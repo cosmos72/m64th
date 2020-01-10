@@ -15,12 +15,8 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-        .file "exec_unix_amd64.S"
+#include "asm.h"
         
-#include "asm_amd64.h"
-        
-        .text
-
 /**
  * enter m4th interpreter from C:
  * save C registers,
@@ -64,7 +60,3 @@ FUNC_START(m4th_bye)
         popq    %rbx;
         ret;
 FUNC_END(m4th_bye)
-
-
-        .ident "m4th 0.0.0"
-        .section .note.GNU-stack,"",@progbits
