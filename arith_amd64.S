@@ -4,10 +4,6 @@
         
         .text
 
-FUNC(m4th_plus, /* + */
-        DPOP(REG1)
-)
-
 FUNC(m4th_at, /* @ */
         LOAD(DTOP, DTOP)
 )
@@ -51,6 +47,12 @@ FUNC(m4th_over,
         DPUSH(DTOP)
         movq SZ(DSTK), DTOP;
 )
+
+FUNC(m4th_plus, /* + */
+        DPOP(REG1)
+        ADD2(REG1, DTOP)
+)
+
 
 FUNC(m4th_rot,
         movq (DSTK),   REG1;

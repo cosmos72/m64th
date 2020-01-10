@@ -3,6 +3,8 @@
 
 #define SZ   8    /* width of registers and cells, in bytes */
 #define SZ2  16   /* SZ * 2 */
+#define SZ3  24   /* SZ * 3 */
+#define SZ5  40   /* SZ * 5 */
 
 #define REG1 %rax /* scratch register 1 */
 #define REG2 %rcx /* scratch register 2 */
@@ -12,13 +14,15 @@
 #define DSTK %rsp /* pointer to second data stack element */
 
 #define RTOP %rbp /* value of first return stack element */
-#define RSTK %r15 /* pointer to second return stack element */
+#define RSTK %r14 /* pointer to second return stack element */
+
+#define M4TH %r15 /* pointer to C struct m4th */
 
 #define DPUSH(val)    pushq     val; /* push val to second data stack element */
 #define DPOP(val)     popq      val; /* pop second data stack element into val */
 
-#define RPUSH(val)    movq      val,    (RSTK); /* push val to second return stack element */ \
-                      subq      $SZ,    RSTK;
+#define RPUSH(val)    subq      $SZ,    RSTK; /* push val to second return stack element */ \
+                      movq      val,    (RSTK);
 
 #define RPOP(val)     movq      (RSTK), val; /* pop second return stack element into val */ \
                       addq      $SZ,    RSTK;
