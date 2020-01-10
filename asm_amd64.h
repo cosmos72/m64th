@@ -4,6 +4,7 @@
 #define SZ   8    /* width of registers and cells, in bytes */
 #define SZ2  16   /* SZ * 2 */
 #define SZ3  24   /* SZ * 3 */
+#define SZ4  32   /* SZ * 4 */
 #define SZ5  40   /* SZ * 5 */
 
 #define REG1 %rax /* scratch register 1 */
@@ -28,7 +29,7 @@
                       addq      $SZ,    RSTK;
 
 #define NEXT()        addq      $SZ,    RTOP; /* jump to next instruction */ \
-                      jmp       *RTOP;
+                      jmp       *(RTOP);
 
 
 #define FUNC_NEXT(name) \
