@@ -8,5 +8,5 @@ all: m4th
 clean:
 	rm -f m4th *.o *~
 
-m4th: arith_amd64.o exec_unix_amd64.o main.o mem_unix.o
+m4th: arith_amd64.o exec_unix_amd64.o main.o mem.o
 	$(CC) $(CFLAGS) -o $@ $^

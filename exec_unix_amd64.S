@@ -9,7 +9,7 @@
  * save C registers,
  * load m4th registers from struct (m4th*)
  *      passed in %rdi as per SYS V amd64 ABI,
- * execute m4th->code
+ * execute m4th->rstack[0]
  */
 FUNC_START(m4th_enter)
         pushq   %rbx;            /* save C registers */
