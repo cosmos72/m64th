@@ -40,7 +40,7 @@ FUNC(m4th_dup,
 )
 
 FUNC(m4th_literal,
-        ADD2($SZ, RTOP)
+        ADD2(IMM(SZ), RTOP)
         DPUSH(DTOP)
         LOAD(RTOP, DTOP)
 )
