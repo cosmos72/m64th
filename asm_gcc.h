@@ -18,24 +18,27 @@
 #ifndef M4TH_ASM_GCC_H
 #define M4TH_ASM_GCC_H
 
-#define FUNC_NEXT(name)                         \
-/* .name.next: */ \
-                      NEXT()
-
 #define FUNC_START(name) \
                       .globl    name; \
                       .type     name,   @function; \
 name: \
                       .cfi_startproc;
 
-#define FUNC_END(name) \
+#define FUNC_RAWEND(name) \
                       .cfi_endproc; \
                       .size     name,   .-name;
+
+#define FUNC_NEXT(name)                         \
+/* .name.next: */ \
+                      NEXT()
+
+#define FUNC_END(name) \
+                      FUNC_NEXT(name) \
+                      FUNC_RAWEND(name)
 
 #define FUNC(name, ...) \
                       FUNC_START(name) \
                       __VA_ARGS__ \
-                      FUNC_NEXT(name) \
                       FUNC_END(name)
 
 #endif /* M4TH_ASM_GCC_H */

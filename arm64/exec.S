@@ -21,26 +21,18 @@
  * enter m4th interpreter from C:
  * save C registers,
  * load m4th registers from struct (m4th*)
- *      passed in %rdi as per SYS V amd64 ABI,
- * execute m4th->rstack[0]
+ *      passed in x0 as per aarch64 ABI,
+ * execute m4th->rstack[0] and subsequent code until m4th_bye is found.
  */
 FUNC_START(m4th_enter)
-#if 0 /* TODO */
-        pushq   %rbx;            /* save C registers */
-        pushq   %rbp;
-        pushq   %r12;
-        pushq   %r13;
-        pushq   %r14;
-        pushq   %r15;
-        movq    %rdi, M4TH;      /* interp                    */
-        movq    %rsp, SZ5(M4TH); /* save C stack pointer      */
-        movq    SZ(M4TH),  DSTK; /* load data   stack pointer */
-        movq    SZ3(M4TH), RSTK; /* load return stack pointer */
-        DPOP(DTOP)               /* load first data   stack element */
-        RPOP(RTOP)               /* load first return stack element  */
-        jmp     *(RTOP);         /* execute it */
-#endif /* 0 */
-FUNC_END(m4th_enter)
+        mov  M4TH, x0;               /* interp                    */
+        ldr  DSTK, [M4TH];           /* load data   stack pointer */
+        ldr  RSTK, [M4TH, IMM(SZ2)]; /* load return stack pointer */
+        DPOP(DTOP)                   /* load first data   stack element */
+        RPOP(RTOP)                   /* load first return stack element  */
+        LOAD(RTOP, REG1)
+        br   REG1;                   /* execute it */
+FUNC_RAWEND(m4th_enter)
 
 /**
  * exit m4th interpreter and return to C:
@@ -49,18 +41,9 @@ FUNC_END(m4th_enter)
  * return to C
  */
 FUNC_START(m4th_bye)
-#if 0 /* TODO */
-        RPUSH(RTOP)              /* save first return stack element */
-        DPUSH(DTOP)              /* save first data   stack element */
-        movq    RSTK, SZ3(M4TH); /* save return stack pointer */
-        movq    DSTK, SZ(M4TH);  /* save data   stack pointer */
-        movq    SZ5(M4TH), %rsp; /* load C stack pointer */
-        popq    %r15;            /* load C registers */
-        popq    %r14;
-        popq    %r13;
-        popq    %r12;
-        popq    %rbp;
-        popq    %rbx;
+        RPUSH(RTOP)                   /* save first return stack element */
+        DPUSH(DTOP)                   /* save first data   stack element */
+        str   RSTK, [M4TH, IMM(SZ2)]; /* save return stack pointer */
+        str   DSTK, [M4TH];           /* save data   stack pointer */
         ret;
-#endif /* 0 */
-FUNC_END(m4th_bye)
+FUNC_RAWEND(m4th_bye)

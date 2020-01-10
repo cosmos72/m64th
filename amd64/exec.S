@@ -22,23 +22,25 @@
  * save C registers,
  * load m4th registers from struct (m4th*)
  *      passed in %rdi as per SYS V amd64 ABI,
- * execute m4th->rstack[0]
+ * execute m4th->rstack[0] and subsequent code until m4th_bye is found.
  */
 FUNC_START(m4th_enter)
         pushq   %rbx;            /* save C registers */
+#if 0 /* not clobbered by m4th */
         pushq   %rbp;
         pushq   %r12;
         pushq   %r13;
+#endif /* 0 */
         pushq   %r14;
         pushq   %r15;
         movq    %rdi, M4TH;      /* interp                    */
         movq    %rsp, SZ5(M4TH); /* save C stack pointer      */
-        movq    SZ(M4TH),  DSTK; /* load data   stack pointer */
-        movq    SZ3(M4TH), RSTK; /* load return stack pointer */
+        movq    (M4TH),  DSTK;   /* load data   stack pointer */
+        movq    SZ2(M4TH), RSTK; /* load return stack pointer */
         DPOP(DTOP)               /* load first data   stack element */
         RPOP(RTOP)               /* load first return stack element  */
         jmp     *(RTOP);         /* execute it */
-FUNC_END(m4th_enter)
+FUNC_RAWEND(m4th_enter)
 
 /**
  * exit m4th interpreter and return to C:
@@ -49,14 +51,16 @@ FUNC_END(m4th_enter)
 FUNC_START(m4th_bye)
         RPUSH(RTOP)              /* save first return stack element */
         DPUSH(DTOP)              /* save first data   stack element */
-        movq    RSTK, SZ3(M4TH); /* save return stack pointer */
-        movq    DSTK, SZ(M4TH);  /* save data   stack pointer */
+        movq    RSTK, SZ2(M4TH); /* save return stack pointer */
+        movq    DSTK, (M4TH);    /* save data   stack pointer */
         movq    SZ5(M4TH), %rsp; /* load C stack pointer */
         popq    %r15;            /* load C registers */
         popq    %r14;
+#if 0 /* not clobbered by m4th */
         popq    %r13;
         popq    %r12;
         popq    %rbp;
+#endif /* 0 */
         popq    %rbx;
         ret;
-FUNC_END(m4th_bye)
+FUNC_RAWEND(m4th_bye)

@@ -32,6 +32,8 @@
 #define REG1 x0 /* scratch register 1 */
 #define REG2 x1 /* scratch register 2 */
 #define REG3 x2 /* scratch register 3 */
+#define REG4 x3 /* scratch register 4 */
+/* additional scratch registers: x4 .. x10 */
 
 #define DTOP x11 /* value of first data stack element */
 #define DSTK x12 /* pointer to second data stack element */

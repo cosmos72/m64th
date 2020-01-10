@@ -39,12 +39,14 @@ FUNC(m4th_dup,
         DPUSH(DTOP)
 )
 
+#ifndef M4TH_LITERAL
 FUNC(m4th_literal,
         ADD2(IMM(SZ), RTOP)
         DPUSH(DTOP)
         LOAD(RTOP, DTOP)
 )
-
+#endif
+        
 FUNC(m4th_minus, /* - */
         DPOP(REG1)
 #ifdef SUB3

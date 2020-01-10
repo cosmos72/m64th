@@ -10,8 +10,8 @@ all: m4th
 clean:
 	rm -f m4th *.o *~
 
-arith.S: $(wildcard */arith.S)
-exec.S:  $(wildcard */exec.S)
+arith.o: arith.S $(wildcard */asm.h */arith.S)
+exec.o:  exec.S  $(wildcard */asm.h */exec.S)
 
 m4th: $(OBJS)
 	$(CC) $(CFLAGS) -o $@ $^

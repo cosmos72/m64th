@@ -17,36 +17,41 @@
 
 #include "asm.h"
         
+#define M4TH_LITERAL
+FUNC_START(m4th_literal)
+        DPUSH(DTOP)
+        ldr DTOP, [RTOP, IMM(SZ)]!;
+FUNC_END(m4th_literal)
 
 /* mod is unsigned remainder */
-FUNC(m4th_mod,
-#if 0
+FUNC_START(m4th_mod)
+#if 0 /* TODO */
         DPOP(%rax)
         ZERO(%rdx)
         div DTOP;
         MOV(%rdx, DTOP) /* remainder */
-#endif
-)
+#endif /* 0 */
+FUNC_END(m4th_mod)
 
-FUNC(m4th_over,
+FUNC_START(m4th_over)
         DPUSH(DTOP)
-        ldr  DTOP, [DSTK, SZ];
-)
+        ldr  DTOP, [DSTK, IMM(SZ)];
+FUNC_END(m4th_over)
 
-FUNC(m4th_rot,
+FUNC_START(m4th_rot)
         ldr  REG1, [DSTK];
         str  DTOP, [DSTK];
-        ldr  DTOP, [DSTK, SZ];
-        str  REG1, [DSTK, SZ];
-)
+        ldr  DTOP, [DSTK, IMM(SZ)];
+        str  REG1, [DSTK, IMM(SZ)];
+FUNC_END(m4th_rot)
 
-FUNC(m4th_slash, /* / */
+FUNC_START(m4th_slash) /* / */
         DPOP(REG1)
         DIV3(REG1, DTOP, DTOP)
-)
+FUNC_END(m4th_slash)
 
 /* /mod is unsigned divide & remainder */
-FUNC(m4th_slash_mod,
+FUNC_START(m4th_slash_mod)
 #if 0
         LOAD(DSTK, %rax)
         ZERO(%rdx)
@@ -54,10 +59,10 @@ FUNC(m4th_slash_mod,
         STORE(%rdx, DSTK) /* remainder */
         MOV(%rax, DTOP)   /* quotient */
 #endif
-)
+FUNC_END(m4th_slash_mod)
 
-FUNC(m4th_swap,
+FUNC_START(m4th_swap)
         ldr  REG1, [DSTK];
         str  DTOP, [DSTK];
         MOV(REG1, DTOP)
-)
+FUNC_END(m4th_swap)
