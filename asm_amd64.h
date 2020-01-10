@@ -14,7 +14,7 @@
 #define DTOP %rbx /* value of first data stack element */
 #define DSTK %rsp /* pointer to second data stack element */
 
-#define RTOP %rbp /* value of first return stack element */
+#define RTOP %rsi /* value of first return stack element */
 #define RSTK %r14 /* pointer to second return stack element */
 
 #define M4TH %r15 /* pointer to C struct m4th */

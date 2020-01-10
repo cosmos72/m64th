@@ -10,10 +10,8 @@ enum {
 
 m4th* m4th_new() {
     m4th* interp = (m4th*)malloc(sizeof(m4th));
-    interp->dstack0 = dstack_n + (m_int*)malloc(dstack_n * sizeof(m_int));
-    interp->rstack0 = rstack_n + (m_int*)malloc(rstack_n * sizeof(m_int));
-    interp->dstack = interp->dstack0 - 1;
-    interp->rstack = interp->rstack0 - 1;
+    interp->dstack = interp->dstack0 = dstack_n - 1 + (m_int*)malloc(dstack_n * sizeof(m_int));
+    interp->rstack = interp->rstack0 = rstack_n - 1 + (m_int*)malloc(rstack_n * sizeof(m_int));
     interp->code = (m_int*)malloc(code_n * sizeof(m_int));
     interp->c_stack = NULL;
     return interp;
@@ -21,8 +19,8 @@ m4th* m4th_new() {
 
 void m4th_free(m4th* interp) {
     free(interp->code);
-    free(interp->rstack0 - rstack_n);
-    free(interp->dstack0 - dstack_n);
+    free(interp->rstack0 - (rstack_n - 1));
+    free(interp->dstack0 - (dstack_n - 1));
     free(interp);
 }
 
