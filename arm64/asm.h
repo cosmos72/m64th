@@ -26,7 +26,7 @@
 #define SZ4  32   /* SZ * 4 */
 #define SZ5  40   /* SZ * 5 */
 
-#define HASH() #
+#define HASH()
 #define IMM(constant) HASH() constant /* immediate constant */
 
 #define REG1 x0 /* scratch register 1 */
