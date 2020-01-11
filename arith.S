@@ -27,27 +27,27 @@
 #error "unsupported architecture: expecting amd64 or arm64"
 #endif
 
-FUNC(m4th_at, /* @ */
+FUNC(m4at, /* @ */
         LOAD(DTOP, DTOP)
 )
 
-FUNC(m4th_drop,
+FUNC(m4drop,
         DPOP(DTOP)
 )
 
-FUNC(m4th_dup,
+FUNC(m4dup,
         DPUSH(DTOP)
 )
 
-#ifndef M4TH_LITERAL
-FUNC(m4th_literal,
+#ifndef M4LITERAL
+FUNC(m4literal,
         ADD2(IMM(SZ), RTOP)
         DPUSH(DTOP)
         LOAD(RTOP, DTOP)
 )
 #endif
         
-FUNC(m4th_minus, /* - */
+FUNC(m4minus, /* - */
         DPOP(REG1)
 #ifdef SUB3
         SUB3(REG1, DTOP, DTOP)
@@ -57,15 +57,15 @@ FUNC(m4th_minus, /* - */
 #endif
 )
 
-FUNC(m4th_noop,
+FUNC(m4noop,
 )
         
-FUNC(m4th_plus, /* + */
+FUNC(m4plus, /* + */
         DPOP(REG1)
         ADD2(REG1, DTOP)
 )
 
-FUNC(m4th_star, /* * */
+FUNC(m4star, /* * */
         DPOP(REG1)
         MUL2(REG1, DTOP)
 )

@@ -40,10 +40,10 @@ FUNC_RAWEND(m4th_enter)
  * load C registers
  * return to C
  */
-FUNC_START(m4th_bye)
+FUNC_START(m4bye)
         RPUSH(RTOP)                   /* save first return stack element */
         DPUSH(DTOP)                   /* save first data   stack element */
         str   RSTK, [M4TH, IMM(SZ2)]; /* save return stack pointer */
         str   DSTK, [M4TH];           /* save data   stack pointer */
         ret;
-FUNC_RAWEND(m4th_bye)
+FUNC_RAWEND(m4bye)

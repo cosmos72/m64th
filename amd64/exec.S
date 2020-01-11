@@ -48,7 +48,7 @@ FUNC_RAWEND(m4th_enter)
  * load C registers
  * return to C
  */
-FUNC_START(m4th_bye)
+FUNC_START(m4bye)
         RPUSH(RTOP)              /* save first return stack element */
         DPUSH(DTOP)              /* save first data   stack element */
         movq    RSTK, SZ2(M4TH); /* save return stack pointer */
@@ -63,4 +63,4 @@ FUNC_START(m4th_bye)
 #endif /* 0 */
         popq    %rbx;
         ret;
-FUNC_RAWEND(m4th_bye)
+FUNC_RAWEND(m4bye)

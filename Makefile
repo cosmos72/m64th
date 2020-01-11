@@ -1,7 +1,8 @@
-AS=gcc
 CC=gcc
-ASFLAGS=-g -Wall
 CFLAGS=-g -Wall
+
+AS=$(CC)
+ASFLAGS=$(CFLAGS)
 
 OBJS=arith.o exec.o main.o mem.o
 

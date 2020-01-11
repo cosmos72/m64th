@@ -19,42 +19,42 @@
         
 
 /* mod is unsigned remainder */
-FUNC_START(m4th_mod)
+FUNC_START(m4mod)
         DPOP(%rax)
         ZERO(%rdx)
         div DTOP;
         MOV(%rdx, DTOP) /* remainder */
-FUNC_END(m4th_mod)
+FUNC_END(m4mod)
 
-FUNC_START(m4th_over)
+FUNC_START(m4over)
         DPUSH(DTOP)
         movq SZ(DSTK), DTOP;
-FUNC_END(m4th_over)
+FUNC_END(m4over)
 
-FUNC_START(m4th_rot)
+FUNC_START(m4rot)
         movq (DSTK),   REG1;
         movq DTOP,     (DSTK);
         movq SZ(DSTK), DTOP;
         movq REG1,     SZ(DSTK);
-FUNC_END(m4th_rot)
+FUNC_END(m4rot)
 
-FUNC_START(m4th_slash) /* / */
+FUNC_START(m4slash) /* / */
         DPOP(%rax)
         cqto; /* sign-extend %rax into %rdx */
         idiv DTOP;
         MOV(%rax, DTOP)
-FUNC_END(m4th_slash)
+FUNC_END(m4slash)
 
 /* /mod is unsigned divide & remainder */
-FUNC_START(m4th_slash_mod)
+FUNC_START(m4slash_mod)
         LOAD(DSTK, %rax)
         ZERO(%rdx)
         div DTOP;
         STORE(%rdx, DSTK) /* remainder */
         MOV(%rax, DTOP)   /* quotient */
-FUNC_END(m4th_slash_mod)
+FUNC_END(m4slash_mod)
 
-FUNC_START(m4th_swap)
+FUNC_START(m4swap)
         xchg (DSTK), DTOP;
-FUNC_END(m4th_swap)
+FUNC_END(m4swap)
 

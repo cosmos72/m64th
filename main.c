@@ -18,7 +18,8 @@
 #include "m4th.h"
 #include "decl.h"
 
-#include <stdio.h>
+#include <stdio.h>  /* fprintf() */
+#include <string.h> /* memcpy() */
 
 void m4th_print_dstack(FILE* out, m4th* interp) {
     m4int* lo = interp->dstack.begin;
@@ -31,14 +32,14 @@ void m4th_print_dstack(FILE* out, m4th* interp) {
 }
 
 static void add_sample_code(m4int* code) {
-    *code++ = (m4int)m4th_literal;
-    *code++ = 1;
-    *code++ = (m4int)m4th_literal;
-    *code++ = 2;
-    *code++ = (m4int)m4th_literal;
-    *code++ = 3;
-    *code++ = (m4int)m4th_rot;
-    *code++ = (m4int)m4th_bye;
+    static const m4int sample[] =
+        { (m4int)m4literal, 1,
+          (m4int)m4literal, 2,
+          (m4int)m4literal, 3,
+          (m4int)m4rot,
+          (m4int)m4bye,
+        };
+    memcpy(code, sample, sizeof(sample));
 }
 
 int main(int argc, char* argv[]) {

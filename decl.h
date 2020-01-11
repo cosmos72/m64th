@@ -25,20 +25,20 @@
  * operation is taking their address and appending it to m4th->code
  */
 
-void m4th_at(void);
-void m4th_bye(void);
-void m4th_drop(void);
-void m4th_dup(void);
-void m4th_literal(void);
-void m4th_minus(void);
-void m4th_mod(void);
-void m4th_noop(void);
-void m4th_over(void);
-void m4th_plus(void);
-void m4th_rot(void);
-void m4th_slash(void);
-void m4th_slash_mod(void);
-void m4th_star(void);
-void m4th_swap(void);
+void m4at(void);
+void m4bye(void);
+void m4drop(void);
+void m4dup(void);
+void m4literal(void);
+void m4minus(void);
+void m4mod(void);
+void m4noop(void);
+void m4over(void);
+void m4plus(void);
+void m4rot(void);
+void m4slash(void);
+void m4slash_mod(void);
+void m4star(void);
+void m4swap(void);
 
 #endif /* M4TH_DECL_H */
