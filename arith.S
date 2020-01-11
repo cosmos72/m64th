@@ -27,17 +27,39 @@
 #error "unsupported architecture: expecting amd64 or arm64"
 #endif
 
+
 FUNC_START(m4at) /* @ */
         LOAD(DTOP, DTOP)
 FUNC_END(m4at)
+
 
 FUNC_START(m4drop)
         DPOP(DTOP)
 FUNC_END(m4drop)
 
+
 FUNC_START(m4dup)
         DPUSH(DTOP)
 FUNC_END(m4dup)
+
+
+FUNC_START(m4i)
+        DPUSH(DTOP)
+        LOAD(RSTK, DTOP)
+FUNC_END(m4i)
+
+
+FUNC_START(m4i_prime) /* i' */
+        DPUSH(DTOP)
+        IGET(RSTK, SZ, DTOP)
+FUNC_END(m4i_prime)
+
+
+FUNC_START(m4j)
+        DPUSH(DTOP)
+        IGET(RSTK, SZ2, DTOP)
+FUNC_END(m4j)
+
 
 #ifndef M4LITERAL
 FUNC_START(m4literal)
@@ -46,7 +68,7 @@ FUNC_START(m4literal)
         LOAD(IP, DTOP)
 FUNC_END(m4literal)
 #endif
-        
+
 FUNC_START(m4minus) /* - */
         DPOP(REG1)
 #ifdef SUB3
@@ -57,18 +79,52 @@ FUNC_START(m4minus) /* - */
 #endif
 FUNC_END(m4minus)
 
+
+FUNC_START(m4negate)
+        NEG1(DTOP)
+FUNC_END(m4negate)
+
+
 FUNC_START(m4noop)
 FUNC_END(m4noop)
-        
+
+
+FUNC_START(m4over)
+        DPUSH(DTOP)
+        IGET(DSTK, SZ, DTOP)
+FUNC_END(m4over)
+
+
 FUNC_START(m4plus) /* + */
         DPOP(REG1)
         ADD2(REG1, DTOP)
 FUNC_END(m4plus)
 
+
+FUNC_START(m4r_from) /* r> */
+        DPUSH(DTOP)
+        RPOP(DTOP)
+FUNC_END(m4r_from)
+
+
+FUNC_START(m4rot)
+        LOAD(DSTK, REG1)
+        STOR(DTOP, DSTK)
+        IGET(DSTK, SZ, DTOP)
+        ISET(REG1, DSTK, SZ)
+FUNC_END(m4rot)
+
+
 FUNC_START(m4star) /* * */
         DPOP(REG1)
         MUL2(REG1, DTOP)
 FUNC_END(m4star)
+
+
+FUNC_START(m4to_r) /* >r */
+        RPUSH(DTOP)
+        DPOP(DTOP)
+FUNC_END(m4to_r)
 
         .ident "m4th 0.0.0"
         .section .note.GNU-stack,"",@progbits

@@ -33,11 +33,21 @@ void m4th_print_dstack(FILE* out, m4th* interp) {
 
 static void add_sample_code(m4int* code) {
     static const m4int sample[] =
-        { (m4int)m4literal, 1,
-          (m4int)m4literal, 2,
-          (m4int)m4literal, 3,
-          (m4int)m4rot,
-          (m4int)m4bye,
+        {
+#if 1
+         (m4int)m4literal, 1,
+         (m4int)m4literal, 2,
+         (m4int)m4min,
+         (m4int)m4literal, -4,
+         (m4int)m4literal, -5,
+         (m4int)m4max,
+#else
+         (m4int)m4literal, 1,
+         (m4int)m4literal, 2,
+         (m4int)m4literal, 3,
+         (m4int)m4rot,
+#endif
+         (m4int)m4bye,
         };
     memcpy(code, sample, sizeof(sample));
 }

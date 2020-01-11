@@ -56,14 +56,16 @@
                       jmp       *(IP);
 
 
-#define ADD2(src,dst)   addq    src,    dst;    /* dst += src     */
-#define LOAD(addr,dst)  movq    (addr), dst;    /* dst  = addr[0] */
-#define MOV(src,dst)    movq    src,    dst;    /* dst  = src     */
-#define MUL2(src,dst)   imulq   src,    dst;    /* dst *= src     */
-#define NEG1(dst)       negq    dst;            /* dst  = -dst    */
-#define SUB2(src,dst)   subq    src,    dst;    /* dst -= src     */
-#define STORE(src,addr) movq    src,    (addr); /* addr[0] = src  */
-#define ZERO(dst)       xorq    dst,    dst;    /* dst  = 0       */
+#define ADD2(src,dst)    addq   src,     dst;    /* dst += src     */
+#define IGET(addr,i,dst) movq   i(addr), dst;    /* dst  = addr[i] */
+#define ISET(src,addr,i) movq   src,     i(addr);/* addr[i] = src  */
+#define LOAD(addr,dst)   movq   (addr),  dst;    /* dst  = addr[0] */
+#define MOVE(src,dst)    movq   src,     dst;    /* dst  = src     */
+#define MUL2(src,dst)    imulq  src,     dst;    /* dst *= src     */
+#define NEG1(dst)        negq   dst;             /* dst  = -dst    */
+#define SUB2(src,dst)    subq   src,     dst;    /* dst -= src     */
+#define STOR(src,addr)   movq   src,     (addr); /* addr[0] = src  */
+#define ZERO(dst)        xorq   dst,     dst;    /* dst  = 0       */
 
 #endif /* M4TH_AMD64_ASM_H */
 

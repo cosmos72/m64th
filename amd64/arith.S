@@ -16,45 +16,82 @@
  */
 
 #include "asm.h"
-        
 
-/* mod is unsigned remainder */
+FUNC_START(m4abs)
+        MOVE(DTOP, REG1)
+        NEG1(REG1)
+        cmovlq REG1, DTOP;
+FUNC_END(m4abs)
+
+FUNC_START(m4max)
+        DPOP(REG1)
+        cmpq   DTOP, REG1;
+        cmovgq REG1, DTOP;
+FUNC_END(m4min)
+
+FUNC_START(m4min)
+        DPOP(REG1)
+        cmpq   DTOP, REG1;
+        cmovlq REG1, DTOP;
+FUNC_END(m4min)
+
+/* unsigned remainder */
 FUNC_START(m4mod)
         DPOP(%rax)
         ZERO(%rdx)
         div DTOP;
-        MOV(%rdx, DTOP) /* remainder */
+        MOVE(%rdx, DTOP) /* remainder */
 FUNC_END(m4mod)
 
-FUNC_START(m4over)
-        DPUSH(DTOP)
-        movq SZ(DSTK), DTOP;
-FUNC_END(m4over)
 
-FUNC_START(m4rot)
-        movq (DSTK),   REG1;
-        movq DTOP,     (DSTK);
-        movq SZ(DSTK), DTOP;
-        movq REG1,     SZ(DSTK);
-FUNC_END(m4rot)
+FUNC_START(m4one_minus) /* 1- */
+        dec  DTOP;
+FUNC_END(m4one_minus)
+
+
+FUNC_START(m4one_plus) /* 1+ */
+        inc  DTOP;
+FUNC_END(m4one_plus)
+
 
 FUNC_START(m4slash) /* / */
         DPOP(%rax)
         cqto; /* sign-extend %rax into %rdx */
         idiv DTOP;
-        MOV(%rax, DTOP)
+        MOVE(%rax, DTOP)
 FUNC_END(m4slash)
 
-/* /mod is unsigned divide & remainder */
-FUNC_START(m4slash_mod)
+/* unsigned divide & remainder */
+FUNC_START(m4slash_mod) /* /mod */
         LOAD(DSTK, %rax)
         ZERO(%rdx)
-        div DTOP;
-        STORE(%rdx, DSTK) /* remainder */
-        MOV(%rax, DTOP)   /* quotient */
+        div  DTOP;
+        STOR(%rdx, DSTK) /* remainder */
+        MOVE(%rax, DTOP)   /* quotient */
 FUNC_END(m4slash_mod)
+
 
 FUNC_START(m4swap)
         xchg (DSTK), DTOP;
 FUNC_END(m4swap)
+
+
+FUNC_START(m4two_minus) /* 2- */
+        SUB2(IMM(2),  DTOP)
+FUNC_END(m4two_minus)
+
+
+FUNC_START(m4two_plus) /* 2+ */
+        ADD2(IMM(2), DTOP)
+FUNC_END(m4two_plus)
+
+
+FUNC_START(m4two_slash) /* 2/ */
+        sar  IMM(1), DTOP;
+FUNC_END(m4two_slash)
+
+
+FUNC_START(m4two_star) /* 2* */
+        sal  IMM(1), DTOP;
+FUNC_END(m4two_star)
 

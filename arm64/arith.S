@@ -16,6 +16,21 @@
  */
 
 #include "asm.h"
+
+
+FUNC_START(m4abs)
+        /* TODO */
+FUNC_END(m4abs)
+
+
+FUNC_START(m4max)
+        /* TODO */
+FUNC_END(m4min)
+
+
+FUNC_START(m4min)
+        /* TODO */
+FUNC_END(m4min)
         
 #define M4LITERAL
 FUNC_START(m4literal)
@@ -25,25 +40,9 @@ FUNC_END(m4literal)
 
 /* mod is unsigned remainder */
 FUNC_START(m4mod)
-#if 0 /* TODO */
-        DPOP(%rax)
-        ZERO(%rdx)
-        div DTOP;
-        MOV(%rdx, DTOP) /* remainder */
-#endif /* 0 */
+        /* TODO */
 FUNC_END(m4mod)
 
-FUNC_START(m4over)
-        DPUSH(DTOP)
-        ldr  DTOP, [DSTK, IMM(SZ)];
-FUNC_END(m4over)
-
-FUNC_START(m4rot)
-        ldr  REG1, [DSTK];
-        str  DTOP, [DSTK];
-        ldr  DTOP, [DSTK, IMM(SZ)];
-        str  REG1, [DSTK, IMM(SZ)];
-FUNC_END(m4rot)
 
 FUNC_START(m4slash) /* / */
         DPOP(REG1)
@@ -52,17 +51,12 @@ FUNC_END(m4slash)
 
 /* /mod is unsigned divide & remainder */
 FUNC_START(m4slash_mod)
-#if 0
-        LOAD(DSTK, %rax)
-        ZERO(%rdx)
-        div DTOP;
-        STORE(%rdx, DSTK) /* remainder */
-        MOV(%rax, DTOP)   /* quotient */
-#endif
+        /* TODO */
 FUNC_END(m4slash_mod)
 
+
 FUNC_START(m4swap)
-        ldr  REG1, [DSTK];
-        str  DTOP, [DSTK];
-        MOV(REG1, DTOP)
+        LOAD(REG1, DSTK)
+        STOR(DTOP, DSTK)
+        MOVE(REG1, DTOP)
 FUNC_END(m4swap)

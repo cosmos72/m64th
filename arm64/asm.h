@@ -52,16 +52,18 @@
                       br        REG1;
 
 
-#define ADD2(src,dst)   add  dst, dst, src;    /* dst += src     */
-#define DIV3(a,b,dst)   sdiv dst, a, b;        /* dst  = a / b   */
-#define LOAD(addr,dst)  ldr  dst, [addr];      /* dst  = addr[0] */
-#define MOV(src,dst)    mov  dst, src;         /* dst  = src     */
-#define MUL2(src,dst)   mul  dst, dst, src;    /* dst *= src     */
-#define NEG1(dst)       neg  dst, dst;         /* dst  = -dst    */
-#define SUB2(src,dst)   sub  dst, dst, src;    /* dst -= src     */
-#define SUB3(a,b,dst)   sub  dst, a, b;        /* dst  = a - b   */
-#define STORE(src,addr) str  src, [addr];      /* addr[0] = src  */
-#define ZERO(dst)       mov  dst, 0;           /* dst  = 0       */
+#define ADD2(src,dst)    add  dst, dst, src;    /* dst += src     */
+#define DIV3(a,b,dst)    sdiv dst, a, b;        /* dst  = a / b   */
+#define LOAD(addr,dst)   ldr  dst, [addr];      /* dst  = addr[0] */
+#define IGET(addr,i,dst) ldr  dst, [addr, i];   /* dst  = addr[i] */
+#define ISET(src,addr,i) str  src, [addr, i];   /* addr[i] = src  */
+#define MOVE(src,dst)    mov  dst, src;         /* dst  = src     */
+#define MUL2(src,dst)    mul  dst, dst, src;    /* dst *= src     */
+#define NEG1(dst)        neg  dst, dst;         /* dst  = -dst    */
+#define SUB2(src,dst)    sub  dst, dst, src;    /* dst -= src     */
+#define SUB3(a,b,dst)    sub  dst, a, b;        /* dst  = a - b   */
+#define STOR(src,addr)   str  src, [addr];      /* addr[0] = src  */
+#define ZERO(dst)        mov  dst, 0;           /* dst  = 0       */
 
 
 #endif /* M4TH_ARM64_ASM_H */
