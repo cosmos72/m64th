@@ -27,27 +27,27 @@
 #error "unsupported architecture: expecting amd64 or arm64"
 #endif
 
-FUNC(m4at, /* @ */
+FUNC_START(m4at) /* @ */
         LOAD(DTOP, DTOP)
-)
+FUNC_END(m4at)
 
-FUNC(m4drop,
+FUNC_START(m4drop)
         DPOP(DTOP)
-)
+FUNC_END(m4drop)
 
-FUNC(m4dup,
+FUNC_START(m4dup)
         DPUSH(DTOP)
-)
+FUNC_END(m4dup)
 
 #ifndef M4LITERAL
-FUNC(m4literal,
+FUNC_START(m4literal)
         ADD2(IMM(SZ), IP)
         DPUSH(DTOP)
         LOAD(IP, DTOP)
-)
+FUNC_END(m4literal)
 #endif
         
-FUNC(m4minus, /* - */
+FUNC_START(m4minus) /* - */
         DPOP(REG1)
 #ifdef SUB3
         SUB3(REG1, DTOP, DTOP)
@@ -55,20 +55,20 @@ FUNC(m4minus, /* - */
         NEG1(DTOP)
         ADD2(REG1, DTOP)
 #endif
-)
+FUNC_END(m4minus)
 
-FUNC(m4noop,
-)
+FUNC_START(m4noop)
+FUNC_END(m4noop)
         
-FUNC(m4plus, /* + */
+FUNC_START(m4plus) /* + */
         DPOP(REG1)
         ADD2(REG1, DTOP)
-)
+FUNC_END(m4plus)
 
-FUNC(m4star, /* * */
+FUNC_START(m4star) /* * */
         DPOP(REG1)
         MUL2(REG1, DTOP)
-)
+FUNC_END(m4star)
 
         .ident "m4th 0.0.0"
         .section .note.GNU-stack,"",@progbits
