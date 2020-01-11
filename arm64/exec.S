@@ -28,10 +28,10 @@ FUNC_START(m4th_enter)
         mov  M4TH, x0;               /* interp                    */
         ldr  DSTK, [M4TH];           /* load data   stack pointer */
         ldr  RSTK, [M4TH, IMM(SZ2)]; /* load return stack pointer */
-        DPOP(DTOP)                   /* load first data   stack element */
-        RPOP(RTOP)                   /* load first return stack element  */
-        LOAD(RTOP, REG1)
-        br   REG1;                   /* execute it */
+        ldr  IP,   [M4TH, IMM(SZ6)]; /* load instruction  pointer */
+        DPOP(DTOP)                   /* load first data stack element  */
+        ldr  REG1, [IP];
+        br   REG1;                   /* begin execution */
 FUNC_RAWEND(m4th_enter)
 
 /**
@@ -41,8 +41,8 @@ FUNC_RAWEND(m4th_enter)
  * return to C
  */
 FUNC_START(m4bye)
-        RPUSH(RTOP)                   /* save first return stack element */
-        DPUSH(DTOP)                   /* save first data   stack element */
+        DPUSH(DTOP)                   /* save first data stack element */
+        str   IP,   [M4TH, IMM(SZ6)]; /* save instruction  pointer */
         str   RSTK, [M4TH, IMM(SZ2)]; /* save return stack pointer */
         str   DSTK, [M4TH];           /* save data   stack pointer */
         ret;

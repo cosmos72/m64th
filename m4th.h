@@ -24,25 +24,29 @@
 
 typedef size_t m4uint;
 typedef ssize_t m4int;
-
-typedef struct m4th_span_s m4th_span;
+typedef struct m4span_s m4span;
 typedef struct m4th_s m4th;
 
-struct m4th_span_s {
+struct m4span_s {
     m4int* begin;
     m4int* end;
 };
 
 struct m4th_s {
-    m4th_span dstack;  /* data stack */
-    m4th_span rstack;  /* return stack */
-    m4th_span code;    /* executable code */
-    m4int* ip;         /* pointer to next instruction to execute */
-    m4int* c_stack;    /* C stack pointer. saved here by m4th_enter() */
+    m4span dstack;  /* data stack */
+    m4span rstack;  /* return stack */
+    m4span code;    /* executable code */
+    m4int* ip;      /* instruction pointer */
+    m4int* c_stack; /* C stack pointer. saved here by m4th_enter() */
 };
 
+/** malloc() wrapper, calls exit(1) on failure */
+void* m4th_alloc(size_t bytes);
 
+/** create a new m4th struct */
 m4th* m4th_new();
+
+/** delete an m4th struct */
 void  m4th_del(m4th* interp);
 
 /**
@@ -51,9 +55,7 @@ void  m4th_del(m4th* interp);
  */
 void m4th_enter(m4th* interp);
 
-/* malloc() wrapper, calls exit(1) on failure */
-void* m4th_alloc(size_t bytes);
-
+/** print data stack to 'out' */
 void m4th_print_dstack(FILE* out, m4th* interp);
 
 #endif /* M4TH_M4TH_H */

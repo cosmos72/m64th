@@ -41,9 +41,9 @@ FUNC(m4dup,
 
 #ifndef M4LITERAL
 FUNC(m4literal,
-        ADD2(IMM(SZ), RTOP)
+        ADD2(IMM(SZ), IP)
         DPUSH(DTOP)
-        LOAD(RTOP, DTOP)
+        LOAD(IP, DTOP)
 )
 #endif
         

@@ -38,19 +38,17 @@
 #define DTOP x11 /* value of first data stack element */
 #define DSTK x12 /* pointer to second data stack element */
 
-#define RTOP x13 /* value of first return stack element */
-#define RSTK x14 /* pointer to second return stack element */
-
+#define IP   x13 /* instruction pointer */
+#define RSTK x14 /* pointer to return stack */
 #define M4TH x15 /* pointer to C struct m4th */
 
 #define DPUSH(val)    str       val, [DSTK, -SZ]!; /* push val to second data stack element */
-#define DPOP(val)     ldr       val, [DSTK], SZ; /* pop second data stack element into val */
+#define DPOP(val)     ldr       val, [DSTK], SZ;   /* pop second data stack element into val */
 
-#define RPUSH(val)    str       val, [RSTK, -SZ]!; /* push val to second return stack element */
+#define RPUSH(val)    str       val, [RSTK, -SZ]!; /* push val to return stack */
+#define RPOP(val)     ldr       val, [RSTK], SZ;   /* pop first return stack element into val */
 
-#define RPOP(val)     ldr       val, [RSTK], SZ; /* pop second return stack element into val */
-
-#define NEXT()        ldr       REG1, [RTOP, SZ]!; /* jump to next instruction */ \
+#define NEXT()        ldr       REG1, [IP, SZ]!;   /* jump to next instruction */ \
                       br        REG1;
 
 

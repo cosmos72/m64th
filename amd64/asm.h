@@ -39,22 +39,21 @@
 #define DTOP %rbx /* value of first data stack element */
 #define DSTK %rsp /* pointer to second data stack element */
 
-#define RTOP %rsi /* value of first return stack element */
-#define RSTK %r14 /* pointer to second return stack element */
-
+#define IP   %rsi /* instruction pointer */
+#define RSTK %r14 /* pointer to return stack */
 #define M4TH %r15 /* pointer to C struct m4th */
 
 #define DPUSH(val)    pushq     val; /* push val to second data stack element */
 #define DPOP(val)     popq      val; /* pop second data stack element into val */
 
-#define RPUSH(val)    subq      $SZ,    RSTK; /* push val to second return stack element */ \
+#define RPUSH(val)    subq      $SZ,    RSTK; /* push val to return stack */ \
                       movq      val,    (RSTK);
 
-#define RPOP(val)     movq      (RSTK), val; /* pop second return stack element into val */ \
+#define RPOP(val)     movq      (RSTK), val; /* pop first return stack element into val */ \
                       addq      $SZ,    RSTK;
 
-#define NEXT()        addq      $SZ,    RTOP; /* jump to next instruction */ \
-                      jmp       *(RTOP);
+#define NEXT()        addq      $SZ,    IP; /* jump to next instruction */ \
+                      jmp       *(IP);
 
 
 #define ADD2(src,dst)   addq    src,    dst;    /* dst += src     */

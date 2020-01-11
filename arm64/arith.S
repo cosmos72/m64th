@@ -20,7 +20,7 @@
 #define M4LITERAL
 FUNC_START(m4literal)
         DPUSH(DTOP)
-        ldr DTOP, [RTOP, IMM(SZ)]!;
+        ldr DTOP, [IP, IMM(SZ)]!;
 FUNC_END(m4literal)
 
 /* mod is unsigned remainder */
