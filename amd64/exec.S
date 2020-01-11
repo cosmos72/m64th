@@ -29,8 +29,8 @@ FUNC_START(m4th_enter)
 #if 0 /* not clobbered by m4th */
         pushq   %rbp;
         pushq   %r12;
-        pushq   %r13;
 #endif /* 0 */
+        pushq   %r13;
         pushq   %r14;
         pushq   %r15;
         movq    %rdi, M4TH;      /* interp                    */
@@ -56,8 +56,8 @@ FUNC_START(m4bye)
         movq    SZ7(M4TH), %rsp; /* load C stack pointer */
         popq    %r15;            /* load C registers */
         popq    %r14;
-#if 0 /* not clobbered by m4th */
         popq    %r13;
+#if 0 /* not clobbered by m4th */
         popq    %r12;
         popq    %rbp;
 #endif /* 0 */

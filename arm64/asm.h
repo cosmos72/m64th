@@ -33,20 +33,20 @@
 #define REG2 x1 /* scratch register 2 */
 #define REG3 x2 /* scratch register 3 */
 #define REG4 x3 /* scratch register 4 */
-/* additional scratch registers: x4 .. x10 */
+/* additional scratch registers: x4 .. x9 */
 
-#define DTOP x11 /* value of first data stack element */
-#define DSTK x12 /* pointer to second data stack element */
-
-#define IP   x13 /* instruction pointer */
-#define RSTK x14 /* pointer to return stack */
+#define DTOP x10 /* value of first data stack element */
+#define DSTK x11 /* pointer to second data stack element */
+#define IP   x12 /* instruction pointer */
+#define RTOP x13 /* value of first return stack element */
+#define RSTK x14 /* pointer to second return stack element */
 #define M4TH x15 /* pointer to C struct m4th */
 
 #define DPUSH(val)    str       val, [DSTK, -SZ]!; /* push val to second data stack element */
 #define DPOP(val)     ldr       val, [DSTK], SZ;   /* pop second data stack element into val */
 
-#define RPUSH(val)    str       val, [RSTK, -SZ]!; /* push val to return stack */
-#define RPOP(val)     ldr       val, [RSTK], SZ;   /* pop first return stack element into val */
+#define RPUSH(val)    str       val, [RSTK, -SZ]!; /* push val to second return stack element */
+#define RPOP(val)     ldr       val, [RSTK], SZ;   /* pop second return stack element into val */
 
 #define NEXT()        ldr       REG1, [IP, SZ]!;   /* jump to next instruction */ \
                       br        REG1;

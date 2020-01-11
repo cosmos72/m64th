@@ -49,19 +49,19 @@ FUNC_END(m4dup)
 
 FUNC_START(m4i)
         DPUSH(DTOP)
-        LOAD(RSTK, DTOP)
+        MOVE(RTOP, DTOP)
 FUNC_END(m4i)
 
 
 FUNC_START(m4i_prime) /* i' */
         DPUSH(DTOP)
-        IGET(RSTK, SZ, DTOP)
+        LOAD(RSTK, DTOP)
 FUNC_END(m4i_prime)
 
 
 FUNC_START(m4j)
         DPUSH(DTOP)
-        IGET(RSTK, SZ2, DTOP)
+        IGET(RSTK, SZ, DTOP)
 FUNC_END(m4j)
 
 
@@ -121,7 +121,8 @@ FUNC_END(m4plus)
 
 FUNC_START(m4r_from) /* r> */
         DPUSH(DTOP)
-        RPOP(DTOP)
+        MOVE(RTOP, DTOP)
+        RPOP(RTOP)
 FUNC_END(m4r_from)
 
 
@@ -140,7 +141,8 @@ FUNC_END(m4star)
 
 
 FUNC_START(m4to_r) /* >r */
-        RPUSH(DTOP)
+        RPUSH(RTOP)
+        MOVE(DTOP, RTOP)
         DPOP(DTOP)
 FUNC_END(m4to_r)
 
