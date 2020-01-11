@@ -54,9 +54,3 @@ FUNC_START(m4slash_mod)
         /* TODO */
 FUNC_END(m4slash_mod)
 
-
-FUNC_START(m4swap)
-        LOAD(REG1, DSTK)
-        STOR(DTOP, DSTK)
-        MOVE(REG1, DTOP)
-FUNC_END(m4swap)

@@ -18,7 +18,7 @@
         .file "asm.S"
         .text
 
-       
+
 #if defined(__x86_64__)
 #include "amd64/arith.S"
 #include "amd64/exec.S"
@@ -156,6 +156,14 @@ FUNC_START(m4two_plus) /* 2+ */
         ADD2(IMM(2), DTOP)
 FUNC_END(m4two_plus)
 
+
+#ifndef M4SWAP
+FUNC_START(m4swap)
+        LOAD(DSTK, REG1)
+        STOR(DTOP, DSTK)
+        MOVE(REG1, DTOP)
+FUNC_END(m4swap)
+#endif
 
         .ident "m4th 0.0.0"
         .section .note.GNU-stack,"",@progbits

@@ -16,7 +16,7 @@
  */
 
 #include "asm.h"
-        
+
 /**
  * enter m4th interpreter from C:
  * save C registers,
@@ -38,7 +38,8 @@ FUNC_START(m4th_enter)
         movq    (M4TH),  DSTK;   /* load data   stack pointer */
         movq    SZ2(M4TH), RSTK; /* load return stack pointer */
         movq    SZ6(M4TH), IP;   /* load instruction  pointer */
-        DPOP(DTOP)               /* load first data stack element */
+        DPOP(DTOP)               /* load first data   stack element */
+        RPOP(RTOP)               /* load first return stack element */
         jmp     *(IP);           /* begin execution */
 FUNC_RAWEND(m4th_enter)
 
@@ -49,7 +50,8 @@ FUNC_RAWEND(m4th_enter)
  * return to C
  */
 FUNC_START(m4bye)
-        DPUSH(DTOP)              /* save first data stack element */
+        RPUSH(RTOP)              /* save first return stack element */
+        DPUSH(DTOP)              /* save first data   stack element */
         movq    IP,   SZ6(M4TH); /* save instruction  pointer */
         movq    RSTK, SZ2(M4TH); /* save return stack pointer */
         movq    DSTK, (M4TH);    /* save data   stack pointer */

@@ -73,6 +73,7 @@ FUNC_START(m4slash_mod) /* /mod */
 FUNC_END(m4slash_mod)
 
 
+#define M4SWAP
 FUNC_START(m4swap)
         xchg (DSTK), DTOP;
 FUNC_END(m4swap)
