@@ -21,16 +21,16 @@
 #include <stddef.h>    /* size_t  */
 #include <sys/types.h> /* ssize_t */
 
-typedef size_t m_uint;
-typedef ssize_t m_int;
+typedef size_t m4uint;
+typedef ssize_t m4int;
 
 struct m4th_s {
-    m_int* dstack;  /* pointer to top    of data stack */
-    m_int* dstack0; /* pointer to bottom of data stack */
-    m_int* rstack;  /* pointer to top    of return stack */
-    m_int* rstack0; /* pointer to bottom of return stack */
-    m_int* code;    /* executable code */
-    m_int* c_stack; /* saved here by m4th_enter */
+    m4int* dstack;  /* pointer to top    of data stack */
+    m4int* dstack0; /* pointer to bottom of data stack */
+    m4int* rstack;  /* pointer to top    of return stack */
+    m4int* rstack0; /* pointer to bottom of return stack */
+    m4int* code;    /* executable code */
+    m4int* c_stack; /* saved here by m4th_enter */
 };
 
 typedef struct m4th_s m4th;

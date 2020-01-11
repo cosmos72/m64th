@@ -27,9 +27,9 @@ enum {
 
 m4th* m4th_new() {
     m4th* interp = (m4th*)malloc(sizeof(m4th));
-    interp->dstack = interp->dstack0 = dstack_n - 1 + (m_int*)malloc(dstack_n * sizeof(m_int));
-    interp->rstack = interp->rstack0 = rstack_n - 1 + (m_int*)malloc(rstack_n * sizeof(m_int));
-    interp->code = (m_int*)malloc(code_n * sizeof(m_int));
+    interp->dstack = interp->dstack0 = dstack_n - 1 + (m4int*)malloc(dstack_n * sizeof(m4int));
+    interp->rstack = interp->rstack0 = rstack_n - 1 + (m4int*)malloc(rstack_n * sizeof(m4int));
+    interp->code = (m4int*)malloc(code_n * sizeof(m4int));
     interp->c_stack = NULL;
     return interp;
 }
