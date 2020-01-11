@@ -20,14 +20,14 @@
 
 #include <stdio.h>
 
-static void show_dstack(m4th* interp) {
+void m4th_print_dstack(FILE* out, m4th* interp) {
     m4int* lo = interp->dstack;
     m4int* hi = interp->dstack0;
-    printf("<%ld> ", (long)(hi - lo));
+    fprintf(out, "<%ld> ", (long)(hi - lo));
     while (hi != lo) {
-        printf("%ld ", (long)*--hi);
+        fprintf(out, "%ld ", (long)*--hi);
     }
-    putchar('\n');
+    fputc('\n', out);
 }
 
 static void add_sample_code(m4int* code) {
@@ -43,13 +43,12 @@ static void add_sample_code(m4int* code) {
 
 int main(int argc, char* argv[]) {
     m4th* interp = m4th_new();
-    m4int* code = interp->code;
-    interp->rstack[0] = (m4int)code;
 
-    add_sample_code(code);
+    interp->rstack[0] = (m4int)interp->code;
+    add_sample_code(interp->code);
 
     m4th_enter(interp);
-    show_dstack(interp);
-    m4th_free(interp);
+    m4th_print_dstack(stdout, interp);
+    m4th_del(interp);
     return 0;
 }

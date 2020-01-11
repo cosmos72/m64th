@@ -17,7 +17,10 @@
 
 #include "m4th.h"
 
-#include <stdlib.h>   /* malloc(), free() */
+#include <errno.h>    /* errno */
+#include <stdio.h>    /* fprinf() */
+#include <stdlib.h>   /* exit(), free(), malloc() */
+#include <string.h>   /* memset() */
 
 enum {
       dstack_n = 256,
@@ -25,16 +28,30 @@ enum {
       code_n   = 1024,
 };
 
+void* m4th_alloc(size_t bytes) {
+    void* ret;
+    if (bytes == 0) {
+        return NULL;
+    }
+    ret = malloc(bytes);
+    if (ret == NULL) {
+        fprintf(stderr, "failed to allocate %lu bytes: %s\n", (unsigned long)bytes, strerror(errno));
+        exit(1);
+    }
+    memset(ret, '\xFF', bytes);
+    return ret;
+}
+
 m4th* m4th_new() {
-    m4th* interp = (m4th*)malloc(sizeof(m4th));
-    interp->dstack = interp->dstack0 = dstack_n - 1 + (m4int*)malloc(dstack_n * sizeof(m4int));
-    interp->rstack = interp->rstack0 = rstack_n - 1 + (m4int*)malloc(rstack_n * sizeof(m4int));
-    interp->code = (m4int*)malloc(code_n * sizeof(m4int));
+    m4th* interp = (m4th*)m4th_alloc(sizeof(m4th));
+    interp->dstack = interp->dstack0 = dstack_n - 1 + (m4int*)m4th_alloc(dstack_n * sizeof(m4int));
+    interp->rstack = interp->rstack0 = rstack_n - 1 + (m4int*)m4th_alloc(rstack_n * sizeof(m4int));
+    interp->ip = interp->code = (m4int*)m4th_alloc(code_n * sizeof(m4int));
     interp->c_stack = NULL;
     return interp;
 }
 
-void m4th_free(m4th* interp) {
+void m4th_del(m4th* interp) {
     free(interp->code);
     free(interp->rstack0 - (rstack_n - 1));
     free(interp->dstack0 - (dstack_n - 1));

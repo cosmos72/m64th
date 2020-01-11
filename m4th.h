@@ -19,6 +19,7 @@
 #define M4TH_M4TH_H
 
 #include <stddef.h>    /* size_t  */
+#include <stdio.h>     /* FILE    */
 #include <sys/types.h> /* ssize_t */
 
 typedef size_t m4uint;
@@ -30,18 +31,24 @@ struct m4th_s {
     m4int* rstack;  /* pointer to top    of return stack */
     m4int* rstack0; /* pointer to bottom of return stack */
     m4int* code;    /* executable code */
-    m4int* c_stack; /* saved here by m4th_enter */
+    m4int* ip;      /* pointer to next instruction to execute */
+    m4int* c_stack; /* C stack pointer. saved here by m4th_enter */
 };
 
 typedef struct m4th_s m4th;
 
 m4th* m4th_new();
-void  m4th_free(m4th* interp);
+void  m4th_del(m4th* interp);
 
 /**
  * main entry point from C. implemented in assembly.
- * execute m4th->rstack[0] and subsequent code until m4th_bye is found.
+ * execute m4th->ip and subsequent code until m4th_bye is found.
  */
 void m4th_enter(m4th* interp);
+
+/* malloc() wrapper, calls exit(1) on failure */
+void* m4th_alloc(size_t bytes);
+
+void m4th_print_dstack(FILE* out, m4th* interp);
 
 #endif /* M4TH_M4TH_H */
