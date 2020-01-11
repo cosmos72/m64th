@@ -61,6 +61,7 @@ int main(int argc, char* argv[]) {
 
     m4th_enter(interp);
     m4th_stack_print(interp->dstack, stdout);
+    m4th_stack_print(interp->rstack, stdout);
     m4th_del(interp);
     return 0;
 }

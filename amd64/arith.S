@@ -44,11 +44,13 @@ FUNC_START(m4mod)
 FUNC_END(m4mod)
 
 
+#define M4ONE_MINUS
 FUNC_START(m4one_minus) /* 1- */
         dec  DTOP;
 FUNC_END(m4one_minus)
 
 
+#define M4ONE_PLUS
 FUNC_START(m4one_plus) /* 1+ */
         inc  DTOP;
 FUNC_END(m4one_plus)

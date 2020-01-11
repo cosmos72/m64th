@@ -15,14 +15,18 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-        .file "arith.S"
+        .file "asm.S"
         .text
 
        
 #if defined(__x86_64__)
 #include "amd64/arith.S"
+#include "amd64/exec.S"
+#include "amd64/loop.S"
 #elif defined(__aarch64__)
 #include "arm64/arith.S"
+#include "arm64/exec.S"
+#include "arm64/loop.S"
 #else
 #error "unsupported architecture: expecting amd64 or arm64"
 #endif
@@ -87,6 +91,20 @@ FUNC_END(m4negate)
 
 FUNC_START(m4noop)
 FUNC_END(m4noop)
+
+
+#ifndef M4ONE_MINUS
+FUNC_START(m4one_minus) /* 1- */
+        SUB2(IMM(1), DTOP);
+FUNC_END(m4one_minus)
+#endif
+
+
+#ifndef M4ONE_PLUS
+FUNC_START(m4one_plus) /* 1+ */
+        ADD2(IMM(1), DTOP);
+FUNC_END(m4one_plus)
+#endif
 
 
 FUNC_START(m4over)

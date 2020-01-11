@@ -13,18 +13,24 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
-*/
-        
-        .file "exec.S"
-        .text
+ */
 
-#if defined(__x86_64__)
-#include "amd64/exec.S"
-#elif defined(__aarch64__)
-#include "arm64/exec.S"
-#else
-#error "unsupported architecture: expecting amd64 or arm64"
-#endif
+#include "asm.h"
 
-        .ident "m4th 0.0.0"
-        .section .note.GNU-stack,"",@progbits
+FUNC_START(m4do)
+        DPOP(REG1)
+        RPUSH(REG1)
+        RPUSH(DTOP)
+        DPOP(DTOP)
+FUNC_END(m4do)
+
+
+FUNC_START(m4loop)
+        LOAD(RSTK, REG1)
+        cmpq SZ(RSTK), REG1;
+        jge  .m4loop.break;
+        /* TODO set IP to loop beginning before jump */
+        jmp  *(IP);
+.m4loop.break:
+        ADD2(IMM(SZ2), RSTK)
+FUNC_END(m4loop)        

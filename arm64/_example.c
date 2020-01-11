@@ -6,6 +6,14 @@ typedef struct upair_s {
   
 
 
+long one_plus(long a) {
+  return a + 1;
+}
+
+long one_minus(long a) {
+  return a - 1;
+}
+
 long zero(void) {
   return 0;
 }
