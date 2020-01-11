@@ -76,16 +76,6 @@ FUNC_START(m4swap)
 FUNC_END(m4swap)
 
 
-FUNC_START(m4two_minus) /* 2- */
-        SUB2(IMM(2),  DTOP)
-FUNC_END(m4two_minus)
-
-
-FUNC_START(m4two_plus) /* 2+ */
-        ADD2(IMM(2), DTOP)
-FUNC_END(m4two_plus)
-
-
 FUNC_START(m4two_slash) /* 2/ */
         sar  IMM(1), DTOP;
 FUNC_END(m4two_slash)

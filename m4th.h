@@ -55,7 +55,7 @@ void  m4th_del(m4th* interp);
  */
 void m4th_enter(m4th* interp);
 
-/** print data stack to 'out' */
-void m4th_print_dstack(FILE* out, m4th* interp);
+/** print stack to 'out' */
+void m4th_stack_print(m4span stack, FILE* out);
 
 #endif /* M4TH_M4TH_H */

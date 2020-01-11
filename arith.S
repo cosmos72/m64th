@@ -126,5 +126,16 @@ FUNC_START(m4to_r) /* >r */
         DPOP(DTOP)
 FUNC_END(m4to_r)
 
+
+FUNC_START(m4two_minus) /* 2- */
+        SUB2(IMM(2),  DTOP)
+FUNC_END(m4two_minus)
+
+
+FUNC_START(m4two_plus) /* 2+ */
+        ADD2(IMM(2), DTOP)
+FUNC_END(m4two_plus)
+
+
         .ident "m4th 0.0.0"
         .section .note.GNU-stack,"",@progbits

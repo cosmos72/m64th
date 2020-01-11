@@ -21,9 +21,9 @@
 #include <stdio.h>  /* fprintf() */
 #include <string.h> /* memcpy() */
 
-void m4th_print_dstack(FILE* out, m4th* interp) {
-    m4int* lo = interp->dstack.begin;
-    m4int* hi = interp->dstack.end;
+void m4th_stack_print(m4span stack, FILE* out) {
+    m4int* lo = stack.begin;
+    m4int* hi = stack.end;
     fprintf(out, "<%ld> ", (long)(hi - lo));
     while (hi != lo) {
         fprintf(out, "%ld ", (long)*--hi);
@@ -60,7 +60,7 @@ int main(int argc, char* argv[]) {
     add_sample_code(code);
 
     m4th_enter(interp);
-    m4th_print_dstack(stdout, interp);
+    m4th_stack_print(interp->dstack, stdout);
     m4th_del(interp);
     return 0;
 }
