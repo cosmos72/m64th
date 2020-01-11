@@ -34,7 +34,7 @@ FUNC_START(m4th_enter)
         pushq   %r14;
         pushq   %r15;
         movq    %rdi, M4TH;      /* interp                    */
-        movq    %rsp, SZ5(M4TH); /* save C stack pointer      */
+        movq    %rsp, SZ7(M4TH); /* save C stack pointer      */
         movq    (M4TH),  DSTK;   /* load data   stack pointer */
         movq    SZ2(M4TH), RSTK; /* load return stack pointer */
         DPOP(DTOP)               /* load first data   stack element */
@@ -53,7 +53,7 @@ FUNC_START(m4th_bye)
         DPUSH(DTOP)              /* save first data   stack element */
         movq    RSTK, SZ2(M4TH); /* save return stack pointer */
         movq    DSTK, (M4TH);    /* save data   stack pointer */
-        movq    SZ5(M4TH), %rsp; /* load C stack pointer */
+        movq    SZ7(M4TH), %rsp; /* load C stack pointer */
         popq    %r15;            /* load C registers */
         popq    %r14;
 #if 0 /* not clobbered by m4th */

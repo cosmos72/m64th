@@ -25,17 +25,22 @@
 typedef size_t m4uint;
 typedef ssize_t m4int;
 
-struct m4th_s {
-    m4int* dstack;  /* pointer to top    of data stack */
-    m4int* dstack0; /* pointer to bottom of data stack */
-    m4int* rstack;  /* pointer to top    of return stack */
-    m4int* rstack0; /* pointer to bottom of return stack */
-    m4int* code;    /* executable code */
-    m4int* ip;      /* pointer to next instruction to execute */
-    m4int* c_stack; /* C stack pointer. saved here by m4th_enter */
+typedef struct m4th_span_s m4th_span;
+typedef struct m4th_s m4th;
+
+struct m4th_span_s {
+    m4int* begin;
+    m4int* end;
 };
 
-typedef struct m4th_s m4th;
+struct m4th_s {
+    m4th_span dstack;  /* data stack */
+    m4th_span rstack;  /* return stack */
+    m4th_span code;    /* executable code */
+    m4int* ip;         /* pointer to next instruction to execute */
+    m4int* c_stack;    /* C stack pointer. saved here by m4th_enter() */
+};
+
 
 m4th* m4th_new();
 void  m4th_del(m4th* interp);

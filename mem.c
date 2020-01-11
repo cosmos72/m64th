@@ -44,17 +44,22 @@ void* m4th_alloc(size_t bytes) {
 
 m4th* m4th_new() {
     m4th* interp = (m4th*)m4th_alloc(sizeof(m4th));
-    interp->dstack = interp->dstack0 = dstack_n - 1 + (m4int*)m4th_alloc(dstack_n * sizeof(m4int));
-    interp->rstack = interp->rstack0 = rstack_n - 1 + (m4int*)m4th_alloc(rstack_n * sizeof(m4int));
-    interp->ip = interp->code = (m4int*)m4th_alloc(code_n * sizeof(m4int));
+    interp->dstack.end = dstack_n - 1 + (m4int*)m4th_alloc(dstack_n * sizeof(m4int));
+    interp->rstack.end = rstack_n - 1 + (m4int*)m4th_alloc(rstack_n * sizeof(m4int));
+    interp->code.begin = interp->ip =   (m4int*)m4th_alloc(code_n * sizeof(m4int));
+
+    interp->dstack.begin = interp->dstack.end;
+    interp->rstack.begin = interp->rstack.end;
+    interp->code.end = interp->code.begin + code_n;
+
     interp->c_stack = NULL;
     return interp;
 }
 
 void m4th_del(m4th* interp) {
-    free(interp->code);
-    free(interp->rstack0 - (rstack_n - 1));
-    free(interp->dstack0 - (dstack_n - 1));
+    free(interp->code.begin);
+    free(interp->rstack.end - (rstack_n - 1));
+    free(interp->dstack.end - (dstack_n - 1));
     free(interp);
 }
 

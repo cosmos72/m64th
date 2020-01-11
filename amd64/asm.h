@@ -25,6 +25,8 @@
 #define SZ3  24   /* SZ * 3 */
 #define SZ4  32   /* SZ * 4 */
 #define SZ5  40   /* SZ * 5 */
+#define SZ6  48   /* SZ * 6 */
+#define SZ7  56   /* SZ * 7 */
 
 #define IMM(constant) $constant /* immediate constant */
 

@@ -21,8 +21,8 @@
 #include <stdio.h>
 
 void m4th_print_dstack(FILE* out, m4th* interp) {
-    m4int* lo = interp->dstack;
-    m4int* hi = interp->dstack0;
+    m4int* lo = interp->dstack.begin;
+    m4int* hi = interp->dstack.end;
     fprintf(out, "<%ld> ", (long)(hi - lo));
     while (hi != lo) {
         fprintf(out, "%ld ", (long)*--hi);
@@ -44,8 +44,9 @@ static void add_sample_code(m4int* code) {
 int main(int argc, char* argv[]) {
     m4th* interp = m4th_new();
 
-    interp->rstack[0] = (m4int)interp->code;
-    add_sample_code(interp->code);
+    m4int* code = interp->code.begin;
+    interp->rstack.begin[0] = (m4int)code;
+    add_sample_code(code);
 
     m4th_enter(interp);
     m4th_print_dstack(stdout, interp);
