@@ -33,7 +33,7 @@ FUNC_START(m4th_enter)
         pushq   %r13;
         pushq   %r14;
         pushq   %r15;
-        movq    %rdi, M4TH;      /* interp                    */
+        movq    %rdi, M4TH;      /* m                         */
         movq    %rsp, SZ7(M4TH); /* save C stack pointer      */
         movq    (M4TH),  DSTK;   /* load data   stack pointer */
         movq    SZ2(M4TH), RSTK; /* load return stack pointer */

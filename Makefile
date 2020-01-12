@@ -1,10 +1,10 @@
 CC=gcc
-CFLAGS=-g -Wall
+CFLAGS=-g -Wall -Wextra
 
 AS=$(CC)
 ASFLAGS=$(CFLAGS)
 
-OBJS=asm.o main.o mem.o
+OBJS=asm.o m4th.o main.o test.o
 
 all: m4th
 

@@ -25,7 +25,7 @@
  * execute m4th->rstack[0] and subsequent code until m4th_bye is found.
  */
 FUNC_START(m4th_enter)
-        mov  M4TH, x0;               /* interp                    */
+        mov  M4TH, x0;               /* m                         */
         ldr  DSTK, [M4TH];           /* load data   stack pointer */
         ldr  RSTK, [M4TH, IMM(SZ2)]; /* load return stack pointer */
         ldr  IP,   [M4TH, IMM(SZ6)]; /* load instruction  pointer */

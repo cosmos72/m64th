@@ -6,6 +6,14 @@ typedef struct upair_s {
 } upair;
   
 
+long two_star(long a) {
+    return a * 2;
+}
+
+long two_slash(long a) {
+    return a / 2;
+}
+
 ulong c_fetch(uchar* addr) {
     return (ulong)*addr;
 }

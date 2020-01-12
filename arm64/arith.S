@@ -60,3 +60,14 @@ FUNC_START(m4slash_mod)
         /* TODO */
 FUNC_END(m4slash_mod)
 
+
+FUNC_START(m4two_slash) /* 2/ */
+        add  DTOP, DTOP, DTOP, lsr IMM(63)
+        asr  DTOP, DTOP, IMM(1)
+FUNC_END(m4two_slash)
+
+
+FUNC_START(m4two_star) /* 2* */
+        lsl  DTOP, DTOP, IMM(1)
+FUNC_END(m4two_star)
+

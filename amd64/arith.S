@@ -20,7 +20,7 @@
 FUNC_START(m4abs)
         MOVE(DTOP, REG1)
         NEG1(REG1)
-        cmovlq REG1, DTOP;
+        cmovgq REG1, DTOP;
 FUNC_END(m4abs)
 
 
@@ -48,11 +48,11 @@ FUNC_START(m4min)
         cmovlq REG1, DTOP;
 FUNC_END(m4min)
 
-/* unsigned remainder */
+/* signed remainder */
 FUNC_START(m4mod)
         DPOP(%rax)
-        ZERO(%rdx)
-        div DTOP;
+        cqto; /* sign-extend %rax into %rdx */
+        idiv  DTOP;
         MOVE(%rdx, DTOP) /* remainder */
 FUNC_END(m4mod)
 
@@ -77,18 +77,19 @@ FUNC_START(m4plus_store) /* +! */
 FUNC_END(m4plus_store)
 
 
+/* signed divide */
 FUNC_START(m4slash) /* / */
         DPOP(%rax)
         cqto; /* sign-extend %rax into %rdx */
-        idiv DTOP;
+        idiv  DTOP;
         MOVE(%rax, DTOP)
 FUNC_END(m4slash)
 
-/* unsigned divide & remainder */
+/* signed divide & remainder */
 FUNC_START(m4slash_mod) /* /mod */
         LOAD(DSTK, %rax)
-        ZERO(%rdx)
-        div  DTOP;
+        cqto; /* sign-extend %rax into %rdx */
+        idiv  DTOP;
         STOR(%rdx, DSTK) /* remainder */
         MOVE(%rax, DTOP)   /* quotient */
 FUNC_END(m4slash_mod)
@@ -101,11 +102,14 @@ FUNC_END(m4swap)
 
 
 FUNC_START(m4two_slash) /* 2/ */
-        sar  IMM(1), DTOP;
+        MOVE(DTOP, REG1)
+        shr  IMM(63), REG1;
+        ADD2(REG1, DTOP) /* add 1 if negative */
+        sar  DTOP;       /* because sar rounds toward -infinity */
 FUNC_END(m4two_slash)
 
 
 FUNC_START(m4two_star) /* 2* */
-        sal  IMM(1), DTOP;
+        sal  DTOP;
 FUNC_END(m4two_star)
 
