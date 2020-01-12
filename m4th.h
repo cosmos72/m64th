@@ -28,43 +28,43 @@ typedef struct m4span_s m4span;
 typedef struct m4th_s m4th;
 
 struct m4span_s {
-    m4int* begin;
-    m4int* end;
+    m4int *begin;
+    m4int *end;
 };
 
 struct m4th_s {
     m4span dstack;  /* data stack */
     m4span rstack;  /* return stack */
     m4span code;    /* executable code */
-    m4int* ip;      /* instruction pointer */
-    m4int* c_stack; /* C stack pointer. saved here by m4th_enter() */
+    m4int *ip;      /* instruction pointer */
+    m4int *c_stack; /* C stack pointer. saved here by m4th_enter() */
 };
 
 /** malloc() wrapper, calls exit(1) on failure */
-void* m4th_alloc(size_t bytes);
+void *m4th_alloc(size_t bytes);
 
 /** create a new m4th struct */
-m4th* m4th_new();
+m4th *m4th_new();
 
 /** delete an m4th struct */
-void  m4th_del(m4th* m);
+void m4th_del(m4th *m);
 
 /**
  * main entry point from C. implemented in assembly.
  * execute m4th->ip and subsequent code until m4th_bye is found.
  */
-void m4th_enter(m4th* m);
+void m4th_enter(m4th *m);
 
 /** clear data stack and return stack. set ->ip to ->code.begin */
-void m4th_clear(m4th* m);
+void m4th_clear(m4th *m);
 
 /**
  * perform self-test, return != 0 if failed.
- * if out != NULL, print failed tests to out.
+ * if out != NULL, also print failed tests to out.
  */
-m4int m4th_test(m4th* m, FILE* out);
+m4int m4th_test(m4th *m, FILE *out);
 
-/** print stack to 'out' */
-void m4th_stack_print(const m4span* stack, FILE* out);
+/** print stack to out */
+void m4th_stack_print(const m4span *stack, FILE *out);
 
 #endif /* M4TH_M4TH_H */

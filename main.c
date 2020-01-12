@@ -15,12 +15,11 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "m4th.h"
 #include "decl.h"
+#include "m4th.h"
 
-
-int main(int argc, char* argv[]) {
-    m4th* m = m4th_new();
+int main(int argc, char *argv[]) {
+    m4th *m = m4th_new();
 
     m4th_test(m, stdout);
     m4th_del(m);

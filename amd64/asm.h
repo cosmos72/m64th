@@ -40,9 +40,12 @@
 
 #define DTOP  %rbx /* value of first data stack element */
 #define DTOPb %bl  /* low 8 bits of DTOP */
+#define DTOPh %bx  /* low 16 bits of DTOP */
+#define DTOPw %ebx /* low 32 bits of DTOP */
 
 #define DSTK %rsp /* pointer to second data stack element */
 #define IP   %rsi /* instruction pointer */
+#define RFFF %r12 /* always contains -1 */
 #define RTOP %r13 /* value of first return stack element */
 #define RSTK %r14 /* pointer to secont return stack element */
 #define M4TH %r15 /* pointer to C struct m4th */

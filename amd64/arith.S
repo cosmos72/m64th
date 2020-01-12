@@ -36,11 +36,30 @@ FUNC_START(m4c_store) /* c! */
 FUNC_END(m4c_store)
 
 
+FUNC_START(m4equal)   /* = */
+        DPOP(REG2)
+        ZERO(REG1)
+        cmpq DTOP, REG2;
+        sete REG1b;
+        NEG1(REG1)
+        MOVE(REG1, DTOP)
+FUNC_END(m4equal)
+
+
+FUNC_START(m4less_than)   /* < */
+        DPOP(REG2)
+        cmpq   DTOP, REG2;
+        movl   IMM(0), DTOPw;    /* xor would affect EFLAGS */
+        cmoveq RFFF, DTOP;
+FUNC_END(m4less_than)
+
+
 FUNC_START(m4max)
         DPOP(REG1)
         cmpq   DTOP, REG1;
         cmovgq REG1, DTOP;
 FUNC_END(m4min)
+
 
 FUNC_START(m4min)
         DPOP(REG1)
@@ -59,13 +78,13 @@ FUNC_END(m4mod)
 
 #define M4ONE_MINUS
 FUNC_START(m4one_minus) /* 1- */
-        dec  DTOP;
+        decq  DTOP;
 FUNC_END(m4one_minus)
 
 
 #define M4ONE_PLUS
 FUNC_START(m4one_plus) /* 1+ */
-        inc  DTOP;
+        incq  DTOP;
 FUNC_END(m4one_plus)
 
 
@@ -113,3 +132,11 @@ FUNC_START(m4two_star) /* 2* */
         sal  DTOP;
 FUNC_END(m4two_star)
 
+
+FUNC_START(m4zero_equal)   /* 0= */
+        ZERO(REG1)
+        testq   DTOP, DTOP;
+        sete    REG1b;
+        NEG1(REG1)
+        MOVE(REG1, DTOP)
+FUNC_END(m4equal)

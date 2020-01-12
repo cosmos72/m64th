@@ -28,8 +28,8 @@ FUNC_START(m4th_enter)
         pushq   %rbx;            /* save C registers */
 #if 0 /* not clobbered by m4th */
         pushq   %rbp;
-        pushq   %r12;
 #endif /* 0 */
+        pushq   %r12;
         pushq   %r13;
         pushq   %r14;
         pushq   %r15;
@@ -40,6 +40,7 @@ FUNC_START(m4th_enter)
         movq    SZ6(M4TH), IP;   /* load instruction  pointer */
         DPOP(DTOP)               /* load first data   stack element */
         RPOP(RTOP)               /* load first return stack element */
+        MOVE(IMM(-1), RFFF)      /* set RFFF to -1 */
         jmp     *(IP);           /* begin execution */
 FUNC_RAWEND(m4th_enter)
 
@@ -59,8 +60,8 @@ FUNC_START(m4bye)
         popq    %r15;            /* load C registers */
         popq    %r14;
         popq    %r13;
-#if 0 /* not clobbered by m4th */
         popq    %r12;
+#if 0 /* not clobbered by m4th */
         popq    %rbp;
 #endif /* 0 */
         popq    %rbx;

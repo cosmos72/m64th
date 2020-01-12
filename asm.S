@@ -74,10 +74,10 @@ FUNC_RAWEND(m4literal)
 #endif
 
 
-FUNC_START(m4__literal0)
+FUNC_START(m4literal0)
         DPUSH(DTOP)
         ZERO(DTOP)
-FUNC_END(m4__literal0)
+FUNC_END(m4literal0)
 
 
 FUNC_START(m4minus) /* - */

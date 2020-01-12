@@ -1,12 +1,12 @@
-long m4min(long a, long* b) {
-    return a < *b ? a : *b;
+long equal(long a, long b, long minus1) {
+    return a == b ? minus1 : 0;
 }
 
-long m4two_slash(long a) {
-    return a / 2;
+long zero_equal(long a, long minus1) {
+    return a == 0 ? minus1 : 0;
 }
 
-long m4mod(long a, long b) {
-    long ret = a % b;
-    return ret;
+long less_than(long a, long b, long minus1) {
+    return a < b ? minus1 : 0;
 }
+
