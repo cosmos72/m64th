@@ -21,8 +21,8 @@
 #include <stdio.h>  /* fprintf(), fputs() */
 #include <string.h> /* memcpy() */
 
-enum { m4test_code_n = 8 };
-enum { m4test_stack_n = 7 };
+enum { m4test_code_n = 3 };
+enum { m4test_stack_n = 3 };
 enum { tfalse = (m4int)0, ttrue = (m4int)-1 };
 
 typedef struct m4test_stack_s {
