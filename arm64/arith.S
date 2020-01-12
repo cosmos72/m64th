@@ -35,6 +35,31 @@ FUNC_START(m4c_store) /* c! */
 FUNC_END(m4c_store)
 
 
+FUNC_START(m4equal)   /* = */
+        /* TODO */
+FUNC_END(m4equal)
+
+
+FUNC_START(m4greater_equal_than)   /* >= */
+        /* TODO */
+FUNC_END(m4less_than)
+
+
+FUNC_START(m4greater_than)   /* > */
+        /* TODO */
+FUNC_END(m4less_than)
+
+
+FUNC_START(m4less_equal_than)   /* <= */
+        /* TODO */
+FUNC_END(m4less_than)
+
+
+FUNC_START(m4less_than)   /* < */
+        /* TODO */
+FUNC_END(m4less_than)
+
+
 FUNC_START(m4max)
         /* TODO */
 FUNC_END(m4min)
@@ -50,12 +75,17 @@ FUNC_START(m4mod)
 FUNC_END(m4mod)
 
 
+FUNC_START(m4not_equal)   /* <> */
+        /* TODO */
+FUNC_END(m4not_equal)
+
+
 FUNC_START(m4slash) /* / */
         DPOP(REG1)
         DIV3(REG1, DTOP, DTOP)
 FUNC_END(m4slash)
 
-/* /mod is unsigned divide & remainder */
+/* /mod is signed divide & remainder */
 FUNC_START(m4slash_mod)
         /* TODO */
 FUNC_END(m4slash_mod)
@@ -71,3 +101,17 @@ FUNC_START(m4two_star) /* 2* */
         lsl  DTOP, DTOP, IMM(1)
 FUNC_END(m4two_star)
 
+
+FUNC_START(m4zero_equal)   /* 0= */
+        /* TODO */
+FUNC_END(m4equal)
+
+
+FUNC_START(m4zero_greater_than)   /* 0> */
+        /* TODO */
+FUNC_END(m4equal)
+
+
+FUNC_START(m4zero_less_than)   /* 0< */
+        asr   DTOP, DTOP, IMM(63)
+FUNC_END(m4equal)

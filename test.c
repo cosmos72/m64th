@@ -15,14 +15,15 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "m4th.h"
 #include "decl.h"
+#include "m4th.h"
 
 #include <stdio.h>  /* fprintf(), fputs() */
 #include <string.h> /* memcpy() */
 
 enum { m4test_code_n = 8 };
 enum { m4test_stack_n = 7 };
+enum { tfalse = (m4int)0, ttrue = (m4int)-1 };
 
 typedef struct m4test_stack_s {
     m4int len;
@@ -69,6 +70,78 @@ static const m4test test[] = {
         {(m4int)m4dup, (m4int)m4bye},
         {{1, {-5}}, /**/ {0}},
         {{2, {-5, -5}}, {0}},
+    },
+    {
+        "1 2 =",
+        {(m4int)m4equal, (m4int)m4bye},
+        {{2, {1, 2}}, /*  */ {0}},
+        {{1, {tfalse}}, /**/ {0}},
+    },
+    {
+        "3 3 =",
+        {(m4int)m4equal, (m4int)m4bye},
+        {{2, {3, 3}}, /* */ {0}},
+        {{1, {ttrue}}, /**/ {0}},
+    },
+    {
+        "1 2 >=",
+        {(m4int)m4greater_equal_than, (m4int)m4bye},
+        {{2, {1, 2}}, /*  */ {0}},
+        {{1, {tfalse}}, /**/ {0}},
+    },
+    {
+        "3 3 >=",
+        {(m4int)m4greater_equal_than, (m4int)m4bye},
+        {{2, {3, 3}}, /* */ {0}},
+        {{1, {ttrue}}, /**/ {0}},
+    },
+    {
+        "5 4 >=",
+        {(m4int)m4greater_equal_than, (m4int)m4bye},
+        {{2, {5, 4}}, /* */ {0}},
+        {{1, {ttrue}}, /**/ {0}},
+    },
+    {
+        "2 1 >",
+        {(m4int)m4greater_than, (m4int)m4bye},
+        {{2, {2, 1}}, /**/ {0}},
+        {{1, {ttrue}}, /*   */ {0}},
+    },
+    {
+        "3 3 >",
+        {(m4int)m4greater_than, (m4int)m4bye},
+        {{2, {3, 3}}, /*  */ {0}},
+        {{1, {tfalse}}, /**/ {0}},
+    },
+    {
+        "1 2 <=",
+        {(m4int)m4less_equal_than, (m4int)m4bye},
+        {{2, {1, 2}}, /* */ {0}},
+        {{1, {ttrue}}, /**/ {0}},
+    },
+    {
+        "3 3 <=",
+        {(m4int)m4less_equal_than, (m4int)m4bye},
+        {{2, {3, 3}}, /* */ {0}},
+        {{1, {ttrue}}, /**/ {0}},
+    },
+    {
+        "5 4 <=",
+        {(m4int)m4less_equal_than, (m4int)m4bye},
+        {{2, {5, 4}}, /**/ {0}},
+        {{1, {0}}, /*   */ {0}},
+    },
+    {
+        "1 2 <",
+        {(m4int)m4less_than, (m4int)m4bye},
+        {{2, {1, 2}}, /**/ {0}},
+        {{1, {ttrue}}, /*   */ {0}},
+    },
+    {
+        "3 3 <",
+        {(m4int)m4less_than, (m4int)m4bye},
+        {{2, {3, 3}}, /*  */ {0}},
+        {{1, {tfalse}}, /**/ {0}},
     },
     {
         "literal0",
@@ -141,6 +214,18 @@ static const m4test test[] = {
         {(m4int)m4noop, (m4int)m4bye},
         {{0}, {0}},
         {{0}, {0}},
+    },
+    {
+        "1 2 <>",
+        {(m4int)m4not_equal, (m4int)m4bye},
+        {{2, {1, 2}}, /* */ {0}},
+        {{1, {ttrue}}, /**/ {0}},
+    },
+    {
+        "3 3 <>",
+        {(m4int)m4not_equal, (m4int)m4bye},
+        {{2, {3, 3}}, /*  */ {0}},
+        {{1, {tfalse}}, /**/ {0}},
     },
     {
         "1-",
@@ -244,6 +329,48 @@ static const m4test test[] = {
         {{1, {-5}}, {0}},
         {{1, {-2}}, {0}},
     },
+    {
+        "0 0<",
+        {(m4int)m4zero_less_than, (m4int)m4bye},
+        {{1, {0}}, /**/ {0}},
+        {{1, {tfalse}}, {0}},
+    },
+    {
+        "-1 0<",
+        {(m4int)m4zero_less_than, (m4int)m4bye},
+        {{1, {-1}}, /*   */ {0}},
+        {{1, {ttrue}}, /**/ {0}},
+    },
+    {
+        "0 0>",
+        {(m4int)m4zero_greater_than, (m4int)m4bye},
+        {{1, {0}}, /**/ {0}},
+        {{1, {tfalse}}, {0}},
+    },
+    {
+        "1 0>",
+        {(m4int)m4zero_greater_than, (m4int)m4bye},
+        {{1, {1}}, /*    */ {0}},
+        {{1, {ttrue}}, /**/ {0}},
+    },
+    {
+        "0 0=",
+        {(m4int)m4zero_equal, (m4int)m4bye},
+        {{1, {0}}, /*    */ {0}},
+        {{1, {ttrue}}, /**/ {0}},
+    },
+    {
+        "1 0=",
+        {(m4int)m4zero_equal, (m4int)m4bye},
+        {{1, {1}}, /*     */ {0}},
+        {{1, {tfalse}}, /**/ {0}},
+    },
+    {
+        "-1 0=",
+        {(m4int)m4zero_equal, (m4int)m4bye},
+        {{1, {-1}}, /*    */ {0}},
+        {{1, {tfalse}}, /**/ {0}},
+    },
 };
 
 enum { test_n = sizeof(test) / sizeof(test[0]) };
@@ -297,7 +424,7 @@ static void m4test_failed(m4th *m, const m4test *t, FILE *out) {
     if (out == NULL) {
         return;
     }
-    fprintf(out, "test %s failed:\n", t->name);
+    fprintf(out, "test failed: %s\n", t->name);
     fputs("    expected data   stack ", out);
     m4test_stack_print(&t->after.d, out);
     fputs("    actual   data   stack ", out);
