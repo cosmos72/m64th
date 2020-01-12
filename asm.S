@@ -32,11 +32,6 @@
 #endif
 
 
-FUNC_START(m4at) /* @ */
-        LOAD(DTOP, DTOP)
-FUNC_END(m4at)
-
-
 FUNC_START(m4drop)
         DPOP(DTOP)
 FUNC_END(m4drop)
@@ -45,6 +40,11 @@ FUNC_END(m4drop)
 FUNC_START(m4dup)
         DPUSH(DTOP)
 FUNC_END(m4dup)
+
+
+FUNC_START(m4fetch) /* @ */
+        LOAD(DTOP, DTOP)
+FUNC_END(m4fetch)
 
 
 FUNC_START(m4i)
@@ -67,11 +67,18 @@ FUNC_END(m4j)
 
 #ifndef M4LITERAL
 FUNC_START(m4literal)
-        ADD2(IMM(SZ), IP)
         DPUSH(DTOP)
-        LOAD(IP, DTOP)
-FUNC_END(m4literal)
+        IGET(IP, SZ, DTOP)
+        NEXT2()
+FUNC_RAWEND(m4literal)
 #endif
+
+
+FUNC_START(m4__literal0)
+        DPUSH(DTOP)
+        ZERO(DTOP)
+FUNC_END(m4__literal0)
+
 
 FUNC_START(m4minus) /* - */
         DPOP(REG1)
@@ -119,6 +126,17 @@ FUNC_START(m4plus) /* + */
 FUNC_END(m4plus)
 
 
+#ifndef M4PLUS_STORE
+FUNC_START(m4plus_store) /* +! */
+        DPOP(REG1)
+        LOAD(DTOP, REG2)
+        ADD2(REG1, REG2)
+        STOR(REG2, DTOP)
+        DPOP(DTOP)
+FUNC_END(m4plus_store)
+#endif /* M4PLUS_STORE */
+
+
 FUNC_START(m4r_from) /* r> */
         DPUSH(DTOP)
         MOVE(RTOP, DTOP)
@@ -138,6 +156,13 @@ FUNC_START(m4star) /* * */
         DPOP(REG1)
         MUL2(REG1, DTOP)
 FUNC_END(m4star)
+
+
+FUNC_START(m4store) /* ! */
+        DPOP(REG1)
+        STOR(REG1, DTOP)
+        DPOP(DTOP)
+FUNC_END(m4store)
 
 
 FUNC_START(m4to_r) /* >r */

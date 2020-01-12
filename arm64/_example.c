@@ -1,3 +1,4 @@
+typedef unsigned char uchar;
 typedef unsigned long ulong;
 
 typedef struct upair_s {
@@ -5,6 +6,13 @@ typedef struct upair_s {
 } upair;
   
 
+ulong c_fetch(uchar* addr) {
+    return (ulong)*addr;
+}
+
+void c_store(uchar value, uchar* addr) {
+    *addr = value;
+}
 
 long one_plus(long a) {
   return a + 1;

@@ -36,7 +36,11 @@
 #define REG4 %rdi /* scratch register 4 */
 /* additional scratch registers: %r8 %r9 %r10 %r11 */
 
-#define DTOP %rbx /* value of first data stack element */
+#define REG1b %al /* low 8 bits of REG1 */
+
+#define DTOP  %rbx /* value of first data stack element */
+#define DTOPb %bl  /* low 8 bits of DTOP */
+
 #define DSTK %rsp /* pointer to second data stack element */
 #define IP   %rsi /* instruction pointer */
 #define RTOP %r13 /* value of first return stack element */
@@ -53,6 +57,8 @@
                       addq      $SZ,    RSTK;
 
 #define NEXT()        addq      $SZ,    IP; /* jump to next instruction */ \
+                      jmp       *(IP);
+#define NEXT2()       addq      $SZ2,   IP; /* skip next instruction, jump to following one */ \
                       jmp       *(IP);
 
 

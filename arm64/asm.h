@@ -35,7 +35,11 @@
 #define REG4 x3 /* scratch register 4 */
 /* additional scratch registers: x4 .. x9 */
 
-#define DTOP x10 /* value of first data stack element */
+#define REG1w w0 /* low 32 bits of REG1 */
+
+#define DTOP  x10 /* value of first data stack element */
+#define DTOPw w10 /* low 32 bits of DTOP */
+
 #define DSTK x11 /* pointer to second data stack element */
 #define IP   x12 /* instruction pointer */
 #define RTOP x13 /* value of first return stack element */
@@ -49,6 +53,8 @@
 #define RPOP(val)     ldr       val, [RSTK], SZ;   /* pop second return stack element into val */
 
 #define NEXT()        ldr       REG1, [IP, SZ]!;   /* jump to next instruction */ \
+                      br        REG1;
+#define NEXT2()       ldr       REG1, [IP, SZ2]!;  /* skip next instruction, jump to following one */ \
                       br        REG1;
 
 

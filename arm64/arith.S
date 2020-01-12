@@ -23,6 +23,18 @@ FUNC_START(m4abs)
 FUNC_END(m4abs)
 
 
+FUNC_START(m4c_fetch) /* c@ */
+        ldrb DTOPw, [DTOP];
+FUNC_END(m4c_store)
+
+
+FUNC_START(m4c_store) /* c! */
+        DPOP(REG1)
+        strb REG1w, [DTOP];
+        DPOP(DTOP)
+FUNC_END(m4c_store)
+
+
 FUNC_START(m4max)
         /* TODO */
 FUNC_END(m4min)
@@ -32,12 +44,6 @@ FUNC_START(m4min)
         /* TODO */
 FUNC_END(m4min)
         
-#define M4LITERAL
-FUNC_START(m4literal)
-        DPUSH(DTOP)
-        ldr DTOP, [IP, IMM(SZ)]!;
-FUNC_END(m4literal)
-
 /* mod is unsigned remainder */
 FUNC_START(m4mod)
         /* TODO */

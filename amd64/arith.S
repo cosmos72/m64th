@@ -23,6 +23,19 @@ FUNC_START(m4abs)
         cmovlq REG1, DTOP;
 FUNC_END(m4abs)
 
+
+FUNC_START(m4c_fetch) /* c@ */
+        movzbq (DTOP), DTOP;
+FUNC_END(m4c_store)
+
+
+FUNC_START(m4c_store) /* c! */
+        DPOP(REG1)
+        movb REG1b, (DTOP);
+        DPOP(DTOP)
+FUNC_END(m4c_store)
+
+
 FUNC_START(m4max)
         DPOP(REG1)
         cmpq   DTOP, REG1;
@@ -54,6 +67,14 @@ FUNC_END(m4one_minus)
 FUNC_START(m4one_plus) /* 1+ */
         inc  DTOP;
 FUNC_END(m4one_plus)
+
+
+#define M4PLUS_STORE
+FUNC_START(m4plus_store) /* +! */
+        DPOP(REG1)
+        addq REG1, (DTOP);
+        DPOP(DTOP)
+FUNC_END(m4plus_store)
 
 
 FUNC_START(m4slash) /* / */

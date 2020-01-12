@@ -24,13 +24,15 @@ FUNC_START(m4do)
         DPOP(DTOP)
 FUNC_END(m4do)
 
-
-FUNC_START(m4loop)
-        LOAD(RSTK, REG1)
-        cmpq SZ(RSTK), REG1;
-        jge  .m4loop.break;
-        /* TODO set IP to loop beginning before jump */
+/* loop compiles to this, followed by IP offset to jump (usually < 0) */
+FUNC_START(m4__loop)
+        cmpq (RSTK), RTOP;
+        jge  .Lm4__loop.break;
+        IGET(IP, SZ, REG2)
+        leaq (IP, REG2, SZ), IP; /* add jump offset to IP */
         jmp  *(IP);
-.m4loop.break:
-        ADD2(IMM(SZ2), RSTK)
-FUNC_END(m4loop)        
+.Lm4__loop.break:
+        ADD2(IMM(SZ2), IP)       /* also skip jump offset */
+        ADD2(IMM(SZ2), RSTK)     /* clean return stack */
+        jmp  *(IP);
+FUNC_RAWEND(m4__loop)
