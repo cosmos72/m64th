@@ -187,27 +187,27 @@ FUNC_END(m4two_star)
 FUNC_START(m4xor)
         DPOP(REG1)
         xor    REG1,  DTOP;
-FUNC_END(m4slash)
+FUNC_END(m4xor)
 
 
 FUNC_START(m4zero_equal)   /* 0= */
         test   DTOP, DTOP;
         mov    IMM(0), DTOPw;    /* xor would affect EFLAGS */
         cmove  RFFF,   DTOP;
-FUNC_END(m4equal)
+FUNC_END(m4zero_equal)
 
 
 FUNC_START(m4zero_not_equal)   /* 0<> */
         test   DTOP, DTOP;
         mov    IMM(0), DTOPw;    /* xor would affect EFLAGS */
         cmovne RFFF,   DTOP;
-FUNC_END(m4equal)
+FUNC_END(m4zero_not_equal)
 
 FUNC_START(m4zero_greater_than)   /* 0> */
         test   DTOP,   DTOP;
         mov    IMM(0), DTOPw;    /* xor would affect EFLAGS */
         cmovg  RFFF,   DTOP;
-FUNC_END(m4equal)
+FUNC_END(m4zero_greater_than)
 
 
 FUNC_START(m4zero_less_than)   /* 0< */

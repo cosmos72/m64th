@@ -129,27 +129,27 @@ FUNC_END(m4two_star)
 FUNC_START(m4xor)
         DPOP(REG1)
         eor   DTOP, DTOP, REG1;
-FUNC_END(m4slash)
+FUNC_END(m4xor)
 
 
 FUNC_START(m4zero_equal)   /* 0= */
         cmp   DTOP, IMM(0)
         csetm DTOP, eq
-FUNC_END(m4equal)
+FUNC_END(m4zero_equal)
 
 
 FUNC_START(m4zero_not_equal)   /* 0<> */
         cmp   DTOP, IMM(0)
         csetm DTOP, ne
-FUNC_END(m4equal)
+FUNC_END(m4zero_not_equal)
 
 
 FUNC_START(m4zero_greater_than)   /* 0> */
         cmp   DTOP, IMM(0)
         csetm DTOP, gt
-FUNC_END(m4equal)
+FUNC_END(m4zero_greater_than)
 
 
 FUNC_START(m4zero_less_than)   /* 0< */
         asr   DTOP, DTOP, IMM(63)
-FUNC_END(m4equal)
+FUNC_END(m4zero_less_than)
