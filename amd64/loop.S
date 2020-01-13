@@ -17,29 +17,34 @@
 
 #include "asm.h"
 
+/*
+ * must be followed by IP offset of 'loop' (usually > 0)
+ * IP offset = 0 means 'do' itself
+ */
 FUNC_START(m4do_)
-        DPOP(REG1)             /* REG1 = i'      */
-        ISET(RTOP, RSTK, -SZ ) /* save RTOP      */
-        IGET(IP,    SZ,  REG2) /* REG2 = DELTAIP */
-        MOVE(DTOP, RTOP)       /* RTOP = i       */
-        ISET(REG2, RSTK, -SZ2) /* save   DELTAIP */
-        ISET(REG1, RSTK, -SZ3) /* save   i'      */
-        DPOP(DTOP)             /* reload dstack top */
-        SUB2(SZ3,  RSTK)       /* update rstack pointer */
-
-        IGET(IP, SZ, REG3)
-        leaq (IP, REG3, SZ), IP; /* add jump offset to IP */
-        jmp  *(IP);            /* jump to 'loop' */
+        DPOP(REG1)               /* REG1 = i'         */
+        ISET(RTOP, RSTK, -SZ )   /* save RTOP         */
+        IGET(IP,    SZ,  REG2)   /* REG2 = DELTAIP    */
+        MOVE(DTOP, RTOP)         /* RTOP = i          */
+        lea  (IP, REG2, SZ), IP; /* IP = IP_OF_LOOP  */
+        DPOP(DTOP)               /* reload dstack top */
+        ISET(IP,   RSTK, -SZ2)   /* save   IP_OF_LOOP */
+        ISET(REG1, RSTK, -SZ3)   /* save   i'         */
+        SUB2(SZ3,  RSTK)         /* update rstack pointer */
+        jmp  *(IP);              /* jump to 'loop' */
 FUNC_RAWEND(m4do_)
 
 
 
-/* loop compiles to this */
+/*
+ * must be followed by IP offset of next instruction after 'do' (usually < 0)
+ * IP offset = 0 means 'loop' itself
+ */
 FUNC_START(m4loop_)
         cmpq (RSTK), RTOP;
         jge  .Lm4loop_.break;
         IGET(IP, SZ, REG2)
-        leaq (IP, REG2, SZ), IP; /* add jump offset to IP */
+        lea  (IP, REG2, SZ), IP; /* add jump offset to IP */
         jmp  *(IP);              /* jump to instruction after 'do' */
 .Lm4loop_.break:
         ADD2(IMM(SZ2), IP)       /* also skip jump offset */
