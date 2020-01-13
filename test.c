@@ -60,6 +60,12 @@ static const m4test test[] = {
         {{1, {3}}, {0}},
     },
     {
+        "-7 14 and",
+        {(m4int)m4and, (m4int)m4bye},
+        {{2, {-7, 14}}, /* */ {0}},
+        {{1, {-7 & 14}}, /**/ {0}},
+    },
+    {
         "drop",
         {(m4int)m4drop, (m4int)m4bye},
         {{1, {1}}, {0}},
@@ -214,6 +220,12 @@ static const m4test test[] = {
         {(m4int)m4one_plus, (m4int)m4bye},
         {{1, {-6}}, {0}},
         {{1, {-5}}, {0}},
+    },
+    {
+        "-7 14 or",
+        {(m4int)m4or, (m4int)m4bye},
+        {{2, {-7, 14}}, /* */ {0}},
+        {{1, {-7 | 14}}, /**/ {0}},
     },
     {
         "over",

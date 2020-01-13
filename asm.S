@@ -31,6 +31,11 @@
 #error "unsupported architecture: expecting amd64 or arm64"
 #endif
 
+FUNC_START(m4and)
+        DPOP(REG1)
+        AND2(REG1,  DTOP)
+FUNC_END(m4and)
+
 
 FUNC_START(m4drop)
         DPOP(DTOP)
@@ -51,6 +56,12 @@ FUNC_START(m4i)
         DPUSH(DTOP)
         MOVE(RTOP, DTOP)
 FUNC_END(m4i)
+
+
+FUNC_START(m4or)
+        DPOP(REG1)
+        ORR2(REG1,  DTOP)
+FUNC_END(m4or)
 
 
 FUNC_START(m4i_prime) /* i' */

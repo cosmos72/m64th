@@ -26,6 +26,7 @@
  */
 
 void m4abs(void);               /* abs  */
+void m4and(void);               /* and  */
 void m4bye(void);               /* bye  */
 void m4c_fetch(void);           /* c@   */
 void m4c_store(void);           /* c!   */
@@ -53,7 +54,7 @@ void m4noop(void);              /* noop */
 void m4not_equals(void);        /* <>   */
 void m4one_minus(void);         /* 1-   */
 void m4one_plus(void);          /* 1+   */
-void m4not_equals(void);        /* <>   */
+void m4or(void);                /* or   */
 void m4over(void);              /* over */
 void m4plus(void);              /* +    */
 void m4plus_store(void);        /* +!   */

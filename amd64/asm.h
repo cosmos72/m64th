@@ -52,6 +52,7 @@
 #define RSTK  %r14  /* pointer to secont return stack element */
 #define M4TH  %r15  /* pointer to C struct m4th */
 
+#define AND2(src, dst)       and  src,     dst; /* dst &= src     */
 #define ADD2(src, dst)       add  src,     dst; /* dst += src     */
 #define IGET(addr, i, dst)   mov  i(addr), dst; /* dst  = addr[i] */
 #define ISET(src, addr, i)   mov  src, i(addr); /* addr[i] = src  */
@@ -59,6 +60,7 @@
 #define MOVE(src, dst)       mov  src,     dst; /* dst  = src     */
 #define MUL2(src, dst)       imul src,     dst; /* dst *= src     */
 #define NEG1(dst)            neg  dst;          /* dst  = -dst    */
+#define ORR2( src, dst)       or   src,     dst; /* dst |= src     */
 #define SUB2(src, dst)       sub  src,     dst; /* dst -= src     */
 #define STOR(src, addr)      mov  src,  (addr); /* addr[0] = src  */
 #define ZERO(dst)            xor  dst,     dst; /* dst  = 0       */
