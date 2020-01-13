@@ -43,24 +43,10 @@ FUNC_START(m4equal)   /* = */
 FUNC_END(m4equal)
 
 
-FUNC_START(m4greater_equal_than)   /* >= */
-        DPOP(REG2)
-        cmp   REG2, DTOP
-        csetm DTOP, ge
-FUNC_END(m4less_than)
-
-
 FUNC_START(m4greater_than)   /* > */
         DPOP(REG2)
         cmp   REG2, DTOP
         csetm DTOP, gt
-FUNC_END(m4less_than)
-
-
-FUNC_START(m4less_equal_than)   /* <= */
-        DPOP(REG2)
-        cmp   REG2, DTOP
-        csetm DTOP, le
 FUNC_END(m4less_than)
 
 

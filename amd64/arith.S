@@ -44,27 +44,11 @@ FUNC_START(m4equal)   /* = */
 FUNC_END(m4equal)
 
 
-FUNC_START(m4greater_equal_than)   /* >= */
-        DPOP(REG2)
-        cmp     DTOP, REG2;
-        mov     IMM(0), DTOPw;    /* xor would affect EFLAGS */
-        cmovge  RFFF,   DTOP;
-FUNC_END(m4less_than)
-
-
 FUNC_START(m4greater_than)   /* > */
         DPOP(REG2)
         cmp     DTOP, REG2;
         mov     IMM(0), DTOPw;    /* xor would affect EFLAGS */
         cmovg   RFFF,   DTOP;
-FUNC_END(m4less_than)
-
-
-FUNC_START(m4less_equal_than)   /* <= */
-        DPOP(REG2)
-        cmp     DTOP, REG2;
-        mov     IMM(0), DTOPw;    /* xor would affect EFLAGS */
-        cmovle  RFFF,   DTOP;
 FUNC_END(m4less_than)
 
 
@@ -212,4 +196,4 @@ FUNC_END(m4zero_greater_than)
 
 FUNC_START(m4zero_less_than)   /* 0< */
         sar    IMM(63),DTOP 
-FUNC_END(m4equal)
+FUNC_END(m4zero_less_than)

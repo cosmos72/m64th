@@ -84,24 +84,6 @@ static const m4test test[] = {
         {{1, {ttrue}}, /**/ {0}},
     },
     {
-        "1 2 >=",
-        {(m4int)m4greater_equal_than, (m4int)m4bye},
-        {{2, {1, 2}}, /*  */ {0}},
-        {{1, {tfalse}}, /**/ {0}},
-    },
-    {
-        "3 3 >=",
-        {(m4int)m4greater_equal_than, (m4int)m4bye},
-        {{2, {3, 3}}, /* */ {0}},
-        {{1, {ttrue}}, /**/ {0}},
-    },
-    {
-        "5 4 >=",
-        {(m4int)m4greater_equal_than, (m4int)m4bye},
-        {{2, {5, 4}}, /* */ {0}},
-        {{1, {ttrue}}, /**/ {0}},
-    },
-    {
         "2 1 >",
         {(m4int)m4greater_than, (m4int)m4bye},
         {{2, {2, 1}}, /**/ {0}},
@@ -112,24 +94,6 @@ static const m4test test[] = {
         {(m4int)m4greater_than, (m4int)m4bye},
         {{2, {3, 3}}, /*  */ {0}},
         {{1, {tfalse}}, /**/ {0}},
-    },
-    {
-        "1 2 <=",
-        {(m4int)m4less_equal_than, (m4int)m4bye},
-        {{2, {1, 2}}, /* */ {0}},
-        {{1, {ttrue}}, /**/ {0}},
-    },
-    {
-        "3 3 <=",
-        {(m4int)m4less_equal_than, (m4int)m4bye},
-        {{2, {3, 3}}, /* */ {0}},
-        {{1, {ttrue}}, /**/ {0}},
-    },
-    {
-        "5 4 <=",
-        {(m4int)m4less_equal_than, (m4int)m4bye},
-        {{2, {5, 4}}, /**/ {0}},
-        {{1, {0}}, /*   */ {0}},
     },
     {
         "1 2 <",
