@@ -33,7 +33,7 @@ FUNC_END(m4bl)
 
 FUNC_START(m4c_fetch) /* c@ */
         movzbq  (DTOP), DTOP;
-FUNC_END(m4c_store)
+FUNC_END(m4c_fetch)
 
 
 FUNC_START(m4c_store) /* c! */
@@ -56,7 +56,7 @@ FUNC_START(m4greater_than)   /* > */
         cmp     DTOP, REG2;
         mov     IMM(0), DTOPw;    /* xor would affect EFLAGS */
         cmovg   RFFF,   DTOP;
-FUNC_END(m4less_than)
+FUNC_END(m4greater_than)
 
 
 FUNC_START(m4less_than)   /* < */
@@ -92,7 +92,7 @@ FUNC_START(m4max)
         DPOP(REG1)
         cmp     DTOP, REG1;
         cmovg   REG1, DTOP;
-FUNC_END(m4min)
+FUNC_END(m4max)
 
 
 FUNC_START(m4min)
@@ -115,7 +115,7 @@ FUNC_START(m4not_equals)   /* <> */
         cmp     REG2,   DTOP;
         mov     IMM(0), DTOPw;    /* xor would affect EFLAGS */
         cmovne  RFFF,   DTOP;
-FUNC_END(m4equals)
+FUNC_END(m4not_equals)
 
 
 #define M4ONE_MINUS

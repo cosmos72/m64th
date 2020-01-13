@@ -18,27 +18,29 @@
 #ifndef M4TH_ASM_GCC_H
 #define M4TH_ASM_GCC_H
 
-#define FUNC_START(name) \
-                      .globl    name; \
-                      .type     name,   @function; \
-name: \
-                      .cfi_startproc;
+/* clang-format off */
 
-#define FUNC_RAWEND(name) \
-                      .cfi_endproc; \
-                      .size     name,   .-name;
+/* align functions at 8 bytes. */
+/* on x86_64, aligning at 16 bytes should be faster, but wastes more memory */
+#define FUNC_ALIGN()                                                                               \
+    .p2align 3
 
-#define FUNC_NEXT(name)                         \
-/* .name.next: */ \
-                      NEXT()
+#define FUNC_START(name)                                                                           \
+    FUNC_ALIGN();                                                                                  \
+    .globl name;                                                                                   \
+    .type name, @function;                                                                         \
+    name:                                                                                          \
+    .cfi_startproc;
 
-#define FUNC_END(name) \
-                      FUNC_NEXT(name) \
-                      FUNC_RAWEND(name)
+#define FUNC_RAWEND(name)                                                                          \
+    .cfi_endproc;                                                                                  \
+    .size name, .- name;
 
-#define FUNC(name, ...) \
-                      FUNC_START(name) \
-                      __VA_ARGS__ \
-                      FUNC_END(name)
+#define FUNC_END(name)                                                                             \
+    .name.next:                                                                                    \
+    NEXT()                                                                                         \
+    FUNC_RAWEND(name)
+
+/* clang-format on */
 
 #endif /* M4TH_ASM_GCC_H */

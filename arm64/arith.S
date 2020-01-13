@@ -26,7 +26,7 @@ FUNC_END(m4abs)
 
 FUNC_START(m4c_fetch) /* c@ */
         ldrb  DTOPw, [DTOP];
-FUNC_END(m4c_store)
+FUNC_END(m4c_fetch)
 
 
 FUNC_START(m4c_store) /* c! */
@@ -47,7 +47,7 @@ FUNC_START(m4greater_than)   /* > */
         DPOP(REG2)
         cmp   REG2, DTOP
         csetm DTOP, gt
-FUNC_END(m4less_than)
+FUNC_END(m4greater_than)
 
 
 FUNC_START(m4less_than)   /* < */
@@ -61,7 +61,7 @@ FUNC_START(m4max)
         DPOP(REG2)
         cmp   REG2, DTOP;
         csel  DTOP, REG2, DTOP, gt
-FUNC_END(m4min)
+FUNC_END(m4max)
 
 
 FUNC_START(m4min)
