@@ -26,7 +26,11 @@ FUNC_START(m4do_)
         ISET(REG1, RSTK, -SZ3) /* save   i'      */
         DPOP(DTOP)             /* reload dstack top */
         SUB2(SZ3,  RSTK)       /* update rstack pointer */
-FUNC_END(m4do_)
+
+        IGET(IP, SZ, REG3)
+        leaq (IP, REG3, SZ), IP; /* add jump offset to IP */
+        jmp  *(IP);            /* jump to 'loop' */
+FUNC_RAWEND(m4do_)
 
 
 
@@ -36,10 +40,10 @@ FUNC_START(m4loop_)
         jge  .Lm4loop_.break;
         IGET(IP, SZ, REG2)
         leaq (IP, REG2, SZ), IP; /* add jump offset to IP */
-        jmp  *(IP);
+        jmp  *(IP);              /* jump to instruction after 'do' */
 .Lm4loop_.break:
         ADD2(IMM(SZ2), IP)       /* also skip jump offset */
         IGET(RSTK, SZ, RTOP)     /* load new top of rstack */
-        ADD2(IMM(SZ2), RSTK)     /* pop return stack twice */
-        jmp  *(IP);
+        ADD2(IMM(SZ3), RSTK)     /* drop deltaip i' i from return stack */
+        jmp  *(IP);              /* execute next instruction */
 FUNC_RAWEND(m4loop_)
