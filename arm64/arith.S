@@ -19,18 +19,19 @@
 
 
 FUNC_START(m4abs)
-        /* TODO */
+        cmp   DTOP, IMM(0);
+        cneg  DTOP, DTOP, lt;
 FUNC_END(m4abs)
 
 
 FUNC_START(m4c_fetch) /* c@ */
-        ldrb DTOPw, [DTOP];
+        ldrb  DTOPw, [DTOP];
 FUNC_END(m4c_store)
 
 
 FUNC_START(m4c_store) /* c! */
         DPOP(REG1)
-        strb REG1w, [DTOP];
+        strb  REG1w, [DTOP];
         DPOP(DTOP)
 FUNC_END(m4c_store)
 
@@ -71,22 +72,30 @@ FUNC_END(m4less_than)
 
 
 FUNC_START(m4max)
-        /* TODO */
+        DPOP(REG2)
+        cmp   REG2, DTOP;
+        csel  DTOP, REG2, DTOP, gt
 FUNC_END(m4min)
 
 
 FUNC_START(m4min)
-        /* TODO */
+        DPOP(REG2)
+        cmp   REG2, DTOP;
+        csel  DTOP, REG2, DTOP, lt
 FUNC_END(m4min)
         
-/* mod is unsigned remainder */
+/* mod is signed remainder */
 FUNC_START(m4mod)
-        /* TODO */
+        DPOP(REG1)
+        DIV3(REG1, DTOP, REG2)
+        msub  DTOP, REG2, DTOP, REG1;
 FUNC_END(m4mod)
 
 
 FUNC_START(m4not_equal)   /* <> */
-        /* TODO */
+        DPOP(REG2)
+        cmp   REG2, DTOP
+        csetm DTOP, ne
 FUNC_END(m4not_equal)
 
 
@@ -97,7 +106,11 @@ FUNC_END(m4slash)
 
 /* /mod is signed divide & remainder */
 FUNC_START(m4slash_mod)
-        /* TODO */
+        LOAD(DSTK, REG1)
+        DIV3(REG1, DTOP, REG2)
+        msub  REG1, REG2, DTOP, REG1;
+        MOVE(REG2, DTOP)
+        STOR(REG1, DSTK)
 FUNC_END(m4slash_mod)
 
 

@@ -15,23 +15,19 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-typedef struct pair_s {
-    long first, second;
-} pair;
+typedef struct m4th_s {
+    void *data;
+} m4th;
 
-long m4max(long a, long b) {
-    return a > b ? a : b;
-}
+typedef struct instruction_s instruction;
 
-long div(long a, long b) {
-    return a / b;
-}
+struct instruction_s {
+    long (*f)(long dtop, long *dstk, long rtop, long *rstk, const instruction *ip, m4th *m);
+};
 
-long rem(long a, long b) {
-    return a % b;
-}
-
-pair div_rem(long a, long b) {
-    pair ret = {a / b, a % b};
-    return ret;
+long m4equal(long dtop, long *dstk, long rtop, long *rstk, const instruction *ip, m4th *m) {
+    long a = *dstk++;
+    dtop = (a == dtop) ? 1 : 0;
+    ++ip;
+    return ip->f(dtop, dstk, rtop, rstk, ip, m);
 }
