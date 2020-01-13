@@ -45,17 +45,6 @@ FUNC_END(m4bl)
 #endif
 
 
-#ifndef M4DO_
-FUNC_START(m4do_)
-        DPOP(REG1)
-        RPUSH(RTOP)
-        MOVE(DTOP, RTOP)
-        RPUSH(REG1)
-        DPOP(DTOP)
-FUNC_END(m4do_)
-#endif
-
-
 FUNC_START(m4drop)
         DPOP(DTOP)
 FUNC_END(m4drop)
@@ -89,9 +78,14 @@ FUNC_START(m4i_prime) /* i' */
 FUNC_END(m4i_prime)
 
 
+/**
+ * get iteration index of outer do-loop.
+ * must skip return stack used by innermost do-loop:
+ *   IP-of-loop_ limit i
+ */
 FUNC_START(m4j)
         DPUSH(DTOP)
-        IGET(RSTK, SZ, DTOP)
+        IGET(RSTK, SZ2, DTOP)
 FUNC_END(m4j)
 
 

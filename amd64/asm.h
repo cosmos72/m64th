@@ -36,7 +36,7 @@
 #define REG2  %rcx  /* scratch register 2 */
 #define REG3  %rdx  /* scratch register 3 */
 #define REG4  %rdi  /* scratch register 4 */
-/* additional scratch registers: %r8 %r9 %r10 %r11 */
+/* additional callee-saved registers: %rbp %r12 %r13 %r14 %r15 */
 
 #define REG1b %al   /* low 8 bits of REG1 */
 
@@ -47,10 +47,10 @@
 
 #define DSTK  %rsp  /* pointer to second data stack element */
 #define IP    %rsi  /* instruction pointer */
-#define RFFF  %r12  /* always contains -1 */
-#define RTOP  %r13  /* value of first return stack element */
-#define RSTK  %r14  /* pointer to secont return stack element */
-#define M4TH  %r15  /* pointer to C struct m4th */
+#define RTOP  %r8   /* value of first return stack element */
+#define RSTK  %r9   /* pointer to secont return stack element */
+#define M4TH  %r10  /* pointer to C struct m4th */
+#define RFFF  %r11  /* always contains -1 */
 
 #define AND2(src, dst)       and  src,     dst; /* dst &= src     */
 #define ADD2(src, dst)       add  src,     dst; /* dst += src     */

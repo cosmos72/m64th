@@ -22,7 +22,7 @@
 #include <string.h> /* memcpy() */
 
 enum { m4test_code_n = 3 };
-enum { m4test_stack_n = 3 };
+enum { m4test_stack_n = 4 };
 enum { tfalse = (m4int)0, ttrue = (m4int)-1 };
 
 typedef struct m4test_stack_s {
@@ -158,8 +158,8 @@ static const m4test test[] = {
     {
         "j",
         {(m4int)m4j, (m4int)m4bye},
-        {{0}, /* */ {3, {12, 13, 14}}},
-        {{1, {12}}, {3, {12, 13, 14}}},
+        {{0}, /* */ {4, {12, -1 /*IP*/, 13, 14}}},
+        {{1, {12}}, {4, {12, -1 /*IP*/, 13, 14}}},
     },
     {
         "max",

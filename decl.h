@@ -31,7 +31,7 @@ void m4bl(void);                /* bl   */
 void m4bye(void);               /* bye  */
 void m4c_fetch(void);           /* c@   */
 void m4c_store(void);           /* c!   */
-void m4do_(void);               /* do compiles to this */
+void m4do_(void);               /* must be followed by IP offset of LOOP */
 void m4drop(void);              /* drop */
 void m4dup(void);               /* dup  */
 void m4equals(void);            /* =    */
@@ -44,7 +44,7 @@ void m4literal(void);           /* must be followed by number */
 void m4literal_1(void);         /* -1   */
 void m4literal0(void);          /* 0    */
 void m4literal1(void);          /* 1    */
-void m4loop_(void);             /* must be followed by IP offset to jump (usually < 0) */
+void m4loop_(void);             /* loop compiles to this */
 void m4j(void);                 /* j    */
 void m4max(void);               /* max  */
 void m4min(void);               /* min  */

@@ -17,7 +17,20 @@
 
 #include "asm.h"
 
-/* loop compiles to this, followed by IP offset to jump (usually < 0) */
+FUNC_START(m4do_)
+        DPOP(REG1)             /* REG1 = i'      */
+        ISET(RTOP, RSTK, -SZ ) /* save RTOP      */
+        IGET(IP,    SZ,  REG2) /* REG2 = DELTAIP */
+        MOVE(DTOP, RTOP)       /* RTOP = i       */
+        ISET(REG2, RSTK, -SZ2) /* save   DELTAIP */
+        ISET(REG1, RSTK, -SZ3) /* save   i'      */
+        DPOP(DTOP)             /* reload dstack top */
+        SUB2(SZ3,  RSTK)       /* update rstack pointer */
+FUNC_END(m4do_)
+
+
+
+/* loop compiles to this */
 FUNC_START(m4loop_)
         cmpq (RSTK), RTOP;
         jge  .Lm4loop_.break;

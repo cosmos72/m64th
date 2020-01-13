@@ -28,11 +28,11 @@ FUNC_START(m4th_enter)
         pushq   %rbx;            /* save C registers */
 #if 0 /* not clobbered by m4th */
         pushq   %rbp;
-#endif /* 0 */
         pushq   %r12;
         pushq   %r13;
         pushq   %r14;
         pushq   %r15;
+#endif /* 0 */
         movq    %rdi, M4TH;      /* m                         */
         movq    %rsp, SZ7(M4TH); /* save C stack pointer      */
         movq    (M4TH),  DSTK;   /* load data   stack pointer */
@@ -57,11 +57,11 @@ FUNC_START(m4bye)
         movq    RSTK, SZ2(M4TH); /* save return stack pointer */
         movq    DSTK, (M4TH);    /* save data   stack pointer */
         movq    SZ7(M4TH), %rsp; /* load C stack pointer */
+#if 0 /* not clobbered by m4th */
         popq    %r15;            /* load C registers */
         popq    %r14;
         popq    %r13;
         popq    %r12;
-#if 0 /* not clobbered by m4th */
         popq    %rbp;
 #endif /* 0 */
         popq    %rbx;
