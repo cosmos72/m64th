@@ -73,12 +73,26 @@ FUNC_START(m4literal)
 FUNC_RAWEND(m4literal)
 #endif
 
+#ifndef M4LITERAL_1
+FUNC_START(m4literal_1)
+        DPUSH(DTOP)
+        MOVE(IMM(-1), DTOP)
+FUNC_END(m4literal_1)
+#endif
 
+#ifndef M4LITERAL0
 FUNC_START(m4literal0)
         DPUSH(DTOP)
         ZERO(DTOP)
 FUNC_END(m4literal0)
+#endif
 
+#ifndef M4LITERAL1
+FUNC_START(m4literal1)
+        DPUSH(DTOP)
+        MOVE(IMM(1), DTOP)
+FUNC_END(m4literal1)
+#endif
 
 FUNC_START(m4minus) /* - */
         DPOP(REG1)

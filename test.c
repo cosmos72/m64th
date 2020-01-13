@@ -144,16 +144,28 @@ static const m4test test[] = {
         {{1, {tfalse}}, /**/ {0}},
     },
     {
+        "literal",
+        {(m4int)m4literal, 7, (m4int)m4bye},
+        {{0}, /**/ {0}},
+        {{1, {7}}, {0}},
+    },
+    {
+        "literal_1",
+        {(m4int)m4literal_1, (m4int)m4bye},
+        {{0}, /* */ {0}},
+        {{1, {-1}}, {0}},
+    },
+    {
         "literal0",
         {(m4int)m4literal0, (m4int)m4bye},
         {{0}, /**/ {0}},
         {{1, {0}}, {0}},
     },
     {
-        "literal",
-        {(m4int)m4literal, 7, (m4int)m4bye},
+        "literal1",
+        {(m4int)m4literal1, (m4int)m4bye},
         {{0}, /**/ {0}},
-        {{1, {7}}, {0}},
+        {{1, {1}}, {0}},
     },
     {
         "i",
@@ -420,33 +432,46 @@ static m4int m4test_run(m4th *m, const m4test *t) {
            m4test_stack_equal(&t->after.r, &m->rstack);
 }
 
-static void m4test_failed(m4th *m, const m4test *t, FILE *out) {
-    if (out == NULL) {
-        return;
-    }
-    fprintf(out, "test failed: %s\n", t->name);
-    fputs("    expected data   stack ", out);
-    m4test_stack_print(&t->after.d, out);
-    fputs("    actual   data   stack ", out);
-    m4th_stack_print(&m->dstack, out);
+static m4int m4test_failed(m4th *m, const m4test *t, FILE *out) {
+    if (out != NULL) {
+        fprintf(out, "test failed: %s\n", t->name);
+        fputs("    expected data   stack ", out);
+        m4test_stack_print(&t->after.d, out);
+        fputs("    actual   data   stack ", out);
+        m4th_stack_print(&m->dstack, out);
 
-    fputs("... expected return stack ", out);
-    m4test_stack_print(&t->after.r, out);
-    fputs("    actual   return stack ", out);
-    m4th_stack_print(&m->rstack, out);
+        fputs("... expected return stack ", out);
+        m4test_stack_print(&t->after.r, out);
+        fputs("    actual   return stack ", out);
+        m4th_stack_print(&m->rstack, out);
+    }
+    return 1;
 }
 
 m4int m4th_test(m4th *m, FILE *out) {
     m4int i, err = 0;
 
     for (i = 0; i < test_n; i++) {
-        if (m4test_run(m, &test[i])) {
-            continue;
+        if (!m4test_run(m, &test[i])) {
+            err += m4test_failed(m, &test[i], out);
         }
-        m4test_failed(m, &test[i], out);
+    }
+    if (out != NULL) {
         if (err == 0) {
-            err = 1;
+            fprintf(out, "all %ld tests passed\n", (long)test_n);
+        } else {
+            fprintf(out, "\ntests failed: %ld of %ld\n", (long)err, (long)test_n);
         }
     }
     return err;
+}
+
+int main(int argc, char *argv[]) {
+    m4th *m = m4th_new();
+
+    m4int err = m4th_test(m, stdout);
+    m4th_del(m);
+
+    /* suppress 'unused parameter' warning */
+    return err || (0 & argc & (m4int)argv);
 }

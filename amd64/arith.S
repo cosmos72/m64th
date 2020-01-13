@@ -76,6 +76,27 @@ FUNC_START(m4less_than)   /* < */
 FUNC_END(m4less_than)
 
 
+#define M4LITERAL_1
+FUNC_START(m4literal_1)
+        DPUSH(DTOP)
+        MOVE(RFFF, DTOP)
+FUNC_END(m4literal_1)
+
+
+#define M4LITERAL0
+FUNC_START(m4literal0)
+        DPUSH(DTOP)
+        ZERO(DTOPw)
+FUNC_END(m4literal0)
+
+
+#define M4LITERAL1
+FUNC_START(m4literal1)
+        DPUSH(DTOP)
+        MOVE(IMM(1), DTOPw)
+FUNC_END(m4literal1)
+
+
 FUNC_START(m4max)
         DPOP(REG1)
         cmp     DTOP, REG1;
@@ -92,7 +113,7 @@ FUNC_END(m4min)
 /* signed remainder */
 FUNC_START(m4mod)
         DPOP(%rax)
-        cqto; /* sign-extend %rax into %rdx */
+        cqto;   /* sign-extend %rax into %rdx */
         idiv    DTOP;
         MOVE(%rdx, DTOP) /* remainder */
 FUNC_END(m4mod)
@@ -139,7 +160,7 @@ FUNC_START(m4slash_mod) /* /mod */
         LOAD(DSTK, %rax)
         cqto; /* sign-extend %rax into %rdx */
         idiv  DTOP;
-        STOR(%rdx, DSTK) /* remainder */
+        STOR(%rdx, DSTK)   /* remainder */
         MOVE(%rax, DTOP)   /* quotient */
 FUNC_END(m4slash_mod)
 
@@ -152,14 +173,14 @@ FUNC_END(m4swap)
 
 FUNC_START(m4two_slash) /* 2/ */
         MOVE(DTOP, REG1)
-        shr  IMM(63), REG1;
+        shr    IMM(63), REG1;
         ADD2(REG1, DTOP) /* add 1 if negative */
-        sar  DTOP;       /* because sar rounds toward -infinity */
+        sar    DTOP;       /* because sar rounds toward -infinity */
 FUNC_END(m4two_slash)
 
 
 FUNC_START(m4two_star) /* 2* */
-        sal  DTOP;
+        sal    DTOP;
 FUNC_END(m4two_star)
 
 
@@ -171,7 +192,7 @@ FUNC_END(m4equal)
 
 
 FUNC_START(m4zero_greater_than)   /* 0> */
-        test   DTOP, DTOP;
+        test   DTOP,   DTOP;
         mov    IMM(0), DTOPw;    /* xor would affect EFLAGS */
         cmovg  RFFF,   DTOP;
 FUNC_END(m4equal)

@@ -36,27 +36,37 @@ FUNC_END(m4c_store)
 
 
 FUNC_START(m4equal)   /* = */
-        /* TODO */
+        DPOP(REG2)
+        cmp   REG2, DTOP
+        csetm DTOP, eq
 FUNC_END(m4equal)
 
 
 FUNC_START(m4greater_equal_than)   /* >= */
-        /* TODO */
+        DPOP(REG2)
+        cmp   REG2, DTOP
+        csetm DTOP, ge
 FUNC_END(m4less_than)
 
 
 FUNC_START(m4greater_than)   /* > */
-        /* TODO */
+        DPOP(REG2)
+        cmp   REG2, DTOP
+        csetm DTOP, gt
 FUNC_END(m4less_than)
 
 
 FUNC_START(m4less_equal_than)   /* <= */
-        /* TODO */
+        DPOP(REG2)
+        cmp   REG2, DTOP
+        csetm DTOP, le
 FUNC_END(m4less_than)
 
 
 FUNC_START(m4less_than)   /* < */
-        /* TODO */
+        DPOP(REG2)
+        cmp   REG2, DTOP
+        csetm DTOP, lt
 FUNC_END(m4less_than)
 
 
@@ -92,23 +102,25 @@ FUNC_END(m4slash_mod)
 
 
 FUNC_START(m4two_slash) /* 2/ */
-        add  DTOP, DTOP, DTOP, lsr IMM(63)
-        asr  DTOP, DTOP, IMM(1)
+        add   DTOP, DTOP, DTOP, lsr IMM(63)
+        asr   DTOP, DTOP, IMM(1)
 FUNC_END(m4two_slash)
 
 
 FUNC_START(m4two_star) /* 2* */
-        lsl  DTOP, DTOP, IMM(1)
+        lsl   DTOP, DTOP, IMM(1)
 FUNC_END(m4two_star)
 
 
 FUNC_START(m4zero_equal)   /* 0= */
-        /* TODO */
+        cmp   DTOP, IMM(0)
+        csetm DTOP, eq
 FUNC_END(m4equal)
 
 
 FUNC_START(m4zero_greater_than)   /* 0> */
-        /* TODO */
+        cmp   DTOP, IMM(0)
+        csetm DTOP, gt
 FUNC_END(m4equal)
 
 

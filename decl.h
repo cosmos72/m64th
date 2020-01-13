@@ -41,7 +41,9 @@ void m4i_prime(void);            /* i'   */
 void m4less_than(void);          /* <    */
 void m4less_equal_than(void);    /* <=    */
 void m4literal(void);            /* must be followed by number */
+void m4literal_1(void);          /* -1   */
 void m4literal0(void);           /* 0    */
+void m4literal1(void);           /* 1    */
 void m4loop_(void);              /* must be followed by IP offset to jump (usually < 0) */
 void m4j(void);                  /* j    */
 void m4max(void);                /* max  */
