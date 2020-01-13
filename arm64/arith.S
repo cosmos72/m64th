@@ -104,6 +104,7 @@ FUNC_START(m4slash) /* / */
         DIV3(REG1, DTOP, DTOP)
 FUNC_END(m4slash)
 
+
 /* /mod is signed divide & remainder */
 FUNC_START(m4slash_mod)
         LOAD(DSTK, REG1)
@@ -123,6 +124,12 @@ FUNC_END(m4two_slash)
 FUNC_START(m4two_star) /* 2* */
         lsl   DTOP, DTOP, IMM(1)
 FUNC_END(m4two_star)
+
+
+FUNC_START(m4xor)
+        DPOP(REG1)
+        eor   DTOP, DTOP, REG1;
+FUNC_END(m4slash)
 
 
 FUNC_START(m4zero_equal)   /* 0= */

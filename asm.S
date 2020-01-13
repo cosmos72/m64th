@@ -204,5 +204,12 @@ FUNC_START(m4swap)
 FUNC_END(m4swap)
 #endif
 
+
+FUNC_START(m4unloop)
+        IGET(RSTK, SZ, RTOP)
+        ADD2(IMM(SZ2), RSTK)
+FUNC_END(m4slash)
+
+
         .ident "m4th 0.0.0"
         .section .note.GNU-stack,"",@progbits

@@ -184,6 +184,12 @@ FUNC_START(m4two_star) /* 2* */
 FUNC_END(m4two_star)
 
 
+FUNC_START(m4xor)
+        DPOP(REG1)
+        xor    REG1,  DTOP;
+FUNC_END(m4slash)
+
+
 FUNC_START(m4zero_equal)   /* 0= */
         test   DTOP, DTOP;
         mov    IMM(0), DTOPw;    /* xor would affect EFLAGS */

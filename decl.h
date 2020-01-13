@@ -71,6 +71,8 @@ void m4two_minus(void);          /* 2-   */
 void m4two_plus(void);           /* 2+   */
 void m4two_slash(void);          /* 2/   */
 void m4two_star(void);           /* 2*   */
+void m4unloop(void);             /* unloop */
+void m4xor(void);                /* xor  */
 void m4zero_equal(void);         /* 0=   */
 void m4zero_not_equal(void);     /* 0<>  */
 void m4zero_greater_than(void);  /* 0>   */
