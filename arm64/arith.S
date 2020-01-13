@@ -36,11 +36,11 @@ FUNC_START(m4c_store) /* c! */
 FUNC_END(m4c_store)
 
 
-FUNC_START(m4equal)   /* = */
+FUNC_START(m4equals)   /* = */
         DPOP(REG2)
         cmp   REG2, DTOP
         csetm DTOP, eq
-FUNC_END(m4equal)
+FUNC_END(m4equals)
 
 
 FUNC_START(m4greater_than)   /* > */
@@ -78,11 +78,11 @@ FUNC_START(m4mod)
 FUNC_END(m4mod)
 
 
-FUNC_START(m4not_equal)   /* <> */
+FUNC_START(m4not_equals)   /* <> */
         DPOP(REG2)
         cmp   REG2, DTOP
         csetm DTOP, ne
-FUNC_END(m4not_equal)
+FUNC_END(m4not_equals)
 
 
 FUNC_START(m4slash) /* / */
@@ -118,16 +118,16 @@ FUNC_START(m4xor)
 FUNC_END(m4xor)
 
 
-FUNC_START(m4zero_equal)   /* 0= */
+FUNC_START(m4zero_equals)   /* 0= */
         cmp   DTOP, IMM(0)
         csetm DTOP, eq
-FUNC_END(m4zero_equal)
+FUNC_END(m4zero_equals)
 
 
-FUNC_START(m4zero_not_equal)   /* 0<> */
+FUNC_START(m4zero_not_equals)   /* 0<> */
         cmp   DTOP, IMM(0)
         csetm DTOP, ne
-FUNC_END(m4zero_not_equal)
+FUNC_END(m4zero_not_equals)
 
 
 FUNC_START(m4zero_greater_than)   /* 0> */

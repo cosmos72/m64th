@@ -73,13 +73,13 @@ static const m4test test[] = {
     },
     {
         "1 2 =",
-        {(m4int)m4equal, (m4int)m4bye},
+        {(m4int)m4equals, (m4int)m4bye},
         {{2, {1, 2}}, /*  */ {0}},
         {{1, {tfalse}}, /**/ {0}},
     },
     {
         "3 3 =",
-        {(m4int)m4equal, (m4int)m4bye},
+        {(m4int)m4equals, (m4int)m4bye},
         {{2, {3, 3}}, /* */ {0}},
         {{1, {ttrue}}, /**/ {0}},
     },
@@ -193,13 +193,13 @@ static const m4test test[] = {
     },
     {
         "1 2 <>",
-        {(m4int)m4not_equal, (m4int)m4bye},
+        {(m4int)m4not_equals, (m4int)m4bye},
         {{2, {1, 2}}, /* */ {0}},
         {{1, {ttrue}}, /**/ {0}},
     },
     {
         "3 3 <>",
-        {(m4int)m4not_equal, (m4int)m4bye},
+        {(m4int)m4not_equals, (m4int)m4bye},
         {{2, {3, 3}}, /*  */ {0}},
         {{1, {tfalse}}, /**/ {0}},
     },
@@ -343,37 +343,37 @@ static const m4test test[] = {
     },
     {
         "-1 0=",
-        {(m4int)m4zero_equal, (m4int)m4bye},
+        {(m4int)m4zero_equals, (m4int)m4bye},
         {{1, {-1}}, /*    */ {0}},
         {{1, {tfalse}}, /**/ {0}},
     },
     {
         "0 0=",
-        {(m4int)m4zero_equal, (m4int)m4bye},
+        {(m4int)m4zero_equals, (m4int)m4bye},
         {{1, {0}}, /*    */ {0}},
         {{1, {ttrue}}, /**/ {0}},
     },
     {
         "1 0=",
-        {(m4int)m4zero_equal, (m4int)m4bye},
+        {(m4int)m4zero_equals, (m4int)m4bye},
         {{1, {1}}, /*     */ {0}},
         {{1, {tfalse}}, /**/ {0}},
     },
     {
         "-1 0=",
-        {(m4int)m4zero_not_equal, (m4int)m4bye},
+        {(m4int)m4zero_not_equals, (m4int)m4bye},
         {{1, {-1}}, /*   */ {0}},
         {{1, {ttrue}}, /**/ {0}},
     },
     {
         "0 0=",
-        {(m4int)m4zero_not_equal, (m4int)m4bye},
+        {(m4int)m4zero_not_equals, (m4int)m4bye},
         {{1, {0}}, /*     */ {0}},
         {{1, {tfalse}}, /**/ {0}},
     },
     {
         "1 0=",
-        {(m4int)m4zero_not_equal, (m4int)m4bye},
+        {(m4int)m4zero_not_equals, (m4int)m4bye},
         {{1, {1}}, /*    */ {0}},
         {{1, {ttrue}}, /**/ {0}},
     },
@@ -390,7 +390,7 @@ static void m4test_stack_print(const m4test_stack *src, FILE *out) {
     fputc('\n', out);
 }
 
-static m4int m4test_stack_equal(const m4test_stack *src, const m4span *dst) {
+static m4int m4test_stack_equals(const m4test_stack *src, const m4span *dst) {
     m4int i, len = src->len;
     if (len != dst->end - dst->begin) {
         return 0;
@@ -422,8 +422,8 @@ static m4int m4test_run(m4th *m, const m4test *t) {
     m4test_stack_copy(&t->before.d, &m->dstack);
     m4test_stack_copy(&t->before.r, &m->rstack);
     m4th_enter(m);
-    return m4test_stack_equal(&t->after.d, &m->dstack) &&
-           m4test_stack_equal(&t->after.r, &m->rstack);
+    return m4test_stack_equals(&t->after.d, &m->dstack) &&
+           m4test_stack_equals(&t->after.r, &m->rstack);
 }
 
 static m4int m4test_failed(m4th *m, const m4test *t, FILE *out) {

@@ -32,7 +32,7 @@ void m4c_store(void);           /* c!   */
 void m4do(void);                /* do   */
 void m4drop(void);              /* drop */
 void m4dup(void);               /* dup  */
-void m4equal(void);             /* =    */
+void m4equals(void);            /* =    */
 void m4fetch(void);             /* @    */
 void m4greater_than(void);      /* >    */
 void m4i(void);                 /* i    */
@@ -50,10 +50,10 @@ void m4minus(void);             /* -    */
 void m4mod(void);               /* mod  */
 void m4negate(void);            /* negate */
 void m4noop(void);              /* noop */
-void m4not_equal(void);         /* <>   */
+void m4not_equals(void);        /* <>   */
 void m4one_minus(void);         /* 1-   */
 void m4one_plus(void);          /* 1+   */
-void m4not_equal(void);         /* <>   */
+void m4not_equals(void);        /* <>   */
 void m4over(void);              /* over */
 void m4plus(void);              /* +    */
 void m4plus_store(void);        /* +!   */
@@ -71,8 +71,8 @@ void m4two_slash(void);         /* 2/   */
 void m4two_star(void);          /* 2*   */
 void m4unloop(void);            /* unloop */
 void m4xor(void);               /* xor  */
-void m4zero_equal(void);        /* 0=   */
-void m4zero_not_equal(void);    /* 0<>  */
+void m4zero_equals(void);       /* 0=   */
+void m4zero_not_equals(void);   /* 0<>  */
 void m4zero_greater_than(void); /* 0>   */
 void m4zero_less_than(void);    /* 0<   */
 
