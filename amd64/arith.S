@@ -24,6 +24,13 @@ FUNC_START(m4abs)
 FUNC_END(m4abs)
 
 
+#define M4BL
+FUNC_START(m4bl)
+        DPUSH(DTOP)
+        mov     IMM(32), DTOPw
+FUNC_END(m4bl)
+
+
 FUNC_START(m4c_fetch) /* c@ */
         movzbq  (DTOP), DTOP;
 FUNC_END(m4c_store)

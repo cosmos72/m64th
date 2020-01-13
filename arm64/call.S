@@ -49,3 +49,12 @@ FUNC_START(m4bye)
         str   DSTK, [M4TH];           /* save data   stack pointer */
         ret;
 FUNC_RAWEND(m4bye)
+
+
+/** return from word being executed (i.e. current function) */
+FUNC_START(m4exit)
+        add   IP,   RTOP, IMM(SZ);
+        RPOP(RTOP)
+        ldr   REG1, [IP];
+        br    REG1;
+FUNC_RAWEND(m4exit)

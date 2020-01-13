@@ -66,6 +66,12 @@ static const m4test test[] = {
         {{1, {-7 & 14}}, /**/ {0}},
     },
     {
+        "bl",
+        {(m4int)m4bl, (m4int)m4bye},
+        {{0}, /*  */ {0}},
+        {{1, {' '}}, {0}},
+    },
+    {
         "drop",
         {(m4int)m4drop, (m4int)m4bye},
         {{1, {1}}, {0}},

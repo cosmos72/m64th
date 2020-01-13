@@ -21,11 +21,11 @@
 
 #if defined(__x86_64__)
 #include "amd64/arith.S"
-#include "amd64/exec.S"
+#include "amd64/call.S"
 #include "amd64/loop.S"
 #elif defined(__aarch64__)
 #include "arm64/arith.S"
-#include "arm64/exec.S"
+#include "arm64/call.S"
 #include "arm64/loop.S"
 #else
 #error "unsupported architecture: expecting amd64 or arm64"
@@ -35,6 +35,25 @@ FUNC_START(m4and)
         DPOP(REG1)
         AND2(REG1,  DTOP)
 FUNC_END(m4and)
+
+
+#ifndef M4BL
+FUNC_START(m4bl)
+        DPUSH(DTOP)
+        MOVE(IMM(32), DTOP)
+FUNC_END(m4bl)
+#endif
+
+
+#ifndef M4DO_
+FUNC_START(m4do_)
+        DPOP(REG1)
+        RPUSH(RTOP)
+        MOVE(DTOP, RTOP)
+        RPUSH(REG1)
+        DPOP(DTOP)
+FUNC_END(m4do_)
+#endif
 
 
 FUNC_START(m4drop)
@@ -217,9 +236,9 @@ FUNC_END(m4swap)
 
 
 FUNC_START(m4unloop)
-        IGET(RSTK, SZ, RTOP)
-        ADD2(IMM(SZ2), RSTK)
-FUNC_END(m4slash)
+        IGET(RSTK, SZ, RTOP)     /* load new top of rstack */
+        ADD2(IMM(SZ2), RSTK)     /* pop return stack twice */
+FUNC_END(m4unloop)
 
 
         .ident "m4th 0.0.0"

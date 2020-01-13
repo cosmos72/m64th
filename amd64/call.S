@@ -67,3 +67,11 @@ FUNC_START(m4bye)
         popq    %rbx;
         ret;
 FUNC_RAWEND(m4bye)
+
+
+/** return from word being executed (i.e. current function) */
+FUNC_START(m4exit)
+        lea   SZ(RTOP), IP;
+        RPOP(RTOP)
+        jmp   *(IP);
+FUNC_RAWEND(m4exit)

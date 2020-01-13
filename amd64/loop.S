@@ -17,13 +17,6 @@
 
 #include "asm.h"
 
-FUNC_START(m4do)
-        DPOP(REG1)
-        RPUSH(REG1)
-        RPUSH(DTOP)
-        DPOP(DTOP)
-FUNC_END(m4do)
-
 /* loop compiles to this, followed by IP offset to jump (usually < 0) */
 FUNC_START(m4loop_)
         cmpq (RSTK), RTOP;
@@ -33,6 +26,7 @@ FUNC_START(m4loop_)
         jmp  *(IP);
 .Lm4loop_.break:
         ADD2(IMM(SZ2), IP)       /* also skip jump offset */
-        ADD2(IMM(SZ2), RSTK)     /* clean return stack */
+        IGET(RSTK, SZ, RTOP)     /* load new top of rstack */
+        ADD2(IMM(SZ2), RSTK)     /* pop return stack twice */
         jmp  *(IP);
 FUNC_RAWEND(m4loop_)
