@@ -131,6 +131,12 @@ FUNC_START(m4zero_equal)   /* 0= */
 FUNC_END(m4equal)
 
 
+FUNC_START(m4zero_not_equal)   /* 0<> */
+        cmp   DTOP, IMM(0)
+        csetm DTOP, ne
+FUNC_END(m4equal)
+
+
 FUNC_START(m4zero_greater_than)   /* 0> */
         cmp   DTOP, IMM(0)
         csetm DTOP, gt

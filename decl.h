@@ -72,6 +72,7 @@ void m4two_plus(void);           /* 2+   */
 void m4two_slash(void);          /* 2/   */
 void m4two_star(void);           /* 2*   */
 void m4zero_equal(void);         /* 0=   */
+void m4zero_not_equal(void);     /* 0<>  */
 void m4zero_greater_than(void);  /* 0>   */
 void m4zero_less_than(void);     /* 0<   */
 

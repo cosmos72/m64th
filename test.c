@@ -366,6 +366,12 @@ static const m4test test[] = {
         {{1, {ttrue}}, /**/ {0}},
     },
     {
+        "-1 0=",
+        {(m4int)m4zero_equal, (m4int)m4bye},
+        {{1, {-1}}, /*    */ {0}},
+        {{1, {tfalse}}, /**/ {0}},
+    },
+    {
         "0 0=",
         {(m4int)m4zero_equal, (m4int)m4bye},
         {{1, {0}}, /*    */ {0}},
@@ -379,9 +385,21 @@ static const m4test test[] = {
     },
     {
         "-1 0=",
-        {(m4int)m4zero_equal, (m4int)m4bye},
-        {{1, {-1}}, /*    */ {0}},
+        {(m4int)m4zero_not_equal, (m4int)m4bye},
+        {{1, {-1}}, /*   */ {0}},
+        {{1, {ttrue}}, /**/ {0}},
+    },
+    {
+        "0 0=",
+        {(m4int)m4zero_not_equal, (m4int)m4bye},
+        {{1, {0}}, /*     */ {0}},
         {{1, {tfalse}}, /**/ {0}},
+    },
+    {
+        "1 0=",
+        {(m4int)m4zero_not_equal, (m4int)m4bye},
+        {{1, {1}}, /*    */ {0}},
+        {{1, {ttrue}}, /**/ {0}},
     },
 };
 

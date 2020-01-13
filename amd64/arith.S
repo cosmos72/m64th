@@ -191,6 +191,12 @@ FUNC_START(m4zero_equal)   /* 0= */
 FUNC_END(m4equal)
 
 
+FUNC_START(m4zero_not_equal)   /* 0<> */
+        test   DTOP, DTOP;
+        mov    IMM(0), DTOPw;    /* xor would affect EFLAGS */
+        cmovne RFFF,   DTOP;
+FUNC_END(m4equal)
+
 FUNC_START(m4zero_greater_than)   /* 0> */
         test   DTOP,   DTOP;
         mov    IMM(0), DTOPw;    /* xor would affect EFLAGS */
