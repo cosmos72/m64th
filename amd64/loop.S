@@ -17,21 +17,14 @@
 
 #include "asm.h"
 
-/*
- * must be followed by IP offset of (loop)
- * IP offset = 0 means (do) itself
- */
 FUNC_START(m4_do_)
         DPOP(  REG1)                 /* REG1 = i'             */
         STOR(  RTOP, AT(RSTK, -SZ))  /* save RTOP             */
-        LOAD(  REG2, AT(IP,    SZ))  /* REG2 = DELTA_IP       */
         MOVE(  DTOP, RTOP)           /* RTOP = i              */
-        lea    (IP, REG2, SZ), IP;   /* IP = TARGET_IP        */
         DPOP(  DTOP)                 /* reload dstack top     */
         STOR(  REG1, AT(RSTK, -SZ2)) /* save   i' to rstack   */
         SUB2(  IMM(SZ2),  RSTK)      /* update rstack pointer */
-        jmp    *(IP);                /* jump to (loop)        */
-FUNC_RAWEND(m4_do_)
+FUNC_END(m4_do_)
 
 
 
@@ -40,13 +33,13 @@ FUNC_RAWEND(m4_do_)
  * IP offset = 0 means (loop) itself
  */
 FUNC_START(m4_loop_)
+        inc    RTOP;               /* increment i                 */
         cmpq   (RSTK), RTOP;
-        jge    .Lm4_loop_.break;
+        je     .Lm4_loop_.leave;   /* leave if i == i'            */
         LOAD(  REG2, AT(IP, SZ))
         lea    (IP, REG2, SZ), IP; /* IP = TARGET_IP              */
-        inc    RTOP;               /* increment i                 */
         jmp    *(IP);              /* jump to instruction after (do) */
-.Lm4_loop_.break:
+.Lm4_loop_.leave:
         ADD2(  IMM(SZ2), IP)       /* skip jump offset            */
         LOAD(  RTOP, AT(RSTK, SZ)) /* load new top of rstack      */
         ADD2(  IMM(SZ2), RSTK)     /* drop i' i from return stack */

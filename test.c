@@ -21,8 +21,8 @@
 #include <stdio.h>  /* fprintf(), fputs() */
 #include <string.h> /* memcpy() */
 
-enum { m4test_code_n = 3 };
-enum { m4test_stack_n = 3 };
+enum { m4test_code_n = 5 };
+enum { m4test_stack_n = 5 };
 enum { tfalse = (m4int)0, ttrue = (m4int)-1 };
 
 typedef struct m4test_stack_s {
@@ -47,13 +47,13 @@ typedef struct m4test_s {
 static const m4test test[] = {
     {
         "0 1 (do)",
-        {m4_do_, (m4test_code)2, m4bye},
+        {m4_do_, m4bye},
         {{2, {0, 1}}, {0}},
         {{0}, /*   */ {2, {0, 1}}},
     },
     {
         "1 0 (do)",
-        {m4_do_, (m4test_code)2, m4bye},
+        {m4_do_, m4bye},
         {{2, {1, 0}}, {0}},
         {{0}, /*   */ {2, {1, 0}}},
     },
@@ -67,13 +67,25 @@ static const m4test test[] = {
         "0 0 (loop)",
         {m4_loop_, (m4test_code)2, m4bye},
         {{0}, {2, {0, 0}}},
-        {{0}, {0}},
+        {{0}, {2, {0, 1}}},
+    },
+    {
+        "0 1 (loop)",
+        {m4_loop_, (m4test_code)2, m4bye},
+        {{0}, {2, {0, 1}}},
+        {{0}, {2, {0, 2}}},
     },
     {
         "1 0 (loop)",
         {m4_loop_, (m4test_code)2, m4bye},
         {{0}, {2, {1, 0}}},
-        {{0}, {2, {1, 1}}},
+        {{0}, {0}},
+    },
+    {
+        "5 0 (do) i (loop)",
+        {m4_do_, m4i, m4_loop_, (m4test_code)-1, m4bye},
+        {{2, {5, 0}}, /*    */ {0}},
+        {{5, {0, 1, 2, 3, 4}}, {0}},
     },
     {
         "*",

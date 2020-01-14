@@ -17,14 +17,13 @@
 
 #include "asm.h"
 
-/*
- * must be followed by IP offset of (loop)
- * IP offset = 0 means (do) itself
- */
 FUNC_START(m4_do_)
-        /* TODO */
-        NEXT2()
-FUNC_RAWEND(m4_do_)
+        RPUSH( RTOP)                 /* save rstack top       */
+        DPOP(  REG1)                 /* REG1 = i'             */
+        MOVE(  DTOP, RTOP)           /* RTOP = i              */
+        RPUSH( REG1)                 /* push i' on rstack     */
+        DPOP(  DTOP)                 /* reload dstack top     */
+FUNC_END(m4_do_)
 
 
 
