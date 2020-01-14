@@ -19,6 +19,12 @@ typedef struct pair_s {
     long first, second;
 } pair;
 
+void m4question_dupe(long dtop, long *dstk) {
+    if (dtop != 0) {
+        *--dstk = dtop;
+    }
+}
+
 long m4max(long a, long b) {
     return a > b ? a : b;
 }

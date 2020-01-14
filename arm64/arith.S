@@ -77,9 +77,9 @@ FUNC_END(m4less_than)
 
 
 FUNC_START(m4not_equals)   /* <>   core ext */
-        DPOP(REG2)
-        cmp   REG2, DTOP
-        csetm DTOP, ne
+        DPOP(  REG2)
+        cmp    REG2, DTOP
+        csetm  DTOP, ne
 FUNC_END(m4not_equals)
 
 
@@ -91,10 +91,16 @@ FUNC_END(m4equals)
 
 
 FUNC_START(m4greater_than)   /* > */
-        DPOP(REG2)
-        cmp   REG2, DTOP
-        csetm DTOP, gt
+        DPOP(  REG2)
+        cmp    REG2, DTOP
+        csetm  DTOP, gt
 FUNC_END(m4greater_than)
+
+
+FUNC_START(m4question_dupe)   /* ?dup */
+        cbz    DTOP, .m4question_dupe.next;
+        DPUSH( DTOP)
+FUNC_END(m4question_dupe)
 
 
 FUNC_START(m4abs)

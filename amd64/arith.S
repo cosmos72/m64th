@@ -112,34 +112,41 @@ FUNC_END(m4two_star)
 
 FUNC_START(m4less_than)   /* < */
         DPOP(REG2)
-        cmp     DTOP, REG2;
-        mov     IMM(0), DTOPw;    /* xor would affect EFLAGS */
-        cmovl   RFFF,   DTOP;
+        cmp    DTOP, REG2;
+        mov    IMM(0), DTOPw;    /* xor would affect EFLAGS */
+        cmovl  RFFF,   DTOP;
 FUNC_END(m4less_than)
 
 
 FUNC_START(m4not_equals) /* <>   core ext */
         DPOP(REG2)
-        cmp     REG2,   DTOP;
-        mov     IMM(0), DTOPw;    /* xor would affect EFLAGS */
-        cmovne  RFFF,   DTOP;
+        cmp    REG2,   DTOP;
+        mov    IMM(0), DTOPw;    /* xor would affect EFLAGS */
+        cmovne RFFF,   DTOP;
 FUNC_END(m4not_equals)
 
 
 FUNC_START(m4equals)   /* = */
         DPOP(REG2)
-        cmp     REG2,   DTOP;
-        mov     IMM(0), DTOPw;    /* xor would affect EFLAGS */
-        cmove   RFFF,   DTOP;
+        cmp    REG2,   DTOP;
+        mov    IMM(0), DTOPw;    /* xor would affect EFLAGS */
+        cmove  RFFF,   DTOP;
 FUNC_END(m4equals)
 
 
 FUNC_START(m4greater_than)   /* > */
         DPOP(REG2)
-        cmp     DTOP, REG2;
-        mov     IMM(0), DTOPw;    /* xor would affect EFLAGS */
-        cmovg   RFFF,   DTOP;
+        cmp    DTOP, REG2;
+        mov    IMM(0), DTOPw;    /* xor would affect EFLAGS */
+        cmovg  RFFF,   DTOP;
 FUNC_END(m4greater_than)
+
+
+FUNC_START(m4question_dupe)   /* ?dup */
+        test   DTOP, DTOP;
+        jz     .m4question_dupe.next;
+        DPUSH(  DTOP)
+FUNC_END(m4question_dupe)
 
 
 FUNC_START(m4abs)
