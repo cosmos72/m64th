@@ -70,7 +70,7 @@ FUNC_END(m4i)
 
 FUNC_START(m4i_prime) /* i' */
         DPUSH(DTOP)
-        LOAD(RSTK, DTOP)
+        LOAD(DTOP, RSTK)
 FUNC_END(m4i_prime)
 
 
@@ -169,7 +169,7 @@ FUNC_END(m4plus)
 #ifndef M4PLUS_STORE
 FUNC_START(m4plus_store) /* +! */
         DPOP(REG1)
-        LOAD(DTOP, REG2)
+        LOAD(REG2, DTOP)
         ADD2(REG1, REG2)
         STOR(REG2, DTOP)
         DPOP(DTOP)
@@ -185,7 +185,7 @@ FUNC_END(m4r_from)
 
 
 FUNC_START(m4rot)
-        LOAD(DSTK, REG1)
+        LOAD(REG1, DSTK)
         STOR(DTOP, DSTK)
         IGET(DSTK, SZ, DTOP)
         ISET(REG1, DSTK, SZ)
@@ -224,7 +224,7 @@ FUNC_END(m4two_plus)
 
 #ifndef M4SWAP
 FUNC_START(m4swap)
-        LOAD(DSTK, REG1)
+        LOAD(REG1, DSTK)
         STOR(DTOP, DSTK)
         MOVE(REG1, DTOP)
 FUNC_END(m4swap)

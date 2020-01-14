@@ -70,7 +70,7 @@
 #define ADD3(a,b,dst)    add  dst, a, b;        /* dst  = a + b   */
 #define AND2(src,dst)    and  dst, dst, src;    /* dst &= src     */
 #define DIV3(a,b,dst)    sdiv dst, a, b;        /* dst  = a / b   */
-#define LOAD(addr,dst)   ldr  dst, [addr];      /* dst  = addr[0] */
+#define LOAD(dst, addr)  ldr  dst, [addr];      /* dst  = addr[0] */
 #define IGET(addr,i,dst) ldr  dst, [addr, i];   /* dst  = addr[i] */
 #define ISET(src,addr,i) str  src, [addr, i];   /* addr[i] = src  */
 #define MOVE(src,dst)    mov  dst, src;         /* dst  = src     */

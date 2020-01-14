@@ -31,7 +31,7 @@ FUNC_START(m4th_enter)
         IGET(M4TH, OFF_IP,   IP)   /* load instruction  pointer */
         DPOP(DTOP)                 /* load first data   stack element  */
         RPOP(RTOP)                 /* load first return stack element  */
-        LOAD(IP,   REG1)           /* begin execution */
+        LOAD(REG1, IP)             /* begin execution */
         br   REG1;
 FUNC_RAWEND(m4th_enter)
 
@@ -55,6 +55,6 @@ FUNC_RAWEND(m4bye)
 FUNC_START(m4exit)
         MOVE(RTOP, IP)
         RPOP(RTOP)
-        LOAD(IP, REG1)
+        LOAD(REG1, IP)
         br   REG1;
 FUNC_RAWEND(m4exit)

@@ -148,7 +148,7 @@ FUNC_END(m4slash)
 
 /* signed divide & remainder */
 FUNC_START(m4slash_mod) /* /mod */
-        LOAD(DSTK, %rax)
+        LOAD(%rax, DSTK)
         cqto; /* sign-extend %rax into %rdx */
         idiv  DTOP;
         STOR(%rdx, DSTK)   /* remainder */

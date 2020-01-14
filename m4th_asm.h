@@ -41,6 +41,12 @@
     NEXT()                                                                                         \
     FUNC_RAWEND(name)
 
+/* expand AT(addr) -> AT0(addr) and expand AT(addr, i) -> ATx(addr, i) */
+#define AT_0(addr, i)           AT0(addr)
+#define AT_x(addr, i)           ATx(addr, i)
+#define AT_(addr, i, kind, ...) AT_##kind(addr, i)
+#define AT(...)                 AT_(__VA_ARGS__, x, 0)
+
 #define OFF_DSTK    SZ   /* offset of m4th->dstack.curr */
 #define OFF_RSTK    SZ4  /* offset of m4th->rstack.curr */
 #define OFF_CODE    SZ6  /* offset of m4th->code.start  */

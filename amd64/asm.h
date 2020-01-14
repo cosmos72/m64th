@@ -59,9 +59,11 @@
 
 #define AND2(src, dst)       and  src,     dst; /* dst &= src     */
 #define ADD2(src, dst)       add  src,     dst; /* dst += src     */
+#define AT0(addr)                 (addr)        /* addr[0]        */
+#define ATx(addr, i)              i(addr)       /* addr[i]        */
 #define IGET(addr, i, dst)   mov  i(addr), dst; /* dst  = addr[i] */
 #define ISET(src, addr, i)   mov  src, i(addr); /* addr[i] = src  */
-#define LOAD(addr, dst)      mov  (addr),  dst; /* dst  = addr[0] */
+#define LOAD(dst, addr)      mov  (addr),  dst; /* dst  = addr[0] */
 #define MOVE(src, dst)       mov  src,     dst; /* dst  = src     */
 #define MUL2(src, dst)       imul src,     dst; /* dst *= src     */
 #define NEG1(dst)            neg  dst;          /* dst  = -dst    */
