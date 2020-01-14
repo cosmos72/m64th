@@ -25,14 +25,14 @@
  * execute m4th->rstack[0] and subsequent code until m4th_bye is found.
  */
 FUNC_START(m4th_enter)
-        mov  M4TH, x0;               /* m                         */
-        ldr  DSTK, [M4TH];           /* load data   stack pointer */
-        ldr  RSTK, [M4TH, IMM(SZ2)]; /* load return stack pointer */
-        ldr  IP,   [M4TH, IMM(SZ6)]; /* load instruction  pointer */
-        DPOP(DTOP)                   /* load first data   stack element  */
-        RPOP(RTOP)                   /* load first return stack element  */
-        ldr  REG1, [IP];
-        br   REG1;                   /* begin execution */
+        MOVE(x0, M4TH)             /* m                         */
+        IGET(M4TH, OFF_DSTK, DSTK) /* load data   stack pointer */
+        IGET(M4TH, OFF_RSTK, RSTK) /* load return stack pointer */
+        IGET(M4TH, OFF_IP,   IP)   /* load instruction  pointer */
+        DPOP(DTOP)                 /* load first data   stack element  */
+        RPOP(RTOP)                 /* load first return stack element  */
+        LOAD(IP,   REG1)           /* begin execution */
+        br   REG1;
 FUNC_RAWEND(m4th_enter)
 
 /**
@@ -42,19 +42,19 @@ FUNC_RAWEND(m4th_enter)
  * return to C
  */
 FUNC_START(m4bye)
-        RPUSH(RTOP)                   /* save first return stack element */
-        DPUSH(DTOP)                   /* save first data   stack element */
-        str   IP,   [M4TH, IMM(SZ6)]; /* save instruction  pointer */
-        str   RSTK, [M4TH, IMM(SZ2)]; /* save return stack pointer */
-        str   DSTK, [M4TH];           /* save data   stack pointer */
-        ret;
+        RPUSH(RTOP)                /* save first return stack element */
+        DPUSH(DTOP)                /* save first data   stack element */
+        ISET(IP,   M4TH, OFF_IP)   /* save instruction  pointer */
+        ISET(RSTK, M4TH, OFF_RSTK) /* save return stack pointer */
+        ISET(DSTK, M4TH, OFF_DSTK) /* save data   stack pointer */
+        ret;                       /* return to C               */
 FUNC_RAWEND(m4bye)
 
 
 /** return from word being executed (i.e. current function) */
 FUNC_START(m4exit)
-        add   IP,   RTOP, IMM(SZ);
+        MOVE(RTOP, IP)
         RPOP(RTOP)
-        ldr   REG1, [IP];
-        br    REG1;
+        LOAD(IP, REG1)
+        br   REG1;
 FUNC_RAWEND(m4exit)

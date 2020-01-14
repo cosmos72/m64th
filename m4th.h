@@ -22,22 +22,36 @@
 #include <stdio.h>     /* FILE    */
 #include <sys/types.h> /* ssize_t */
 
+typedef unsigned char m4char;
 typedef size_t m4uint;
 typedef ssize_t m4int;
-typedef struct m4span_s m4span;
+
+typedef struct m4cspan_s m4cspan;
+typedef struct m4ispan_s m4ispan;
+typedef struct m4ispan_s m4stack;
+typedef struct m4ispan_s m4code;
 typedef struct m4th_s m4th;
 
-struct m4span_s {
-    m4int *begin;
+struct m4cspan_s {
+    m4char *start;
+    m4char *curr;
+    m4char *end;
+};
+
+struct m4ispan_s {
+    m4int *start;
+    m4int *curr;
     m4int *end;
 };
 
 struct m4th_s {
-    m4span dstack;  /* data stack */
-    m4span rstack;  /* return stack */
-    m4span code;    /* executable code */
+    m4stack dstack; /* data stack          */
+    m4stack rstack; /* return stack        */
+    m4code code;    /* executable code     */
     m4int *ip;      /* instruction pointer */
     m4int *c_stack; /* C stack pointer. saved here by m4th_enter() */
+    m4cspan in;     /* input  buffer       */
+    m4cspan out;    /* output buffer       */
 };
 
 /** malloc() wrapper, calls exit(1) on failure */
@@ -55,7 +69,10 @@ void m4th_del(m4th *m);
  */
 void m4th_enter(m4th *m);
 
-/** clear data stack and return stack. set ->ip to ->code.begin */
+/**
+ * clear data stack, return stack, input buffer and output buffer.
+ * set ->ip to ->code.start
+ */
 void m4th_clear(m4th *m);
 
 /**
@@ -65,6 +82,6 @@ void m4th_clear(m4th *m);
 m4int m4th_test(m4th *m, FILE *out);
 
 /** print stack to out */
-void m4th_stack_print(const m4span *stack, FILE *out);
+void m4th_stack_print(const m4stack *stack, FILE *out);
 
 #endif /* M4TH_M4TH_H */

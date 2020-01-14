@@ -22,10 +22,12 @@
 #if defined(__x86_64__)
 #include "amd64/arith.S"
 #include "amd64/call.S"
+#include "amd64/io.S"
 #include "amd64/loop.S"
 #elif defined(__aarch64__)
 #include "arm64/arith.S"
 #include "arm64/call.S"
+#include "arm64/io.S"
 #include "arm64/loop.S"
 #else
 #error "unsupported architecture: expecting amd64 or arm64"
@@ -64,12 +66,6 @@ FUNC_START(m4i)
         DPUSH(DTOP)
         MOVE(RTOP, DTOP)
 FUNC_END(m4i)
-
-
-FUNC_START(m4or)
-        DPOP(REG1)
-        ORR2(REG1,  DTOP)
-FUNC_END(m4or)
 
 
 FUNC_START(m4i_prime) /* i' */
@@ -150,6 +146,12 @@ FUNC_START(m4one_plus) /* 1+ */
         ADD2(IMM(1), DTOP);
 FUNC_END(m4one_plus)
 #endif
+
+
+FUNC_START(m4or)
+        DPOP(REG1)
+        ORR2(REG1,  DTOP)
+FUNC_END(m4or)
 
 
 FUNC_START(m4over)

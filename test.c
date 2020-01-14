@@ -408,9 +408,9 @@ static void m4test_stack_print(const m4test_stack *src, FILE *out) {
     fputc('\n', out);
 }
 
-static m4int m4test_stack_equals(const m4test_stack *src, const m4span *dst) {
+static m4int m4test_stack_equals(const m4test_stack *src, const m4ispan *dst) {
     m4int i, len = src->len;
-    if (len != dst->end - dst->begin) {
+    if (len != dst->end - dst->curr) {
         return 0;
     }
     for (i = 0; i < len; i++) {
@@ -421,17 +421,17 @@ static m4int m4test_stack_equals(const m4test_stack *src, const m4span *dst) {
     return 1;
 }
 
-static void m4test_stack_copy(const m4test_stack *src, m4span *dst) {
+static void m4test_stack_copy(const m4test_stack *src, m4ispan *dst) {
     m4int i, len = src->len;
-    dst->begin = dst->end - len;
+    dst->curr = dst->end - len;
     for (i = 0; i < len; i++) {
         dst->end[-i - 1] = src->data[i];
     }
 }
 
-static void m4test_code_copy(const m4int src[m4test_code_n], m4span *dst) {
-    dst->end = dst->begin + m4test_code_n;
-    memcpy(dst->begin, src, m4test_code_n * sizeof(m4int));
+static void m4test_code_copy(const m4int src[m4test_code_n], m4ispan *dst) {
+    dst->end = dst->start + m4test_code_n;
+    memcpy(dst->start, src, m4test_code_n * sizeof(m4int));
 }
 
 static m4int m4test_run(m4th *m, const m4test *t) {

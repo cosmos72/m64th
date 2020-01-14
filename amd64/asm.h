@@ -18,15 +18,20 @@
 #ifndef M4TH_AMD64_ASM_H
 #define M4TH_AMD64_ASM_H
 
-#include "../asm_gcc.h"
+#include "../m4th_asm.h"
 
-#define SZ 8   /* width of registers and cells, in bytes */
-#define SZ2 16 /* SZ * 2 */
-#define SZ3 24 /* SZ * 3 */
-#define SZ4 32 /* SZ * 4 */
-#define SZ5 40 /* SZ * 5 */
-#define SZ6 48 /* SZ * 6 */
-#define SZ7 56 /* SZ * 7 */
+#define SZ 8     /* width of registers, m4int and void* in bytes */
+#define SZ2 16   /* SZ * 2 */
+#define SZ3 24   /* SZ * 3 */
+#define SZ4 32   /* SZ * 4 */
+#define SZ5 40   /* SZ * 5 */
+#define SZ6 48   /* SZ * 6 */
+#define SZ9 72   /* SZ * 9 */
+#define SZ10 80  /* SZ * 10 */
+#define SZ12 96  /* SZ * 12 */
+#define SZ13 104 /* SZ * 13 */
+#define SZ15 120 /* SZ * 15 */
+#define SZ16 128 /* SZ * 16 */
 
 #define IMM(constant) $constant /* immediate constant */
 

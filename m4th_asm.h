@@ -15,8 +15,8 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_ASM_GCC_H
-#define M4TH_ASM_GCC_H
+#ifndef M4TH_M4TH_ASM_H
+#define M4TH_M4TH_ASM_H
 
 /* clang-format off */
 
@@ -41,6 +41,16 @@
     NEXT()                                                                                         \
     FUNC_RAWEND(name)
 
+#define OFF_DSTK    SZ   /* offset of m4th->dstack.curr */
+#define OFF_RSTK    SZ4  /* offset of m4th->rstack.curr */
+#define OFF_CODE    SZ6  /* offset of m4th->code.start  */
+#define OFF_IP      SZ9  /* offset of m4th->ip          */
+#define OFF_C_STK   SZ10 /* offset of m4th->c_stack     */
+#define OFF_IN      SZ12 /* offset of m4th->in.curr     */
+#define OFF_IN_END  SZ13 /* offset of m4th->in.end      */
+#define OFF_OUT     SZ15 /* offset of m4th->out.curr    */
+#define OFF_OUT_END SZ16 /* offset of m4th->out.end     */
+
 /* clang-format on */
 
-#endif /* M4TH_ASM_GCC_H */
+#endif /* M4TH_M4TH_ASM_H */
