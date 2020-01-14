@@ -57,7 +57,7 @@ void m4fetch(void);             /* @    */
 void m4abs(void);               /* abs  */
 void m4and(void);               /* and  */
 void m4bl(void);                /* bl   */
-void m4bye(void);               /* bye  */
+void m4bye(void);               /* bye  tools ext */
 void m4c_store(void);           /* c!   */
 void m4c_fetch(void);           /* c@   */
 void m4drop(void);              /* drop */
