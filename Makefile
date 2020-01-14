@@ -9,9 +9,9 @@ OBJS=asm.o m4th.o
 all: m4th test
 
 clean:
-	rm -f m4th *.o *~
+	rm -f m4th test *.o *~
 
-asm.o: asm.S $(wildcard */asm.h */*.S)
+asm.o: asm.S $(wildcard *asm.h */asm.h */*.S)
 
 m4th: $(OBJS) main.o
 	$(CC) $(CFLAGS) -o $@ $^
