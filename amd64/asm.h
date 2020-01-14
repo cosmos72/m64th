@@ -63,13 +63,13 @@
 #define ATx(addr, i)              i(addr)       /* addr[i]        */
 #define IGET(addr, i, dst)   mov  i(addr), dst; /* dst  = addr[i] */
 #define ISET(src, addr, i)   mov  src, i(addr); /* addr[i] = src  */
-#define LOAD(dst, addr)      mov  (addr),  dst; /* dst  = addr[0] */
+#define LOAD(reg, mem)       mov  mem,     reg; /* reg  = *mem    */
 #define MOVE(src, dst)       mov  src,     dst; /* dst  = src     */
 #define MUL2(src, dst)       imul src,     dst; /* dst *= src     */
 #define NEG1(dst)            neg  dst;          /* dst  = -dst    */
-#define ORR2( src, dst)       or   src,     dst; /* dst |= src     */
+#define ORR2(src, dst)       or   src,     dst; /* dst |= src     */
 #define SUB2(src, dst)       sub  src,     dst; /* dst -= src     */
-#define STOR(src, addr)      mov  src,  (addr); /* addr[0] = src  */
+#define STOR(reg, mem)       mov  reg,     mem; /* *mem = reg     */
 #define ZERO(dst)            xor  dst,     dst; /* dst  = 0       */
 
 /* clang-format on */

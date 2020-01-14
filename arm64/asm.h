@@ -69,8 +69,10 @@
 #define ADD2(src,dst)    add  dst, dst, src;    /* dst += src     */
 #define ADD3(a,b,dst)    add  dst, a, b;        /* dst  = a + b   */
 #define AND2(src,dst)    and  dst, dst, src;    /* dst &= src     */
+#define AT0(addr)             [addr]            /* addr[0]        */
+#define ATx(addr, i)          [addr, i]         /* addr[i]        */
 #define DIV3(a,b,dst)    sdiv dst, a, b;        /* dst  = a / b   */
-#define LOAD(dst, addr)  ldr  dst, [addr];      /* dst  = addr[0] */
+#define LOAD(reg,mem)    ldr  reg, mem;         /* reg  = *mem    */
 #define IGET(addr,i,dst) ldr  dst, [addr, i];   /* dst  = addr[i] */
 #define ISET(src,addr,i) str  src, [addr, i];   /* addr[i] = src  */
 #define MOVE(src,dst)    mov  dst, src;         /* dst  = src     */
@@ -79,7 +81,7 @@
 #define ORR2(src,dst)    orr  dst, dst, src;    /* dst |= src     */
 #define SUB2(src,dst)    sub  dst, dst, src;    /* dst -= src     */
 #define SUB3(a,b,dst)    sub  dst, a, b;        /* dst  = a - b   */
-#define STOR(src,addr)   str  src, [addr];      /* addr[0] = src  */
+#define STOR(reg,mem)    str  reg, mem;         /* *mem = reg     */
 #define ZERO(dst)        mov  dst, 0;           /* dst  = 0       */
 
 /* clang-format on */

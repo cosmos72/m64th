@@ -93,11 +93,11 @@ FUNC_END(m4slash)
 
 /* /mod is signed divide & remainder */
 FUNC_START(m4slash_mod)
-        LOAD(REG1, DSTK)
+        LOAD(REG1, AT(DSTK))
         DIV3(REG1, DTOP, REG2)
         msub  REG1, REG2, DTOP, REG1;
         MOVE(REG2, DTOP)
-        STOR(REG1, DSTK)
+        STOR(REG1, AT(DSTK))
 FUNC_END(m4slash_mod)
 
 

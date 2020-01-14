@@ -147,12 +147,12 @@ FUNC_START(m4slash) /* / */
 FUNC_END(m4slash)
 
 /* signed divide & remainder */
-FUNC_START(m4slash_mod) /* /mod */
-        LOAD(%rax, DSTK)
+FUNC_START(m4slash_mod)      /* /mod */
+        LOAD(%rax, AT(DSTK))
         cqto; /* sign-extend %rax into %rdx */
         idiv  DTOP;
-        STOR(%rdx, DSTK)   /* remainder */
-        MOVE(%rax, DTOP)   /* quotient */
+        STOR(%rdx, AT(DSTK)) /* remainder */
+        MOVE(%rax, DTOP)     /* quotient */
 FUNC_END(m4slash_mod)
 
 
