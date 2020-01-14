@@ -18,37 +18,36 @@
 #include "asm.h"
 
 /*
- * must be followed by IP offset of 'loop' (usually > 0)
- * IP offset = 0 means 'do' itself
+ * must be followed by IP offset of (loop)
+ * IP offset = 0 means (do) itself
  */
-FUNC_START(m4do_)
+FUNC_START(m4_do_)
         DPOP(  REG1)                 /* REG1 = i'             */
         STOR(  RTOP, AT(RSTK, -SZ))  /* save RTOP             */
         LOAD(  REG2, AT(IP,   SZ))   /* REG2 = DELTAIP        */
         MOVE(  DTOP, RTOP)           /* RTOP = i              */
-        lea    (IP, REG2), IP;       /* IP = IP_OF_LOOP       */
+        lea    (IP, REG2, SZ), IP;   /* IP = IP_OF_LOOP       */
         DPOP(  DTOP)                 /* reload dstack top     */
-        STOR(  IP,   AT(RSTK, -SZ2)) /* save   IP_OF_LOOP     */
-        STOR(  REG1, AT(RSTK, -SZ3)) /* save   i'             */
-        SUB2(  SZ3,  RSTK)           /* update rstack pointer */
-        jmp    *(IP);                /* jump to 'loop'        */
-FUNC_RAWEND(m4do_)
+        STOR(  REG1, AT(RSTK, -SZ2)) /* save   i'             */
+        SUB2(  SZ2,  RSTK)           /* update rstack pointer */
+        jmp    *(IP);                /* jump to (loop)      */
+FUNC_RAWEND(m4_do_)
 
 
 
 /*
- * must be followed by IP offset of next instruction after 'do' (usually < 0)
- * IP offset = 0 means 'loop' itself
+ * must be followed by IP offset of next instruction after (do) - usually < 0
+ * IP offset = 0 means (loop) itself
  */
-FUNC_START(m4loop_)
+FUNC_START(m4_loop_)
         cmpq   (RSTK), RTOP;
-        jge    .Lm4loop_.break;
+        jge    .Lm4_loop_.break;
         LOAD(  REG2, AT(IP, SZ))
-        lea    (IP, REG2), IP;     /* add jump offset to IP */
-        jmp    *(IP);              /* jump to instruction after 'do' */
-.Lm4loop_.break:
+        lea    (IP, REG2, SZ), IP; /* add jump offset to IP */
+        jmp    *(IP);              /* jump to instruction after (do) */
+.Lm4_loop_.break:
         ADD2(  IMM(SZ2), IP)       /* also skip jump offset */
         LOAD(  RTOP, AT(RSTK, SZ)) /* load new top of rstack */
-        ADD2(  IMM(SZ3), RSTK)     /* drop deltaip i' i from return stack */
+        ADD2(  IMM(SZ2), RSTK)     /* drop i' i from return stack */
         jmp    *(IP);              /* execute next instruction */
-FUNC_RAWEND(m4loop_)
+FUNC_RAWEND(m4_loop_)

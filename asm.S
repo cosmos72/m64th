@@ -33,6 +33,108 @@
 #error "unsupported architecture: expecting amd64 or arm64"
 #endif
 
+FUNC_START(m4store) /* ! */
+        DPOP(REG1)
+        STOR(REG1, AT(DTOP))
+        DPOP(DTOP)
+FUNC_END(m4store)
+
+
+#ifndef M4_LIT_
+FUNC_START(m4_lit_) /* (lit) */
+        DPUSH(DTOP)
+        LOAD(DTOP, AT(IP, SZ))
+        NEXT2()
+FUNC_RAWEND(m4_lit_)
+#endif
+
+
+FUNC_START(m4star) /* * */
+        DPOP(REG1)
+        MUL2(REG1, DTOP)
+FUNC_END(m4star)
+
+
+FUNC_START(m4plus) /* + */
+        DPOP(REG1)
+        ADD2(REG1, DTOP)
+FUNC_END(m4plus)
+
+
+#ifndef M4PLUS_STORE
+FUNC_START(m4plus_store) /* +! */
+        DPOP(REG1)
+        LOAD(REG2, AT(DTOP))
+        ADD2(REG1, REG2)
+        STOR(REG2, AT(DTOP))
+        DPOP(DTOP)
+FUNC_END(m4plus_store)
+#endif
+
+
+FUNC_START(m4minus) /* - */
+        DPOP(REG1)
+#ifdef SUB3
+        SUB3(REG1, DTOP, DTOP)
+#else
+        NEG1(DTOP)
+        ADD2(REG1, DTOP)
+#endif
+FUNC_END(m4minus)
+
+
+#ifndef M4SLASH_C
+FUNC_START(m4slash_c) /* /c   m4th: sizeof(m4char) i.e. 1  */
+        DPUSH( DTOP)
+        MOVE(  IMM(1), DTOP)
+FUNC_END(m4slash_c)
+#endif
+
+
+#ifndef M4SLASH_N
+FUNC_START(m4slash_n) /* /n   m4th: sizeof(m4int)  i.e. SZ */
+        DPUSH( DTOP)
+        MOVE(  IMM(SZ), DTOP)
+FUNC_END(m4slash_n)
+#endif
+
+
+#ifndef M4ONE_MINUS
+FUNC_START(m4one_minus) /* 1-   */
+        SUB2(IMM(1), DTOP);
+FUNC_END(m4one_minus)
+#endif
+
+
+#ifndef M4ONE_PLUS
+FUNC_START(m4one_plus) /* 1+   */
+        ADD2(IMM(1), DTOP);
+FUNC_END(m4one_plus)
+#endif
+
+
+FUNC_START(m4two_minus) /* 2- */
+        SUB2(  IMM(2), DTOP)
+FUNC_END(m4two_minus)
+
+
+FUNC_START(m4two_plus) /* 2+ */
+        ADD2(  IMM(2), DTOP)
+FUNC_END(m4two_plus)
+
+
+FUNC_START(m4to_r) /* >r */
+        RPUSH( RTOP)
+        MOVE(  DTOP, RTOP)
+        DPOP(  DTOP)
+FUNC_END(m4to_r)
+
+
+FUNC_START(m4fetch) /* @ */
+        LOAD(DTOP, AT(DTOP))
+FUNC_END(m4fetch)
+
+
 FUNC_START(m4and)
         DPOP(REG1)
         AND2(REG1,  DTOP)
@@ -57,9 +159,12 @@ FUNC_START(m4dup)
 FUNC_END(m4dup)
 
 
-FUNC_START(m4fetch) /* @ */
-        LOAD(DTOP, AT(DTOP))
-FUNC_END(m4fetch)
+#ifndef M4FALSE
+FUNC_START(m4false)
+        DPUSH(DTOP)
+        ZERO(DTOP)
+FUNC_END(m4false)
+#endif
 
 
 FUNC_START(m4i)
@@ -77,52 +182,12 @@ FUNC_END(m4i_prime)
 /**
  * get iteration index of outer do-loop.
  * must skip return stack used by innermost do-loop:
- *   IP-of-loop_ limit i
+ *   i' i
  */
 FUNC_START(m4j)
         DPUSH(DTOP)
-        LOAD(DTOP, AT(RSTK, SZ2))
+        LOAD(DTOP, AT(RSTK, SZ))
 FUNC_END(m4j)
-
-
-#ifndef M4LITERAL
-FUNC_START(m4literal)
-        DPUSH(DTOP)
-        LOAD(DTOP, AT(IP, SZ))
-        NEXT2()
-FUNC_RAWEND(m4literal)
-#endif
-
-#ifndef M4LITERAL_1
-FUNC_START(m4literal_1)
-        DPUSH(DTOP)
-        MOVE(IMM(-1), DTOP)
-FUNC_END(m4literal_1)
-#endif
-
-#ifndef M4LITERAL0
-FUNC_START(m4literal0)
-        DPUSH(DTOP)
-        ZERO(DTOP)
-FUNC_END(m4literal0)
-#endif
-
-#ifndef M4LITERAL1
-FUNC_START(m4literal1)
-        DPUSH(DTOP)
-        MOVE(IMM(1), DTOP)
-FUNC_END(m4literal1)
-#endif
-
-FUNC_START(m4minus) /* - */
-        DPOP(REG1)
-#ifdef SUB3
-        SUB3(REG1, DTOP, DTOP)
-#else
-        NEG1(DTOP)
-        ADD2(REG1, DTOP)
-#endif
-FUNC_END(m4minus)
 
 
 FUNC_START(m4negate)
@@ -132,20 +197,6 @@ FUNC_END(m4negate)
 
 FUNC_START(m4noop)
 FUNC_END(m4noop)
-
-
-#ifndef M4ONE_MINUS
-FUNC_START(m4one_minus) /* 1- */
-        SUB2(IMM(1), DTOP);
-FUNC_END(m4one_minus)
-#endif
-
-
-#ifndef M4ONE_PLUS
-FUNC_START(m4one_plus) /* 1+ */
-        ADD2(IMM(1), DTOP);
-FUNC_END(m4one_plus)
-#endif
 
 
 FUNC_START(m4or)
@@ -158,23 +209,6 @@ FUNC_START(m4over)
         DPUSH( DTOP)
         LOAD(  DTOP, AT(DSTK, SZ))
 FUNC_END(m4over)
-
-
-FUNC_START(m4plus) /* + */
-        DPOP(REG1)
-        ADD2(REG1, DTOP)
-FUNC_END(m4plus)
-
-
-#ifndef M4PLUS_STORE
-FUNC_START(m4plus_store) /* +! */
-        DPOP(REG1)
-        LOAD(REG2, AT(DTOP))
-        ADD2(REG1, REG2)
-        STOR(REG2, AT(DTOP))
-        DPOP(DTOP)
-FUNC_END(m4plus_store)
-#endif /* M4PLUS_STORE */
 
 
 FUNC_START(m4r_from) /* r> */
@@ -192,34 +226,12 @@ FUNC_START(m4rot)
 FUNC_END(m4rot)
 
 
-FUNC_START(m4star) /* * */
-        DPOP(REG1)
-        MUL2(REG1, DTOP)
-FUNC_END(m4star)
-
-
-FUNC_START(m4store) /* ! */
-        DPOP(REG1)
-        STOR(REG1, AT(DTOP))
-        DPOP(DTOP)
-FUNC_END(m4store)
-
-
-FUNC_START(m4to_r) /* >r */
-        RPUSH(RTOP)
-        MOVE(DTOP, RTOP)
-        DPOP(DTOP)
-FUNC_END(m4to_r)
-
-
-FUNC_START(m4two_minus) /* 2- */
-        SUB2(IMM(2),  DTOP)
-FUNC_END(m4two_minus)
-
-
-FUNC_START(m4two_plus) /* 2+ */
-        ADD2(IMM(2), DTOP)
-FUNC_END(m4two_plus)
+#ifndef M4TRUE
+FUNC_START(m4true)
+        DPUSH(DTOP)
+        MOVE(IMM(-1), DTOP)
+FUNC_END(m4true)
+#endif
 
 
 #ifndef M4SWAP
@@ -233,7 +245,7 @@ FUNC_END(m4swap)
 
 FUNC_START(m4unloop)
         LOAD(  RTOP, AT(RSTK, SZ)) /* load new top of rstack */
-        ADD2(IMM(SZ2), RSTK)       /* pop return stack twice */
+        ADD2(  IMM(SZ2), RSTK)     /* pop return stack twice */
 FUNC_END(m4unloop)
 
 

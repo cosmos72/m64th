@@ -22,7 +22,7 @@
 #include <string.h> /* memcpy() */
 
 enum { m4test_code_n = 3 };
-enum { m4test_stack_n = 4 };
+enum { m4test_stack_n = 3 };
 enum { tfalse = (m4int)0, ttrue = (m4int)-1 };
 
 typedef struct m4test_stack_s {
@@ -34,364 +34,374 @@ typedef struct m4test_stacks_s {
     m4test_stack d, r;
 } m4test_stacks;
 
+typedef void *m4test_code;
+typedef char
+    assert_sizeof_m4test_code_equals_sizeof_m4int[sizeof(m4test_code) == sizeof(m4int) ? 1 : -1];
+
 typedef struct m4test_s {
     const char *name;
-    m4int code[m4test_code_n];
+    m4test_code code[m4test_code_n];
     m4test_stacks before, after;
 } m4test;
 
 static const m4test test[] = {
     {
-        "0 abs",
-        {(m4int)m4abs, (m4int)m4bye},
-        {{1, {0}}, {0}}, /* d, r before */
-        {{1, {0}}, {0}}, /* d, r after  */
-    },
-    {
-        "11 abs",
-        {(m4int)m4abs, (m4int)m4bye},
-        {{1, {11}}, {0}},
-        {{1, {11}}, {0}},
-    },
-    {
-        "-3 abs",
-        {(m4int)m4abs, (m4int)m4bye},
-        {{1, {-3}}, {0}},
-        {{1, {3}}, {0}},
-    },
-    {
-        "-7 14 and",
-        {(m4int)m4and, (m4int)m4bye},
-        {{2, {-7, 14}}, /* */ {0}},
-        {{1, {-7 & 14}}, /**/ {0}},
-    },
-    {
-        "bl",
-        {(m4int)m4bl, (m4int)m4bye},
-        {{0}, /*  */ {0}},
-        {{1, {' '}}, {0}},
-    },
-    {
-        "drop",
-        {(m4int)m4drop, (m4int)m4bye},
-        {{1, {1}}, {0}},
-        {{0}, /**/ {0}},
-    },
-    {
-        "dup",
-        {(m4int)m4dup, (m4int)m4bye},
-        {{1, {-5}}, /**/ {0}},
-        {{2, {-5, -5}}, {0}},
-    },
-    {
-        "1 2 =",
-        {(m4int)m4equals, (m4int)m4bye},
-        {{2, {1, 2}}, /*  */ {0}},
-        {{1, {tfalse}}, /**/ {0}},
-    },
-    {
-        "3 3 =",
-        {(m4int)m4equals, (m4int)m4bye},
-        {{2, {3, 3}}, /* */ {0}},
-        {{1, {ttrue}}, /**/ {0}},
-    },
-    {
-        "2 1 >",
-        {(m4int)m4greater_than, (m4int)m4bye},
-        {{2, {2, 1}}, /**/ {0}},
-        {{1, {ttrue}}, /*   */ {0}},
-    },
-    {
-        "3 3 >",
-        {(m4int)m4greater_than, (m4int)m4bye},
-        {{2, {3, 3}}, /*  */ {0}},
-        {{1, {tfalse}}, /**/ {0}},
-    },
-    {
-        "1 2 <",
-        {(m4int)m4less_than, (m4int)m4bye},
-        {{2, {1, 2}}, /**/ {0}},
-        {{1, {ttrue}}, /*   */ {0}},
-    },
-    {
-        "3 3 <",
-        {(m4int)m4less_than, (m4int)m4bye},
-        {{2, {3, 3}}, /*  */ {0}},
-        {{1, {tfalse}}, /**/ {0}},
-    },
-    {
-        "literal",
-        {(m4int)m4literal, 7, (m4int)m4bye},
-        {{0}, /**/ {0}},
-        {{1, {7}}, {0}},
-    },
-    {
-        "literal_1",
-        {(m4int)m4literal_1, (m4int)m4bye},
-        {{0}, /* */ {0}},
-        {{1, {-1}}, {0}},
-    },
-    {
-        "literal0",
-        {(m4int)m4literal0, (m4int)m4bye},
-        {{0}, /**/ {0}},
-        {{1, {0}}, {0}},
-    },
-    {
-        "literal1",
-        {(m4int)m4literal1, (m4int)m4bye},
-        {{0}, /**/ {0}},
-        {{1, {1}}, {0}},
-    },
-    {
-        "i",
-        {(m4int)m4i, (m4int)m4bye},
-        {{0}, /**/ {1, {9}}},
-        {{1, {9}}, {1, {9}}},
-    },
-    {
-        "i'",
-        {(m4int)m4i_prime, (m4int)m4bye},
-        {{0}, /* */ {2, {10, 11}}},
-        {{1, {10}}, {2, {10, 11}}},
-    },
-    {
-        "j",
-        {(m4int)m4j, (m4int)m4bye},
-        {{0}, /* */ {4, {12, -1 /*IP*/, 13, 14}}},
-        {{1, {12}}, {4, {12, -1 /*IP*/, 13, 14}}},
-    },
-    {
-        "max",
-        {(m4int)m4max, (m4int)m4bye},
-        {{2, {1, 2}}, /**/ {0}},
-        {{1, {2}}, /*   */ {0}},
-    },
-    {
-        "min",
-        {(m4int)m4min, (m4int)m4bye},
-        {{2, {3, 4}}, /**/ {0}},
-        {{1, {3}}, /*   */ {0}},
-    },
-    {
-        "minus",
-        {(m4int)m4minus, (m4int)m4bye},
-        {{2, {3, 4}}, /**/ {0}},
-        {{1, {-1}}, /*  */ {0}},
-    },
-    {
-        "20 7 mod",
-        {(m4int)m4mod, (m4int)m4bye},
-        {{2, {20, 7}}, {0}},
-        {{1, {6}}, /**/ {0}},
-    },
-    {
-        "-20 7 mod", /* symmetric division rounds toward 0 => remainder is -6 */
-        {(m4int)m4mod, (m4int)m4bye},
-        {{2, {-20, 7}}, {0}},
-        {{1, {-6}}, /**/ {0}},
-    },
-    {
-        "negate",
-        {(m4int)m4negate, (m4int)m4bye},
-        {{1, {-12}}, {0}},
-        {{1, {12}}, {0}},
-    },
-    {
-        "noop",
-        {(m4int)m4noop, (m4int)m4bye},
-        {{0}, {0}},
-        {{0}, {0}},
-    },
-    {
-        "1 2 <>",
-        {(m4int)m4not_equals, (m4int)m4bye},
-        {{2, {1, 2}}, /* */ {0}},
-        {{1, {ttrue}}, /**/ {0}},
-    },
-    {
-        "3 3 <>",
-        {(m4int)m4not_equals, (m4int)m4bye},
-        {{2, {3, 3}}, /*  */ {0}},
-        {{1, {tfalse}}, /**/ {0}},
-    },
-    {
-        "1-",
-        {(m4int)m4one_minus, (m4int)m4bye},
-        {{1, {-3}}, {0}},
-        {{1, {-4}}, {0}},
-    },
-    {
-        "1+",
-        {(m4int)m4one_plus, (m4int)m4bye},
-        {{1, {-6}}, {0}},
-        {{1, {-5}}, {0}},
-    },
-    {
-        "-7 14 or",
-        {(m4int)m4or, (m4int)m4bye},
-        {{2, {-7, 14}}, /* */ {0}},
-        {{1, {-7 | 14}}, /**/ {0}},
-    },
-    {
-        "over",
-        {(m4int)m4over, (m4int)m4bye},
-        {{2, {1, 0}}, /*   */ {0}},
-        {{3, {1, 0, 1}}, /**/ {0}},
-    },
-    {
-        "plus",
-        {(m4int)m4plus, (m4int)m4bye},
-        {{2, {-3, 2}}, /**/ {0}},
-        {{1, {-1}}, /*   */ {0}},
-    },
-    {
-        "r>",
-        {(m4int)m4r_from, (m4int)m4bye},
-        {{0}, /* */ {1, {99}}},
-        {{1, {99}}, {0}},
-    },
-    {
-        "rot",
-        {(m4int)m4rot, (m4int)m4bye},
-        {{3, {1, 2, 3}}, {0}},
-        {{3, {2, 3, 1}}, {0}},
-    },
-    {
-        "20 7 /",
-        {(m4int)m4slash, (m4int)m4bye},
-        {{2, {20, 7}}, {0}},
-        {{1, {2}}, /**/ {0}},
-    },
-    {
-        "-20 7 /",
-        {(m4int)m4slash, (m4int)m4bye},
-        {{2, {-20, 7}}, {0}},
-        {{1, {-2}}, /**/ {0}},
-    },
-    {
-        "20 7 /mod",
-        {(m4int)m4slash_mod, (m4int)m4bye},
-        {{2, {20, 7}}, {0}},
-        {{2, {6, 2}}, {0}},
-    },
-    {
-        "-20 7 /",
-        {(m4int)m4slash_mod, (m4int)m4bye},
-        {{2, {-20, 7}}, {0}},
-        {{2, {-6, -2}}, {0}},
-    },
-    {
-        "*",
-        {(m4int)m4star, (m4int)m4bye},
-        {{2, {20, 7}}, /**/ {0}},
-        {{1, {140}}, /*  */ {0}},
-    },
-    {
-        "swap",
-        {(m4int)m4swap, (m4int)m4bye},
-        {{2, {4, 5}}, {0}},
-        {{2, {5, 4}}, {0}},
-    },
-    {
-        ">r",
-        {(m4int)m4to_r, (m4int)m4bye},
-        {{1, {99}}, {0}},
-        {{0}, {1, {99}}},
-    },
-    {
         "2-",
-        {(m4int)m4two_minus, (m4int)m4bye},
+        {m4two_minus, m4bye},
         {{1, {-3}}, {0}},
         {{1, {-5}}, {0}},
     },
     {
         "2+",
-        {(m4int)m4two_plus, (m4int)m4bye},
+        {m4two_plus, m4bye},
         {{1, {-6}}, {0}},
         {{1, {-4}}, {0}},
     },
     {
         "2*",
-        {(m4int)m4two_star, (m4int)m4bye},
+        {m4two_star, m4bye},
         {{1, {-6}}, {0}},
         {{1, {-12}}, {0}},
     },
     {
         "2/",
-        {(m4int)m4two_slash, (m4int)m4bye},
+        {m4two_slash, m4bye},
         {{1, {-5}}, {0}},
         {{1, {-2}}, {0}},
     },
     {
+        "0 abs",
+        {m4abs, m4bye},
+        {{1, {0}}, {0}}, /* d, r before */
+        {{1, {0}}, {0}}, /* d, r after  */
+    },
+    {
+        "11 abs",
+        {m4abs, m4bye},
+        {{1, {11}}, {0}},
+        {{1, {11}}, {0}},
+    },
+    {
+        "-3 abs",
+        {m4abs, m4bye},
+        {{1, {-3}}, {0}},
+        {{1, {3}}, {0}},
+    },
+    {
+        "-7 14 and",
+        {m4and, m4bye},
+        {{2, {-7, 14}}, /* */ {0}},
+        {{1, {-7 & 14}}, /**/ {0}},
+    },
+    {
+        "bl",
+        {m4bl, m4bye},
+        {{0}, /*  */ {0}},
+        {{1, {' '}}, {0}},
+    },
+    {
+        "drop",
+        {m4drop, m4bye},
+        {{1, {1}}, {0}},
+        {{0}, /**/ {0}},
+    },
+    {
+        "dup",
+        {m4dup, m4bye},
+        {{1, {-5}}, /**/ {0}},
+        {{2, {-5, -5}}, {0}},
+    },
+    {
+        "1 2 =",
+        {m4equals, m4bye},
+        {{2, {1, 2}}, /*  */ {0}},
+        {{1, {tfalse}}, /**/ {0}},
+    },
+    {
+        "3 3 =",
+        {m4equals, m4bye},
+        {{2, {3, 3}}, /* */ {0}},
+        {{1, {ttrue}}, /**/ {0}},
+    },
+    {
+        "2 1 >",
+        {m4greater_than, m4bye},
+        {{2, {2, 1}}, /**/ {0}},
+        {{1, {ttrue}}, /*   */ {0}},
+    },
+    {
+        "3 3 >",
+        {m4greater_than, m4bye},
+        {{2, {3, 3}}, /*  */ {0}},
+        {{1, {tfalse}}, /**/ {0}},
+    },
+    {
+        "1 2 <",
+        {m4less_than, m4bye},
+        {{2, {1, 2}}, /**/ {0}},
+        {{1, {ttrue}}, /*   */ {0}},
+    },
+    {
+        "3 3 <",
+        {m4less_than, m4bye},
+        {{2, {3, 3}}, /*  */ {0}},
+        {{1, {tfalse}}, /**/ {0}},
+    },
+    {
+        "(lit))",
+        {m4_lit_, (m4test_code)7, m4bye},
+        {{0}, /**/ {0}},
+        {{1, {7}}, {0}},
+    },
+    {
+        "true",
+        {m4true, m4bye},
+        {{0}, /* */ {0}},
+        {{1, {ttrue}}, {0}},
+    },
+    {
+        "false",
+        {m4false, m4bye},
+        {{0}, /**/ {0}},
+        {{1, {tfalse}}, {0}},
+    },
+    {
+        "/c",
+        {m4slash_c, m4bye},
+        {{0}, /**/ {0}},
+        {{1, {sizeof(m4char)}}, {0}},
+    },
+    {
+        "/n",
+        {m4slash_n, m4bye},
+        {{0}, /**/ {0}},
+        {{1, {sizeof(m4int)}}, {0}},
+    },
+    {
+        "i",
+        {m4i, m4bye},
+        {{0}, /**/ {1, {9}}},
+        {{1, {9}}, {1, {9}}},
+    },
+    {
+        "i'",
+        {m4i_prime, m4bye},
+        {{0}, /* */ {2, {10, 11}}},
+        {{1, {10}}, {2, {10, 11}}},
+    },
+    {
+        "j",
+        {m4j, m4bye},
+        {{0}, /* */ {3, {12, 13, 14}}},
+        {{1, {12}}, {3, {12, 13, 14}}},
+    },
+    {
+        "max",
+        {m4max, m4bye},
+        {{2, {1, 2}}, /**/ {0}},
+        {{1, {2}}, /*   */ {0}},
+    },
+    {
+        "min",
+        {m4min, m4bye},
+        {{2, {3, 4}}, /**/ {0}},
+        {{1, {3}}, /*   */ {0}},
+    },
+    {
+        "3 4 -",
+        {m4minus, m4bye},
+        {{2, {3, 4}}, /**/ {0}},
+        {{1, {-1}}, /*  */ {0}},
+    },
+    {
+        "20 7 mod",
+        {m4mod, m4bye},
+        {{2, {20, 7}}, {0}},
+        {{1, {6}}, /**/ {0}},
+    },
+    {
+        "-20 7 mod", /* symmetric division rounds toward 0 => remainder is -6 */
+        {m4mod, m4bye},
+        {{2, {-20, 7}}, {0}},
+        {{1, {-6}}, /**/ {0}},
+    },
+    {
+        "negate",
+        {m4negate, m4bye},
+        {{1, {-12}}, {0}},
+        {{1, {12}}, {0}},
+    },
+    {
+        "noop",
+        {m4noop, m4bye},
+        {{0}, {0}},
+        {{0}, {0}},
+    },
+    {
+        "1 2 <>",
+        {m4not_equals, m4bye},
+        {{2, {1, 2}}, /* */ {0}},
+        {{1, {ttrue}}, /**/ {0}},
+    },
+    {
+        "3 3 <>",
+        {m4not_equals, m4bye},
+        {{2, {3, 3}}, /*  */ {0}},
+        {{1, {tfalse}}, /**/ {0}},
+    },
+    {
+        "1-",
+        {m4one_minus, m4bye},
+        {{1, {-3}}, {0}},
+        {{1, {-4}}, {0}},
+    },
+    {
+        "1+",
+        {m4one_plus, m4bye},
+        {{1, {-6}}, {0}},
+        {{1, {-5}}, {0}},
+    },
+    {
+        "-7 14 or",
+        {m4or, m4bye},
+        {{2, {-7, 14}}, /* */ {0}},
+        {{1, {-7 | 14}}, /**/ {0}},
+    },
+    {
+        "over",
+        {m4over, m4bye},
+        {{2, {1, 0}}, /*   */ {0}},
+        {{3, {1, 0, 1}}, /**/ {0}},
+    },
+    {
+        "plus",
+        {m4plus, m4bye},
+        {{2, {-3, 2}}, /**/ {0}},
+        {{1, {-1}}, /*   */ {0}},
+    },
+    {
+        "r>",
+        {m4r_from, m4bye},
+        {{0}, /* */ {1, {99}}},
+        {{1, {99}}, {0}},
+    },
+    {
+        "rot",
+        {m4rot, m4bye},
+        {{3, {1, 2, 3}}, {0}},
+        {{3, {2, 3, 1}}, {0}},
+    },
+    {
+        "20 7 /",
+        {m4slash, m4bye},
+        {{2, {20, 7}}, {0}},
+        {{1, {2}}, /**/ {0}},
+    },
+    {
+        "-20 7 /",
+        {m4slash, m4bye},
+        {{2, {-20, 7}}, {0}},
+        {{1, {-2}}, /**/ {0}},
+    },
+    {
+        "20 7 /mod",
+        {m4slash_mod, m4bye},
+        {{2, {20, 7}}, {0}},
+        {{2, {6, 2}}, {0}},
+    },
+    {
+        "-20 7 /",
+        {m4slash_mod, m4bye},
+        {{2, {-20, 7}}, {0}},
+        {{2, {-6, -2}}, {0}},
+    },
+    {
+        "*",
+        {m4star, m4bye},
+        {{2, {20, 7}}, /**/ {0}},
+        {{1, {140}}, /*  */ {0}},
+    },
+    {
+        "swap",
+        {m4swap, m4bye},
+        {{2, {4, 5}}, {0}},
+        {{2, {5, 4}}, {0}},
+    },
+    {
+        ">r",
+        {m4to_r, m4bye},
+        {{1, {99}}, {0}},
+        {{0}, {1, {99}}},
+    },
+    {
         "unloop",
-        {(m4int)m4unloop, (m4int)m4bye},
+        {m4unloop, m4bye},
         {{0}, /* */ {3, {1, 2, 3}}},
         {{0}, /* */ {1, {1}}},
     },
     {
         "-7 14 xor",
-        {(m4int)m4xor, (m4int)m4bye},
+        {m4xor, m4bye},
         {{2, {-7, 14}}, /* */ {0}},
         {{1, {-7 ^ 14}}, /**/ {0}},
     },
     {
         "0 0<",
-        {(m4int)m4zero_less_than, (m4int)m4bye},
+        {m4zero_less, m4bye},
         {{1, {0}}, /**/ {0}},
         {{1, {tfalse}}, {0}},
     },
     {
         "-1 0<",
-        {(m4int)m4zero_less_than, (m4int)m4bye},
+        {m4zero_less, m4bye},
         {{1, {-1}}, /*   */ {0}},
         {{1, {ttrue}}, /**/ {0}},
     },
     {
         "0 0>",
-        {(m4int)m4zero_greater_than, (m4int)m4bye},
+        {m4zero_greater_than, m4bye},
         {{1, {0}}, /**/ {0}},
         {{1, {tfalse}}, {0}},
     },
     {
         "1 0>",
-        {(m4int)m4zero_greater_than, (m4int)m4bye},
+        {m4zero_greater_than, m4bye},
         {{1, {1}}, /*    */ {0}},
         {{1, {ttrue}}, /**/ {0}},
     },
     {
         "-1 0=",
-        {(m4int)m4zero_equals, (m4int)m4bye},
+        {m4zero_equals, m4bye},
         {{1, {-1}}, /*    */ {0}},
         {{1, {tfalse}}, /**/ {0}},
     },
     {
         "0 0=",
-        {(m4int)m4zero_equals, (m4int)m4bye},
+        {m4zero_equals, m4bye},
         {{1, {0}}, /*    */ {0}},
         {{1, {ttrue}}, /**/ {0}},
     },
     {
         "1 0=",
-        {(m4int)m4zero_equals, (m4int)m4bye},
+        {m4zero_equals, m4bye},
         {{1, {1}}, /*     */ {0}},
         {{1, {tfalse}}, /**/ {0}},
     },
     {
         "-1 0=",
-        {(m4int)m4zero_not_equals, (m4int)m4bye},
+        {m4zero_not_equals, m4bye},
         {{1, {-1}}, /*   */ {0}},
         {{1, {ttrue}}, /**/ {0}},
     },
     {
         "0 0=",
-        {(m4int)m4zero_not_equals, (m4int)m4bye},
+        {m4zero_not_equals, m4bye},
         {{1, {0}}, /*     */ {0}},
         {{1, {tfalse}}, /**/ {0}},
     },
     {
         "1 0=",
-        {(m4int)m4zero_not_equals, (m4int)m4bye},
+        {m4zero_not_equals, m4bye},
         {{1, {1}}, /*    */ {0}},
         {{1, {ttrue}}, /**/ {0}},
     },
@@ -429,7 +439,7 @@ static void m4test_stack_copy(const m4test_stack *src, m4ispan *dst) {
     }
 }
 
-static void m4test_code_copy(const m4int src[m4test_code_n], m4ispan *dst) {
+static void m4test_code_copy(const m4test_code src[m4test_code_n], m4code *dst) {
     dst->end = dst->start + m4test_code_n;
     memcpy(dst->start, src, m4test_code_n * sizeof(m4int));
 }

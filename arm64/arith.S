@@ -136,6 +136,6 @@ FUNC_START(m4zero_greater_than)   /* 0> */
 FUNC_END(m4zero_greater_than)
 
 
-FUNC_START(m4zero_less_than)   /* 0< */
+FUNC_START(m4zero_less)   /* 0< */
         asr   DTOP, DTOP, IMM(63)
-FUNC_END(m4zero_less_than)
+FUNC_END(m4zero_less)
