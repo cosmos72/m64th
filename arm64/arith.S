@@ -19,27 +19,27 @@
 
 
 FUNC_START(m4abs)
-        cmp   DTOP, IMM(0);
-        cneg  DTOP, DTOP, lt;
+        cmp    DTOP, IMM(0);
+        cneg   DTOP, DTOP, lt;
 FUNC_END(m4abs)
 
 
 FUNC_START(m4c_fetch) /* c@ */
-        ldrb  DTOPw, [DTOP];
+        ldrb   DTOPw, [DTOP];
 FUNC_END(m4c_fetch)
 
 
 FUNC_START(m4c_store) /* c! */
-        DPOP(REG1)
-        strb  REG1w, [DTOP];
-        DPOP(DTOP)
+        DPOP(  REG1)
+        strb   REG1w, [DTOP];
+        DPOP(  DTOP)
 FUNC_END(m4c_store)
 
 
 FUNC_START(m4equals)   /* = */
-        DPOP(REG2)
-        cmp   REG2, DTOP
-        csetm DTOP, eq
+        DPOP(  REG2)
+        cmp    REG2, DTOP
+        csetm  DTOP, eq
 FUNC_END(m4equals)
 
 
@@ -51,30 +51,30 @@ FUNC_END(m4greater_than)
 
 
 FUNC_START(m4less_than)   /* < */
-        DPOP(REG2)
-        cmp   REG2, DTOP
-        csetm DTOP, lt
+        DPOP(  REG2)
+        cmp    REG2, DTOP
+        csetm  DTOP, lt
 FUNC_END(m4less_than)
 
 
 FUNC_START(m4max)
-        DPOP(REG2)
-        cmp   REG2, DTOP;
-        csel  DTOP, REG2, DTOP, gt
+        DPOP(  REG2)
+        cmp    REG2, DTOP;
+        csel   DTOP, REG2, DTOP, gt
 FUNC_END(m4max)
 
 
 FUNC_START(m4min)
-        DPOP(REG2)
-        cmp   REG2, DTOP;
-        csel  DTOP, REG2, DTOP, lt
+        DPOP(  REG2)
+        cmp    REG2, DTOP;
+        csel   DTOP, REG2, DTOP, lt
 FUNC_END(m4min)
         
 /* mod is signed remainder */
 FUNC_START(m4mod)
-        DPOP(REG1)
-        DIV3(REG1, DTOP, REG2)
-        msub  DTOP, REG2, DTOP, REG1;
+        DPOP(  REG1)
+        DIV3(  REG1, DTOP, REG2)
+        msub   DTOP, REG2, DTOP, REG1;
 FUNC_END(m4mod)
 
 
@@ -93,11 +93,11 @@ FUNC_END(m4slash)
 
 /* /mod is signed divide & remainder */
 FUNC_START(m4slash_mod)
-        LOAD(REG1, AT(DSTK))
-        DIV3(REG1, DTOP, REG2)
-        msub  REG1, REG2, DTOP, REG1;
-        MOVE(REG2, DTOP)
-        STOR(REG1, AT(DSTK))
+        LOAD(  REG1, AT(DSTK))
+        DIV3(  REG1, DTOP, REG2)
+        msub   REG1, REG2, DTOP, REG1;
+        MOVE(  REG2, DTOP)
+        STOR(  REG1, AT(DSTK))
 FUNC_END(m4slash_mod)
 
 

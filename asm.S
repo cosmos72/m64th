@@ -81,14 +81,14 @@ FUNC_END(m4i_prime)
  */
 FUNC_START(m4j)
         DPUSH(DTOP)
-        IGET(RSTK, SZ2, DTOP)
+        LOAD(DTOP, AT(RSTK, SZ2))
 FUNC_END(m4j)
 
 
 #ifndef M4LITERAL
 FUNC_START(m4literal)
         DPUSH(DTOP)
-        IGET(IP, SZ, DTOP)
+        LOAD(DTOP, AT(IP, SZ))
         NEXT2()
 FUNC_RAWEND(m4literal)
 #endif
@@ -155,8 +155,8 @@ FUNC_END(m4or)
 
 
 FUNC_START(m4over)
-        DPUSH(DTOP)
-        IGET(DSTK, SZ, DTOP)
+        DPUSH( DTOP)
+        LOAD(  DTOP, AT(DSTK, SZ))
 FUNC_END(m4over)
 
 
@@ -187,8 +187,8 @@ FUNC_END(m4r_from)
 FUNC_START(m4rot)
         LOAD(REG1, AT(DSTK))
         STOR(DTOP, AT(DSTK))
-        IGET(DSTK, SZ, DTOP)
-        ISET(REG1, DSTK, SZ)
+        LOAD(DTOP, AT(DSTK, SZ))
+        STOR(REG1, AT(DSTK, SZ))
 FUNC_END(m4rot)
 
 
@@ -232,8 +232,8 @@ FUNC_END(m4swap)
 
 
 FUNC_START(m4unloop)
-        IGET(RSTK, SZ, RTOP)     /* load new top of rstack */
-        ADD2(IMM(SZ2), RSTK)     /* pop return stack twice */
+        LOAD(  RTOP, AT(RSTK, SZ)) /* load new top of rstack */
+        ADD2(IMM(SZ2), RSTK)       /* pop return stack twice */
 FUNC_END(m4unloop)
 
 

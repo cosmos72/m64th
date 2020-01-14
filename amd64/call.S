@@ -25,23 +25,23 @@
  * execute m4th->rstack[0] and subsequent code until m4th_bye is found.
  */
 FUNC_START(m4th_enter)
-        push    %rbx;            /* save C registers */
+        push   %rbx;            /* save C registers */
 #if 0 /* not clobbered by m4th */
-        push    %rbp;
-        push    %r12;
-        push    %r13;
-        push    %r14;
-        push    %r15;
+        push   %rbp;
+        push   %r12;
+        push   %r13;
+        push   %r14;
+        push   %r15;
 #endif /* 0 */
-        MOVE(   %rdi, M4TH)            /* m                         */
-        ISET(   %rsp, M4TH, OFF_C_STK) /* save C stack pointer      */
-        IGET(   M4TH, OFF_DSTK, DSTK)  /* load data   stack pointer */
-        IGET(   M4TH, OFF_RSTK, RSTK)  /* load return stack pointer */
-        IGET(   M4TH, OFF_IP,   IP)    /* load instruction  pointer */
-        DPOP(   DTOP)                  /* load first data   stack element */
-        RPOP(   RTOP)                  /* load first return stack element */
-        MOVE(   IMM(-1), RFFF)         /* set RFFF to -1            */
-        jmp     *(IP);                 /* begin execution           */
+        MOVE(  %rdi, M4TH)                /* m                               */
+        STOR(  %rsp, AT(M4TH, OFF_C_STK)) /* save C stack pointer            */
+        LOAD(  DSTK, AT(M4TH, OFF_DSTK))  /* load data   stack pointer       */
+        LOAD(  RSTK, AT(M4TH, OFF_RSTK))  /* load return stack pointer       */
+        LOAD(  IP,   AT(M4TH, OFF_IP))    /* load instruction  pointer       */
+        DPOP(  DTOP)                      /* load first data   stack element */
+        RPOP(  RTOP)                      /* load first return stack element */
+        MOVE(  IMM(-1), RFFF)             /* set RFFF to -1                  */
+        jmp    *(IP);                     /* begin execution                 */
 FUNC_RAWEND(m4th_enter)
 
 /**
@@ -51,27 +51,27 @@ FUNC_RAWEND(m4th_enter)
  * return to C
  */
 FUNC_START(m4bye)
-        RPUSH(  RTOP)                  /* save first return stack element */
-        DPUSH(  DTOP)                  /* save first data   stack element */
-        ISET(   IP,   M4TH, OFF_IP)    /* save instruction  pointer */
-        ISET(   RSTK, M4TH, OFF_RSTK)  /* save return stack pointer */
-        ISET(   DSTK, M4TH, OFF_DSTK)  /* save data   stack pointer */
-        IGET(   M4TH, OFF_C_STK, %rsp) /* load C stack pointer      */
+        RPUSH( RTOP)                      /* save first return stack element */
+        DPUSH( DTOP)                      /* save first data   stack element */
+        STOR(  IP,   AT(M4TH, OFF_IP))    /* save instruction  pointer       */
+        STOR(  RSTK, AT(M4TH, OFF_RSTK))  /* save return stack pointer       */
+        STOR(  DSTK, AT(M4TH, OFF_DSTK))  /* save data   stack pointer       */
+        LOAD(  %rsp, AT(M4TH, OFF_C_STK)) /* load C stack pointer            */
 #if 0 /* not clobbered by m4th */
-        pop     %r15;                  /* load C registers          */
-        pop     %r14;
-        pop     %r13;
-        pop     %r12;
-        pop     %rbp;
+        pop    %r15;                      /* load C registers                */
+        pop    %r14;
+        pop    %r13;
+        pop    %r12;
+        pop    %rbp;
 #endif /* 0 */
-        pop     %rbx;
-        ret;                           /* return to C               */
+        pop    %rbx;
+        ret;                           /* return to C                     */
 FUNC_RAWEND(m4bye)
 
 
 /** return from word being executed (i.e. current function) */
 FUNC_START(m4exit)
-        MOVE(RTOP, IP)
-        RPOP(RTOP)
-        jmp   *(IP);
+        MOVE(  RTOP, IP)
+        RPOP(  RTOP)
+        jmp    *(IP);
 FUNC_RAWEND(m4exit)

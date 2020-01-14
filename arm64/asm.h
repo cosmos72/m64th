@@ -73,8 +73,6 @@
 #define ATx(addr, i)          [addr, i]         /* addr[i]        */
 #define DIV3(a,b,dst)    sdiv dst, a, b;        /* dst  = a / b   */
 #define LOAD(reg,mem)    ldr  reg, mem;         /* reg  = *mem    */
-#define IGET(addr,i,dst) ldr  dst, [addr, i];   /* dst  = addr[i] */
-#define ISET(src,addr,i) str  src, [addr, i];   /* addr[i] = src  */
 #define MOVE(src,dst)    mov  dst, src;         /* dst  = src     */
 #define MUL2(src,dst)    mul  dst, dst, src;    /* dst *= src     */
 #define NEG1(dst)        neg  dst, dst;         /* dst  = -dst    */

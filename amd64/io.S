@@ -18,26 +18,26 @@
 #include "asm.h"
 
 FUNC_START(m4cr)
-        IGET( M4TH, OFF_OUT, REG1)
+        LOAD(  REG1, AT(M4TH, OFF_OUT))
         /* TODO check buffer full */
-        movb  IMM(10), (REG1);
-        inc   REG1;
-        ISET( REG1, M4TH, OFF_OUT)
+        movb   IMM(10), (REG1);
+        inc    REG1;
+        STOR(  REG1, AT(M4TH, OFF_OUT))
 FUNC_END(m4cr)
 
 
 FUNC_START(m4emit)
-        IGET( M4TH, OFF_OUT, REG1)
+        LOAD( REG1, AT(M4TH, OFF_OUT))
         /* TODO check buffer full */
-        movb  DTOPb, (REG1);
-        inc   REG1;
-        DPOP( DTOP)
-        ISET( REG1, M4TH, OFF_OUT)
+        movb   DTOPb, (REG1);
+        inc    REG1;
+        DPOP(  DTOP)
+        STOR(  REG1, AT(M4TH, OFF_OUT))
 FUNC_END(m4emit)
 
 
 FUNC_START(m4key)
-        IGET(  M4TH, OFF_IN, REG1)
+        LOAD(  REG1, AT(M4TH, OFF_IN))
 	cmp    OFF_IN_END(M4TH), REG1;
 	jge    m4bye; /* TODO read from stdin instead */
         DPUSH( DTOP)
