@@ -32,6 +32,16 @@ FUNC_END(m4_do_)
  * IP offset = 0 means (loop) itself
  */
 FUNC_START(m4_loop_)
-        /* TODO */
-        NEXT2()
+        ADD2(  IMM(1), RTOP)        /* increment i                 */
+        LOAD(  REG1, AT(RSTK))      /* REG1 = i'                   */
+        cmp    REG1, RTOP;
+        b.eq   .Lm4_loop_.leave;    /* leave if i == i'            */
+        LOAD(  REG2, AT(IP, SZ))
+        add    IP, IP, REG2, lsl 3; /* IP = TARGET_IP              */
+        LOAD(  REG3, AT(IP))
+        br     REG3;                /* jump to instruction after (do) */
+.Lm4_loop_.leave:
+        LOAD(  RTOP, AT(RSTK, SZ)) /* load new top of rstack      */
+        ADD2(  IMM(SZ2), RSTK)     /* drop i' i from return stack */
+        NEXT2();                   /* skip IP offset, execute next instruction */
 FUNC_RAWEND(m4_loop_)
