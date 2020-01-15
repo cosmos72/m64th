@@ -1,5 +1,7 @@
-CC=gcc
-CFLAGS=-g -Wall -Wextra
+FLAGS=-g
+
+CC=cc
+CFLAGS=-Wall -Wextra -W $(FLAGS)
 
 AS=$(CC)
 ASFLAGS=$(CFLAGS)
