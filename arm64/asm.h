@@ -26,6 +26,7 @@
 #define SZ4 32   /* SZ * 4 */
 #define SZ5 40   /* SZ * 5 */
 #define SZ6 48   /* SZ * 6 */
+#define SZ7 48   /* SZ * 7 */
 #define SZ9 72   /* SZ * 9 */
 #define SZ10 80  /* SZ * 10 */
 #define SZ12 96  /* SZ * 12 */
@@ -40,30 +41,44 @@
 #define REG1  x0 /* scratch register 1 */
 #define REG2  x1 /* scratch register 2 */
 #define REG3  x2 /* scratch register 3 */
-#define REG4  x3 /* scratch register 4 */
-/* additional scratch registers: x4 .. x9 */
+/* additional scratch registers: x3 .. x9 */
 
 #define REG1w w0 /* low 32 bits of REG1 */
 
-#define DTOP  x10 /* value of first data stack element */
-#define DTOPw w10 /* low 32 bits of DTOP */
+#define DTOP  x9 /* value of first data stack element */
+#define DTOPw w9 /* low 32 bits of DTOP */
 
-#define DSTK  x11 /* pointer to second data stack element */
-#define IP    x12 /* instruction pointer */
-#define RTOP  x13 /* value of first return stack element */
-#define RSTK  x14 /* pointer to second return stack element */
+#define DSTK  x10 /* pointer to second data stack element */
+#define IP    x11 /* instruction pointer */
+#define RTOP  x12 /* value of first return stack element */
+#define RSTK  x13 /* pointer to second return stack element */
+#define CSTK  x14 /* pointer to code being compiled */
 #define M4TH  x15 /* pointer to C struct m4th */
+
+
+#define CPUSH1(val)   /* push val to code array */  \
+    str   val, [CSTK], SZ;
+
+#define CPUSH2(a, b)  /* push a, b to code array */ \
+    str   b,   [CSTK,  SZ];                         \
+    str   a,   [CSTK], SZ2;                         \
+
+#define FADDR(fun, dst) /* load function address */ \
+    adrp  dst,  fun;             /* high 21 bits */ \
+    add   dst,  dst,  :lo12:fun; /* low  12 bits */
 
 #define DPUSH(val)    str       val, [DSTK, -SZ]!; /* push val to second data stack element */
 #define DPOP(val)     ldr       val, [DSTK], SZ;   /* pop second data stack element into val */
-
-#define RPUSH(val)    str       val, [RSTK, -SZ]!; /* push val to second return stack element */
-#define RPOP(val)     ldr       val, [RSTK], SZ;   /* pop second return stack element into val */
 
 #define NEXT()        ldr       REG1, [IP, SZ]!;   /* jump to next instruction */ \
                       br        REG1;
 #define NEXT2()       ldr       REG1, [IP, SZ2]!;  /* skip next instruction, jump to following one */ \
                       br        REG1;
+
+#define RPUSH(val)    str       val, [RSTK, -SZ]!; /* push val to second return stack element */
+#define RPOP(val)     ldr       val, [RSTK], SZ;   /* pop second return stack element into val */
+
+
 
 
 #define ADD2(src,dst)    add  dst, dst, src;    /* dst += src     */

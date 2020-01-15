@@ -49,7 +49,7 @@ struct m4th_s {
     m4stack rstack; /* return stack        */
     m4code code;    /* executable code     */
     m4int *ip;      /* instruction pointer */
-    m4int *c_stack; /* C stack pointer. saved here by m4th_enter() */
+    m4int *c_sp;    /* C stack pointer. saved here by m4th_enter() */
     m4cspan in;     /* input  buffer       */
     m4cspan out;    /* output buffer       */
 };

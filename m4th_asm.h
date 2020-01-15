@@ -41,17 +41,24 @@
     NEXT()                                                                                         \
     FUNC_RAWEND(name)
 
-/* expand AT(addr) -> AT0(addr) and expand AT(addr, i) -> ATx(addr, i) */
+/* expand AT(addr) -> AT0(addr) and AT(addr, i) -> ATx(addr, i) */
 #define AT_0(addr, i)           AT0(addr)
 #define AT_x(addr, i)           ATx(addr, i)
 #define AT_(addr, i, kind, ...) AT_##kind(addr, i)
 #define AT(...)                 AT_(__VA_ARGS__, x, 0)
 
+/* expand CPUSH(a) -> CPUSH1(a) and CPUSH(a, b) -> CPUSH2(a, b) */
+#define CPUSH_1(a, b)           CPUSH1(a)
+#define CPUSH_2(a, b)           CPUSH2(a, b)
+#define CPUSH_(a, b, kind, ...) CPUSH_##kind(a, b)
+#define CPUSH(...)              CPUSH_(__VA_ARGS__, 2, 1)
+
 #define OFF_DSTK    SZ   /* offset of m4th->dstack.curr */
 #define OFF_RSTK    SZ4  /* offset of m4th->rstack.curr */
 #define OFF_CODE    SZ6  /* offset of m4th->code.start  */
+#define OFF_CSTK    SZ7  /* offset of m4th->code.curr  */
 #define OFF_IP      SZ9  /* offset of m4th->ip          */
-#define OFF_C_STK   SZ10 /* offset of m4th->c_stack     */
+#define OFF_C_SP    SZ10 /* offset of m4th->c_sp     */
 #define OFF_IN      SZ12 /* offset of m4th->in.curr     */
 #define OFF_IN_END  SZ13 /* offset of m4th->in.end      */
 #define OFF_OUT     SZ15 /* offset of m4th->out.curr    */

@@ -30,10 +30,13 @@ void m4store(void);   /* !    */
 #define m4__1_ m4true /* -1   */
 void m4_1_(void);     /* (1)    m4th: 1  */
 void m4_do_(void);    /* (do)   m4th     */
-void m4_lit_(void);   /* (lit)  m4th: must be followed by number              */
-void m4_loop_(void); /* (loop) m4th: must be followed by IP offset of next instruction after (do) */
-void m4star(void);   /* *    */
-void m4plus(void);   /* +    */
+void m4_lit_(void);   /* (lit)  m4th: must be followed by number */
+/* (leave) m4th: must be followed by IP offset of 1st instruction after (loop) */
+void m4_leave_(void);
+/* (loop) m4th: must be followed by IP offset of 1st instruction after (do) */
+void m4_loop_(void);
+void m4star(void);              /* *    */
+void m4plus(void);              /* +    */
 void m4plus_store(void);        /* +!   */
 void m4minus(void);             /* -    */
 void m4slash(void);             /* /    */
@@ -72,6 +75,7 @@ void m4i_plus(void);            /* i +  m4th */
 void m4i_minus(void);           /* i -  m4th */
 void m4i_prime(void);           /* i'   */
 void m4j(void);                 /* j    */
+void m4literal(void);           /* literal */
 void m4max(void);               /* max  */
 void m4min(void);               /* min  */
 void m4mod(void);               /* mod  */

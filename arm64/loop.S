@@ -27,6 +27,19 @@ FUNC_END(m4_do_)
 
 
 /*
+ * must be followed by IP offset of first instruction after (loop)
+ * IP offset = 0 means (leave) itself
+ */
+FUNC_START(m4_leave_)
+        LOAD(  REG2, AT(IP, SZ))
+        LOAD(  RTOP, AT(RSTK, SZ)) /* load new top of rstack      */
+        add    IP, IP, REG2, lsl 3;/* IP = TARGET_IP              */
+        ADD2(  IMM(SZ2), RSTK)     /* drop i' i from return stack */
+        LOAD(  REG3, AT(IP))
+        br     REG3;               /* jump to instruction after (loop) */
+FUNC_RAWEND(m4_leave_)
+
+/*
  * must be followed by IP offset of first instruction after (do) - usually < 0
  * IP offset = 0 means (loop) itself
  */
@@ -34,12 +47,12 @@ FUNC_START(m4_loop_)
         ADD2(  IMM(1), RTOP)        /* increment i                 */
         LOAD(  REG1, AT(RSTK))      /* REG1 = i'                   */
         cmp    REG1, RTOP;
-        b.eq   .Lm4_loop_.leave;    /* leave if i == i'            */
+        b.eq   .Lm4_loop_.break;    /* break if i == i'            */
         LOAD(  REG2, AT(IP, SZ))
         add    IP, IP, REG2, lsl 3; /* IP = TARGET_IP              */
         LOAD(  REG3, AT(IP))
         br     REG3;                /* jump to instruction after (do) */
-.Lm4_loop_.leave:
+.Lm4_loop_.break:
         LOAD(  RTOP, AT(RSTK, SZ)) /* load new top of rstack      */
         ADD2(  IMM(SZ2), RSTK)     /* drop i' i from return stack */
         NEXT2();                   /* skip IP offset, execute next instruction */

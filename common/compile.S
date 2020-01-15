@@ -15,26 +15,13 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-void _lit_(void) {
-}
+#ifndef M4TH_M4TH_ASM_H
+#error "common/compile.h can only be included from asm.S - do not attempt to use it directly"
+#endif
 
-void literal(long dtop, long *cstk) {
-    *cstk++ = (long)_lit_;
-    *cstk++ = dtop;
-}
-
-long equals(long a, long b, long ttrue) {
-    return a == b ? ttrue : 0;
-}
-
-long zero_equals(long a, long ttrue) {
-    return a == 0 ? ttrue : 0;
-}
-
-long zero_less_than(long a) {
-    return a < 0 ? -1 : 0;
-}
-
-long zero_greater_than(long a, long ttrue) {
-    return a > 0 ? ttrue : 0;
-}
+/* literal: compile the literal number found on the stack */
+FUNC_START(m4literal)
+        FADDR( m4_lit_, REG1)
+        CPUSH(REG1, DTOP)
+        DPOP(  DTOP)
+FUNC_END(m4literal)

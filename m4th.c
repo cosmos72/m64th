@@ -155,7 +155,7 @@ m4th *m4th_new() {
     m->rstack = m4stack_alloc(rstack_n);
     m->code = m4code_alloc(code_n);
     m->ip = m->code.start;
-    m->c_stack = NULL;
+    m->c_sp = NULL;
     m->in = m4cspan_alloc(inbuf_n);
     m->out = m4cspan_alloc(outbuf_n);
     return m;
@@ -177,7 +177,7 @@ void m4th_clear(m4th *m) {
     m->rstack.curr = m->rstack.end;
     m->code.curr = m->code.start;
     m->ip = m->code.start;
-    m->c_stack = NULL;
+    m->c_sp = NULL;
     m->in.curr = m->in.start;
     m->out.curr = m->out.start;
 }

@@ -34,9 +34,10 @@ FUNC_START(m4th_enter)
         push   %r15;
 #endif /* 0 */
         MOVE(  %rdi, M4TH)                /* m                               */
-        STOR(  %rsp, AT(M4TH, OFF_C_STK)) /* save C stack pointer            */
+        STOR(  %rsp, AT(M4TH, OFF_C_SP))  /* save C stack pointer            */
         LOAD(  DSTK, AT(M4TH, OFF_DSTK))  /* load data   stack pointer       */
         LOAD(  RSTK, AT(M4TH, OFF_RSTK))  /* load return stack pointer       */
+        LOAD(  CSTK, AT(M4TH, OFF_CSTK))  /* load code   array pointer       */
         LOAD(  IP,   AT(M4TH, OFF_IP))    /* load instruction  pointer       */
         DPOP(  DTOP)                      /* load first data   stack element */
         RPOP(  RTOP)                      /* load first return stack element */
@@ -54,9 +55,10 @@ FUNC_START(m4bye)
         RPUSH( RTOP)                      /* save first return stack element */
         DPUSH( DTOP)                      /* save first data   stack element */
         STOR(  IP,   AT(M4TH, OFF_IP))    /* save instruction  pointer       */
+        STOR(  CSTK, AT(M4TH, OFF_CSTK))  /* save code   array pointer       */
         STOR(  RSTK, AT(M4TH, OFF_RSTK))  /* save return stack pointer       */
         STOR(  DSTK, AT(M4TH, OFF_DSTK))  /* save data   stack pointer       */
-        LOAD(  %rsp, AT(M4TH, OFF_C_STK)) /* load C stack pointer            */
+        LOAD(  %rsp, AT(M4TH, OFF_C_SP))  /* load C stack pointer            */
 #if 0 /* not clobbered by m4th */
         pop    %r15;                      /* load C registers                */
         pop    %r14;

@@ -26,6 +26,7 @@
 #define SZ4 32   /* SZ * 4 */
 #define SZ5 40   /* SZ * 5 */
 #define SZ6 48   /* SZ * 6 */
+#define SZ7 48   /* SZ * 7 */
 #define SZ9 72   /* SZ * 9 */
 #define SZ10 80  /* SZ * 10 */
 #define SZ12 96  /* SZ * 12 */
@@ -40,7 +41,6 @@
 #define REG1  %rax  /* scratch register 1 */
 #define REG2  %rcx  /* scratch register 2 */
 #define REG3  %rdx  /* scratch register 3 */
-#define REG4  %rdi  /* scratch register 4 */
 /* additional callee-saved registers: %rbp %r12 %r13 %r14 %r15 */
 
 #define REG1b %al   /* low 8 bits of REG1 */
@@ -51,11 +51,13 @@
 #define DTOPw %ebx  /* low 32 bits of DTOP */
 
 #define DSTK  %rsp  /* pointer to second data stack element */
-#define IP    %rsi  /* instruction pointer */
-#define RTOP  %r8   /* value of first return stack element */
-#define RSTK  %r9   /* pointer to secont return stack element */
+#define IP    %rdi  /* forth instruction pointer */
+#define RTOP  %rsi  /* value of first return stack element */
+#define RSTK  %r8   /* pointer to second return stack element */
+#define CSTK  %r9   /* pointer to code being compiled */
 #define M4TH  %r10  /* pointer to C struct m4th */
 #define RFFF  %r11  /* always contains -1 */
+#define RIP   %rip  /* x86-64 instruction pointer */
 
 #define AND2(src, dst)       and  src,     dst; /* dst &= src     */
 #define ADD2(src, dst)       add  src,     dst; /* dst += src     */
@@ -72,8 +74,26 @@
 
 /* clang-format on */
 
+#define CPUSH1(val) /* push val to code array */                                                   \
+    mov val, (CSTK);                                                                               \
+    add $SZ, (CSTK);
+
+#define CPUSH2(a, b) /* push a, b to code array */                                                 \
+    mov b, SZ(CSTK);                                                                               \
+    mov a, (CSTK);                                                                                 \
+    add $SZ2, (CSTK);
+
+#define FADDR(fun, dst) lea fun(RIP), dst; /* load function address */
+
 #define DPUSH(val) pushq val; /* push val to second data stack element */
 #define DPOP(val) popq val;   /* pop second data stack element into val */
+
+#define NEXT() /* jump to next instruction */                                                      \
+    add $SZ, IP;                                                                                   \
+    jmp *(IP);
+#define NEXT2() /* skip next instruction, jump to following one */                                 \
+    add $SZ2, IP;                                                                                  \
+    jmp *(IP);
 
 #define RPUSH(val) /* push val to second return stack element */                                   \
     sub $SZ, RSTK;                                                                                 \
@@ -82,12 +102,5 @@
 #define RPOP(val) /* pop second return stack element into val */                                   \
     mov 0(RSTK), val;                                                                              \
     add $SZ, RSTK;
-
-#define NEXT() /* jump to next instruction */                                                      \
-    add $SZ, IP;                                                                                   \
-    jmp *(IP);
-#define NEXT2() /* skip next instruction, jump to following one */                                 \
-    add $SZ2, IP;                                                                                  \
-    jmp *(IP);
 
 #endif /* M4TH_AMD64_ASM_H */
