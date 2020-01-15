@@ -41,8 +41,6 @@ void m4plus_store(void);        /* +!   */
 void m4minus(void);             /* -    */
 void m4slash(void);             /* /    */
 void m4slash_mod(void);         /* /mod */
-void m4slash_c(void);           /* /c   m4th: sizeof(m4char) i.e. 1  */
-void m4slash_n(void);           /* /n   m4th: sizeof(m4int)  i.e. SZ */
 void m4zero_less(void);         /* 0<   */
 void m4zero_not_equals(void);   /* 0<>  core ext */
 void m4zero_equals(void);       /* 0=   */

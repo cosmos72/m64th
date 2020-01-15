@@ -76,22 +76,6 @@ FUNC_START(m4minus) /* - */
 FUNC_END(m4minus)
 
 
-#ifndef M4SLASH_C
-FUNC_START(m4slash_c) /* /c   m4th: sizeof(m4char) i.e. 1  */
-        DPUSH( DTOP)
-        MOVE(  IMM(1), DTOP)
-FUNC_END(m4slash_c)
-#endif
-
-
-#ifndef M4SLASH_N
-FUNC_START(m4slash_n) /* /n   m4th: sizeof(m4int)  i.e. SZ */
-        DPUSH( DTOP)
-        MOVE(  IMM(SZ), DTOP)
-FUNC_END(m4slash_n)
-#endif
-
-
 #ifndef M4ONE_MINUS
 FUNC_START(m4one_minus) /* 1-   */
         SUB2(  IMM(1), DTOP);
