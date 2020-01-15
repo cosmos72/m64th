@@ -203,6 +203,11 @@ FUNC_START(m4negate)
 FUNC_END(m4negate)
 
 
+FUNC_START(m4nip)
+        DPOP(  DTOP)
+FUNC_END(m4nip)
+
+
 FUNC_START(m4noop)
 FUNC_END(m4noop)
 

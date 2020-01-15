@@ -80,7 +80,8 @@ void m4max(void);               /* max  */
 void m4min(void);               /* min  */
 void m4mod(void);               /* mod  */
 void m4negate(void);            /* negate */
-void m4noop(void);              /* noop */
+void m4nip(void);               /* nip  core ext */
+void m4noop(void);              /* noop m4th */
 void m4or(void);                /* or   */
 void m4over(void);              /* over */
 void m4r_from(void);            /* r>   */
