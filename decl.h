@@ -64,6 +64,7 @@ void m4bl(void);                /* bl   */
 void m4bye(void);               /* bye  tools ext */
 void m4c_store(void);           /* c!   */
 void m4c_fetch(void);           /* c@   */
+void m4depth(void);             /* depth */
 void m4drop(void);              /* drop */
 void m4dup(void);               /* dup  */
 void m4false(void);             /* false i.e. 0 */

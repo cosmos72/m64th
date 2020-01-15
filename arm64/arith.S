@@ -35,11 +35,6 @@ FUNC_START(m4slash_mod)  /* /mod */
 FUNC_END(m4slash_mod)
 
 
-FUNC_START(m4zero_less)   /* 0<   */
-        asr    DTOP, DTOP, IMM(63)
-FUNC_END(m4zero_less)
-
-
 FUNC_START(m4zero_not_equals)   /* 0<>  core ext */
         cmp    DTOP, IMM(0)
         csetm  DTOP, ne

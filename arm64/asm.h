@@ -33,6 +33,7 @@
 #define SZ13 104 /* SZ * 13 */
 #define SZ15 120 /* SZ * 15 */
 #define SZ16 128 /* SZ * 16 */
+#define PSZ 3    /* (1 << PSZ) == SZ */
 
 #define IMM(constant) constant /* immediate constant */
 
@@ -56,6 +57,24 @@
 #define M4TH  x15 /* pointer to C struct m4th */
 
 
+#define ADD2(src,dst)    add  dst, dst, src;    /* dst += src     */
+#define ADD3(a,b,dst)    add  dst, a, b;        /* dst  = a + b   */
+#define AND2(src,dst)    and  dst, dst, src;    /* dst &= src     */
+#define AT0(addr)             [addr]            /* addr[0]        */
+#define ATx(addr, i)          [addr, i]         /* addr[i]        */
+#define DIV3(a,b,dst)    sdiv dst, a, b;        /* dst  = a / b   */
+#define LOAD(reg,mem)    ldr  reg, mem;         /* reg  = *mem    */
+#define MOVE(src,dst)    mov  dst, src;         /* dst  = src     */
+#define MUL2(src,dst)    mul  dst, dst, src;    /* dst *= src     */
+#define NEG1(dst)        neg  dst, dst;         /* dst  = -dst    */
+#define ORR2(src,dst)    orr  dst, dst, src;    /* dst |= src     */
+#define SAR2(src,dst)    asr  dst, dst, src;    /* dst >>= src    signed */
+#define SUB2(src,dst)    sub  dst, dst, src;    /* dst -= src     */
+#define SUB3(a,b,dst)    sub  dst, a, b;        /* dst  = a - b   */
+#define STOR(reg,mem)    str  reg, mem;         /* *mem = reg     */
+#define ZERO(dst)        mov  dst, 0;           /* dst  = 0       */
+
+
 #define CPUSH1(val)   /* push val to code array */  \
     str   val, [CSTK], SZ;
 
@@ -77,25 +96,6 @@
 
 #define RPUSH(val)    str       val, [RSTK, -SZ]!; /* push val to second return stack element */
 #define RPOP(val)     ldr       val, [RSTK], SZ;   /* pop second return stack element into val */
-
-
-
-
-#define ADD2(src,dst)    add  dst, dst, src;    /* dst += src     */
-#define ADD3(a,b,dst)    add  dst, a, b;        /* dst  = a + b   */
-#define AND2(src,dst)    and  dst, dst, src;    /* dst &= src     */
-#define AT0(addr)             [addr]            /* addr[0]        */
-#define ATx(addr, i)          [addr, i]         /* addr[i]        */
-#define DIV3(a,b,dst)    sdiv dst, a, b;        /* dst  = a / b   */
-#define LOAD(reg,mem)    ldr  reg, mem;         /* reg  = *mem    */
-#define MOVE(src,dst)    mov  dst, src;         /* dst  = src     */
-#define MUL2(src,dst)    mul  dst, dst, src;    /* dst *= src     */
-#define NEG1(dst)        neg  dst, dst;         /* dst  = -dst    */
-#define ORR2(src,dst)    orr  dst, dst, src;    /* dst |= src     */
-#define SUB2(src,dst)    sub  dst, dst, src;    /* dst -= src     */
-#define SUB3(a,b,dst)    sub  dst, a, b;        /* dst  = a - b   */
-#define STOR(reg,mem)    str  reg, mem;         /* *mem = reg     */
-#define ZERO(dst)        mov  dst, 0;           /* dst  = 0       */
 
 /* clang-format on */
 

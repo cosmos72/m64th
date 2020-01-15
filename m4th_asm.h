@@ -54,11 +54,12 @@
 #define CPUSH(...)              CPUSH_(__VA_ARGS__, 2, 1)
 
 #define OFF_DSTK    SZ   /* offset of m4th->dstack.curr */
+#define OFF_DEND    SZ2  /* offset of m4th->dstack.end  */
 #define OFF_RSTK    SZ4  /* offset of m4th->rstack.curr */
 #define OFF_CODE    SZ6  /* offset of m4th->code.start  */
-#define OFF_CSTK    SZ7  /* offset of m4th->code.curr  */
+#define OFF_CSTK    SZ7  /* offset of m4th->code.curr   */
 #define OFF_IP      SZ9  /* offset of m4th->ip          */
-#define OFF_C_SP    SZ10 /* offset of m4th->c_sp     */
+#define OFF_C_SP    SZ10 /* offset of m4th->c_sp        */
 #define OFF_IN      SZ12 /* offset of m4th->in.curr     */
 #define OFF_IN_END  SZ13 /* offset of m4th->in.end      */
 #define OFF_OUT     SZ15 /* offset of m4th->out.curr    */

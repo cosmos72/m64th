@@ -51,11 +51,6 @@ FUNC_START(m4slash_mod)      /* /mod */
 FUNC_END(m4slash_mod)
 
 
-FUNC_START(m4zero_less)   /* 0< */
-        sar    IMM(63),DTOP 
-FUNC_END(m4zero_less)
-
-
 FUNC_START(m4zero_not_equals)   /* 0<>  core ext */
         test   DTOP, DTOP;
         mov    IMM(0), DTOPw;    /* xor would affect EFLAGS */

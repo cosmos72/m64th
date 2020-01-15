@@ -76,16 +76,21 @@ FUNC_START(m4minus) /* - */
 FUNC_END(m4minus)
 
 
+FUNC_START(m4zero_less)   /* 0< */
+        SAR2(  IMM(63), DTOP)
+FUNC_END(m4zero_less)
+
+
 #ifndef M4ONE_MINUS
 FUNC_START(m4one_minus) /* 1-   */
-        SUB2(  IMM(1), DTOP);
+        SUB2(  IMM(1), DTOP)
 FUNC_END(m4one_minus)
 #endif
 
 
 #ifndef M4ONE_PLUS
 FUNC_START(m4one_plus) /* 1+   */
-        ADD2(  IMM(1), DTOP);
+        ADD2(  IMM(1), DTOP)
 FUNC_END(m4one_plus)
 #endif
 
@@ -127,8 +132,16 @@ FUNC_END(m4bl)
 
 
 FUNC_START(m4drop)
-        DPOP(DTOP)
+        DPOP(  DTOP)
 FUNC_END(m4drop)
+
+
+FUNC_START(m4depth)
+        DPUSH( DTOP)
+        LOAD(  DTOP, AT(M4TH, OFF_DEND))
+        SUB2(  DSTK, DTOP)
+        SAR2(  IMM(PSZ), DTOP)
+FUNC_END(m4depth)
 
 
 FUNC_START(m4dup)
