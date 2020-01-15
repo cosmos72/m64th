@@ -54,9 +54,6 @@ struct m4th_s {
     m4cspan out;    /* output buffer       */
 };
 
-/** malloc() wrapper, calls exit(1) on failure */
-void *m4th_alloc(size_t bytes);
-
 /** create a new m4th struct */
 m4th *m4th_new();
 
@@ -83,5 +80,17 @@ m4int m4th_test(m4th *m, FILE *out);
 
 /** print stack to out */
 void m4th_stack_print(const m4stack *stack, FILE *out);
+
+/** malloc() wrapper, calls exit(1) on failure */
+void *m4th_alloc(size_t bytes);
+
+/** free() wrapper */
+void m4th_free(void *ptr);
+
+/** mmap() wrapper, calls exit(1) on failure */
+void *m4th_mmap(size_t bytes);
+
+/** munmap() wrapper */
+void m4th_munmap(void *ptr, size_t bytes);
 
 #endif /* M4TH_M4TH_H */

@@ -22,6 +22,11 @@
 #include <stdlib.h> /* exit(), free(), malloc() */
 #include <string.h> /* memset() */
 
+#ifdef __unix__
+#include <sys/mman.h> /* mmap(), munmap() */
+#include <unistd.h>   /* sysconf() */
+#endif
+
 enum {
     dstack_n = 256,
     rstack_n = 64,
@@ -30,30 +35,93 @@ enum {
     outbuf_n = 1024,
 };
 
+static void m4th_oom(size_t bytes) {
+    fprintf(stderr, "failed to allocate %lu bytes: %s\n", (unsigned long)bytes, strerror(errno));
+    exit(1);
+}
+
+#ifdef __unix__
+static size_t m4th_getpagesize() {
+    static size_t page = 0;
+    if (page == 0) {
+        page =
+#if defined(_SC_PAGESIZE)
+            sysconf(_SC_PAGESIZE);
+#elif defined(_SC_PAGE_SIZE)
+            sysconf(_SC_PAGE_SIZE);
+#elif defined(PAGESIZE)
+            PAGESIZE;
+#elif defined(PAGE_SIZE)
+            PAGE_SIZE;
+#else
+            4096;
+#endif
+    }
+    return page;
+}
+
+static size_t m4th_round_to_page(size_t bytes) {
+    const size_t page = m4th_getpagesize();
+    return (bytes + page - 1) / page * page;
+}
+
+void *m4th_mmap(size_t bytes) {
+    void *ptr = NULL;
+    if (bytes != 0) {
+        bytes = m4th_round_to_page(bytes);
+        if ((ptr = mmap(NULL, bytes, PROT_READ | PROT_WRITE,
+                        MAP_PRIVATE | MAP_ANONYMOUS
+#ifdef MAP_STACK
+                            | MAP_STACK /* for BSD */
+#endif
+                        ,
+                        -1, 0)) == (void *)-1) {
+            m4th_oom(bytes);
+        }
+        memset(ptr, '\xFF', bytes);
+    }
+    return ptr;
+}
+
+void m4th_munmap(void *ptr, size_t bytes) {
+    if (bytes != 0) {
+        bytes = m4th_round_to_page(bytes);
+        munmap(ptr, bytes);
+    }
+}
+#else /* ! __unix__ */
+void *m4th_mmap(size_t bytes) {
+    return m4th_alloc(bytes);
+}
+void m4th_munmap(void *ptr, size_t bytes) {
+    m4th_free(ptr);
+}
+#endif
+
 void *m4th_alloc(size_t bytes) {
-    void *ret;
-    if (bytes == 0) {
-        return NULL;
+    void *ptr = NULL;
+    if (bytes != 0) {
+        if ((ptr = malloc(bytes)) == NULL) {
+            m4th_oom(bytes);
+        }
+        memset(ptr, '\xFF', bytes);
     }
-    ret = malloc(bytes);
-    if (ret == NULL) {
-        fprintf(stderr, "failed to allocate %lu bytes: %s\n", (unsigned long)bytes,
-                strerror(errno));
-        exit(1);
-    }
-    memset(ret, '\xFF', bytes);
-    return ret;
+    return ptr;
+}
+
+void m4th_free(void *ptr) {
+    free(ptr);
 }
 
 static m4stack m4stack_alloc(m4int size) {
-    m4int *p = (m4int *)m4th_alloc(size * sizeof(m4int));
+    m4int *p = (m4int *)m4th_mmap(size * sizeof(m4int));
     m4stack ret = {p, p + size - 1, p + size - 1};
     return ret;
 }
 
 static void m4stack_free(m4stack *arg) {
     if (arg) {
-        free(arg->start);
+        m4th_munmap(arg->start, (arg->end - arg->start + 1) / sizeof(m4int));
     }
 }
 
@@ -65,7 +133,7 @@ static m4code m4code_alloc(m4int size) {
 
 static void m4code_free(m4code *arg) {
     if (arg) {
-        free(arg->start);
+        m4th_free(arg->start);
     }
 }
 
@@ -77,7 +145,7 @@ static m4cspan m4cspan_alloc(m4int size) {
 
 static void m4cspan_free(m4cspan *arg) {
     if (arg) {
-        free(arg->start);
+        m4th_free(arg->start);
     }
 }
 
@@ -100,7 +168,7 @@ void m4th_del(m4th *m) {
         m4code_free(&m->code);
         m4stack_free(&m->rstack);
         m4stack_free(&m->dstack);
-        free(m);
+        m4th_free(m);
     }
 }
 
