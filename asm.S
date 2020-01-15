@@ -180,6 +180,21 @@ FUNC_START(m4i)
 FUNC_END(m4i)
 
 
+FUNC_START(m4i_star) /* i *  m4th */
+        MUL2(  RTOP, DTOP)
+FUNC_END(m4i_star)
+
+
+FUNC_START(m4i_plus) /* i +  m4th */
+        ADD2(  RTOP, DTOP)
+FUNC_END(m4i_plus)
+
+
+FUNC_START(m4i_minus) /* i -  m4th */
+        SUB2(  RTOP, DTOP)
+FUNC_END(m4i_minus)
+
+
 FUNC_START(m4i_prime) /* i' */
         DPUSH( DTOP)
         LOAD(  DTOP, AT(RSTK))

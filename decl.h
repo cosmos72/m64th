@@ -67,6 +67,9 @@ void m4drop(void);              /* drop */
 void m4dup(void);               /* dup  */
 void m4false(void);             /* false i.e. 0 */
 void m4i(void);                 /* i    */
+void m4i_star(void);            /* i *  m4th */
+void m4i_plus(void);            /* i +  m4th */
+void m4i_minus(void);           /* i -  m4th */
 void m4i_prime(void);           /* i'   */
 void m4j(void);                 /* j    */
 void m4max(void);               /* max  */
