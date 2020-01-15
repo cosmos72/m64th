@@ -25,11 +25,13 @@
 typedef unsigned char m4char;
 typedef size_t m4uint;
 typedef ssize_t m4int;
+typedef void (*m4instr)(void);
+typedef char assert_sizeof_m4instr_equals_sizeof_m4int[sizeof(m4instr) == sizeof(m4int) ? 1 : -1];
 
 typedef struct m4cspan_s m4cspan;
-typedef struct m4ispan_s m4ispan;
-typedef struct m4ispan_s m4stack;
-typedef struct m4ispan_s m4code;
+typedef struct m4span_s m4span;
+typedef struct m4span_s m4stack;
+typedef struct m4code_s m4code;
 typedef struct m4th_s m4th;
 
 struct m4cspan_s {
@@ -38,18 +40,24 @@ struct m4cspan_s {
     m4char *end;
 };
 
-struct m4ispan_s {
+struct m4span_s {
     m4int *start;
     m4int *curr;
     m4int *end;
+};
+
+struct m4code_s {
+    m4instr *start;
+    m4instr *curr;
+    m4instr *end;
 };
 
 struct m4th_s {
     m4stack dstack; /* data stack          */
     m4stack rstack; /* return stack        */
     m4code code;    /* executable code     */
-    m4int *ip;      /* instruction pointer */
-    m4int *c_sp;    /* C stack pointer. saved here by m4th_enter() */
+    m4instr *ip;    /* instruction pointer */
+    void *c_sp;     /* C stack pointer. saved here by m4th_enter() */
     m4cspan in;     /* input  buffer       */
     m4cspan out;    /* output buffer       */
 };

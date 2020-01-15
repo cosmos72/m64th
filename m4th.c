@@ -126,7 +126,7 @@ static void m4stack_free(m4stack *arg) {
 }
 
 static m4code m4code_alloc(m4int size) {
-    m4int *p = (m4int *)m4th_alloc(size * sizeof(m4int));
+    m4instr *p = (m4instr *)m4th_alloc(size * sizeof(m4instr));
     m4code ret = {p, p, p + size};
     return ret;
 }
