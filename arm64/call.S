@@ -53,8 +53,8 @@ FUNC_RAWEND(m4bye)
 
 /** return from word being executed (i.e. current function) */
 FUNC_START(m4exit)
-        MOVE(RTOP, IP)
-        RPOP(RTOP)
-        LOAD(REG1, AT(IP))
-        br   REG1;
+        MOVE(  RTOP, IP)
+        RPOP(  RTOP)
+        LOAD(  REG1, AT(IP))
+        br     REG1;
 FUNC_RAWEND(m4exit)

@@ -26,7 +26,6 @@ FUNC_START(m4_do_)
 FUNC_END(m4_do_)
 
 
-
 /*
  * must be followed by IP offset of first instruction after (do) - usually < 0
  * IP offset = 0 means (loop) itself

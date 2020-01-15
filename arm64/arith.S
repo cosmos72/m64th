@@ -20,8 +20,8 @@
 
 /* signed divide */
 FUNC_START(m4slash) /* / */
-        DPOP(REG1)
-        DIV3(REG1, DTOP, DTOP)
+        DPOP(  REG1)
+        DIV3(  REG1, DTOP, DTOP)
 FUNC_END(m4slash)
 
 
@@ -36,36 +36,36 @@ FUNC_END(m4slash_mod)
 
 
 FUNC_START(m4zero_less)   /* 0<   */
-        asr   DTOP, DTOP, IMM(63)
+        asr    DTOP, DTOP, IMM(63)
 FUNC_END(m4zero_less)
 
 
 FUNC_START(m4zero_not_equals)   /* 0<>  core ext */
-        cmp   DTOP, IMM(0)
-        csetm DTOP, ne
+        cmp    DTOP, IMM(0)
+        csetm  DTOP, ne
 FUNC_END(m4zero_not_equals)
 
 
 FUNC_START(m4zero_equals)   /* 0=   */
-        cmp   DTOP, IMM(0)
-        csetm DTOP, eq
+        cmp    DTOP, IMM(0)
+        csetm  DTOP, eq
 FUNC_END(m4zero_equals)
 
 
 FUNC_START(m4zero_greater_than)   /* 0>   */
-        cmp   DTOP, IMM(0)
-        csetm DTOP, gt
+        cmp    DTOP, IMM(0)
+        csetm  DTOP, gt
 FUNC_END(m4zero_greater_than)
 
 
 FUNC_START(m4two_slash) /* 2/   */
-        add   DTOP, DTOP, DTOP, lsr IMM(63)
-        asr   DTOP, DTOP, IMM(1)
+        add    DTOP, DTOP, DTOP, lsr IMM(63)
+        asr    DTOP, DTOP, IMM(1)
 FUNC_END(m4two_slash)
 
 
 FUNC_START(m4two_star) /* 2* */
-        lsl   DTOP, DTOP, IMM(1)
+        lsl    DTOP, DTOP, IMM(1)
 FUNC_END(m4two_star)
 
 
@@ -143,6 +143,6 @@ FUNC_END(m4mod)
 
 
 FUNC_START(m4xor)
-        DPOP(REG1)
-        eor   DTOP, DTOP, REG1;
+        DPOP(  REG1)
+        eor    DTOP, DTOP, REG1;
 FUNC_END(m4xor)

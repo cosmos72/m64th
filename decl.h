@@ -25,9 +25,12 @@
  * operation is taking their address and appending it to m4th->code
  */
 
-void m4store(void);  /* !    */
-void m4_do_(void);   /* (do)   m4th: must be followed by IP offset of (loop) */
-void m4_lit_(void);  /* (lit)  m4th: must be followed by number */
+void m4store(void);   /* !    */
+#define m4_0_ m4false /* 0    */
+#define m4__1_ m4true /* -1   */
+void m4_1_(void);     /* (1)    m4th: 1  */
+void m4_do_(void);    /* (do)   m4th     */
+void m4_lit_(void);   /* (lit)  m4th: must be followed by number              */
 void m4_loop_(void); /* (loop) m4th: must be followed by IP offset of next instruction after (do) */
 void m4star(void);   /* *    */
 void m4plus(void);   /* +    */
