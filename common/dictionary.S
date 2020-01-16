@@ -19,6 +19,18 @@
 #error "common/dictionary.h can only be included from asm.S - do not attempt to use it directly"
 #endif
 
+#ifdef __ANDROID__
+        /*
+	 * work around linker message
+	 * "warning: creating a DT_TEXTREL in a shared object"
+	 * because it produces non-working executable that fail with
+	 * CANNOT LINK EXECUTABLE: "/cmd/full/path" has text relocations
+	 */
+	.data
+#else
+	.rodata
+#endif
+
 /* ---------------------------------------------------------------------------------------------- */
 DICT_START(m4th)
 
@@ -33,7 +45,7 @@ WORD_SIMPLE(2, "i-", i_minus, i_plus)
 WORD_START(4, "noop", noop, i_minus)
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_INLINE_NATIVE)
     WORD_INLINE_NATIVE_LEN_0()
-    WORD_CODE_N(1)     
+    WORD_CODE_N(1)
     WORD_DATA_N(0)
     WORD_CODE_FUNC(exit)
 WORD_END(noop)
@@ -45,7 +57,7 @@ DICT_START(tools_ext)
 WORD_START(3, "bye", bye)
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_INLINE_NATIVE_LEN_0()
-    WORD_CODE_N(2)     
+    WORD_CODE_N(2)
     WORD_DATA_N(0)
     WORD_CODE_FUNC(bye)
     WORD_CODE_FUNC(exit) /* reachable by subsequent m4th_enter() */
@@ -95,7 +107,7 @@ WORD_SIMPLE(1, "j", j, invert)
 WORD_START(7, "literal", literal, j)
     WORD_FLAGS(M4FLAG_IMMEDIATE | M4FLAG_INLINE | M4FLAG_INLINE_NATIVE)
     WORD_INLINE_NATIVE_LEN(literal)
-    WORD_CODE_N(2)     
+    WORD_CODE_N(2)
     WORD_DATA_N(0)
     WORD_CODE_FUNC(literal)
     WORD_CODE_FUNC(exit)
