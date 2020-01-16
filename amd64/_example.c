@@ -15,6 +15,8 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+const char buf[] = "foobar";
+
 long invert(long dtop) {
     return ~dtop;
 }

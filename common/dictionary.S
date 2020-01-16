@@ -19,16 +19,16 @@
 #error "common/dictionary.h can only be included from asm.S - do not attempt to use it directly"
 #endif
 
-#ifdef __ANDROID__
-        /*
-	 * work around linker message
-	 * "warning: creating a DT_TEXTREL in a shared object"
-	 * because it produces non-working executable that fail with
-	 * CANNOT LINK EXECUTABLE: "/cmd/full/path" has text relocations
-	 */
-	.data
+/*
+ * work around Android linker message
+ * "warning: creating a DT_TEXTREL in a shared object"
+ * because it produces non-working executable that fail with
+ * CANNOT LINK EXECUTABLE: "/cmd/full/path" has text relocations
+ */
+#if defined(__ELF__) && !defined(__ANDROID__)
+       .section .rodata
 #else
-	.rodata
+       .data
 #endif
 
 /* ---------------------------------------------------------------------------------------------- */
