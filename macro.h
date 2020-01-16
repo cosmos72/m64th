@@ -43,14 +43,14 @@
 #define FUNC_SYM_NEXT(name)                                                                        \
     .Lfunc.name.next
 
-#define FUNC_DECL_SYM(name)                                                                        \
+#define FUNC_DEF_SYM(name)                                                                         \
     FUNC_ALIGN()                                                                                   \
     .globl FUNC_SYM(name);                                                                         \
-    .type FUNC_SYM(name), @function;
+    .type FUNC_SYM(name), @function;                                                               \
+    FUNC_SYM(name):
 
 #define FUNC_START(name)                                                                           \
-    FUNC_DECL_SYM(name)                                                                            \
-    FUNC_SYM(name):                                                                                \
+    FUNC_DEF_SYM(name)                                                                             \
     .cfi_startproc;
 
 #define FUNC_RAWEND(name)                                                                          \
@@ -78,19 +78,19 @@
 #define WORDNAME_SYM(name)                                                                         \
     .Lwordname.name
 
-#define WORDNAME_DECL_SYM(name)                                                                    \
-    DATA_ALIGN()                                                                                   \
-    .type WORDNAME_SYM(name), @object;
-
-#define WORDNAME_START(name)                                                                       \
-    WORDNAME_DECL_SYM(name)                                                                        \
+#define WORDNAME_DEF_SYM(name)                                                                     \
+    /* no alignment */                                                                             \
+    .type WORDNAME_SYM(name), @object;                                                             \
     WORDNAME_SYM(name):
 
+#define WORDNAME_START(name)                                                                       \
+    WORDNAME_DEF_SYM(name)                                                                         \
+
 #define WORDNAME_LEN(strlen)            .byte  strlen;
-#define WORDNAME_ASCII(str)             .asciz str;  
+#define WORDNAME_ASCII(str)             .ascii str;
 #define WORDNAME_END(name)
 
-#define WORDNAME(name, strlen, str)                                                                \
+#define WORDNAME(strlen, str, name)                                                                \
     WORDNAME_START(name)                                                                           \
     WORDNAME_LEN(strlen)                                                                           \
     WORDNAME_ASCII(str)                                                                            \
@@ -98,22 +98,20 @@
 
 /* ------------- WORD ------------- */
 
+#define _1st(a, ...)                    a
+
 #define WORD_SYM(name)                                                                             \
     m4word_##name
 
-#define WORD_DECL_SYM(name)                                                                        \
+#define WORD_DEF_SYM(name)                                                                         \
     DATA_ALIGN()                                                                                   \
     .globl WORD_SYM(name);                                                                         \
-    .type  WORD_SYM(name), @object;
+    .type  WORD_SYM(name), @object;                                                                \
+    WORD_SYM(name):
 
-#define WORD_START_(strlen, str, name, ...)                                                        \
-    WORDNAME(name, strlen, str)                                                                    \
-    WORD_DECL_SYM(name)                                                                            \
-    WORD_SYM(name):                                                                                \
-    WORD_NAME_OFF(name)
-
-#define WORD_START(strlen, str, ...)                                                               \
-    WORD_START_(strlen, str, __VA_ARGS__)                                                          \
+#define WORD_START(...)                                                                            \
+    WORD_DEF_SYM(_1st(__VA_ARGS__))                                                                \
+    WORD_NAME_OFF(_1st(__VA_ARGS__))                                                               \
     WORD_PREV(__VA_ARGS__)
 
 /*
@@ -123,7 +121,7 @@
 #define WORD_PREV_(name,prev,kind, ...) WORD_PREV_##kind(name, prev)
 #define WORD_PREV(...)                  WORD_PREV_(__VA_ARGS__, OFF, NONE)
 
-#define WORD_NAME_NONE(...)             .2byte 0 ;
+#define WORD_NAME_NONE(...)             .4byte 0 ;
 #define WORD_NAME_OFF(name)             .4byte WORD_SYM(name) - WORDNAME_SYM(name) ;
 #define WORD_PREV_NONE(...)             .4byte 0 ;
 #define WORD_PREV_OFF(name,prev)        .4byte WORD_SYM(name) - WORD_SYM(prev) ;
@@ -141,8 +139,6 @@
 #define WORD_DATA_8(...)                .8byte __VA_ARGS__;
 #define WORD_END(name)                  .size WORD_SYM(name), . - WORD_SYM(name);
 
-#define _1st(a, ...)                    a
-
 #define WORD_INLINE_NATIVE_CODE_1(name)                                                            \
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_INLINE_NATIVE)                                               \
     WORD_INLINE_NATIVE_LEN(name)                                                                   \
@@ -151,8 +147,8 @@
     WORD_CODE_FUNC(name)                                                                           \
     WORD_CODE_FUNC(exit)
 
-#define WORD_SIMPLE(strlen, str, ...)                                                              \
-    WORD_START(strlen, str, __VA_ARGS__)                                                           \
+#define WORD_SIMPLE(...)                                                                           \
+    WORD_START(__VA_ARGS__)                                                                        \
     WORD_INLINE_NATIVE_CODE_1(_1st(__VA_ARGS__))                                                   \
     WORD_END(_1st(__VA_ARGS__))
 
