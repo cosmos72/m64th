@@ -64,7 +64,7 @@ struct m4code_s {
 
 struct m4wordname_s { /* word name                                    */
     m4char name_len;  /* name length, in bytes                        */
-    m4char name[7];   /* name. ends with '\0'                         */
+    m4char name[1];   /* name. does NOT end with '\0'                 */
 };
 
 struct m4word_s {
