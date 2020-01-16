@@ -27,7 +27,10 @@
 /* align functions at 8 bytes. */
 /* on x86_64, aligning at 16 bytes should be faster, but wastes more memory */
 #define P_FUNC_ALIGN 3
-#define P_WORD_ALIGN 3
+#define P_DATA_ALIGN 3
+
+#define DATA_ALIGN()                                                                               \
+    .p2align P_DATA_ALIGN, 0;
 
 /* ------------- FUNC ------------- */
 
@@ -40,10 +43,13 @@
 #define FUNC_SYM_NEXT(name)                                                                        \
     .Lfunc.name.next
 
-#define FUNC_START(name)                                                                           \
+#define FUNC_DECL_SYM(name)                                                                        \
     FUNC_ALIGN()                                                                                   \
     .globl FUNC_SYM(name);                                                                         \
-    .type FUNC_SYM(name), @function;                                                               \
+    .type FUNC_SYM(name), @function;
+
+#define FUNC_START(name)                                                                           \
+    FUNC_DECL_SYM(name)                                                                            \
     FUNC_SYM(name):                                                                                \
     .cfi_startproc;
 
@@ -56,14 +62,14 @@
     NEXT()                                                                                         \
     FUNC_RAWEND(name)
 
+/* ------------- SECTION ------------- */
+
+#define SECTION_RO()                    .text;
+#define SECTION_RW()                    .data;
+
 /* ------------- DICT ------------- */
 
 #define DICT_START(name)                                                                           \
-    .text;                                                                                         \
-    .p2align P_WORD_ALIGN, 0;
-
-#define DICT_RO()                      .text
-#define DICT_RW()                      .data
 
 #define DICT_END(name)
 
@@ -72,12 +78,16 @@
 #define WORDNAME_SYM(name)                                                                         \
     .Lwordname.name
 
+#define WORDNAME_DECL_SYM(name)                                                                    \
+    DATA_ALIGN()                                                                                   \
+    .type WORDNAME_SYM(name), @object;
+
 #define WORDNAME_START(name)                                                                       \
-    .type WORDNAME_SYM(name), @object;                                                             \
+    WORDNAME_DECL_SYM(name)                                                                        \
     WORDNAME_SYM(name):
 
-#define WORDNAME_LEN(strlen)           .byte  strlen;
-#define WORDNAME_ASCII(str)            .asciz str;  
+#define WORDNAME_LEN(strlen)            .byte  strlen;
+#define WORDNAME_ASCII(str)             .asciz str;  
 #define WORDNAME_END(name)
 
 #define WORDNAME(name, strlen, str)                                                                \
@@ -91,11 +101,14 @@
 #define WORD_SYM(name)                                                                             \
     m4word_##name
 
+#define WORD_DECL_SYM(name)                                                                        \
+    DATA_ALIGN()                                                                                   \
+    .globl WORD_SYM(name);                                                                         \
+    .type  WORD_SYM(name), @object;
+
 #define WORD_START_(strlen, str, name, ...)                                                        \
     WORDNAME(name, strlen, str)                                                                    \
-    .p2align P_WORD_ALIGN, 0;                                                                      \
-    .globl WORD_SYM(name);                                                                         \
-    .type  WORD_SYM(name), @object;                                                                \
+    WORD_DECL_SYM(name)                                                                            \
     WORD_SYM(name):                                                                                \
     WORD_NAME_OFF(name)
 
@@ -110,6 +123,7 @@
 #define WORD_PREV_(name,prev,kind, ...) WORD_PREV_##kind(name, prev)
 #define WORD_PREV(...)                  WORD_PREV_(__VA_ARGS__, OFF, NONE)
 
+#define WORD_NAME_NONE(...)             .2byte 0 ;
 #define WORD_NAME_OFF(name)             .4byte WORD_SYM(name) - WORDNAME_SYM(name) ;
 #define WORD_PREV_NONE(...)             .4byte 0 ;
 #define WORD_PREV_OFF(name,prev)        .4byte WORD_SYM(name) - WORD_SYM(prev) ;
@@ -138,21 +152,21 @@
     WORD_CODE_FUNC(exit)
 
 #define WORD_SIMPLE(strlen, str, ...)                                                              \
-     WORD_START(strlen, str, __VA_ARGS__)                                                          \
-     WORD_INLINE_NATIVE_CODE_1(_1st(__VA_ARGS__))                                                  \
-     WORD_END(_1st(__VA_ARGS__))
+    WORD_START(strlen, str, __VA_ARGS__)                                                           \
+    WORD_INLINE_NATIVE_CODE_1(_1st(__VA_ARGS__))                                                   \
+    WORD_END(_1st(__VA_ARGS__))
 
 /* expand AT(addr) -> AT0(addr) and AT(addr, i) -> ATx(addr, i) */
-#define AT_0(addr, i)           AT0(addr)
-#define AT_x(addr, i)           ATx(addr, i)
-#define AT_(addr, i, kind, ...) AT_##kind(addr, i)
-#define AT(...)                 AT_(__VA_ARGS__, x, 0)
+#define AT_0(addr, i)                   AT0(addr)
+#define AT_x(addr, i)                   ATx(addr, i)
+#define AT_(addr, i, kind, ...)         AT_##kind(addr, i)
+#define AT(...)                         AT_(__VA_ARGS__, x, 0)
 
 /* expand IPUSH(a) -> IPUSH1(a) and IPUSH(a, b) -> IPUSH2(a, b) */
-#define IPUSH_1(a, b)           IPUSH1(a)
-#define IPUSH_2(a, b)           IPUSH2(a, b)
-#define IPUSH_(a, b, kind, ...) IPUSH_##kind(a, b)
-#define IPUSH(...)              IPUSH_(__VA_ARGS__, 2, 1)
+#define IPUSH_1(a, b)                   IPUSH1(a)
+#define IPUSH_2(a, b)                   IPUSH2(a, b)
+#define IPUSH_(a, b, kind, ...)         IPUSH_##kind(a, b)
+#define IPUSH(...)                      IPUSH_(__VA_ARGS__, 2, 1)
 
 #define OFF_DSTK    SZ   /* offset of m4th->dstack.curr */
 #define OFF_DEND    SZ2  /* offset of m4th->dstack.end  */

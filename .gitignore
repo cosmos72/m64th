@@ -2,5 +2,6 @@ m4th
 test
 a.out
 *.o
+*.s
 *~
 .vscode
