@@ -15,6 +15,10 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+long invert(long dtop) {
+    return ~dtop;
+}
+
 void _lit_(void) {
 }
 

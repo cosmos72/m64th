@@ -22,28 +22,28 @@
  * save C registers,
  * load m4th registers from struct (m4th*)
  *      passed in %rdi as per SYS V amd64 ABI,
- * execute m4th->rstack[0] and subsequent code until m4th_bye is found.
+ * execute m4th->code.start[0] and subsequent instructions until m4bye is found.
  */
-FUNC_START(m4th_enter)
-        push   %rbx;            /* save C registers */
+FUNC_START(th_enter)
+        push   %rbx;                      /* save C registers                */
 #if 0 /* not clobbered by m4th */
         push   %rbp;
+#endif /* 0 */
         push   %r12;
         push   %r13;
         push   %r14;
         push   %r15;
-#endif /* 0 */
         MOVE(  %rdi, M4TH)                /* m                               */
         STOR(  %rsp, AT(M4TH, OFF_C_SP))  /* save C stack pointer            */
         LOAD(  DSTK, AT(M4TH, OFF_DSTK))  /* load data   stack pointer       */
         LOAD(  RSTK, AT(M4TH, OFF_RSTK))  /* load return stack pointer       */
-        LOAD(  CSTK, AT(M4TH, OFF_CSTK))  /* load code   array pointer       */
+        LOAD(  ISTK, AT(M4TH, OFF_ISTK))  /* load code   array pointer       */
         LOAD(  IP,   AT(M4TH, OFF_IP))    /* load instruction  pointer       */
         DPOP(  DTOP)                      /* load first data   stack element */
         RPOP(  RTOP)                      /* load first return stack element */
         MOVE(  IMM(-1), RFFF)             /* set RFFF to -1                  */
         jmp    *(IP);                     /* begin execution                 */
-FUNC_RAWEND(m4th_enter)
+FUNC_RAWEND(th_enter)
 
 /**
  * exit m4th interpreter and return to C:
@@ -51,29 +51,29 @@ FUNC_RAWEND(m4th_enter)
  * load C registers
  * return to C
  */
-FUNC_START(m4bye)
+FUNC_START(bye)
         RPUSH( RTOP)                      /* save first return stack element */
         DPUSH( DTOP)                      /* save first data   stack element */
         STOR(  IP,   AT(M4TH, OFF_IP))    /* save instruction  pointer       */
-        STOR(  CSTK, AT(M4TH, OFF_CSTK))  /* save code   array pointer       */
+        STOR(  ISTK, AT(M4TH, OFF_ISTK))  /* save code   array pointer       */
         STOR(  RSTK, AT(M4TH, OFF_RSTK))  /* save return stack pointer       */
         STOR(  DSTK, AT(M4TH, OFF_DSTK))  /* save data   stack pointer       */
         LOAD(  %rsp, AT(M4TH, OFF_C_SP))  /* load C stack pointer            */
-#if 0 /* not clobbered by m4th */
         pop    %r15;                      /* load C registers                */
         pop    %r14;
         pop    %r13;
         pop    %r12;
+#if 0 /* not clobbered by m4th */
         pop    %rbp;
 #endif /* 0 */
         pop    %rbx;
-        ret;                           /* return to C                     */
-FUNC_RAWEND(m4bye)
+        ret;                              /* return to C                     */
+FUNC_RAWEND(bye)
 
 
 /** return from word being executed (i.e. current function) */
-FUNC_START(m4exit)
+FUNC_START(exit)
         MOVE(  RTOP, IP)
         RPOP(  RTOP)
         jmp    *(IP);
-FUNC_RAWEND(m4exit)
+FUNC_RAWEND(exit)

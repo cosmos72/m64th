@@ -15,18 +15,13 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "asm.h"
+#ifndef M4TH_M4TH_MACRO_H
+#define M4TH_M4TH_MACRO_H
 
-#define m4main main
+/* macros that are part of m4th public API */
 
-FUNC_START(main)
-        ZERO(  REG1)
-        MOVE(  IMM(1000000000), REG2)
-.Lmain.again:	
-        inc    REG1;
-        cmpq   REG2, REG1;
-        jne    .Lmain.again;
-        ZERO(  REG1)
-	ret;
-FUNC_RAWEND(main)
+#define M4FLAG_IMMEDIATE (1 << 0)     /* word has interpretation semantics */
+#define M4FLAG_INLINE (1 << 1)        /* can inline forth code of word     */
+#define M4FLAG_INLINE_NATIVE (1 << 2) /* can inline native code of word    */
 
+#endif /* M4TH_M4TH_MACRO_H */

@@ -18,20 +18,30 @@
 #ifndef M4TH_M4TH_H
 #define M4TH_M4TH_H
 
-#include <stddef.h>    /* size_t  */
-#include <stdio.h>     /* FILE    */
-#include <sys/types.h> /* ssize_t */
+#include "m4th_macro.h"
+
+#include <stddef.h>    /* size_t   */
+#include <stdint.h>    /* int16_t  */
+#include <stdio.h>     /* FILE     */
+#include <sys/types.h> /* ssize_t  */
 
 typedef unsigned char m4char;
 typedef size_t m4uint;
 typedef ssize_t m4int;
 typedef void (*m4instr)(void);
 typedef char assert_sizeof_m4instr_equals_sizeof_m4int[sizeof(m4instr) == sizeof(m4int) ? 1 : -1];
+typedef enum m4flags_e {
+    m4flag_immediate = M4FLAG_IMMEDIATE,
+    m4flag_inline = M4FLAG_INLINE,
+    m4flag_inline_native = M4FLAG_INLINE_NATIVE,
+} m4flags;
 
 typedef struct m4cspan_s m4cspan;
 typedef struct m4span_s m4span;
 typedef struct m4span_s m4stack;
 typedef struct m4code_s m4code;
+typedef struct m4wordname_s m4wordname;
+typedef struct m4word_s m4word;
 typedef struct m4th_s m4th;
 
 struct m4cspan_s {
@@ -52,15 +62,34 @@ struct m4code_s {
     m4instr *end;
 };
 
+struct m4wordname_s { /* word name                                    */
+    m4char name_len;  /* name length, in bytes                        */
+    m4char name[7];   /* name. ends with '\0'                         */
+};
+
+struct m4word_s {
+    int32_t name_off;          /* offset of m4wordname, in bytes               */
+    int32_t prev_off;          /* offset of previous word, in bytes. 0 = not present */
+    uint8_t flags;             /* m4flags                                      */
+    uint8_t inline_native_len; /* native inline size, in bytes                 */
+    uint16_t code_len;         /* forth code size, in bytes                    */
+    uint32_t data_len;         /* data size, in bytes                          */
+    m4char code[0];            /* code starts at [0], data starts at [code_len]*/
+};
+
 struct m4th_s {
     m4stack dstack; /* data stack          */
     m4stack rstack; /* return stack        */
-    m4code code;    /* executable code     */
+    m4code code;    /* forth code being compiled */
     m4instr *ip;    /* instruction pointer */
     void *c_sp;     /* C stack pointer. saved here by m4th_enter() */
     m4cspan in;     /* input  buffer       */
     m4cspan out;    /* output buffer       */
 };
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /** create a new m4th struct */
 m4th *m4th_new();
@@ -86,9 +115,6 @@ void m4th_clear(m4th *m);
  */
 m4int m4th_test(m4th *m, FILE *out);
 
-/** print stack to out */
-void m4th_stack_print(const m4stack *stack, FILE *out);
-
 /** malloc() wrapper, calls exit(1) on failure */
 void *m4th_alloc(size_t bytes);
 
@@ -100,5 +126,16 @@ void *m4th_mmap(size_t bytes);
 
 /** munmap() wrapper */
 void m4th_munmap(void *ptr, size_t bytes);
+
+void m4th_wordname_print(const m4wordname *n, FILE *out);
+void m4th_word_print(const m4word *w, FILE *out);
+void m4th_stack_print(const m4stack *stack, FILE *out);
+
+const m4wordname *m4th_word_name(const m4word *w);
+const m4word *m4th_word_prev(const m4word *w);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* M4TH_M4TH_H */

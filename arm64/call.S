@@ -22,18 +22,27 @@
  * save C registers,
  * load m4th registers from struct (m4th*)
  *      passed in x0 as per aarch64 ABI,
- * execute m4th->rstack[0] and subsequent code until m4th_bye is found.
+ * execute m4th->code.start[0] and subsequent instructions until m4bye is found.
  */
-FUNC_START(m4th_enter)
+FUNC_START(th_enter)
+        SUB2(  IMM(SZ8), sp)
+        STOR(  x26,  AT(sp, SZ6))        /* save C registers                */
+        STOR(  x25,  AT(sp, SZ5))
+        STOR(  x24,  AT(sp, SZ4))
+        STOR(  x23,  AT(sp, SZ3))
+        STOR(  x22,  AT(sp, SZ2))
+        STOR(  x21,  AT(sp, SZ))
+        STOR(  x20,  AT(sp))
         MOVE(  x0,   M4TH)               /* m                               */
         LOAD(  DSTK, AT(M4TH, OFF_DSTK)) /* load data   stack pointer       */
         LOAD(  RSTK, AT(M4TH, OFF_RSTK)) /* load return stack pointer       */
+        LOAD(  ISTK, AT(M4TH, OFF_ISTK)) /* load code   array pointer       */
         LOAD(  IP,   AT(M4TH, OFF_IP))   /* load instruction  pointer       */
         DPOP(  DTOP)                     /* load first data   stack element */
         RPOP(  RTOP)                     /* load first return stack element */
         LOAD(  REG1, AT(IP))             /* begin execution                 */
         br     REG1;
-FUNC_RAWEND(m4th_enter)
+FUNC_RAWEND(th_enter)
 
 /**
  * exit m4th interpreter and return to C:
@@ -41,20 +50,29 @@ FUNC_RAWEND(m4th_enter)
  * load C registers
  * return to C
  */
-FUNC_START(m4bye)
+FUNC_START(bye)
         RPUSH( RTOP)                     /* save first return stack element */
         DPUSH( DTOP)                     /* save first data   stack element */
         STOR(  IP,   AT(M4TH, OFF_IP))   /* save instruction  pointer       */
+        STOR(  ISTK, AT(M4TH, OFF_ISTK)) /* save code   array pointer       */
         STOR(  RSTK, AT(M4TH, OFF_RSTK)) /* save return stack pointer       */
         STOR(  DSTK, AT(M4TH, OFF_DSTK)) /* save data   stack pointer       */
+        LOAD(  x20,  AT(sp))             /* load C registers                */
+        LOAD(  x21,  AT(sp, SZ))
+        LOAD(  x22,  AT(sp, SZ2))
+        LOAD(  x23,  AT(sp, SZ3))
+        LOAD(  x24,  AT(sp, SZ4))
+        LOAD(  x25,  AT(sp, SZ5))
+        LOAD(  x26,  AT(sp, SZ6))
+        ADD2(  IMM(SZ8), sp)
         ret;                             /* return to C                     */
-FUNC_RAWEND(m4bye)
+FUNC_RAWEND(bye)
 
 
 /** return from word being executed (i.e. current function) */
-FUNC_START(m4exit)
+FUNC_START(exit)
         MOVE(  RTOP, IP)
         RPOP(  RTOP)
         LOAD(  REG1, AT(IP))
         br     REG1;
-FUNC_RAWEND(m4exit)
+FUNC_RAWEND(exit)

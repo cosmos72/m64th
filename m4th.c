@@ -41,10 +41,11 @@ static void m4th_oom(size_t bytes) {
 }
 
 #ifdef __unix__
+static size_t m4th_page = 0;
+
 static size_t m4th_getpagesize() {
-    static size_t page = 0;
-    if (page == 0) {
-        page =
+    if (m4th_page == 0) {
+        m4th_page =
 #if defined(_SC_PAGESIZE)
             sysconf(_SC_PAGESIZE);
 #elif defined(_SC_PAGE_SIZE)
@@ -57,7 +58,7 @@ static size_t m4th_getpagesize() {
             4096;
 #endif
     }
-    return page;
+    return m4th_page;
 }
 
 static size_t m4th_round_to_page(size_t bytes) {
@@ -149,6 +150,68 @@ static void m4cspan_free(m4cspan *arg) {
     }
 }
 
+void m4th_stack_print(const m4stack *stack, FILE *out) {
+    const m4int *lo = stack->curr;
+    const m4int *hi = stack->end;
+    fprintf(out, "<%ld> ", (long)(hi - lo));
+    while (hi != lo) {
+        fprintf(out, "%ld ", (long)*--hi);
+    }
+    fputc('\n', out);
+}
+
+void m4th_flags_print(m4flags fl, FILE *out) {
+    m4char printed = 0;
+    if (out == NULL) {
+        return;
+    }
+    if (!fl) {
+        fputc('0', out);
+    }
+    if (fl & m4flag_immediate) {
+        fputs("immediate", out);
+        printed++;
+    }
+    if (fl & m4flag_inline) {
+        fputs(printed++ ? "|inline" : "inline", out);
+    }
+    if (fl & m4flag_inline_native) {
+        fputs(printed++ ? "|inline_native" : "inline_native", out);
+    }
+}
+
+void m4th_wordname_print(const m4wordname *n, FILE *out) {
+    if (n == NULL || out == NULL) {
+        return;
+    }
+    fwrite(n->name, 1, n->name_len, out);
+}
+
+void m4th_word_print(const m4word *w, FILE *out) {
+    if (w == NULL || out == NULL) {
+        return;
+    }
+    m4th_wordname_print(m4th_word_name(w), out);
+    fputs(" {\n\tflags:\t", out);
+    m4th_flags_print((m4flags)w->flags, out);
+    fprintf(out, "\n\tinline_native_len:\t%u\n\tcode_len:\t%u\n\tdata_len:\t%u\n}\n",
+            (unsigned)w->inline_native_len, (unsigned)w->code_len, (unsigned)w->data_len);
+}
+
+const m4word *m4th_word_prev(const m4word *w) {
+    if (w == NULL || w->prev_off == 0) {
+        return NULL;
+    }
+    return (const m4word *)((const m4char *)w - w->prev_off);
+}
+
+const m4wordname *m4th_word_name(const m4word *w) {
+    if (w == NULL || w->name_off == 0) {
+        return NULL;
+    }
+    return (const m4wordname *)((const m4char *)w - w->name_off);
+}
+
 m4th *m4th_new() {
     m4th *m = (m4th *)m4th_alloc(sizeof(m4th));
     m->dstack = m4stack_alloc(dstack_n);
@@ -180,14 +243,4 @@ void m4th_clear(m4th *m) {
     m->c_sp = NULL;
     m->in.curr = m->in.start;
     m->out.curr = m->out.start;
-}
-
-void m4th_stack_print(const m4stack *stack, FILE *out) {
-    const m4int *lo = stack->curr;
-    const m4int *hi = stack->end;
-    fprintf(out, "<%ld> ", (long)(hi - lo));
-    while (hi != lo) {
-        fprintf(out, "%ld ", (long)*--hi);
-    }
-    fputc('\n', out);
 }

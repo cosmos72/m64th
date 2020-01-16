@@ -16,11 +16,26 @@
  */
 
 #include "m4th.h"
+#include "word_decl.h"
+
+#include <stdio.h>
+
+static void m4th_dict_print(const m4word *w, FILE *out) {
+    if (out == NULL) {
+        return;
+    }
+    while (w) {
+        m4th_word_print(w, out);
+        w = m4th_word_prev(w);
+    }
+}
 
 int main(int argc, char *argv[]) {
     m4th *m = m4th_new();
 
     m4th_del(m);
+
+    m4th_dict_print(&m4word_xor, stdout);
 
     /* suppress 'unused parameter' warning */
     return 0 & argc & (m4int)argv;

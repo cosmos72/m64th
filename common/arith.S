@@ -15,57 +15,57 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_M4TH_ASM_H
-#error "common/arith.h can only be included from asm.S - do not attempt to use it directly"
+#ifndef M4TH_ASM_S
+#error "common/arith.S can only be included from asm.S - do not attempt to use it directly"
 #endif
 
-FUNC_START(m4store) /* ! */
+FUNC_START(store) /* ! */
         DPOP(  REG1)
         STOR(  REG1, AT(DTOP))
         DPOP(  DTOP)
-FUNC_END(m4store)
+FUNC_END(store)
 
 
 #ifndef M4_1_
-FUNC_START(m4_1_) /* (1) */
+FUNC_START(_1_) /* (1) */
         DPUSH( DTOP)
         MOVE(  IMM(1), DTOP)
-FUNC_END(m4_1_)
+FUNC_END(_1_)
 #endif
 
 #ifndef M4_LIT_
-FUNC_START(m4_lit_) /* (lit) */
+FUNC_START(_lit_) /* (lit) */
         DPUSH( DTOP)
         LOAD(  DTOP, AT(IP, SZ))
         NEXT2()
-FUNC_RAWEND(m4_lit_)
+FUNC_RAWEND(_lit_)
 #endif
 
 
-FUNC_START(m4star) /* * */
+FUNC_START(star) /* * */
         DPOP(  REG1)
         MUL2(  REG1, DTOP)
-FUNC_END(m4star)
+FUNC_END(star)
 
 
-FUNC_START(m4plus) /* + */
+FUNC_START(plus) /* + */
         DPOP(  REG1)
         ADD2(  REG1, DTOP)
-FUNC_END(m4plus)
+FUNC_END(plus)
 
 
 #ifndef M4PLUS_STORE
-FUNC_START(m4plus_store) /* +! */
+FUNC_START(plus_store) /* +! */
         DPOP(  REG1)
         LOAD(  REG2, AT(DTOP))
         ADD2(  REG1, REG2)
         STOR(  REG2, AT(DTOP))
         DPOP(  DTOP)
-FUNC_END(m4plus_store)
+FUNC_END(plus_store)
 #endif
 
 
-FUNC_START(m4minus) /* - */
+FUNC_START(minus) /* - */
         DPOP(  REG1)
 #ifdef SUB3
         SUB3(  REG1, DTOP, DTOP)
@@ -73,187 +73,191 @@ FUNC_START(m4minus) /* - */
         NEG1(  DTOP)
         ADD2(  REG1, DTOP)
 #endif
-FUNC_END(m4minus)
+FUNC_END(minus)
 
 
-FUNC_START(m4zero_less)   /* 0< */
+FUNC_START(zero_less)   /* 0< */
         SAR2(  IMM(63), DTOP)
-FUNC_END(m4zero_less)
+FUNC_END(zero_less)
 
 
 #ifndef M4ONE_MINUS
-FUNC_START(m4one_minus) /* 1-   */
+FUNC_START(one_minus) /* 1-   */
         SUB2(  IMM(1), DTOP)
-FUNC_END(m4one_minus)
+FUNC_END(one_minus)
 #endif
 
 
 #ifndef M4ONE_PLUS
-FUNC_START(m4one_plus) /* 1+   */
+FUNC_START(one_plus) /* 1+   */
         ADD2(  IMM(1), DTOP)
-FUNC_END(m4one_plus)
+FUNC_END(one_plus)
 #endif
 
 
-FUNC_START(m4two_minus) /* 2-   m4th */
+FUNC_START(two_minus) /* 2-   m4th */
         SUB2(  IMM(2), DTOP)
-FUNC_END(m4two_minus)
+FUNC_END(two_minus)
 
 
-FUNC_START(m4two_plus)  /* 2+   m4th */
+FUNC_START(two_plus)  /* 2+   m4th */
         ADD2(  IMM(2), DTOP)
-FUNC_END(m4two_plus)
+FUNC_END(two_plus)
 
 
-FUNC_START(m4to_r) /* >r */
+FUNC_START(to_r) /* >r */
         RPUSH( RTOP)
         MOVE(  DTOP, RTOP)
         DPOP(  DTOP)
-FUNC_END(m4to_r)
+FUNC_END(to_r)
 
 
-FUNC_START(m4fetch) /* @ */
+FUNC_START(fetch) /* @ */
         LOAD(  DTOP, AT(DTOP))
-FUNC_END(m4fetch)
+FUNC_END(fetch)
 
 
-FUNC_START(m4and)
+FUNC_START(and)
         DPOP(  REG1)
         AND2(  REG1,  DTOP)
-FUNC_END(m4and)
+FUNC_END(and)
 
 
 #ifndef M4BL
-FUNC_START(m4bl)
+FUNC_START(bl)
         DPUSH( DTOP)
         MOVE(  IMM(32), DTOP)
-FUNC_END(m4bl)
+FUNC_END(bl)
 #endif
 
 
-FUNC_START(m4drop)
+FUNC_START(drop)
         DPOP(  DTOP)
-FUNC_END(m4drop)
+FUNC_END(drop)
 
 
-FUNC_START(m4depth)
+FUNC_START(depth)
         DPUSH( DTOP)
         LOAD(  DTOP, AT(M4TH, OFF_DEND))
         SUB2(  DSTK, DTOP)
         SAR2(  IMM(PSZ), DTOP)
-FUNC_END(m4depth)
+FUNC_END(depth)
 
 
-FUNC_START(m4dup)
+FUNC_START(dup)
         DPUSH( DTOP)
-FUNC_END(m4dup)
+FUNC_END(dup)
 
 
 #ifndef M4FALSE
-FUNC_START(m4false)
+FUNC_START(false)
         DPUSH( DTOP)
         ZERO(  DTOP)
-FUNC_END(m4false)
+FUNC_END(false)
 #endif
 
 
-FUNC_START(m4i)
+FUNC_START(i)
         DPUSH( DTOP)
         MOVE(  RTOP, DTOP)
-FUNC_END(m4i)
+FUNC_END(i)
 
 
-FUNC_START(m4i_star) /* i *  m4th */
+FUNC_START(i_star) /* i *  m4th */
         MUL2(  RTOP, DTOP)
-FUNC_END(m4i_star)
+FUNC_END(i_star)
 
 
-FUNC_START(m4i_plus) /* i +  m4th */
+FUNC_START(i_plus) /* i +  m4th */
         ADD2(  RTOP, DTOP)
-FUNC_END(m4i_plus)
+FUNC_END(i_plus)
 
 
-FUNC_START(m4i_minus) /* i -  m4th */
+FUNC_START(i_minus) /* i -  m4th */
         SUB2(  RTOP, DTOP)
-FUNC_END(m4i_minus)
+FUNC_END(i_minus)
 
 
-FUNC_START(m4i_prime) /* i' */
+FUNC_START(i_prime) /* i' */
         DPUSH( DTOP)
         LOAD(  DTOP, AT(RSTK))
-FUNC_END(m4i_prime)
+FUNC_END(i_prime)
 
+
+FUNC_START(invert)
+        NOT1(  DTOP)
+FUNC_END(invert)
 
 /**
  * get iteration index of outer do-loop.
  * must skip return stack used by innermost do-loop:
  *   i' i
  */
-FUNC_START(m4j)
+FUNC_START(j)
         DPUSH( DTOP)
         LOAD(  DTOP, AT(RSTK, SZ))
-FUNC_END(m4j)
+FUNC_END(j)
 
 
-FUNC_START(m4negate)
+FUNC_START(negate)
         NEG1(  DTOP)
-FUNC_END(m4negate)
+FUNC_END(negate)
 
 
-FUNC_START(m4nip)
+FUNC_START(nip)
         DPOP(  DTOP)
-FUNC_END(m4nip)
+FUNC_END(nip)
 
 
-FUNC_START(m4noop)
-FUNC_END(m4noop)
+FUNC_START(noop)
+FUNC_END(noop)
 
 
-FUNC_START(m4or)
+FUNC_START(or)
         DPOP(  REG1)
         ORR2(  REG1,  DTOP)
-FUNC_END(m4or)
+FUNC_END(or)
 
 
-FUNC_START(m4over)
+FUNC_START(over)
         DPUSH( DTOP)
         LOAD(  DTOP, AT(DSTK, SZ))
-FUNC_END(m4over)
+FUNC_END(over)
 
 
-FUNC_START(m4r_from) /* r> */
+FUNC_START(r_from) /* r> */
         DPUSH( DTOP)
         MOVE(  RTOP, DTOP)
         RPOP(  RTOP)
-FUNC_END(m4r_from)
+FUNC_END(r_from)
 
 
-FUNC_START(m4rot)
+FUNC_START(rot)
         LOAD(  REG1, AT(DSTK))
         STOR(  DTOP, AT(DSTK))
         LOAD(  DTOP, AT(DSTK, SZ))
         STOR(  REG1, AT(DSTK, SZ))
-FUNC_END(m4rot)
+FUNC_END(rot)
 
 
 #ifndef M4TRUE
-FUNC_START(m4true)
+FUNC_START(true)
         DPUSH( DTOP)
         MOVE(  IMM(-1), DTOP)
-FUNC_END(m4true)
+FUNC_END(true)
 #endif
 
 
 #ifndef M4SWAP
-FUNC_START(m4swap)
+FUNC_START(swap)
         LOAD(  REG1, AT(DSTK))
         STOR(  DTOP, AT(DSTK))
         MOVE(  REG1, DTOP)
-FUNC_END(m4swap)
+FUNC_END(swap)
 #endif
 
 
-FUNC_START(m4unloop)
+FUNC_START(unloop)
         LOAD(  RTOP, AT(RSTK, SZ)) /* load new top of rstack */
         ADD2(  IMM(SZ2), RSTK)     /* pop return stack twice */
-FUNC_END(m4unloop)
+FUNC_END(unloop)

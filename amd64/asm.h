@@ -18,7 +18,7 @@
 #ifndef M4TH_AMD64_ASM_H
 #define M4TH_AMD64_ASM_H
 
-#include "../m4th_asm.h"
+#include "../macro.h"
 
 #define SZ 8     /* width of registers, m4int and void* in bytes */
 #define SZ2 16   /* SZ * 2 */
@@ -26,7 +26,8 @@
 #define SZ4 32   /* SZ * 4 */
 #define SZ5 40   /* SZ * 5 */
 #define SZ6 48   /* SZ * 6 */
-#define SZ7 48   /* SZ * 7 */
+#define SZ7 56   /* SZ * 7 */
+#define SZ8 64   /* SZ * 8 */
 #define SZ9 72   /* SZ * 9 */
 #define SZ10 80  /* SZ * 10 */
 #define SZ12 96  /* SZ * 12 */
@@ -35,14 +36,24 @@
 #define SZ16 128 /* SZ * 16 */
 #define PSZ 3    /* (1 << PSZ) == SZ */
 
+#define ISZ SZ /* size of a forth instruction in bytes */
+
 #define IMM(constant) $constant /* immediate constant */
 
 /* clang-format off */
 
+/*
+ * SYS-V ABI:
+ * argument registers:     %rdi %rsi %rdx %rcx %r8 %r9
+ * return   registers:     %rax %rdx
+ * caller-saved registers: %r10 %r11 and argument/return registers
+ * callee-saved registers: %rbx %rbp %rsp %r12 %r13 %r14 %r15
+ */
 #define REG1  %rax  /* scratch register 1 */
 #define REG2  %rcx  /* scratch register 2 */
 #define REG3  %rdx  /* scratch register 3 */
-/* additional callee-saved registers: %rbp %r12 %r13 %r14 %r15 */
+/* additional scratch registers: %r8 %r9 %r10 %r11 */
+/* additional callee-saved registers: %rbp */
 
 #define REG1b %al   /* low 8 bits of REG1 */
 
@@ -54,10 +65,10 @@
 #define DSTK  %rsp  /* pointer to second data stack element */
 #define IP    %rdi  /* forth instruction pointer */
 #define RTOP  %rsi  /* value of first return stack element */
-#define RSTK  %r8   /* pointer to second return stack element */
-#define CSTK  %r9   /* pointer to code being compiled */
-#define M4TH  %r10  /* pointer to C struct m4th */
-#define RFFF  %r11  /* always contains -1 */
+#define RSTK  %r12  /* pointer to second return stack element */
+#define ISTK  %r13  /* pointer to code being compiled */
+#define M4TH  %r14  /* pointer to C struct m4th */
+#define RFFF  %r15  /* always contains -1 */
 #define RIP   %rip  /* x86-64 instruction pointer */
 
 #define AND2(src, dst)       and  src,     dst; /* dst &= src     */
@@ -68,6 +79,7 @@
 #define MOVE(src, dst)       mov  src,     dst; /* dst  = src     */
 #define MUL2(src, dst)       imul src,     dst; /* dst *= src     */
 #define NEG1(dst)            neg  dst;          /* dst  = -dst    */
+#define NOT1(dst)            not  dst;          /* dst  = ~dst    */
 #define ORR2(src, dst)       or   src,     dst; /* dst |= src     */
 #define SAR2(src, dst)       sar  src,     dst; /* dst >>= src    signed */
 #define SUB2(src, dst)       sub  src,     dst; /* dst -= src     */
@@ -76,14 +88,14 @@
 
 /* clang-format on */
 
-#define CPUSH1(val) /* push val to code array */                                                   \
-    mov val, (CSTK);                                                                               \
-    add $SZ, (CSTK);
+#define IPUSH1(val) /* push val to code array */                                                   \
+    mov val, (ISTK);                                                                               \
+    addq IMM(SZ), (ISTK);
 
-#define CPUSH2(a, b) /* push a, b to code array */                                                 \
-    mov b, SZ(CSTK);                                                                               \
-    mov a, (CSTK);                                                                                 \
-    add $SZ2, (CSTK);
+#define IPUSH2(a, b) /* push a, b to code array */                                                 \
+    mov b, SZ(ISTK);                                                                               \
+    mov a, (ISTK);                                                                                 \
+    addq IMM(SZ2), (ISTK);
 
 #define FADDR(fun, dst) lea fun(RIP), dst; /* load function address */
 

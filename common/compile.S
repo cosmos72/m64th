@@ -15,13 +15,13 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_M4TH_ASM_H
+#ifndef M4TH_ASM_S
 #error "common/compile.h can only be included from asm.S - do not attempt to use it directly"
 #endif
 
 /* literal: compile the literal number found on the stack */
-FUNC_START(m4literal)
+FUNC_START(literal)
         FADDR( m4_lit_, REG1)
-        CPUSH(REG1, DTOP)
+        IPUSH2(REG1, DTOP)
         DPOP(  DTOP)
-FUNC_END(m4literal)
+FUNC_END(literal)

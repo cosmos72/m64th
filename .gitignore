@@ -1,4 +1,6 @@
 m4th
 test
+a.out
 *.o
 *~
+.vscode

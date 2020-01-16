@@ -15,8 +15,12 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_DECL_H
-#define M4TH_DECL_H
+#ifndef M4TH_FUNC_DECL_H
+#define M4TH_FUNC_DECL_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * The following functions use m4th calling convention, not C !
@@ -25,12 +29,10 @@
  * operation is taking their address and appending it to m4th->code
  */
 
-void m4store(void);   /* !    */
-#define m4_0_ m4false /* 0    */
-#define m4__1_ m4true /* -1   */
-void m4_1_(void);     /* (1)    m4th: 1  */
-void m4_do_(void);    /* (do)   m4th     */
-void m4_lit_(void);   /* (lit)  m4th: must be followed by number */
+void m4store(void); /* !    */
+void m4_1_(void);   /* (1)    m4th: 1  */
+void m4_do_(void);  /* (do)   m4th     */
+void m4_lit_(void); /* (lit)  m4th: must be followed by number */
 /* (leave) m4th: must be followed by IP offset of 1st instruction after (loop) */
 void m4_leave_(void);
 /* (loop) m4th: must be followed by IP offset of 1st instruction after (do) */
@@ -73,6 +75,7 @@ void m4i_star(void);            /* i *  m4th */
 void m4i_plus(void);            /* i +  m4th */
 void m4i_minus(void);           /* i -  m4th */
 void m4i_prime(void);           /* i'   */
+void m4invert(void);            /* invert */
 void m4j(void);                 /* j    */
 void m4literal(void);           /* literal */
 void m4max(void);               /* max  */
@@ -90,4 +93,8 @@ void m4true(void);              /* true i.e. -1 */
 void m4unloop(void);            /* unloop */
 void m4xor(void);               /* xor  */
 
-#endif /* M4TH_DECL_H */
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* M4TH_FUNC_DECL_H */

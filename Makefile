@@ -13,7 +13,10 @@ all: m4th test
 clean:
 	rm -f m4th test *.o *~
 
-asm.o: asm.S $(wildcard *asm.h */asm.h */*.S)
+asm.o:  asm.S macro.h $(wildcard *asm.h */asm.h */*.S)
+m4th.o: m4th.c $(wildcard *.h)
+main.o: main.c $(wildcard *.h)
+test.o: test.c $(wildcard *.h)
 
 m4th: $(OBJS) main.o
 	$(CC) $(CFLAGS) -o $@ $^

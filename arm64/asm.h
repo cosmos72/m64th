@@ -18,7 +18,7 @@
 #ifndef M4TH_ARM64_ASM_H
 #define M4TH_ARM64_ASM_H
 
-#include "../m4th_asm.h"
+#include "../macro.h"
 
 #define SZ 8     /* width of registers, m4int and void* in bytes */
 #define SZ2 16   /* SZ * 2 */
@@ -26,7 +26,8 @@
 #define SZ4 32   /* SZ * 4 */
 #define SZ5 40   /* SZ * 5 */
 #define SZ6 48   /* SZ * 6 */
-#define SZ7 48   /* SZ * 7 */
+#define SZ7 56   /* SZ * 7 */
+#define SZ8 64   /* SZ * 8 */
 #define SZ9 72   /* SZ * 9 */
 #define SZ10 80  /* SZ * 10 */
 #define SZ12 96  /* SZ * 12 */
@@ -35,26 +36,37 @@
 #define SZ16 128 /* SZ * 16 */
 #define PSZ 3    /* (1 << PSZ) == SZ */
 
+#define ISZ SZ   /* size of a forth instruction in bytes */
+
 #define IMM(constant) constant /* immediate constant */
 
 /* clang-format off */
 
+/*
+ * aarch64 ABI:
+ * argument registers:     x0 ... x7
+ * return   registers:     x0 x1. also x8 for wider returns
+ * caller-saved registers: x9 ... x17 and argument/return registers
+ * callee-saved registers: x18 ... x30 and sp (i.e. x31)
+ */
+
 #define REG1  x0 /* scratch register 1 */
 #define REG2  x1 /* scratch register 2 */
 #define REG3  x2 /* scratch register 3 */
-/* additional scratch registers: x3 .. x9 */
+/* additional scratch registers:      x3 .. x17           */
+/* additional callee-saved registers: x18 x19 x27 ... x30 */
 
 #define REG1w w0 /* low 32 bits of REG1 */
 
-#define DTOP  x9 /* value of first data stack element */
-#define DTOPw w9 /* low 32 bits of DTOP */
+#define DTOP  x20 /* value of first data stack element */
+#define DTOPw w20 /* low 32 bits of DTOP */
 
-#define DSTK  x10 /* pointer to second data stack element */
-#define IP    x11 /* instruction pointer */
-#define RTOP  x12 /* value of first return stack element */
-#define RSTK  x13 /* pointer to second return stack element */
-#define CSTK  x14 /* pointer to code being compiled */
-#define M4TH  x15 /* pointer to C struct m4th */
+#define DSTK  x21 /* pointer to second data stack element */
+#define IP    x22 /* instruction pointer */
+#define RTOP  x23 /* value of first return stack element */
+#define RSTK  x24 /* pointer to second return stack element */
+#define ISTK  x25 /* pointer to code being compiled */
+#define M4TH  x26 /* pointer to C struct m4th */
 
 
 #define ADD2(src,dst)    add  dst, dst, src;    /* dst += src     */
@@ -67,6 +79,7 @@
 #define MOVE(src,dst)    mov  dst, src;         /* dst  = src     */
 #define MUL2(src,dst)    mul  dst, dst, src;    /* dst *= src     */
 #define NEG1(dst)        neg  dst, dst;         /* dst  = -dst    */
+#define NOT1(dst)        mvn  dst, dst;         /* dst  = ~dst    */
 #define ORR2(src,dst)    orr  dst, dst, src;    /* dst |= src     */
 #define SAR2(src,dst)    asr  dst, dst, src;    /* dst >>= src    signed */
 #define SUB2(src,dst)    sub  dst, dst, src;    /* dst -= src     */
@@ -75,12 +88,12 @@
 #define ZERO(dst)        mov  dst, 0;           /* dst  = 0       */
 
 
-#define CPUSH1(val)   /* push val to code array */  \
-    str   val, [CSTK], SZ;
+#define IPUSH1(val)   /* push val to code array */  \
+    str   val, [ISTK], SZ;
 
-#define CPUSH2(a, b)  /* push a, b to code array */ \
-    str   b,   [CSTK,  SZ];                         \
-    str   a,   [CSTK], SZ2;                         \
+#define IPUSH2(a, b)  /* push a, b to code array */ \
+    str   b,   [ISTK,  SZ];                         \
+    str   a,   [ISTK], SZ2;                         \
 
 #define FADDR(fun, dst) /* load function address */ \
     adrp  dst,  fun;             /* high 21 bits */ \

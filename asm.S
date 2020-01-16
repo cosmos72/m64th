@@ -15,9 +15,11 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#ifndef M4TH_ASM_S
+#define M4TH_ASM_S
+
         .file "asm.S"
         .text
-
 
 #if defined(__x86_64__)
 #include "amd64/arith.S"
@@ -36,5 +38,9 @@
 #include "common/arith.S"
 #include "common/compile.S"
 
+#include "common/dictionary.S" /* must be last one */
+
         .ident "m4th 0.0.0"
         .section .note.GNU-stack,"",@progbits
+
+#endif /* M4TH_ASM_S */
