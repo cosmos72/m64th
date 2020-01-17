@@ -158,7 +158,7 @@ FUNC_END(c_store)
 
 
 FUNC_START(c_fetch) /* c@ */
-        movzbq (DTOP), DTOP;
+        movzbl (DTOP), DTOPw;
 FUNC_END(c_fetch)
 
 
@@ -167,6 +167,13 @@ FUNC_START(false)
         DPUSH( DTOP)
         ZERO(  DTOPw)
 FUNC_END(false)
+
+
+FUNC_START(lshift)
+        MOVE(  DTOP, %rcx)
+        DPOP(  DTOP)
+        SHL2(  %cl,  DTOP)
+FUNC_END(lshift)
 
 
 FUNC_START(max)
@@ -189,6 +196,13 @@ FUNC_START(mod)
         idiv   DTOP;
         MOVE(  %rdx, DTOP) /* remainder */
 FUNC_END(mod)
+
+
+FUNC_START(rshift)
+        MOVE(  DTOP, %rcx)
+        DPOP(  DTOP)
+        SHR2(  %cl,  DTOP)
+FUNC_END(rshift)
 
 
 #define M4SWAP

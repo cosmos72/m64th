@@ -116,6 +116,12 @@ FUNC_START(c_fetch) /* c@ */
 FUNC_END(c_fetch)
 
 
+FUNC_START(lshift)
+        DPOP(  REG1)
+        lsl    DTOP, REG1, DTOP;
+FUNC_END(lshift)
+
+
 FUNC_START(max)
         DPOP(  REG2)
         cmp    REG2, DTOP;
@@ -135,6 +141,12 @@ FUNC_START(mod)
         DIV3(  REG1, DTOP, REG2)
         msub   DTOP, REG2, DTOP, REG1;
 FUNC_END(mod)
+
+
+FUNC_START(rshift)
+        DPOP(  REG1)
+        lsr    DTOP, REG1, DTOP;
+FUNC_END(rshift)
 
 
 FUNC_START(xor)

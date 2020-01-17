@@ -82,6 +82,8 @@
 #define NOT1(dst)            not  dst;          /* dst  = ~dst    */
 #define ORR2(src, dst)       or   src,     dst; /* dst |= src     */
 #define SAR2(src, dst)       sar  src,     dst; /* dst >>= src    signed */
+#define SHL2(src,dst)        shl  src,     dst; /* dst <<= src    */
+#define SHR2(src,dst)        shr  src,     dst; /* dst >>= src    unsigned */
 #define SUB2(src, dst)       sub  src,     dst; /* dst -= src     */
 #define STOR(reg, mem)       mov  reg,     mem; /* *mem = reg     */
 #define ZERO(dst)            xor  dst,     dst; /* dst  = 0       */

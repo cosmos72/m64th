@@ -73,13 +73,14 @@ extern const m4word m4word_drop;              /* drop */
 extern const m4word m4word_dup;               /* dup  */
 extern const m4word m4word_false;             /* false i.e. 0 */
 extern const m4word m4word_i;                 /* i    */
-extern const m4word m4word_i_star;            /* i *  m4th */
-extern const m4word m4word_i_plus;            /* i +  m4th */
-extern const m4word m4word_i_minus;           /* i -  m4th */
+extern const m4word m4word_i_star;            /* i*   m4th */
+extern const m4word m4word_i_plus;            /* i+   m4th */
+extern const m4word m4word_i_minus;           /* i-   m4th */
 extern const m4word m4word_i_prime;           /* i'   */
 extern const m4word m4word_invert;            /* invert  */
 extern const m4word m4word_j;                 /* j    */
 extern const m4word m4word_literal;           /* literal */
+extern const m4word m4word_lshift;            /* lshift  */
 extern const m4word m4word_max;               /* max  */
 extern const m4word m4word_min;               /* min  */
 extern const m4word m4word_mod;               /* mod  */
@@ -90,6 +91,7 @@ extern const m4word m4word_or;                /* or   */
 extern const m4word m4word_over;              /* over */
 extern const m4word m4word_r_from;            /* r>   */
 extern const m4word m4word_rot;               /* rot  */
+extern const m4word m4word_rshift;            /* rshift  */
 extern const m4word m4word_swap;              /* swap */
 extern const m4word m4word_true;              /* true i.e. -1 */
 extern const m4word m4word_unloop;            /* unloop */

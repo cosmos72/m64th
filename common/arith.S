@@ -209,7 +209,7 @@ FUNC_START(nip)
 FUNC_END(nip)
 
 
-FUNC_START(noop)
+FUNC_START(noop) /* no-op m4th */
 FUNC_END(noop)
 
 

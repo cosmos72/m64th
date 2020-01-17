@@ -77,13 +77,14 @@ void m4dup(m4arg _);               /* dup  */
 void m4exit(m4arg _);              /* exit */
 void m4false(m4arg _);             /* false i.e. 0 */
 void m4i(m4arg _);                 /* i    */
-void m4i_star(m4arg _);            /* i *  m4th */
-void m4i_plus(m4arg _);            /* i +  m4th */
-void m4i_minus(m4arg _);           /* i -  m4th */
+void m4i_star(m4arg _);            /* i*   m4th */
+void m4i_plus(m4arg _);            /* i+   m4th */
+void m4i_minus(m4arg _);           /* i-   m4th */
 void m4i_prime(m4arg _);           /* i'   */
-void m4invert(m4arg _);            /* invert */
+void m4invert(m4arg _);            /* invert  */
 void m4j(m4arg _);                 /* j    */
 void m4literal(m4arg _);           /* literal */
+void m4lshift(m4arg _);            /* lshift  */
 void m4max(m4arg _);               /* max  */
 void m4min(m4arg _);               /* min  */
 void m4mod(m4arg _);               /* mod  */
@@ -94,6 +95,7 @@ void m4or(m4arg _);                /* or   */
 void m4over(m4arg _);              /* over */
 void m4r_from(m4arg _);            /* r>   */
 void m4rot(m4arg _);               /* rot  */
+void m4rshift(m4arg _);            /* rshift  */
 void m4swap(m4arg _);              /* swap */
 void m4true(m4arg _);              /* true i.e. -1 */
 void m4unloop(m4arg _);            /* unloop */
