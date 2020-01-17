@@ -168,15 +168,76 @@ void m4th_flags_print(m4flags fl, FILE *out) {
     if (!fl) {
         fputc('0', out);
     }
-    if (fl & m4flag_immediate) {
-        fputs("immediate", out);
+    if (fl & m4flag_addr_mask) {
+        const char* s = NULL;
+        switch (fl & m4flag_addr_mask) {
+	 case m4flag_addr_fetch:
+	   s = "addr_fetch";
+	   break;
+	 case m4flag_addr_store:
+	   s = "addr_store";
+	   break;
+	}
+        if (s != NULL) {
+	    if (printed++) {
+		fputc('|', out);
+	    }
+	    fputs(s, out);
+	}
+    }
+    if (fl & m4flag_compile_only) {
+        fputs("compile_only", out);
         printed++;
     }
-    if (fl & m4flag_inline) {
-        fputs(printed++ ? "|inline" : "inline", out);
+    if (fl & m4flag_consumes_ip_mask) {
+        m4char ch = 0;
+        switch (fl & m4flag_consumes_ip_mask) {
+	 case m4flag_consumes_ip_1:
+	   ch = '1';
+	   break;
+	 case m4flag_consumes_ip_2:
+	   ch = '2';
+	   break;
+	 case m4flag_consumes_ip_4:
+	   ch = '4';
+	   break;
+	 case m4flag_consumes_ip_8:
+	   ch = '8';
+	   break;
+	}
+        if (ch != 0) {
+	    if (printed++) {
+		fputc('|', out);
+	    }
+	    fputs("consumes_ip_", out);
+	    fputc(ch, out);
+	}
     }
-    if (fl & m4flag_inline_native) {
-        fputs(printed++ ? "|inline_native" : "inline_native", out);
+    if (fl & m4flag_immediate) {
+        fputs(printed++ ? "|immediate" : "immediate", out);
+    }
+    if (fl & m4flag_inline_mask) {
+        if (printed++) {
+	    fputc('|', out);
+	}
+        switch (fl & m4flag_inline_mask) {
+	 case m4flag_inline:
+	 default:
+	   fputs("inline", out);
+	   break;
+	 case m4flag_inline_always:
+	   fputs("inline_always", out);
+	   break;
+	 case m4flag_inline_native:
+	   fputs("inline_native", out);
+	   break;
+	}
+    }
+    if (fl & m4flag_jump) {
+        fputs(printed++ ? "|jump" : "jump", out);
+    }
+    if ((fl & m4flag_pure_mask) == m4flag_pure) {
+        fputs(printed++ ? "|pure" : "pure", out);
     }
 }
 
@@ -187,6 +248,21 @@ void m4th_wordname_print(const m4wordname *n, FILE *out) {
     fwrite(n->name, 1, n->name_len, out);
 }
 
+void m4th_word_stack_print(uint8_t stack_in_out, FILE *out) {
+    uint8_t n = stack_in_out & 0xF;
+    if (n == 0xF) {
+        fputc('?', out);
+    } else {
+        fprintf(out, "%u", (unsigned)n);
+    }
+    n = stack_in_out >> 4;
+    if (n == 0xF) {
+        fputs(" -> ?", out);
+    } else {
+        fprintf(out, " -> %u", (unsigned)n);
+    }
+}
+
 void m4th_word_print(const m4word *w, FILE *out) {
     if (w == NULL || out == NULL) {
         return;
@@ -194,6 +270,10 @@ void m4th_word_print(const m4word *w, FILE *out) {
     m4th_wordname_print(m4th_word_name(w), out);
     fputs(" {\n\tflags:\t", out);
     m4th_flags_print((m4flags)w->flags, out);
+    fputs(" \n\tdata_stack:\t", out);
+    m4th_word_stack_print(w->dstack, out);
+    fputs(" \n\treturn_stack:\t", out);
+    m4th_word_stack_print(w->rstack, out);
     fprintf(out, "\n\tinline_native_len:\t%u\n\tcode_len:\t%u\n\tdata_len:\t%u\n}\n",
             (unsigned)w->inline_native_len, (unsigned)w->code_len, (unsigned)w->data_len);
 }

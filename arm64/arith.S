@@ -128,7 +128,7 @@ FUNC_START(min)
         cmp    REG2, DTOP;
         csel   DTOP, REG2, DTOP, lt
 FUNC_END(min)
-        
+
 /* signed remainder */
 FUNC_START(mod)
         DPOP(  REG1)

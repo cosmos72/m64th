@@ -35,6 +35,8 @@ int main(int argc, char *argv[]) {
 
     m4th_del(m);
 
+    m4th_dict_print(&m4word_noop, stdout);
+    m4th_dict_print(&m4word_bye, stdout);
     m4th_dict_print(&m4word_xor, stdout);
 
     /* suppress 'unused parameter' warning */

@@ -71,6 +71,17 @@ FUNC_START(bye)
 FUNC_RAWEND(bye)
 
 
+/** must be followed by address of a forth function. calls it. */
+FUNC_START(_call_)
+        RPUSH( RTOP)
+        /* load function address */
+        LOAD(  IP,   AT(IP, SZ))
+        /* execution will resume at IP + SZ2 after called function returns */
+        lea    AT(IP, SZ2), RTOP
+        /* jump to function */
+        jmp    *(IP);
+FUNC_RAWEND(_call_)
+
 /** return from word being executed (i.e. current function) */
 FUNC_START(exit)
         MOVE(  RTOP, IP)

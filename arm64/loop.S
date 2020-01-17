@@ -25,19 +25,30 @@ FUNC_START(_do_)
         DPOP(  DTOP)                 /* reload dstack top     */
 FUNC_END(_do_)
 
+/*
+ * must be followed by IP offset of first instruction after (loop)
+ * IP offset = 0 means (?do) itself
+ */
+FUNC_START(_question_do_)
+        LOAD(  REG2, AT(RSTK))
+        cmp    REG2, RTOP;
+        b.ne   FUNC_SYM(_do_);
+        /* FALLTHROUGH into _leave_ */
 
 /*
  * must be followed by IP offset of first instruction after (loop)
  * IP offset = 0 means (leave) itself
  */
-FUNC_START(_leave_)
+FUNC_DEF_SYM(_leave_)
+/* FUNC_START(_leave_) */
         LOAD(  REG2, AT(IP, SZ))
         LOAD(  RTOP, AT(RSTK, SZ)) /* load new top of rstack      */
         add    IP, IP, REG2, lsl 3;/* IP = TARGET_IP              */
         ADD2(  IMM(SZ2), RSTK)     /* drop i' i from return stack */
         LOAD(  REG3, AT(IP))
         br     REG3;               /* jump to instruction after (loop) */
-FUNC_RAWEND(_leave_)
+/* FUNC_RAWEND(_leave_) */
+FUNC_RAWEND(_question_do_)
 
 /*
  * must be followed by IP offset of first instruction after (do) - usually < 0

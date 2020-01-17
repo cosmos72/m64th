@@ -25,15 +25,33 @@
 #include <stdio.h>     /* FILE     */
 #include <sys/types.h> /* ssize_t  */
 
+typedef struct m4arg_s m4arg; /* intentionally incomplete type, cannot be instantiated */
+
 typedef unsigned char m4char;
 typedef size_t m4uint;
 typedef ssize_t m4int;
-typedef void (*m4instr)(void);
+/** forth instruction. uses forth calling convention, cannot be invoked from C */
+typedef void (*m4instr)(m4arg);
+
 typedef char assert_sizeof_m4instr_equals_sizeof_m4int[sizeof(m4instr) == sizeof(m4int) ? 1 : -1];
 typedef enum m4flags_e {
+    m4flag_addr_mask = M4FLAG_ADDR_MASK,
+    m4flag_addr_fetch = M4FLAG_ADDR_FETCH,
+    m4flag_addr_store = M4FLAG_ADDR_STORE,
+    m4flag_compile_only = M4FLAG_COMPILE_ONLY,
     m4flag_immediate = M4FLAG_IMMEDIATE,
+    m4flag_inline_mask = M4FLAG_INLINE_MASK,
     m4flag_inline = M4FLAG_INLINE,
+    m4flag_inline_always = M4FLAG_INLINE_ALWAYS,
     m4flag_inline_native = M4FLAG_INLINE_NATIVE,
+    m4flag_jump = M4FLAG_JUMP,
+    m4flag_pure_mask = M4FLAG_PURE_MASK,
+    m4flag_pure = M4FLAG_PURE,
+    m4flag_consumes_ip_mask = M4FLAG_CONSUMES_IP_MASK,
+    m4flag_consumes_ip_1 = M4FLAG_CONSUMES_IP_1,
+    m4flag_consumes_ip_2 = M4FLAG_CONSUMES_IP_2,
+    m4flag_consumes_ip_4 = M4FLAG_CONSUMES_IP_4,
+    m4flag_consumes_ip_8 = M4FLAG_CONSUMES_IP_8,
 } m4flags;
 
 typedef struct m4cspan_s m4cspan;
@@ -62,19 +80,21 @@ struct m4code_s {
     m4instr *end;
 };
 
-struct m4wordname_s { /* word name                                    */
-    m4char name_len;  /* name length, in bytes                        */
-    m4char name[1];   /* name. does NOT end with '\0'                 */
+struct m4wordname_s { /**< word name                                    */
+    m4char name_len;  /**< name length, in bytes                        */
+    m4char name[1];   /**< name. does NOT end with '\0'                 */
 };
 
 struct m4word_s {
-    int32_t name_off;          /* offset of m4wordname, in bytes               */
-    int32_t prev_off;          /* offset of previous word, in bytes. 0 = not present */
-    uint8_t flags;             /* m4flags                                      */
-    uint8_t inline_native_len; /* native inline size, in bytes                 */
-    uint16_t code_len;         /* forth code size, in bytes                    */
-    uint32_t data_len;         /* data size, in bytes                          */
-    m4char code[0];            /* code starts at [0], data starts at [code_len]*/
+    int32_t prev_off;          /**< offset of previous word, in bytes. 0 = not present */
+    int16_t name_off;          /**< offset of m4wordname,    in bytes. 0 = not present */
+    uint8_t flags;             /**< m4flags                                            */
+    uint8_t dstack;            /**< dstack # in and # out. 0xFF if unknown or variable */
+    uint8_t rstack;            /**< rstack # in and # out. 0xFF if unknown or variable */
+    uint8_t inline_native_len; /**< native inline size, in bytes                       */
+    uint16_t code_len;         /**< forth code size, in bytes                          */
+    uint32_t data_len;         /**< data size, in bytes                                */
+    m4char code[0];            /**< code starts at [0], data starts at [code_len]      */
 };
 
 struct m4th_s {

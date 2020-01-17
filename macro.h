@@ -20,6 +20,11 @@
 
 #include "m4th_macro.h" /* also define public macros */
 
+#define CAT2_(a,b) a##b
+#define CAT2(a,b)  CAT2_(a,b)
+
+#define M4FLAG_CONSUMES_IP_SZ CAT2(M4FLAG_CONSUMES_IP_,SZ)
+
 /* internal m4th macros used (mostly) by assembly */
 
 /* clang-format off */
@@ -98,8 +103,6 @@
 
 /* ------------- WORD ------------- */
 
-#define _1st(a, ...)                    a
-
 #define WORD_SYM(name)                                                                             \
     m4word_##name
 
@@ -109,23 +112,18 @@
     .type  WORD_SYM(name), @object;                                                                \
     WORD_SYM(name):
 
-#define WORD_START(...)                                                                            \
-    WORD_DEF_SYM(_1st(__VA_ARGS__))                                                                \
-    WORD_NAME_OFF(_1st(__VA_ARGS__))                                                               \
-    WORD_PREV(__VA_ARGS__)
+#define WORD_START(name, prev)                                                                     \
+    WORD_DEF_SYM(name)                                                                             \
+    WORD_PREV_OFF(name, prev)                                                                      \
+    WORD_NAME_OFF(name)
 
-/*
- * expand     WORD_PREV(name)      -> WORD_PREV_NONE()
- * and expand WORD_PREV(name,prev) -> WORD_PREV_OFF(name, prev)
- */
-#define WORD_PREV_(name,prev,kind, ...) WORD_PREV_##kind(name, prev)
-#define WORD_PREV(...)                  WORD_PREV_(__VA_ARGS__, OFF, NONE)
-
-#define WORD_NAME_NONE(...)             .4byte 0 ;
-#define WORD_NAME_OFF(name)             .4byte WORD_SYM(name) - WORDNAME_SYM(name) ;
-#define WORD_PREV_NONE(...)             .4byte 0 ;
 #define WORD_PREV_OFF(name,prev)        .4byte WORD_SYM(name) - WORD_SYM(prev) ;
+#define WORD_NAME_OFF(name)             .2byte WORD_SYM(name) - WORDNAME_SYM(name) ;
 #define WORD_FLAGS(flags)               .byte  flags;
+#define WORD_DSTACK(in, out)            .byte  ((in) & 0xF) | (((out) & 0xF) << 4);
+#define WORD_DSTACK_UNKNOWN()           .byte  0xFF;
+#define WORD_RSTACK(in, out)            .byte  ((in) & 0xF) | (((out) & 0xF) << 4);
+#define WORD_RSTACK_UNKNOWN()           .byte  0xFF;
 #define WORD_INLINE_NATIVE_LEN(name)    .byte  FUNC_SYM_NEXT(name) - FUNC_SYM(name);
 #define WORD_INLINE_NATIVE_LEN_0()      .byte  0;
 #define WORD_CODE_N(n_instr)            .2byte (n_instr) * ISZ;
@@ -139,18 +137,24 @@
 #define WORD_DATA_8(...)                .8byte __VA_ARGS__;
 #define WORD_END(name)                  .size WORD_SYM(name), . - WORD_SYM(name);
 
-#define WORD_INLINE_NATIVE_CODE_1(name)                                                            \
-    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_INLINE_NATIVE)                                               \
+#define WORD_BODY_SIMPLE(name, flags, dstack, rstack)                                              \
+    WORD_FLAGS(flags)                                                                              \
+    WORD_##dstack                                                                                  \
+    WORD_##rstack                                                                                  \
     WORD_INLINE_NATIVE_LEN(name)                                                                   \
     WORD_CODE_N(2)                                                                                 \
     WORD_DATA_N(0)                                                                                 \
     WORD_CODE_FUNC(name)                                                                           \
     WORD_CODE_FUNC(exit)
 
-#define WORD_SIMPLE(...)                                                                           \
-    WORD_START(__VA_ARGS__)                                                                        \
-    WORD_INLINE_NATIVE_CODE_1(_1st(__VA_ARGS__))                                                   \
-    WORD_END(_1st(__VA_ARGS__))
+#define WORD_IMPURE M4FLAG_INLINE|M4FLAG_INLINE_NATIVE
+#define WORD_PURE   M4FLAG_INLINE|M4FLAG_INLINE_NATIVE|M4FLAG_PURE
+
+#define WORD(name, prev, dstack, rstack, flags)                                                    \
+    WORD_START(name, prev)                                                                         \
+    WORD_BODY_SIMPLE(name, flags, dstack, rstack)                                                  \
+    WORD_END(name)
+
 
 /* expand AT(addr) -> AT0(addr) and AT(addr, i) -> ATx(addr, i) */
 #define AT_0(addr, i)                   AT0(addr)

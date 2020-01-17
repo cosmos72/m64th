@@ -33,6 +33,8 @@ extern "C" {
 
 extern const m4word m4word_store;             /* !    */
 extern const m4word m4word__1_;               /* (1)     m4th */
+extern const m4word m4word__question_do_;     /* (?do)   m4th */
+extern const m4word m4word__call_;            /* (call)  m4th */
 extern const m4word m4word__do_;              /* (do)    m4th */
 extern const m4word m4word__lit_;             /* (lit)   m4th */
 extern const m4word m4word__leave_;           /* (leave) m4th */

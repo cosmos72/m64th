@@ -15,32 +15,6 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-const char buf[] = "foobar";
-
-long invert(long dtop) {
-    return ~dtop;
-}
-
-void _lit_(void) {
-}
-
-void literal(long dtop, long *cstk) {
-    *cstk++ = (long)_lit_;
-    *cstk++ = dtop;
-}
-
-long equals(long a, long b, long ttrue) {
-    return a == b ? ttrue : 0;
-}
-
-long zero_equals(long a, long ttrue) {
-    return a == 0 ? ttrue : 0;
-}
-
-long zero_less_than(long a) {
-    return a < 0 ? -1 : 0;
-}
-
-long zero_greater_than(long a, long ttrue) {
-    return a > 0 ? ttrue : 0;
+long c_fetch(const unsigned char *addr) {
+    return (long)*addr;
 }

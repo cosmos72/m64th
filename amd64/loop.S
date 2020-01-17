@@ -26,18 +26,29 @@ FUNC_START(_do_)
         SUB2(  IMM(SZ2),  RSTK)      /* update rstack pointer */
 FUNC_END(_do_)
 
+/*
+ * must be followed by IP offset of first instruction after (loop)
+ * IP offset = 0 means (?do) itself
+ */
+FUNC_START(_question_do_)
+        cmp    RTOP, AT(RSTK);
+        jne    FUNC_SYM(_do_);
+        /* FALLTHROUGH into _leave_ */
+
 
 /*
  * must be followed by IP offset of first instruction after (loop)
  * IP offset = 0 means (leave) itself
  */
-FUNC_START(_leave_)
+FUNC_DEF_SYM(_leave_)
+/* FUNC_START(_leave_) */
         LOAD(  REG2, AT(IP, SZ))
         LOAD(  RTOP, AT(RSTK, SZ)) /* load new top of rstack      */
         lea    (IP, REG2, SZ), IP; /* IP = TARGET_IP              */
         ADD2(  IMM(SZ2), RSTK)     /* drop i' i from return stack */
         jmp    *(IP);              /* jump to instruction after (loop) */
-FUNC_RAWEND(_leave_)
+/* FUNC_RAWEND(_leave_) */
+FUNC_RAWEND(_question_do_)
 
 /*
  * must be followed by IP offset of first instruction after (do) - usually < 0
