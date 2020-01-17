@@ -71,10 +71,10 @@ FUNC_RAWEND(bye)
 /** must be followed by address of a forth function. calls it. */
 FUNC_START(_call_)
         RPUSH( RTOP)
-        /* load function address */
-        LOAD(  IP,   AT(IP, SZ))
         /* execution will resume at IP + SZ2 after called function returns */
         ADD3(  IP,   IMM(SZ2), RTOP)
+        /* load function address */
+        LOAD(  IP,   AT(IP, SZ))
         /* jump to function */
         LOAD(  REG1, AT(IP))
         br     REG1;

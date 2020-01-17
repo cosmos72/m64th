@@ -136,6 +136,16 @@ FUNC_START(drop)
 FUNC_END(drop)
 
 
+FUNC_START(cell_plus) /* cell+ */
+        ADD2(  IMM(SZ), DTOP)
+FUNC_END(cell_plus)
+
+
+FUNC_START(cells) /* cells does SZ * */
+        SHL2(  IMM(PSZ), DTOP)
+FUNC_END(cells)
+
+
 FUNC_START(depth)
         DPUSH( DTOP)
         LOAD(  DTOP, AT(M4TH, OFF_DEND))

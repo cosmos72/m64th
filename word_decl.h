@@ -68,7 +68,11 @@ extern const m4word m4word_bl;                /* bl   */
 extern const m4word m4word_bye;               /* bye  tools ext */
 extern const m4word m4word_c_store;           /* c!   */
 extern const m4word m4word_c_fetch;           /* c@   */
-extern const m4word m4word_depth;             /* depth */
+extern const m4word m4word_cell_plus;         /* cell+   */
+extern const m4word m4word_cells;             /* cells   */
+extern const m4word m4word_char_plus;         /* char+   */
+extern const m4word m4word_chars;             /* chars   */
+extern const m4word m4word_depth;             /* depth   */
 extern const m4word m4word_drop;              /* drop */
 extern const m4word m4word_dup;               /* dup  */
 extern const m4word m4word_false;             /* false i.e. 0 */

@@ -22,6 +22,27 @@
 #include <stdio.h>  /* fprintf(), fputs() */
 #include <string.h> /* memcpy() */
 
+enum { SZ = sizeof(m4int) };
+
+static m4int crctable[256];
+
+static void crcfill(m4int table[256]) {
+    int i, j;
+
+    for (i = 0; i < 256; i++) {
+        uint32_t rem = i;
+        for (j = 0; j < 8; j++) {
+            if (rem & 1) {
+                rem >>= 1;
+                rem ^= 0xedb88320;
+            } else {
+                rem >>= 1;
+            }
+        }
+        table[i] = rem;
+    }
+}
+
 enum { m4test_code_n = 6 };
 enum { m4test_stack_n = 5 };
 enum { tfalse = (m4int)0, ttrue = (m4int)-1 };
@@ -44,8 +65,18 @@ typedef struct m4test_s {
     m4test_code generated;
 } m4test;
 
+#if 0
+/* : crc+ ( crc n -- crc' ) over xor $ff and  cells crctbl + @  swap 8 rshift xor ; */
+static const m4instr test_func_crc1byte[] = {
+    m4over, m4xor,   m4_lit_,    (m4instr)0xFF, m4and, m4cells, (m4instr)crctable, m4plus, m4store,
+    m4swap, m4_lit_, (m4instr)8, m4rshift,      m4xor, m4exit,
+};
+#endif /* 0 */
+
 static const m4test test[] = {
     {"(1))", {m4_1_, m4bye}, {{0}, {0}}, {{1, {1}}, {0}}, {}},
+    {"(call) noop", {m4_call_, (m4instr)m4word_noop.code, m4bye}, {{0}, {0}}, {{0}, {0}}, {}},
+    {"(call) true", {m4_call_, (m4instr)m4word_true.code, m4bye}, {{0}, {0}}, {{1, {-1}}, {0}}, {}},
     {"0 1 (do)", {m4_do_, m4bye}, {{2, {0, 1}}, {0}}, {{0}, {2, {0, 1}}}, {}},
     {"1 0 (do)", {m4_do_, m4bye}, {{2, {1, 0}}, {0}}, {{0}, {2, {1, 0}}}, {}},
     {"(leave)", {m4_leave_, (m4instr)2, m4bye}, {{0}, {2, {0, 1}}}, {{0}, {0}}, {}},
@@ -107,6 +138,10 @@ static const m4test test[] = {
     {"-3 abs", {m4abs, m4bye}, {{1, {-3}}, {0}}, {{1, {3}}, {0}}, {}},
     {"-7 14 and", {m4and, m4bye}, {{2, {-7, 14}}, {0}}, {{1, {-7 & 14}}, {0}}, {}},
     {"bl", {m4bl, m4bye}, {{0}, {0}}, {{1, {' '}}, {0}}, {}},
+    {"cell+", {m4cell_plus, m4bye}, {{1, {12}}, {0}}, {{1, {SZ + 12}}, {0}}, {}},
+    {"cells", {m4cells, m4bye}, {{1, {3}}, {0}}, {{1, {SZ * 3}}, {0}}, {}},
+    {"char+", {m4char_plus, m4bye}, {{1, {6}}, {0}}, {{1, {7}}, {0}}, {}},
+    {"chars", {m4chars, m4bye}, {{1, {8}}, {0}}, {{1, {8}}, {0}}, {}},
     {"depth", {m4depth, m4bye}, {{0}, {0}}, {{1, {0}}, {0}}, {}},
     {"_ depth", {m4depth, m4bye}, {{1, {3}}, {0}}, {{2, {3, 1}}, {0}}, {}},
     {"_ _ depth", {m4depth, m4bye}, {{2, {3, 4}}, {0}}, {{3, {3, 4, 2}}, {0}}, {}},
@@ -220,6 +255,8 @@ m4int m4th_test(m4th *m, FILE *out) {
 }
 
 int main(int argc, char *argv[]) {
+    crcfill(crctable);
+
     m4th *m = m4th_new();
 
     m4int err = m4th_test(m, stdout);

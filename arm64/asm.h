@@ -83,7 +83,6 @@
 #define ORR2(src,dst)    orr  dst, dst, src;    /* dst |= src     */
 #define SAR2(src,dst)    asr  dst, dst, src;    /* dst >>= src    signed   */
 #define SHL2(src,dst)    lsl  dst, dst, src;    /* dst <<= src    */
-#define SHR2(src,dst)    lsr  dst, dst, src;    /* dst >>= src    unsigned */
 #define SUB2(src,dst)    sub  dst, dst, src;    /* dst -= src     */
 #define SUB3(a,b,dst)    sub  dst, a, b;        /* dst  = a - b   */
 #define STOR(reg,mem)    str  reg, mem;         /* *mem = reg     */

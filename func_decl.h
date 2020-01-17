@@ -71,7 +71,11 @@ void m4bl(m4arg _);                /* bl   */
 void m4bye(m4arg _);               /* bye  tools ext */
 void m4c_store(m4arg _);           /* c!   */
 void m4c_fetch(m4arg _);           /* c@   */
-void m4depth(m4arg _);             /* depth */
+void m4cell_plus(m4arg _);         /* cell+   */
+void m4cells(m4arg _);             /* cells   */
+#define m4char_plus m4one_plus     /* char+   */
+#define m4chars m4noop             /* chars   */
+void m4depth(m4arg _);             /* depth   */
 void m4drop(m4arg _);              /* drop */
 void m4dup(m4arg _);               /* dup  */
 void m4exit(m4arg _);              /* exit */
