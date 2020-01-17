@@ -51,13 +51,14 @@ FUNC_RAWEND(th_enter)
  * return to C
  */
 FUNC_START(bye)
-        RPUSH( RTOP)                     /* save first return stack element */
-        DPUSH( DTOP)                     /* save first data   stack element */
-        STOR(  IP,   AT(M4TH, OFF_IP))   /* save instruction  pointer       */
-        STOR(  ISTK, AT(M4TH, OFF_ISTK)) /* save code   array pointer       */
-        STOR(  RSTK, AT(M4TH, OFF_RSTK)) /* save return stack pointer       */
-        STOR(  DSTK, AT(M4TH, OFF_DSTK)) /* save data   stack pointer       */
-        LOAD(  x20,  AT(sp))             /* load C registers                */
+	ADD2(  IMM(SZ), IP)               /* point IP to next instruction    */
+        RPUSH( RTOP)                      /* save first return stack element */
+        DPUSH( DTOP)                      /* save first data   stack element */
+        STOR(  IP,   AT(M4TH, OFF_IP))    /* save instruction  pointer       */
+        STOR(  ISTK, AT(M4TH, OFF_ISTK))  /* save code   array pointer       */
+        STOR(  RSTK, AT(M4TH, OFF_RSTK))  /* save return stack pointer       */
+        STOR(  DSTK, AT(M4TH, OFF_DSTK))  /* save data   stack pointer       */
+        LOAD(  x20,  AT(sp))              /* load C registers                */
         LOAD(  x21,  AT(sp, SZ))
         LOAD(  x22,  AT(sp, SZ2))
         LOAD(  x23,  AT(sp, SZ3))
@@ -65,7 +66,7 @@ FUNC_START(bye)
         LOAD(  x25,  AT(sp, SZ5))
         LOAD(  x26,  AT(sp, SZ6))
         ADD2(  IMM(SZ8), sp)
-        ret;                             /* return to C                     */
+        ret;                              /* return to C                     */
 FUNC_RAWEND(bye)
 
 /** must be followed by address of a forth function. calls it. */
