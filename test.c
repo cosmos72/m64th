@@ -19,29 +19,11 @@
 #include "m4th.h"
 #include "word_decl.h"
 
-#include <stdio.h>  /* fprintf(), fputs() */
-#include <string.h> /* memcpy() */
+#include <assert.h> /* assert()          */
+#include <stdio.h>  /* fprintf() fputs() */
+#include <string.h> /* memcpy()          */
 
 enum { SZ = sizeof(m4int) };
-
-static m4int crctable[256];
-
-static void crcfill(m4int table[256]) {
-    int i, j;
-
-    for (i = 0; i < 256; i++) {
-        uint32_t rem = i;
-        for (j = 0; j < 8; j++) {
-            if (rem & 1) {
-                rem >>= 1;
-                rem ^= 0xedb88320;
-            } else {
-                rem >>= 1;
-            }
-        }
-        table[i] = rem;
-    }
-}
 
 enum { m4test_code_n = 6 };
 enum { m4test_stack_n = 5 };
@@ -65,18 +47,52 @@ typedef struct m4test_s {
     m4test_code generated;
 } m4test;
 
+static m4int crctable[256];
+
+static void crcfill(m4int table[256]) {
+    int i, j;
+
+    for (i = 0; i < 256; i++) {
+        uint32_t val = i;
+        for (j = 0; j < 8; j++) {
+            if (val & 1) {
+                val >>= 1;
+                val ^= 0xedb88320;
+            } else {
+                val >>= 1;
+            }
+        }
+        table[i] = val;
+    }
+}
+
 #if 0
-/* : crc+ ( crc n -- crc' ) over xor $ff and  cells crctbl + @  swap 8 rshift xor ; */
-static const m4instr test_func_crc1byte[] = {
-    m4over, m4xor,   m4_lit_,    (m4instr)0xFF, m4and, m4cells, (m4instr)crctable, m4plus, m4store,
-    m4swap, m4_lit_, (m4instr)8, m4rshift,      m4xor, m4exit,
-};
+static uint32_t crc1byte(uint32_t crc, unsigned char byte) {
+    assert(crctable[0xff]);
+    return (crc >> 8) ^ crctable[(crc & 0xff) ^ byte];
+}
 #endif /* 0 */
+
+/*
+ * compiled forth version of crc1byte above. forth source would be
+ * : crc+ ( crc char -- crc' )
+ *   over xor 0xff and  cells crctable + @  swap 8 rshift xor
+ * ;
+ */
+static const m4instr test_func_crc1byte[] = {
+    m4over, m4xor,   m4_lit_, (m4instr)0xff, m4and,      m4cells,  m4_lit_, (m4instr)crctable,
+    m4plus, m4fetch, m4swap,  m4_lit_,       (m4instr)8, m4rshift, m4xor,   m4exit,
+};
 
 static const m4test test[] = {
     {"(1))", {m4_1_, m4bye}, {{0}, {0}}, {{1, {1}}, {0}}, {}},
     {"(call) noop", {m4_call_, (m4instr)m4word_noop.code, m4bye}, {{0}, {0}}, {{0}, {0}}, {}},
     {"(call) true", {m4_call_, (m4instr)m4word_true.code, m4bye}, {{0}, {0}}, {{1, {-1}}, {0}}, {}},
+    {"(call) crc+",
+     {m4_call_, (m4instr)test_func_crc1byte, m4bye},
+     {{2, {0xffffffff, 't'}}, {0}},
+     {{1, {0x7a95a557 /* crc1byte(0xffffffff, 't') */}}, {0}},
+     {}},
     {"0 1 (do)", {m4_do_, m4bye}, {{2, {0, 1}}, {0}}, {{0}, {2, {0, 1}}}, {}},
     {"1 0 (do)", {m4_do_, m4bye}, {{2, {1, 0}}, {0}}, {{0}, {2, {1, 0}}}, {}},
     {"(leave)", {m4_leave_, (m4instr)2, m4bye}, {{0}, {2, {0, 1}}}, {{0}, {0}}, {}},
