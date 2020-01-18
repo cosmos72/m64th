@@ -15,14 +15,14 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_WORD_DECL_H
-#define M4TH_WORD_DECL_H
+#ifndef M4TH_WORD_FWD_H
+#define M4TH_WORD_FWD_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include "m4th.h"
+typedef struct m4word_s m4word;
 
 /**
  * The following functions use m4th calling convention, not C !
@@ -105,4 +105,4 @@ extern const m4word m4word_xor;               /* xor  */
 }
 #endif
 
-#endif /* M4TH_WORD_DECL_H */
+#endif /* M4TH_WORD_FWD_H */

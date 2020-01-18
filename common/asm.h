@@ -37,6 +37,32 @@
 #define DATA_ALIGN()                                                                               \
     .p2align P_DATA_ALIGN, 0;
 
+/* ------------- COUNTEDSTRING ------------- */
+
+#define COUNTEDSTRING_SYM(name)                                                                    \
+    .Lcountedstring.name
+
+#define COUNTEDSTRING_DEF_SYM(name)                                                                \
+    /* no alignment */                                                                             \
+    .type COUNTEDSTRING_SYM(name), @object;                                                        \
+    COUNTEDSTRING_SYM(name):
+
+#define COUNTEDSTRING_START(name)                                                                  \
+    COUNTEDSTRING_DEF_SYM(name)                                                                    \
+
+#define COUNTEDSTRING_LEN(strlen)            .byte  strlen;
+#define COUNTEDSTRING_ASCII(str)             .ascii str;
+#define COUNTEDSTRING_END(name)
+
+#define COUNTEDSTRING(strlen, str, name)                                                           \
+    COUNTEDSTRING_START(name)                                                                      \
+    COUNTEDSTRING_LEN(strlen)                                                                      \
+    COUNTEDSTRING_ASCII(str)                                                                       \
+    COUNTEDSTRING_END(name)
+
+#define DICTNAME COUNTEDSTRING
+#define WORDNAME COUNTEDSTRING
+
 /* ------------- FUNC ------------- */
 
 #define FUNC_ALIGN()                                                                               \
@@ -67,39 +93,27 @@
     NEXT()                                                                                         \
     FUNC_RAWEND(name)
 
-/* ------------- SECTION ------------- */
-
-#define SECTION_RO()                    .text;
-#define SECTION_RW()                    .data;
-
 /* ------------- DICT ------------- */
 
-#define DICT_START(name)                                                                           \
+#define DICT_SYM(name)                                                                             \
+    m4dict_##name
 
-#define DICT_END(name)
+#define DICT_DEF_SYM(name)                                                                         \
+    DATA_ALIGN()                                                                                   \
+    .globl DICT_SYM(name);                                                                         \
+    .type  DICT_SYM(name), @object;                                                                \
+    DICT_SYM(name):
 
-/* ------------- WORDNAME ------------- */
+#define DICT_START(name)
 
-#define WORDNAME_SYM(name)                                                                         \
-    .Lwordname.name
+#define DICT_NAME_OFF(name)             .2byte DICT_SYM(name)    - COUNTEDSTRING_SYM(name) ;
+#define DICT_WORD_OFF(name, wordname)   .2byte DICT_SYM(name)    - WORD_SYM(wordname) ;
+#define DICT_END(name)                  .size  DICT_SYM(name), . - DICT_SYM(name) ;
 
-#define WORDNAME_DEF_SYM(name)                                                                     \
-    /* no alignment */                                                                             \
-    .type WORDNAME_SYM(name), @object;                                                             \
-    WORDNAME_SYM(name):
-
-#define WORDNAME_START(name)                                                                       \
-    WORDNAME_DEF_SYM(name)                                                                         \
-
-#define WORDNAME_LEN(strlen)            .byte  strlen;
-#define WORDNAME_ASCII(str)             .ascii str;
-#define WORDNAME_END(name)
-
-#define WORDNAME(strlen, str, name)                                                                \
-    WORDNAME_START(name)                                                                           \
-    WORDNAME_LEN(strlen)                                                                           \
-    WORDNAME_ASCII(str)                                                                            \
-    WORDNAME_END(name)
+#define DICT_BODY(name, last_wordname)                                                             \
+    DICT_DEF_SYM(name)                                                                             \
+    DICT_NAME_OFF(name)                                                                            \
+    DICT_WORD_OFF(name, last_wordname)
 
 /* ------------- WORD ------------- */
 
@@ -118,7 +132,7 @@
     WORD_NAME_OFF(name)
 
 #define WORD_PREV_OFF(name,prev)        .4byte WORD_SYM(name) - WORD_SYM(prev) ;
-#define WORD_NAME_OFF(name)             .2byte WORD_SYM(name) - WORDNAME_SYM(name) ;
+#define WORD_NAME_OFF(name)             .2byte WORD_SYM(name) - COUNTEDSTRING_SYM(name) ;
 #define WORD_FLAGS(flags)               .byte  flags;
 #define WORD_DSTACK(in, out)            .byte  ((in) & 0xF) | (((out) & 0xF) << 4);
 #define WORD_DSTACK_UNKNOWN()           .byte  0xFF;

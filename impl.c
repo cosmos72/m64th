@@ -16,29 +16,29 @@
  */
 
 #include "m4th.h"
-#include "word_fwd.h"
 
-#include <stdio.h>
+#include <string.h> /* strlen() */
 
-static void m4th_dict_print(const m4word *w, FILE *out) {
-    if (out == NULL) {
+#define dpush(val) (*--m->dstack.curr = (val))
+#define dpop(val) (*m->dstack.curr++)
+
+/** temporary C implementation of parse */
+static void m4th_parse(m4th *m) {
+    const char *word = NULL;
+    if (m->parsed == NULL || (word = *m->parsed) == NULL) {
+        *m->dstack.curr-- = 0;
+        *m->dstack.curr-- = 0;
         return;
     }
-    while (w) {
-        m4th_word_print(w, out);
-        w = m4th_word_prev(w);
-    }
+    dpush((m4int)word);
+    dpush(strlen(word));
+    m->parsed++;
 }
 
-int main(int argc, char *argv[]) {
-    m4th *m = m4th_new();
+/** temporary C implementation of (lookup-word) */
+static void m4th_lookup_word(m4th *m) {
+}
 
-    m4th_del(m);
-
-    m4th_dict_print(&m4word_noop, stdout);
-    m4th_dict_print(&m4word_bye, stdout);
-    m4th_dict_print(&m4word_xor, stdout);
-
-    /* suppress 'unused parameter' warning */
-    return 0 & argc & (m4int)argv;
+/** temporary C implementation of (interpret) */
+void m4th_interpret(m4th *m) {
 }

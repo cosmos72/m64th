@@ -15,9 +15,9 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "func_decl.h"
+#include "func_fwd.h"
 #include "m4th.h"
-#include "word_decl.h"
+#include "word_fwd.h"
 
 #include <assert.h> /* assert()          */
 #include <stdio.h>  /* fprintf() fputs() */

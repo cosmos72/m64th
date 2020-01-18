@@ -14,6 +14,7 @@ clean:
 	rm -f m4th test *.o *~
 
 asm.o:  asm.S $(wildcard *asm.h */asm.h */*.S)
+impl.o: impl.c $(wildcard *.h)
 m4th.o: m4th.c $(wildcard *.h)
 main.o: main.c $(wildcard *.h)
 test.o: test.c $(wildcard *.h)

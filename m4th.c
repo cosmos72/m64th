@@ -169,21 +169,21 @@ void m4th_flags_print(m4flags fl, FILE *out) {
         fputc('0', out);
     }
     if (fl & m4flag_addr_mask) {
-        const char* s = NULL;
+        const char *s = NULL;
         switch (fl & m4flag_addr_mask) {
-	 case m4flag_addr_fetch:
-	   s = "addr_fetch";
-	   break;
-	 case m4flag_addr_store:
-	   s = "addr_store";
-	   break;
-	}
+        case m4flag_addr_fetch:
+            s = "addr_fetch";
+            break;
+        case m4flag_addr_store:
+            s = "addr_store";
+            break;
+        }
         if (s != NULL) {
-	    if (printed++) {
-		fputc('|', out);
-	    }
-	    fputs(s, out);
-	}
+            if (printed++) {
+                fputc('|', out);
+            }
+            fputs(s, out);
+        }
     }
     if (fl & m4flag_compile_only) {
         fputs("compile_only", out);
@@ -192,46 +192,46 @@ void m4th_flags_print(m4flags fl, FILE *out) {
     if (fl & m4flag_consumes_ip_mask) {
         m4char ch = 0;
         switch (fl & m4flag_consumes_ip_mask) {
-	 case m4flag_consumes_ip_1:
-	   ch = '1';
-	   break;
-	 case m4flag_consumes_ip_2:
-	   ch = '2';
-	   break;
-	 case m4flag_consumes_ip_4:
-	   ch = '4';
-	   break;
-	 case m4flag_consumes_ip_8:
-	   ch = '8';
-	   break;
-	}
+        case m4flag_consumes_ip_1:
+            ch = '1';
+            break;
+        case m4flag_consumes_ip_2:
+            ch = '2';
+            break;
+        case m4flag_consumes_ip_4:
+            ch = '4';
+            break;
+        case m4flag_consumes_ip_8:
+            ch = '8';
+            break;
+        }
         if (ch != 0) {
-	    if (printed++) {
-		fputc('|', out);
-	    }
-	    fputs("consumes_ip_", out);
-	    fputc(ch, out);
-	}
+            if (printed++) {
+                fputc('|', out);
+            }
+            fputs("consumes_ip_", out);
+            fputc(ch, out);
+        }
     }
     if (fl & m4flag_immediate) {
         fputs(printed++ ? "|immediate" : "immediate", out);
     }
     if (fl & m4flag_inline_mask) {
         if (printed++) {
-	    fputc('|', out);
-	}
+            fputc('|', out);
+        }
         switch (fl & m4flag_inline_mask) {
-	 case m4flag_inline:
-	 default:
-	   fputs("inline", out);
-	   break;
-	 case m4flag_inline_always:
-	   fputs("inline_always", out);
-	   break;
-	 case m4flag_inline_native:
-	   fputs("inline_native", out);
-	   break;
-	}
+        case m4flag_inline:
+        default:
+            fputs("inline", out);
+            break;
+        case m4flag_inline_always:
+            fputs("inline_always", out);
+            break;
+        case m4flag_inline_native:
+            fputs("inline_native", out);
+            break;
+        }
     }
     if (fl & m4flag_jump) {
         fputs(printed++ ? "|jump" : "jump", out);
@@ -278,11 +278,18 @@ void m4th_word_print(const m4word *w, FILE *out) {
             (unsigned)w->inline_native_len, (unsigned)w->code_len, (unsigned)w->data_len);
 }
 
-const m4word *m4th_word_prev(const m4word *w) {
-    if (w == NULL || w->prev_off == 0) {
+const m4dictname *m4th_dict_name(const m4dict *d) {
+    if (d == NULL || d->name_off == 0) {
         return NULL;
     }
-    return (const m4word *)((const m4char *)w - w->prev_off);
+    return (const m4dictname *)((const m4char *)d - d->name_off);
+}
+
+const m4word *m4th_dict_lastword(const m4dict *d) {
+    if (d == NULL || d->word_off == 0) {
+        return NULL;
+    }
+    return (const m4word *)((const m4char *)d - d->word_off);
 }
 
 const m4wordname *m4th_word_name(const m4word *w) {
@@ -290,6 +297,13 @@ const m4wordname *m4th_word_name(const m4word *w) {
         return NULL;
     }
     return (const m4wordname *)((const m4char *)w - w->name_off);
+}
+
+const m4word *m4th_word_prev(const m4word *w) {
+    if (w == NULL || w->prev_off == 0) {
+        return NULL;
+    }
+    return (const m4word *)((const m4char *)w - w->prev_off);
 }
 
 m4th *m4th_new() {

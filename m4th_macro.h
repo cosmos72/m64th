@@ -20,10 +20,16 @@
 
 /* macros that are part of m4th public API */
 
-#define M4FLAG_COMPILE_ONLY (1 << 0)  /**< word cannot interpreted - only compiled     */
-#define M4FLAG_IMMEDIATE (1 << 1)     /**< word is executed immediately                */
-#define M4FLAG_INLINE_MASK   (3 << 2)
-#define M4FLAG_INLINE        (1 << 2) /**< forth code of word can be inlined           */
+/* m4th flags */
+#define M4TH_FLAG_STATUS_MASK 1 /**< mask to extract interpret/compile flag */
+#define M4TH_FLAG_INTERPRET 0   /**< m4th is currently interpreting         */
+#define M4TH_FLAG_COMPILE 1     /**< m4th is currently compiling            */
+
+/* m4word flags */
+#define M4FLAG_COMPILE_ONLY (1 << 0) /**< word cannot interpreted - only compiled     */
+#define M4FLAG_IMMEDIATE (1 << 1)    /**< word is executed immediately                */
+#define M4FLAG_INLINE_MASK (3 << 2)
+#define M4FLAG_INLINE (1 << 2)        /**< forth code of word can be inlined           */
 #define M4FLAG_INLINE_ALWAYS (2 << 2) /**< forth code of word *must* always be inlined */
 #define M4FLAG_INLINE_NATIVE (3 << 2) /**< both forth & native code of word can be inlined */
 
@@ -32,7 +38,7 @@
  *
  * incompatible with M4FLAG_PURE
  */
-#define M4FLAG_JUMP          (1 << 4)
+#define M4FLAG_JUMP (1 << 4)
 
 #define M4FLAG_PURE_MASK (7 << 5)
 /**
@@ -51,15 +57,15 @@
  *
  * implies M4FLAG_INLINE_ALWAYS, incompatible with M4FLAG_PURE.
  */
-#define M4FLAG_CONSUMES_IP_1    ((2 << 5) | M4FLAG_INLINE_ALWAYS)
-#define M4FLAG_CONSUMES_IP_2    ((3 << 5) | M4FLAG_INLINE_ALWAYS)
-#define M4FLAG_CONSUMES_IP_4    ((4 << 5) | M4FLAG_INLINE_ALWAYS)
-#define M4FLAG_CONSUMES_IP_8    ((5 << 5) | M4FLAG_INLINE_ALWAYS)
+#define M4FLAG_CONSUMES_IP_1 ((2 << 5) | M4FLAG_INLINE_ALWAYS)
+#define M4FLAG_CONSUMES_IP_2 ((3 << 5) | M4FLAG_INLINE_ALWAYS)
+#define M4FLAG_CONSUMES_IP_4 ((4 << 5) | M4FLAG_INLINE_ALWAYS)
+#define M4FLAG_CONSUMES_IP_8 ((5 << 5) | M4FLAG_INLINE_ALWAYS)
 
-#define M4FLAG_ADDR_MASK        (7 << 5)
+#define M4FLAG_ADDR_MASK (7 << 5)
 /** word dereferences and reads  an address received as argument */
-#define M4FLAG_ADDR_FETCH       (6 << 5)
+#define M4FLAG_ADDR_FETCH (6 << 5)
 /** word dereferences and writes an address received as argument */
-#define M4FLAG_ADDR_STORE       (7 << 5)
+#define M4FLAG_ADDR_STORE (7 << 5)
 
 #endif /* M4TH_M4TH_MACRO_H */

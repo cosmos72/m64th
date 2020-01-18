@@ -36,6 +36,8 @@
 /* ---------------------------------------------------------------------------------------------- */
 DICT_START(m4th)
 
+DICTNAME(4, "m4th", m4th)
+
 DICT_WORDS_M4TH(WORDNAME)
 
 WORD(_1_,             _1_,         DSTACK(0,1), RSTACK(0,0), WORD_PURE)
@@ -104,9 +106,12 @@ WORD_START(noop, i_minus)
     WORD_CODE_FUNC(exit)
 WORD_END(noop)
 
+DICT_BODY(m4th, noop)
 DICT_END(m4th)
 /* ---------------------------------------------------------------------------------------------- */
 DICT_START(tools_ext)
+
+DICTNAME(9, "tools-ext", tools_ext)
 
 DICT_WORDS_TOOLS_EXT(WORDNAME)
 
@@ -121,9 +126,12 @@ WORD_START(bye, bye)
     WORD_CODE_FUNC(exit) /* reachable by subsequent m4th_enter() */
 WORD_END(bye)
 
+DICT_BODY(tools_ext, bye)
 DICT_END(tools_ext)
 /* ---------------------------------------------------------------------------------------------- */
 DICT_START(core)
+
+DICTNAME(4, "core", core)
 
 DICT_WORDS_CORE(WORDNAME)
 
@@ -222,5 +230,6 @@ WORD(true,            swap,        DSTACK(0,1), RSTACK(0,0), WORD_PURE)
 WORD(unloop,          true,        DSTACK(0,0), RSTACK(2,0), WORD_PURE | M4FLAG_COMPILE_ONLY)
 WORD(xor,             unloop,      DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 
+DICT_BODY(core, xor)
 DICT_END(core)
 /* ---------------------------------------------------------------------------------------------- */

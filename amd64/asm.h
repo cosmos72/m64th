@@ -18,7 +18,7 @@
 #ifndef M4TH_AMD64_ASM_H
 #define M4TH_AMD64_ASM_H
 
-#include "../common/macro_asm.h"
+#include "../common/asm.h"
 
 #define SZ 8     /* width of registers, m4int and void* in bytes */
 #define SZ2 16   /* SZ * 2 */

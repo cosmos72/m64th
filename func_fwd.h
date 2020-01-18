@@ -15,8 +15,8 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_FUNC_DECL_H
-#define M4TH_FUNC_DECL_H
+#ifndef M4TH_FUNC_FWD_H
+#define M4TH_FUNC_FWD_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -109,4 +109,4 @@ void m4xor(m4arg _);               /* xor  */
 }
 #endif
 
-#endif /* M4TH_FUNC_DECL_H */
+#endif /* M4TH_FUNC_FWD_H */
