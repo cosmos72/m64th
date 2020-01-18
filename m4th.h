@@ -104,7 +104,7 @@ struct m4word_s {       /**< word                                               
     uint8_t native_len; /**< native code size, in bytes                         */
     uint16_t code_len;  /**< forth code size, in bytes                            */
     uint32_t data_len;  /**< data size, in bytes                                  */
-    m4char code[0];     /**< code starts at [0], data starts at [code_len]        */
+    m4instr code[0];    /**< code starts at [0], data starts at [code_len]        */
 };
 
 struct m4dict_s {     /**< dictionary                                           */

@@ -197,7 +197,8 @@ enum { test_n = sizeof(test) / sizeof(test[0]) };
 
 static const m4testcompile testcompile[] = {
     {{"0"}, {2, {m4_lit_, (m4instr)0}}},
-    {{"1", "2", "+"}, {4, {m4_lit_, (m4instr)1, m4_lit_, (m4instr)2, m4plus}}},
+    {{"1", "2", "+"},
+     {6, {m4_lit_, (m4instr)1, m4_lit_, (m4instr)2, m4_call_, (m4instr)m4word_plus.code}}},
 };
 
 enum { testcompile_n = sizeof(testcompile) / sizeof(testcompile[0]) };
@@ -284,9 +285,9 @@ m4int m4th_test(m4th *m, FILE *out) {
     }
     if (out != NULL) {
         if (fail == 0) {
-            fprintf(out, "all % 3ld tests passed\n", (long)n);
+            fprintf(out, "all % 3ld execute tests passed\n", (long)n);
         } else {
-            fprintf(out, "\ntests failed: % 3ld of % 3ld\n", (long)fail, (long)n);
+            fprintf(out, "\nexecute tests failed: % 3ld of % 3ld\n", (long)fail, (long)n);
         }
     }
     return fail;
@@ -312,7 +313,7 @@ static m4int m4testcompile_code_equals(const m4testcompile_code *src, const m4co
 static m4int m4testcompile_run(m4th *m, const m4testcompile *t) {
     m4th_clear(m);
     m->flags &= ~m4th_flag_status_mask;
-    m->flags |= ~m4th_flag_compile;
+    m->flags |= m4th_flag_compile;
     m->in_cstr = t->input;
     m4th_repl(m);
     return m4testcompile_code_equals(&t->generated, &m->code);
@@ -333,7 +334,7 @@ static void m4testcompile_failed(m4th *m, const m4testcompile *t, FILE *out) {
     }
     fputs("compile test failed: ", out);
     m4testcompile_print(t, out);
-    fputs("    expected code   ", out);
+    fputs("    expected code ", out);
     m4testcompile_code_print(&t->generated, out);
     fputs("    actual   code ", out);
     m4th_code_print(&m->code, out);
@@ -366,7 +367,7 @@ int main(int argc, char *argv[]) {
     m4th *m = m4th_new();
 
     m4int fail1 = m4th_test(m, stdout);
-    m4int fail2 = 0; /* m4th_testcompile(m, stdout); */
+    m4int fail2 = m4th_testcompile(m, stdout);
 
     m4th_del(m);
 

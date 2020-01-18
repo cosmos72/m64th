@@ -121,11 +121,12 @@ static const m4word *m4th_lookup_word(m4th *m, m4string key) {
 
 /** temporary C implementation of (parse) */
 m4eval_arg m4th_parse(m4th *m, m4string key) {
-    m4eval_arg arg = {NULL, 0, -1 /*EOF*/};
-    if (key.addr != NULL) {
-        if ((arg.w = m4th_lookup_word(m, key)) == NULL) {
-            arg.err = m4th_string_to_int(key, &arg.n);
-        }
+    m4eval_arg arg = {NULL, 0, 0};
+    if (key.addr == NULL) {
+        arg.err = teof;
+    } else if ((arg.w = m4th_lookup_word(m, key)) != NULL) {
+    } else {
+        arg.err = m4th_string_to_int(key, &arg.n);
     }
     return arg;
 }
