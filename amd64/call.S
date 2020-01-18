@@ -24,7 +24,7 @@
  *      passed in %rdi as per SYS V amd64 ABI,
  * execute m4th->code.start[0] and subsequent instructions until m4bye is found.
  */
-FUNC_START(th_enter)
+FUNC_START(th_run)
         push   %rbx;                      /* save C registers                */
 #if 0 /* not clobbered by m4th */
         push   %rbp;
@@ -43,7 +43,7 @@ FUNC_START(th_enter)
         RPOP(  RTOP)                      /* load first return stack element */
         MOVE(  IMM(-1), RFFF)             /* set RFFF to -1                  */
         jmp    *(IP);                     /* begin execution                 */
-FUNC_RAWEND(th_enter)
+FUNC_RAWEND(th_run)
 
 /**
  * exit m4th interpreter and return to C:

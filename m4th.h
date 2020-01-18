@@ -95,16 +95,16 @@ struct m4countedstring_s { /**< counted string                           */
     m4char chars[1];       /**< string characters. may NOT end with '\0' */
 };
 
-struct m4word_s {              /**< word                                                 */
-    int32_t prev_off;          /**< offset of previous word,   in bytes. 0 = not present */
-    int16_t name_off;          /**< offset of m4countedstring, in bytes. 0 = not present */
-    uint8_t flags;             /**< m4flags                                              */
-    uint8_t dstack;            /**< dstack # in and # out. 0xFF if unknown or variable   */
-    uint8_t rstack;            /**< rstack # in and # out. 0xFF if unknown or variable   */
-    uint8_t native_len;        /**< native code size, in bytes                         */
-    uint16_t code_len;         /**< forth code size, in bytes                            */
-    uint32_t data_len;         /**< data size, in bytes                                  */
-    m4char code[0];            /**< code starts at [0], data starts at [code_len]        */
+struct m4word_s {       /**< word                                                 */
+    int32_t prev_off;   /**< offset of previous word,   in bytes. 0 = not present */
+    int16_t name_off;   /**< offset of m4countedstring, in bytes. 0 = not present */
+    uint8_t flags;      /**< m4flags                                              */
+    uint8_t dstack;     /**< dstack # in and # out. 0xFF if unknown or variable   */
+    uint8_t rstack;     /**< rstack # in and # out. 0xFF if unknown or variable   */
+    uint8_t native_len; /**< native code size, in bytes                         */
+    uint16_t code_len;  /**< forth code size, in bytes                            */
+    uint32_t data_len;  /**< data size, in bytes                                  */
+    m4char code[0];     /**< code starts at [0], data starts at [code_len]        */
 };
 
 struct m4dict_s {     /**< dictionary                                           */
@@ -117,13 +117,13 @@ struct m4th_s {     /**< m4th forth interpreter and compiler */
     m4stack rstack; /**< return stack                        */
     m4code code;    /**< forth code being compiled           */
     m4instr *ip;    /**< instruction pointer                 */
-    void *c_sp;     /**< C stack pointer, may be saved here by m4th_enter() */
+    void *c_sp;     /**< C stack pointer, may be saved here by m4th_run() */
     m4cspan in;     /**< input  buffer                       */
     m4cspan out;    /**< output buffer                       */
     m4int flags;    /**< m4th_flags                          */
 
-    const m4dict *dicts[4];    /* FIXME: available dictionaries */
-    const char *const *parsed; /* DELETEME: pre-parsed input    */
+    const m4dict *dicts[4];     /* FIXME: available dictionaries */
+    const char *const *in_cstr; /* DELETEME: pre-parsed input    */
 };
 
 #ifdef __cplusplus
@@ -140,7 +140,7 @@ void m4th_del(m4th *m);
  * main entry point from C. implemented in assembly.
  * execute m4th->ip and subsequent code until m4th_bye is found.
  */
-m4int m4th_enter(m4th *m);
+m4int m4th_run(m4th *m);
 
 /**
  * clear data stack, return stack, input buffer and output buffer.

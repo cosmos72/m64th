@@ -21,10 +21,17 @@
 #include "m4th.h"
 
 typedef struct m4string_s m4string;
+typedef struct m4eval_arg_s m4eval_arg;
 
 struct m4string_s {
     const char *addr;
     m4int len;
+};
+
+struct m4eval_arg_s {
+    const m4word *w; /* NULL if parsed word is a number */
+    m4int n;
+    m4int err;
 };
 
 void m4th_string_print(m4string str, FILE *out);
@@ -32,18 +39,18 @@ void m4th_string_print(m4string str, FILE *out);
 m4int m4th_string_equals(m4string a, const m4countedstring *b);
 
 /* warning: str must end with '\0' */
-static m4int m4th_string_to_int(m4string str, m4int *out_n);
+m4int m4th_string_to_int(m4string str, m4int *out_n);
 
-/** temporary C implementation of (interpret-word) */
-m4int m4th_interpret_word(m4th *m, const m4word *w);
+/** temporary C implementation of (read) */
+m4string m4th_read(m4th *m);
 
-/** temporary C implementation of (compile-number) */
-m4int m4th_compile_number(m4th *m, m4int n);
+/** temporary C implementation of (parse) */
+m4eval_arg m4th_parse(m4th *m, m4string key);
 
-/** temporary C implementation of (interpret) */
-m4int m4th_interpret(m4th *m);
+/** temporary C implementation of (eval) */
+m4int m4th_eval(m4th *m, m4eval_arg arg);
 
-/** temporary C implementation of (interpret-loop) */
-void m4th_interpret_loop(m4th *m);
+/** temporary C implementation of (repl) */
+m4int m4th_repl(m4th *m);
 
 #endif /* M4TH_IMPL_H */

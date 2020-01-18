@@ -123,7 +123,7 @@ WORD_START(bye, bye)
     WORD_CODE_N(2)
     WORD_DATA_N(0)
     WORD_CODE_FUNC(bye)
-    WORD_CODE_FUNC(exit) /* reachable by subsequent m4th_enter() */
+    WORD_CODE_FUNC(exit) /* reachable by subsequent m4th_run() */
 WORD_END(bye)
 
 DICT_BODY(tools_ext, bye)

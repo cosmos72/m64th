@@ -24,7 +24,7 @@
  *      passed in x0 as per aarch64 ABI,
  * execute m4th->code.start[0] and subsequent instructions until m4bye is found.
  */
-FUNC_START(th_enter)
+FUNC_START(th_run)
         SUB2(  IMM(SZ8), sp)
         STOR(  x26,  AT(sp, SZ6))        /* save C registers                */
         STOR(  x25,  AT(sp, SZ5))
@@ -42,7 +42,7 @@ FUNC_START(th_enter)
         RPOP(  RTOP)                     /* load first return stack element */
         LOAD(  REG1, AT(IP))             /* begin execution                 */
         br     REG1;
-FUNC_RAWEND(th_enter)
+FUNC_RAWEND(th_run)
 
 /**
  * exit m4th interpreter and return to C:

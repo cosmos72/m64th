@@ -347,7 +347,7 @@ m4th *m4th_new() {
     m->dicts[1] = &m4dict_tools_ext;
     m->dicts[2] = &m4dict_m4th;
     m->dicts[3] = NULL;
-    m->parsed = NULL;
+    m->in_cstr = NULL;
     return m;
 }
 
