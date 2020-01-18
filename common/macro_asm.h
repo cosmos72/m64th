@@ -15,15 +15,15 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_MACRO_H
-#define M4TH_MACRO_H
+#ifndef M4TH_COMMON_MACRO_ASM_H
+#define M4TH_COMMON_MACRO_ASM_H
 
-#include "m4th_macro.h" /* also define public macros */
+#include "../m4th_macro.h" /* also define public macros */
 
-#define CAT2_(a,b) a##b
-#define CAT2(a,b)  CAT2_(a,b)
+#define CAT2_(a, b) a##b
+#define CAT2(a, b) CAT2_(a, b)
 
-#define M4FLAG_CONSUMES_IP_SZ CAT2(M4FLAG_CONSUMES_IP_,SZ)
+#define M4FLAG_CONSUMES_IP_SZ CAT2(M4FLAG_CONSUMES_IP_, SZ)
 
 /* internal m4th macros used (mostly) by assembly */
 
@@ -182,4 +182,4 @@
 
 /* clang-format on */
 
-#endif /* M4TH_MACRO_H */
+#endif /* M4TH_COMMON_MACRO_ASM_H */

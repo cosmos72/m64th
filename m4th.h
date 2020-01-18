@@ -58,7 +58,8 @@ typedef struct m4cspan_s m4cspan;
 typedef struct m4span_s m4span;
 typedef struct m4span_s m4stack;
 typedef struct m4code_s m4code;
-typedef struct m4wordname_s m4wordname;
+typedef struct m4countedstring_s m4countedstring;
+typedef struct m4countedstring_s m4wordname;
 typedef struct m4word_s m4word;
 typedef struct m4th_s m4th;
 
@@ -80,9 +81,9 @@ struct m4code_s {
     m4instr *end;
 };
 
-struct m4wordname_s { /**< word name                                    */
-    m4char name_len;  /**< name length, in bytes                        */
-    m4char name[1];   /**< name. does NOT end with '\0'                 */
+struct m4countedstring_s { /**<                                          */
+    m4char name_len;       /**< string length, in bytes                  */
+    m4char name[1];        /**< string characters. may NOT end with '\0' */
 };
 
 struct m4word_s {

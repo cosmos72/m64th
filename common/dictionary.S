@@ -19,6 +19,8 @@
 #error "common/dictionary.h can only be included from asm.S - do not attempt to use it directly"
 #endif
 
+#include "dictionary_asm.h"
+
 /*
  * work around Android linker message
  * "warning: creating a DT_TEXTREL in a shared object"
@@ -34,19 +36,7 @@
 /* ---------------------------------------------------------------------------------------------- */
 DICT_START(m4th)
 
-WORDNAME(3, "(1)", _1_)
-WORDNAME(5, "(?do)", _question_do_)
-WORDNAME(6, "(call)", _call_)
-WORDNAME(4, "(do)", _do_)
-WORDNAME(5, "(lit)", _lit_)
-WORDNAME(7, "(leave)", _leave_)
-WORDNAME(6, "(loop)", _loop_)
-/* WORDNAME(2, "*!", star_store)  TODO */
-/* WORDNAME(2, "-!", minus_store) TODO */
-WORDNAME(2, "i*", i_star)
-WORDNAME(2, "i+", i_plus)
-WORDNAME(2, "i-", i_minus)
-WORDNAME(4, "noop", noop)
+DICT_WORDS_M4TH(WORDNAME)
 
 WORD(_1_,             _1_,         DSTACK(0,1), RSTACK(0,0), WORD_PURE)
 WORD_START(_question_do_, _1_)
@@ -118,7 +108,7 @@ DICT_END(m4th)
 /* ---------------------------------------------------------------------------------------------- */
 DICT_START(tools_ext)
 
-WORDNAME(3, "bye", bye)
+DICT_WORDS_TOOLS_EXT(WORDNAME)
 
 WORD_START(bye, bye)
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_JUMP)
@@ -135,66 +125,7 @@ DICT_END(tools_ext)
 /* ---------------------------------------------------------------------------------------------- */
 DICT_START(core)
 
-
-WORDNAME(1, "!",    store)
-WORDNAME(1, "*",    star)
-WORDNAME(1, "+",    plus)
-WORDNAME(2, "+!",   plus_store)
-WORDNAME(1, "-",    minus)
-WORDNAME(1, "/",    slash)
-WORDNAME(4, "/mod", slash_mod)
-WORDNAME(2, "0<",   zero_less)
-WORDNAME(3, "0<>",  zero_not_equals)
-WORDNAME(2, "0=",   zero_equals)
-WORDNAME(2, "0>",   zero_greater_than)
-WORDNAME(2, "1+",   one_plus)
-WORDNAME(2, "1-",   one_minus)
-WORDNAME(2, "2*",   two_star)
-WORDNAME(2, "2+",   two_plus)
-WORDNAME(2, "2-",   two_minus)
-WORDNAME(2, "2/",   two_slash)
-WORDNAME(1, "<",    less_than)
-WORDNAME(2, "<>",   not_equals)
-WORDNAME(1, "=",    equals)
-WORDNAME(1, ">",    greater_than)
-WORDNAME(2, ">r",   to_r)
-WORDNAME(4, "?dup", question_dupe)
-WORDNAME(1, "@",    fetch)
-WORDNAME(3, "abs",  abs)
-WORDNAME(3, "and",  and)
-WORDNAME(2, "bl",   bl)
-WORDNAME(2, "c!",   c_store)
-WORDNAME(2, "c@",   c_fetch)
-WORDNAME(5, "cell+",   cell_plus)
-WORDNAME(5, "cells",   cells)
-WORDNAME(5, "char+",   char_plus)
-WORDNAME(5, "chars",   chars)
-WORDNAME(5, "depth",depth)
-WORDNAME(4, "drop", drop)
-WORDNAME(3, "dup",  dup)
-WORDNAME(4, "exit", exit)
-WORDNAME(5, "false",false)
-WORDNAME(1, "i",    i)
-WORDNAME(2, "i'",   i_prime)
-WORDNAME(6, "invert",  invert)
-WORDNAME(1, "j",    j)
-WORDNAME(7, "literal", literal)
-WORDNAME(6, "lshift",  lshift)
-WORDNAME(3, "max",  max)
-WORDNAME(3, "min",  min)
-WORDNAME(3, "mod",  mod)
-WORDNAME(3, "negate",  negate)
-WORDNAME(3, "nip",  nip)
-WORDNAME(2, "or",   or)
-WORDNAME(4, "over", over)
-WORDNAME(2, "r>",   r_from)
-WORDNAME(3, "rot",  rot)
-WORDNAME(6, "rshift",  rshift)
-WORDNAME(4, "swap", swap)
-WORDNAME(4, "true", true)
-WORDNAME(6, "unloop",  unloop)
-WORDNAME(3, "xor",  xor)
-
+DICT_WORDS_CORE(WORDNAME)
 
 WORD(store,           store,       DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_ADDR_STORE)
 WORD(star,            store,       DSTACK(2,1), RSTACK(0,0), WORD_PURE)
