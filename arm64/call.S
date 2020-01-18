@@ -66,6 +66,7 @@ FUNC_START(bye)
         LOAD(  x25,  AT(sp, SZ5))
         LOAD(  x26,  AT(sp, SZ6))
         ADD2(  IMM(SZ8), sp)
+        ZERO(  x0)                        /* return value = 0                */
         ret;                              /* return to C                     */
 FUNC_RAWEND(bye)
 

@@ -68,6 +68,7 @@ FUNC_START(bye)
         pop    %rbp;
 #endif /* 0 */
         pop    %rbx;
+        ZERO(  %rax)                      /* return value = 0                */
         ret;                              /* return to C                     */
 FUNC_RAWEND(bye)
 

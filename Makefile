@@ -6,7 +6,7 @@ CFLAGS=-Wall -Wextra -W $(FLAGS)
 AS=$(CC)
 ASFLAGS=$(CFLAGS)
 
-OBJS=asm.o m4th.o
+OBJS=asm.o impl.o m4th.o
 
 all: m4th test
 

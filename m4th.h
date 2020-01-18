@@ -91,8 +91,8 @@ struct m4code_s {
 };
 
 struct m4countedstring_s { /**< counted string                           */
-    m4char name_len;       /**< string length, in bytes                  */
-    m4char name[1];        /**< string characters. may NOT end with '\0' */
+    m4char len;            /**< string length, in bytes                  */
+    m4char chars[1];       /**< string characters. may NOT end with '\0' */
 };
 
 struct m4word_s {              /**< word                                                 */
@@ -140,7 +140,7 @@ void m4th_del(m4th *m);
  * main entry point from C. implemented in assembly.
  * execute m4th->ip and subsequent code until m4th_bye is found.
  */
-void m4th_enter(m4th *m);
+m4int m4th_enter(m4th *m);
 
 /**
  * clear data stack, return stack, input buffer and output buffer.

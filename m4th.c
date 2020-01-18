@@ -247,10 +247,10 @@ void m4th_flags_print(m4flags fl, FILE *out) {
 /* ----------------------- m4countedstring ----------------------- */
 
 void m4th_countedstring_print(const m4countedstring *n, FILE *out) {
-    if (n == NULL || out == NULL) {
+    if (out == NULL || n == NULL || n->len == 0) {
         return;
     }
-    fwrite(n->name, 1, n->name_len, out);
+    fwrite(n->chars, 1, n->len, out);
 }
 
 /* ----------------------- m4word ----------------------- */
