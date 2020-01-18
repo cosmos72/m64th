@@ -281,8 +281,8 @@ void m4th_word_print(const m4word *w, FILE *out) {
     m4th_word_stack_print(w->dstack, out);
     fputs(" \n\treturn_stack:\t", out);
     m4th_word_stack_print(w->rstack, out);
-    fprintf(out, "\n\tinline_native_len:\t%u\n\tcode_len:\t%u\n\tdata_len:\t%u\n}\n",
-            (unsigned)w->inline_native_len, (unsigned)w->code_len, (unsigned)w->data_len);
+    fprintf(out, "\n\tnative_len:\t%u\n\tcode_len:\t%u\n\tdata_len:\t%u\n}\n",
+            (unsigned)w->native_len, (unsigned)w->code_len, (unsigned)w->data_len);
 }
 
 const m4countedstring *m4th_word_name(const m4word *w) {

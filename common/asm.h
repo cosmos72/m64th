@@ -138,8 +138,8 @@
 #define WORD_DSTACK_UNKNOWN()           .byte  0xFF;
 #define WORD_RSTACK(in, out)            .byte  ((in) & 0xF) | (((out) & 0xF) << 4);
 #define WORD_RSTACK_UNKNOWN()           .byte  0xFF;
-#define WORD_INLINE_NATIVE_LEN(name)    .byte  FUNC_SYM_NEXT(name) - FUNC_SYM(name);
-#define WORD_INLINE_NATIVE_LEN_0()      .byte  0;
+#define WORD_NATIVE_LEN(name)           .byte  FUNC_SYM_NEXT(name) - FUNC_SYM(name);
+#define WORD_NATIVE_LEN_0()             .byte  0;
 #define WORD_CODE_N(n_instr)            .2byte (n_instr) * ISZ;
 #define WORD_DATA_NBYTES(n_bytes)       .4byte n_bytes;
 #define WORD_DATA_N(n_instr)            .4byte (n_instr) * ISZ;
@@ -155,7 +155,7 @@
     WORD_FLAGS(flags)                                                                              \
     WORD_##dstack                                                                                  \
     WORD_##rstack                                                                                  \
-    WORD_INLINE_NATIVE_LEN(name)                                                                   \
+    WORD_NATIVE_LEN(name)                                                                   \
     WORD_CODE_N(2)                                                                                 \
     WORD_DATA_N(0)                                                                                 \
     WORD_CODE_FUNC(name)                                                                           \
