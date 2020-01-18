@@ -52,6 +52,7 @@ FUNC_RAWEND(th_enter)
  * return to C
  */
 FUNC_START(bye)
+	ADD2(  IMM(SZ), IP)               /* point IP to next instruction    */
         RPUSH( RTOP)                      /* save first return stack element */
         DPUSH( DTOP)                      /* save first data   stack element */
         STOR(  IP,   AT(M4TH, OFF_IP))    /* save instruction  pointer       */
