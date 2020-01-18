@@ -16,8 +16,8 @@
  */
 
 #include "test.h"
-#include "t/testcompile.h"
-#include "t/testexecute.h"
+#include "t/testcompile.c"
+#include "t/testexecute.c"
 
 #include <stdio.h> /* fprintf() fputc() */
 

@@ -15,8 +15,8 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_T_TESTEXECUTE_H
-#define M4TH_T_TESTEXECUTE_H
+#ifndef M4TH_T_TESTEXECUTE_C
+#define M4TH_T_TESTEXECUTE_C
 
 #include "../common/func_fwd.h"
 #include "../common/word_fwd.h"
@@ -277,4 +277,4 @@ m4int m4th_testexecute(m4th *m, FILE *out) {
     return fail;
 }
 
-#endif /* M4TH_T_TESTEXECUTE_H */
+#endif /* M4TH_T_TESTEXECUTE_C */

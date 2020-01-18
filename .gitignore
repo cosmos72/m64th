@@ -1,6 +1,7 @@
 m4th
 test
 a.out
+*.h.gch
 *.o
 *.s
 *~
