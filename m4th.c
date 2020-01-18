@@ -16,6 +16,7 @@
  */
 
 #include "m4th.h"
+#include "dict_fwd.h"
 
 #include <errno.h>  /* errno */
 #include <stdio.h>  /* fprintf() */
@@ -160,6 +161,8 @@ void m4th_stack_print(const m4stack *stack, FILE *out) {
     fputc('\n', out);
 }
 
+/* ----------------------- m4flags ----------------------- */
+
 void m4th_flags_print(m4flags fl, FILE *out) {
     m4char printed = 0;
     if (out == NULL) {
@@ -241,12 +244,16 @@ void m4th_flags_print(m4flags fl, FILE *out) {
     }
 }
 
-void m4th_wordname_print(const m4wordname *n, FILE *out) {
+/* ----------------------- m4countedstring ----------------------- */
+
+void m4th_countedstring_print(const m4countedstring *n, FILE *out) {
     if (n == NULL || out == NULL) {
         return;
     }
     fwrite(n->name, 1, n->name_len, out);
 }
+
+/* ----------------------- m4word ----------------------- */
 
 void m4th_word_stack_print(uint8_t stack_in_out, FILE *out) {
     uint8_t n = stack_in_out & 0xF;
@@ -267,7 +274,7 @@ void m4th_word_print(const m4word *w, FILE *out) {
     if (w == NULL || out == NULL) {
         return;
     }
-    m4th_wordname_print(m4th_word_name(w), out);
+    m4th_countedstring_print(m4th_word_name(w), out);
     fputs(" {\n\tflags:\t", out);
     m4th_flags_print((m4flags)w->flags, out);
     fputs(" \n\tdata_stack:\t", out);
@@ -278,11 +285,43 @@ void m4th_word_print(const m4word *w, FILE *out) {
             (unsigned)w->inline_native_len, (unsigned)w->code_len, (unsigned)w->data_len);
 }
 
-const m4dictname *m4th_dict_name(const m4dict *d) {
+const m4countedstring *m4th_word_name(const m4word *w) {
+    if (w == NULL || w->name_off == 0) {
+        return NULL;
+    }
+    return (const m4countedstring *)((const m4char *)w - w->name_off);
+}
+
+const m4word *m4th_word_prev(const m4word *w) {
+    if (w == NULL || w->prev_off == 0) {
+        return NULL;
+    }
+    return (const m4word *)((const m4char *)w - w->prev_off);
+}
+
+/* ----------------------- m4dict ----------------------- */
+
+void m4th_dict_print(const m4dict *d, FILE *out) {
+    const m4word *w;
+    if (out == NULL || d == NULL) {
+        return;
+    }
+    fputs("/* -------- ", out);
+    m4th_countedstring_print(m4th_dict_name(d), out);
+    fputs(" -------- */\n", out);
+
+    w = m4th_dict_lastword(d);
+    while (w) {
+        m4th_word_print(w, out);
+        w = m4th_word_prev(w);
+    }
+}
+
+const m4countedstring *m4th_dict_name(const m4dict *d) {
     if (d == NULL || d->name_off == 0) {
         return NULL;
     }
-    return (const m4dictname *)((const m4char *)d - d->name_off);
+    return (const m4countedstring *)((const m4char *)d - d->name_off);
 }
 
 const m4word *m4th_dict_lastword(const m4dict *d) {
@@ -292,19 +331,7 @@ const m4word *m4th_dict_lastword(const m4dict *d) {
     return (const m4word *)((const m4char *)d - d->word_off);
 }
 
-const m4wordname *m4th_word_name(const m4word *w) {
-    if (w == NULL || w->name_off == 0) {
-        return NULL;
-    }
-    return (const m4wordname *)((const m4char *)w - w->name_off);
-}
-
-const m4word *m4th_word_prev(const m4word *w) {
-    if (w == NULL || w->prev_off == 0) {
-        return NULL;
-    }
-    return (const m4word *)((const m4char *)w - w->prev_off);
-}
+/* ----------------------- m4th ----------------------- */
 
 m4th *m4th_new() {
     m4th *m = (m4th *)m4th_alloc(sizeof(m4th));
@@ -315,6 +342,12 @@ m4th *m4th_new() {
     m->c_sp = NULL;
     m->in = m4cspan_alloc(inbuf_n);
     m->out = m4cspan_alloc(outbuf_n);
+    m->flags = m4th_flag_interpret;
+    m->dicts[0] = &m4dict_core;
+    m->dicts[1] = &m4dict_tools_ext;
+    m->dicts[2] = &m4dict_m4th;
+    m->dicts[3] = NULL;
+    m->parsed = NULL;
     return m;
 }
 

@@ -68,8 +68,6 @@ typedef struct m4span_s m4span;
 typedef struct m4span_s m4stack;
 typedef struct m4code_s m4code;
 typedef struct m4countedstring_s m4countedstring;
-typedef struct m4countedstring_s m4wordname;
-typedef struct m4countedstring_s m4dictname;
 typedef struct m4dict_s m4dict;
 typedef struct m4word_s m4word;
 typedef struct m4th_s m4th;
@@ -97,21 +95,21 @@ struct m4countedstring_s { /**< counted string                           */
     m4char name[1];        /**< string characters. may NOT end with '\0' */
 };
 
-struct m4word_s {              /**< word                                               */
-    int32_t prev_off;          /**< offset of previous word, in bytes. 0 = not present */
-    int16_t name_off;          /**< offset of m4wordname,    in bytes. 0 = not present */
-    uint8_t flags;             /**< m4flags                                            */
-    uint8_t dstack;            /**< dstack # in and # out. 0xFF if unknown or variable */
-    uint8_t rstack;            /**< rstack # in and # out. 0xFF if unknown or variable */
-    uint8_t inline_native_len; /**< native inline size, in bytes                       */
-    uint16_t code_len;         /**< forth code size, in bytes                          */
-    uint32_t data_len;         /**< data size, in bytes                                */
-    m4char code[0];            /**< code starts at [0], data starts at [code_len]      */
+struct m4word_s {              /**< word                                                 */
+    int32_t prev_off;          /**< offset of previous word,   in bytes. 0 = not present */
+    int16_t name_off;          /**< offset of m4countedstring, in bytes. 0 = not present */
+    uint8_t flags;             /**< m4flags                                              */
+    uint8_t dstack;            /**< dstack # in and # out. 0xFF if unknown or variable   */
+    uint8_t rstack;            /**< rstack # in and # out. 0xFF if unknown or variable   */
+    uint8_t inline_native_len; /**< native inline size, in bytes                         */
+    uint16_t code_len;         /**< forth code size, in bytes                            */
+    uint32_t data_len;         /**< data size, in bytes                                  */
+    m4char code[0];            /**< code starts at [0], data starts at [code_len]        */
 };
 
-struct m4dict_s {     /**< dictionary                                         */
-    int32_t word_off; /**< offset of last word,     in bytes. 0 = not present */
-    int16_t name_off; /**< offset of m4dictname,    in bytes. 0 = not present */
+struct m4dict_s {     /**< dictionary                                           */
+    int32_t word_off; /**< offset of last word,       in bytes. 0 = not present */
+    int16_t name_off; /**< offset of m4countedstring, in bytes. 0 = not present */
 };
 
 struct m4th_s {     /**< m4th forth interpreter and compiler */
@@ -168,15 +166,17 @@ void *m4th_mmap(size_t bytes);
 /** munmap() wrapper */
 void m4th_munmap(void *ptr, size_t bytes);
 
-void m4th_wordname_print(const m4wordname *n, FILE *out);
-void m4th_word_print(const m4word *w, FILE *out);
+void m4th_countedstring_print(const m4countedstring *n, FILE *out);
+
 void m4th_stack_print(const m4stack *stack, FILE *out);
 
-const m4dictname *m4th_dict_name(const m4dict *d);
+const m4countedstring *m4th_dict_name(const m4dict *d);
 const m4word *m4th_dict_lastword(const m4dict *d);
+void m4th_dict_print(const m4dict *d, FILE *out);
 
-const m4wordname *m4th_word_name(const m4word *w);
+const m4countedstring *m4th_word_name(const m4word *w);
 const m4word *m4th_word_prev(const m4word *w);
+void m4th_word_print(const m4word *w, FILE *out);
 
 #ifdef __cplusplus
 }

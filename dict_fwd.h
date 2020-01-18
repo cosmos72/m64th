@@ -15,24 +15,21 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "m4th.h"
+#ifndef M4TH_DICT_FWD_H
+#define M4TH_DICT_FWD_H
 
-#include <stdio.h>
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-int main(int argc, char *argv[]) {
-    m4th *m = m4th_new();
-    const m4dict *d;
-    m4int i;
+typedef struct m4dict_s m4dict;
 
-    for (i = 0;; i++) {
-        if ((d = m->dicts[i]) == NULL) {
-            break;
-        }
-        m4th_dict_print(d, stdout);
-    }
+extern const m4dict m4dict_core;
+extern const m4dict m4dict_m4th;
+extern const m4dict m4dict_tools_ext;
 
-    m4th_del(m);
-
-    /* suppress 'unused parameter' warning */
-    return 0 & argc & (m4int)argv;
+#ifdef __cplusplus
 }
+#endif
+
+#endif /* M4TH_DICT_FWD_H */

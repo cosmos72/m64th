@@ -24,13 +24,6 @@ extern "C" {
 
 typedef struct m4word_s m4word;
 
-/**
- * The following functions use m4th calling convention, not C !
- *
- * Do not attempt to invoke them directly from C - the only useful
- * operation is taking their address and appending it to m4th->code
- */
-
 extern const m4word m4word_store;             /* !    */
 extern const m4word m4word__1_;               /* (1)     m4th */
 extern const m4word m4word__question_do_;     /* (?do)   m4th */

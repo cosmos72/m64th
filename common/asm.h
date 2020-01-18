@@ -106,14 +106,14 @@
 
 #define DICT_START(name)
 
+#define DICT_WORD_OFF(name, wordname)   .4byte DICT_SYM(name)    - WORD_SYM(wordname) ;
 #define DICT_NAME_OFF(name)             .2byte DICT_SYM(name)    - COUNTEDSTRING_SYM(name) ;
-#define DICT_WORD_OFF(name, wordname)   .2byte DICT_SYM(name)    - WORD_SYM(wordname) ;
 #define DICT_END(name)                  .size  DICT_SYM(name), . - DICT_SYM(name) ;
 
 #define DICT_BODY(name, last_wordname)                                                             \
     DICT_DEF_SYM(name)                                                                             \
-    DICT_NAME_OFF(name)                                                                            \
-    DICT_WORD_OFF(name, last_wordname)
+    DICT_WORD_OFF(name, last_wordname)                                                             \
+    DICT_NAME_OFF(name)
 
 /* ------------- WORD ------------- */
 
