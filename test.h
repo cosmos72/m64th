@@ -15,30 +15,16 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "test.h"
-#include "t/testcompile.h"
-#include "t/testexecute.h"
+#ifndef M4TH_TEST_H
+#define M4TH_TEST_H
 
-#include <stdio.h> /* fprintf() fputc() */
+#include "m4th.h"
 
-void m4th_code_print(const m4code *src, FILE *out) {
-    m4instr *p = src->start, *end = src->curr;
-    for (; p != end; p++) {
-        fprintf(out, "0x%lx ", (unsigned long)*p);
-    }
-    fputc('\n', out);
-}
+enum { tfalse = (m4int)0, ttrue = (m4int)-1 };
 
-/* -------------- main -------------- */
+void m4th_code_print(const m4code *src, FILE *out);
 
-int main(int argc, char *argv[]) {
-    m4th *m = m4th_new();
+m4int m4th_testcompile(m4th *m, FILE *out);
+m4int m4th_testexecute(m4th *m, FILE *out);
 
-    m4int fail1 = m4th_testexecute(m, stdout);
-    m4int fail2 = m4th_testcompile(m, stdout);
-
-    m4th_del(m);
-
-    /* suppress 'unused parameter' warning */
-    return (fail1 + fail2) || (0 & argc & (m4int)argv);
-}
+#endif /* M4TH_TEST_H */

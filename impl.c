@@ -15,7 +15,7 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "func_fwd.h"
+#include "common/func_fwd.h"
 
 #include "impl.h"
 

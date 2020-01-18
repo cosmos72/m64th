@@ -16,7 +16,7 @@
  */
 
 #include "m4th.h"
-#include "dict_fwd.h"
+#include "common/dict_fwd.h"
 
 #include <errno.h>  /* errno */
 #include <stdio.h>  /* fprintf() */
