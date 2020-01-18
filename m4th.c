@@ -277,12 +277,12 @@ void m4th_word_print(const m4word *w, FILE *out) {
     m4th_countedstring_print(m4th_word_name(w), out);
     fputs(" {\n\tflags:\t", out);
     m4th_flags_print((m4flags)w->flags, out);
-    fputs(" \n\tdata_stack:\t", out);
+    fputs(" \n\tdata_stack: \t", out);
     m4th_word_stack_print(w->dstack, out);
     fputs(" \n\treturn_stack:\t", out);
     m4th_word_stack_print(w->rstack, out);
-    fprintf(out, "\n\tnative_len:\t%u\n\tcode_len:\t%u\n\tdata_len:\t%u\n}\n",
-            (unsigned)w->native_len, (unsigned)w->code_len, (unsigned)w->data_len);
+    fprintf(out, "\n\tnative_len:  \t%u\n\tcode_n:      \t%u\n\tdata_len:    \t%u\n}\n",
+            (unsigned)w->native_len, (unsigned)w->code_n, (unsigned)w->data_len);
 }
 
 const m4countedstring *m4th_word_name(const m4word *w) {

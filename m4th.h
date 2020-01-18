@@ -101,10 +101,10 @@ struct m4word_s {       /**< word                                               
     uint8_t flags;      /**< m4flags                                              */
     uint8_t dstack;     /**< dstack # in and # out. 0xFF if unknown or variable   */
     uint8_t rstack;     /**< rstack # in and # out. 0xFF if unknown or variable   */
-    uint8_t native_len; /**< native code size, in bytes                         */
-    uint16_t code_len;  /**< forth code size, in bytes                            */
+    uint8_t native_len; /**< native code size, in bytes                           */
+    uint16_t code_n;    /**< forth code size, in m4instr:s                        */
     uint32_t data_len;  /**< data size, in bytes                                  */
-    m4instr code[0];    /**< code starts at [0], data starts at [code_len]        */
+    m4instr code[0];    /**< code starts at [0], data starts at [code_n]          */
 };
 
 struct m4dict_s {     /**< dictionary                                           */

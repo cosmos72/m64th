@@ -140,7 +140,7 @@
 #define WORD_RSTACK_UNKNOWN()           .byte  0xFF;
 #define WORD_NATIVE_LEN(name)           .byte  FUNC_SYM_NEXT(name) - FUNC_SYM(name);
 #define WORD_NATIVE_LEN_0()             .byte  0;
-#define WORD_CODE_N(n_instr)            .2byte (n_instr) * ISZ;
+#define WORD_CODE_N(n_instr)            .2byte n_instr;
 #define WORD_DATA_NBYTES(n_bytes)       .4byte n_bytes;
 #define WORD_DATA_N(n_instr)            .4byte (n_instr) * ISZ;
 #define WORD_CODE(...)                  .8byte __VA_ARGS__;
