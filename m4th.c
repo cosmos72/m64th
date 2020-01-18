@@ -115,37 +115,37 @@ void m4th_free(void *ptr) {
     free(ptr);
 }
 
-static m4stack m4stack_alloc(m4int size) {
+static m4stack m4th_stack_alloc(m4int size) {
     m4int *p = (m4int *)m4th_mmap(size * sizeof(m4int));
     m4stack ret = {p, p + size - 1, p + size - 1};
     return ret;
 }
 
-static void m4stack_free(m4stack *arg) {
+static void m4th_stack_free(m4stack *arg) {
     if (arg) {
         m4th_munmap(arg->start, (arg->end - arg->start + 1) / sizeof(m4int));
     }
 }
 
-static m4code m4code_alloc(m4int size) {
+static m4code m4th_code_alloc(m4int size) {
     m4instr *p = (m4instr *)m4th_alloc(size * sizeof(m4instr));
     m4code ret = {p, p, p + size};
     return ret;
 }
 
-static void m4code_free(m4code *arg) {
+static void m4th_code_free(m4code *arg) {
     if (arg) {
         m4th_free(arg->start);
     }
 }
 
-static m4cspan m4cspan_alloc(m4int size) {
+static m4cspan m4th_cspan_alloc(m4int size) {
     m4char *p = (m4char *)m4th_alloc(size * sizeof(m4char));
     m4cspan ret = {p, p, p + size};
     return ret;
 }
 
-static void m4cspan_free(m4cspan *arg) {
+static void m4th_cspan_free(m4cspan *arg) {
     if (arg) {
         m4th_free(arg->start);
     }
@@ -335,13 +335,13 @@ const m4word *m4th_dict_lastword(const m4dict *d) {
 
 m4th *m4th_new() {
     m4th *m = (m4th *)m4th_alloc(sizeof(m4th));
-    m->dstack = m4stack_alloc(dstack_n);
-    m->rstack = m4stack_alloc(rstack_n);
-    m->code = m4code_alloc(code_n);
+    m->dstack = m4th_stack_alloc(dstack_n);
+    m->rstack = m4th_stack_alloc(rstack_n);
+    m->code = m4th_code_alloc(code_n);
     m->ip = m->code.start;
     m->c_sp = NULL;
-    m->in = m4cspan_alloc(inbuf_n);
-    m->out = m4cspan_alloc(outbuf_n);
+    m->in = m4th_cspan_alloc(inbuf_n);
+    m->out = m4th_cspan_alloc(outbuf_n);
     m->flags = m4th_flag_interpret;
     m->dicts[0] = &m4dict_core;
     m->dicts[1] = &m4dict_tools_ext;
@@ -353,11 +353,11 @@ m4th *m4th_new() {
 
 void m4th_del(m4th *m) {
     if (m) {
-        m4cspan_free(&m->out);
-        m4cspan_free(&m->in);
-        m4code_free(&m->code);
-        m4stack_free(&m->rstack);
-        m4stack_free(&m->dstack);
+        m4th_cspan_free(&m->out);
+        m4th_cspan_free(&m->in);
+        m4th_code_free(&m->code);
+        m4th_stack_free(&m->rstack);
+        m4th_stack_free(&m->dstack);
         m4th_free(m);
     }
 }
