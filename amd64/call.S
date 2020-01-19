@@ -37,7 +37,7 @@ FUNC_START(th_run)
         STOR(  %rsp, AT(M4TH, OFF_C_SP))  /* save C stack pointer            */
         LOAD(  DSTK, AT(M4TH, OFF_DSTK))  /* load data   stack pointer       */
         LOAD(  RSTK, AT(M4TH, OFF_RSTK))  /* load return stack pointer       */
-        LOAD(  ISTK, AT(M4TH, OFF_ISTK))  /* load code   array pointer       */
+        LOAD(  M4W,  AT(M4TH, OFF_W))     /* load word being compiled        */
         LOAD(  IP,   AT(M4TH, OFF_IP))    /* load instruction  pointer       */
         DPOP(  DTOP)                      /* load first data   stack element */
         RPOP(  RTOP)                      /* load first return stack element */
@@ -56,7 +56,7 @@ FUNC_START(bye)
         RPUSH( RTOP)                      /* save first return stack element */
         DPUSH( DTOP)                      /* save first data   stack element */
         STOR(  IP,   AT(M4TH, OFF_IP))    /* save instruction  pointer       */
-        STOR(  ISTK, AT(M4TH, OFF_ISTK))  /* save code   array pointer       */
+        STOR(  M4W,  AT(M4TH, OFF_W))     /* save word being compiled        */
         STOR(  RSTK, AT(M4TH, OFF_RSTK))  /* save return stack pointer       */
         STOR(  DSTK, AT(M4TH, OFF_DSTK))  /* save data   stack pointer       */
         LOAD(  %rsp, AT(M4TH, OFF_C_SP))  /* load C stack pointer            */

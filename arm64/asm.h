@@ -30,6 +30,7 @@
 #define SZ8 64   /* SZ * 8 */
 #define SZ9 72   /* SZ * 9 */
 #define SZ10 80  /* SZ * 10 */
+#define SZ11 88  /* SZ * 11 */
 #define SZ12 96  /* SZ * 12 */
 #define SZ13 104 /* SZ * 13 */
 #define SZ15 120 /* SZ * 15 */
@@ -65,7 +66,7 @@
 #define IP    x22 /* instruction pointer */
 #define RTOP  x23 /* value of first return stack element */
 #define RSTK  x24 /* pointer to second return stack element */
-#define ISTK  x25 /* pointer to code being compiled */
+#define M4W   x25 /* pointer to word being compiled */
 #define M4TH  x26 /* pointer to C struct m4th */
 
 
@@ -88,13 +89,14 @@
 #define STOR(reg,mem)    str  reg, mem;         /* *mem = reg     */
 #define ZERO(dst)        mov  dst, 0;           /* dst  = 0       */
 
-
+#if 0
 #define IPUSH1(val)   /* push val to code array */  \
     str   val, [ISTK], SZ;
 
 #define IPUSH2(a, b)  /* push a, b to code array */ \
     str   b,   [ISTK,  SZ];                         \
-    str   a,   [ISTK], SZ2;                         \
+    str   a,   [ISTK], SZ2;
+#endif /* 0 */
 
 #define FADDR(fun, dst) /* load function address */ \
     adrp  dst,  fun;             /* high 21 bits */ \

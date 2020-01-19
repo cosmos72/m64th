@@ -127,18 +127,6 @@ static void m4th_stack_free(m4stack *arg) {
     }
 }
 
-static m4code m4th_code_alloc(m4int size) {
-    m4instr *p = (m4instr *)m4th_alloc(size * sizeof(m4instr));
-    m4code ret = {p, p, p + size};
-    return ret;
-}
-
-static void m4th_code_free(m4code *arg) {
-    if (arg) {
-        m4th_free(arg->start);
-    }
-}
-
 static m4cspan m4th_cspan_alloc(m4int size) {
     m4char *p = (m4char *)m4th_alloc(size * sizeof(m4char));
     m4cspan ret = {p, p, p + size};
@@ -334,8 +322,8 @@ m4th *m4th_new() {
     m4th *m = (m4th *)m4th_alloc(sizeof(m4th));
     m->dstack = m4th_stack_alloc(dstack_n);
     m->rstack = m4th_stack_alloc(rstack_n);
-    m->code = m4th_code_alloc(code_n);
-    m->ip = m->code.start;
+    m->w = NULL;
+    m->ip = NULL;
     m->c_sp = NULL;
     m->in = m4th_cspan_alloc(inbuf_n);
     m->out = m4th_cspan_alloc(outbuf_n);
@@ -352,7 +340,6 @@ void m4th_del(m4th *m) {
     if (m) {
         m4th_cspan_free(&m->out);
         m4th_cspan_free(&m->in);
-        m4th_code_free(&m->code);
         m4th_stack_free(&m->rstack);
         m4th_stack_free(&m->dstack);
         m4th_free(m);
@@ -362,8 +349,8 @@ void m4th_del(m4th *m) {
 void m4th_clear(m4th *m) {
     m->dstack.curr = m->dstack.end;
     m->rstack.curr = m->rstack.end;
-    m->code.curr = m->code.start;
-    m->ip = m->code.start;
+    m->w = NULL;
+    m->ip = NULL;
     m->c_sp = NULL;
     m->in.curr = m->in.start;
     m->out.curr = m->out.start;

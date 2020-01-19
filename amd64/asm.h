@@ -30,6 +30,7 @@
 #define SZ8 64   /* SZ * 8 */
 #define SZ9 72   /* SZ * 9 */
 #define SZ10 80  /* SZ * 10 */
+#define SZ11 88  /* SZ * 11 */
 #define SZ12 96  /* SZ * 12 */
 #define SZ13 104 /* SZ * 13 */
 #define SZ15 120 /* SZ * 15 */
@@ -66,7 +67,7 @@
 #define IP    %rdi  /* forth instruction pointer */
 #define RTOP  %rsi  /* value of first return stack element */
 #define RSTK  %r12  /* pointer to second return stack element */
-#define ISTK  %r13  /* pointer to code being compiled */
+#define M4W   %r13  /* pointer to word being compiled */
 #define M4TH  %r14  /* pointer to C struct m4th */
 #define RFFF  %r15  /* always contains -1 */
 #define RIP   %rip  /* x86-64 instruction pointer */
@@ -89,6 +90,7 @@
 
 /* clang-format on */
 
+#if 0
 #define IPUSH1(val) /* push val to code array */                                                   \
     mov val, (ISTK);                                                                               \
     addq IMM(SZ), (ISTK);
@@ -97,6 +99,7 @@
     mov b, SZ(ISTK);                                                                               \
     mov a, (ISTK);                                                                                 \
     addq IMM(SZ2), (ISTK);
+#endif /* 0 */
 
 #define FADDR(fun, dst) lea fun(RIP), dst; /* load function address */
 

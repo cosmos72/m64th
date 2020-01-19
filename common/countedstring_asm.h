@@ -1,0 +1,43 @@
+/**
+ * This file is part of m4th.
+ *
+ * m4th is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3
+ * of the License, or (at your option) any later version.
+ *
+ * m4th is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+#ifndef M4TH_COMMON_COUNTEDSTRING_ASM_H
+#define M4TH_COMMON_COUNTEDSTRING_ASM_H
+
+#define COUNTEDSTRING_SYM(name) .Lcountedstring.name
+
+#define COUNTEDSTRING_DEF_SYM(name)                                                                \
+    /* no alignment */                                                                             \
+    .type COUNTEDSTRING_SYM(name), @object;                                                        \
+    COUNTEDSTRING_SYM(name) :
+
+#define COUNTEDSTRING_START(name) COUNTEDSTRING_DEF_SYM(name)
+
+#define COUNTEDSTRING_LEN(strlen) .byte strlen;
+#define COUNTEDSTRING_ASCII(str) .ascii str;
+#define COUNTEDSTRING_END(name)
+
+#define COUNTEDSTRING(strlen, str, name)                                                           \
+    COUNTEDSTRING_START(name)                                                                      \
+    COUNTEDSTRING_LEN(strlen)                                                                      \
+    COUNTEDSTRING_ASCII(str)                                                                       \
+    COUNTEDSTRING_END(name)
+
+#define DICTNAME COUNTEDSTRING
+#define WORDNAME COUNTEDSTRING
+
+#endif /* M4TH_COMMON_COUNTEDSTRING_ASM_H */

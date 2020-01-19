@@ -111,15 +111,15 @@ struct m4dict_s {     /**< dictionary                                           
     int16_t name_off; /**< offset of m4countedstring, in bytes. 0 = not present */
 };
 
-struct m4th_s {     /**< m4th forth interpreter and compiler */
-    m4stack dstack; /**< data stack                          */
-    m4stack rstack; /**< return stack                        */
-    m4code code;    /**< forth code being compiled           */
-    m4instr *ip;    /**< instruction pointer                 */
-    void *c_sp;     /**< C stack pointer, may be saved here by m4th_run() */
-    m4cspan in;     /**< input  buffer                       */
-    m4cspan out;    /**< output buffer                       */
-    m4int flags;    /**< m4th_flags                          */
+struct m4th_s {        /**< m4th forth interpreter and compiler */
+    m4stack dstack;    /**< data stack                          */
+    m4stack rstack;    /**< return stack                        */
+    m4word *w;         /**< forth word being compiled           */
+    const m4instr *ip; /**< instruction pointer                 */
+    const void *c_sp;  /**< C stack pointer, may be saved here by m4th_run() */
+    m4cspan in;        /**< input  buffer                       */
+    m4cspan out;       /**< output buffer                       */
+    m4int flags;       /**< m4th_flags                          */
 
     const m4dict *dicts[4];     /* FIXME: available dictionaries */
     const char *const *in_cstr; /* DELETEME: pre-parsed input    */

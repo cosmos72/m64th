@@ -21,7 +21,9 @@
 
 /* literal: compile the literal number found on the stack */
 FUNC_START(literal)
+#if 0
         FADDR( m4_lit_, REG1)
         IPUSH2(REG1, DTOP)
+#endif /* 0 */
         DPOP(  DTOP)
 FUNC_END(literal)

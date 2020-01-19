@@ -82,13 +82,6 @@ static void m4test_stack_copy(const m4test_stack *src, m4span *dst) {
     }
 }
 
-/* -------------- m4test_code -------------- */
-
-static void m4test_code_copy(const m4test_code *src, m4code *dst) {
-    dst->curr = dst->start + m4test_code_n;
-    memcpy(dst->start, *src, m4test_code_n * sizeof(m4instr));
-}
-
 /* -------------- crc -------------- */
 
 static m4int crctable[256];
@@ -232,9 +225,9 @@ enum { test_n = sizeof(test) / sizeof(test[0]) };
 
 static m4int m4test_run(m4th *m, const m4test *t) {
     m4th_clear(m);
-    m4test_code_copy(&t->code, &m->code);
     m4test_stack_copy(&t->before.d, &m->dstack);
     m4test_stack_copy(&t->before.r, &m->rstack);
+    m->ip = t->code;
     m4th_run(m);
     return m4test_stack_equals(&t->after.d, &m->dstack) &&
            m4test_stack_equals(&t->after.r, &m->rstack);

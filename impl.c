@@ -27,7 +27,7 @@
 #define dpush(val) (*--m->dstack.curr = (val))
 #define dpop(val) (*m->dstack.curr++)
 
-#define ipush(val) (*m->code.curr++ = (val))
+#define ipush(val) (m->w->code[m->w->code_n++] = (val))
 
 enum {
     tsuccess = 0,
@@ -140,14 +140,14 @@ static m4int m4th_compile_word(m4th *m, const m4word *w) {
 
 /** temporary C implementation of (interpret-word) */
 static m4int m4th_interpret_word(m4th *m, const m4word *w) {
-    const m4code code_save = m->code;
+    m4word *w_save = m->w;
     m4int ret = m4th_compile_word(m, w);
     if (ret != tsuccess) {
         return ret;
     }
     ipush(m4bye);
     ret = m4th_run(m);
-    m->code = code_save;
+    m->w = w_save;
     return ret;
 }
 
