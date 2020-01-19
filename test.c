@@ -16,13 +16,13 @@
  */
 
 #include "test.h"
-// #include "t/testcompile.c"
+#include "t/testcompile.c"
 #include "t/testexecute.c"
 
 #include <stdio.h> /* fprintf() fputc() */
 
-void m4th_code_print(const m4code *src, FILE *out) {
-    m4instr *p = src->start, *end = src->curr;
+void m4th_word_code_print(const m4word *w, FILE *out) {
+    const m4instr *p = w->code, *end = w->code + w->code_n;
     for (; p != end; p++) {
         fprintf(out, "0x%lx ", (unsigned long)*p);
     }
@@ -35,7 +35,7 @@ int main(int argc, char *argv[]) {
     m4th *m = m4th_new();
 
     m4int fail1 = m4th_testexecute(m, stdout);
-    m4int fail2 = 0; // m4th_testcompile(m, stdout);
+    m4int fail2 = m4th_testcompile(m, stdout);
 
     m4th_del(m);
 

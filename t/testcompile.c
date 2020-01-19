@@ -34,6 +34,12 @@ typedef struct m4testcompile_code_s {
     m4instr data[m4testcompile_code_n];
 } m4testcompile_code;
 
+typedef struct m4testcompile_word_s {
+    m4word impl;
+    /* reserve space for generated code */
+    m4instr code[m4testcompile_code_n];
+} m4testcompile_word;
+
 typedef struct m4testcompile_s {
     const char *input[8];
     m4testcompile_code generated;
@@ -49,11 +55,11 @@ static void m4testcompile_code_print(const m4testcompile_code *src, FILE *out) {
     fputc('\n', out);
 }
 
-static m4int m4testcompile_code_equals(const m4testcompile_code *src, const m4code *dst) {
-    if (src->len != dst->curr - dst->start) {
+static m4int m4testcompile_code_equals(const m4testcompile_code *src, const m4word *dst) {
+    if (src->len != dst->code_n) {
         return tfalse;
     }
-    return memcmp(src->data, dst->start, src->len * sizeof(m4instr)) == 0;
+    return memcmp(src->data, dst->code, src->len * sizeof(m4instr)) == 0;
 }
 
 /* -------------- m4testcompile -------------- */
@@ -71,12 +77,14 @@ static const m4testcompile testcompile[] = {
 enum { testcompile_n = sizeof(testcompile) / sizeof(testcompile[0]) };
 
 static m4int m4testcompile_run(m4th *m, const m4testcompile *t) {
+    m4testcompile_word w = {};
     m4th_clear(m);
+    m->w = &w.impl;
     m->flags &= ~m4th_flag_status_mask;
     m->flags |= m4th_flag_compile;
     m->in_cstr = t->input;
     m4th_repl(m);
-    return m4testcompile_code_equals(&t->generated, &m->code);
+    return m4testcompile_code_equals(&t->generated, m->w);
 }
 
 static void m4testcompile_print(const m4testcompile *t, FILE *out) {
@@ -97,7 +105,7 @@ static void m4testcompile_failed(m4th *m, const m4testcompile *t, FILE *out) {
     fputs("    expected code ", out);
     m4testcompile_code_print(&t->generated, out);
     fputs("    actual   code ", out);
-    m4th_code_print(&m->code, out);
+    m4th_word_code_print(m->w, out);
 }
 
 m4int m4th_testcompile(m4th *m, FILE *out) {
