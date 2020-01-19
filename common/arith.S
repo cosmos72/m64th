@@ -26,13 +26,6 @@ FUNC_START(store) /* ! */
 FUNC_END(store)
 
 
-#ifndef M4ONE
-FUNC_START(one) /* (1) */
-        DPUSH( DTOP)
-        MOVE(  IMM(1), DTOP)
-FUNC_END(one)
-#endif
-
 #ifndef M4_LIT_
 FUNC_START(_lit_) /* (lit) */
         DPUSH( DTOP)
