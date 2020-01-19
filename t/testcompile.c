@@ -59,9 +59,17 @@ static m4int m4testcompile_code_equals(const m4testcompile_code *src, const m4co
 /* -------------- m4testcompile -------------- */
 
 static const m4testcompile testcompile[] = {
-    {{"0"}, {2, {m4_lit_, (m4instr)0}}},
+    {{"0"}, {2, {m4_call_, (m4instr)m4word_zero.code}}},
     {{"1", "2", "+"},
-     {6, {m4_lit_, (m4instr)1, m4_lit_, (m4instr)2, m4_call_, (m4instr)m4word_plus.code}}},
+     {6,
+      {
+          m4_call_,
+          (m4instr)m4word_one.code,
+          m4_call_,
+          (m4instr)m4word_two.code,
+          m4_call_,
+          (m4instr)m4word_plus.code,
+      }}},
 };
 
 enum { testcompile_n = sizeof(testcompile) / sizeof(testcompile[0]) };

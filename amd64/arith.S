@@ -17,13 +17,6 @@
 
 #include "asm.h"
 
-#define M4_1_
-FUNC_START(_1_) /* (1) */
-        DPUSH( DTOP)
-        MOVE(  IMM(1), DTOPw)
-FUNC_END(_1_)
-
-
 #define M4PLUS_STORE
 FUNC_START(plus_store) /* +! */
         DPOP(  REG1)
@@ -51,6 +44,13 @@ FUNC_START(slash_mod)      /* /mod */
 FUNC_END(slash_mod)
 
 
+#define M4ZERO
+FUNC_START(zero)
+        DPUSH( DTOP)
+        ZERO(  DTOPw)
+FUNC_END(zero)
+
+
 FUNC_START(zero_not_equals)   /* 0<>  core ext */
         test   DTOP, DTOP;
         mov    IMM(0), DTOPw;    /* xor would affect EFLAGS */
@@ -72,6 +72,13 @@ FUNC_START(zero_greater_than)   /* 0> */
 FUNC_END(zero_greater_than)
 
 
+#define M4ONE
+FUNC_START(one) /* 1 */
+        DPUSH( DTOP)
+        MOVE(  IMM(1), DTOPw)
+FUNC_END(one)
+
+
 #define M4ONE_MINUS
 FUNC_START(one_minus) /* 1-   */
         dec    DTOP;
@@ -82,6 +89,13 @@ FUNC_END(one_minus)
 FUNC_START(one_plus) /* 1+   */
         inc    DTOP;
 FUNC_END(one_plus)
+
+
+#define M4TWO
+FUNC_START(two) /* 2 */
+        DPUSH( DTOP)
+        MOVE(  IMM(2), DTOPw)
+FUNC_END(two)
 
 
 FUNC_START(two_slash) /* 2/ */
@@ -160,13 +174,6 @@ FUNC_END(c_store)
 FUNC_START(c_fetch) /* c@ */
         movzbl (DTOP), DTOPw;
 FUNC_END(c_fetch)
-
-
-#define M4FALSE
-FUNC_START(false)
-        DPUSH( DTOP)
-        ZERO(  DTOPw)
-FUNC_END(false)
 
 
 FUNC_START(lshift)

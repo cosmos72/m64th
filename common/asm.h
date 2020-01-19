@@ -23,9 +23,30 @@
 #define CAT2_(a, b) a##b
 #define CAT2(a, b) CAT2_(a, b)
 
-#define M4FLAG_CONSUMES_IP_SZ CAT2(M4FLAG_CONSUMES_IP_, SZ)
+/* works only for 1..10 arguments. broken for zero arguments */
+#define COUNT_ARGS_(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, n, ...) n
+#define COUNT_ARGS(...) COUNT_ARGS_(__VA_ARGS__, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1)
+
+#define WRAP_ARGS_COMMA_1(x, _1) x(_1)
+#define WRAP_ARGS_COMMA_2(x, _1, _2) x(_1), x(_2)
+#define WRAP_ARGS_COMMA_3(x, _1, _2, _3) x(_1), x(_2), x(_3)
+#define WRAP_ARGS_COMMA_4(x, _1, _2, _3, _4) x(_1), x(_2), x(_3), x(_4)
+#define WRAP_ARGS_COMMA_5(x, _1, _2, _3, _4, _5) x(_1), x(_2), x(_3), x(_4), x(_5)
+#define WRAP_ARGS_COMMA_6(x, _1, _2, _3, _4, _5, _6) x(_1), x(_2), x(_3), x(_4), x(_5), x(_6)
+#define WRAP_ARGS_COMMA_7(x, _1, _2, _3, _4, _5, _6, _7)                                           \
+    x(_1), x(_2), x(_3), x(_4), x(_5), x(_6), x(_7)
+#define WRAP_ARGS_COMMA_8(x, _1, _2, _3, _4, _5, _6, _7, _8)                                       \
+    x(_1), x(_2), x(_3), x(_4), x(_5), x(_6), x(_7), x(_8)
+#define WRAP_ARGS_COMMA_9(x, _1, _2, _3, _4, _5, _6, _7, _8, _9)                                   \
+    x(_1), x(_2), x(_3), x(_4), x(_5), x(_6), x(_7), x(_8), x(_9)
+#define WRAP_ARGS_COMMA_10(x, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10)                             \
+    x(_1), x(_2), x(_3), x(_4), x(_5), x(_6), x(_7), x(_8), x(_9), x(_10)
+
+#define WRAP_ARGS_COMMA(x, ...) CAT2(WRAP_ARGS_COMMA_, COUNT_ARGS(__VA_ARGS__))(x, __VA_ARGS__)
 
 /* internal m4th macros used (mostly) by assembly */
+
+#define M4FLAG_CONSUMES_IP_SZ CAT2(M4FLAG_CONSUMES_IP_, SZ)
 
 /* clang-format off */
 
@@ -139,7 +160,7 @@
 #define WORD_RSTACK(in, out)            .byte  ((in) & 0xF) | (((out) & 0xF) << 4);
 #define WORD_RSTACK_UNKNOWN()           .byte  0xFF;
 #define WORD_NATIVE_LEN(name)           .byte  FUNC_SYM_NEXT(name) - FUNC_SYM(name);
-#define WORD_NATIVE_LEN_0()             .byte  0;
+#define WORD_NATIVE_LEN_NONE()             .byte  0;
 #define WORD_CODE_N(n_instr)            .2byte n_instr;
 #define WORD_DATA_NBYTES(n_bytes)       .4byte n_bytes;
 #define WORD_DATA_N(n_instr)            .4byte (n_instr) * ISZ;
@@ -151,15 +172,20 @@
 #define WORD_DATA_8(...)                .8byte __VA_ARGS__;
 #define WORD_END(name)                  .size WORD_SYM(name), . - WORD_SYM(name);
 
+#define WORD_CODE_FUNCS(...)                                                                       \
+    WORD_CODE(WRAP_ARGS_COMMA(FUNC_SYM, __VA_ARGS__))
+
+#define WORD_FUNCS(...)                                                                            \
+    WORD_CODE_N(COUNT_ARGS(__VA_ARGS__))                                                           \
+    WORD_DATA_NBYTES(0)                                                                            \
+    WORD_CODE_FUNCS(__VA_ARGS__)
+
 #define WORD_BODY_SIMPLE(name, flags, dstack, rstack)                                              \
     WORD_FLAGS(flags)                                                                              \
     WORD_##dstack                                                                                  \
     WORD_##rstack                                                                                  \
-    WORD_NATIVE_LEN(name)                                                                   \
-    WORD_CODE_N(2)                                                                                 \
-    WORD_DATA_N(0)                                                                                 \
-    WORD_CODE_FUNC(name)                                                                           \
-    WORD_CODE_FUNC(exit)
+    WORD_NATIVE_LEN(name)                                                                          \
+    WORD_FUNCS(name, exit)
 
 #define WORD_IMPURE M4FLAG_INLINE|M4FLAG_INLINE_NATIVE
 #define WORD_PURE   M4FLAG_INLINE|M4FLAG_INLINE_NATIVE|M4FLAG_PURE

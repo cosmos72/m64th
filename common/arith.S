@@ -26,11 +26,11 @@ FUNC_START(store) /* ! */
 FUNC_END(store)
 
 
-#ifndef M4_1_
-FUNC_START(_1_) /* (1) */
+#ifndef M4ONE
+FUNC_START(one) /* (1) */
         DPUSH( DTOP)
         MOVE(  IMM(1), DTOP)
-FUNC_END(_1_)
+FUNC_END(one)
 #endif
 
 #ifndef M4_LIT_
@@ -76,9 +76,31 @@ FUNC_START(minus) /* - */
 FUNC_END(minus)
 
 
+FUNC_START(minus_one)
+        DPUSH( DTOP)
+        MOVE(  IMM(-1), DTOP)
+FUNC_END(minus_one)
+
+
+#ifndef M4ZERO
+FUNC_START(zero)
+        DPUSH( DTOP)
+        ZERO(  DTOP)
+FUNC_END(zero)
+#endif
+
+
 FUNC_START(zero_less)   /* 0< */
         SAR2(  IMM(63), DTOP)
 FUNC_END(zero_less)
+
+
+#ifndef M4ONE
+FUNC_START(one)
+        DPUSH( DTOP)
+        MOVE(  IMM(1), DTOP)
+FUNC_END(one)
+#endif
 
 
 #ifndef M4ONE_MINUS
@@ -92,6 +114,14 @@ FUNC_END(one_minus)
 FUNC_START(one_plus) /* 1+   */
         ADD2(  IMM(1), DTOP)
 FUNC_END(one_plus)
+#endif
+
+
+#ifndef M4TWO
+FUNC_START(two)
+        DPUSH( DTOP)
+        MOVE(  IMM(2), DTOP)
+FUNC_END(two)
 #endif
 
 
@@ -141,7 +171,7 @@ FUNC_START(cell_plus) /* cell+ */
 FUNC_END(cell_plus)
 
 
-FUNC_START(cells) /* cells does SZ * */
+FUNC_START(cells) /* cells i.e SZ * */
         SHL2(  IMM(PSZ), DTOP)
 FUNC_END(cells)
 
@@ -157,14 +187,6 @@ FUNC_END(depth)
 FUNC_START(dup)
         DPUSH( DTOP)
 FUNC_END(dup)
-
-
-#ifndef M4FALSE
-FUNC_START(false)
-        DPUSH( DTOP)
-        ZERO(  DTOP)
-FUNC_END(false)
-#endif
 
 
 FUNC_START(i)

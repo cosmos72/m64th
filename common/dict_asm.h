@@ -19,7 +19,6 @@
 #define M4TH_COMMON_DICTIONARY_ASM_H
 
 #define DICT_WORDS_M4TH(X)                                                                         \
-    X(3, "(1)", _1_)                                                                               \
     X(5, "(?do)", _question_do_)                                                                   \
     X(6, "(call)", _call_)                                                                         \
     X(4, "(do)", _do_)                                                                             \
@@ -28,6 +27,10 @@
     X(6, "(loop)", _loop_)                                                                         \
     /* X(2, "*!", star_store)  TODO */                                                             \
     /* X(2, "-!", minus_store) TODO */                                                             \
+    X(2, "-1", minus_one)                                                                          \
+    X(1, "0", zero)                                                                                \
+    X(1, "1", one)                                                                                 \
+    X(1, "2", two)                                                                                 \
     X(2, "i*", i_star)                                                                             \
     X(2, "i+", i_plus)                                                                             \
     X(2, "i-", i_minus)                                                                            \

@@ -32,7 +32,6 @@ typedef struct m4arg_s m4arg; /* intentionally incomplete type, cannot be instan
  */
 
 void m4store(m4arg _); /* !    */
-void m4_1_(m4arg _);   /* (1)    m4th: 1  */
 /* (?do) m4th: must be followed by IP offset of 1st instruction after (loop) */
 void m4_question_do_(m4arg _);
 void m4_call_(m4arg _); /* (call) m4th: must be followed by IP of forth function */
@@ -46,14 +45,18 @@ void m4star(m4arg _);              /* *    */
 void m4plus(m4arg _);              /* +    */
 void m4plus_store(m4arg _);        /* +!   */
 void m4minus(m4arg _);             /* -    */
+void m4minus_one(m4arg _);         /* -1   m4th */
 void m4slash(m4arg _);             /* /    */
 void m4slash_mod(m4arg _);         /* /mod */
+void m4zero(m4arg _);              /* 0    m4th */
 void m4zero_less(m4arg _);         /* 0<   */
 void m4zero_not_equals(m4arg _);   /* 0<>  core ext */
 void m4zero_equals(m4arg _);       /* 0=   */
 void m4zero_greater_than(m4arg _); /* 0>   */
+void m4one(m4arg _);               /* 1    m4th */
 void m4one_plus(m4arg _);          /* 1+   */
 void m4one_minus(m4arg _);         /* 1-   */
+void m4two(m4arg _);               /* 2    m4th */
 void m4two_star(m4arg _);          /* 2*   */
 void m4two_plus(m4arg _);          /* 2+   m4th */
 void m4two_minus(m4arg _);         /* 2-   m4th */
@@ -79,7 +82,7 @@ void m4depth(m4arg _);             /* depth   */
 void m4drop(m4arg _);              /* drop */
 void m4dup(m4arg _);               /* dup  */
 void m4exit(m4arg _);              /* exit */
-void m4false(m4arg _);             /* false i.e. 0 */
+#define m4false m4zero             /* false   */
 void m4i(m4arg _);                 /* i    */
 void m4i_star(m4arg _);            /* i*   m4th */
 void m4i_plus(m4arg _);            /* i+   m4th */
@@ -101,7 +104,7 @@ void m4r_from(m4arg _);            /* r>   */
 void m4rot(m4arg _);               /* rot  */
 void m4rshift(m4arg _);            /* rshift  */
 void m4swap(m4arg _);              /* swap */
-void m4true(m4arg _);              /* true i.e. -1 */
+#define m4true m4minus_one         /* true */
 void m4unloop(m4arg _);            /* unloop */
 void m4xor(m4arg _);               /* xor  */
 

@@ -131,7 +131,6 @@ static const m4instr test_func_crc1byte[] = {
 /* -------------- m4test -------------- */
 
 static const m4test test[] = {
-    {"(1))", {m4_1_, m4bye}, {{0}, {0}}, {{1, {1}}, {0}}},
     {"(call) noop", {m4_call_, (m4instr)m4word_noop.code, m4bye}, {{0}, {0}}, {{0}, {0}}},
     {"(call) true", {m4_call_, (m4instr)m4word_true.code, m4bye}, {{0}, {0}}, {{1, {-1}}, {0}}},
     {"(call) crc+",
@@ -171,6 +170,7 @@ static const m4test test[] = {
     {"1 0=", {m4zero_equals, m4bye}, {{1, {1}}, {0}}, {{1, {tfalse}}, {0}}},
     {"0 0>", {m4zero_greater_than, m4bye}, {{1, {0}}, {0}}, {{1, {tfalse}}, {0}}},
     {"1 0>", {m4zero_greater_than, m4bye}, {{1, {1}}, {0}}, {{1, {ttrue}}, {0}}},
+    {"1", {m4one, m4bye}, {{0}, {0}}, {{1, {1}}, {0}}},
     {"1-", {m4one_minus, m4bye}, {{1, {-3}}, {0}}, {{1, {-4}}, {0}}},
     {"1+", {m4one_plus, m4bye}, {{1, {-6}}, {0}}, {{1, {-5}}, {0}}},
     {"2-", {m4two_minus, m4bye}, {{1, {-3}}, {0}}, {{1, {-5}}, {0}}},

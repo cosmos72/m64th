@@ -38,7 +38,7 @@
 #include "common/arith.S"
 #include "common/compile.S"
 
-#include "common/dictionary.S" /* must be last one */
+#include "common/dict.S" /* must be last one */
 
         .ident "m4th 0.0.0"
         .section .note.GNU-stack,"",@progbits

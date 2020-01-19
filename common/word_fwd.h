@@ -25,7 +25,6 @@ extern "C" {
 typedef struct m4word_s m4word;
 
 extern const m4word m4word_store;             /* !    */
-extern const m4word m4word__1_;               /* (1)     m4th */
 extern const m4word m4word__question_do_;     /* (?do)   m4th */
 extern const m4word m4word__call_;            /* (call)  m4th */
 extern const m4word m4word__do_;              /* (do)    m4th */
@@ -36,14 +35,18 @@ extern const m4word m4word_star;              /* *    */
 extern const m4word m4word_plus;              /* +    */
 extern const m4word m4word_plus_store;        /* +!   */
 extern const m4word m4word_minus;             /* -    */
+extern const m4word m4word_minus_one;         /* -1   m4th */
 extern const m4word m4word_slash;             /* /    */
 extern const m4word m4word_slash_mod;         /* /mod */
+extern const m4word m4word_zero;              /* 0    m4th */
 extern const m4word m4word_zero_less;         /* 0<   */
 extern const m4word m4word_zero_not_equals;   /* 0<>  core ext */
 extern const m4word m4word_zero_equals;       /* 0=   */
 extern const m4word m4word_zero_greater_than; /* 0>   */
+extern const m4word m4word_one;               /* 1    m4th */
 extern const m4word m4word_one_plus;          /* 1+   */
 extern const m4word m4word_one_minus;         /* 1-   */
+extern const m4word m4word_two;               /* 2    m4th*/
 extern const m4word m4word_two_star;          /* 2*   */
 extern const m4word m4word_two_plus;          /* 2+   m4th */
 extern const m4word m4word_two_minus;         /* 2-   m4th */
