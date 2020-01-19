@@ -57,10 +57,9 @@
  *
  * implies M4FLAG_INLINE_ALWAYS, incompatible with M4FLAG_PURE.
  */
-#define M4FLAG_CONSUMES_IP_1 ((2 << 5) | M4FLAG_INLINE_ALWAYS)
-#define M4FLAG_CONSUMES_IP_2 ((3 << 5) | M4FLAG_INLINE_ALWAYS)
-#define M4FLAG_CONSUMES_IP_4 ((4 << 5) | M4FLAG_INLINE_ALWAYS)
-#define M4FLAG_CONSUMES_IP_8 ((5 << 5) | M4FLAG_INLINE_ALWAYS)
+#define M4FLAG_CONSUMES_IP_2 ((2 << 5) | M4FLAG_INLINE_ALWAYS)
+#define M4FLAG_CONSUMES_IP_4 ((3 << 5) | M4FLAG_INLINE_ALWAYS)
+#define M4FLAG_CONSUMES_IP_8 ((4 << 5) | M4FLAG_INLINE_ALWAYS)
 
 #define M4FLAG_ADDR_MASK (7 << 5)
 /** word dereferences and reads  an address received as argument */

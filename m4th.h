@@ -57,7 +57,6 @@ typedef enum m4flags_e {
     m4flag_pure_mask = M4FLAG_PURE_MASK,
     m4flag_pure = M4FLAG_PURE,
     m4flag_consumes_ip_mask = M4FLAG_CONSUMES_IP_MASK,
-    m4flag_consumes_ip_1 = M4FLAG_CONSUMES_IP_1,
     m4flag_consumes_ip_2 = M4FLAG_CONSUMES_IP_2,
     m4flag_consumes_ip_4 = M4FLAG_CONSUMES_IP_4,
     m4flag_consumes_ip_8 = M4FLAG_CONSUMES_IP_8,

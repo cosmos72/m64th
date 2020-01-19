@@ -195,9 +195,6 @@ void m4th_flags_print(m4flags fl, FILE *out) {
     if (fl & m4flag_consumes_ip_mask) {
         m4char ch = 0;
         switch (fl & m4flag_consumes_ip_mask) {
-        case m4flag_consumes_ip_1:
-            ch = '1';
-            break;
         case m4flag_consumes_ip_2:
             ch = '2';
             break;
