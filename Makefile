@@ -17,7 +17,7 @@ asm.o:  asm.S $(wildcard *asm.h */asm.h */*.S)
 impl.o: impl.c $(wildcard *.h)
 m4th.o: m4th.c $(wildcard *.h)
 main.o: main.c $(wildcard *.h)
-test.o: test.c $(wildcard *.h t/*.h)
+test.o: test.c $(wildcard *.h t/*.*)
 
 m4th: $(OBJS) main.o
 	$(CC) $(CFLAGS) -o $@ $^

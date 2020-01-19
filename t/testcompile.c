@@ -58,18 +58,14 @@ static m4int m4testcompile_code_equals(const m4testcompile_code *src, const m4co
 
 /* -------------- m4testcompile -------------- */
 
+#define CALLXT(name) m4_call_, (m4instr)m4word_##name.code
+
 static const m4testcompile testcompile[] = {
-    {{"0"}, {2, {m4_call_, (m4instr)m4word_zero.code}}},
-    {{"1", "2", "+"},
-     {6,
-      {
-          m4_call_,
-          (m4instr)m4word_one.code,
-          m4_call_,
-          (m4instr)m4word_two.code,
-          m4_call_,
-          (m4instr)m4word_plus.code,
-      }}},
+    {{"0"}, {2, {CALLXT(zero)}}},
+    {{"1", "2", "+"}, {6, {CALLXT(one), CALLXT(two), CALLXT(plus)}}},
+    {{"drop"}, {2, {CALLXT(drop)}}},
+    {{"false"}, {2, {CALLXT(false)}}},
+    {{"true"}, {2, {CALLXT(true)}}},
 };
 
 enum { testcompile_n = sizeof(testcompile) / sizeof(testcompile[0]) };
