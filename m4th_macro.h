@@ -38,7 +38,7 @@
  *
  * incompatible with M4FLAG_PURE
  */
-#define M4FLAG_JUMP (1 << 4)
+#define M4FLAG_MAY_JUMP (1 << 4)
 
 #define M4FLAG_PURE_MASK (7 << 5)
 /**
@@ -47,7 +47,7 @@
  * the word does not dereference any pointer (not even variables)
  * and does not use the instruction pointer or any other external status or data.
  *
- * incompatible with M4FLAG_CONSUMES_IP_* and M4FLAG_JUMP
+ * incompatible with M4FLAG_CONSUMES_IP_* and M4FLAG_MAY_JUMP
  */
 #define M4FLAG_PURE (1 << 5)
 

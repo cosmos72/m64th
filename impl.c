@@ -44,22 +44,8 @@ enum {
 #endif
 };
 
-void m4th_string_print(m4string str, FILE *out) {
-    if (out == NULL || str.addr == NULL || str.len == 0) {
-        return;
-    }
-    fwrite(str.addr, sizeof(m4char), str.len, out);
-}
-
-m4int m4th_string_compare(m4string a, const m4countedstring *b) {
-    if (a.addr == NULL || b == NULL || a.len != b->len) {
-        return 1;
-    }
-    return memcmp(a.addr, b->chars, (size_t)a.len);
-}
-
 /* warning: str must end with '\0' */
-m4int m4th_string_to_int(m4string str, m4int *out_n) {
+m4int m4string_to_int(m4string str, m4int *out_n) {
     char *end = NULL;
     m4int err = tsuccess;
     if (str.addr == NULL || str.len == 0) {
@@ -69,8 +55,8 @@ m4int m4th_string_to_int(m4string str, m4int *out_n) {
         return tbad_addr;
     }
     errno = 0;
-    *out_n = strtol(str.addr, &end, 0 /*base*/);
-    if ((err = errno) == 0 && end != str.addr + str.len) {
+    *out_n = strtol((const char *)str.addr, &end, 0 /*base*/);
+    if ((err = errno) == 0 && end != (const char *)(str.addr + str.len)) {
         err = tint_trailing_junk;
     }
     return err;
@@ -78,24 +64,24 @@ m4int m4th_string_to_int(m4string str, m4int *out_n) {
 
 /** temporary C implementation of (read) */
 m4string m4th_read(m4th *m) {
-    m4string s = {NULL, 0};
+    m4string s = {};
     const char *cstr = NULL;
     assert(m);
     if (m->in_cstr != NULL && (cstr = *m->in_cstr) != NULL) {
         m->in_cstr++;
-        s.addr = cstr;
+        s.addr = (const m4char *)cstr;
         s.len = strlen(cstr);
     }
     return s;
 }
 
-/** temporary C implementation of (dict-lookup-word) */
-static const m4word *m4th_dict_lookup_word(const m4dict *d, m4string key) {
-    const m4word *w = m4th_dict_lastword(d);
+/** temporary C implementation of (wordlist-lookup-word) */
+static const m4word *m4wordlist_lookup_word(const m4wordlist *d, m4string key) {
+    const m4word *w;
     assert(d);
     assert(key.addr);
-    for (; w; w = m4th_word_prev(w)) {
-        if (m4th_string_compare(key, m4th_word_name(w)) == 0) {
+    for (w = m4wordlist_lastword(d); w != NULL; w = m4word_prev(w)) {
+        if (m4string_compare(key, m4word_name(w)) == 0) {
             return w;
         }
     }
@@ -104,17 +90,15 @@ static const m4word *m4th_dict_lookup_word(const m4dict *d, m4string key) {
 
 /** temporary C implementation of (lookup-word) */
 static const m4word *m4th_lookup_word(m4th *m, m4string key) {
-    const m4dict *d;
+    m4wordlist *l;
     const m4word *w = NULL;
-    enum { n = sizeof(m->dicts) / sizeof(m->dicts[0]) };
     m4int i;
     assert(m);
     assert(key.addr);
-    for (i = 0; w == NULL && i < n; i++) {
-        if ((d = m->dicts[i]) == NULL) {
-            break;
+    for (i = 0; i < m4th_wordlist_n && w == NULL; i++) {
+        if ((l = m->wordlist[i]) != NULL) {
+            w = m4wordlist_lookup_word(l, key);
         }
-        w = m4th_dict_lookup_word(d, key);
     }
     return w;
 }
@@ -126,7 +110,7 @@ m4eval_arg m4th_parse(m4th *m, m4string key) {
         arg.err = teof;
     } else if ((arg.w = m4th_lookup_word(m, key)) != NULL) {
     } else {
-        arg.err = m4th_string_to_int(key, &arg.n);
+        arg.err = m4string_to_int(key, &arg.n);
     }
     return arg;
 }
@@ -189,7 +173,7 @@ m4int m4th_repl(m4th *m) {
     while ((ret = m4th_eval(m, arg = m4th_parse(m, str = m4th_read(m)))) == 0) {
     }
     if (ret != 0 && arg.err == ret && arg.w == NULL && str.addr != NULL) {
-        m4th_string_print(str, stderr);
+        m4string_print(str, stderr);
         fputs(" ?", stderr);
     }
     return ret;

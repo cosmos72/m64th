@@ -39,6 +39,9 @@
     FUNC_DEF_SYM(name)                                                                             \
     .cfi_startproc;
 
+#define FUNC_SIZE(name)                                                                            \
+    .size FUNC_SYM(name), . - FUNC_SYM(name);
+
 #define FUNC_RAWEND(name)                                                                          \
     .cfi_endproc;                                                                                  \
     .size FUNC_SYM(name), . - FUNC_SYM(name);

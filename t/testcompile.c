@@ -76,10 +76,10 @@ static const m4testcompile testcompile[] = {
 
 enum { testcompile_n = sizeof(testcompile) / sizeof(testcompile[0]) };
 
-static m4int m4testcompile_run(m4th *m, const m4testcompile *t) {
-    m4testcompile_word w = {};
+static m4int m4testcompile_run(m4th *m, const m4testcompile *t, m4testcompile_word *out) {
     m4th_clear(m);
-    m->w = &w.impl;
+    memset(out, '\0', sizeof(m4testcompile_word));
+    m->w = &out->impl;
     m->flags &= ~m4th_flag_status_mask;
     m->flags |= m4th_flag_compile;
     m->in_cstr = t->input;
@@ -100,20 +100,21 @@ static void m4testcompile_failed(m4th *m, const m4testcompile *t, FILE *out) {
     if (out == NULL) {
         return;
     }
-    fputs("compile test failed: ", out);
+    fputs("\ncompile test  failed: ", out);
     m4testcompile_print(t, out);
     fputs("    expected code ", out);
     m4testcompile_code_print(&t->generated, out);
     fputs("    actual   code ", out);
-    m4th_word_code_print(m->w, out);
+    m4word_code_print(m->w, out);
 }
 
 m4int m4th_testcompile(m4th *m, FILE *out) {
+    m4testcompile_word w;
     m4int i, fail = 0;
     enum { n = testcompile_n };
 
     for (i = 0; i < n; i++) {
-        if (!m4testcompile_run(m, &testcompile[i])) {
+        if (!m4testcompile_run(m, &testcompile[i], &w)) {
             fail++, m4testcompile_failed(m, &testcompile[i], out);
         }
     }

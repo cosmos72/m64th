@@ -35,61 +35,87 @@ FUNC_START(slash_mod)  /* /mod */
 FUNC_END(slash_mod)
 
 
+FUNC_START(zero_less_equals)   /* 0<=  m4th-user   */
+        cmp    DTOP, IMM(0);
+        csetm  DTOP, le;
+FUNC_END(zero_less_equals)
+
+
 FUNC_START(zero_not_equals)   /* 0<>  core ext */
-        cmp    DTOP, IMM(0)
-        csetm  DTOP, ne
+        cmp    DTOP, IMM(0);
+        csetm  DTOP, ne;
 FUNC_END(zero_not_equals)
 
 
 FUNC_START(zero_equals)   /* 0=   */
-        cmp    DTOP, IMM(0)
-        csetm  DTOP, eq
+        cmp    DTOP, IMM(0);
+        csetm  DTOP, eq;
 FUNC_END(zero_equals)
 
 
 FUNC_START(zero_greater_than)   /* 0>   */
-        cmp    DTOP, IMM(0)
-        csetm  DTOP, gt
+        cmp    DTOP, IMM(0);
+        csetm  DTOP, gt;
 FUNC_END(zero_greater_than)
 
 
+FUNC_START(zero_greater_equals) /* 0>= m4th-user  */
+        cmp    DTOP, IMM(0);
+        csetm  DTOP, ge;
+FUNC_END(zero_greater_equals)
+
+
 FUNC_START(two_slash) /* 2/   */
-        add    DTOP, DTOP, DTOP, lsr IMM(63)
-        asr    DTOP, DTOP, IMM(1)
+        add    DTOP, DTOP, DTOP, lsr IMM(63);
+        asr    DTOP, DTOP, IMM(1);
 FUNC_END(two_slash)
 
 
 FUNC_START(two_star) /* 2* */
-        lsl    DTOP, DTOP, IMM(1)
+        lsl    DTOP, DTOP, IMM(1);
 FUNC_END(two_star)
 
 
 FUNC_START(less_than)   /* < */
         DPOP(  REG2)
-        cmp    REG2, DTOP
-        csetm  DTOP, lt
+        cmp    REG2, DTOP;
+        csetm  DTOP, lt;
 FUNC_END(less_than)
+
+
+FUNC_START(less_equals)   /* <= m4th-user */
+        DPOP(  REG2)
+        cmp    REG2, DTOP;
+        csetm  DTOP, le;
+FUNC_END(less_equals)
 
 
 FUNC_START(not_equals)   /* <>   core ext */
         DPOP(  REG2)
-        cmp    REG2, DTOP
-        csetm  DTOP, ne
+        cmp    REG2, DTOP;
+        csetm  DTOP, ne;
 FUNC_END(not_equals)
 
 
 FUNC_START(equals)   /* = */
         DPOP(  REG2)
-        cmp    REG2, DTOP
-        csetm  DTOP, eq
+        cmp    REG2, DTOP;
+        csetm  DTOP, eq;
 FUNC_END(equals)
 
 
 FUNC_START(greater_than)   /* > */
         DPOP(  REG2)
-        cmp    REG2, DTOP
-        csetm  DTOP, gt
+        cmp    REG2, DTOP;
+        csetm  DTOP, gt;
 FUNC_END(greater_than)
+
+
+FUNC_START(greater_equals)   /* >= m4th-user */
+        DPOP(  REG2)
+        cmp    REG2, DTOP;
+        csetm  DTOP, ge;
+FUNC_END(greater_equals)
 
 
 FUNC_START(question_dupe)   /* ?dup */
@@ -125,14 +151,14 @@ FUNC_END(lshift)
 FUNC_START(max)
         DPOP(  REG2)
         cmp    REG2, DTOP;
-        csel   DTOP, REG2, DTOP, gt
+        csel   DTOP, REG2, DTOP, gt;
 FUNC_END(max)
 
 
 FUNC_START(min)
         DPOP(  REG2)
         cmp    REG2, DTOP;
-        csel   DTOP, REG2, DTOP, lt
+        csel   DTOP, REG2, DTOP, lt;
 FUNC_END(min)
 
 /* signed remainder */

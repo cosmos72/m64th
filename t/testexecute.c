@@ -124,6 +124,8 @@ static const m4instr test_func_crc1byte[] = {
 /* -------------- m4test -------------- */
 
 static const m4test test[] = {
+    {"0 0 (?do)", {m4_question_do_, (m4instr)2, m4bye}, {{2, {0, 0}}, {0}}, {{0}, {0}}},
+    {"1 0 (?do)", {m4_question_do_, (m4instr)2, m4bye}, {{2, {1, 0}}, {0}}, {{0}, {2, {1, 0}}}},
     {"(call) noop", {m4_call_, (m4instr)m4word_noop.code, m4bye}, {{0}, {0}}, {{0}, {0}}},
     {"(call) true", {m4_call_, (m4instr)m4word_true.code, m4bye}, {{0}, {0}}, {{1, {-1}}, {0}}},
     {"(call) crc+",
@@ -241,12 +243,12 @@ static void m4test_failed(m4th *m, const m4test *t, FILE *out) {
     fputs("    expected data   stack ", out);
     m4test_stack_print(&t->after.d, out);
     fputs("    actual   data   stack ", out);
-    m4th_stack_print(&m->dstack, out);
+    m4stack_print(&m->dstack, out);
 
     fputs("... expected return stack ", out);
     m4test_stack_print(&t->after.r, out);
     fputs("    actual   return stack ", out);
-    m4th_stack_print(&m->rstack, out);
+    m4stack_print(&m->rstack, out);
 }
 
 m4int m4th_testexecute(m4th *m, FILE *out) {

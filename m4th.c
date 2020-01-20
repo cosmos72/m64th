@@ -67,7 +67,7 @@ static size_t m4th_round_to_page(size_t bytes) {
     return (bytes + page - 1) / page * page;
 }
 
-void *m4th_mmap(size_t bytes) {
+void *m4mem_mmap(size_t bytes) {
     void *ptr = NULL;
     if (bytes != 0) {
         bytes = m4th_round_to_page(bytes);
@@ -85,22 +85,22 @@ void *m4th_mmap(size_t bytes) {
     return ptr;
 }
 
-void m4th_munmap(void *ptr, size_t bytes) {
+void m4mem_munmap(void *ptr, size_t bytes) {
     if (bytes != 0) {
         bytes = m4th_round_to_page(bytes);
         munmap(ptr, bytes);
     }
 }
 #else /* ! __unix__ */
-void *m4th_mmap(size_t bytes) {
-    return m4th_alloc(bytes);
+void *m4mem_mmap(size_t bytes) {
+    return m4mem_alloc(bytes);
 }
-void m4th_munmap(void *ptr, size_t bytes) {
-    m4th_free(ptr);
+void m4mem_munmap(void *ptr, size_t bytes) {
+    m4mem_free(ptr);
 }
 #endif
 
-void *m4th_alloc(size_t bytes) {
+void *m4mem_alloc(size_t bytes) {
     void *ptr = NULL;
     if (bytes != 0) {
         if ((ptr = malloc(bytes)) == NULL) {
@@ -111,35 +111,35 @@ void *m4th_alloc(size_t bytes) {
     return ptr;
 }
 
-void m4th_free(void *ptr) {
+void m4mem_free(void *ptr) {
     free(ptr);
 }
 
-static m4stack m4th_stack_alloc(m4int size) {
-    m4int *p = (m4int *)m4th_mmap(size * sizeof(m4int));
+static m4stack m4stack_alloc(m4int size) {
+    m4int *p = (m4int *)m4mem_mmap(size * sizeof(m4int));
     m4stack ret = {p, p + size - 1, p + size - 1};
     return ret;
 }
 
-static void m4th_stack_free(m4stack *arg) {
+static void m4stack_free(m4stack *arg) {
     if (arg) {
-        m4th_munmap(arg->start, (arg->end - arg->start + 1) / sizeof(m4int));
+        m4mem_munmap(arg->start, (arg->end - arg->start + 1) / sizeof(m4int));
     }
 }
 
 static m4cspan m4th_cspan_alloc(m4int size) {
-    m4char *p = (m4char *)m4th_alloc(size * sizeof(m4char));
+    m4char *p = (m4char *)m4mem_alloc(size * sizeof(m4char));
     m4cspan ret = {p, p, p + size};
     return ret;
 }
 
 static void m4th_cspan_free(m4cspan *arg) {
     if (arg) {
-        m4th_free(arg->start);
+        m4mem_free(arg->start);
     }
 }
 
-void m4th_stack_print(const m4stack *stack, FILE *out) {
+void m4stack_print(const m4stack *stack, FILE *out) {
     const m4int *lo = stack->curr;
     const m4int *hi = stack->end;
     fprintf(out, "<%ld> ", (long)(hi - lo));
@@ -221,26 +221,36 @@ void m4th_flags_print(m4flags fl, FILE *out) {
             break;
         }
     }
-    if (fl & m4flag_jump) {
-        fputs(printed++ ? "|jump" : "jump", out);
+    if (fl & m4flag_may_jump) {
+        fputs(printed++ ? "|may_jump" : "may_jump", out);
     }
     if ((fl & m4flag_pure_mask) == m4flag_pure) {
         fputs(printed++ ? "|pure" : "pure", out);
     }
 }
 
-/* ----------------------- m4countedstring ----------------------- */
+/* ----------------------- m4string ----------------------- */
 
-void m4th_countedstring_print(const m4countedstring *n, FILE *out) {
-    if (out == NULL || n == NULL || n->len == 0) {
+void m4string_print(m4string str, FILE *out) {
+    if (out == NULL || str.addr == NULL || str.len == 0) {
         return;
     }
-    fwrite(n->chars, 1, n->len, out);
+    fwrite(str.addr, 1, str.len, out);
+}
+
+m4int m4string_compare(m4string a, m4string b) {
+    if (a.addr == NULL || b.addr == NULL || a.len != b.len || a.len < 0) {
+        return 1;
+    }
+    if (a.addr == b.addr || a.len == 0) {
+        return 0;
+    }
+    return memcmp(a.addr, b.addr, (size_t)a.len);
 }
 
 /* ----------------------- m4word ----------------------- */
 
-void m4th_word_stack_print(uint8_t stack_in_out, FILE *out) {
+void m4word_stack_print(uint8_t stack_in_out, FILE *out) {
     uint8_t n = stack_in_out & 0xF;
     if (n == 0xF) {
         fputc('?', out);
@@ -255,29 +265,41 @@ void m4th_word_stack_print(uint8_t stack_in_out, FILE *out) {
     }
 }
 
-void m4th_word_print(const m4word *w, FILE *out) {
+void m4word_print(const m4word *w, FILE *out) {
     if (w == NULL || out == NULL) {
         return;
     }
-    m4th_countedstring_print(m4th_word_name(w), out);
+    m4string_print(m4word_name(w), out);
     fputs(" {\n\tflags:\t", out);
     m4th_flags_print((m4flags)w->flags, out);
     fputs(" \n\tdata_stack: \t", out);
-    m4th_word_stack_print(w->dstack, out);
+    m4word_stack_print(w->dstack, out);
     fputs(" \n\treturn_stack:\t", out);
-    m4th_word_stack_print(w->rstack, out);
+    m4word_stack_print(w->rstack, out);
     fprintf(out, "\n\tnative_len:  \t%u\n\tcode_n:      \t%u\n\tdata_len:    \t%u\n}\n",
             (unsigned)w->native_len, (unsigned)w->code_n, (unsigned)w->data_len);
 }
 
-const m4countedstring *m4th_word_name(const m4word *w) {
-    if (w == NULL || w->name_off == 0) {
-        return NULL;
+void m4word_print_fwd_recursive(const m4word *w, FILE *out) {
+    if (w == NULL || out == NULL) {
+        return;
     }
-    return (const m4countedstring *)((const m4char *)w - w->name_off);
+    m4word_print_fwd_recursive(m4word_prev(w), out);
+    m4word_print(w, out);
 }
 
-const m4word *m4th_word_prev(const m4word *w) {
+m4string m4word_name(const m4word *w) {
+    m4string ret = {};
+    if (w == NULL || w->name_off == 0) {
+        return ret;
+    }
+    const m4countedstring *name = (const m4countedstring *)((const m4char *)w - w->name_off);
+    ret.addr = name->chars;
+    ret.len = name->len;
+    return ret;
+}
+
+const m4word *m4word_prev(const m4word *w) {
     if (w == NULL || w->prev_off == 0) {
         return NULL;
     }
@@ -286,63 +308,119 @@ const m4word *m4th_word_prev(const m4word *w) {
 
 /* ----------------------- m4dict ----------------------- */
 
-void m4th_dict_print(const m4dict *d, FILE *out) {
-    const m4word *w;
-    if (out == NULL || d == NULL) {
-        return;
-    }
-    fputs("/* -------- ", out);
-    m4th_countedstring_print(m4th_dict_name(d), out);
-    fputs(" -------- */\n", out);
-
-    w = m4th_dict_lastword(d);
-    while (w) {
-        m4th_word_print(w, out);
-        w = m4th_word_prev(w);
-    }
-}
-
-const m4countedstring *m4th_dict_name(const m4dict *d) {
+static m4string m4dict_name(const m4dict *d) {
+    m4string ret = {};
     if (d == NULL || d->name_off == 0) {
-        return NULL;
+        return ret;
     }
-    return (const m4countedstring *)((const m4char *)d - d->name_off);
+    const m4countedstring *name = (const m4countedstring *)((const m4char *)d - d->name_off);
+    ret.addr = name->chars;
+    ret.len = name->len;
+    return ret;
 }
 
-const m4word *m4th_dict_lastword(const m4dict *d) {
+static const m4word *m4dict_lastword(const m4dict *d) {
     if (d == NULL || d->word_off == 0) {
         return NULL;
     }
     return (const m4word *)((const m4char *)d - d->word_off);
 }
 
+/* ----------------------- m4wordlist ----------------------- */
+
+static m4wordlist *m4wordlist_new(const m4dict *impl) {
+    m4wordlist *l = (m4wordlist *)m4mem_alloc(sizeof(m4wordlist));
+    l->impl = impl;
+    return l;
+}
+
+static void m4wordlist_new_vec(m4wordlist *l[m4th_wordlist_n]) {
+    static const m4dict *dict[] = {
+        &m4dict_forth,
+        &m4dict_m4th_user,
+        &m4dict_m4th_impl,
+    };
+    enum { dict_n = sizeof(dict) / sizeof(dict[0]) };
+    m4int i;
+    if (l == NULL) {
+        return;
+    }
+    for (i = 0; i < m4th_wordlist_n; i++) {
+        if (i < dict_n) {
+            l[i] = m4wordlist_new(dict[i]);
+        } else {
+            l[i] = NULL;
+        }
+    }
+}
+
+static void m4wordlist_del(m4wordlist *l) {
+    m4mem_free(l);
+}
+
+static void m4wordlist_del_vec(m4wordlist *l[m4th_wordlist_n]) {
+    m4int i;
+    if (l == NULL) {
+        return;
+    }
+    for (i = 0; i < m4th_wordlist_n; i++) {
+        m4wordlist_del(l[i]);
+        l[i] = NULL;
+    }
+}
+
+const m4word *m4wordlist_lastword(const m4wordlist *d) {
+    if (d == NULL) {
+        return NULL;
+    }
+    return m4dict_lastword(d->impl);
+}
+
+m4string m4wordlist_name(const m4wordlist *d) {
+    if (d == NULL) {
+        m4string ret = {};
+        return ret;
+    }
+    return m4dict_name(d->impl);
+}
+
+void m4wordlist_print(const m4wordlist *l, FILE *out) {
+    if (out == NULL || l == NULL) {
+        return;
+    }
+    fputs("/* -------- ", out);
+    m4string_print(m4wordlist_name(l), out);
+    fputs(" -------- */\n", out);
+
+    m4word_print_fwd_recursive(m4wordlist_lastword(l), out);
+}
+
 /* ----------------------- m4th ----------------------- */
 
 m4th *m4th_new() {
-    m4th *m = (m4th *)m4th_alloc(sizeof(m4th));
-    m->dstack = m4th_stack_alloc(dstack_n);
-    m->rstack = m4th_stack_alloc(rstack_n);
+
+    m4th *m = (m4th *)m4mem_alloc(sizeof(m4th));
+    m->dstack = m4stack_alloc(dstack_n);
+    m->rstack = m4stack_alloc(rstack_n);
     m->w = NULL;
     m->ip = NULL;
     m->c_sp = NULL;
     m->in = m4th_cspan_alloc(inbuf_n);
     m->out = m4th_cspan_alloc(outbuf_n);
     m->flags = m4th_flag_interpret;
-    m->dicts[0] = &m4dict_core;
-    m->dicts[1] = &m4dict_tools_ext;
-    m->dicts[2] = &m4dict_m4th;
-    m->dicts[3] = NULL;
+    m4wordlist_new_vec(m->wordlist);
     m->in_cstr = NULL;
     return m;
 }
 
 void m4th_del(m4th *m) {
     if (m) {
+        m4wordlist_del_vec(m->wordlist);
         m4th_cspan_free(&m->out);
         m4th_cspan_free(&m->in);
-        m4th_stack_free(&m->rstack);
-        m4th_stack_free(&m->dstack);
-        m4th_free(m);
+        m4stack_free(&m->rstack);
+        m4stack_free(&m->dstack);
+        m4mem_free(m);
     }
 }
 

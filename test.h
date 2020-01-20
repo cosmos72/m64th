@@ -22,7 +22,7 @@
 
 enum { tfalse = (m4int)0, ttrue = (m4int)-1 };
 
-void m4th_word_code_print(const m4word *w, FILE *out);
+void m4word_code_print(const m4word *w, FILE *out);
 
 m4int m4th_testcompile(m4th *m, FILE *out);
 m4int m4th_testexecute(m4th *m, FILE *out);

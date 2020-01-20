@@ -21,14 +21,11 @@
 
 int main(int argc, char *argv[]) {
     m4th *m = m4th_new();
-    const m4dict *d;
+    m4wordlist **l = m->wordlist;
     m4int i;
 
-    for (i = 0;; i++) {
-        if ((d = m->dicts[i]) == NULL) {
-            break;
-        }
-        m4th_dict_print(d, stdout);
+    for (i = 0; i < m4th_wordlist_n; i++) {
+        m4wordlist_print(l[i], stdout);
     }
 
     m4th_del(m);

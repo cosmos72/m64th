@@ -15,32 +15,21 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_IMPL_H
-#define M4TH_IMPL_H
+#ifndef M4TH_COMMON_SECTION_ASM_H
+#define M4TH_COMMON_SECTION_ASM_H
 
-#include "m4th.h"
+#define SECTION_FUNC() .text
 
-typedef struct m4eval_arg_s m4eval_arg;
+/*
+ * work around Android linker message
+ * "warning: creating a DT_TEXTREL in a shared object"
+ * because it produces non-working executable that fail with
+ * CANNOT LINK EXECUTABLE: "/cmd/full/path" has text relocations
+ */
+#if defined(__ELF__) && !defined(__ANDROID__)
+#define SECTION_RODATA() .section .rodata
+#else
+#define SECTION_RODATA() .data
+#endif
 
-struct m4eval_arg_s {
-    const m4word *w; /* NULL if parsed word is a number */
-    m4int n;
-    m4int err;
-};
-
-/* warning: str must end with '\0' */
-m4int m4string_to_int(m4string str, m4int *out_n);
-
-/** temporary C implementation of (read) */
-m4string m4th_read(m4th *m);
-
-/** temporary C implementation of (parse) */
-m4eval_arg m4th_parse(m4th *m, m4string key);
-
-/** temporary C implementation of (eval) */
-m4int m4th_eval(m4th *m, m4eval_arg arg);
-
-/** temporary C implementation of (repl) */
-m4int m4th_repl(m4th *m);
-
-#endif /* M4TH_IMPL_H */
+#endif /* M4TH_COMMON_SECTION_ASM_H */

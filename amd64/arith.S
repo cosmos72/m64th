@@ -51,25 +51,39 @@ FUNC_START(zero)
 FUNC_END(zero)
 
 
-FUNC_START(zero_not_equals)   /* 0<>  core ext */
+FUNC_START(zero_less_equals)     /* 0<=  m4th-user */
         test   DTOP, DTOP;
-        mov    IMM(0), DTOPw;    /* xor would affect EFLAGS */
+        mov    IMM(0), DTOPw;       /* xor would affect EFLAGS */
+        cmovle RFFF,   DTOP;
+FUNC_END(zero_less_equals)
+
+
+FUNC_START(zero_not_equals)     /* 0<>  core ext */
+        test   DTOP, DTOP;
+        mov    IMM(0), DTOPw;      /* xor would affect EFLAGS */
         cmovne RFFF,   DTOP;
 FUNC_END(zero_not_equals)
 
 
-FUNC_START(zero_equals)     /* 0= */
+FUNC_START(zero_equals)         /* 0= */
         test   DTOP, DTOP;
-        mov    IMM(0), DTOPw;    /* xor would affect EFLAGS */
+        mov    IMM(0), DTOPw;      /* xor would affect EFLAGS */
         cmove  RFFF,   DTOP;
 FUNC_END(zero_equals)
 
 
 FUNC_START(zero_greater_than)   /* 0> */
         test   DTOP,   DTOP;
-        mov    IMM(0), DTOPw;    /* xor would affect EFLAGS */
+        mov    IMM(0), DTOPw;      /* xor would affect EFLAGS */
         cmovg  RFFF,   DTOP;
 FUNC_END(zero_greater_than)
+
+
+FUNC_START(zero_greater_equals) /* 0>= m4th-user */
+        test   DTOP,   DTOP;
+        mov    IMM(0), DTOPw;      /* xor would affect EFLAGS */
+        cmovge RFFF,   DTOP;
+FUNC_END(zero_greater_equals)
 
 
 #define M4ONE
@@ -119,6 +133,14 @@ FUNC_START(less_than)   /* < */
 FUNC_END(less_than)
 
 
+FUNC_START(less_equals)   /* <=   m4th-user */
+        DPOP(  REG2)
+        cmp    DTOP, REG2;
+        mov    IMM(0), DTOPw;    /* xor would affect EFLAGS */
+        cmovle RFFF,   DTOP;
+FUNC_END(less_equals)
+
+
 FUNC_START(not_equals) /* <>   core ext */
         DPOP(  REG2)
         cmp    REG2,   DTOP;
@@ -141,6 +163,14 @@ FUNC_START(greater_than)   /* > */
         mov    IMM(0), DTOPw;    /* xor would affect EFLAGS */
         cmovg  RFFF,   DTOP;
 FUNC_END(greater_than)
+
+
+FUNC_START(greater_equals)   /* >=   m4th-user */
+        DPOP(  REG2)
+        cmp    DTOP, REG2;
+        mov    IMM(0), DTOPw;    /* xor would affect EFLAGS */
+        cmovge RFFF,   DTOP;
+FUNC_END(greater_equals)
 
 
 FUNC_START(question_dupe)   /* ?dup */

@@ -17,38 +17,47 @@
 
 #include "asm.h"
 
-FUNC_START(_do_)
-        DPOP(  REG1)                 /* REG1 = i'             */
-        STOR(  RTOP, AT(RSTK, -SZ))  /* save RTOP             */
-        MOVE(  DTOP, RTOP)           /* RTOP = i              */
-        DPOP(  DTOP)                 /* reload dstack top     */
-        STOR(  REG1, AT(RSTK, -SZ2)) /* save   i' to rstack   */
-        SUB2(  IMM(SZ2),  RSTK)      /* update rstack pointer */
-FUNC_END(_do_)
-
 /*
  * must be followed by IP offset of first instruction after (loop)
  * IP offset = 0 means (?do) itself
  */
 FUNC_START(_question_do_)
-        cmp    RTOP, AT(RSTK);
-        jne    FUNC_SYM(_do_);
-        /* FALLTHROUGH into _leave_ */
+        cmp    DTOP, AT(DSTK);
+        jne    .Lm4_question_do_enter;
+        LOAD(  REG2, AT(IP, SZ))     /* REG2 = IP jump offset */
+        LOAD(  DTOP, AT(DSTK, SZ))   /* reload dstack top     */
+        lea    (IP, REG2, SZ), IP;   /* IP = TARGET_IP        */
+        ADD2(  IMM(SZ2), DSTK)       /* drop i' i from dstack */
+        jmp    *(IP);                /* jump to TARGET_IP     */
+.Lm4_question_do_enter:
+        ADD2(  IMM(SZ), IP)          /* skip jump offset      */
+        /* FALLTHROUGH into _do_ */
+/* FUNC_RAWEND(_question_do_) */
+
+
+FUNC_DEF_SYM(_do_)
+/* FUNC_START(_do_) */
+        DPOP(  REG1)                 /* REG1 = i'             */
+        STOR(  RTOP, AT(RSTK, -SZ))  /* save RTOP             */
+        MOVE(  DTOP, RTOP)           /* RTOP = i              */
+        DPOP(  DTOP)                 /* reload dstack top     */
+        STOR(  REG1, AT(RSTK, -SZ2)) /* save i' to rstack     */
+        SUB2(  IMM(SZ2),  RSTK)      /* update rstack pointer */
+FUNC_END(_do_)
+FUNC_SIZE(_question_do_)
 
 
 /*
  * must be followed by IP offset of first instruction after (loop)
  * IP offset = 0 means (leave) itself
  */
-FUNC_DEF_SYM(_leave_)
-/* FUNC_START(_leave_) */
-        LOAD(  REG2, AT(IP, SZ))
-        LOAD(  RTOP, AT(RSTK, SZ)) /* load new top of rstack      */
-        lea    (IP, REG2, SZ), IP; /* IP = TARGET_IP              */
-        ADD2(  IMM(SZ2), RSTK)     /* drop i' i from return stack */
-        jmp    *(IP);              /* jump to instruction after (loop) */
-/* FUNC_RAWEND(_leave_) */
-FUNC_RAWEND(_question_do_)
+FUNC_START(_leave_)
+        LOAD(  REG2, AT(IP, SZ))   /* REG2 = IP jump offset   */
+        LOAD(  RTOP, AT(RSTK, SZ)) /* reload rstack top       */
+        lea    (IP, REG2, SZ), IP; /* IP = TARGET_IP          */
+        ADD2(  IMM(SZ2), RSTK)     /* drop i' i from rstack   */
+        jmp    *(IP);              /* jump to TARGET_IP       */
+FUNC_RAWEND(_leave_)
 
 /*
  * must be followed by IP offset of first instruction after (do) - usually < 0

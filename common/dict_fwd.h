@@ -24,9 +24,24 @@ extern "C" {
 
 typedef struct m4dict_s m4dict;
 
-extern const m4dict m4dict_core;
+/**
+ * Contains all standard words from the ANS forth standard word sets
+ * (core, core ext, tools ext ...) that are actually implemented in m4th.
+ */
+extern const m4dict m4dict_forth;
+/**
+ * Contains commonly found words that are not part of the standard.
+ * Examples: 0<= 0>= <= >= i* i+ i-
+ */
+extern const m4dict m4dict_m4th_user;
+/**
+ * Contains words that directly interact with m4th implementation.
+ */
 extern const m4dict m4dict_m4th;
-extern const m4dict m4dict_tools_ext;
+/**
+ * Contains words used internally by m4th implementation.
+ */
+extern const m4dict m4dict_m4th_impl;
 
 #ifdef __cplusplus
 }

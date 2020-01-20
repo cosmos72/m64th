@@ -33,7 +33,8 @@ typedef ssize_t m4int;
 /** forth instruction. uses forth calling convention, cannot be invoked from C */
 typedef void (*m4instr)(m4arg);
 
-typedef char assert_sizeof_m4instr_equals_sizeof_m4int[sizeof(m4instr) == sizeof(m4int) ? 1 : -1];
+typedef char
+    m4th_assert_sizeof_m4instr_equals_sizeof_m4int[sizeof(m4instr) == sizeof(m4int) ? 1 : -1];
 
 /** m4th flags */
 typedef enum m4th_flags_e {
@@ -53,7 +54,7 @@ typedef enum m4flags_e {
     m4flag_inline = M4FLAG_INLINE,
     m4flag_inline_always = M4FLAG_INLINE_ALWAYS,
     m4flag_inline_native = M4FLAG_INLINE_NATIVE,
-    m4flag_jump = M4FLAG_JUMP,
+    m4flag_may_jump = M4FLAG_MAY_JUMP,
     m4flag_pure_mask = M4FLAG_PURE_MASK,
     m4flag_pure = M4FLAG_PURE,
     m4flag_consumes_ip_mask = M4FLAG_CONSUMES_IP_MASK,
@@ -62,14 +63,20 @@ typedef enum m4flags_e {
     m4flag_consumes_ip_8 = M4FLAG_CONSUMES_IP_8,
 } m4flags;
 
+typedef struct m4countedstring_s m4countedstring;
 typedef struct m4cspan_s m4cspan;
+typedef struct m4dict_s m4dict;
 typedef struct m4span_s m4span;
 typedef struct m4span_s m4stack;
-typedef struct m4code_s m4code;
-typedef struct m4countedstring_s m4countedstring;
-typedef struct m4dict_s m4dict;
+typedef struct m4string_s m4string;
 typedef struct m4word_s m4word;
+typedef struct m4wordlist_s m4wordlist;
 typedef struct m4th_s m4th;
+
+struct m4countedstring_s { /**< counted string                           */
+    m4char len;            /**< string length, in bytes                  */
+    m4char chars[1];       /**< string characters. may NOT end with '\0' */
+};
 
 struct m4cspan_s {
     m4char *start;
@@ -83,15 +90,9 @@ struct m4span_s {
     m4int *end;
 };
 
-struct m4code_s {
-    m4instr *start;
-    m4instr *curr;
-    m4instr *end;
-};
-
-struct m4countedstring_s { /**< counted string                           */
-    m4char len;            /**< string length, in bytes                  */
-    m4char chars[1];       /**< string characters. may NOT end with '\0' */
+struct m4string_s {
+    const m4char *addr;
+    m4int len;
 };
 
 struct m4word_s {       /**< word                                                 */
@@ -106,10 +107,17 @@ struct m4word_s {       /**< word                                               
     m4instr code[0];    /**< code starts at [0], data starts at [code_n]          */
 };
 
-struct m4dict_s {     /**< dictionary                                           */
-    int32_t word_off; /**< offset of last word,       in bytes. 0 = not present */
-    int16_t name_off; /**< offset of m4countedstring, in bytes. 0 = not present */
+struct m4wordlist_s {   /**< wordlist                                             */
+    const m4dict *impl; /**< pointer to implementation dictionary                 */
+    /* TODO hash table of contained words */
 };
+
+struct m4dict_s {     /**< dictionary. used to implement wordlist                */
+    int32_t word_off; /**< offset of last m4word*,     in bytes. 0 = not present */
+    int16_t name_off; /**< offset of m4countedstring*, in bytes. 0 = not present */
+};
+
+enum { m4th_wordlist_n = 12 };
 
 struct m4th_s {        /**< m4th forth interpreter and compiler */
     m4stack dstack;    /**< data stack                          */
@@ -121,8 +129,8 @@ struct m4th_s {        /**< m4th forth interpreter and compiler */
     m4cspan out;       /**< output buffer                       */
     m4int flags;       /**< m4th_flags                          */
 
-    const m4dict *dicts[4];     /* FIXME: available dictionaries */
-    const char *const *in_cstr; /* DELETEME: pre-parsed input    */
+    m4wordlist *wordlist[m4th_wordlist_n]; /**< FIXME: visible wordlists     */
+    const char *const *in_cstr;            /* DELETEME: pre-parsed input     */
 };
 
 #ifdef __cplusplus
@@ -154,28 +162,29 @@ void m4th_clear(m4th *m);
 m4int m4th_test(m4th *m, FILE *out);
 
 /** malloc() wrapper, calls exit(1) on failure */
-void *m4th_alloc(size_t bytes);
+void *m4mem_alloc(size_t bytes);
 
 /** free() wrapper */
-void m4th_free(void *ptr);
+void m4mem_free(void *ptr);
 
 /** mmap() wrapper, calls exit(1) on failure */
-void *m4th_mmap(size_t bytes);
+void *m4mem_mmap(size_t bytes);
 
 /** munmap() wrapper */
-void m4th_munmap(void *ptr, size_t bytes);
+void m4mem_munmap(void *ptr, size_t bytes);
 
-void m4th_countedstring_print(const m4countedstring *n, FILE *out);
+void m4string_print(m4string str, FILE *out);
+m4int m4string_compare(m4string a, m4string b);
 
-void m4th_stack_print(const m4stack *stack, FILE *out);
+void m4stack_print(const m4stack *stack, FILE *out);
 
-const m4countedstring *m4th_dict_name(const m4dict *d);
-const m4word *m4th_dict_lastword(const m4dict *d);
-void m4th_dict_print(const m4dict *d, FILE *out);
+m4string m4wordlist_name(const m4wordlist *d);
+const m4word *m4wordlist_lastword(const m4wordlist *d);
+void m4wordlist_print(const m4wordlist *d, FILE *out);
 
-const m4countedstring *m4th_word_name(const m4word *w);
-const m4word *m4th_word_prev(const m4word *w);
-void m4th_word_print(const m4word *w, FILE *out);
+m4string m4word_name(const m4word *w);
+const m4word *m4word_prev(const m4word *w);
+void m4word_print(const m4word *w, FILE *out);
 
 #ifdef __cplusplus
 }

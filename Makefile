@@ -6,6 +6,9 @@ CFLAGS=-Wall -Wextra -W $(FLAGS)
 AS=$(CC)
 ASFLAGS=$(CFLAGS)
 
+LD=$(CC)
+LDFLAGS=$(CFLAGS)
+
 OBJS=asm.o impl.o m4th.o
 
 all: m4th test
@@ -20,7 +23,7 @@ main.o: main.c $(wildcard *.h)
 test.o: test.c $(wildcard *.h t/*.*)
 
 m4th: $(OBJS) main.o
-	$(CC) $(CFLAGS) -o $@ $^
+	$(LD) $(LDFLAGS) -o $@ $^
 
 test: $(OBJS) test.o
-	$(CC) $(CFLAGS) -o $@ $^
+	$(LD) $(LDFLAGS) -o $@ $^

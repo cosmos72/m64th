@@ -21,7 +21,7 @@
 
 #include <stdio.h> /* fprintf() fputc() */
 
-void m4th_word_code_print(const m4word *w, FILE *out) {
+void m4word_code_print(const m4word *w, FILE *out) {
     const m4instr *p = w->code, *end = w->code + w->code_n;
     for (; p != end; p++) {
         fprintf(out, "0x%lx ", (unsigned long)*p);

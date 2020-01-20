@@ -19,7 +19,12 @@
 #define M4TH_ASM_S
 
         .file "asm.S"
-        .text
+
+#include "common/section_asm.h"
+#include "common/marker_asm.h"
+
+SECTION_FUNC()
+MARKER(asm_func_start)
 
 #if defined(__x86_64__)
 #include "amd64/arith.S"
@@ -38,7 +43,13 @@
 #include "common/arith.S"
 #include "common/compile.S"
 
-#include "common/dict.S" /* must be last one */
+MARKER(asm_func_end)
+SECTION_RODATA()
+MARKER(asm_data_start)
+
+#include "common/dict.S" /* must be the last one */
+
+MARKER(asm_data_end)
 
         .ident "m4th 0.0.0"
         .section .note.GNU-stack,"",@progbits
