@@ -25,10 +25,10 @@ DICTNAME(5, "forth", forth)
 
 DICT_WORDS_FORTH(WORDNAME)
 
-WORD(store,           store,       DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_ADDR_STORE)
+WORD(store,           store,       DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE)
 WORD(star,            store,       DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(plus,            star,        DSTACK(2,1), RSTACK(0,0), WORD_PURE)
-WORD(plus_store,      plus,        DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_ADDR_STORE)
+WORD(plus_store,      plus,        DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE)
 WORD(minus,           plus_store,  DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(slash,           minus,       DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(slash_mod,       slash,       DSTACK(2,2), RSTACK(0,0), WORD_PURE)
@@ -48,11 +48,11 @@ WORD(equals,          not_equals,   DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(greater_than,    equals,      DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(to_r,            greater_than,DSTACK(1,0), RSTACK(0,1), WORD_PURE | M4FLAG_COMPILE_ONLY)
 WORD(question_dupe,   to_r,        DSTACK(1,-1),RSTACK(0,0), WORD_PURE)
-WORD(fetch,         question_dupe, DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_ADDR_FETCH)
+WORD(fetch,         question_dupe, DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 WORD(abs,             fetch,       DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(and,             abs,         DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(bl,              and,         DSTACK(0,1), RSTACK(0,0), WORD_PURE)
-WORD(c_store,         bl,          DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_ADDR_STORE)
+WORD(c_store,         bl,          DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE)
 WORD_START(bye, c_store) /* tools ext */
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MAY_JUMP)
     WORD_DSTACK(0,-1) /* data   stack may be altered from outside */
@@ -61,7 +61,7 @@ WORD_START(bye, c_store) /* tools ext */
     /* exit is reachable by subsequent m4th_run() */
     WORD_FUNCS(bye, exit)
 WORD_END(bye)
-WORD(c_fetch,         bye,     DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_ADDR_FETCH)
+WORD(c_fetch,         bye,     DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 WORD(cell_plus,       c_fetch,     DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(cells,           cell_plus,   DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD_START(char_plus, cells)
@@ -83,7 +83,7 @@ WORD(drop,            depth,       DSTACK(1,0), RSTACK(0,0), WORD_PURE)
 WORD(dup,             drop,        DSTACK(1,2), RSTACK(0,0), WORD_PURE)
 WORD_START(exit, dup)
    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS | M4FLAG_MAY_JUMP)
-   WORD_DSTACK(0,-1) /* FIXME: mark as M4FLAG_JUMP */
+   WORD_DSTACK(0,-1) /* FIXME: mark as M4FLAG_MAY_JUMP */
    WORD_RSTACK(1,-1)
    WORD_NATIVE_LEN_0()
    /* make inliner happy: it skips the final 'exit' of a word's code when inlining */
@@ -165,7 +165,7 @@ WORD_START(_lit_, _do_)
 WORD_END(_lit_)
 WORD_START(_leave_, _lit_)
    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZ | M4FLAG_INLINE_ALWAYS | M4FLAG_MAY_JUMP)
-   WORD_DSTACK(0,0) /* FIXME: mark as M4FLAG_JUMP. these are stack effects when jumping */
+   WORD_DSTACK(0,0) /* FIXME: mark as M4FLAG_MAY_JUMP. these are stack effects when jumping */
    WORD_RSTACK(2,0)
    WORD_NATIVE_LEN_0()
    WORD_FUNCS(_leave_, exit)

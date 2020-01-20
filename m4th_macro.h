@@ -33,38 +33,42 @@
 #define M4FLAG_INLINE_ALWAYS (2 << 2) /**< forth code of word *must* always be inlined */
 #define M4FLAG_INLINE_NATIVE (3 << 2) /**< both forth & native code of word can be inlined */
 
+#define M4FLAG_JUMP_MASK (3 << 4)
 /**
- * word may jump to some other instruction than the following one.
- *
+ * word always jumps to some other instruction than the following one.
  * incompatible with M4FLAG_PURE
  */
-#define M4FLAG_MAY_JUMP (1 << 4)
+#define M4FLAG_JUMP (1 << 4)
+/**
+ * word may jump to some other instruction than the following one.
+ * incompatible with M4FLAG_PURE
+ */
+#define M4FLAG_MAY_JUMP (2 << 4)
 
-#define M4FLAG_PURE_MASK (7 << 5)
+#define M4FLAG_PURE_MASK (3 << 4)
 /**
  * results are a fixed arithmetic algorithm depending only
  * on numeric value of arguments:
  * the word does not dereference any pointer (not even variables)
  * and does not use the instruction pointer or any other external status or data.
  *
- * incompatible with M4FLAG_CONSUMES_IP_* and M4FLAG_MAY_JUMP
+ * incompatible with M4FLAG_CONSUMES_IP_* and M4FLAG_*JUMP
  */
-#define M4FLAG_PURE (1 << 5)
+#define M4FLAG_PURE (3 << 4)
 
-#define M4FLAG_CONSUMES_IP_MASK ((7 << 5) | M4FLAG_INLINE_ALWAYS)
+#define M4FLAG_CONSUMES_IP_MASK ((3 << 6) | M4FLAG_INLINE_MASK)
 /**
  * word must be followed by 1, 2, 4 or 8 bytes, which are used (not modified) and jumped over.
  *
  * implies M4FLAG_INLINE_ALWAYS, incompatible with M4FLAG_PURE.
  */
-#define M4FLAG_CONSUMES_IP_2 ((2 << 5) | M4FLAG_INLINE_ALWAYS)
-#define M4FLAG_CONSUMES_IP_4 ((3 << 5) | M4FLAG_INLINE_ALWAYS)
-#define M4FLAG_CONSUMES_IP_8 ((4 << 5) | M4FLAG_INLINE_ALWAYS)
+#define M4FLAG_CONSUMES_IP_2 ((1 << 6) | M4FLAG_INLINE_ALWAYS)
+#define M4FLAG_CONSUMES_IP_4 ((2 << 6) | M4FLAG_INLINE_ALWAYS)
+#define M4FLAG_CONSUMES_IP_8 ((3 << 6) | M4FLAG_INLINE_ALWAYS)
 
-#define M4FLAG_ADDR_MASK (7 << 5)
-/** word dereferences and reads  an address received as argument */
-#define M4FLAG_ADDR_FETCH (6 << 5)
-/** word dereferences and writes an address received as argument */
-#define M4FLAG_ADDR_STORE (7 << 5)
+/** word dereferences some pointer and reads from i */
+#define M4FLAG_MEM_FETCH 0 /* FIXME */
+/** word dereferences some pointer and writes to it */
+#define M4FLAG_MEM_STORE 0 /* FIXME */
 
 #endif /* M4TH_M4TH_MACRO_H */

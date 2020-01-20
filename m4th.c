@@ -159,23 +159,6 @@ void m4th_flags_print(m4flags fl, FILE *out) {
     if (!fl) {
         fputc('0', out);
     }
-    if (fl & m4flag_addr_mask) {
-        const char *s = NULL;
-        switch (fl & m4flag_addr_mask) {
-        case m4flag_addr_fetch:
-            s = "addr_fetch";
-            break;
-        case m4flag_addr_store:
-            s = "addr_store";
-            break;
-        }
-        if (s != NULL) {
-            if (printed++) {
-                fputc('|', out);
-            }
-            fputs(s, out);
-        }
-    }
     if (fl & m4flag_compile_only) {
         fputs("compile_only", out);
         printed++;
@@ -221,8 +204,17 @@ void m4th_flags_print(m4flags fl, FILE *out) {
             break;
         }
     }
-    if (fl & m4flag_may_jump) {
+    if ((fl & m4flag_jump_mask) == m4flag_jump) {
+        fputs(printed++ ? "|jump" : "jump", out);
+    }
+    if ((fl & m4flag_jump_mask) == m4flag_may_jump) {
         fputs(printed++ ? "|may_jump" : "may_jump", out);
+    }
+    if (fl & m4flag_mem_fetch) {
+        fputs(printed++ ? "|mem_fetch" : "mem_fetch", out);
+    }
+    if (fl & m4flag_mem_store) {
+        fputs(printed++ ? "|mem_store" : "mem_store", out);
     }
     if ((fl & m4flag_pure_mask) == m4flag_pure) {
         fputs(printed++ ? "|pure" : "pure", out);

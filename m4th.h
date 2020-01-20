@@ -45,15 +45,16 @@ typedef enum m4th_flags_e {
 
 /** m4word flags */
 typedef enum m4flags_e {
-    m4flag_addr_mask = M4FLAG_ADDR_MASK,
-    m4flag_addr_fetch = M4FLAG_ADDR_FETCH,
-    m4flag_addr_store = M4FLAG_ADDR_STORE,
+    m4flag_mem_fetch = M4FLAG_MEM_FETCH,
+    m4flag_mem_store = M4FLAG_MEM_STORE,
     m4flag_compile_only = M4FLAG_COMPILE_ONLY,
     m4flag_immediate = M4FLAG_IMMEDIATE,
     m4flag_inline_mask = M4FLAG_INLINE_MASK,
     m4flag_inline = M4FLAG_INLINE,
     m4flag_inline_always = M4FLAG_INLINE_ALWAYS,
     m4flag_inline_native = M4FLAG_INLINE_NATIVE,
+    m4flag_jump_mask = M4FLAG_JUMP_MASK,
+    m4flag_jump = M4FLAG_JUMP,
     m4flag_may_jump = M4FLAG_MAY_JUMP,
     m4flag_pure_mask = M4FLAG_PURE_MASK,
     m4flag_pure = M4FLAG_PURE,

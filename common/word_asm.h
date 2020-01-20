@@ -18,6 +18,9 @@
 #ifndef M4TH_COMMON_WORD_ASM_H
 #define M4TH_COMMON_WORD_ASM_H
 
+#define WORD_OFF_CODE_N fixme /* offset of m4word->code_n */
+#define WORD_OFF_CODE fixme   /* offset of m4word->code */
+
 #define WORD_SYM(name) m4word_##name
 
 #define WORD_DEF_SYM(name)                                                                         \
