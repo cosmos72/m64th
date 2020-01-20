@@ -29,7 +29,7 @@ FUNC_END(cr)
 FUNC_START(emit)
         LOAD( REG1, AT(M4TH, M4TH_OFF_OUT))
         /* TODO check buffer full */
-        movb   DTOPb, (REG1);
+        STORb( DTOPb, AT(REG1))
         inc    REG1;
         DPOP(  DTOP)
         STOR(  REG1, AT(M4TH, M4TH_OFF_OUT))

@@ -56,12 +56,27 @@
 /* additional scratch registers: %r8 %r9 %r10 %r11 */
 /* additional callee-saved registers: %rbp */
 
-#define REG1b %al   /* low 8 bits of REG1 */
+#define REG1b %al    /* low 8 bits of REG1 */
+#define REG1h %ax    /* low 16 bits of REG1 */
+#define REG1w %eax   /* low 32 bits of REG1 */
+#define REG1_ub %eax /* zero-extend  8 bits into REG1 */
+#define REG1_uh %eax /* zero-extend 16 bits into REG1 */
+#define REG1_uw %eax /* zero-extend 32 bits into REG1 */
+#define REG1_sb %rax /* sign-extend  8 bits into REG1 */
+#define REG1_sh %rax /* sign-extend 16 bits into REG1 */
+#define REG1_sw %rax /* sign-extend 32 bits into REG1 */
 
-#define DTOP  %rbx  /* value of first data stack element */
-#define DTOPb %bl   /* low 8 bits of DTOP */
-#define DTOPh %bx   /* low 16 bits of DTOP */
-#define DTOPw %ebx  /* low 32 bits of DTOP */
+#define DTOP  %rbx   /* value of first data stack element */
+#define DTOPb %bl    /* low 8 bits of DTOP */
+#define DTOPh %bx    /* low 16 bits of DTOP */
+#define DTOPw %ebx   /* low 32 bits of DTOP */
+#define DTOP_ub %ebx /* zero-extend  8 bits into DTOP */
+#define DTOP_uh %ebx /* zero-extend 16 bits into DTOP */
+#define DTOP_uw %ebx /* zero-extend 32 bits into DTOP */
+#define DTOP_sb %rbx /* sign-extend  8 bits into DTOP */
+#define DTOP_sh %rbx /* sign-extend 16 bits into DTOP */
+#define DTOP_sw %rbx /* sign-extend 32 bits into DTOP */
+
 
 #define DSTK  %rsp  /* pointer to second data stack element */
 #define IP    %rdi  /* forth instruction pointer */
@@ -87,6 +102,19 @@
 #define SUB2(src, dst)       sub  src,     dst; /* dst -= src     */
 #define STOR(reg, mem)       mov  reg,     mem; /* *mem = reg     */
 #define ZERO(dst)            xor  dst,     dst; /* dst  = 0       */
+
+#define LOAD_sb(reg, mem)  movsbq mem,     reg; /* reg = *(int8_t *)mem */
+#define LOAD_sh(reg, mem)  movswq mem,     reg; /* reg = *(int16_t*)mem */
+#define LOAD_sw(reg, mem)  movslq mem,     reg; /* reg = *(int32_t*)mem */
+
+#define LOAD_ub(reg, mem)  movzbl mem,     reg; /* reg = *(uint8_t *)mem */
+#define LOAD_uh(reg, mem)  movzwl mem,     reg; /* reg = *(uint16_t*)mem */
+#define LOAD_uw(reg, mem)  movl   mem,     reg; /* reg = *(uint32_t*)mem */
+
+/* no difference between signed and unsigned STOR* */
+#define STORb(reg, mem)    movb   reg,     mem; /* *(uint8_t *)mem = reg */
+#define STORh(reg, mem)    movw   reg,     mem; /* *(uint16_t*)mem = reg */
+#define STORw(reg, mem)    movl   reg,     mem; /* *(uint32_t*)mem = reg */
 
 /* clang-format on */
 

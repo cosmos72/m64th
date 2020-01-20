@@ -15,6 +15,41 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-long c_fetch(const unsigned char *addr) {
+#include <stdint.h>
+
+int64_t load(uint64_t *addr) {
     return (long)*addr;
+}
+
+int64_t load_sb(int8_t *addr) {
+    return (long)*addr;
+}
+int64_t load_sh(int16_t *addr) {
+    return (long)*addr;
+}
+int64_t load_sw(int32_t *addr) {
+    return (long)*addr;
+}
+
+int64_t load_ub(uint8_t *addr) {
+    return (long)*addr;
+}
+int64_t load_uh(uint16_t *addr) {
+    return (long)*addr;
+}
+int64_t load_uw(uint32_t *addr) {
+    return (long)*addr;
+}
+
+void stor_b(uint8_t *addr, uint8_t val) {
+    *addr = val;
+}
+void stor_h(uint16_t *addr, uint16_t val) {
+    *addr = val;
+}
+void stor_w(uint32_t *addr, uint32_t val) {
+    *addr = val;
+}
+void stor(uint64_t *addr, uint64_t val) {
+    *addr = val;
 }

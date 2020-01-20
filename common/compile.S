@@ -19,6 +19,28 @@
 #error "common/compile.h can only be included from asm.S - do not attempt to use it directly"
 #endif
 
+#if 0
+FUNC_START(word_code_n) /* (word -- word.code_n) */
+        LOAD_sb(DTOP_sb, AT(DTOP, WORD_OFF_CODE_N))
+        LOAD_sh(DTOP_sh, AT(DTOP, WORD_OFF_CODE_N))
+        LOAD_sw(DTOP_sw, AT(DTOP, WORD_OFF_CODE_N))
+        LOAD_ub(DTOP_ub, AT(DTOP, WORD_OFF_CODE_N))
+        LOAD_uh(DTOP_uh, AT(DTOP, WORD_OFF_CODE_N))
+        LOAD_uw(DTOP_uw, AT(DTOP, WORD_OFF_CODE_N))
+        LOAD(   DTOP,    AT(DTOP, WORD_OFF_CODE_N))
+        STORb(  DTOPb,   AT(DTOP, WORD_OFF_CODE_N))
+        STORh(  DTOPh,   AT(DTOP, WORD_OFF_CODE_N))
+        STORw(  DTOPw,   AT(DTOP, WORD_OFF_CODE_N))
+        STOR(   DTOP,    AT(DTOP, WORD_OFF_CODE_N))
+FUNC_END(word_code_n)
+#endif /* 0 */
+
+/* compile, : pop xt from dstack and append it to current word's code */
+FUNC_START(compile_comma)
+        /* TODO check if enough space */
+        DPOP(  DTOP)
+FUNC_END(compile_comma)
+
 /* literal: compile the literal number found on the stack */
 FUNC_START(literal)
 #if 0

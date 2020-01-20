@@ -89,6 +89,19 @@
 #define STOR(reg,mem)    str  reg, mem;         /* *mem = reg     */
 #define ZERO(dst)        mov  dst, 0;           /* dst  = 0       */
 
+#define LOAD_sb(reg, mem)  ldrsb  mem,     reg; /* reg = *(int8_t *)mem */
+#define LOAD_sh(reg, mem)  ldrhs  mem,     reg; /* reg = *(int16_t*)mem */
+#define LOAD_sw(reg, mem)  ldrsw  mem,     reg; /* reg = *(int32_t*)mem */
+
+#define LOAD_ub(reg, mem)  ldrb   mem,     reg; /* reg = *(uint8_t *)mem */
+#define LOAD_uh(reg, mem)  ldrw   mem,     reg; /* reg = *(uint16_t*)mem */
+#define LOAD_uw(reg, mem)  ldr    mem,     reg; /* reg = *(uint32_t*)mem */
+
+/* no difference between signed and unsigned STOR* */
+#define STORb(reg, mem)    strb   reg,     mem; /* *(uint8_t *)mem = reg */
+#define STORh(reg, mem)    strw   reg,     mem; /* *(uint16_t*)mem = reg */
+#define STORw(reg, mem)    str    reg,     mem; /* *(uint32_t*)mem = reg */
+
 #if 0
 #define IPUSH1(val)   /* push val to code array */  \
     str   val, [ISTK], SZ;
