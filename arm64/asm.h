@@ -57,10 +57,27 @@
 /* additional scratch registers:      x3 .. x17           */
 /* additional callee-saved registers: x18 x19 x27 ... x30 */
 
-#define REG1w w0 /* low 32 bits of REG1 */
+#define REG1b w0    /* low 8 bits of REG1 */
+#define REG1h w0    /* low 16 bits of REG1 */
+#define REG1w w0    /* low 32 bits of REG1 */
+#define REG1_ub w0  /* zero-extend  8 bits into REG1 */
+#define REG1_uh w0  /* zero-extend 16 bits into REG1 */
+#define REG1_uw w0  /* zero-extend 32 bits into REG1 */
+#define REG1_sb w0  /* sign-extend  8 bits into REG1 */
+#define REG1_sh w0  /* sign-extend 16 bits into REG1 */
+#define REG1_sw w0  /* sign-extend 32 bits into REG1 */
 
 #define DTOP  x20 /* value of first data stack element */
-#define DTOPw w20 /* low 32 bits of DTOP */
+#define DTOPb w20    /* low 8 bits of DTOP */
+#define DTOPh w20    /* low 16 bits of DTOP */
+#define DTOPw w20    /* low 32 bits of DTOP */
+#define DTOP_ub w20  /* zero-extend  8 bits into DTOP */
+#define DTOP_uh w20  /* zero-extend 16 bits into DTOP */
+#define DTOP_uw w20  /* zero-extend 32 bits into DTOP */
+#define DTOP_sb w20  /* sign-extend  8 bits into DTOP */
+#define DTOP_sh w20  /* sign-extend 16 bits into DTOP */
+#define DTOP_sw w20  /* sign-extend 32 bits into DTOP */
+
 
 #define DSTK  x21 /* pointer to second data stack element */
 #define IP    x22 /* instruction pointer */
