@@ -105,6 +105,9 @@
 #define DPUSH(val)    str       val, [DSTK, -SZ]!; /* push val to second data stack element */
 #define DPOP(val)     ldr       val, [DSTK], SZ;   /* pop second data stack element into val */
 
+/* jump to current instruction. useful after manually updating IP */
+#define NEXT0()       ldr       REG1, [IP];        \
+                      br        REG1;
 #define NEXT()        ldr       REG1, [IP, SZ]!;   /* jump to next instruction */ \
                       br        REG1;
 #define NEXT2()       ldr       REG1, [IP, SZ2]!;  /* skip next instruction, jump to following one */ \

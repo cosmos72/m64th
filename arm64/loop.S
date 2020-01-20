@@ -17,38 +17,47 @@
 
 #include "asm.h"
 
-FUNC_START(_do_)
+/*
+ * must be followed by IP offset of first instruction after (loop)
+ * IP offset = 0 means (?do) itself
+ */
+FUNC_START(_question_do_)
+        LOAD(  REG2, AT(DSTK))
+        cmp    REG2, DTOP;
+        b.ne   .Lm4_question_do_enter;
+        /* skip the loop */
+        LOAD(  REG2, AT(IP, SZ))     /* REG2 = IP jump offset */
+        LOAD(  DTOP, AT(DSTK, SZ))   /* reload dstack top     */
+        add    IP, IP, REG2, lsl PSZ;/* IP = TARGET_IP        */
+        ADD2(  IMM(SZ2), DSTK)       /* drop i' i from dstack */
+        NEXT0()                      /* jump to TARGET_IP     */
+.Lm4_question_do_enter:
+        ADD2(  IMM(SZ), IP)          /* skip jump offset      */
+        /* FALLTHROUGH into _do_ */
+/* FUNC_RAWEND(_question_do_) */
+
+
+/* FUNC_START(_do_) */
+FUNC_DEF_SYM(_do_)
         RPUSH( RTOP)                 /* save rstack top       */
         DPOP(  REG1)                 /* REG1 = i'             */
         MOVE(  DTOP, RTOP)           /* RTOP = i              */
         RPUSH( REG1)                 /* push i' on rstack     */
         DPOP(  DTOP)                 /* reload dstack top     */
 FUNC_END(_do_)
-
-/*
- * must be followed by IP offset of first instruction after (loop)
- * IP offset = 0 means (?do) itself
- */
-FUNC_START(_question_do_)
-        LOAD(  REG2, AT(RSTK))
-        cmp    REG2, RTOP;
-        b.ne   FUNC_SYM(_do_);
-        /* FALLTHROUGH into _leave_ */
+FUNC_SIZE(_question_do_)
 
 /*
  * must be followed by IP offset of first instruction after (loop)
  * IP offset = 0 means (leave) itself
  */
-FUNC_DEF_SYM(_leave_)
-/* FUNC_START(_leave_) */
+FUNC_START(_leave_)
         LOAD(  REG2, AT(IP, SZ))
-        LOAD(  RTOP, AT(RSTK, SZ)) /* load new top of rstack      */
-        add    IP, IP, REG2, lsl 3;/* IP = TARGET_IP              */
-        ADD2(  IMM(SZ2), RSTK)     /* drop i' i from return stack */
-        LOAD(  REG3, AT(IP))
-        br     REG3;               /* jump to instruction after (loop) */
-/* FUNC_RAWEND(_leave_) */
-FUNC_RAWEND(_question_do_)
+        LOAD(  RTOP, AT(RSTK, SZ))   /* load new rstack top   */
+        add    IP, IP, REG2, lsl PSZ;/* IP = TARGET_IP        */
+        ADD2(  IMM(SZ2), RSTK)       /* drop i' i from rstack */
+        NEXT0()                      /* jump to TARGET_IP     */
+FUNC_RAWEND(_leave_)
 
 /*
  * must be followed by IP offset of first instruction after (do) - usually < 0

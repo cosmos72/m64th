@@ -24,11 +24,12 @@
 FUNC_START(_question_do_)
         cmp    DTOP, AT(DSTK);
         jne    .Lm4_question_do_enter;
+        /* skip the loop */
         LOAD(  REG2, AT(IP, SZ))     /* REG2 = IP jump offset */
         LOAD(  DTOP, AT(DSTK, SZ))   /* reload dstack top     */
         lea    (IP, REG2, SZ), IP;   /* IP = TARGET_IP        */
         ADD2(  IMM(SZ2), DSTK)       /* drop i' i from dstack */
-        jmp    *(IP);                /* jump to TARGET_IP     */
+        NEXT0()                      /* jump to TARGET_IP     */
 .Lm4_question_do_enter:
         ADD2(  IMM(SZ), IP)          /* skip jump offset      */
         /* FALLTHROUGH into _do_ */

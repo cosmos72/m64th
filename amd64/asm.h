@@ -106,6 +106,9 @@
 #define DPUSH(val) pushq val; /* push val to second data stack element */
 #define DPOP(val) popq val;   /* pop second data stack element into val */
 
+#define NEXT0() /* jump to current instruction. useful after manually updating IP              */  \
+    jmp *(IP);
+
 #define NEXT() /* jump to next instruction */                                                      \
     add $SZ, IP;                                                                                   \
     jmp *(IP);
