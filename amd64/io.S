@@ -18,30 +18,30 @@
 #include "asm.h"
 
 FUNC_START(cr)
-        LOAD(  REG1, AT(M4TH, OFF_OUT))
+        LOAD(  REG1, AT(M4TH, M4TH_OFF_OUT))
         /* TODO check buffer full */
         movb   IMM(10), (REG1);
         inc    REG1;
-        STOR(  REG1, AT(M4TH, OFF_OUT))
+        STOR(  REG1, AT(M4TH, M4TH_OFF_OUT))
 FUNC_END(cr)
 
 
 FUNC_START(emit)
-        LOAD( REG1, AT(M4TH, OFF_OUT))
+        LOAD( REG1, AT(M4TH, M4TH_OFF_OUT))
         /* TODO check buffer full */
         movb   DTOPb, (REG1);
         inc    REG1;
         DPOP(  DTOP)
-        STOR(  REG1, AT(M4TH, OFF_OUT))
+        STOR(  REG1, AT(M4TH, M4TH_OFF_OUT))
 FUNC_END(emit)
 
 
 FUNC_START(key)
-        LOAD(  REG1, AT(M4TH, OFF_IN))
-	cmp    OFF_IN_END(M4TH), REG1;
+        LOAD(  REG1, AT(M4TH, M4TH_OFF_IN))
+	cmp    M4TH_OFF_IN_END(M4TH), REG1;
 	jge    m4bye; /* TODO read from stdin instead */
         DPUSH( DTOP)
-        incq   OFF_IN(M4TH)
+        incq   M4TH_OFF_IN(M4TH)
         movzbq (REG1), DTOP;
 FUNC_END(key)
 

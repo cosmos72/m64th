@@ -18,15 +18,15 @@
 #ifndef M4TH_COMMON_M4TH_ASM_H
 #define M4TH_COMMON_M4TH_ASM_H
 
-#define OFF_DSTK SZ      /* offset of m4th->dstack.curr */
-#define OFF_DEND SZ2     /* offset of m4th->dstack.end  */
-#define OFF_RSTK SZ4     /* offset of m4th->rstack.curr */
-#define OFF_W SZ6        /* offset of m4th->w           */
-#define OFF_IP SZ7       /* offset of m4th->ip          */
-#define OFF_C_SP SZ8     /* offset of m4th->c_sp        */
-#define OFF_IN SZ10      /* offset of m4th->in.curr     */
-#define OFF_IN_END SZ11  /* offset of m4th->in.end      */
-#define OFF_OUT SZ13     /* offset of m4th->out.curr    */
-#define OFF_OUT_END SZ14 /* offset of m4th->out.end     */
+#define M4TH_OFF_DSTK SZ      /* offset of m4th->dstack.curr */
+#define M4TH_OFF_DEND SZ2     /* offset of m4th->dstack.end  */
+#define M4TH_OFF_RSTK SZ4     /* offset of m4th->rstack.curr */
+#define M4TH_OFF_W SZ6        /* offset of m4th->w           */
+#define M4TH_OFF_IP SZ7       /* offset of m4th->ip          */
+#define M4TH_OFF_C_SP SZ8     /* offset of m4th->c_sp        */
+#define M4TH_OFF_IN SZ10      /* offset of m4th->in.curr     */
+#define M4TH_OFF_IN_END SZ11  /* offset of m4th->in.end      */
+#define M4TH_OFF_OUT SZ13     /* offset of m4th->out.curr    */
+#define M4TH_OFF_OUT_END SZ14 /* offset of m4th->out.end     */
 
 #endif /* M4TH_COMMON_M4TH_ASM_H */

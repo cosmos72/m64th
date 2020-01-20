@@ -34,10 +34,10 @@ FUNC_START(th_run)
         STOR(  x21,  AT(sp, SZ))
         STOR(  x20,  AT(sp))
         MOVE(  x0,   M4TH)               /* m                               */
-        LOAD(  DSTK, AT(M4TH, OFF_DSTK)) /* load data   stack pointer       */
-        LOAD(  RSTK, AT(M4TH, OFF_RSTK)) /* load return stack pointer       */
-        LOAD(  M4W,  AT(M4TH, OFF_W))    /* load word being compiled        */
-        LOAD(  IP,   AT(M4TH, OFF_IP))   /* load instruction  pointer       */
+        LOAD(  DSTK, AT(M4TH, M4TH_OFF_DSTK)) /* load data   stack pointer       */
+        LOAD(  RSTK, AT(M4TH, M4TH_OFF_RSTK)) /* load return stack pointer       */
+        LOAD(  M4W,  AT(M4TH, M4TH_OFF_W))    /* load word being compiled        */
+        LOAD(  IP,   AT(M4TH, M4TH_OFF_IP))   /* load instruction  pointer       */
         DPOP(  DTOP)                     /* load first data   stack element */
         RPOP(  RTOP)                     /* load first return stack element */
         LOAD(  REG1, AT(IP))             /* begin execution                 */
@@ -54,10 +54,10 @@ FUNC_START(bye)
 	ADD2(  IMM(SZ), IP)               /* point IP to next instruction    */
         RPUSH( RTOP)                      /* save first return stack element */
         DPUSH( DTOP)                      /* save first data   stack element */
-        STOR(  IP,   AT(M4TH, OFF_IP))    /* save instruction  pointer       */
-        STOR(  M4W,  AT(M4TH, OFF_W))     /* save word being compiled        */
-        STOR(  RSTK, AT(M4TH, OFF_RSTK))  /* save return stack pointer       */
-        STOR(  DSTK, AT(M4TH, OFF_DSTK))  /* save data   stack pointer       */
+        STOR(  IP,   AT(M4TH, M4TH_OFF_IP))    /* save instruction  pointer       */
+        STOR(  M4W,  AT(M4TH, M4TH_OFF_W))     /* save word being compiled        */
+        STOR(  RSTK, AT(M4TH, M4TH_OFF_RSTK))  /* save return stack pointer       */
+        STOR(  DSTK, AT(M4TH, M4TH_OFF_DSTK))  /* save data   stack pointer       */
         LOAD(  x20,  AT(sp))              /* load C registers                */
         LOAD(  x21,  AT(sp, SZ))
         LOAD(  x22,  AT(sp, SZ2))

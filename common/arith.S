@@ -171,7 +171,7 @@ FUNC_END(cells)
 
 FUNC_START(depth)
         DPUSH( DTOP)
-        LOAD(  DTOP, AT(M4TH, OFF_DEND))
+        LOAD(  DTOP, AT(M4TH, M4TH_OFF_DEND))
         SUB2(  DSTK, DTOP)
         SAR2(  IMM(PSZ), DTOP)
 FUNC_END(depth)
