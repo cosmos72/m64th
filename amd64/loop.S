@@ -67,11 +67,13 @@ FUNC_RAWEND(_jump_)
 FUNC_START(_jump_if_)
         test   DTOP, DTOP;
         DPOP(  DTOP)
-        jz     FUNC_SYM_NEXT(_jump_if_);
+        jnz    .Lm4_jump_if_nonzero;
+        NEXT2()                    /* skip IP offset          */
+.Lm4_jump_if_nonzero:
         LOAD(  REG2, AT(IP, SZ))   /* REG2 = IP jump offset   */
         lea    (IP, REG2, SZ), IP; /* IP   = TARGET_IP        */
         NEXT0()                    /* jump to TARGET_IP       */
-FUNC_END(_jump_if_)
+FUNC_RAWEND(_jump_if_)
 
 /**
  * pop dstack top, and jump if = 0.
@@ -81,11 +83,13 @@ FUNC_END(_jump_if_)
 FUNC_START(_jump_unless_)
         test   DTOP, DTOP;
         DPOP(  DTOP)
-        jnz    FUNC_SYM_NEXT(_jump_unless_);
+        jnz    .Lm4_jump_unless_zero;
+        NEXT2()                    /* skip IP offset          */
+.Lm4_jump_unless_zero:
         LOAD(  REG2, AT(IP, SZ))   /* REG2 = IP jump offset   */
         lea    (IP, REG2, SZ), IP; /* IP   = TARGET_IP        */
         NEXT0()                    /* jump to TARGET_IP       */
-FUNC_END(_jump_unless_)
+FUNC_RAWEND(_jump_unless_)
 
 /**
  * must be followed by IP offset of first instruction after (loop)
