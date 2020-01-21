@@ -20,154 +20,171 @@
 
 #define OPT1_BODY(x, _) x((noop), _)
 
-#define OPT2_BODY(x, _)                                     /* note: '_' represents noop       */  \
-    x((minus_one, star), (negate))                          /* -1 *            => negate       */  \
-        x((minus_one, plus), (one_minus))                   /* -1 +            => 1-           */  \
-        x((minus_one, minus), (one_plus))                   /* -1 -            => 1+           */  \
-        x((minus_one, slash), (negate))                     /* -1 /            => negate       */  \
-        x((minus_one, and), _)                              /* -1 and          =>              */  \
-        x((minus_one, mod), (slash))                        /* -1 mod          => drop 0       */  \
-        x((minus_one, or), (drop, minus_one))               /* -1 or           => drop -1      */  \
-        x((minus_one, xor), (invert))                       /* -1 xor          => invert       */  \
-        x((zero, star), (drop, drop, zero))                 /*  0 *            => drop 0       */  \
-        x((zero, minus), _)                                 /*  0 -            =>              */  \
-        x((zero, plus), _)                                  /*  0 +            =>              */  \
-        x((zero, less_than), (zero_less_than))              /*  0 <            => 0<           */  \
-        x((zero, less_equals), (zero_less_equals))          /*  0 <=           => 0<=          */  \
-        x((zero, not_equals), (zero_not_equals))            /*  0 <>           => 0<>          */  \
-        x((zero, equals), (zero_equals))                    /*  0 =            => 0=           */  \
-        x((zero, greater_than), (zero_greater_than))        /*  0 >            => 0>           */  \
-        x((zero, greater_equals), (zero_greater_equals))    /*  0 >=           => 0>=          */  \
-        x((zero, and), (drop, zero))                        /*  0 and          => drop 0       */  \
-        x((zero, lshift), _)                                /*  0 lshift       =>              */  \
-        x((zero, or), _)                                    /*  0 or           =>              */  \
-        x((zero, rshift), _)                                /*  0 rshift       =>              */  \
-        x((zero, xor), _)                                   /*  0 xor          =>              */  \
-        x((one, star), _)                                   /*  1 *            =>              */  \
-        x((one, plus), (one_plus))                          /*  1 +            => 1+           */  \
-        x((one, minus), (one_minus))                        /*  1 -            => 1-           */  \
-        x((one, slash), _)                                  /*  1 /            =>              */  \
-        x((one, slash_mod), (slash))                        /*  1 /mod         => drop 0       */  \
-        x((one, lshift), (two_star))                        /*  1 lshift       => 2*           */  \
-        x((one, mod), _)                                    /*  1 mod          => drop 0       */  \
-        x((one_plus, two_minus), (one_minus))               /*  1+ 2-          => 1-           */  \
-        x((one_plus, one_minus), _)                         /*  1+ 1-          =>              */  \
-        x((one_plus, one_plus), (two_plus))                 /*  1+ 1+          => 2+           */  \
-        x((one_minus, one_minus), (two_minus))              /*  1- 1-          => 2-           */  \
-        x((one_minus, one_plus), _)                         /*  1- 1+          =>              */  \
-        x((one_minus, two_plus), (one_plus))                /*  1- 2+          => 1+           */  \
-        x((two, star), (two_star))                          /*  2 *            => 2*           */  \
-        x((two, plus), (two_plus))                          /*  2 +            => 2+           */  \
-        x((two, minus), (two_minus))                        /*  2 -            => 2-           */  \
-        x((two, slash), (two_slash))                        /*  2 /            => 2/           */  \
-        x((two, lshift), (four_star))                       /*  2 lshift       => 4*           */  \
-        x((two_star, two_slash), _)                         /*  2* 2/          =>              */  \
-        x((two_star, two_star), (four_star))                /*  2* 2*          => 4*           */  \
-        x((two_star, four_star), (eight_star))              /*  2* 4*          => 8*           */  \
-        x((two_plus, two_minus), _)                         /*  2+ 2-          =>              */  \
-        x((two_plus, one_minus), (one_plus))                /*  2+ 1-          => 1+           */  \
-        x((two_plus, two_plus), (four_plus))                /*  2+ 2+          => 4+           */  \
-        x((two_minus, two_plus), _)                         /*  2- 2+          => 4+           */  \
-        x((two_minus, four_plus), (two_plus))               /*  2- 4+          => 2+           */  \
-        x((two_slash, two_star), _)                         /*  2/ 2*          =>              */  \
-        x((two_slash, four_star), (two_star))               /*  2/ 4*          => 2*           */  \
-        x((two_slash, eight_star), (four_star))             /*  2/ 8*          => 4*           */  \
-        x((three, lshift), (eight_star))                    /*  3 lshift       => 8*           */  \
-        x((four, star), (four_star))                        /*  4 *            => 4*           */  \
-        x((four, plus), (four_plus))                        /*  4 +            => 4+           */  \
-        x((four, minus), (four_minus))                      /*  4 -            => 4-           */  \
-        x((four, slash), (four_slash))                      /*  4 /            => 4/           */  \
-        x((four_star, two_slash), (eight_star))             /*  4* 2/          => 2*           */  \
-        x((four_star, two_star), (eight_star))              /*  4* 2*          => 8*           */  \
-        x((four_plus, two_minus), (two_plus))               /*  4+ 2-          => 2+           */  \
-        x((four_plus, four_plus), (eight_plus))             /*  4+ 4+          => 8+           */  \
-        x((eight, star), (eight_star))                      /*  8 *            => 8*           */  \
-        x((eight, plus), (eight_plus))                      /*  8 +            => 8+           */  \
-        x((eight, minus), (eight_minus))                    /*  8 -            => 8-           */  \
-        x((eight, slash), (eight_slash))                    /*  8 /            => 8/           */  \
-        x((eight_star, two_slash), (four_star))             /*  8* 2/          => 4*           */  \
-        x((slash_mod, drop), (slash))                       /* /mod drop       => /            */  \
-        x((slash_mod, nip), (mod))                          /* /mod nip        => mod          */  \
-        x((star, negate), (negate, star))                   /* *    negate     => negate *     */  \
-        x((less_than, invert), (greater_equals))            /* <    invert     => >=           */  \
-        x((less_equals, invert), (greater_than))            /* <=   invert     => >            */  \
-        x((not_equals, invert), (equals))                   /* <>   invert     => =            */  \
-        x((equals, invert), (not_equals))                   /* =    invert     => <>           */  \
-        x((greater_than, invert), (less_equals))            /* >    invert     => <=           */  \
-        x((greater_equals, invert), (less_than))            /* >=   invert     => <            */  \
-        x((to_r, from_r), _)                                /* >r   r>         =>              */  \
-        x((fetch, drop), (drop))                            /* @    drop       => drop         */  \
-        x((abs, abs), (abs))                                /* abs  abs        => abs          */  \
-        x((abs, squared), (squared))                        /* abs  squared    => squared      */  \
-        x((dup, star), (squared))                           /* dup  *          => squared      */  \
-        x((dup, plus), (two_star))                          /* dup  +          => 2*           */  \
-        x((dup, minus), (drop, zero))                       /* dup  -          => drop 0       */  \
-        x((dup, slash), (drop, one))                        /* dup  /          => drop 1       */  \
-        x((dup, less_than), (drop, false))                  /* dup  <          => drop false   */  \
-        x((dup, less_equals), (drop, true))                 /* dup  <=         => drop true    */  \
-        x((dup, not_equals), (drop, false))                 /* dup  <>         => drop false   */  \
-        x((dup, equals), (drop, true))                      /* dup  =          => drop true    */  \
-        x((dup, greater_than), (drop, false))               /* dup  >          => drop false   */  \
-        x((dup, greater_equals), (drop, true))              /* dup  >=         => drop true    */  \
-        x((dup, and), _)                                    /* dup  and        =>              */  \
-        x((dup, drop), _)                                   /* dup  drop       =>              */  \
-        x((dup, max), _)                                    /* dup  max        =>              */  \
-        x((dup, min), _)                                    /* dup  min        =>              */  \
-        x((dup, mod), (drop, zero))                         /* dup  mod        => drop 0       */  \
-        x((dup, nip), _)                                    /* dup  nip        =>              */  \
-        x((dup, or), _)                                     /* dup  or         =>              */  \
-        x((dup, xor), (drop, zero))                         /* dup  xor        => drop 0       */  \
-        x((dup, swap), _)                                   /* dup  swap       => dup          */  \
-        x((c_fetch, drop), (drop))                          /* c@   drop       => drop         */  \
-        x((i, drop), _)                                     /* i    drop       =>              */  \
-        x((i, star), (i_star))                              /* i *             => i*           */  \
-        x((i, plus), (i_plus))                              /* i +             => i+           */  \
-        x((i, minus), (i_minus))                            /* i -             => i-           */  \
-        x((invert, invert), _)                              /* invert invert   =>              */  \
-        x((invert, negate), (one_plus))                     /* invert negate   => 1+           */  \
-        x((negate, plus), (minus))                          /* negate +        => -            */  \
-        x((negate, minus), (plus))                          /* negate -        => +            */  \
-        x((negate, abs), (abs))                             /* negate abs      => abs          */  \
-        x((negate, negate), _)                              /* negate negate   =>              */  \
-        x((negate, invert), (one_minus))                    /* negate invert   => 1-           */  \
-        x((negate, squared), (squared))                     /* negate squared  => squared      */  \
-        x((over, drop), _)                                  /* over   drop     =>              */  \
-        x((over, nip), (swap))                              /* over   nip      => swap         */  \
-        x((from_r, to_r), _)                                /* r>     >r       =>              */  \
-        x((swap, star), (star))                             /* swap *          => *            */  \
-        x((swap, plus), (plus))                             /* swap +          => +            */  \
-        x((swap, minus), (minus, negate))                   /* swap -          => - negate     */  \
-        x((swap, less_than), (greater_than))                /* swap <          => >            */  \
-        x((swap, less_equals), (greater_equals))            /* swap <=         => >=           */  \
-        x((swap, not_equals), (not_equals))                 /* swap <>         => <>           */  \
-        x((swap, equals), (equals))                         /* swap =          => =            */  \
-        x((swap, greater_than), (less_equals))              /* swap >          => <            */  \
-        x((swap, greater_equals), (less_equals))            /* swap >=         => <=           */  \
-        x((swap, and), (and))                               /* swap and        => and          */  \
-        x((swap, drop), (nip))                              /* swap drop       => nip          */  \
-        x((swap, max), (max))                               /* swap max        => max          */  \
-        x((swap, min), (min))                               /* swap min        => min          */  \
-        x((swap, nip), (drop))                              /* swap nip        => drop         */  \
-        x((swap, or), (or))                                 /* swap or         => or           */  \
-        x((swap, swap), _)                                  /* swap swap       =>              */  \
-        x((swap, xor), (xor))                               /* swap xor        => xor          */  \
-        x((byte_plus, byte_fetch), (byte_bracket1))         /* byte+    byte@   => byte[1]     */  \
-        x((cell_plus, fetch), (cell_bracket1))              /* cell+    @       => cell[1]     */  \
-        x((char_plus, c_fetch), (char_bracket1))            /* char+    c@      => char[1]     */  \
-        x((int_plus, int_fetch), (int_bracket))             /* int+     int@    => int[1]      */  \
-        x((short_plus, short_fetch), (short_bracket1))      /* short+   short@  => short[1]    */  \
-        x((uint_plus, uint_fetch), (uint_bracket1))         /* uint+    uint@   => uint[1]     */  \
-        x((ushort_plus, ushort_fetch), (ushort_bracket1))   /* ushort+  ushort@ => ushort[1]   */  \
-        x((_2byte_plus, byte_fetch), (byte_bracket))        /* 2byte+   byte@   => byte[2]     */  \
-        x((_2int_plus, int_fetch), (int_bracket))           /* 2int+    int@    => int[2]      */  \
-        x((_2char_plus, c_fetch), (char_bracket2))          /* 2char+   c@      => char[2]     */  \
-        x((_2short_plus, short_fetch), (short_bracket2))    /* 2short+  short@  => short[2]    */  \
-        x((_2uint_plus, uint_fetch), (uint_bracket2))       /* 2uint+   uint@   => uint[2]     */  \
-        x((_2ushort_plus, ushort_fetch), (ushort_bracket2)) /* 2ushort+ ushort@ => ushort[2]   */  \
-        x((_4byte_plus, byte_fetch), (byte_bracket))        /* 4byte+   byte@   => byte[4]     */  \
-        x((_4char_plus, c_fetch), (char_bracket4))          /* 4char+   c@      => char[4]     */  \
-        x((_4short_plus, short_fetch), (short_bracket4))    /* 4short+  short@  => short[4]    */  \
-        x((_4ushort_plus, ushort_fetch), (ushort_bracket4)) /* 4ushort+ ushort@ => ushort[4]   */
+#define OPT2_BODY(x, _)                                    /* note: '_' represents noop       */   \
+    x((minus_one, star), (negate))                         /* -1 *            => negate       */   \
+        x((minus_one, plus), (one_minus))                  /* -1 +            => 1-           */   \
+        x((minus_one, minus), (one_plus))                  /* -1 -            => 1+           */   \
+        x((minus_one, slash), (negate))                    /* -1 /            => negate       */   \
+        x((minus_one, and), _)                             /* -1 and          =>              */   \
+        x((minus_one, mod), (slash))                       /* -1 mod          => drop 0       */   \
+        x((minus_one, or), (drop, minus_one))              /* -1 or           => drop -1      */   \
+        x((minus_one, xor), (invert))                      /* -1 xor          => invert       */   \
+        x((zero, star), (drop, drop, zero))                /*  0 *            => drop 0       */   \
+        x((zero, minus), _)                                /*  0 -            =>              */   \
+        x((zero, plus), _)                                 /*  0 +            =>              */   \
+        x((zero, less_than), (zero_less_than))             /*  0 <            => 0<           */   \
+        x((zero, less_equals), (zero_less_equals))         /*  0 <=           => 0<=          */   \
+        x((zero, not_equals), (zero_not_equals))           /*  0 <>           => 0<>          */   \
+        x((zero, equals), (zero_equals))                   /*  0 =            => 0=           */   \
+        x((zero, greater_than), (zero_greater_than))       /*  0 >            => 0>           */   \
+        x((zero, greater_equals), (zero_greater_equals))   /*  0 >=           => 0>=          */   \
+        x((zero, and), (drop, zero))                       /*  0 and          => drop 0       */   \
+        x((zero, lshift), _)                               /*  0 lshift       =>              */   \
+        x((zero, or), _)                                   /*  0 or           =>              */   \
+        x((zero, rshift), _)                               /*  0 rshift       =>              */   \
+        x((zero, xor), _)                                  /*  0 xor          =>              */   \
+        x((zero_not_equals, _jump_if_), (_jump_if_))       /* 0<> (jump-if)   => (jump-if)    */   \
+        x((zero_equals, _jump_unless_), (_jump_unless_))   /* 0=  (jump-unless)=>(jump-unless)*/   \
+        x((zero_less_than, invert), (zero_greater_equals)) /* 0<    invert    => 0>=          */   \
+        x((zero_less_equals, invert), (zero_greater_than)) /* 0<=   invert    => 0>           */   \
+        x((zero_not_equals, invert), (zero_equals))        /* 0<>   invert    => 0=           */   \
+        x((zero_equals, invert), (zero_not_equals))        /* 0=    invert    => 0<>          */   \
+        x((zero_greater_than, invert), (zero_less_equals)) /* 0>    invert    => 0<=          */   \
+        x((zero_greater_equals, invert), (zero_less_than)) /* 0>=   invert    => 0<           */   \
+        x((one, star), _)                                  /*  1 *            =>              */   \
+        x((one, plus), (one_plus))                         /*  1 +            => 1+           */   \
+        x((one, minus), (one_minus))                       /*  1 -            => 1-           */   \
+        x((one, slash), _)                                 /*  1 /            =>              */   \
+        x((one, slash_mod), (slash))                       /*  1 /mod         => drop 0       */   \
+        x((one, lshift), (two_star))                       /*  1 lshift       => 2*           */   \
+        x((one, mod), _)                                   /*  1 mod          => drop 0       */   \
+        x((one_plus, two_minus), (one_minus))              /*  1+ 2-          => 1-           */   \
+        x((one_plus, one_minus), _)                        /*  1+ 1-          =>              */   \
+        x((one_plus, one_plus), (two_plus))                /*  1+ 1+          => 2+           */   \
+        x((one_minus, one_minus), (two_minus))             /*  1- 1-          => 2-           */   \
+        x((one_minus, one_plus), _)                        /*  1- 1+          =>              */   \
+        x((one_minus, two_plus), (one_plus))               /*  1- 2+          => 1+           */   \
+        x((two, star), (two_star))                         /*  2 *            => 2*           */   \
+        x((two, plus), (two_plus))                         /*  2 +            => 2+           */   \
+        x((two, minus), (two_minus))                       /*  2 -            => 2-           */   \
+        x((two, slash), (two_slash))                       /*  2 /            => 2/           */   \
+        x((two, lshift), (four_star))                      /*  2 lshift       => 4*           */   \
+        x((two_star, two_slash), _)                        /*  2* 2/          =>              */   \
+        x((two_star, two_star), (four_star))               /*  2* 2*          => 4*           */   \
+        x((two_star, four_star), (eight_star))             /*  2* 4*          => 8*           */   \
+        x((two_plus, two_minus), _)                        /*  2+ 2-          =>              */   \
+        x((two_plus, one_minus), (one_plus))               /*  2+ 1-          => 1+           */   \
+        x((two_plus, two_plus), (four_plus))               /*  2+ 2+          => 4+           */   \
+        x((two_minus, two_plus), _)                        /*  2- 2+          => 4+           */   \
+        x((two_minus, four_plus), (two_plus))              /*  2- 4+          => 2+           */   \
+        x((two_slash, two_star), _)                        /*  2/ 2*          =>              */   \
+        x((two_slash, four_star), (two_star))              /*  2/ 4*          => 2*           */   \
+        x((two_slash, eight_star), (four_star))            /*  2/ 8*          => 4*           */   \
+        x((three, lshift), (eight_star))                   /*  3 lshift       => 8*           */   \
+        x((four, star), (four_star))                       /*  4 *            => 4*           */   \
+        x((four, plus), (four_plus))                       /*  4 +            => 4+           */   \
+        x((four, minus), (four_minus))                     /*  4 -            => 4-           */   \
+        x((four, slash), (four_slash))                     /*  4 /            => 4/           */   \
+        x((four_star, two_slash), (eight_star))            /*  4* 2/          => 2*           */   \
+        x((four_star, two_star), (eight_star))             /*  4* 2*          => 8*           */   \
+        x((four_plus, two_minus), (two_plus))              /*  4+ 2-          => 2+           */   \
+        x((four_plus, four_plus), (eight_plus))            /*  4+ 4+          => 8+           */   \
+        x((eight, star), (eight_star))                     /*  8 *            => 8*           */   \
+        x((eight, plus), (eight_plus))                     /*  8 +            => 8+           */   \
+        x((eight, minus), (eight_minus))                   /*  8 -            => 8-           */   \
+        x((eight, slash), (eight_slash))                   /*  8 /            => 8/           */   \
+        x((eight_star, two_slash), (four_star))            /*  8* 2/          => 4*           */   \
+        x((slash_mod, drop), (slash))                      /* /mod drop       => /            */   \
+        x((slash_mod, nip), (mod))                         /* /mod nip        => mod          */   \
+        x((star, negate), (negate, star))                  /* *    negate     => negate *     */   \
+        x((less_than, invert), (greater_equals))           /* <    invert     => >=           */   \
+        x((less_equals, invert), (greater_than))           /* <=   invert     => >            */   \
+        x((not_equals, invert), (equals))                  /* <>   invert     => =            */   \
+        x((equals, invert), (not_equals))                  /* =    invert     => <>           */   \
+        x((greater_than, invert), (less_equals))           /* >    invert     => <=           */   \
+        x((greater_equals, invert), (less_than))           /* >=   invert     => <            */   \
+        x((to_r, from_r), _)                               /* >r   r>         =>              */   \
+        x((fetch, drop), (drop))                           /* @    drop       => drop         */   \
+        x((abs, abs), (abs))                               /* abs  abs        => abs          */   \
+        x((abs, squared), (squared))                       /* abs  squared    => squared      */   \
+        x((dup, star), (squared))                          /* dup  *          => squared      */   \
+        x((dup, plus), (two_star))                         /* dup  +          => 2*           */   \
+        x((dup, minus), (drop, zero))                      /* dup  -          => drop 0       */   \
+        x((dup, slash), (drop, one))                       /* dup  /          => drop 1       */   \
+        x((dup, less_than), (drop, false))                 /* dup  <          => drop false   */   \
+        x((dup, less_equals), (drop, true))                /* dup  <=         => drop true    */   \
+        x((dup, not_equals), (drop, false))                /* dup  <>         => drop false   */   \
+        x((dup, equals), (drop, true))                     /* dup  =          => drop true    */   \
+        x((dup, greater_than), (drop, false))              /* dup  >          => drop false   */   \
+        x((dup, greater_equals), (drop, true))             /* dup  >=         => drop true    */   \
+        x((dup, and), _)                                   /* dup  and        =>              */   \
+        x((dup, drop), _)                                  /* dup  drop       =>              */   \
+        x((dup, max), _)                                   /* dup  max        =>              */   \
+        x((dup, min), _)                                   /* dup  min        =>              */   \
+        x((dup, mod), (drop, zero))                        /* dup  mod        => drop 0       */   \
+        x((dup, nip), _)                                   /* dup  nip        =>              */   \
+        x((dup, or), _)                                    /* dup  or         =>              */   \
+        x((dup, xor), (drop, zero))                        /* dup  xor        => drop 0       */   \
+        x((dup, swap), _)                                  /* dup  swap       => dup          */   \
+        x((c_fetch, drop), (drop))                         /* c@   drop       => drop         */   \
+        x((i, drop), _)                                    /* i    drop       =>              */   \
+        x((i, star), (i_star))                             /* i *             => i*           */   \
+        x((i, plus), (i_plus))                             /* i +             => i+           */   \
+        x((i, minus), (i_minus))                           /* i -             => i-           */   \
+        x((invert, invert), _)                             /* invert invert   =>              */   \
+        x((invert, negate), (one_plus))                    /* invert negate   => 1+           */   \
+        x((invert, _jump_if_), (_jump_unless_))            /* invert (jump-if) => (jump-unless) */ \
+        x((invert, _jump_unless_), (_jump_if_))            /* invert (jump-unless) => (jump-if) */ \
+        x((negate, _jump_if_), (_jump_if_))                /* negate (jump-if) => (jump-if)     */ \
+        x((negate, _jump_unless_), (_jump_unless_)) /*    negate (jump-unless) => (jump-unless) */ \
+        x((negate, plus), (minus))                  /*          negate +        => -            */ \
+        x((negate, minus), (plus))                  /*          negate -        => +            */ \
+        x((negate, zero_less_than), (zero_greater_than))     /* negate 0<       => 0>=          */ \
+        x((negate, zero_less_equals), (zero_greater_equals)) /* negate 0<=      => 0>=          */ \
+        x((negate, zero_greater_than), (zero_less_than))     /* negate 0>       => 0<           */ \
+        x((negate, zero_greater_equals), (zero_less_equals)) /* negate 0>=      => 0<=          */ \
+        x((negate, zero_not_equals), (zero_not_equals))      /* negate 0<>      => 0<>          */ \
+        x((negate, abs), (abs))                              /* negate abs      => abs          */ \
+        x((negate, negate), _)                               /* negate negate   =>              */ \
+        x((negate, invert), (one_minus))                     /* negate invert   => 1-           */ \
+        x((negate, squared), (squared))                      /* negate squared  => squared      */ \
+        x((over, drop), _)                                   /* over   drop     =>              */ \
+        x((over, nip), (swap))                               /* over   nip      => swap         */ \
+        x((from_r, to_r), _)                                 /* r>     >r       =>              */ \
+        x((swap, star), (star))                              /* swap *          => *            */ \
+        x((swap, plus), (plus))                              /* swap +          => +            */ \
+        x((swap, minus), (minus, negate))                    /* swap -          => - negate     */ \
+        x((swap, less_than), (greater_than))                 /* swap <          => >            */ \
+        x((swap, less_equals), (greater_equals))             /* swap <=         => >=           */ \
+        x((swap, not_equals), (not_equals))                  /* swap <>         => <>           */ \
+        x((swap, equals), (equals))                          /* swap =          => =            */ \
+        x((swap, greater_than), (less_equals))               /* swap >          => <            */ \
+        x((swap, greater_equals), (less_equals))             /* swap >=         => <=           */ \
+        x((swap, and), (and))                                /* swap and        => and          */ \
+        x((swap, drop), (nip))                               /* swap drop       => nip          */ \
+        x((swap, max), (max))                                /* swap max        => max          */ \
+        x((swap, min), (min))                                /* swap min        => min          */ \
+        x((swap, nip), (drop))                               /* swap nip        => drop         */ \
+        x((swap, or), (or))                                  /* swap or         => or           */ \
+        x((swap, swap), _)                                   /* swap swap       =>              */ \
+        x((swap, xor), (xor))                                /* swap xor        => xor          */ \
+        x((byte_plus, byte_fetch), (byte_bracket1))          /* byte+    byte@   => byte[1]     */ \
+        x((cell_plus, fetch), (cell_bracket1))               /* cell+    @       => cell[1]     */ \
+        x((char_plus, c_fetch), (char_bracket1))             /* char+    c@      => char[1]     */ \
+        x((int_plus, int_fetch), (int_bracket))              /* int+     int@    => int[1]      */ \
+        x((short_plus, short_fetch), (short_bracket1))       /* short+   short@  => short[1]    */ \
+        x((uint_plus, uint_fetch), (uint_bracket1))          /* uint+    uint@   => uint[1]     */ \
+        x((ushort_plus, ushort_fetch), (ushort_bracket1))    /* ushort+  ushort@ => ushort[1]   */ \
+        x((_2byte_plus, byte_fetch), (byte_bracket))         /* 2byte+   byte@   => byte[2]     */ \
+        x((_2int_plus, int_fetch), (int_bracket))            /* 2int+    int@    => int[2]      */ \
+        x((_2char_plus, c_fetch), (char_bracket2))           /* 2char+   c@      => char[2]     */ \
+        x((_2short_plus, short_fetch), (short_bracket2))     /* 2short+  short@  => short[2]    */ \
+        x((_2uint_plus, uint_fetch), (uint_bracket2))        /* 2uint+   uint@   => uint[2]     */ \
+        x((_2ushort_plus, ushort_fetch), (ushort_bracket2))  /* 2ushort+ ushort@ => ushort[2]   */ \
+        x((_4byte_plus, byte_fetch), (byte_bracket))         /* 4byte+   byte@   => byte[4]     */ \
+        x((_4char_plus, c_fetch), (char_bracket4))           /* 4char+   c@      => char[4]     */ \
+        x((_4short_plus, short_fetch), (short_bracket4))     /* 4short+  short@  => short[4]    */ \
+        x((_4ushort_plus, ushort_fetch), (ushort_bracket4))  /* 4ushort+ ushort@ => ushort[4]   */
 
 /* these are attempted only as last resort, because they can prevent other optimizations.   */
 #define OPT2_LOWPRIO_BODY(x, _)                          /* note: '_' represents noop       */     \
