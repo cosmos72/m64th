@@ -118,13 +118,15 @@ WORD_START(literal, j)
     WORD_DSTACK(1,0)
     WORD_RSTACK(0,0)
     WORD_NATIVE_LEN_0()
-    WORD_CODE_N(7)
+    WORD_CODE_N(5)
     WORD_DATA_N(0)
     WORD_CODE_FUNCS(
       _lit_,  _lit_,   /* push _lit_ to dstack    */
       _compile_comma_, /* move _lit_ to word.code */
       _compile_comma_, /* move dtop  to word.code */
+#if 0      
       _call_, word__optimize_ + WORD_OFF_CODE, /* call (optimize)         */
+#endif
       exit
     )
 WORD_END(literal)

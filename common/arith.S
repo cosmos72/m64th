@@ -27,7 +27,7 @@ FUNC_END(store)
 
 
 #ifndef M4_LIT_
-FUNC_START(_lit_) /* (lit) */
+FUNC_START(_lit_) /* (lit)  push to dstack the number at following IP */
         DPUSH( DTOP)
         LOAD(  DTOP, AT(IP, SZ))
         NEXT2()

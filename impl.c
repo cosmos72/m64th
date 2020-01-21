@@ -124,14 +124,11 @@ static m4int m4th_compile_word(m4th *m, const m4word *w) {
 
 /** temporary C implementation of (interpret-word) */
 static m4int m4th_interpret_word(m4th *m, const m4word *w) {
-    m4word *w_save = m->w;
-    m4int ret = m4th_compile_word(m, w);
-    if (ret != tsuccess) {
-        return ret;
-    }
-    ipush(m4bye);
-    ret = m4th_run(m);
-    m->w = w_save;
+    const m4instr *ip_save = m->ip;
+    m4instr torun[] = {m4_call_, (m4instr)w->code, m4bye};
+    m->ip = torun;
+    m4int ret = m4th_run(m);
+    m->ip = ip_save;
     return ret;
 }
 
@@ -149,7 +146,7 @@ m4int m4th_eval(m4th *m, m4eval_arg arg) {
     if (arg.err != 0) {
         return arg.err;
     } else if (arg.w != NULL) {
-        if (is_interpreting) {
+        if (is_interpreting || (arg.w->flags & m4flag_immediate)) {
             return m4th_interpret_word(m, arg.w);
         } else {
             return m4th_compile_word(m, arg.w);

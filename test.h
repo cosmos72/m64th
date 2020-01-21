@@ -27,7 +27,7 @@ void m4word_code_print(const m4word *w, FILE *out);
 m4int m4th_testcompile(m4th *m, FILE *out);
 m4int m4th_testexecute(m4th *m, FILE *out);
 
-/* -------------- m4test_stack -------------- */
+/* -------------- m4testexecute  -------------- */
 
 enum { m4test_stack_n = 5 };
 
@@ -35,5 +35,22 @@ typedef struct m4test_stack_s {
     m4int len;
     m4int data[m4test_stack_n];
 } m4test_stack;
+
+void m4test_stack_copy(const m4test_stack *src, m4span *dst);
+
+/* -------------- m4testcompile  -------------- */
+
+enum { m4testcompile_code_n = 6 };
+
+typedef struct m4testcompile_code_s {
+    m4int len;
+    m4instr data[m4testcompile_code_n];
+} m4testcompile_code;
+
+typedef struct m4testcompile_word_s {
+    m4word impl;
+    /* reserve space for generated code */
+    m4instr code[m4testcompile_code_n];
+} m4testcompile_word;
 
 #endif /* M4TH_TEST_H */

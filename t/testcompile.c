@@ -27,19 +27,6 @@
 #include <stdio.h>  /* fprintf() fputs() */
 #include <string.h> /* memcpy()          */
 
-enum { m4testcompile_code_n = 6 };
-
-typedef struct m4testcompile_code_s {
-    m4int len;
-    m4instr data[m4testcompile_code_n];
-} m4testcompile_code;
-
-typedef struct m4testcompile_word_s {
-    m4word impl;
-    /* reserve space for generated code */
-    m4instr code[m4testcompile_code_n];
-} m4testcompile_word;
-
 typedef struct m4testcompile_s {
     const char *input[8];
     m4test_stack before;
@@ -70,7 +57,9 @@ static m4int m4testcompile_code_equals(const m4testcompile_code *src, const m4wo
 static const m4testcompile testcompile[] = {
     {{"0"}, {}, {2, {CALLXT(zero)}}},
     {{"1", "2", "+"}, {}, {6, {CALLXT(one), CALLXT(two), CALLXT(plus)}}},
-    /* {{"literal"}, {}, {1, {(m4instr)11}}}, */
+#if 0
+    {{"literal"}, {1, {11}}, {2, {m4_lit_, (m4instr)11}}},
+#endif
     {{"drop"}, {}, {2, {CALLXT(drop)}}},
     {{"false"}, {}, {2, {CALLXT(false)}}},
     {{"true"}, {}, {2, {CALLXT(true)}}},
@@ -81,6 +70,7 @@ enum { testcompile_n = sizeof(testcompile) / sizeof(testcompile[0]) };
 static m4int m4testcompile_run(m4th *m, const m4testcompile *t, m4testcompile_word *out) {
     m4th_clear(m);
     memset(out, '\0', sizeof(m4testcompile_word));
+    m4test_stack_copy(&t->before, &m->dstack);
     m->w = &out->impl;
     m->flags &= ~m4th_flag_status_mask;
     m->flags |= m4th_flag_compile;
