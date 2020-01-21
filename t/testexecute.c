@@ -28,17 +28,12 @@
 #include <stdio.h>  /* fprintf() fputs() */
 #include <string.h> /* memcpy()          */
 
-enum { SZ = sizeof(m4int) };
-
-enum { m4test_code_n = 6 };
-enum { m4test_stack_n = 5 };
+enum {
+    SZ = sizeof(m4int),
+    m4test_code_n = 6,
+};
 
 typedef m4instr m4test_code[m4test_code_n];
-
-typedef struct m4test_stack_s {
-    m4int len;
-    m4int data[m4test_stack_n];
-} m4test_stack;
 
 typedef struct m4test_stacks_s {
     m4test_stack d, r;
@@ -52,7 +47,7 @@ typedef struct m4test_s {
 
 /* -------------- m4test_stack -------------- */
 
-static void m4test_stack_print(const m4test_stack *src, FILE *out) {
+void m4test_stack_print(const m4test_stack *src, FILE *out) {
     m4int i;
     fprintf(out, "<%ld> ", (long)src->len);
     for (i = 0; i < src->len; i++) {
@@ -61,7 +56,7 @@ static void m4test_stack_print(const m4test_stack *src, FILE *out) {
     fputc('\n', out);
 }
 
-static m4int m4test_stack_equals(const m4test_stack *src, const m4span *dst) {
+m4int m4test_stack_equals(const m4test_stack *src, const m4span *dst) {
     m4int i, len = src->len;
     if (len != dst->end - dst->curr) {
         return 0;

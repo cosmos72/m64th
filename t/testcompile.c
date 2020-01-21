@@ -42,6 +42,7 @@ typedef struct m4testcompile_word_s {
 
 typedef struct m4testcompile_s {
     const char *input[8];
+    m4test_stack before;
     m4testcompile_code generated;
 } m4testcompile;
 
@@ -67,11 +68,12 @@ static m4int m4testcompile_code_equals(const m4testcompile_code *src, const m4wo
 #define CALLXT(name) m4_call_, (m4instr)m4word_##name.code
 
 static const m4testcompile testcompile[] = {
-    {{"0"}, {2, {CALLXT(zero)}}},
-    {{"1", "2", "+"}, {6, {CALLXT(one), CALLXT(two), CALLXT(plus)}}},
-    {{"drop"}, {2, {CALLXT(drop)}}},
-    {{"false"}, {2, {CALLXT(false)}}},
-    {{"true"}, {2, {CALLXT(true)}}},
+    {{"0"}, {}, {2, {CALLXT(zero)}}},
+    {{"1", "2", "+"}, {}, {6, {CALLXT(one), CALLXT(two), CALLXT(plus)}}},
+    /* {{"literal"}, {}, {1, {(m4instr)11}}}, */
+    {{"drop"}, {}, {2, {CALLXT(drop)}}},
+    {{"false"}, {}, {2, {CALLXT(false)}}},
+    {{"true"}, {}, {2, {CALLXT(true)}}},
 };
 
 enum { testcompile_n = sizeof(testcompile) / sizeof(testcompile[0]) };

@@ -83,7 +83,7 @@ FUNC_RAWEND(_jump_if_)
 FUNC_START(_jump_unless_)
         test   DTOP, DTOP;
         DPOP(  DTOP)
-        jnz    .Lm4_jump_unless_zero;
+        jz     .Lm4_jump_unless_zero;
         NEXT2()                    /* skip IP offset          */
 .Lm4_jump_unless_zero:
         LOAD(  REG2, AT(IP, SZ))   /* REG2 = IP jump offset   */
