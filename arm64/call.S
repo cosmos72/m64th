@@ -15,7 +15,7 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "asm.h"
+#include "asm.mh"
 
 /**
  * enter m4th interpreter from C:

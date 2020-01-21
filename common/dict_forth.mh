@@ -15,27 +15,8 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_COMMON_DICT_ASM_H
-#define M4TH_COMMON_DICT_ASM_H
-
-#define DICT_SYM(name) m4dict_##name
-
-#define DICT_DEF_SYM(name)                                                                         \
-    DATA_ALIGN();                                                                                  \
-    .globl DICT_SYM(name);                                                                         \
-    .type DICT_SYM(name), @object;                                                                 \
-    DICT_SYM(name) :
-
-#define DICT_START(name)
-
-#define DICT_WORD_OFF(name, wordname) .4byte DICT_SYM(name) - WORD_SYM(wordname);
-#define DICT_NAME_OFF(name) .2byte DICT_SYM(name) - COUNTEDSTRING_SYM(name);
-#define DICT_END(name) .size DICT_SYM(name), .- DICT_SYM(name);
-
-#define DICT_BODY(name, last_wordname)                                                             \
-    DICT_DEF_SYM(name)                                                                             \
-    DICT_WORD_OFF(name, last_wordname)                                                             \
-    DICT_NAME_OFF(name)
+#ifndef M4TH_COMMON_DICT_FORTH_MH
+#define M4TH_COMMON_DICT_FORTH_MH
 
 #define DICT_WORDS_FORTH(X)                                                                        \
     X(1, "!", store)                                                                               \
@@ -52,8 +33,6 @@
     X(2, "1+", one_plus)                                                                           \
     X(2, "1-", one_minus)                                                                          \
     X(2, "2*", two_star)                                                                           \
-    X(2, "2+", two_plus)                                                                           \
-    X(2, "2-", two_minus)                                                                          \
     X(2, "2/", two_slash)                                                                          \
     X(1, "<", less_than)                                                                           \
     X(2, "<>", not_equals) /* core ext */                                                          \
@@ -72,6 +51,7 @@
     X(5, "cells", cells)                                                                           \
     X(5, "char+", char_plus)                                                                       \
     X(5, "chars", chars)                                                                           \
+    X(8, "compile,", compile_comma)                                                                \
     X(5, "depth", depth)                                                                           \
     X(4, "drop", drop)                                                                             \
     X(3, "dup", dup)                                                                               \
@@ -98,28 +78,4 @@
     X(6, "unloop", unloop)                                                                         \
     X(3, "xor", xor)
 
-#define DICT_WORDS_M4TH_IMPL(X)                                                                    \
-    X(5, "(?do)", _question_do_)                                                                   \
-    X(6, "(call)", _call_)                                                                         \
-    X(4, "(do)", _do_)                                                                             \
-    X(5, "(lit)", _lit_)                                                                           \
-    X(7, "(leave)", _leave_)                                                                       \
-    X(6, "(loop)", _loop_)                                                                         \
-    X(2, "-1", minus_one)                                                                          \
-    X(1, "0", zero)                                                                                \
-    X(1, "1", one)                                                                                 \
-    X(1, "2", two)                                                                                 \
-    X(4, "noop", noop)
-
-#define DICT_WORDS_M4TH_USER(X)                                                                    \
-    /* X(2, "*!", star_store)  TODO */                                                             \
-    /* X(2, "-!", minus_store) TODO */                                                             \
-    X(2, "<=", less_equals)                                                                        \
-    X(2, ">=", greater_equals)                                                                     \
-    X(3, "0<=", zero_less_equals)                                                                  \
-    X(3, "0>=", zero_greater_equals)                                                               \
-    X(2, "i*", i_star)                                                                             \
-    X(2, "i+", i_plus)                                                                             \
-    X(2, "i-", i_minus)
-
-#endif /* M4TH_COMMON_DICT_ASM_H */
+#endif /* M4TH_COMMON_DICT_FORTH_MH */

@@ -123,11 +123,16 @@ static const m4instr test_func_crc1byte[] = {
 
 /* -------------- m4test -------------- */
 
+#define CALL(name) m4_call_, (m4instr)m4word_##name.code
+
 static const m4test test[] = {
     {"0 0 (?do)", {m4_question_do_, (m4instr)2, m4bye}, {{2, {0, 0}}, {0}}, {{0}, {0}}},
     {"1 0 (?do)", {m4_question_do_, (m4instr)2, m4bye}, {{2, {1, 0}}, {0}}, {{0}, {2, {1, 0}}}},
-    {"(call) noop", {m4_call_, (m4instr)m4word_noop.code, m4bye}, {{0}, {0}}, {{0}, {0}}},
-    {"(call) true", {m4_call_, (m4instr)m4word_true.code, m4bye}, {{0}, {0}}, {{1, {-1}}, {0}}},
+    {"(call) (inline)", {CALL(_inline_), m4bye}, {{0}, {0}}, {{0}, {0}}},
+    {"(call) (optimize)", {CALL(_optimize_), m4bye}, {{0}, {0}}, {{0}, {0}}},
+    {"(call) false", {CALL(false), m4bye}, {{0}, {0}}, {{1, {0}}, {0}}},
+    {"(call) noop", {CALL(noop), m4bye}, {{0}, {0}}, {{0}, {0}}},
+    {"(call) true", {CALL(true), m4bye}, {{0}, {0}}, {{1, {-1}}, {0}}},
     {"(call) crc+",
      {m4_call_, (m4instr)test_func_crc1byte, m4bye},
      {{2, {0xffffffff, 't'}}, {0}},
@@ -169,13 +174,23 @@ static const m4test test[] = {
     {"1 0>", {m4zero_greater_than, m4bye}, {{1, {1}}, {0}}, {{1, {ttrue}}, {0}}},
     {"-1 0>=", {m4zero_greater_equals, m4bye}, {{1, {-1}}, {0}}, {{1, {tfalse}}, {0}}},
     {"0 0>=", {m4zero_greater_equals, m4bye}, {{1, {0}}, {0}}, {{1, {ttrue}}, {0}}},
+    {"-1", {m4minus_one, m4bye}, {{0}, {0}}, {{1, {-1}}, {0}}},
+    {"0", {m4zero, m4bye}, {{0}, {0}}, {{1, {0}}, {0}}},
     {"1", {m4one, m4bye}, {{0}, {0}}, {{1, {1}}, {0}}},
     {"1-", {m4one_minus, m4bye}, {{1, {-3}}, {0}}, {{1, {-4}}, {0}}},
     {"1+", {m4one_plus, m4bye}, {{1, {-6}}, {0}}, {{1, {-5}}, {0}}},
+    {"2", {m4two, m4bye}, {{0}, {0}}, {{1, {2}}, {0}}},
     {"2-", {m4two_minus, m4bye}, {{1, {-3}}, {0}}, {{1, {-5}}, {0}}},
     {"2+", {m4two_plus, m4bye}, {{1, {-6}}, {0}}, {{1, {-4}}, {0}}},
     {"2*", {m4two_star, m4bye}, {{1, {-6}}, {0}}, {{1, {-12}}, {0}}},
     {"2/", {m4two_slash, m4bye}, {{1, {-5}}, {0}}, {{1, {-2}}, {0}}},
+    {"3", {m4three, m4bye}, {{0}, {0}}, {{1, {3}}, {0}}},
+    {"4", {m4four, m4bye}, {{0}, {0}}, {{1, {4}}, {0}}},
+    {"4+", {m4four_plus, m4bye}, {{1, {-7}}, {0}}, {{1, {-3}}, {0}}},
+    {"4*", {m4four_star, m4bye}, {{1, {-7}}, {0}}, {{1, {-28}}, {0}}},
+    {"8", {m4eight, m4bye}, {{0}, {0}}, {{1, {8}}, {0}}},
+    {"8+", {m4eight_plus, m4bye}, {{1, {-3}}, {0}}, {{1, {5}}, {0}}},
+    {"8*", {m4eight_star, m4bye}, {{1, {-3}}, {0}}, {{1, {-24}}, {0}}},
     {"1 2 <", {m4less_than, m4bye}, {{2, {1, 2}}, {0}}, {{1, {ttrue}}, {0}}},
     {"3 3 <", {m4less_than, m4bye}, {{2, {3, 3}}, {0}}, {{1, {tfalse}}, {0}}},
     {"4 4 <=", {m4less_equals, m4bye}, {{2, {4, 4}}, {0}}, {{1, {ttrue}}, {0}}},
@@ -272,9 +287,10 @@ m4int m4th_testexecute(m4th *m, FILE *out) {
     }
     if (out != NULL) {
         if (fail == 0) {
-            fprintf(out, "all % 3ld execute tests passed\n", (long)n);
+            fprintf(out, "all %3u execute tests passed\n", (unsigned)n);
         } else {
-            fprintf(out, "\nexecute tests failed: % 3ld of % 3ld\n", (long)fail, (long)n);
+            fprintf(out, "\nexecute tests failed: %3u of %3u\n",
+                    (unsigned)fail, (unsigned)n);
         }
     }
     return fail;

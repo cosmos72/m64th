@@ -1,0 +1,29 @@
+/**
+ * This file is part of m4th.
+ *
+ * m4th is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3
+ * of the License, or (at your option) any later version.
+ *
+ * m4th is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+#ifndef M4TH_COMMON_DICT_M4TH_USER_MH
+#define M4TH_COMMON_DICT_M4TH_USER_MH
+
+#define DICT_WORDS_M4TH_USER(X)                                                                    \
+    /* X(2, "*!", star_store)  TODO */                                                             \
+    /* X(2, "-!", minus_store) TODO */                                                             \
+    X(2, "<=", less_equals)                                                                        \
+    X(2, ">=", greater_equals)                                                                     \
+    X(3, "0<=", zero_less_equals)                                                                  \
+    X(3, "0>=", zero_greater_equals)
+
+#endif /* M4TH_COMMON_DICT_M4TH_USER_MH */

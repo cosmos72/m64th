@@ -15,8 +15,10 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_COMMON_FUNC_ASM_H
-#define M4TH_COMMON_FUNC_ASM_H
+#ifndef M4TH_COMMON_FUNC_MH
+#define M4TH_COMMON_FUNC_MH
+
+#include "func_fwd.mh"
 
 /* clang-format off */
 
@@ -29,10 +31,13 @@
 #define FUNC_SYM_NEXT(name)                                                                        \
     .Lfunc.name.next
 
+#define FUNC_DECL_SYM(name)                                                                        \
+    .globl FUNC_SYM(name);                                                                         \
+    .type FUNC_SYM(name), @function;
+
 #define FUNC_DEF_SYM(name)                                                                         \
     FUNC_ALIGN()                                                                                   \
-    .globl FUNC_SYM(name);                                                                         \
-    .type FUNC_SYM(name), @function;                                                               \
+    FUNC_DECL_SYM(name);                                                                           \
     FUNC_SYM(name):
 
 #define FUNC_START(name)                                                                           \
@@ -53,4 +58,4 @@
 
 /* clang-format on */
 
-#endif /* M4TH_COMMON_FUNC_ASM_H */
+#endif /* M4TH_COMMON_FUNC_MH */

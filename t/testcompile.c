@@ -64,14 +64,14 @@ static m4int m4testcompile_code_equals(const m4testcompile_code *src, const m4wo
 
 /* -------------- m4testcompile -------------- */
 
-#define CALLXT(name) m4_call_, (m4instr)m4word_##name.code
+#define CALL(name) m4_call_, (m4instr)m4word_##name.code
 
 static const m4testcompile testcompile[] = {
-    {{"0"}, {2, {CALLXT(zero)}}},
-    {{"1", "2", "+"}, {6, {CALLXT(one), CALLXT(two), CALLXT(plus)}}},
-    {{"drop"}, {2, {CALLXT(drop)}}},
-    {{"false"}, {2, {CALLXT(false)}}},
-    {{"true"}, {2, {CALLXT(true)}}},
+    {{"0"}, {2, {CALL(zero)}}},
+    {{"1", "2", "+"}, {6, {CALL(one), CALL(two), CALL(plus)}}},
+    {{"drop"}, {2, {CALL(drop)}}},
+    {{"false"}, {2, {CALL(false)}}},
+    {{"true"}, {2, {CALL(true)}}},
 };
 
 enum { testcompile_n = sizeof(testcompile) / sizeof(testcompile[0]) };
@@ -120,9 +120,9 @@ m4int m4th_testcompile(m4th *m, FILE *out) {
     }
     if (out != NULL) {
         if (fail == 0) {
-            fprintf(out, "all % 3ld compile tests passed\n", (long)n);
+            fprintf(out, "all %3u compile tests passed\n", (unsigned)n);
         } else {
-            fprintf(out, "\ncompile tests failed: % 3ld of % 3ld\n", (long)fail, (long)n);
+            fprintf(out, "\ncompile tests failed: %3u of %3u\n", (unsigned)fail, (unsigned)n);
         }
     }
     return fail;

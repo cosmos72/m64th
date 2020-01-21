@@ -15,17 +15,24 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_COMMON_WORD_ASM_H
-#define M4TH_COMMON_WORD_ASM_H
+#ifndef M4TH_COMMON_WORD_MH
+#define M4TH_COMMON_WORD_MH
+
+/** used to insert an execution token (XT) in a sequence of functions */
+#define m4XT(x) WORD_SYM(x) + WORD_OFF_CODE
 
 #define WORD_OFF_CODE_N 10 /* offset of m4word->code_n */
 #define WORD_OFF_CODE 16   /* offset of m4word->code */
 
 #define WORD_SYM(name) m4word_##name
 
+#define WORD_DECL_SYM(name)                                                                        \
+    .globl WORD_SYM(name);                                                                         \
+    .type WORD_SYM(name), @object;
+
 #define WORD_DEF_SYM(name)                                                                         \
-    DATA_ALIGN().globl WORD_SYM(name);                                                             \
-    .type WORD_SYM(name), @object;                                                                 \
+    DATA_ALIGN()                                                                                   \
+    WORD_DECL_SYM(name);                                                                           \
     WORD_SYM(name) :
 
 #define WORD_START(name, prev)                                                                     \
@@ -79,4 +86,4 @@
     WORD_BODY_SIMPLE(name, flags, dstack, rstack)                                                  \
     WORD_END(name)
 
-#endif /* M4TH_COMMON_WORD_ASM_H */
+#endif /* M4TH_COMMON_WORD_MH */

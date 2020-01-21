@@ -15,7 +15,7 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "asm.h"
+#include "asm.mh"
 
 FUNC_START(cr)
         LOAD(  REG1, AT(M4TH, M4TH_OFF_OUT))

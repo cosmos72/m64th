@@ -15,7 +15,7 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "asm.h"
+#include "asm.mh"
 
 /*
  * must be followed by IP offset of first instruction after (loop)
@@ -48,7 +48,46 @@ FUNC_END(_do_)
 FUNC_SIZE(_question_do_)
 
 
-/*
+/**
+ * unconditional jump.
+ * must be followed by IP offset to skip.
+ * IP offset = 0 means (jump) itself
+ */
+FUNC_START(_jump_)
+        LOAD(  REG2, AT(IP, SZ))   /* REG2 = IP jump offset   */
+        lea    (IP, REG2, SZ), IP; /* IP   = TARGET_IP        */
+        NEXT0()                    /* jump to TARGET_IP       */
+FUNC_RAWEND(_jump_)
+
+/**
+ * pop dstack top, and jump if <> 0.
+ * must be followed by IP offset to skip.
+ * IP offset = 0 means (jump_if) itself
+ */
+FUNC_START(_jump_if_)
+        test   DTOP, DTOP;
+        DPOP(  DTOP)
+        jz     FUNC_SYM_NEXT(_jump_if_);
+        LOAD(  REG2, AT(IP, SZ))   /* REG2 = IP jump offset   */
+        lea    (IP, REG2, SZ), IP; /* IP   = TARGET_IP        */
+        NEXT0()                    /* jump to TARGET_IP       */
+FUNC_END(_jump_if_)
+
+/**
+ * pop dstack top, and jump if = 0.
+ * must be followed by IP offset to skip.
+ * IP offset = 0 means (jump_unless) itself
+ */
+FUNC_START(_jump_unless_)
+        test   DTOP, DTOP;
+        DPOP(  DTOP)
+        jnz    FUNC_SYM_NEXT(_jump_unless_);
+        LOAD(  REG2, AT(IP, SZ))   /* REG2 = IP jump offset   */
+        lea    (IP, REG2, SZ), IP; /* IP   = TARGET_IP        */
+        NEXT0()                    /* jump to TARGET_IP       */
+FUNC_END(_jump_unless_)
+
+/**
  * must be followed by IP offset of first instruction after (loop)
  * IP offset = 0 means (leave) itself
  */
@@ -57,10 +96,10 @@ FUNC_START(_leave_)
         LOAD(  RTOP, AT(RSTK, SZ)) /* reload rstack top       */
         lea    (IP, REG2, SZ), IP; /* IP = TARGET_IP          */
         ADD2(  IMM(SZ2), RSTK)     /* drop i' i from rstack   */
-        jmp    *(IP);              /* jump to TARGET_IP       */
+        NEXT0()                    /* jump to TARGET_IP       */
 FUNC_RAWEND(_leave_)
 
-/*
+/**
  * must be followed by IP offset of first instruction after (do) - usually < 0
  * IP offset = 0 means (loop) itself
  */
@@ -70,10 +109,10 @@ FUNC_START(_loop_)
         je     .Lm4_loop_.leave;   /* leave if i == i'            */
         LOAD(  REG2, AT(IP, SZ))
         lea    (IP, REG2, SZ), IP; /* IP = TARGET_IP              */
-        jmp    *(IP);              /* jump to instruction after (do) */
+        NEXT0()                    /* jump to instruction after (do) */
 .Lm4_loop_.leave:
         ADD2(  IMM(SZ2), IP)       /* skip jump offset            */
         LOAD(  RTOP, AT(RSTK, SZ)) /* load new top of rstack      */
         ADD2(  IMM(SZ2), RSTK)     /* drop i' i from return stack */
-        jmp    *(IP);              /* execute next instruction    */
+        NEXT0()                    /* execute next instruction    */
 FUNC_RAWEND(_loop_)

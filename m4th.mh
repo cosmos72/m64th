@@ -15,8 +15,8 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_M4TH_MACRO_H
-#define M4TH_M4TH_MACRO_H
+#ifndef M4TH_M4TH_MH
+#define M4TH_M4TH_MH
 
 /* macros that are part of m4th public API */
 
@@ -71,4 +71,4 @@
 /** word dereferences some pointer and writes to it */
 #define M4FLAG_MEM_STORE 0 /* FIXME */
 
-#endif /* M4TH_M4TH_MACRO_H */
+#endif /* M4TH_M4TH_MH */

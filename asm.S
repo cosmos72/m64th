@@ -20,11 +20,11 @@
 
         .file "asm.S"
 
-#include "common/section_asm.h"
-#include "common/marker_asm.h"
+#include "common/section.mh"
+#include "common/marker.mh"
 
 SECTION_FUNC()
-MARKER(asm_func_start)
+/* MARKER(asm_func_start) */
 
 #if defined(__x86_64__)
 #include "amd64/arith.S"
@@ -43,13 +43,15 @@ MARKER(asm_func_start)
 #include "common/arith.S"
 #include "common/compile.S"
 
-MARKER(asm_func_end)
+/* MARKER(asm_func_end) */
 SECTION_RODATA()
-MARKER(asm_data_start)
+/* MARKER(asm_data_start) */
 
-#include "common/dict.S" /* must be the last one */
+#include "common/dict_forth.S"
+#include "common/dict_m4th_user.S"
+#include "common/dict_m4th_impl.S"
 
-MARKER(asm_data_end)
+/* MARKER(asm_data_end) */
 
         .ident "m4th 0.0.0"
         .section .note.GNU-stack,"",@progbits

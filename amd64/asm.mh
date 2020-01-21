@@ -15,10 +15,10 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_AMD64_ASM_H
-#define M4TH_AMD64_ASM_H
+#ifndef M4TH_AMD64_ASM_MH
+#define M4TH_AMD64_ASM_MH
 
-#include "../common/asm.h"
+#include "../common/asm.mh"
 
 #define SZ 8     /* width of registers, m4int and void* in bytes */
 #define SZ2 16   /* SZ * 2 */
@@ -87,34 +87,37 @@
 #define RFFF  %r15  /* always contains -1 */
 #define RIP   %rip  /* x86-64 instruction pointer */
 
-#define AND2(src, dst)       and  src,     dst; /* dst &= src     */
-#define ADD2(src, dst)       add  src,     dst; /* dst += src     */
-#define AT0(addr)                 (addr)        /* addr[0]        */
-#define ATx(addr, i)              i(addr)       /* addr[i]        */
-#define LOAD(reg, mem)       mov  mem,     reg; /* reg  = *mem    */
-#define MOVE(src, dst)       mov  src,     dst; /* dst  = src     */
-#define MUL2(src, dst)       imul src,     dst; /* dst *= src     */
-#define NEG1(dst)            neg  dst;          /* dst  = -dst    */
-#define NOT1(dst)            not  dst;          /* dst  = ~dst    */
-#define ORR2(src, dst)       or   src,     dst; /* dst |= src     */
-#define SAR2(src, dst)       sar  src,     dst; /* dst >>= src    signed */
-#define SHL2(src, dst)       shl  src,     dst; /* dst <<= src    */
-#define SUB2(src, dst)       sub  src,     dst; /* dst -= src     */
-#define STOR(reg, mem)       mov  reg,     mem; /* *mem = reg     */
-#define ZERO(dst)            xor  dst,     dst; /* dst  = 0       */
+#define AND2(src, dst)       and  src,     dst;   /* dst &= src     */
+#define ADD2(src, dst)       add  src,     dst;   /* dst += src     */
+#define AT0( reg)                 (reg)           /* mem[reg]       */
+#define ATx( reg,  imm)           imm(reg)        /* mem[reg+imm]   */
+#define ATxy(reg1, reg2, rmul)    (reg1,reg2,rmul) /* mem[reg1+reg2*rmul] */
+#define DEC1(dst)            dec  dst;            /* dst--          */
+#define INC1(dst)            inc  dst;            /* dst++          */
+#define LOAD(reg, at )       mov  at ,     reg;   /* reg  = *at     */
+#define MOVE(src, dst)       mov  src,     dst;   /* dst  = src     */
+#define MUL2(src, dst)       imul src,     dst;   /* dst *= src     */
+#define NEG1(dst)            neg  dst;            /* dst  = -dst    */
+#define NOT1(dst)            not  dst;            /* dst  = ~dst    */
+#define ORR2(src, dst)       or   src,     dst;   /* dst |= src     */
+#define SAR2(src, dst)       sar  src,     dst;   /* dst >>= src    signed */
+#define SHL2(src, dst)       shl  src,     dst;   /* dst <<= src    */
+#define SUB2(src, dst)       sub  src,     dst;   /* dst -= src     */
+#define STOR(reg, at )       mov  reg,     at ;   /* *at  = reg     */
+#define ZERO(dst)            xor  dst,     dst;   /* dst  = 0       */
 
-#define LOAD_sb(reg, mem)  movsbq mem,     reg; /* reg = *(int8_t *)mem */
-#define LOAD_sh(reg, mem)  movswq mem,     reg; /* reg = *(int16_t*)mem */
-#define LOAD_sw(reg, mem)  movslq mem,     reg; /* reg = *(int32_t*)mem */
+#define LOAD_sb(reg, at )  movsbq at ,     reg;   /* reg = *(int8_t *)at  */
+#define LOAD_sh(reg, at )  movswq at ,     reg;   /* reg = *(int16_t*)at  */
+#define LOAD_sw(reg, at )  movslq at ,     reg;   /* reg = *(int32_t*)at  */
 
-#define LOAD_ub(reg, mem)  movzbl mem,     reg; /* reg = *(uint8_t *)mem */
-#define LOAD_uh(reg, mem)  movzwl mem,     reg; /* reg = *(uint16_t*)mem */
-#define LOAD_uw(reg, mem)  movl   mem,     reg; /* reg = *(uint32_t*)mem */
+#define LOAD_ub(reg, at )  movzbl at ,     reg;   /* reg = *(uint8_t *)at  */
+#define LOAD_uh(reg, at )  movzwl at ,     reg;   /* reg = *(uint16_t*)at  */
+#define LOAD_uw(reg, at )  movl   at ,     reg;   /* reg = *(uint32_t*)at  */
 
 /* no difference between signed and unsigned STOR* */
-#define STORb(reg, mem)    movb   reg,     mem; /* *(uint8_t *)mem = reg */
-#define STORh(reg, mem)    movw   reg,     mem; /* *(uint16_t*)mem = reg */
-#define STORw(reg, mem)    movl   reg,     mem; /* *(uint32_t*)mem = reg */
+#define STORb(reg, at )    movb   reg,     at ;   /* *(uint8_t *)at  = reg */
+#define STORh(reg, at )    movw   reg,     at ;   /* *(uint16_t*)at  = reg */
+#define STORw(reg, at )    movl   reg,     at ;   /* *(uint32_t*)at  = reg */
 
 /* clang-format on */
 
@@ -152,4 +155,4 @@
     mov 0(RSTK), val;                                                                              \
     add $SZ, RSTK;
 
-#endif /* M4TH_AMD64_ASM_H */
+#endif /* M4TH_AMD64_ASM_MH */

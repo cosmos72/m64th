@@ -15,10 +15,10 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_ARM64_ASM_H
-#define M4TH_ARM64_ASM_H
+#ifndef M4TH_ARM64_ASM_MH
+#define M4TH_ARM64_ASM_MH
 
-#include "../common/asm.h"
+#include "../common/asm.mh"
 
 #define SZ 8     /* width of registers, m4int and void* in bytes */
 #define SZ2 16   /* SZ * 2 */
@@ -37,7 +37,7 @@
 #define SZ16 128 /* SZ * 16 */
 #define PSZ 3    /* (1 << PSZ) == SZ */
 
-#define ISZ SZ   /* size of a forth instruction in bytes */
+#define ISZ SZ /* size of a forth instruction in bytes */
 
 #define IMM(constant) constant /* immediate constant */
 
@@ -90,9 +90,16 @@
 #define ADD2(src,dst)    add  dst, dst, src;    /* dst += src     */
 #define ADD3(a,b,dst)    add  dst, a, b;        /* dst  = a + b   */
 #define AND2(src,dst)    and  dst, dst, src;    /* dst &= src     */
-#define AT0(addr)             [addr]            /* addr[0]        */
-#define ATx(addr, i)          [addr, i]         /* addr[i]        */
+#define AT0( reg)             [reg]             /* mem[reg]       */
+#define ATx( reg, imm)        [reg,imm]         /* mem[reg+imm]   */
+#define ATxy(reg1, reg2, rmul)  CAT2(ATxy_,rmul)(reg1,reg2) /* mem[reg1+reg2*rmul] */
+#define ATxy_1(reg1,reg2)      [reg1,reg2]       /* mem[reg1+reg2] */
+#define ATxy_2(reg1,reg2)      [reg1,reg2,lsl 1] /* mem[reg1+reg2*2] */
+#define ATxy_4(reg1,reg2)      [reg1,reg2,lsl 2] /* mem[reg1+reg2*4] */
+#define ATxy_8(reg1,reg2)      [reg1,reg2,lsl 3] /* mem[reg1+reg2*8] */
+#define DEC1(dst)        sub  dst, dst, 1;      /* dst--          */
 #define DIV3(a,b,dst)    sdiv dst, a, b;        /* dst  = a / b   */
+#define INC1(dst)        add  dst, dst, 1;      /* dst++          */
 #define LOAD(reg,mem)    ldr  reg, mem;         /* reg  = *mem    */
 #define MOVE(src,dst)    mov  dst, src;         /* dst  = src     */
 #define MUL2(src,dst)    mul  dst, dst, src;    /* dst *= src     */
@@ -103,21 +110,21 @@
 #define SHL2(src,dst)    lsl  dst, dst, src;    /* dst <<= src    */
 #define SUB2(src,dst)    sub  dst, dst, src;    /* dst -= src     */
 #define SUB3(a,b,dst)    sub  dst, a, b;        /* dst  = a - b   */
-#define STOR(reg,mem)    str  reg, mem;         /* *mem = reg     */
+#define STOR(reg,at )    str  reg, at ;         /* *at  = reg     */
 #define ZERO(dst)        mov  dst, 0;           /* dst  = 0       */
 
-#define LOAD_sb(reg, mem)  ldrsb  mem,     reg; /* reg = *(int8_t *)mem */
-#define LOAD_sh(reg, mem)  ldrhs  mem,     reg; /* reg = *(int16_t*)mem */
-#define LOAD_sw(reg, mem)  ldrsw  mem,     reg; /* reg = *(int32_t*)mem */
+#define LOAD_sb(reg, at )  ldrsb  reg,     at ; /* reg = *(int8_t *)at  */
+#define LOAD_sh(reg, at )  ldrsh  reg,     at ; /* reg = *(int16_t*)at  */
+#define LOAD_sw(reg, at )  ldrsw  reg,     at ; /* reg = *(int32_t*)at  */
 
-#define LOAD_ub(reg, mem)  ldrb   mem,     reg; /* reg = *(uint8_t *)mem */
-#define LOAD_uh(reg, mem)  ldrw   mem,     reg; /* reg = *(uint16_t*)mem */
-#define LOAD_uw(reg, mem)  ldr    mem,     reg; /* reg = *(uint32_t*)mem */
+#define LOAD_ub(reg, at )  ldrb   reg,     at ; /* reg = *(uint8_t *)at  */
+#define LOAD_uh(reg, at )  ldrh   reg,     at ; /* reg = *(uint16_t*)at  */
+#define LOAD_uw(reg, at )  ldr    reg,     at ; /* reg = *(uint32_t*)at  */
 
 /* no difference between signed and unsigned STOR* */
-#define STORb(reg, mem)    strb   reg,     mem; /* *(uint8_t *)mem = reg */
-#define STORh(reg, mem)    strw   reg,     mem; /* *(uint16_t*)mem = reg */
-#define STORw(reg, mem)    str    reg,     mem; /* *(uint32_t*)mem = reg */
+#define STORb(reg, at )    strb   reg,     at ; /* *(uint8_t *)at  = reg */
+#define STORh(reg, at )    strh   reg,     at ; /* *(uint16_t*)at  = reg */
+#define STORw(reg, at )    str    reg,     at ; /* *(uint32_t*)at  = reg */
 
 #if 0
 #define IPUSH1(val)   /* push val to code array */  \
@@ -148,5 +155,4 @@
 
 /* clang-format on */
 
-#endif /* M4TH_ARM64_ASM_H */
-
+#endif /* M4TH_ARM64_ASM_MH */

@@ -15,9 +15,10 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "asm.h"
+#include "asm.mh"
 
-/*
+/**
+ * pop dstack top, enter a (do) ... (loop) if <> 0.
  * must be followed by IP offset of first instruction after (loop)
  * IP offset = 0 means (?do) itself
  */
@@ -37,6 +38,7 @@ FUNC_START(_question_do_)
 /* FUNC_RAWEND(_question_do_) */
 
 
+/** implementation of 'do', enters a (do) ... (loop) */
 /* FUNC_START(_do_) */
 FUNC_DEF_SYM(_do_)
         RPUSH( RTOP)                 /* save rstack top       */
@@ -47,7 +49,46 @@ FUNC_DEF_SYM(_do_)
 FUNC_END(_do_)
 FUNC_SIZE(_question_do_)
 
-/*
+/**
+ * unconditional jump.
+ * must be followed by IP offset to skip.
+ * IP offset = 0 means (jump) itself
+ */
+FUNC_START(_jump_)
+        LOAD(  REG2, AT(IP, SZ))     /* REG2 = IP jump offset   */
+        add    IP, IP, REG2, lsl PSZ;/* IP   = TARGET_IP        */
+        NEXT0()                      /* jump to TARGET_IP       */
+FUNC_END(_jump_)
+
+/**
+ * pop dstack top, jump if <> 0.
+ * must be followed by IP offset to skip.
+ * IP offset = 0 means (jump_if) itself
+ */
+ FUNC_START(_jump_if_)
+ cmp    DTOP, IMM(0);
+ DPOP(  DTOP)
+ b.ne   FUNC_SYM_NEXT(_jump_if_);
+ LOAD(  REG2, AT(IP, SZ))     /* REG2 = IP jump offset   */
+ add    IP, IP, REG2, lsl PSZ;/* IP   = TARGET_IP        */
+ NEXT0()                      /* jump to TARGET_IP       */
+FUNC_END(_jump_if_)
+
+/**
+ * pop dstack top, and jump if = 0.
+ * must be followed by IP offset to skip.
+ * IP offset = 0 means (jump_unless) itself
+ */
+FUNC_START(_jump_unless_)
+        cmp    DTOP, IMM(0);
+        DPOP(  DTOP)
+        b.eq   FUNC_SYM_NEXT(_jump_unless_);
+        LOAD(  REG2, AT(IP, SZ))     /* REG2 = IP jump offset   */
+        add    IP, IP, REG2, lsl PSZ;/* IP   = TARGET_IP        */
+        NEXT0()                      /* jump to TARGET_IP       */
+FUNC_END(_jump_unless_)
+
+/**
  * must be followed by IP offset of first instruction after (loop)
  * IP offset = 0 means (leave) itself
  */
@@ -59,7 +100,7 @@ FUNC_START(_leave_)
         NEXT0()                      /* jump to TARGET_IP     */
 FUNC_RAWEND(_leave_)
 
-/*
+/**
  * must be followed by IP offset of first instruction after (do) - usually < 0
  * IP offset = 0 means (loop) itself
  */

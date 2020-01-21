@@ -17,39 +17,39 @@
 
 #include <stdint.h>
 
-int64_t load(uint64_t *addr) {
-    return (long)*addr;
+int64_t load(uint64_t *addr, uint64_t i) {
+    return (long)addr[i];
 }
 
-int64_t load_sb(int8_t *addr) {
-    return (long)*addr;
+int64_t load_sb(int8_t *addr, uint64_t i) {
+    return (long)addr[i];
 }
-int64_t load_sh(int16_t *addr) {
-    return (long)*addr;
+int64_t load_sh(int16_t *addr, uint64_t i) {
+    return (long)addr[i];
 }
-int64_t load_sw(int32_t *addr) {
-    return (long)*addr;
-}
-
-int64_t load_ub(uint8_t *addr) {
-    return (long)*addr;
-}
-int64_t load_uh(uint16_t *addr) {
-    return (long)*addr;
-}
-int64_t load_uw(uint32_t *addr) {
-    return (long)*addr;
+int64_t load_sw(int32_t *addr, uint64_t i) {
+    return (long)addr[i];
 }
 
-void stor_b(uint8_t *addr, uint8_t val) {
-    *addr = val;
+int64_t load_ub(uint8_t *addr, uint64_t i) {
+    return (long)addr[i];
 }
-void stor_h(uint16_t *addr, uint16_t val) {
-    *addr = val;
+int64_t load_uh(uint16_t *addr, uint64_t i) {
+    return (long)addr[i];
 }
-void stor_w(uint32_t *addr, uint32_t val) {
-    *addr = val;
+int64_t load_uw(uint32_t *addr, uint64_t i) {
+    return (long)addr[i];
 }
-void stor(uint64_t *addr, uint64_t val) {
-    *addr = val;
+
+void stor_b(uint8_t *addr, uint64_t i, uint8_t val) {
+    addr[i] = val;
+}
+void stor_h(uint16_t *addr, uint64_t i, uint16_t val) {
+    addr[i] = val;
+}
+void stor_w(uint32_t *addr, uint64_t i, uint32_t val) {
+    addr[i] = val;
+}
+void stor(uint64_t *addr, uint64_t i, uint64_t val) {
+    addr[i] = val;
 }

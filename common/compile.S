@@ -20,32 +20,33 @@
 #endif
 
 #if 0
-FUNC_START(word_code_n) /* (word -- word.code_n) */
-        LOAD_sb(DTOP_sb, AT(DTOP, WORD_OFF_CODE_N))
-        LOAD_sh(DTOP_sh, AT(DTOP, WORD_OFF_CODE_N))
-        LOAD_sw(DTOP_sw, AT(DTOP, WORD_OFF_CODE_N))
-        LOAD_ub(DTOP_ub, AT(DTOP, WORD_OFF_CODE_N))
-        LOAD_uh(DTOP_uh, AT(DTOP, WORD_OFF_CODE_N))
-        LOAD_uw(DTOP_uw, AT(DTOP, WORD_OFF_CODE_N))
-        LOAD(   DTOP,    AT(DTOP, WORD_OFF_CODE_N))
-        STORb(  DTOPb,   AT(DTOP, WORD_OFF_CODE_N))
-        STORh(  DTOPh,   AT(DTOP, WORD_OFF_CODE_N))
-        STORw(  DTOPw,   AT(DTOP, WORD_OFF_CODE_N))
-        STOR(   DTOP,    AT(DTOP, WORD_OFF_CODE_N))
-FUNC_END(word_code_n)
+/* push to dstack the address of word currently being compiled */
+FUNC_START(_word) /* (-- word) */
+        DPUSH( DTOP)
+        MOVE(  M4W, DTOP)
+FUNC_END(_word)
+
+
+FUNC_START(_word_code) /* (word -- word.code) */
+        ADD2(  IMM(WORD_OFF_CODE_N), DTOP)
+FUNC_END(_word_code)
+
+
+FUNC_START(_word_code_n_fetch) /* (word -- word.code_n) */
+        LOAD_uh(DTOP_uh,   AT(DTOP, WORD_OFF_CODE_N))
+FUNC_END(_word_code_n_fetch)
 #endif /* 0 */
 
-/* compile, : pop xt from dstack and append it to current word's code */
-FUNC_START(compile_comma)
+
+/*
+ * (xt -- ) pop xt or number from dstack and append it to current word's code
+ * the standard function compile, calls this function followed by optimizations
+ */
+FUNC_START(_compile_comma_)    /* (compile,) */
         /* TODO check if enough space */
+        LOAD_uh(REG1_uh,   AT(M4W, WORD_OFF_CODE_N)) /* word.code_n */
+        STOR(  DTOP,   AT(M4W, REG1, SZ)) /* word.code[word.code_n] = DTOP */
+        INC1(  REG1)
+        STORh( REG1h,  AT(M4W, WORD_OFF_CODE_N)) /* word.code_n++ */
         DPOP(  DTOP)
-FUNC_END(compile_comma)
-
-/* literal: compile the literal number found on the stack */
-FUNC_START(literal)
-#if 0
-        FADDR( m4_lit_, REG1)
-        IPUSH2(REG1, DTOP)
-#endif /* 0 */
-        DPOP(  DTOP)
-FUNC_END(literal)
+FUNC_END(_compile_comma_)

@@ -15,21 +15,21 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_COMMON_SECTION_ASM_H
-#define M4TH_COMMON_SECTION_ASM_H
+#include "../common/asm.mh"
+#include "dict.mh"
+#include "dict_m4th_user.mh"
 
-#define SECTION_FUNC() .text
+/* ---------------------------------------------------------------------------------------------- */
+DICT_START(m4th_user)
 
-/*
- * work around Android linker message
- * "warning: creating a DT_TEXTREL in a shared object"
- * because it produces non-working executable that fail with
- * CANNOT LINK EXECUTABLE: "/cmd/full/path" has text relocations
- */
-#if defined(__ELF__) && !defined(__ANDROID__)
-#define SECTION_RODATA() .section .rodata
-#else
-#define SECTION_RODATA() .data
-#endif
+DICTNAME(9, "m4th-user", m4th_user)
 
-#endif /* M4TH_COMMON_SECTION_ASM_H */
+DICT_WORDS_M4TH_USER(WORDNAME)
+
+WORD(less_equals,         less_equals,         DSTACK(2,1), RSTACK(0,0), WORD_PURE)
+WORD(greater_equals,      less_equals,         DSTACK(2,1), RSTACK(0,0), WORD_PURE)
+WORD(zero_less_equals,    greater_equals,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD(zero_greater_equals, zero_less_equals,    DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+
+DICT_BODY(m4th_user, zero_greater_equals)
+DICT_END(m4th_user)

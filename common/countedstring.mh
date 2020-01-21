@@ -15,8 +15,8 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_COMMON_COUNTEDSTRING_ASM_H
-#define M4TH_COMMON_COUNTEDSTRING_ASM_H
+#ifndef M4TH_COMMON_COUNTEDSTRING_ASM_MH
+#define M4TH_COMMON_COUNTEDSTRING_ASM_MH
 
 #define COUNTEDSTRING_SYM(name) .Lcountedstring.name
 
@@ -40,4 +40,4 @@
 #define DICTNAME COUNTEDSTRING
 #define WORDNAME COUNTEDSTRING
 
-#endif /* M4TH_COMMON_COUNTEDSTRING_ASM_H */
+#endif /* M4TH_COMMON_COUNTEDSTRING_ASM_MH */

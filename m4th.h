@@ -18,7 +18,7 @@
 #ifndef M4TH_M4TH_H
 #define M4TH_M4TH_H
 
-#include "m4th_macro.h"
+#include "m4th.mh"
 
 #include <stddef.h>    /* size_t    */
 #include <stdint.h>    /* [u]int*_t */

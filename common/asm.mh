@@ -15,14 +15,14 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_COMMON_ASM_H
-#define M4TH_COMMON_ASM_H
+#ifndef M4TH_COMMON_ASM_MH
+#define M4TH_COMMON_ASM_MH
 
-#include "../m4th_macro.h" /* also define public macros */
-#include "countedstring_asm.h"
-#include "func_asm.h"
-#include "m4th_asm.h"
-#include "word_asm.h"
+#include "../m4th.mh" /* also define public macros */
+#include "countedstring.mh"
+#include "func.mh"
+#include "m4th.mh"
+#include "word.mh"
 
 #define CAT2_(a, b) a##b
 #define CAT2(a, b) CAT2_(a, b)
@@ -62,11 +62,16 @@
 #define DATA_ALIGN()                                                                               \
     .p2align P_DATA_ALIGN, 0;
 
-/* expand AT(addr) -> AT0(addr) and AT(addr, i) -> ATx(addr, i) */
-#define AT_0(addr, i)                   AT0(addr)
-#define AT_x(addr, i)                   ATx(addr, i)
-#define AT_(addr, i, kind, ...)         AT_##kind(addr, i)
-#define AT(...)                         AT_(__VA_ARGS__, x, 0)
+#define AT_0(addr, i, _)                AT0(addr)
+#define AT_x(addr, i, _)                ATx(addr, i)
+#define AT_xy(addr, i, shift)           ATxy(addr, i, shift)
+#define AT_(addr, i, shift, kind, ...)  AT_##kind(addr, i, shift)
+/**
+ * expand AT(addr)          -> AT0 (addr)
+ * expand AT(addr, i)       -> ATx (addr, i)
+ * expand AT(addr, i, imul) -> ATxy(addr, i, imul)
+ */
+#define AT(...)                         AT_(__VA_ARGS__, xy, x, 0)
 
 #if 0
 /* expand IPUSH(a) -> IPUSH1(a) and IPUSH(a, b) -> IPUSH2(a, b) */
@@ -78,4 +83,4 @@
 
 /* clang-format on */
 
-#endif /* M4TH_COMMON_ASM_H */
+#endif /* M4TH_COMMON_ASM_MH */

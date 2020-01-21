@@ -69,14 +69,17 @@ FUNC_START(minus) /* - */
 FUNC_END(minus)
 
 
-FUNC_START(minus_one)
+
+#ifndef M4MINUS_ONE
+FUNC_START(minus_one)  /* -1   m4th-impl */
         DPUSH( DTOP)
         MOVE(  IMM(-1), DTOP)
 FUNC_END(minus_one)
+#endif
 
 
 #ifndef M4ZERO
-FUNC_START(zero)
+FUNC_START(zero)     /* 0   m4th-impl */
         DPUSH( DTOP)
         ZERO(  DTOP)
 FUNC_END(zero)
@@ -89,46 +92,86 @@ FUNC_END(zero_less)
 
 
 #ifndef M4ONE
-FUNC_START(one)
+FUNC_START(one)        /* 1    m4th-impl */
         DPUSH( DTOP)
         MOVE(  IMM(1), DTOP)
 FUNC_END(one)
 #endif
 
 
-#ifndef M4ONE_MINUS
-FUNC_START(one_minus) /* 1-   */
-        SUB2(  IMM(1), DTOP)
-FUNC_END(one_minus)
-#endif
-
-
-#ifndef M4ONE_PLUS
-FUNC_START(one_plus) /* 1+   */
-        ADD2(  IMM(1), DTOP)
+FUNC_START(one_plus)   /* 1+   */
+        INC1(  DTOP)
 FUNC_END(one_plus)
-#endif
+
+
+FUNC_START(one_minus)  /* 1-   */
+        DEC1(  DTOP)
+FUNC_END(one_minus)
 
 
 #ifndef M4TWO
-FUNC_START(two)
+FUNC_START(two)        /* 2   m4th-impl */
         DPUSH( DTOP)
         MOVE(  IMM(2), DTOP)
 FUNC_END(two)
 #endif
 
 
-FUNC_START(two_minus) /* 2-   m4th */
-        SUB2(  IMM(2), DTOP)
-FUNC_END(two_minus)
-
-
-FUNC_START(two_plus)  /* 2+   m4th */
+FUNC_START(two_plus)   /* 2+  m4th-impl */
         ADD2(  IMM(2), DTOP)
 FUNC_END(two_plus)
 
 
-FUNC_START(to_r) /* >r */
+FUNC_START(two_minus)  /* 2-  m4th-impl */
+        SUB2(  IMM(2), DTOP)
+FUNC_END(two_minus)
+
+
+#ifndef M4THREE
+FUNC_START(three)      /* 3   m4th-impl */
+        DPUSH( DTOP)
+        MOVE(  IMM(3), DTOP)
+FUNC_END(three)
+#endif
+
+
+#ifndef M4FOUR
+FUNC_START(four)       /* 4   m4th-impl */
+        DPUSH( DTOP)
+        MOVE(  IMM(4), DTOP)
+FUNC_END(four)
+#endif
+
+
+FUNC_START(four_star)  /* 4*  m4th-impl */
+        SHL2(  IMM(2), DTOP)
+FUNC_END(four_star)
+
+
+FUNC_START(four_plus)  /* 4+  m4th-impl */
+        ADD2(  IMM(4), DTOP)
+FUNC_END(four_plus)
+
+
+#ifndef M4EIGHT
+FUNC_START(eight)      /* 8   m4th-impl */
+        DPUSH( DTOP)
+        MOVE(  IMM(8), DTOP)
+FUNC_END(eight)
+#endif
+
+
+FUNC_START(eight_star) /* 8*  m4th-impl */
+        SHL2(  IMM(3), DTOP)
+FUNC_END(eight_star)
+
+
+FUNC_START(eight_plus) /* 8+  m4th-impl */
+        ADD2(  IMM(8), DTOP)
+FUNC_END(eight_plus)
+
+
+FUNC_START(to_r)       /* >r */
         RPUSH( RTOP)
         MOVE(  DTOP, RTOP)
         DPOP(  DTOP)
@@ -157,6 +200,18 @@ FUNC_END(bl)
 FUNC_START(drop)
         DPOP(  DTOP)
 FUNC_END(drop)
+
+
+FUNC_START(c_store)    /* c! */
+        DPOP(  REG1)
+        STORb( REG1b, AT(DTOP))
+        DPOP(  DTOP)
+FUNC_END(c_store)
+
+
+FUNC_START(c_fetch)    /* c@ */
+        LOAD_ub(DTOP_ub, AT(DTOP));
+FUNC_END(c_fetch)
 
 
 FUNC_START(cell_plus) /* cell+ */
@@ -263,14 +318,6 @@ FUNC_START(rot)
         LOAD(  DTOP, AT(DSTK, SZ))
         STOR(  REG1, AT(DSTK, SZ))
 FUNC_END(rot)
-
-
-#ifndef M4TRUE
-FUNC_START(true)
-        DPUSH( DTOP)
-        MOVE(  IMM(-1), DTOP)
-FUNC_END(true)
-#endif
 
 
 #ifndef M4SWAP
