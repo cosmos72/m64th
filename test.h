@@ -22,12 +22,10 @@
 
 enum { tfalse = (m4int)0, ttrue = (m4int)-1 };
 
-void m4word_code_print(const m4word *w, FILE *out);
-
 m4int m4th_testcompile(m4th *m, FILE *out);
 m4int m4th_testexecute(m4th *m, FILE *out);
 
-/* -------------- m4testexecute  -------------- */
+/* -------------- m4test_stack  -------------- */
 
 enum { m4test_stack_n = 5 };
 
@@ -36,21 +34,32 @@ typedef struct m4test_stack_s {
     m4int data[m4test_stack_n];
 } m4test_stack;
 
+typedef struct m4test_stacks_s {
+    m4test_stack d, r;
+} m4test_stacks;
+
 void m4test_stack_copy(const m4test_stack *src, m4span *dst);
+m4int m4test_stack_equals(const m4test_stack *src, const m4span *dst);
+void m4test_stack_print(const m4test_stack *src, FILE *out);
 
-/* -------------- m4testcompile  -------------- */
+/* -------------- m4test_code  -------------- */
 
-enum { m4testcompile_code_n = 6 };
+enum { m4test_code_n = 6 };
 
-typedef struct m4testcompile_code_s {
+typedef struct m4test_code_s {
     m4int len;
-    m4instr data[m4testcompile_code_n];
-} m4testcompile_code;
+    m4instr data[m4test_code_n];
+} m4test_code;
 
-typedef struct m4testcompile_word_s {
+void m4test_code_print(const m4test_code *src, FILE *out);
+m4int m4test_code_equals(const m4test_code *src, const m4word *dst);
+
+/* -------------- m4test_word  -------------- */
+
+typedef struct m4test_word_s {
     m4word impl;
     /* reserve space for generated code */
-    m4instr code[m4testcompile_code_n];
-} m4testcompile_word;
+    m4instr code[m4test_code_n];
+} m4test_word;
 
 #endif /* M4TH_TEST_H */

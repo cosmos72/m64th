@@ -43,11 +43,13 @@
         x((zero, or), _)                                   /*  0 or           =>              */   \
         x((zero, rshift), _)                               /*  0 rshift       =>              */   \
         x((zero, xor), _)                                  /*  0 xor          =>              */   \
-        x((zero_not_equals, _jump_if_), (_jump_if_))       /* 0<> (jump-if)   => (jump-if)    */   \
-        x((zero_equals, _jump_unless_), (_jump_unless_))   /* 0=  (jump-unless)=>(jump-unless)*/   \
+        x((zero_not_equals, _if_), (_if_))                 /* 0<> (if) => (if)  */                 \
+        x((zero_not_equals, _else_), (_else_))             /* 0<>   (else) => (else)    */         \
         x((zero_less_than, invert), (zero_greater_equals)) /* 0<    invert    => 0>=          */   \
         x((zero_less_equals, invert), (zero_greater_than)) /* 0<=   invert    => 0>           */   \
         x((zero_not_equals, invert), (zero_equals))        /* 0<>   invert    => 0=           */   \
+        x((zero_equals, _if_), (_else_))                   /* 0=  (if) => (else)    */             \
+        x((zero_equals, _else_), (_if_))                   /* 0=    (else) => (if)  */             \
         x((zero_equals, invert), (zero_not_equals))        /* 0=    invert    => 0<>          */   \
         x((zero_greater_than, invert), (zero_less_equals)) /* 0>    invert    => 0<=          */   \
         x((zero_greater_equals, invert), (zero_less_than)) /* 0>=   invert    => 0<           */   \
@@ -84,7 +86,6 @@
         x((four, star), (four_star))                       /*  4 *            => 4*           */   \
         x((four, plus), (four_plus))                       /*  4 +            => 4+           */   \
         x((four, minus), (four_minus))                     /*  4 -            => 4-           */   \
-        x((four, slash), (four_slash))                     /*  4 /            => 4/           */   \
         x((four_star, two_slash), (eight_star))            /*  4* 2/          => 2*           */   \
         x((four_star, two_star), (eight_star))             /*  4* 2*          => 8*           */   \
         x((four_plus, two_minus), (two_plus))              /*  4+ 2-          => 2+           */   \
@@ -92,7 +93,6 @@
         x((eight, star), (eight_star))                     /*  8 *            => 8*           */   \
         x((eight, plus), (eight_plus))                     /*  8 +            => 8+           */   \
         x((eight, minus), (eight_minus))                   /*  8 -            => 8-           */   \
-        x((eight, slash), (eight_slash))                   /*  8 /            => 8/           */   \
         x((eight_star, two_slash), (four_star))            /*  8* 2/          => 4*           */   \
         x((slash_mod, drop), (slash))                      /* /mod drop       => /            */   \
         x((slash_mod, nip), (mod))                         /* /mod nip        => mod          */   \
@@ -133,12 +133,12 @@
         x((i, minus), (i_minus))                           /* i -             => i-           */   \
         x((invert, invert), _)                             /* invert invert   =>              */   \
         x((invert, negate), (one_plus))                    /* invert negate   => 1+           */   \
-        x((invert, _jump_if_), (_jump_unless_))            /* invert (jump-if) => (jump-unless) */ \
-        x((invert, _jump_unless_), (_jump_if_))            /* invert (jump-unless) => (jump-if) */ \
-        x((negate, _jump_if_), (_jump_if_))                /* negate (jump-if) => (jump-if)     */ \
-        x((negate, _jump_unless_), (_jump_unless_)) /*    negate (jump-unless) => (jump-unless) */ \
-        x((negate, plus), (minus))                  /*          negate +        => -            */ \
-        x((negate, minus), (plus))                  /*          negate -        => +            */ \
+        x((invert, _else_), (_if_))                        /* invert (else)=> (if)  */             \
+        x((invert, _if_), (_else_))                        /* invert (if)=> (else)  */             \
+        x((negate, _else_), (_else_))                      /* negate (else)  => (else)  */         \
+        x((negate, _if_), (_if_))                          /* negate (if)=> (if)  */               \
+        x((negate, plus), (minus)) /*          negate +        => -            */                  \
+        x((negate, minus), (plus)) /*          negate -        => +            */                  \
         x((negate, zero_less_than), (zero_greater_than))     /* negate 0<       => 0>=          */ \
         x((negate, zero_less_equals), (zero_greater_equals)) /* negate 0<=      => 0>=          */ \
         x((negate, zero_greater_than), (zero_less_than))     /* negate 0>       => 0<           */ \

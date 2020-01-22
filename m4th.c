@@ -143,7 +143,7 @@ void m4stack_print(const m4stack *stack, FILE *out) {
     const m4int *lo = stack->curr;
     const m4int *hi = stack->end;
     fprintf(out, "<%ld> ", (long)(hi - lo));
-    while (hi != lo) {
+    while (hi > lo) {
         fprintf(out, "%ld ", (long)*--hi);
     }
     fputc('\n', out);
@@ -163,51 +163,24 @@ void m4th_flags_print(m4flags fl, FILE *out) {
         fputs("compile_only", out);
         printed++;
     }
-    if (fl & m4flag_consumes_ip_mask) {
-        m4char ch = 0;
-        switch (fl & m4flag_consumes_ip_mask) {
-        case m4flag_consumes_ip_2:
-            ch = '2';
-            break;
-        case m4flag_consumes_ip_4:
-            ch = '4';
-            break;
-        case m4flag_consumes_ip_8:
-            ch = '8';
-            break;
-        }
-        if (ch != 0) {
-            if (printed++) {
-                fputc('|', out);
-            }
-            fputs("consumes_ip_", out);
-            fputc(ch, out);
-        }
+    if ((fl & m4flag_consumes_ip_mask) == m4flag_consumes_ip_2) {
+        fputs(printed++ ? "|consumes_ip_2" : "consumes_ip_2", out);
+    } else if ((fl & m4flag_consumes_ip_mask) == m4flag_consumes_ip_4) {
+        fputs(printed++ ? "|consumes_ip_4" : "consumes_ip_4", out);
+    } else if ((fl & m4flag_consumes_ip_mask) == m4flag_consumes_ip_8) {
+        fputs(printed++ ? "|consumes_ip_8" : "consumes_ip_8", out);
     }
     if (fl & m4flag_immediate) {
         fputs(printed++ ? "|immediate" : "immediate", out);
     }
-    if (fl & m4flag_inline_mask) {
-        if (printed++) {
-            fputc('|', out);
-        }
-        switch (fl & m4flag_inline_mask) {
-        case m4flag_inline:
-        default:
-            fputs("inline", out);
-            break;
-        case m4flag_inline_always:
-            fputs("inline_always", out);
-            break;
-        case m4flag_inline_native:
-            fputs("inline_native", out);
-            break;
-        }
+    if (fl & m4flag_inline_always) {
+        fputs(printed++ ? "|inline_always" : "inline_always", out);
+    } else if (fl & m4flag_inline) {
+        fputs(printed++ ? "|inline" : "inline", out);
     }
     if ((fl & m4flag_jump_mask) == m4flag_jump) {
         fputs(printed++ ? "|jump" : "jump", out);
-    }
-    if ((fl & m4flag_jump_mask) == m4flag_may_jump) {
+    } else if ((fl & m4flag_jump_mask) == m4flag_may_jump) {
         fputs(printed++ ? "|may_jump" : "may_jump", out);
     }
     if (fl & m4flag_mem_fetch) {
@@ -242,9 +215,24 @@ m4int m4string_compare(m4string a, m4string b) {
 
 /* ----------------------- m4word ----------------------- */
 
+void m4word_code_print(const m4word *w, FILE *out) {
+    m4int i, n;
+    if (w == NULL || out == NULL) {
+        return;
+    }
+    n = w->code_n;
+    fprintf(out, "<%ld> ", (long)n);
+    for (i = 0; i < n; i++) {
+        fprintf(out, "0x%lx ", (unsigned long)w->code[i]);
+    }
+    fputc('\n', out);
+}
+
 void m4word_stack_print(uint8_t stack_in_out, FILE *out) {
     uint8_t n = stack_in_out & 0xF;
-    if (n == 0xF) {
+    if (out == NULL) {
+        return;
+    } else if (n == 0xF) {
         fputc('?', out);
     } else {
         fprintf(out, "%u", (unsigned)n);
@@ -268,8 +256,9 @@ void m4word_print(const m4word *w, FILE *out) {
     m4word_stack_print(w->dstack, out);
     fputs(" \n\treturn_stack:\t", out);
     m4word_stack_print(w->rstack, out);
-    fprintf(out, "\n\tnative_len:  \t%u\n\tcode_n:      \t%u\n\tdata_len:    \t%u\n}\n",
-            (unsigned)w->native_len, (unsigned)w->code_n, (unsigned)w->data_len);
+    fprintf(out, "\n\tnative_len:  \t%d\n\tcode_n:      \t%lu\n\tdata_len:    \t%lu\n}\n",
+            (w->native_len == (uint16_t)-1 ? (int)-1 : (int)w->native_len),
+            (unsigned long)w->code_n, (unsigned long)w->data_len);
 }
 
 void m4word_print_fwd_recursive(const m4word *w, FILE *out) {

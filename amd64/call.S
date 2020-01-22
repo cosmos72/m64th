@@ -33,16 +33,17 @@ FUNC_START(th_run)
         push   %r13;
         push   %r14;
         push   %r15;
-        MOVE(  %rdi, M4TH)                /* m                               */
+        MOVE(  %rdi, M4TH)                     /* m                               */
         STOR(  %rsp, AT(M4TH, M4TH_OFF_C_SP))  /* save C stack pointer            */
         LOAD(  DSTK, AT(M4TH, M4TH_OFF_DSTK))  /* load data   stack pointer       */
         LOAD(  RSTK, AT(M4TH, M4TH_OFF_RSTK))  /* load return stack pointer       */
-        LOAD(  M4W,  AT(M4TH, M4TH_OFF_W))     /* load word being compiled        */
+        LOAD(  M4XT, AT(M4TH, M4TH_OFF_W))     /* load word being compiled        */
         LOAD(  IP,   AT(M4TH, M4TH_OFF_IP))    /* load instruction  pointer       */
         DPOP(  DTOP)                      /* load first data   stack element */
         RPOP(  RTOP)                      /* load first return stack element */
+        ADD2(  IMM(WORD_OFF_XT), M4XT)    /* convert *m4word -> XT           */
         MOVE(  IMM(-1), RFFF)             /* set RFFF to -1                  */
-        jmp    *(IP);                     /* begin execution                 */
+        NEXT0()                           /* begin execution                 */
 FUNC_RAWEND(th_run)
 
 /**
@@ -53,10 +54,11 @@ FUNC_RAWEND(th_run)
  */
 FUNC_START(bye)
 	ADD2(  IMM(SZ), IP)               /* point IP to next instruction    */
+        SUB2(  IMM(WORD_OFF_XT), M4XT)    /* convert XT -> *m4word           */
         RPUSH( RTOP)                      /* save first return stack element */
         DPUSH( DTOP)                      /* save first data   stack element */
         STOR(  IP,   AT(M4TH, M4TH_OFF_IP))    /* save instruction  pointer       */
-        STOR(  M4W,  AT(M4TH, M4TH_OFF_W))     /* save word being compiled        */
+        STOR(  M4XT, AT(M4TH, M4TH_OFF_W))     /* save word being compiled        */
         STOR(  RSTK, AT(M4TH, M4TH_OFF_RSTK))  /* save return stack pointer       */
         STOR(  DSTK, AT(M4TH, M4TH_OFF_DSTK))  /* save data   stack pointer       */
         LOAD(  %rsp, AT(M4TH, M4TH_OFF_C_SP))  /* load C stack pointer            */
@@ -73,20 +75,17 @@ FUNC_START(bye)
 FUNC_RAWEND(bye)
 
 
-/** must be followed by address of a forth function. calls it. */
+/** must be followed by an XT. calls it. */
 FUNC_START(_call_)
-        RPUSH( RTOP)
-        /* execution will resume at IP + SZ2 after called function returns */
-        lea    AT(IP, SZ2), RTOP
-        /* load function address */
-        LOAD(  IP,   AT(IP, SZ))
-        /* jump to function */
-        jmp    *(IP);
+        RPUSH( RTOP)             /* save RTOP           */
+        lea    AT(IP, SZ2), RTOP /* save return address = IP + SZ2 */
+        LOAD(  IP,   AT(IP, SZ)) /* load XT from IP[SZ] */
+        NEXT0()                  /* jump to XT          */
 FUNC_RAWEND(_call_)
 
-/** return from word being executed (i.e. current function) */
+/** return from XT being executed (i.e. current forth word) */
 FUNC_START(exit)
         MOVE(  RTOP, IP)
         RPOP(  RTOP)
-        jmp    *(IP);
+        NEXT0()
 FUNC_RAWEND(exit)

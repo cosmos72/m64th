@@ -16,20 +16,9 @@
  */
 
 #include "test.h"
+#include "t/testcommon.c"
 #include "t/testcompile.c"
 #include "t/testexecute.c"
-
-#include <stdio.h> /* fprintf() fputc() */
-
-void m4word_code_print(const m4word *w, FILE *out) {
-    const m4instr *p = w->code, *end = w->code + w->code_n;
-    for (; p != end; p++) {
-        fprintf(out, "0x%lx ", (unsigned long)*p);
-    }
-    fputc('\n', out);
-}
-
-/* -------------- main -------------- */
 
 int main(int argc, char *argv[]) {
     m4th *m = m4th_new();

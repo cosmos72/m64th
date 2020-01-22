@@ -49,10 +49,8 @@ typedef enum m4flags_e {
     m4flag_mem_store = M4FLAG_MEM_STORE,
     m4flag_compile_only = M4FLAG_COMPILE_ONLY,
     m4flag_immediate = M4FLAG_IMMEDIATE,
-    m4flag_inline_mask = M4FLAG_INLINE_MASK,
     m4flag_inline = M4FLAG_INLINE,
     m4flag_inline_always = M4FLAG_INLINE_ALWAYS,
-    m4flag_inline_native = M4FLAG_INLINE_NATIVE,
     m4flag_jump_mask = M4FLAG_JUMP_MASK,
     m4flag_jump = M4FLAG_JUMP,
     m4flag_may_jump = M4FLAG_MAY_JUMP,
@@ -79,12 +77,14 @@ struct m4countedstring_s { /**< counted string                           */
     m4char chars[1];       /**< string characters. may NOT end with '\0' */
 };
 
+/** array of m4char, with current size and capacity */
 struct m4cspan_s {
     m4char *start;
     m4char *curr;
     m4char *end;
 };
 
+/** array of m4int, with current size and capacity */
 struct m4span_s {
     m4int *start;
     m4int *curr;
@@ -96,16 +96,17 @@ struct m4string_s {
     m4int len;
 };
 
-struct m4word_s {       /**< word                                                 */
-    int32_t prev_off;   /**< offset of previous word,   in bytes. 0 = not present */
-    int16_t name_off;   /**< offset of m4countedstring, in bytes. 0 = not present */
-    uint8_t flags;      /**< m4flags                                              */
-    uint8_t dstack;     /**< dstack # in and # out. 0xFF if unknown or variable   */
-    uint8_t rstack;     /**< rstack # in and # out. 0xFF if unknown or variable   */
-    uint8_t native_len; /**< native code size, in bytes                           */
-    uint16_t code_n;    /**< forth code size, in m4instr:s                        */
-    uint32_t data_len;  /**< data size, in bytes                                  */
-    m4instr code[0];    /**< code starts at [0], data starts at [code_n]          */
+/** compiled forth word. Execution token i.e. XT is the address of m4word.code[0] */
+struct m4word_s {
+    int32_t prev_off;    /**< offset of previous word,   in bytes. 0 = not present */
+    int16_t name_off;    /**< offset of m4countedstring, in bytes. 0 = not present */
+    uint16_t flags;      /**< m4flags                                              */
+    uint8_t dstack;      /**< dstack # in and # out. 0xFF if unknown or variable   */
+    uint8_t rstack;      /**< rstack # in and # out. 0xFF if unknown or variable   */
+    uint16_t native_len; /**< native code size, in bytes. 0xFFFF if not available  */
+    uint32_t code_n;     /**< forth code size, in m4instr:s                        */
+    uint64_t data_len;   /**< data size, in bytes                                  */
+    m4instr code[0];     /**< code i.e. XT starts at [0], data starts at [code_n]  */
 };
 
 struct m4wordlist_s {   /**< wordlist                                             */
@@ -179,13 +180,14 @@ m4int m4string_compare(m4string a, m4string b);
 
 void m4stack_print(const m4stack *stack, FILE *out);
 
-m4string m4wordlist_name(const m4wordlist *d);
-const m4word *m4wordlist_lastword(const m4wordlist *d);
-void m4wordlist_print(const m4wordlist *d, FILE *out);
-
 m4string m4word_name(const m4word *w);
 const m4word *m4word_prev(const m4word *w);
 void m4word_print(const m4word *w, FILE *out);
+void m4word_code_print(const m4word *w, FILE *out);
+
+m4string m4wordlist_name(const m4wordlist *d);
+const m4word *m4wordlist_lastword(const m4wordlist *d);
+void m4wordlist_print(const m4wordlist *d, FILE *out);
 
 #ifdef __cplusplus
 }

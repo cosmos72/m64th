@@ -28,10 +28,8 @@
 /* m4word flags */
 #define M4FLAG_COMPILE_ONLY (1 << 0) /**< word cannot interpreted - only compiled     */
 #define M4FLAG_IMMEDIATE (1 << 1)    /**< word is executed immediately                */
-#define M4FLAG_INLINE_MASK (3 << 2)
 #define M4FLAG_INLINE (1 << 2)        /**< forth code of word can be inlined           */
-#define M4FLAG_INLINE_ALWAYS (2 << 2) /**< forth code of word *must* always be inlined */
-#define M4FLAG_INLINE_NATIVE (3 << 2) /**< both forth & native code of word can be inlined */
+#define M4FLAG_INLINE_ALWAYS (1 << 3) /**< forth code of word *must* always be inlined */
 
 #define M4FLAG_JUMP_MASK (3 << 4)
 /**
@@ -56,7 +54,7 @@
  */
 #define M4FLAG_PURE (3 << 4)
 
-#define M4FLAG_CONSUMES_IP_MASK ((3 << 6) | M4FLAG_INLINE_MASK)
+#define M4FLAG_CONSUMES_IP_MASK ((3 << 6) | M4FLAG_INLINE_ALWAYS)
 /**
  * word must be followed by 1, 2, 4 or 8 bytes, which are used (not modified) and jumped over.
  *
@@ -67,8 +65,8 @@
 #define M4FLAG_CONSUMES_IP_8 ((3 << 6) | M4FLAG_INLINE_ALWAYS)
 
 /** word dereferences some pointer and reads from i */
-#define M4FLAG_MEM_FETCH 0 /* FIXME */
+#define M4FLAG_MEM_FETCH (1 << 8)
 /** word dereferences some pointer and writes to it */
-#define M4FLAG_MEM_STORE 0 /* FIXME */
+#define M4FLAG_MEM_STORE (1 << 9)
 
 #endif /* M4TH_M4TH_MH */

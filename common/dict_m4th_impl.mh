@@ -23,12 +23,12 @@
     X(6, "(call)", _call_)                                                                         \
     X(10, "(compile,)", _compile_comma_)                                                           \
     X(4, "(do)", _do_)                                                                             \
+    X(6, "(else)", _else_)                                                                         \
+    X(4, "(if)", _if_)                                                                             \
     X(8, "(inline)", _inline_)                                                                     \
     X(6, "(jump)", _jump_)                                                                         \
-    X(9, "(jump-if)", _jump_if_)                                                                   \
-    X(13, "(jump-unless)", _jump_unless_)                                                          \
-    X(5, "(lit)", _lit_)                                                                           \
     X(7, "(leave)", _leave_)                                                                       \
+    X(5, "(lit)", _lit_)                                                                           \
     X(6, "(loop)", _loop_)                                                                         \
     X(10, "(optimize)", _optimize_)                                                                \
     X(2, "-1", minus_one)                                                                          \

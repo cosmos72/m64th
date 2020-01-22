@@ -29,26 +29,9 @@
 
 typedef struct m4testcompile_s {
     const char *input[8];
-    m4test_stack before;
-    m4testcompile_code generated;
+    m4test_stack dbefore;
+    m4test_code codegen;
 } m4testcompile;
-
-/* -------------- m4testcompile_code -------------- */
-
-static void m4testcompile_code_print(const m4testcompile_code *src, FILE *out) {
-    m4int i, n = src->len;
-    for (i = 0; i < n; i++) {
-        fprintf(out, "0x%lx ", (unsigned long)src->data[i]);
-    }
-    fputc('\n', out);
-}
-
-static m4int m4testcompile_code_equals(const m4testcompile_code *src, const m4word *dst) {
-    if (src->len != dst->code_n) {
-        return tfalse;
-    }
-    return memcmp(src->data, dst->code, src->len * sizeof(m4instr)) == 0;
-}
 
 /* -------------- m4testcompile -------------- */
 
@@ -57,9 +40,10 @@ static m4int m4testcompile_code_equals(const m4testcompile_code *src, const m4wo
 static const m4testcompile testcompile[] = {
     {{"0"}, {}, {2, {CALLXT(zero)}}},
     {{"1", "2", "+"}, {}, {6, {CALLXT(one), CALLXT(two), CALLXT(plus)}}},
-#if 0
+    {{"literal"}, {1, {0}}, {1, {m4zero}}},
+    {{"literal"}, {1, {1}}, {1, {m4one}}},
+    {{"literal"}, {1, {2}}, {2, {m4_lit_, (m4instr)2}}},
     {{"literal"}, {1, {11}}, {2, {m4_lit_, (m4instr)11}}},
-#endif
     {{"drop"}, {}, {2, {CALLXT(drop)}}},
     {{"false"}, {}, {2, {CALLXT(false)}}},
     {{"true"}, {}, {2, {CALLXT(true)}}},
@@ -67,16 +51,18 @@ static const m4testcompile testcompile[] = {
 
 enum { testcompile_n = sizeof(testcompile) / sizeof(testcompile[0]) };
 
-static m4int m4testcompile_run(m4th *m, const m4testcompile *t, m4testcompile_word *out) {
+static m4int m4testcompile_run(m4th *m, const m4testcompile *t, m4test_word *out) {
+    const m4test_stack empty = {};
     m4th_clear(m);
-    memset(out, '\0', sizeof(m4testcompile_word));
-    m4test_stack_copy(&t->before, &m->dstack);
+    memset(out, '\0', sizeof(m4test_word));
+    m4test_stack_copy(&t->dbefore, &m->dstack);
     m->w = &out->impl;
     m->flags &= ~m4th_flag_status_mask;
     m->flags |= m4th_flag_compile;
     m->in_cstr = t->input;
     m4th_repl(m);
-    return m4testcompile_code_equals(&t->generated, m->w);
+    return m4test_stack_equals(&empty, &m->dstack) && m4test_stack_equals(&empty, &m->rstack) &&
+           m4test_code_equals(&t->codegen, m->w);
 }
 
 static void m4testcompile_print(const m4testcompile *t, FILE *out) {
@@ -89,19 +75,35 @@ static void m4testcompile_print(const m4testcompile *t, FILE *out) {
 }
 
 static void m4testcompile_failed(m4th *m, const m4testcompile *t, FILE *out) {
+    const m4test_stack empty = {};
     if (out == NULL) {
         return;
     }
     fputs("\ncompile test  failed: ", out);
     m4testcompile_print(t, out);
-    fputs("    expected code ", out);
-    m4testcompile_code_print(&t->generated, out);
-    fputs("    actual   code ", out);
+    fputs("    initial   data  stack ", out);
+    m4test_stack_print(&t->dbefore, out);
+    fputs("    expected    codegen   ", out);
+    m4test_code_print(&t->codegen, out);
+    fputs("      actual    codegen   ", out);
     m4word_code_print(m->w, out);
+
+    if (m->dstack.curr == m->dstack.end && m->rstack.curr == m->rstack.end) {
+        return;
+    }
+    fputs("... expected  data  stack ", out);
+    m4test_stack_print(&empty, out);
+    fputs("      actual  data  stack ", out);
+    m4stack_print(&m->dstack, out);
+
+    fputs("... expected return stack ", out);
+    m4test_stack_print(&empty, out);
+    fputs("      actual return stack ", out);
+    m4stack_print(&m->rstack, out);
 }
 
 m4int m4th_testcompile(m4th *m, FILE *out) {
-    m4testcompile_word w;
+    m4test_word w;
     m4int i, fail = 0;
     enum { n = testcompile_n };
 

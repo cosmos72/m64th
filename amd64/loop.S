@@ -23,21 +23,19 @@
  */
 FUNC_START(_question_do_)
         cmp    DTOP, AT(DSTK);
-        jne    .Lm4_question_do_enter;
-        /* skip the loop */
+        je     .Lm4_question_do_.skip;
+        ADD2(  IMM(SZ), IP)          /* skip jump offset      */
+        jmp    FUNC_SYM(_do_);
+.Lm4_question_do_.skip:              /* skip the loop:        */
         LOAD(  REG2, AT(IP, SZ))     /* REG2 = IP jump offset */
         LOAD(  DTOP, AT(DSTK, SZ))   /* reload dstack top     */
         lea    (IP, REG2, SZ), IP;   /* IP = TARGET_IP        */
         ADD2(  IMM(SZ2), DSTK)       /* drop i' i from dstack */
         NEXT0()                      /* jump to TARGET_IP     */
-.Lm4_question_do_enter:
-        ADD2(  IMM(SZ), IP)          /* skip jump offset      */
-        /* FALLTHROUGH into _do_ */
-/* FUNC_RAWEND(_question_do_) */
+FUNC_RAWEND(_question_do_)
 
 
-FUNC_DEF_SYM(_do_)
-/* FUNC_START(_do_) */
+FUNC_START(_do_)
         DPOP(  REG1)                 /* REG1 = i'             */
         STOR(  RTOP, AT(RSTK, -SZ))  /* save RTOP             */
         MOVE(  DTOP, RTOP)           /* RTOP = i              */
@@ -45,12 +43,10 @@ FUNC_DEF_SYM(_do_)
         STOR(  REG1, AT(RSTK, -SZ2)) /* save i' to rstack     */
         SUB2(  IMM(SZ2),  RSTK)      /* update rstack pointer */
 FUNC_END(_do_)
-FUNC_SIZE(_question_do_)
 
 
 /**
- * unconditional jump.
- * must be followed by IP offset to skip.
+ * unconditional jump. must be followed by IP offset to jump.
  * IP offset = 0 means (jump) itself
  */
 FUNC_START(_jump_)
@@ -60,36 +56,38 @@ FUNC_START(_jump_)
 FUNC_RAWEND(_jump_)
 
 /**
- * pop dstack top, and jump if <> 0.
- * must be followed by IP offset to skip.
- * IP offset = 0 means (jump_if) itself
+ * pop dstack top.
+ * if = 0 continue to next instruction, otherwise jump.
+ * must be followed by IP offset to jump.
+ * IP offset = 0 means (_else_) itself
  */
-FUNC_START(_jump_if_)
+FUNC_START(_else_)
         test   DTOP, DTOP;
         DPOP(  DTOP)
-        jnz    .Lm4_jump_if_nonzero;
+        jnz    .Lm4_else_.jump;
         NEXT2()                    /* skip IP offset          */
-.Lm4_jump_if_nonzero:
+.Lm4_else_.jump:
         LOAD(  REG2, AT(IP, SZ))   /* REG2 = IP jump offset   */
         lea    (IP, REG2, SZ), IP; /* IP   = TARGET_IP        */
         NEXT0()                    /* jump to TARGET_IP       */
-FUNC_RAWEND(_jump_if_)
+FUNC_RAWEND(_else_)
 
 /**
- * pop dstack top, and jump if = 0.
- * must be followed by IP offset to skip.
- * IP offset = 0 means (jump_unless) itself
+ * pop dstack top.
+ * if <> 0 continue to next instruction, otherwise jump.
+ * must be followed by IP offset to jump.
+ * IP offset = 0 means (_if_) itself
  */
-FUNC_START(_jump_unless_)
+FUNC_START(_if_)
         test   DTOP, DTOP;
         DPOP(  DTOP)
-        jz     .Lm4_jump_unless_zero;
+        jz     .Lm4_if_.jump;
         NEXT2()                    /* skip IP offset          */
-.Lm4_jump_unless_zero:
+.Lm4_if_.jump:
         LOAD(  REG2, AT(IP, SZ))   /* REG2 = IP jump offset   */
         lea    (IP, REG2, SZ), IP; /* IP   = TARGET_IP        */
         NEXT0()                    /* jump to TARGET_IP       */
-FUNC_RAWEND(_jump_unless_)
+FUNC_RAWEND(_if_)
 
 /**
  * must be followed by IP offset of first instruction after (loop)

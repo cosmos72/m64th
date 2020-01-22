@@ -67,7 +67,7 @@
 #define REG1_sh w0  /* sign-extend 16 bits into REG1 */
 #define REG1_sw w0  /* sign-extend 32 bits into REG1 */
 
-#define DTOP  x20 /* value of first data stack element */
+#define DTOP  x20    /* value of first data stack element */
 #define DTOPb w20    /* low 8 bits of DTOP */
 #define DTOPh w20    /* low 16 bits of DTOP */
 #define DTOPw w20    /* low 32 bits of DTOP */
@@ -83,57 +83,48 @@
 #define IP    x22 /* instruction pointer */
 #define RTOP  x23 /* value of first return stack element */
 #define RSTK  x24 /* pointer to second return stack element */
-#define M4W   x25 /* pointer to word being compiled */
+#define M4XT  x25 /* pointer to m4word.code being compiled */
 #define M4TH  x26 /* pointer to C struct m4th */
 
 
-#define ADD2(src,dst)    add  dst, dst, src;    /* dst += src     */
-#define ADD3(a,b,dst)    add  dst, a, b;        /* dst  = a + b   */
-#define AND2(src,dst)    and  dst, dst, src;    /* dst &= src     */
-#define AT0( reg)             [reg]             /* mem[reg]       */
-#define ATx( reg, imm)        [reg,imm]         /* mem[reg+imm]   */
-#define ATxy(reg1, reg2, rmul)  CAT2(ATxy_,rmul)(reg1,reg2) /* mem[reg1+reg2*rmul] */
-#define ATxy_1(reg1,reg2)      [reg1,reg2]       /* mem[reg1+reg2] */
+#define ADD2(src,dst)    add   dst, dst, src;    /* dst += src     */
+#define ADD3(a,b,dst)    add   dst, a, b;        /* dst  = a + b   */
+#define AND2(src,dst)    and   dst, dst, src;    /* dst &= src     */
+#define AT0(reg)               [reg]             /* mem[reg]       */
+#define ATx(reg,imm)           [reg,imm]         /* mem[reg+imm]   */
+#define ATxy(reg1,reg2,rmul)   CAT2(ATxy_,rmul)(reg1,reg2) /* mem[reg1+reg2*rmul] */
+#define ATxy_1(reg1,reg2)      [reg1,reg2]       /* mem[reg1+reg2]   */
 #define ATxy_2(reg1,reg2)      [reg1,reg2,lsl 1] /* mem[reg1+reg2*2] */
 #define ATxy_4(reg1,reg2)      [reg1,reg2,lsl 2] /* mem[reg1+reg2*4] */
 #define ATxy_8(reg1,reg2)      [reg1,reg2,lsl 3] /* mem[reg1+reg2*8] */
-#define DEC1(dst)        sub  dst, dst, 1;      /* dst--          */
-#define DIV3(a,b,dst)    sdiv dst, a, b;        /* dst  = a / b   */
-#define INC1(dst)        add  dst, dst, 1;      /* dst++          */
-#define LOAD(reg,mem)    ldr  reg, mem;         /* reg  = *mem    */
-#define MOVE(src,dst)    mov  dst, src;         /* dst  = src     */
-#define MUL2(src,dst)    mul  dst, dst, src;    /* dst *= src     */
-#define NEG1(dst)        neg  dst, dst;         /* dst  = -dst    */
-#define NOT1(dst)        mvn  dst, dst;         /* dst  = ~dst    */
-#define ORR2(src,dst)    orr  dst, dst, src;    /* dst |= src     */
-#define SAR2(src,dst)    asr  dst, dst, src;    /* dst >>= src    signed   */
-#define SHL2(src,dst)    lsl  dst, dst, src;    /* dst <<= src    */
-#define SUB2(src,dst)    sub  dst, dst, src;    /* dst -= src     */
-#define SUB3(a,b,dst)    sub  dst, a, b;        /* dst  = a - b   */
-#define STOR(reg,at )    str  reg, at ;         /* *at  = reg     */
-#define ZERO(dst)        mov  dst, 0;           /* dst  = 0       */
+#define DEC1(dst)        sub   dst, dst, 1;      /* dst--          */
+#define DIV3(a,b,dst)    sdiv  dst, a, b;        /* dst  = a / b   */
+#define INC1(dst)        add   dst, dst, 1;      /* dst++          */
+#define LOAD(reg,mem)    ldr   reg, mem;         /* reg  = *mem    */
+#define MOVE(src,dst)    mov   dst, src;         /* dst  = src     */
+#define MUL2(src,dst)    mul   dst, dst, src;    /* dst *= src     */
+#define NEG1(dst)        neg   dst, dst;         /* dst  = -dst    */
+#define NOT1(dst)        mvn   dst, dst;         /* dst  = ~dst    */
+#define ORR2(src,dst)    orr   dst, dst, src;    /* dst |= src     */
+#define SAR2(src,dst)    asr   dst, dst, src;    /* dst >>= src    signed   */
+#define SHL2(src,dst)    lsl   dst, dst, src;    /* dst <<= src    */
+#define SUB2(src,dst)    sub   dst, dst, src;    /* dst -= src     */
+#define SUB3(a,b,dst)    sub   dst, a, b;        /* dst  = a - b   */
+#define STOR(reg,at)     str   reg, at;          /* *at  = reg     */
+#define ZERO(dst)        mov   dst, 0;           /* dst  = 0       */
 
-#define LOAD_sb(reg, at )  ldrsb  reg,     at ; /* reg = *(int8_t *)at  */
-#define LOAD_sh(reg, at )  ldrsh  reg,     at ; /* reg = *(int16_t*)at  */
-#define LOAD_sw(reg, at )  ldrsw  reg,     at ; /* reg = *(int32_t*)at  */
+#define LOAD_sb(reg,at)  ldrsb reg, at;          /* reg = *(int8_t *)at   */
+#define LOAD_sh(reg,at)  ldrsh reg, at;          /* reg = *(int16_t*)at   */
+#define LOAD_sw(reg,at)  ldrsw reg, at;          /* reg = *(int32_t*)at   */
 
-#define LOAD_ub(reg, at )  ldrb   reg,     at ; /* reg = *(uint8_t *)at  */
-#define LOAD_uh(reg, at )  ldrh   reg,     at ; /* reg = *(uint16_t*)at  */
-#define LOAD_uw(reg, at )  ldr    reg,     at ; /* reg = *(uint32_t*)at  */
+#define LOAD_ub(reg,at)  ldrb  reg, at;          /* reg = *(uint8_t *)at  */
+#define LOAD_uh(reg,at)  ldrh  reg, at;          /* reg = *(uint16_t*)at  */
+#define LOAD_uw(reg,at)  ldr   reg, at;          /* reg = *(uint32_t*)at  */
 
 /* no difference between signed and unsigned STOR* */
-#define STORb(reg, at )    strb   reg,     at ; /* *(uint8_t *)at  = reg */
-#define STORh(reg, at )    strh   reg,     at ; /* *(uint16_t*)at  = reg */
-#define STORw(reg, at )    str    reg,     at ; /* *(uint32_t*)at  = reg */
-
-#if 0
-#define IPUSH1(val)   /* push val to code array */  \
-    str   val, [ISTK], SZ;
-
-#define IPUSH2(a, b)  /* push a, b to code array */ \
-    str   b,   [ISTK,  SZ];                         \
-    str   a,   [ISTK], SZ2;
-#endif /* 0 */
+#define STORb(reg,at)    strb  reg, at;          /* *(uint8_t *)at  = reg */
+#define STORh(reg,at)    strh  reg, at;          /* *(uint16_t*)at  = reg */
+#define STORw(reg,at)    str   reg, at;          /* *(uint32_t*)at  = reg */
 
 #define FADDR(fun, dst) /* load function address */ \
     adrp  dst,  fun;             /* high 21 bits */ \

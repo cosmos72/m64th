@@ -31,8 +31,8 @@ extern const m4word m4word__call_;              /* (compile,)   m4th-impl */
 extern const m4word m4word__do_;                /* (do)         m4th-impl */
 extern const m4word m4word__inline_;            /* (inline)     m4th-impl */
 extern const m4word m4word__jump_;              /* (jump)       m4th-impl */
-extern const m4word m4word__jump_if_;           /* (jump-if)    m4th-impl */
-extern const m4word m4word__jump_unless_;       /* (jump-unless)    m4th-impl */
+extern const m4word m4word__else_;              /* (else)    m4th-impl */
+extern const m4word m4word__if_;                /* (if)    m4th-impl */
 extern const m4word m4word__lit_;               /* (lit)        m4th-impl */
 extern const m4word m4word__leave_;             /* (leave)      m4th-impl */
 extern const m4word m4word__loop_;              /* (loop)       m4th-impl */

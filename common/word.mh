@@ -19,10 +19,12 @@
 #define M4TH_COMMON_WORD_MH
 
 /** used to insert an execution token (XT) in a sequence of functions */
-#define m4XT(x) WORD_SYM(x) + WORD_OFF_CODE
+#define m4XT(x) WORD_SYM(x) + WORD_OFF_XT
 
-#define WORD_OFF_CODE_N 10 /* offset of m4word->code_n */
-#define WORD_OFF_CODE 16   /* offset of m4word->code */
+#define WORD_OFF_CODE_N 12 /* offset of m4word->code_n */
+#define WORD_OFF_XT 24     /* offset of m4word->code i.e. XT */
+
+#define XT_OFF_CODE_N -12 /* offset from XT (i.e. m4word->code) to m4word->code_n */
 
 #define WORD_SYM(name) m4word_##name
 
@@ -42,16 +44,17 @@
 
 #define WORD_PREV_OFF(name, prev) /**/ .4byte WORD_SYM(name) - WORD_SYM(prev);
 #define WORD_NAME_OFF(name) /*      */ .2byte WORD_SYM(name) - COUNTEDSTRING_SYM(name);
-#define WORD_FLAGS(flags) /*        */ .byte flags;
+#define WORD_FLAGS(flags) /*        */ .2byte flags;
 #define WORD_DSTACK(in, out) /*     */ .byte((in)&0xF) | (((out)&0xF) << 4);
 #define WORD_DSTACK_UNKNOWN() /*    */ .byte 0xFF;
 #define WORD_RSTACK(in, out) /*     */ .byte((in)&0xF) | (((out)&0xF) << 4);
 #define WORD_RSTACK_UNKNOWN() /*    */ .byte 0xFF;
-#define WORD_NATIVE_LEN(name) /*    */ .byte FUNC_SYM_NEXT(name) - FUNC_SYM(name);
-#define WORD_NATIVE_LEN_0() /*      */ .byte 0;
-#define WORD_CODE_N(n_instr) /*     */ .2byte n_instr;
-#define WORD_DATA_NBYTES(n_bytes) /**/ .4byte n_bytes;
-#define WORD_DATA_N(n_instr) /*     */ .4byte(n_instr)*ISZ;
+#define WORD_NATIVE_LEN(name) /*    */ .2byte FUNC_SYM_NEXT(name) - FUNC_SYM(name);
+#define WORD_NATIVE_LEN_0() /*      */ .2byte 0;
+#define WORD_NATIVE_NONE() /*       */ .2byte 0xFFFF;
+#define WORD_CODE_N(n_instr) /*     */ .4byte n_instr;
+#define WORD_DATA_NBYTES(n_bytes) /**/ .8byte n_bytes;
+#define WORD_DATA_N(n_instr) /*     */ .8byte (n_instr)*ISZ;
 #define WORD_CODE(...) /*           */ .8byte __VA_ARGS__;
 #define WORD_CODE_FUNC(name) /*     */ .8byte FUNC_SYM(name);
 #define WORD_DATA_1(...) /*         */ .byte __VA_ARGS__;
@@ -78,8 +81,8 @@
 
 /* clang-format on */
 
-#define WORD_IMPURE M4FLAG_INLINE | M4FLAG_INLINE_NATIVE
-#define WORD_PURE M4FLAG_INLINE | M4FLAG_INLINE_NATIVE | M4FLAG_PURE
+#define WORD_IMPURE M4FLAG_INLINE
+#define WORD_PURE M4FLAG_INLINE | M4FLAG_PURE
 
 #define WORD(name, prev, dstack, rstack, flags)                                                    \
     WORD_START(name, prev)                                                                         \

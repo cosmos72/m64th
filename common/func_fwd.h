@@ -40,8 +40,8 @@ void m4_call_(m4arg _); /* (call) m4th-impl: must be followed by execution token
 void m4_compile_comma_(m4arg _); /* (compile,)     m4th-impl */
 void m4_do_(m4arg _);            /* (do)           m4th-impl */
 void m4_jump_(m4arg _);          /* (jump)         m4th-impl: must be followed by IP offset */
-void m4_jump_if_(m4arg _);       /* (jump-if)      m4th-impl: must be followed by IP offset */
-void m4_jump_unless_(m4arg _);   /* (jump-unless)  m4th-impl: must be followed by IP offset */
+void m4_else_(m4arg _);          /* (else)      m4th-impl: must be followed by IP offset */
+void m4_if_(m4arg _);            /* (if)  m4th-impl: must be followed by IP offset */
 void m4_lit_(m4arg _);           /* (lit)  m4th: must be followed by number */
 /* (leave) m4th: must be followed by IP offset of 1st instruction after (loop) */
 void m4_leave_(m4arg _);

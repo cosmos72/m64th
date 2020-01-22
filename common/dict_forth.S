@@ -56,7 +56,7 @@ WORD_START(bye, c_store) /* tools ext */
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MAY_JUMP)
     WORD_DSTACK(0,-1)  /* data   stack may be altered from outside */
     WORD_RSTACK(0,-1)  /* return stack may be altered from outside */
-    WORD_NATIVE_LEN_0()
+    WORD_NATIVE_NONE()
     /* exit is reachable by subsequent m4th_run() */
     WORD_FUNCS(bye, exit)
 WORD_END(bye)
@@ -84,10 +84,10 @@ WORD_START(compile_comma, chars)
    WORD_FLAGS(WORD_IMPURE | M4FLAG_COMPILE_ONLY)
    WORD_DSTACK(1,0)
    WORD_RSTACK(0,0)
-   WORD_NATIVE_LEN_0()
+   WORD_NATIVE_NONE()
    WORD_FUNCS(_compile_comma_,
-              _call_, word__inline_   + WORD_OFF_CODE,
-              _call_, word__optimize_ + WORD_OFF_CODE,
+              _call_, XT(_inline_),
+              _call_, XT(_optimize_),
               exit
    )
 WORD_END(compile_comma)
@@ -98,7 +98,7 @@ WORD_START(exit, dup)
    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS | M4FLAG_JUMP)
    WORD_DSTACK(0,-1)
    WORD_RSTACK(0,-1) /* we do not yet track the return address pushed (call) */
-   WORD_NATIVE_LEN_0()
+   WORD_NATIVE_NONE()
    /* make inliner happy: it skips the final 'exit' of a word's code when inlining */
    WORD_FUNCS(exit, exit)
 WORD_END(exit)
@@ -106,7 +106,7 @@ WORD_START(false, exit)        /* core ext */
     WORD_FLAGS(WORD_PURE)
     WORD_DSTACK(0,1)
     WORD_RSTACK(0,0)
-    WORD_NATIVE_LEN(zero)
+    WORD_NATIVE_LEN(zero)      /* false is implemented as zero */
     WORD_FUNCS(zero, exit)
 WORD_END(false)
 WORD(i,                false,      DSTACK(0,1), RSTACK(1,1), WORD_PURE | M4FLAG_COMPILE_ONLY)
@@ -117,16 +117,37 @@ WORD_START(literal, j)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE)
     WORD_DSTACK(1,0)
     WORD_RSTACK(0,0)
-    WORD_NATIVE_LEN_0()
-    WORD_CODE_N(5)
-    WORD_DATA_N(0)
-    WORD_CODE_FUNCS(
-      _lit_,  _lit_,   /* push _lit_ to dstack    */
-      _compile_comma_, /* move _lit_ to word.code */
-      _compile_comma_, /* move dtop  to word.code */
-#if 0      
-      _call_, word__optimize_ + WORD_OFF_CODE, /* call (optimize)         */
-#endif
+    WORD_NATIVE_NONE()
+    WORD_FUNCS(
+      dup, _else_, N(7),       /* if dtop = 0                */
+        drop, _lit_, zero,     /*   change dtop to 'm4zero'  */
+        _compile_comma_, exit, /*   append it to XT, exit    */
+      dup, one_minus,
+      _else_, N(7),            /* else if dtop = 1           */
+        drop, _lit_, one,      /*   change dtop to 'm4one'   */
+        _compile_comma_, exit, /*   append it to XT, exit    */
+#if 0
+      dup, two_minus,
+      _else_, N(7),            /* else if dtop = 2           */
+        drop, _lit_, two,      /*   change dtop to 'm4two'   */
+        _compile_comma_, exit, /*   append it to XT, exit    */
+      dup, four, equals,
+      _if_, N(7),              /* else if dtop = 4           */
+        drop, _lit_, four,     /*   change dtop to 'm4four'  */
+        _compile_comma_, exit, /*   append it to XT, exit    */
+      dup, eight, equals,
+      _if_, N(7),              /* else if dtop = 8           */
+        drop, _lit_, eight,    /*   change dtop to 'm4eight' */
+        _compile_comma_, exit, /*   append it to XT, exit    */
+      dup, minus_one, equals,
+      _if_, N(7),              /* else if dtop = -1           */
+        drop, _lit_, minus_one,/*   change dtop 'm4minus_one' */
+        _compile_comma_, exit, /*   append it to XT, exit     */
+#endif /* 0 */      
+      _lit_,  _lit_,           /* push 'm4_lit_' to dstack   */
+      _compile_comma_,         /* append it to XT            */
+      _compile_comma_,         /* append dtop to XT          */
+      /* _call_, XT(_optimize_),  nothing to optimize        */
       exit
     )
 WORD_END(literal)
@@ -146,7 +167,7 @@ WORD_START(true, swap) /* core ext */
     WORD_FLAGS(WORD_PURE)
     WORD_DSTACK(0,1)
     WORD_RSTACK(0,0)
-    WORD_NATIVE_LEN(minus_one)
+    WORD_NATIVE_LEN(minus_one)   /* true is implemented as minus_one */
     WORD_FUNCS(minus_one, exit)
 WORD_END(true)
 WORD(unloop,           true,       DSTACK(0,0), RSTACK(2,0), WORD_PURE | M4FLAG_COMPILE_ONLY)

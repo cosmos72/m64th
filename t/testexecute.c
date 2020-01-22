@@ -25,58 +25,19 @@
 #include "../test.h"
 
 #include <assert.h> /* assert()          */
-#include <stdio.h>  /* fprintf() fputs() */
-#include <string.h> /* memcpy()          */
 
 enum {
     SZ = sizeof(m4int),
-    m4test_code_n = 6,
 };
 
-typedef m4instr m4test_code[m4test_code_n];
+typedef m4instr m4test_code_array[m4test_code_n];
 
-typedef struct m4test_stacks_s {
-    m4test_stack d, r;
-} m4test_stacks;
-
-typedef struct m4test_s {
+typedef struct m4testexecute_s {
     const char *name;
-    m4test_code code;
+    m4test_code_array code;
     m4test_stacks before, after;
-    m4testcompile_code generated;
-} m4test;
-
-/* -------------- m4test_stack -------------- */
-
-void m4test_stack_print(const m4test_stack *src, FILE *out) {
-    m4int i;
-    fprintf(out, "<%ld> ", (long)src->len);
-    for (i = 0; i < src->len; i++) {
-        fprintf(out, "%ld ", (long)src->data[i]);
-    }
-    fputc('\n', out);
-}
-
-m4int m4test_stack_equals(const m4test_stack *src, const m4span *dst) {
-    m4int i, len = src->len;
-    if (len != dst->end - dst->curr) {
-        return 0;
-    }
-    for (i = 0; i < len; i++) {
-        if (src->data[i] != dst->end[-i - 1]) {
-            return 0;
-        }
-    }
-    return 1;
-}
-
-void m4test_stack_copy(const m4test_stack *src, m4span *dst) {
-    m4int i, len = src->len;
-    dst->curr = dst->end - len;
-    for (i = 0; i < len; i++) {
-        dst->end[-i - 1] = src->data[i];
-    }
-}
+    m4test_code codegen;
+} m4testexecute;
 
 /* -------------- crc -------------- */
 
@@ -121,7 +82,10 @@ static const m4instr test_func_crc1byte[] = {
 
 #define CALLXT(name) m4_call_, (m4instr)m4word_##name.code
 
-static const m4test test[] = {
+static const m4testexecute testexecute[] = {
+#if 0
+    {"1G 0 (do) (loop)", {m4_do_, m4_loop_, (m4instr)0, m4bye}, {{2, {1e9, 0}}, {}}, {{}, {}}, {}},
+#else
     {"0 0 (?do)", {m4_question_do_, (m4instr)2, m4bye}, {{2, {0, 0}}, {}}, {{}, {}}, {}},
     {"1 0 (?do)", {m4_question_do_, (m4instr)2, m4bye}, {{2, {1, 0}}, {}}, {{}, {2, {1, 0}}}, {}},
     {"(call) (inline)", {CALLXT(_inline_), m4bye}, {{}, {}}, {{}, {}}, {}},
@@ -134,17 +98,18 @@ static const m4test test[] = {
      {{2, {0xffffffff, 't'}}, {}},
      {{1, {0x7a95a557 /* crc1byte(0xffffffff, 't') */}}, {}},
      {}},
+    {"0x123 (compile,)",
+     {m4_compile_comma_, m4bye},
+     {{1, {0x123}}, {}},
+     {{}, {}},
+     {1, {(m4instr)0x123}}},
     {"0 1 (do)", {m4_do_, m4bye}, {{2, {0, 1}}, {}}, {{}, {2, {0, 1}}}, {}},
     {"1 0 (do)", {m4_do_, m4bye}, {{2, {1, 0}}, {}}, {{}, {2, {1, 0}}}, {}},
+    {"0 (else)", {m4_else_, (m4instr)3, m4two, m4bye}, {{1, {}}, {}}, {{1, {2}}, {}}, {}},
+    {"1 (else)", {m4_else_, (m4instr)3, m4four, m4bye}, {{1, {1}}, {}}, {{}, {}}, {}},
+    {"0 (if)", {m4_if_, (m4instr)3, m4two, m4bye}, {{1, {}}, {}}, {{}, {}}, {}},
+    {"1 (if)", {m4_if_, (m4instr)3, m4four, m4bye}, {{1, {1}}, {}}, {{1, {4}}, {}}, {}},
     {"(jump)", {m4_jump_, (m4instr)2, m4bye}, {{}, {}}, {{}, {}}, {}},
-    {"0 (jump-if)", {m4_jump_if_, (m4instr)3, m4two, m4bye}, {{1, {}}, {}}, {{1, {2}}, {}}, {}},
-    {"1 (jump-if)", {m4_jump_if_, (m4instr)3, m4four, m4bye}, {{1, {1}}, {}}, {{}, {}}, {}},
-    {"0 (jump-unless)", {m4_jump_unless_, (m4instr)3, m4two, m4bye}, {{1, {}}, {}}, {{}, {}}, {}},
-    {"1 (jump-unless)",
-     {m4_jump_unless_, (m4instr)3, m4four, m4bye},
-     {{1, {1}}, {}},
-     {{1, {4}}, {}},
-     {}},
     {"(leave)", {m4_leave_, (m4instr)2, m4bye}, {{}, {2, {0, 1}}}, {{}, {}}, {}},
     {"(lit)", {m4_lit_, (m4instr)7, m4bye}, {{}, {}}, {{1, {7}}, {}}, {}},
     {"0 0 (loop)", {m4_loop_, (m4instr)2, m4bye}, {{}, {2, {0, 0}}}, {{}, {2, {0, 1}}}, {}},
@@ -252,45 +217,57 @@ static const m4test test[] = {
     {"true", {m4true, m4bye}, {{}, {}}, {{1, {ttrue}}, {}}, {}},
     {"unloop", {m4unloop, m4bye}, {{}, {3, {1, 2, 3}}}, {{}, {1, {1}}}, {}},
     {"-7 14 xor", {m4xor, m4bye}, {{2, {-7, 14}}, {}}, {{1, {-7 ^ 14}}, {}}, {}},
+#endif
 };
 
-enum { test_n = sizeof(test) / sizeof(test[0]) };
+enum { testexecute_n = sizeof(testexecute) / sizeof(testexecute[0]) };
 
-static m4int m4test_run(m4th *m, const m4test *t) {
+static m4int m4testexecute_run(m4th *m, const m4testexecute *t, m4test_word *w) {
+    memset(w, '\0', sizeof(m4test_word));
     m4th_clear(m);
     m4test_stack_copy(&t->before.d, &m->dstack);
     m4test_stack_copy(&t->before.r, &m->rstack);
+    m->w = &w->impl;
     m->ip = t->code;
     m4th_run(m);
     return m4test_stack_equals(&t->after.d, &m->dstack) &&
-           m4test_stack_equals(&t->after.r, &m->rstack);
+           m4test_stack_equals(&t->after.r, &m->rstack) && m4test_code_equals(&t->codegen, m->w);
 }
 
-static void m4test_failed(m4th *m, const m4test *t, FILE *out) {
+static void m4testexecute_failed(m4th *m, const m4testexecute *t, FILE *out) {
     if (out == NULL) {
         return;
     }
-    fprintf(out, "test failed: %s\n", t->name);
-    fputs("    expected data   stack ", out);
+    fprintf(out, "execute test failed: %s\n", t->name);
+    fputs("    expected  data  stack ", out);
     m4test_stack_print(&t->after.d, out);
-    fputs("    actual   data   stack ", out);
+    fputs("      actual  data  stack ", out);
     m4stack_print(&m->dstack, out);
 
     fputs("... expected return stack ", out);
     m4test_stack_print(&t->after.r, out);
-    fputs("    actual   return stack ", out);
+    fputs("      actual return stack ", out);
     m4stack_print(&m->rstack, out);
+
+    if (t->codegen.len == 0 && m->w->code_n == 0) {
+        return;
+    }
+    fputs("... expected    codegen   ", out);
+    m4test_code_print(&t->codegen, out);
+    fputs("      actual    codegen   ", out);
+    m4word_code_print(m->w, out);
 }
 
 m4int m4th_testexecute(m4th *m, FILE *out) {
+    m4test_word w;
     m4int i, fail = 0;
-    enum { n = test_n };
+    enum { n = testexecute_n };
 
     crcfill(crctable);
 
     for (i = 0; i < n; i++) {
-        if (!m4test_run(m, &test[i])) {
-            fail++, m4test_failed(m, &test[i], out);
+        if (!m4testexecute_run(m, &testexecute[i], &w)) {
+            fail++, m4testexecute_failed(m, &testexecute[i], out);
         }
     }
     if (out != NULL) {
