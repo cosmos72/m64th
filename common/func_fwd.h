@@ -15,8 +15,8 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_FUNC_FWD_H
-#define M4TH_FUNC_FWD_H
+#ifndef M4TH_COMMON_FUNC_FWD_H
+#define M4TH_COMMON_FUNC_FWD_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -37,12 +37,12 @@ void m4store(m4arg _); /* !    */
 /* (?do) m4th: must be followed by IP offset of 1st instruction after (loop) */
 void m4_question_do_(m4arg _);
 void m4_call_(m4arg _); /* (call) m4th-impl: must be followed by execution token of forth word */
-void m4_compile_comma_(m4arg _); /* (compile,)     m4th-impl */
-void m4_do_(m4arg _);            /* (do)           m4th-impl */
-void m4_jump_(m4arg _);          /* (jump)         m4th-impl: must be followed by IP offset */
-void m4_else_(m4arg _);          /* (else)      m4th-impl: must be followed by IP offset */
-void m4_if_(m4arg _);            /* (if)  m4th-impl: must be followed by IP offset */
-void m4_lit_(m4arg _);           /* (lit)  m4th: must be followed by number */
+void m4_compile_comma_(m4arg _); /* (compile,) m4th-impl */
+void m4_do_(m4arg _);            /* (do)       m4th-impl */
+void m4_jump_(m4arg _);          /* (jump)     m4th-impl: must be followed by IP offset */
+void m4_else_(m4arg _);          /* (else)     m4th-impl: must be followed by IP offset */
+void m4_if_(m4arg _);            /* (if)       m4th-impl: must be followed by IP offset */
+void m4_lit_(m4arg _);           /* (lit)      m4th-impl must be followed by m4int */
 /* (leave) m4th: must be followed by IP offset of 1st instruction after (loop) */
 void m4_leave_(m4arg _);
 /* (loop) m4th: must be followed by IP offset of 1st instruction after (do) */
@@ -126,4 +126,4 @@ void m4xor(m4arg _);                 /* xor  */
 }
 #endif
 
-#endif /* M4TH_FUNC_FWD_H */
+#endif /* M4TH_COMMON_FUNC_FWD_H */

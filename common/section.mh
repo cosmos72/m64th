@@ -18,6 +18,8 @@
 #ifndef M4TH_COMMON_SECTION_ASM_MH
 #define M4TH_COMMON_SECTION_ASM_MH
 
+#define SECTION_DATA() .data
+
 #define SECTION_FUNC() .text
 
 /*
