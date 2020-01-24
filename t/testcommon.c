@@ -18,7 +18,7 @@
 #ifndef M4TH_T_TESTCOMMON_C
 #define M4TH_T_TESTCOMMON_C
 
-#include "test_impl.h"
+#include "testcommon.h"
 
 #include <stdio.h>  /* fprintf() fputc() */
 #include <string.h> /* memcpy()          */

@@ -22,7 +22,7 @@
 #include "../common/word_fwd.h"
 #include "../impl.h"
 #include "../m4th.h"
-#include "test_impl.h"
+#include "testcommon.h"
 
 #include <assert.h> /* assert()          */
 

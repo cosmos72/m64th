@@ -29,8 +29,9 @@ enum {
     callsz = 1 + m4enum_per_m4long,
 };
 
-/** padding needed for element-to-element conversion from m4long[] to m4enum[] */
+/** zero-padding needed for element-to-element conversion from m4long[] to m4enum[] */
 #define CELL(n) (m4long)(n), 0, 0, 0
-#define CALLXT(name) m4_call_, CELL(m4word_##name.code)
+#define XT(name) CELL(m4word_##name.code)
+#define CALLXT(name) m4_call_, XT(name)
 
 #endif /* M4TH_T_TEST_IMPL_H */
