@@ -82,20 +82,17 @@ static const m4testexecute testexecute[] = {
 #else
     {"0 0 (?do)", {m4_question_do_, (m4enum)2, m4bye}, {{2, {0, 0}}, {}}, {{}, {}}, {}},
     {"1 0 (?do)", {m4_question_do_, (m4enum)2, m4bye}, {{2, {1, 0}}, {}}, {{}, {2, {1, 0}}}, {}},
-/*
-{"(call) (inline)", {CALLXT(_inline_), m4bye}, {{}, {}}, {{}, {}}, {}},
-{"(call) (optimize)", {CALLXT(_optimize_), m4bye}, {{}, {}}, {{}, {}}, {}},
-{"(call) false", {CALLXT(false), m4bye}, {{}, {}}, {{1, {}}, {}}, {}},
-{"(call) noop", {CALLXT(noop), m4bye}, {{}, {}}, {{}, {}}, {}},
-{"(call) true", {CALLXT(true), m4bye}, {{}, {}}, {{1, {-1}}, {}}, {}},
-*/
-#if 0   
+#if 0
+    {"(call) (inline)", {CALLXT(_inline_), m4bye}, {{}, {}}, {{}, {}}, {}},
+    {"(call) (optimize)", {CALLXT(_optimize_), m4bye}, {{}, {}}, {{}, {}}, {}},
+    {"(call) false", {CALLXT(false), m4bye}, {{}, {}}, {{1, {}}, {}}, {}},
+    {"(call) noop", {CALLXT(noop), m4bye}, {{}, {}}, {{}, {}}, {}},
+    {"(call) true", {CALLXT(true), m4bye}, {{}, {}}, {{1, {-1}}, {}}, {}},
     {"(call) crc+",
      {m4_call_, (m4enum)test_func_crc1byte, m4bye},
      {{2, {0xffffffff, 't'}}, {}},
      {{1, {0x7a95a557 /* crc1byte(0xffffffff, 't') */}}, {}},
      {}},
-#endif
     {"0x123 (compile,)",
      {m4_compile_comma_, m4bye},
      {{1, {0x123}}, {}},
@@ -124,6 +121,7 @@ static const m4testexecute testexecute[] = {
      {{3, {0, (m4long)1e6, 0}}, {}},
      {{1, {499999500000l}}, {}},
      {}},
+#endif
     {"*", {m4times, m4bye}, {{2, {20, 7}}, {}}, {{1, {140}}, {}}, {}},
     {"-3 2 +", {m4plus, m4bye}, {{2, {-3, 2}}, {}}, {{1, {-1}}, {}}, {}},
     {"3 4 -", {m4minus, m4bye}, {{2, {3, 4}}, {}}, {{1, {-1}}, {}}, {}},
