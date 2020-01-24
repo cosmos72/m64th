@@ -37,11 +37,12 @@
 #define SZ16 128 /* SZ * 16 */
 #define PSZ 3    /* (1 << PSZ) == SZ */
 
-#define ISZ 2   /* size of a forth instruction in bytes */
-#define ISZ2 4  /* ISZ * 2 */
-#define ISZ3 6  /* ISZ * 3 */
-#define ISZ4 8  /* ISZ * 4 */
-#define ISZ5 10 /* ISZ * 5 */
+#define SZe 2   /* sizeof(m4enum) in bytes */
+#define SZe2 4  /* SZe * 2 */
+#define SZe3 6  /* SZe * 3 */
+#define SZe4 8  /* SZe * 4 */
+#define SZe5 10 /* SZe * 5 */
+#define PSZe 1  /* (1 << PSZe) == SZe */
 
 #define IMM(constant) constant /* immediate constant */
 
@@ -63,6 +64,7 @@
 #define REG0b w0   /* low  8 bits of REG0 */
 #define REG0h w0   /* low 16 bits of REG0 */
 #define REG0w w0   /* low 32 bits of REG0 */
+#define REG0e w0   /* (m4enum)REG0        */
 #define REG0_sb x0 /* sign-extend  8 bits into REG0 */
 #define REG0_sh x0 /* sign-extend 16 bits into REG0 */
 #define REG0_sw x0 /* sign-extend 32 bits into REG0 */
@@ -75,6 +77,7 @@
 #define REG1b w1   /* low 8 bits of REG1 */
 #define REG1h w1   /* low 16 bits of REG1 */
 #define REG1w w1   /* low 32 bits of REG1 */
+#define REG1e w1   /* (m4enum)REG1        */
 #define REG1_sb x1 /* sign-extend  8 bits into REG1 */
 #define REG1_sh x1 /* sign-extend 16 bits into REG1 */
 #define REG1_sw x1 /* sign-extend 32 bits into REG1 */
@@ -87,6 +90,7 @@
 #define REG2b w2   /* low  8 bits of REG2 */
 #define REG2h w2   /* low 16 bits of REG2 */
 #define REG2w w2   /* low 32 bits of REG2 */
+#define REG2e w2   /* (m4enum)REG2        */
 #define REG2_sb x2 /* sign-extend  8 bits into REG2 */
 #define REG2_sh x2 /* sign-extend 16 bits into REG2 */
 #define REG2_sw x2 /* sign-extend 32 bits into REG2 */
@@ -99,6 +103,7 @@
 #define REG3b w3   /* low  8 bits of REG3 */
 #define REG3h w3   /* low 16 bits of REG3 */
 #define REG3w w3   /* low 32 bits of REG3 */
+#define REG3e w3   /* (m4enum)REG3        */
 #define REG3_sb x3 /* sign-extend  8 bits into REG3 */
 #define REG3_sh x3 /* sign-extend 16 bits into REG3 */
 #define REG3_sw x3 /* sign-extend 32 bits into REG3 */
@@ -112,6 +117,7 @@
 #define DTOPb w20   /* low 8 bits of DTOP */
 #define DTOPh w20   /* low 16 bits of DTOP */
 #define DTOPw w20   /* low 32 bits of DTOP */
+#define DTOPe w20   /* (m4enum)DTOP        */
 #define DTOP_sb x20 /* sign-extend  8 bits into DTOP */
 #define DTOP_sh x20 /* sign-extend 16 bits into DTOP */
 #define DTOP_sw x20 /* sign-extend 32 bits into DTOP */
@@ -125,6 +131,7 @@
 #define RTOPb w23   /* low  8 bits of RTOP */
 #define RTOPh w23   /* low 16 bits of RTOP */
 #define RTOPw w23   /* low 32 bits of RTOP */
+#define RTOPe w23   /* (m4enum)RTOP        */
 #define RTOP_sb x23 /* sign-extend  8 bits into RTOP */
 #define RTOP_sh x23 /* sign-extend 16 bits into RTOP */
 #define RTOP_sw x23 /* sign-extend 32 bits into RTOP */
@@ -172,18 +179,18 @@
 #define LD_sb(reg,at)  ldrsb reg, at;          /* reg = *(int8_t *)at   */
 #define LD_sh(reg,at)  ldrsh reg, at;          /* reg = *(int16_t*)at   */
 #define LD_sw(reg,at)  ldrsw reg, at;          /* reg = *(int32_t*)at   */
-#define LD_se(reg,at)  LD_sh(reg, at)        /* reg = *(signed m4enum*)at */
+#define LD_se(reg,at)  ldrsh reg, at;          /* reg = *(signed m4enum*)at */
 
 #define LD_ub(reg,at)  ldrb  reg, at;          /* reg = *(uint8_t *)at  */
 #define LD_uh(reg,at)  ldrh  reg, at;          /* reg = *(uint16_t*)at  */
 #define LD_uw(reg,at)  ldr   reg, at;          /* reg = *(uint32_t*)at  */
-#define LD_ue(reg,at)  LD_uh(reg, at)        /* reg = *(unsigned m4enum*)at */
+#define LD_ue(reg,at)  ldrh  reg, at;          /* reg = *(unsigned m4enum*)at */
 
 /* no difference between signed and unsigned STOR* */
 #define STORb(reg,at)    strb  reg, at;          /* *(uint8_t *)at  = reg */
 #define STORh(reg,at)    strh  reg, at;          /* *(uint16_t*)at  = reg */
 #define STORw(reg,at)    str   reg, at;          /* *(uint32_t*)at  = reg */
-#define STORe(reg,at)    STORh(reg, at)          /* *(m4enum  *)at  = reg */
+#define STORe(reg,at)    strh  reg, at;          /* *(m4enum  *)at  = reg */
 
 #define FADDR(fun, dst) /* load function address */ \
     adrp  dst,  fun;             /* high 21 bits */ \
@@ -195,35 +202,35 @@
 #define RPUSH(val)    str       val, [RSTK, -SZ]!; /* push val to second return stack element */
 #define RPOP(val)     ldr       val, [RSTK], SZ;   /* pop second return stack element into val */
 
-/* clang-format on */
-
 #define NEXT0() /* jump to current instruction. useful after manually updating IP              */  \
-    LD_ue(REG0_ue, AT(IP));                                                                        \
+    LD_ue(REG0_ue, AT(IP))                                                                        \
     LOAD(REG0, AT(ETBL, REG0, SZ))                                                                 \
     br REG0;
 
 #define NEXT() /* jump to next instruction */                                                      \
-    LD_ue(REG0_ue, AT(IP, ISZ));                                                                   \
-    ADD2(IMM(ISZ), IP)                                                                             \
+    LD_ue(REG0_ue, AT(IP, SZe))                                                                   \
+    ADD2(IMM(SZe), IP)                                                                             \
     LOAD(REG0, AT(ETBL, REG0, SZ))                                                                 \
     br REG0;
 
 #define NEXT2() /* skip 2 bytes (one instruction), jump to second instruction */                   \
-    LD_ue(REG0_ue, AT(IP, ISZ2));                                                                  \
-    ADD2(IMM(ISZ2), IP)                                                                            \
+    LD_ue(REG0_ue, AT(IP, SZe2))                                                                  \
+    ADD2(IMM(SZe2), IP)                                                                            \
     LOAD(REG0, AT(ETBL, REG0, SZ))                                                                 \
     br REG0;
 
 #define NEXT4() /* skip 4 bytes (two instructions), jump to third instruction */                   \
-    LD_ue(REG0_ue, AT(IP, ISZ3));                                                                  \
-    ADD2(IMM(ISZ3), IP)                                                                            \
+    LD_ue(REG0_ue, AT(IP, SZe3))                                                                  \
+    ADD2(IMM(SZe3), IP)                                                                            \
     LOAD(REG0, AT(ETBL, REG0, SZ))                                                                 \
     br REG0;
 
 #define NEXT8() /* skip 8 bytes (four instructions), jump to fifth instruction */                  \
-    LD_ue(REG0_ue, AT(IP, ISZ5));                                                                  \
-    ADD2(IMM(ISZ5), IP)                                                                            \
+    LD_ue(REG0_ue, AT(IP, SZe5))                                                                  \
+    ADD2(IMM(SZe5), IP)                                                                            \
     LOAD(REG0, AT(ETBL, REG0, SZ))                                                                 \
     br REG0;
+
+/* clang-format on */
 
 #endif /* M4TH_ARM64_ASM_MH */

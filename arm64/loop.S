@@ -26,12 +26,12 @@ FUNC_START(_question_do_)
         LOAD(  REG2, AT(DSTK))
         cmp    REG2, DTOP;
         b.eq   .L_question_do_.skip;
-        ADD2(  IMM(ISZ), IP)           /* skip jump offset      */
+        ADD2(  IMM(SZe), IP)           /* skip jump offset      */
         b      FUNC_SYM(_do_);
 .L_question_do_.skip:                /* skip the loop:        */
-        LD_sh(REG2_sh, AT(IP, ISZ))  /* REG2 = IP jump offset */
+        LD_sh(REG2_sh, AT(IP, SZe))  /* REG2 = IP jump offset */
         LOAD(  DTOP,   AT(DSTK, SZ))   /* reload dstack top     */
-        add    IP, IP, REG2, lsl PISZ; /* IP = TARGET_IP        */
+        add    IP, IP, REG2, lsl PSZe; /* IP = TARGET_IP        */
         ADD2(  IMM(SZ2), DSTK)         /* drop i' i from dstack */
         NEXT0()                        /* jump to TARGET_IP     */
 FUNC_RAWEND(_question_do_)
@@ -52,8 +52,8 @@ FUNC_END(_do_)
  * IP offset = 0 means (jump) itself
  */
 FUNC_START(_jump_)
-        LD_sh(  REG2_sh, AT(IP, ISZ))  /* REG2 = IP jump offset   */
-        add    IP, IP, REG2, lsl PISZ;   /* IP   = TARGET_IP        */
+        LD_sh(  REG2_sh, AT(IP, SZe))  /* REG2 = IP jump offset   */
+        add    IP, IP, REG2, lsl PSZe;   /* IP   = TARGET_IP        */
         NEXT0()                          /* jump to TARGET_IP       */
 FUNC_END(_jump_)
 
@@ -113,8 +113,8 @@ FUNC_START(_loop_)
         LOAD(  REG1, AT(RSTK))      /* REG1 = i'                   */
         cmp    REG1, RTOP;
         b.eq   .L_loop_.break;        /* break if i == i'            */
-        LD_sh(  REG2_sh, AT(IP, ISZ)) /* REG2 = IP jump offset   */
-        add    IP, IP, REG2, lsl PISZ;  /* IP = TARGET_IP              */
+        LD_sh(  REG2_sh, AT(IP, SZe)) /* REG2 = IP jump offset   */
+        add    IP, IP, REG2, lsl PSZe;  /* IP = TARGET_IP              */
         NEXT0()                         /* jump to TARGET_IP           */
 .L_loop_.break:
         LOAD(  RTOP, AT(RSTK, SZ)) /* load new top of rstack      */

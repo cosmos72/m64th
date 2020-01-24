@@ -80,8 +80,8 @@ FUNC_RAWEND(bye)
 /** must be followed by an XT. calls it. */
 FUNC_START(_call_)
         RPUSH( RTOP)                   /* save RTOP           */
-        lea    AT(IP, ISZ+SZ), RTOP    /* save return address = IP + ISZ + SZ */
-        LOAD(  IP,   AT(IP, ISZ))      /* load XT from IP[ISZ] */
+        lea    AT(IP, SZe+SZ), RTOP    /* save return address = IP + SZe + SZ */
+        LOAD(  IP,   AT(IP, SZe))      /* load XT from IP[SZe] */
         NEXT0()                        /* jump to XT          */
 FUNC_RAWEND(_call_)
 

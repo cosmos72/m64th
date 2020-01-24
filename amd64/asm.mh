@@ -38,11 +38,11 @@
 #define SZ16 128 /* SZ * 16 */
 #define PSZ 3    /* (1 << PSZ) == SZ */
 
-#define ISZ 2   /* sizeof(m4enum) in bytes */
-#define ISZ2 4  /* ISZ * 2 */
-#define ISZ3 6  /* ISZ * 3 */
-#define ISZ4 8  /* ISZ * 4 */
-#define ISZ5 10 /* ISZ * 5 */
+#define SZe 2   /* sizeof(m4enum) in bytes */
+#define SZe2 4  /* SZe * 2 */
+#define SZe3 6  /* SZe * 3 */
+#define SZe4 8  /* SZe * 4 */
+#define SZe5 10 /* SZe * 5 */
 
 #define IMM(constant) $constant /* immediate constant */
 
@@ -192,28 +192,28 @@
     jmp *(ETBL, REG3, SZ);
 
 #define NEXT() /* jump to next instruction */                                                      \
-    LD_ue(REG3_ue, AT(IP, ISZ));                                                                   \
-    ADD2(IMM(ISZ), IP)                                                                             \
+    LD_ue(REG3_ue, AT(IP, SZe));                                                                   \
+    ADD2(IMM(SZe), IP)                                                                             \
     jmp *(ETBL, REG3, SZ);
 
 #define NEXT2() /* skip 2 bytes (one instruction), jump to second instruction */                   \
-    LD_ue(REG3_ue, AT(IP, ISZ2));                                                                  \
-    ADD2(IMM(ISZ2), IP)                                                                            \
+    LD_ue(REG3_ue, AT(IP, SZe2));                                                                  \
+    ADD2(IMM(SZe2), IP)                                                                            \
     jmp *(ETBL, REG3, SZ);
 
 #define NEXT4() /* skip 4 bytes (two instructions), jump to third instruction */                   \
-    LD_ue(REG3_ue, AT(IP, ISZ3));                                                                  \
-    ADD2(IMM(ISZ2), IP)                                                                            \
+    LD_ue(REG3_ue, AT(IP, SZe3));                                                                  \
+    ADD2(IMM(SZe2), IP)                                                                            \
     jmp *(ETBL, REG3, SZ);
 
 #define NEXT8() /* skip 8 bytes (four instructions), jump to fifth instruction */                  \
-    LD_ue(REG3_ue, AT(IP, ISZ5));                                                                  \
-    ADD2(IMM(ISZ2), IP)                                                                            \
+    LD_ue(REG3_ue, AT(IP, SZe5));                                                                  \
+    ADD2(IMM(SZe2), IP)                                                                            \
     jmp *(ETBL, REG3, SZ);
 
 #define RELJUMP()                 /* relative jump by number of instructions stored at next IP */  \
-    LD_se(REG3_se, AT(IP, ISZ));  /* REG3 = IP jump offset */                                      \
-    lea /**/ (IP, REG3, ISZ), IP; /* IP = TARGET_IP        */                                      \
+    LD_se(REG3_se, AT(IP, SZe));  /* REG3 = IP jump offset */                                      \
+    lea /**/ (IP, REG3, SZe), IP; /* IP = TARGET_IP        */                                      \
     NEXT0()                       /* jump to TARGET_IP     */
 
 #endif /* M4TH_AMD64_ASM_MH */

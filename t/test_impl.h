@@ -24,8 +24,8 @@ enum {
     tfalse = (m4long)0,
     ttrue = (m4long)-1,
     SZ = sizeof(m4long),
-    ISZ = sizeof(m4enum),
-    m4enum_per_m4long = (SZ + ISZ - 1) / SZ, /* # of m4enum needed to store an m4long */
+    SZe = sizeof(m4enum),
+    m4enum_per_m4long = (SZ + SZe - 1) / SZ, /* # of m4enum needed to store an m4long */
     callsz = 1 + m4enum_per_m4long,
 };
 

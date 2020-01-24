@@ -40,7 +40,7 @@ FUNC_END(xt_code_n_fetch)
 FUNC_START(_compile_comma_)    /* (compile,) */
         /* TODO check if enough space */
         LD_uw(REG1_uw, AT(M4XT, XT_OFF_CODE_N)) /* xt.code_n */
-        STORe(  DTOPe,   AT(M4XT, REG1, ISZ))     /* xt[xt.code_n] = (m4enum)DTOP */
+        STORe(  DTOPe,   AT(M4XT, REG1, SZe))     /* xt[xt.code_n] = (m4enum)DTOP */
         INC1(  REG1)
         DPOP(  DTOP)
         STORw( REG1w,    AT(M4XT, XT_OFF_CODE_N)) /* xt.code_n++ */

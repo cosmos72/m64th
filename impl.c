@@ -25,8 +25,8 @@
 
 enum {
     SZ = sizeof(m4long),
-    ISZ = sizeof(m4enum),
-    m4enum_per_m4long = (SZ + ISZ - 1) / SZ, /* # of m4enum needed to store an m4long */
+    SZe = sizeof(m4enum),
+    m4enum_per_m4long = (SZ + SZe - 1) / SZ, /* # of m4enum needed to store an m4long */
 };
 
 static inline void dpush(m4th *m, m4long val) {

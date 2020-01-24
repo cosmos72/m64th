@@ -25,13 +25,13 @@ FUNC_START(_question_do_)
         cmp    DTOP, AT(DSTK);
         jne     .L_question_do_.enter;
                                            /* skip the loop:        */
-        LD_se( REG2_se,   AT(IP, ISZ))     /* REG2 = IP jump offset */
+        LD_se( REG2_se,   AT(IP, SZe))     /* REG2 = IP jump offset */
         LOAD(  DTOP,      AT(DSTK, SZ))    /* reload dstack top     */
-        lea    (IP, REG2, ISZ),  IP;       /* IP = TARGET_IP        */
+        lea    (IP, REG2, SZe),  IP;       /* IP = TARGET_IP        */
         ADD2(  IMM(SZ2),  DSTK)            /* drop i' i from dstack */
         NEXT0()                            /* jump to TARGET_IP     */
 .L_question_do_.enter:                     /* enter the loop:       */
-        ADD2(  IMM(ISZ), IP)               /* skip jump offset      */
+        ADD2(  IMM(SZe), IP)               /* skip jump offset      */
         /* FALLTHROUGH */
 /* FUNC_RAWEND(_question_do_) */
 
@@ -91,9 +91,9 @@ FUNC_RAWEND(_if_)
  * IP offset = 0 means (leave) itself
  */
 FUNC_START(_leave_)
-        LD_se( REG2_se,    AT(IP, ISZ))    /* REG2 = IP jump offset */
+        LD_se( REG2_se,    AT(IP, SZe))    /* REG2 = IP jump offset */
         LOAD(  RTOP,       AT(RSTK, SZ))   /* reload rstack top     */
-        lea   (IP, REG2, ISZ),  IP;        /* IP = TARGET_IP        */
+        lea   (IP, REG2, SZe),  IP;        /* IP = TARGET_IP        */
         ADD2(  IMM(SZ2),   RSTK)           /* drop i' i from rstack */
         NEXT0()                            /* jump to TARGET_IP     */
 FUNC_RAWEND(_leave_)
@@ -109,7 +109,7 @@ FUNC_START(_loop_)
         RELJUMP()
 .L_loop_.leave:
         LOAD(  RTOP, AT(RSTK, SZ)) /* load new top of rstack      */
-        ADD2(  IMM(ISZ2),  IP)     /* IP = next instruction       */
+        ADD2(  IMM(SZe2),  IP)     /* IP = next instruction       */
         ADD2(  IMM(SZ2),   RSTK)   /* drop i' i from return stack */
         NEXT0()                    /* execute next instruction    */
 FUNC_RAWEND(_loop_)

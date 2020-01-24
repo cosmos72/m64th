@@ -54,7 +54,7 @@
 #define WORD_NATIVE_NONE() /*       */ .2byte 0xFFFF;
 #define WORD_CODE_N(n_instr) /*     */ .4byte n_instr;
 #define WORD_DATA_NBYTES(n_bytes) /**/ .8byte n_bytes;
-#define WORD_DATA_N(n_instr) /*     */ .8byte ISZ *(n_instr);
+#define WORD_DATA_N(n_instr) /*     */ .8byte SZe *(n_instr);
 #define WORD_CODE(...) /*           */ .8byte __VA_ARGS__;
 #define WORD_CODE_FUNC(name) /*     */ .8byte FUNC_SYM(name);
 #define WORD_DATA_1(...) /*         */ .byte __VA_ARGS__;
