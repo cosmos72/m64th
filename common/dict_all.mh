@@ -15,21 +15,12 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "../common/asm.mh"
-#include "dict.mh"
+#ifndef M4TH_COMMON_DICT_ALL_MH
+#define M4TH_COMMON_DICT_ALL_MH
+
+#include "dict_forth.mh"
 #include "dict_m4th.mh"
 
-/* ---------------------------------------------------------------------------------------------- */
-DICT_START(m4th_user)
+#define DICT_WORDS_ALL(X) DICT_WORDS_FORTH(X) DICT_WORDS_M4TH(X)
 
-DICTNAME(9, "m4th-user", m4th_user)
-
-DICT_WORDS_M4TH_USER(WORDNAME)
-
-WORD(less_equal,         less_equal,         DSTACK(2,1), RSTACK(0,0), WORD_PURE)
-WORD(more_equal,      less_equal,         DSTACK(2,1), RSTACK(0,0), WORD_PURE)
-WORD(zero_less_equal,    more_equal,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(zero_more_equal, zero_less_equal,    DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-
-DICT_BODY(m4th_user, zero_more_equal)
-DICT_END(m4th_user)
+#endif /* M4TH_COMMON_DICT_ALL_MH */

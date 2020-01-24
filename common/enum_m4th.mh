@@ -1,0 +1,67 @@
+/**
+ * This file is part of m4th.
+ *
+ * m4th is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3
+ * of the License, or (at your option) any later version.
+ *
+ * m4th is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+#ifndef M4TH_COMMON_ENUM_M4TH_MH
+#define M4TH_COMMON_ENUM_M4TH_MH
+
+/* 'm4th-user' wordlist */
+#define M4zero_less_equal 501 /* 0<=      */
+#define M4zero_more_equal 502 /* 0>=      */
+#define M4less_equal 503      /* <=       */
+#define M4more_equal 504      /* >=       */
+
+/* WARNING: numeric values under this line are subject to change */
+
+/* 'm4th-impl' wordlist */
+/* (?do) must be followed by IP offset of 1st instruction after (loop) */
+#define M4_question_do_ 512
+#define M4_missing_ 0         /* (missing) called instead of invalid/unimplemented function */
+#define M4_call_ 513          /* (call) must be followed by XT */
+#define M4_compile_comma_ 514 /* (compile,)   */
+#define M4_do_ 515            /* (do)         */
+#define M4_jump_ 516          /* (jump) must be followed by IP offset */
+#define M4_else_ 517          /* (else) must be followed by IP offset */
+#define M4_if_ 518            /* (if)   must be followed by IP offset */
+#define M4_inline_ 519        /* (inline) try to inline calls in word being compiled */
+#define M4_lit_ 520           /* (lit)  must be followed by m4enum    */
+#define M4_leave_ 521    /* (leave) must be followed by IP offset of 1st instruction after (loop) */
+#define M4_loop_ 522     /* (loop)  must be followed by IP offset of 1st instruction after (do)   */
+#define M4_optimize_ 523 /* (optimize) try to optimize word being compiled */
+#undef M4____gap         /*          */
+#define M4minus_one 530  /* -1       */
+#define M4zero 531       /* 0        */
+#define M4one 532        /* 1        */
+#define M4two 533        /* 2        */
+#define M4two_plus 534   /* 2+       */
+#define M4two_minus 535  /* 2-       */
+#define M4three 536      /* 3        */
+#define M4four 537       /* 4        */
+#define M4four_times 538 /* 4*       */
+#define M4four_plus 539  /* 4+       */
+#define M4eight 540      /* 8        */
+#define M4eight_times 541 /* 8*       */
+#define M4eight_plus 542  /* 8+       */
+#undef M4____gap          /*          */
+#define M4i_prime 545     /* i'       */
+#define M4i_times 546     /* i*       */
+#define M4i_plus 547      /* i+       */
+#define M4i_minus 548     /* i-       */
+#define M4noop 549        /* noop     */
+
+#define M4____end 550
+
+#endif /* M4TH_COMMON_ENUM_M4TH_MH */

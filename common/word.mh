@@ -45,16 +45,16 @@
 #define WORD_PREV_OFF(name, prev) /**/ .4byte WORD_SYM(name) - WORD_SYM(prev);
 #define WORD_NAME_OFF(name) /*      */ .2byte WORD_SYM(name) - COUNTEDSTRING_SYM(name);
 #define WORD_FLAGS(flags) /*        */ .2byte flags;
-#define WORD_DSTACK(in, out) /*     */ .byte((in)&0xF) | (((out)&0xF) << 4);
+#define WORD_DSTACK(in, out) /*     */ .byte /**/ ((in)&0xF) | (((out)&0xF) << 4);
 #define WORD_DSTACK_UNKNOWN() /*    */ .byte 0xFF;
-#define WORD_RSTACK(in, out) /*     */ .byte((in)&0xF) | (((out)&0xF) << 4);
+#define WORD_RSTACK(in, out) /*     */ .byte /**/ ((in)&0xF) | (((out)&0xF) << 4);
 #define WORD_RSTACK_UNKNOWN() /*    */ .byte 0xFF;
 #define WORD_NATIVE_LEN(name) /*    */ .2byte FUNC_SYM_NEXT(name) - FUNC_SYM(name);
 #define WORD_NATIVE_LEN_0() /*      */ .2byte 0;
 #define WORD_NATIVE_NONE() /*       */ .2byte 0xFFFF;
 #define WORD_CODE_N(n_instr) /*     */ .4byte n_instr;
 #define WORD_DATA_NBYTES(n_bytes) /**/ .8byte n_bytes;
-#define WORD_DATA_N(n_instr) /*     */ .8byte (n_instr)*ISZ;
+#define WORD_DATA_N(n_instr) /*     */ .8byte ISZ *(n_instr);
 #define WORD_CODE(...) /*           */ .8byte __VA_ARGS__;
 #define WORD_CODE_FUNC(name) /*     */ .8byte FUNC_SYM(name);
 #define WORD_DATA_1(...) /*         */ .byte __VA_ARGS__;
@@ -63,12 +63,12 @@
 #define WORD_DATA_8(...) /*         */ .8byte __VA_ARGS__;
 #define WORD_END(name) /*           */ .size WORD_SYM(name), .- WORD_SYM(name);
 
-#define WORD_CODE_FUNCS(...) WORD_CODE(WRAP_ARGS_COMMA(FUNC_SYM, __VA_ARGS__))
+#define WORD_CODE_ENUMS(...) WORD_CODE(WRAP_ARGS_COMMA(M4ENUM_VAL, __VA_ARGS__))
 
-#define WORD_FUNCS(...)                                                                            \
+#define WORD_ENUMS(...)                                                                            \
     WORD_CODE_N(COUNT_ARGS(__VA_ARGS__))                                                           \
     WORD_DATA_NBYTES(0)                                                                            \
-    WORD_CODE_FUNCS(__VA_ARGS__)
+    WORD_CODE_ENUMS(__VA_ARGS__)
 
 /* clang-format off */
 
@@ -77,7 +77,7 @@
     WORD_##dstack                                                                                  \
     WORD_##rstack                                                                                  \
     WORD_NATIVE_LEN(name)                                                                          \
-    WORD_FUNCS(name, exit)
+    WORD_ENUMS(name, exit)
 
 /* clang-format on */
 

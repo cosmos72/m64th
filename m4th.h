@@ -18,6 +18,7 @@
 #ifndef M4TH_M4TH_H
 #define M4TH_M4TH_H
 
+#include "common/enum.h" /* FIXME not a public header */
 #include "m4th.mh"
 
 #include <stddef.h>    /* size_t    */
@@ -29,12 +30,12 @@ typedef struct m4arg_s m4arg; /**< intentionally incomplete type, cannot be inst
 
 typedef unsigned char m4char;
 typedef size_t m4uint;
-typedef ssize_t m4int;
+typedef ssize_t m4long;
 /** forth instruction. uses forth calling convention, cannot be invoked from C */
-typedef void (*m4instr)(m4arg);
+typedef void (*m4func)(m4arg);
 
 typedef char
-    m4th_assert_sizeof_m4instr_equals_sizeof_m4int[sizeof(m4instr) == sizeof(m4int) ? 1 : -1];
+    m4th_assert_sizeof_m4instr_less_equal_sizeof_m4long[sizeof(m4func) <= sizeof(m4long) ? 1 : -1];
 
 /** m4th flags */
 typedef enum m4th_flags_e {
@@ -84,16 +85,16 @@ struct m4cspan_s {
     m4char *end;
 };
 
-/** array of m4int, with current size and capacity */
+/** array of m4long, with current size and capacity */
 struct m4span_s {
-    m4int *start;
-    m4int *curr;
-    m4int *end;
+    m4long *start;
+    m4long *curr;
+    m4long *end;
 };
 
 struct m4string_s {
     const m4char *addr;
-    m4int len;
+    m4long len;
 };
 
 /** compiled forth word. Execution token i.e. XT is the address of m4word.code[0] */
@@ -104,9 +105,9 @@ struct m4word_s {
     uint8_t dstack;      /**< dstack # in and # out. 0xFF if unknown or variable   */
     uint8_t rstack;      /**< rstack # in and # out. 0xFF if unknown or variable   */
     uint16_t native_len; /**< native code size, in bytes. 0xFFFF if not available  */
-    uint32_t code_n;     /**< forth code size, in m4instr:s                        */
+    uint32_t code_n;     /**< forth code size, in m4enum:s                            */
     uint64_t data_len;   /**< data size, in bytes                                  */
-    m4instr code[0];     /**< code i.e. XT starts at [0], data starts at [code_n]  */
+    m4enum code[0];      /**< code i.e. XT starts at [0], data starts at [code_n]  */
 };
 
 struct m4wordlist_s {   /**< wordlist                                             */
@@ -121,18 +122,20 @@ struct m4dict_s {     /**< dictionary. used to implement wordlist               
 
 enum { m4th_wordlist_n = 12 };
 
-struct m4th_s {        /**< m4th forth interpreter and compiler */
-    m4stack dstack;    /**< data stack                          */
-    m4stack rstack;    /**< return stack                        */
-    m4word *w;         /**< forth word being compiled           */
-    const m4instr *ip; /**< instruction pointer                 */
-    const void *c_sp;  /**< C stack pointer, may be saved here by m4th_run() */
-    m4cspan in;        /**< input  buffer                       */
-    m4cspan out;       /**< output buffer                       */
-    m4int flags;       /**< m4th_flags                          */
+struct m4th_s {       /**< m4th forth interpreter and compiler */
+    m4stack dstack;   /**< data stack                          */
+    m4stack rstack;   /**< return stack                        */
+    m4word *w;        /**< forth word being compiled           */
+    const m4enum *ip; /**< instruction pointer                 */
+    const void *c_sp; /**< C stack pointer, may be saved here by m4th_run() */
+    m4func *etable;   /**< table m4e -> asm function address   */
+    m4cspan in;       /**< input  buffer                       */
+    m4cspan out;      /**< output buffer                       */
+
+    m4long flags; /**< m4th_flags                          */
 
     m4wordlist *wordlist[m4th_wordlist_n]; /**< FIXME: visible wordlists     */
-    const char *const *in_cstr;            /* DELETEME: pre-parsed input     */
+    const char *const *in_cstr;            /**< DELETEME: pre-parsed input   */
 };
 
 #ifdef __cplusplus
@@ -149,7 +152,7 @@ void m4th_del(m4th *m);
  * main entry point from C. implemented in assembly.
  * execute m4th->ip and subsequent code until m4th_bye is found.
  */
-m4int m4th_run(m4th *m);
+m4long m4th_run(m4th *m);
 
 /**
  * clear data stack, return stack, input buffer and output buffer.
@@ -161,29 +164,34 @@ void m4th_clear(m4th *m);
  * perform self-test, return != 0 if failed.
  * if out != NULL, also print failed tests to out.
  */
-m4int m4th_test(m4th *m, FILE *out);
+m4long m4th_test(m4th *m, FILE *out);
 
 /** malloc() wrapper, calls exit(1) on failure */
-void *m4mem_alloc(size_t bytes);
+void *m4mem_allocate(size_t bytes);
 
 /** free() wrapper */
 void m4mem_free(void *ptr);
 
+/** realloc() wrapper, calls exit(1) on failure */
+void *m4mem_resize(void *ptr, size_t bytes);
+
 /** mmap() wrapper, calls exit(1) on failure */
-void *m4mem_mmap(size_t bytes);
+void *m4mem_map(size_t bytes);
 
 /** munmap() wrapper */
-void m4mem_munmap(void *ptr, size_t bytes);
+void m4mem_unmap(void *ptr, size_t bytes);
+
+void m4enum_print(m4enum val, FILE *out);
 
 void m4string_print(m4string str, FILE *out);
-m4int m4string_compare(m4string a, m4string b);
+m4long m4string_compare(m4string a, m4string b);
 
 void m4stack_print(const m4stack *stack, FILE *out);
 
 m4string m4word_name(const m4word *w);
 const m4word *m4word_prev(const m4word *w);
 void m4word_print(const m4word *w, FILE *out);
-void m4word_code_print(const m4word *w, FILE *out);
+void m4word_code_print(const m4word *w, m4long code_start_n, FILE *out);
 
 m4string m4wordlist_name(const m4wordlist *d);
 const m4word *m4wordlist_lastword(const m4wordlist *d);

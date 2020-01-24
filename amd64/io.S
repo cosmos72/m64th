@@ -39,7 +39,7 @@ FUNC_END(emit)
 FUNC_START(key)
         LOAD(  REG1, AT(M4TH, M4TH_OFF_IN))
 	cmp    M4TH_OFF_IN_END(M4TH), REG1;
-	jge    m4bye; /* TODO read from stdin instead */
+	jge    FUNC_SYM(bye); /* TODO read from stdin instead */
         DPUSH( DTOP)
         incq   M4TH_OFF_IN(M4TH)
         movzbq (REG1), DTOP;

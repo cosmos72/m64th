@@ -1,0 +1,340 @@
+/**
+ * This file is part of m4th.
+ *
+ * m4th is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3
+ * of the License, or (at your option) any later version.
+ *
+ * m4th is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+#ifndef M4TH_COMMON_ENUM_FORTH_MH
+#define M4TH_COMMON_ENUM_FORTH_MH
+
+/* 'forth' wordlist: 'core' word set */
+#define M4store 1              /* !        */
+#define M4number_sign 2        /* #        */
+#define M4num_end 3            /* #>       */
+#define M4num_s 4              /* #s       */
+#define M4tick 5               /* '        */
+#define M4paren 6              /* (        */
+#define M4times 7              /* *        */
+#define M4times_div 8          /* * /      */
+#define M4times_div_mod 9      /* * /mod   */
+#define M4plus 10              /* +        */
+#define M4plus_store 11        /* +!       */
+#define M4plus_loop 12         /* +loop    */
+#define M4comma 13             /* ,        */
+#define M4minus 14             /* -        */
+#define M4dot 15               /* .        */
+#define M4dot_quote 16         /* ."       */
+#define M4div 17               /* /        */
+#define M4div_mod 18           /* /mod     */
+#define M4zero_less 19         /* 0<       */
+#define M4zero_equal 20        /* 0=       */
+#define M4one_plus 21          /* 1+       */
+#define M4one_minus 22         /* 1-       */
+#define M4two_store 23         /* 2!       */
+#define M4two_times 24         /* 2*       */
+#define M4two_div 25           /* 2/       */
+#define M4two_fetch 26         /* 2@       */
+#define M4two_drop 27          /* 2drop    */
+#define M4two_dup 28           /* 2dup     */
+#define M4two_over 29          /* 2over    */
+#define M4two_swap 30          /* 2swap    */
+#define M4colon 31             /* :        */
+#define M4semi 32              /* ;        */
+#define M4less 33              /* <        */
+#define M4num_start 34         /* <#       */
+#define M4equal 35             /* =        */
+#define M4more 36              /* >        */
+#define M4to_body 37           /* >body    */
+#define M4to_in 38             /* >in      */
+#define M4to_number 39         /* >number  */
+#define M4to_r 40              /* >r       */
+#define M4question_dup 41      /* ?dup     */
+#define M4fetch 42             /* @        */
+#define M4abort 43             /* abort    */
+#define M4abort_quote 44       /* abort"   */
+#define M4abs 45               /* abs      */
+#define M4accept 46            /* accept   */
+#define M4align 47             /* align    */
+#define M4aligned 48           /* aligned  */
+#define M4allot 49             /* allot    */
+#define M4and 50               /* and      */
+#define M4base 51              /* base     */
+#define M4begin 52             /* begin    */
+#define M4bl 53                /* bl       */
+#define M4c_store 54           /* c!       */
+#define M4c_comma 55           /* c,       */
+#define M4c_fetch 56           /* c@       */
+#define M4cell_plus 57         /* cell+    */
+#define M4cells 58             /* cells    */
+#define M4char 59              /* char+    */
+#define M4char_plus 60         /* char+    */
+#define M4chars 61             /* chars    */
+#define M4constant 62          /* constant */
+#define M4count 63             /* count    */
+#define M4cr 64                /* cr       */
+#define M4create 65            /* create   */
+#define M4decimal 66           /* decimal  */
+#define M4depth 67             /* depth    */
+#define M4do 68                /* do       */
+#define M4does 69              /* does     */
+#define M4drop 70              /* drop     */
+#define M4dup 71               /* dup      */
+#define M4else 72              /* else     */
+#define M4emit 73              /* emit     */
+#define M4environment_query 74 /* environment? */
+#define M4evaluate 75          /* evaluate */
+#define M4execute 76           /* execute  */
+#define M4exit 77              /* exit     */
+#define M4fill 78              /* fill     */
+#define M4find 79              /* find     */
+#define M4f_m_div_mod 80       /* fm/mod   */
+#define M4here 81              /* here     */
+#define M4hold 82              /* hold     */
+#define M4i 83                 /* i        */
+#define M4if 84                /* if       */
+#define M4immediate 85         /* immediate    */
+#define M4invert 86            /* invert   */
+#define M4j 87                 /* j        */
+#define M4key 88               /* key      */
+#define M4leave 89             /* leave    */
+#define M4literal 90           /* literal  */
+#define M4loop 91              /* loop     */
+#define M4lshift 92            /* lshift   */
+#define M4m_times 93           /* m*       */
+#define M4max 94               /* max      */
+#define M4min 95               /* min      */
+#define M4mod 96               /* mod      */
+#define M4move 97              /* move     */
+#define M4negate 98            /* negate   */
+#define M4or 99                /* or       */
+#define M4over 100             /* over     */
+#define M4postpone 101         /* postpone */
+#define M4quit 102             /* quit     */
+#define M4r_from 103           /* r>       */
+#define M4r_fetch 104          /* r@       */
+#define M4recurse 105          /* recurse  */
+#define M4repeat 106           /* repeat   */
+#define M4rot 107              /* rot      */
+#define M4rshift 108           /* rshift   */
+#define M4s_quote 109          /* s"       */
+#define M4s_to_d 110           /* s>d      */
+#define M4sign 111             /* sign     */
+#define M4s_m_div_rem 112      /* sm/rem   */
+#define M4source 113           /* source   */
+#define M4space 114            /* space    */
+#define M4spaces 115           /* space    */
+#define M4state 116            /* state    */
+#define M4swap 117             /* swap     */
+#define M4then 118             /* then     */
+#define M4type 119             /* type     */
+#define M4u_dot 120            /* u.       */
+#define M4u_less 121           /* u<       */
+#define M4u_m_times 122        /* um*      */
+#define M4u_m_div_mod 123      /* um/mod   */
+#define M4unloop 124           /* unloop   */
+#define M4until 125            /* until    */
+#define M4variable 126         /* while    */
+#define M4while 127            /* while    */
+#define M4word 128             /* word     */
+#define M4xor 129              /* xor      */
+#define M4left_bracket 130     /* [        */
+#define M4bracket_tick 131     /* [']      */
+#define M4bracket_char 132     /* [char]   */
+#define M4right_bracket 133    /* ]        */
+
+/* 'forth' wordlist: 'core ext' word set */
+#undef M4dot_paren          /* .(       */
+#undef M4dot_r              /* .r       */
+#define M4zero_ne 153       /* 0<>      */
+#define M4zero_more 154     /* 0>       */
+#undef M4two_to_r           /* 2>r      */
+#undef M4two_r_from         /* 2r>      */
+#undef M4two_r_fetch        /* 2r@      */
+#undef M4colon_noname       /* :noname  */
+#define M4ne 159            /* <>       */
+#undef M4question_do        /* ?do      */
+#undef M4action_of          /* action_of    */
+#undef M4again              /* again    */
+#undef M4buffer_colon       /* buffer:  */
+#undef M4c_quote            /* c"       */
+#undef M4case               /* case     */
+#define M4compile_comma 206 /* compile, */
+#undef M4defer              /* defer    */
+#undef M4defer_store        /* defer!   */
+#undef M4defer_fetch        /* defer@   */
+#undef M4endcase            /* endcase  */
+#undef M4endof              /* endof    */
+#undef M4erase              /* erase    */
+#define M4false 213         /* false    */
+#undef M4hex                /* hex      */
+#undef M4holds              /* holds    */
+#undef M4is                 /* is       */
+#undef M4marker             /* marker   */
+#define M4nip 218           /* nip      */
+#undef M4of                 /* of       */
+#undef M4pad                /* pad      */
+#undef M4parse              /* parse    */
+#undef M4parse_name         /* parse-name   */
+#undef M4pick               /* pick     */
+#undef M4refill             /* refill   */
+#undef M4restore_input      /* restore-input    */
+#undef M4roll               /* roll     */
+#undef M4s_equote           /* s\"      */
+#undef M4save_input         /* save-input   */
+#undef M4source_id          /* source-id    */
+#undef M4to                 /* to       */
+#define M4true 231          /* true     */
+#undef M4tuck               /* tuck     */
+#undef M4u_dot_r            /* u.r      */
+#undef M4u_more             /* u>       */
+#undef M4unused             /* unused   */
+#undef M4value              /* value    */
+#undef M4within             /* within   */
+#undef M4bracket_compile    /* [compile]    */
+#undef M4backslash          /* \        */
+
+#undef M4number_t_i_b /* #tib     (removed in Forth 2012) */
+#undef M4convert      /* convert  (removed in Forth 2012) */
+#undef M4expect       /* expect   (removed in Forth 2012) */
+#undef M4query        /* query    (removed in Forth 2012) */
+#undef M4span         /* span     (removed in Forth 2012) */
+#undef M4tib          /* t-i-b    (removed in Forth 2012) */
+
+/* 'forth' wordlist: 'block' word set */
+#undef M4blk           /* blk      */
+#undef M4block         /* block    */
+#undef M4buffer        /* buffer   */
+/*extends M4evaluate*/ /* evaluate */
+#undef M4flush         /* flush    */
+#undef M4load          /* load     */
+#undef M4save_buffers  /* save-buffers */
+#undef M4update        /* update   */
+
+/* 'forth' wordlist: 'block ext' word set */
+#undef M4empty_buffers /* empty-buffers    */
+#undef M4list          /* list     */
+#undef M4refill        /* refill   */
+#undef M4s_c_r         /* src      */
+#undef M4thru          /* thru     */
+/*extends M4backdiv*/  /* backdiv */
+
+/* 'forth' wordlist: 'double' word set */
+#undef M4two_constant /* 2constant    */
+#undef M4two_literal  /* 2literal     */
+#undef M4two_variable /* 2variable    */
+#undef M4d_plus       /* d+       */
+#undef M4d_minus      /* d-       */
+#undef M4d_dot        /* d.       */
+#undef M4d_dot_r      /* d.r      */
+#undef M4d_zero_less  /* d0<      */
+#undef M4d_zero_equal /* d0=      */
+#undef M4d_two_times  /* d2*      */
+#undef M4d_two_div    /* d2/      */
+#undef M4d_less       /* d<       */
+#undef M4d_equal      /* d=       */
+#undef M4d_to_s       /* d>s      */
+#undef M4d_abs        /* dabs     */
+#undef M4d_max        /* dmax     */
+#undef M4d_min        /* dmin     */
+#undef M4d_negate     /* dnegate  */
+#undef M4m_times_div  /* m* /     */
+#undef M4m_plus       /* m+       */
+
+/* 'forth' wordlist: 'double ext' word set */
+#undef M4two_rote /* 2rot     */
+#undef M4d_u_less /* du<      */
+
+/* 'forth' wordlist: 'exception' word set */
+#undef M4catch /* catch    */
+#undef M4throw /* throw    */
+
+/* 'forth' wordlist: 'exception ext' word set */
+/*extends M4abort*/   /* abort    */
+/*extends M4abort_q*/ /* abort"   */
+
+/* 'forth' wordlist: 'facility' word set */
+#undef M4at_x_y       /* at-x-y   */
+#undef M4key_question /* key?     */
+#undef M4page         /* page     */
+
+/* 'forth' wordlist: 'facility ext' word set */
+#undef M4e_key          /* ekey     */
+#undef M4e_key_to_char  /* ekey>char    */
+#undef M4e_key_question /* ekey?    */
+#undef M4emit_question  /* emit?    */
+#undef M4ms             /* ms       */
+#undef M4time_and_date  /* time&date    */
+
+/* 'forth' wordlist: 'file' word set */
+/* TODO */
+
+/* 'forth' wordlist: 'file ext' word set */
+/* TODO */
+
+/* 'forth' wordlist: 'float' word set */
+/* TODO */
+
+/* 'forth' wordlist: 'float ext' word set */
+/* TODO */
+
+/* 'forth' wordlist: 'local' word set */
+#undef M4_local_ /* (local)   */
+
+/* 'forth' wordlist: 'local ext' word set */
+#undef M4locals      /* locals   */
+#undef M4brace_colon /* {:   */
+
+/* 'forth' wordlist: 'memory' word set */
+#undef M4allocate /* allocate */
+#undef M4free     /* free     */
+#undef M4resize   /* resize   */
+
+/* 'forth' wordlist: 'tools' word set */
+#undef M4dot_s    /* .s       */
+#undef M4question /* ?        */
+#undef M4dump     /* dump     */
+#undef M4see      /* see      */
+#undef M4words    /* words    */
+
+/* 'forth' wordlist: 'tools ext' word set */
+#undef M4semi_code         /* ;code    */
+#undef M4ahead             /* ahead    */
+#undef M4assembler         /* assembler    */
+#define M4bye 500          /* bye      */
+#undef M4code              /* code     */
+#undef M4cs_pick           /* cs-pick  */
+#undef M4cs_roll           /* cs-roll  */
+#undef M4editor            /* editor   */
+#undef M4forget            /* forget   (obsolescent) */
+#undef M4n_to_r            /* n>r      */
+#undef M4name_to_compile   /* name>compile */
+#undef M4name_to_interpret /* name>interpret   */
+#undef M4name_to_string    /* name>string  */
+#undef M4nr_from           /* nr>      */
+/*extends M4state*/        /* state    */
+#undef M4synonym           /* synonym  */
+#undef M4traverse_wordlist /* traverse-wordlist    */
+#undef M4bracket_defined   /* [defined]    */
+#undef M4bracket_else      /* [else]   */
+#undef M4bracket_if        /* [if]     */
+#undef M4bracket_then      /* [then]   */
+#undef M4bracket_undefined /* [undefined]  */
+
+/* 'forth' wordlist: 'search' word set */
+/* TODO */
+
+/* 'forth' wordlist: 'string' word set */
+/* TODO */
+
+#endif /* M4TH_COMMON_ENUM_FORTH_MH */

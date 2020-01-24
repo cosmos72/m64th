@@ -18,7 +18,7 @@
 #ifndef M4TH_COMMON_FUNC_MH
 #define M4TH_COMMON_FUNC_MH
 
-#include "func_fwd.mh"
+#include "func_alias.mh"
 
 /* clang-format off */
 
@@ -26,7 +26,7 @@
     .p2align P_FUNC_ALIGN;
 
 #define FUNC_SYM(name)                                                                             \
-    m4##name
+    m4func_##name
 
 #define FUNC_SYM_NEXT(name)                                                                        \
     .Lfunc.name.next

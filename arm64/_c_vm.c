@@ -25,7 +25,7 @@ struct instruction_s {
     long (*f)(long dtop, long *dstk, long rtop, long *rstk, const instruction *ip, m4th *m);
 };
 
-long m4equals(long dtop, long *dstk, long rtop, long *rstk, const instruction *ip, m4th *m) {
+long m4equal(long dtop, long *dstk, long rtop, long *rstk, const instruction *ip, m4th *m) {
     long a = *dstk++;
     dtop = (a == dtop) ? 1 : 0;
     ++ip;

@@ -28,20 +28,20 @@ FUNC_END(xt)
 
 
 FUNC_START(xt_code_n_fetch) /* (xt -- xt.code_n) */
-        LOAD_uw(DTOP_wh,   AT(DTOP, XT_OFF_CODE_N))
+        LD_uw(DTOP_wh,   AT(DTOP, XT_OFF_CODE_N))
 FUNC_END(xt_code_n_fetch)
 #endif /* 0 */
 
 
 /**
- * (n -- ) pop m4instr, xt or number from dstack and append it to XT being compiled.
+ * (ushort -- ) pop m4enum or 16-bit from dstack and append it to XT being compiled.
  * the standard function 'compile,' calls this function followed by optimizations
  */
 FUNC_START(_compile_comma_)    /* (compile,) */
         /* TODO check if enough space */
-        LOAD_uw(REG1_uw,   AT(M4XT, XT_OFF_CODE_N)) /* xt.code_n */
-        STOR(  DTOP,   AT(M4XT, REG1, ISZ))         /* xt[xt.code_n] = DTOP */
+        LD_uw(REG1_uw, AT(M4XT, XT_OFF_CODE_N)) /* xt.code_n */
+        STORe(  DTOPe,   AT(M4XT, REG1, ISZ))     /* xt[xt.code_n] = (m4enum)DTOP */
         INC1(  REG1)
-        STORw( REG1w,  AT(M4XT, XT_OFF_CODE_N))     /* xt.code_n++ */
         DPOP(  DTOP)
+        STORw( REG1w,    AT(M4XT, XT_OFF_CODE_N)) /* xt.code_n++ */
 FUNC_END(_compile_comma_)

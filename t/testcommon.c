@@ -18,22 +18,46 @@
 #ifndef M4TH_T_TESTCOMMON_C
 #define M4TH_T_TESTCOMMON_C
 
-#include "../test.h"
+#include "test_impl.h"
 
 #include <stdio.h>  /* fprintf() fputc() */
 #include <string.h> /* memcpy()          */
 
 /* -------------- m4test_code -------------- */
 
-m4int m4test_code_equals(const m4test_code *src, const m4word *dst) {
-    if (src->len != dst->code_n) {
+void m4test_code_copy(const m4long *src, m4long n, m4word *dst) {
+    m4enum *dst_code = dst->code + dst->code_n;
+    m4long i = 0;
+    while (i < n) {
+        m4long x = src[i];
+        dst_code[i++] = (m4enum)x;
+        if (x == m4_call_) {
+            /* copy XT */
+            x = src[i];
+            memcpy(dst_code + i, &x, sizeof(m4long));
+            i += m4enum_per_m4long;
+        }
+    }
+    dst->code_n += i;
+}
+
+m4long m4test_code_equal(const m4test_code *src, const m4word *dst, m4long dst_code_start_n) {
+    m4long i, n = src->len;
+    const m4enum *dst_code;
+    if (dst->code_n < dst_code_start_n || n != dst->code_n - dst_code_start_n) {
         return tfalse;
     }
-    return memcmp(src->data, dst->code, src->len * sizeof(m4instr)) == 0;
+    dst_code = dst->code + dst_code_start_n;
+    for (i = 0; i < n; i++) {
+        if ((m4enum)src->data[i] != dst_code[i]) {
+            return tfalse;
+        }
+    }
+    return ttrue;
 }
 
 void m4test_code_print(const m4test_code *src, FILE *out) {
-    m4int i, n = src->len;
+    m4long i, n = src->len;
     fprintf(out, "<%ld> ", (long)src->len);
     for (i = 0; i < n; i++) {
         fprintf(out, "0x%lx ", (unsigned long)src->data[i]);
@@ -44,15 +68,15 @@ void m4test_code_print(const m4test_code *src, FILE *out) {
 /* -------------- m4test_stack -------------- */
 
 void m4test_stack_copy(const m4test_stack *src, m4span *dst) {
-    m4int i, len = src->len;
+    m4long i, len = src->len;
     dst->curr = dst->end - len;
     for (i = 0; i < len; i++) {
         dst->end[-i - 1] = src->data[i];
     }
 }
 
-m4int m4test_stack_equals(const m4test_stack *src, const m4span *dst) {
-    m4int i, len = src->len;
+m4long m4test_stack_equal(const m4test_stack *src, const m4span *dst) {
+    m4long i, len = src->len;
     if (len != dst->end - dst->curr) {
         return 0;
     }
@@ -65,7 +89,7 @@ m4int m4test_stack_equals(const m4test_stack *src, const m4span *dst) {
 }
 
 void m4test_stack_print(const m4test_stack *src, FILE *out) {
-    m4int i;
+    m4long i;
     fprintf(out, "<%ld> ", (long)src->len);
     for (i = 0; i < src->len; i++) {
         fprintf(out, "%ld ", (long)src->data[i]);

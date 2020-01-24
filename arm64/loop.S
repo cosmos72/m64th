@@ -25,15 +25,15 @@
 FUNC_START(_question_do_)
         LOAD(  REG2, AT(DSTK))
         cmp    REG2, DTOP;
-        b.eq   .Lm4_question_do_.skip;
-        ADD2(  IMM(SZ), IP)          /* skip jump offset      */
+        b.eq   .L_question_do_.skip;
+        ADD2(  IMM(ISZ), IP)           /* skip jump offset      */
         b      FUNC_SYM(_do_);
-.Lm4_question_do_.skip:              /* skip the loop:        */
-        LOAD(  REG2, AT(IP, SZ))     /* REG2 = IP jump offset */
-        LOAD(  DTOP, AT(DSTK, SZ))   /* reload dstack top     */
-        add    IP, IP, REG2, lsl PSZ;/* IP = TARGET_IP        */
-        ADD2(  IMM(SZ2), DSTK)       /* drop i' i from dstack */
-        NEXT0()                      /* jump to TARGET_IP     */
+.L_question_do_.skip:                /* skip the loop:        */
+        LD_sh(REG2_sh, AT(IP, ISZ))  /* REG2 = IP jump offset */
+        LOAD(  DTOP,   AT(DSTK, SZ))   /* reload dstack top     */
+        add    IP, IP, REG2, lsl PISZ; /* IP = TARGET_IP        */
+        ADD2(  IMM(SZ2), DSTK)         /* drop i' i from dstack */
+        NEXT0()                        /* jump to TARGET_IP     */
 FUNC_RAWEND(_question_do_)
 
 
@@ -52,9 +52,9 @@ FUNC_END(_do_)
  * IP offset = 0 means (jump) itself
  */
 FUNC_START(_jump_)
-        LOAD(  REG2, AT(IP, SZ))     /* REG2 = IP jump offset   */
-        add    IP, IP, REG2, lsl PSZ;/* IP   = TARGET_IP        */
-        NEXT0()                      /* jump to TARGET_IP       */
+        LD_sh(  REG2_sh, AT(IP, ISZ))  /* REG2 = IP jump offset   */
+        add    IP, IP, REG2, lsl PISZ;   /* IP   = TARGET_IP        */
+        NEXT0()                          /* jump to TARGET_IP       */
 FUNC_END(_jump_)
 
 /**
@@ -66,9 +66,9 @@ FUNC_END(_jump_)
 FUNC_START(_else_)
         cmp    DTOP, IMM(0);
         DPOP(  DTOP)
-        b.ne   .Lm4_else_.jump;
+        b.ne   .L_else_.jump;
         NEXT2()                      /* skip IP offset          */
-.Lm4_else_.jump:
+.L_else_.jump:
         LOAD(  REG2, AT(IP, SZ))     /* REG2 = IP jump offset   */
         add    IP, IP, REG2, lsl PSZ;/* IP   = TARGET_IP        */
         NEXT0()                      /* jump to TARGET_IP       */
@@ -83,9 +83,9 @@ FUNC_RAWEND(_else_)
 FUNC_START(_if_)
         cmp    DTOP, IMM(0);
         DPOP(  DTOP)
-        b.eq   .Lm4_if_.jump;
+        b.eq   .L_if_.jump;
         NEXT2()                      /* skip IP offset          */
-.Lm4_if_.jump:
+.L_if_.jump:
         LOAD(  REG2, AT(IP, SZ))     /* REG2 = IP jump offset   */
         add    IP, IP, REG2, lsl PSZ;/* IP   = TARGET_IP        */
         NEXT0()                      /* jump to TARGET_IP       */
@@ -112,12 +112,11 @@ FUNC_START(_loop_)
         ADD2(  IMM(1), RTOP)        /* increment i                 */
         LOAD(  REG1, AT(RSTK))      /* REG1 = i'                   */
         cmp    REG1, RTOP;
-        b.eq   .Lm4_loop_.break;    /* break if i == i'            */
-        LOAD(  REG2, AT(IP, SZ))
-        add    IP, IP, REG2, lsl 3; /* IP = TARGET_IP              */
-        LOAD(  REG3, AT(IP))
-        br     REG3;                /* jump to instruction after (do) */
-.Lm4_loop_.break:
+        b.eq   .L_loop_.break;        /* break if i == i'            */
+        LD_sh(  REG2_sh, AT(IP, ISZ)) /* REG2 = IP jump offset   */
+        add    IP, IP, REG2, lsl PISZ;  /* IP = TARGET_IP              */
+        NEXT0()                         /* jump to TARGET_IP           */
+.L_loop_.break:
         LOAD(  RTOP, AT(RSTK, SZ)) /* load new top of rstack      */
         ADD2(  IMM(SZ2), RSTK)     /* drop i' i from return stack */
         NEXT2();                   /* skip IP offset, execute next instruction */

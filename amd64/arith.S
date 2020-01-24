@@ -34,22 +34,22 @@ FUNC_END(minus_one)
 
 
 /* signed divide */
-FUNC_START(slash)              /* / */
+FUNC_START(div)              /* / */
         DPOP(  %rax)
         cqto;  /* sign-extend %rax into %rdx */
         idiv   DTOP;
         MOVE(  %rax, DTOP)
-FUNC_END(slash)
+FUNC_END(div)
 
 
 /* signed divide & remainder */
-FUNC_START(slash_mod)          /* /mod */
+FUNC_START(div_mod)          /* /mod */
         LOAD(  %rax, AT(DSTK))
         cqto;  /* sign-extend %rax into %rdx */
         idiv   DTOP;
         STOR(  %rdx, AT(DSTK)) /* remainder */
         MOVE(  %rax, DTOP)     /* quotient */
-FUNC_END(slash_mod)
+FUNC_END(div_mod)
 
 
 #define M4ZERO
@@ -59,39 +59,39 @@ FUNC_START(zero)       /* 0    m4th-impl */
 FUNC_END(zero)
 
 
-FUNC_START(zero_less_equals)   /* 0<=  m4th-user */
+FUNC_START(zero_less_equal)   /* 0<=  m4th-user */
         test   DTOP, DTOP;
         mov    IMM(0), DTOPw;       /* xor would affect EFLAGS */
         cmovle RFFF,   DTOP;
-FUNC_END(zero_less_equals)
+FUNC_END(zero_less_equal)
 
 
-FUNC_START(zero_not_equals)    /* 0<>  core ext */
+FUNC_START(zero_ne)    /* 0<>  core ext */
         test   DTOP, DTOP;
         mov    IMM(0), DTOPw;      /* xor would affect EFLAGS */
         cmovne RFFF,   DTOP;
-FUNC_END(zero_not_equals)
+FUNC_END(zero_ne)
 
 
-FUNC_START(zero_equals)        /* 0=   */
+FUNC_START(zero_equal)        /* 0=   */
         test   DTOP, DTOP;
         mov    IMM(0), DTOPw;      /* xor would affect EFLAGS */
         cmove  RFFF,   DTOP;
-FUNC_END(zero_equals)
+FUNC_END(zero_equal)
 
 
-FUNC_START(zero_greater_than)  /* 0>   */
+FUNC_START(zero_more)  /* 0>   */
         test   DTOP,   DTOP;
         mov    IMM(0), DTOPw;      /* xor would affect EFLAGS */
         cmovg  RFFF,   DTOP;
-FUNC_END(zero_greater_than)
+FUNC_END(zero_more)
 
 
-FUNC_START(zero_greater_equals)/* 0>=  m4th-user */
+FUNC_START(zero_more_equal)/* 0>=  m4th-user */
         test   DTOP,   DTOP;
         mov    IMM(0), DTOPw;      /* xor would affect EFLAGS */
         cmovge RFFF,   DTOP;
-FUNC_END(zero_greater_equals)
+FUNC_END(zero_more_equal)
 
 
 #define M4ONE
@@ -108,17 +108,17 @@ FUNC_START(two)        /* 2    m4th-impl */
 FUNC_END(two)
 
 
-FUNC_START(two_star)   /* 2*   */
+FUNC_START(two_times)   /* 2*   */
         sal    DTOP;
-FUNC_END(two_star)
+FUNC_END(two_times)
 
 
-FUNC_START(two_slash)  /* 2/   */
+FUNC_START(two_div)  /* 2/   */
         MOVE(  DTOP, REG1)
         shr    IMM(63), REG1;
         ADD2(  REG1, DTOP) /* add 1 if negative */
         sar    DTOP;       /* because sar rounds toward -infinity */
-FUNC_END(two_slash)
+FUNC_END(two_div)
 
 
 #define M4THREE
@@ -142,59 +142,59 @@ FUNC_START(eight)      /* 8   m4th-impl */
 FUNC_END(eight)
 
 
-FUNC_START(less_than)          /* <   */
+FUNC_START(less)          /* <   */
         DPOP(  REG2)
         cmp    DTOP, REG2;
         mov    IMM(0), DTOPw;      /* xor would affect EFLAGS */
         cmovl  RFFF,   DTOP;
-FUNC_END(less_than)
+FUNC_END(less)
 
 
-FUNC_START(less_equals)        /* <=   m4th-user */
+FUNC_START(less_equal)        /* <=   m4th-user */
         DPOP(  REG2)
         cmp    DTOP, REG2;
         mov    IMM(0), DTOPw;      /* xor would affect EFLAGS */
         cmovle RFFF,   DTOP;
-FUNC_END(less_equals)
+FUNC_END(less_equal)
 
 
-FUNC_START(not_equals)         /* <>   core ext */
+FUNC_START(ne)         /* <>   core ext */
         DPOP(  REG2)
         cmp    REG2,   DTOP;
         mov    IMM(0), DTOPw;      /* xor would affect EFLAGS */
         cmovne RFFF,   DTOP;
-FUNC_END(not_equals)
+FUNC_END(ne)
 
 
-FUNC_START(equals)             /* = */
+FUNC_START(equal)             /* = */
         DPOP(  REG2)
         cmp    REG2,   DTOP;
         mov    IMM(0), DTOPw;      /* xor would affect EFLAGS */
         cmove  RFFF,   DTOP;
-FUNC_END(equals)
+FUNC_END(equal)
 
 
-FUNC_START(greater_than)       /* > */
+FUNC_START(more)       /* > */
         DPOP(  REG2)
         cmp    DTOP, REG2;
         mov    IMM(0), DTOPw;      /* xor would affect EFLAGS */
         cmovg  RFFF,   DTOP;
-FUNC_END(greater_than)
+FUNC_END(more)
 
 
-FUNC_START(greater_equals)     /* >=   m4th-user */
+FUNC_START(more_equal)     /* >=   m4th-user */
         DPOP(  REG2)
         cmp    DTOP, REG2;
         mov    IMM(0), DTOPw;      /* xor would affect EFLAGS */
         cmovge RFFF,   DTOP;
-FUNC_END(greater_equals)
+FUNC_END(more_equal)
 
 
-FUNC_START(question_dupe)      /* ?dup */
+FUNC_START(question_dup)      /* ?dup */
         test   DTOP, DTOP;
-        jz     FUNC_SYM_NEXT(question_dupe);
+        jz     FUNC_SYM_NEXT(question_dup);
         DPUSH( DTOP)
-FUNC_END(question_dupe)
+FUNC_END(question_dup)
 
 
 FUNC_START(abs)        /* abs */

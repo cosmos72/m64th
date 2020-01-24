@@ -20,6 +20,7 @@
 
 #include "../m4th.mh" /* also define public macros */
 #include "countedstring.mh"
+#include "enum.mh"
 #include "func.mh"
 #include "m4th.mh"
 #include "word.mh"

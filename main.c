@@ -22,7 +22,7 @@
 int main(int argc, char *argv[]) {
     m4th *m = m4th_new();
     m4wordlist **l = m->wordlist;
-    m4int i;
+    m4long i;
 
     for (i = 0; i < m4th_wordlist_n; i++) {
         m4wordlist_print(l[i], stdout);
@@ -31,5 +31,5 @@ int main(int argc, char *argv[]) {
     m4th_del(m);
 
     /* suppress 'unused parameter' warning */
-    return 0 & argc & (m4int)argv;
+    return 0 & argc & (m4long)argv;
 }

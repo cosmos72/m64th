@@ -16,7 +16,11 @@
  */
 
 #include "m4th.h"
+#include "common/dict_all.mh"
 #include "common/dict_fwd.h"
+#include "common/func.mh"
+#include "common/func_fwd.h"
+#include "common/word_fwd.h"
 
 #include <errno.h>  /* errno */
 #include <stdio.h>  /* fprintf() */
@@ -36,17 +40,19 @@ enum {
     outbuf_n = 1024,
 };
 
-static void m4th_oom(size_t bytes) {
+/* ----------------------- m4mem ----------------------- */
+
+static void m4mem_oom(size_t bytes) {
     fprintf(stderr, "failed to allocate %lu bytes: %s\n", (unsigned long)bytes, strerror(errno));
     exit(1);
 }
 
 #ifdef __unix__
-static size_t m4th_page = 0;
+static size_t m4mem_page = 0;
 
-static size_t m4th_getpagesize() {
-    if (m4th_page == 0) {
-        m4th_page =
+static size_t m4mem_getpagesize() {
+    if (m4mem_page == 0) {
+        m4mem_page =
 #if defined(_SC_PAGESIZE)
             sysconf(_SC_PAGESIZE);
 #elif defined(_SC_PAGE_SIZE)
@@ -59,18 +65,18 @@ static size_t m4th_getpagesize() {
             4096;
 #endif
     }
-    return m4th_page;
+    return m4mem_page;
 }
 
-static size_t m4th_round_to_page(size_t bytes) {
-    const size_t page = m4th_getpagesize();
+static size_t m4mem_round_to_page(size_t bytes) {
+    const size_t page = m4mem_getpagesize();
     return (bytes + page - 1) / page * page;
 }
 
-void *m4mem_mmap(size_t bytes) {
+void *m4mem_map(size_t bytes) {
     void *ptr = NULL;
     if (bytes != 0) {
-        bytes = m4th_round_to_page(bytes);
+        bytes = m4mem_round_to_page(bytes);
         if ((ptr = mmap(NULL, bytes, PROT_READ | PROT_WRITE,
                         MAP_PRIVATE | MAP_ANONYMOUS
 #ifdef MAP_STACK
@@ -78,33 +84,33 @@ void *m4mem_mmap(size_t bytes) {
 #endif
                         ,
                         -1, 0)) == (void *)-1) {
-            m4th_oom(bytes);
+            m4mem_oom(bytes);
         }
         memset(ptr, '\xFF', bytes);
     }
     return ptr;
 }
 
-void m4mem_munmap(void *ptr, size_t bytes) {
+void m4mem_unmap(void *ptr, size_t bytes) {
     if (bytes != 0) {
-        bytes = m4th_round_to_page(bytes);
+        bytes = m4mem_round_to_page(bytes);
         munmap(ptr, bytes);
     }
 }
 #else /* ! __unix__ */
-void *m4mem_mmap(size_t bytes) {
-    return m4mem_alloc(bytes);
+void *m4mem_map(size_t bytes) {
+    return m4mem_allocate(bytes);
 }
-void m4mem_munmap(void *ptr, size_t bytes) {
+void m4mem_unmap(void *ptr, size_t bytes) {
     m4mem_free(ptr);
 }
 #endif
 
-void *m4mem_alloc(size_t bytes) {
+void *m4mem_allocate(size_t bytes) {
     void *ptr = NULL;
     if (bytes != 0) {
         if ((ptr = malloc(bytes)) == NULL) {
-            m4th_oom(bytes);
+            m4mem_oom(bytes);
         }
         memset(ptr, '\xFF', bytes);
     }
@@ -115,33 +121,87 @@ void m4mem_free(void *ptr) {
     free(ptr);
 }
 
-static m4stack m4stack_alloc(m4int size) {
-    m4int *p = (m4int *)m4mem_mmap(size * sizeof(m4int));
+void *m4mem_resize(void *ptr, size_t bytes) {
+    if (bytes == 0) {
+        free(ptr);
+        return NULL;
+    } else if (ptr == NULL) {
+        return m4mem_allocate(bytes);
+    }
+    if ((ptr = realloc(ptr, bytes)) == NULL) {
+        m4mem_oom(bytes);
+    }
+    return ptr;
+}
+
+/* ----------------------- m4enum ----------------------- */
+
+#if !defined(__STDC_VERSION__) || __STDC_VERSION__ < 199901L
+#warning "etable[] initialization currently requires C99"
+#endif
+
+/* initialize the whole m4enum -> m4func conversion table in one fell swoop */
+#define ETABLE_ENTRY(strlen, str, name) [M4ENUM_VAL(name)] = FUNC_SYM(name),
+static m4func etable[] = {
+    DICT_WORDS_ALL(ETABLE_ENTRY) /**/[M4____end] = FUNC_SYM(_missing_),
+};
+#undef ETABLE_ENTRY
+
+/* initialize the whole m4enum -> m4word conversion table in one fell swoop */
+#define WTABLE_ENTRY(strlen, str, name) [M4ENUM_VAL(name)] = &WORD_SYM(name),
+static const m4word *wtable[] = {
+    DICT_WORDS_ALL(WTABLE_ENTRY) /**/[M4____end] = NULL,
+};
+#undef WTABLE_ENTRY
+
+enum { wtable_n = sizeof(wtable) / sizeof(wtable[0]) };
+
+void m4enum_print(m4enum val, FILE *out) {
+    if (/*val >= 0 &&*/ val < M4____end) {
+        const m4word *w = wtable[val];
+        if (w != NULL) {
+            const m4string name = m4word_name(w);
+            if (name.addr != NULL && name.len != 0) {
+                m4string_print(name, out);
+                fputc(' ', out);
+                return;
+            }
+        }
+    }
+    fprintf(out, "%d ", (int)val);
+}
+
+/* ----------------------- m4cspan ----------------------- */
+
+static m4cspan m4cspan_alloc(m4long size) {
+    m4char *p = (m4char *)m4mem_allocate(size * sizeof(m4char));
+    m4cspan ret = {p, p, p + size};
+    return ret;
+}
+
+static void m4cspan_free(m4cspan *arg) {
+    if (arg) {
+        m4mem_free(arg->start);
+    }
+}
+
+/* ----------------------- m4stack ----------------------- */
+
+static m4stack m4stack_alloc(m4long size) {
+    m4long *p = (m4long *)m4mem_map(size * sizeof(m4long));
     m4stack ret = {p, p + size - 1, p + size - 1};
     return ret;
 }
 
 static void m4stack_free(m4stack *arg) {
     if (arg) {
-        m4mem_munmap(arg->start, (arg->end - arg->start + 1) / sizeof(m4int));
-    }
-}
-
-static m4cspan m4th_cspan_alloc(m4int size) {
-    m4char *p = (m4char *)m4mem_alloc(size * sizeof(m4char));
-    m4cspan ret = {p, p, p + size};
-    return ret;
-}
-
-static void m4th_cspan_free(m4cspan *arg) {
-    if (arg) {
-        m4mem_free(arg->start);
+        m4mem_unmap(arg->start, (arg->end - arg->start + 1) / sizeof(m4long));
     }
 }
 
 void m4stack_print(const m4stack *stack, FILE *out) {
-    const m4int *lo = stack->curr;
-    const m4int *hi = stack->end;
+    const m4long *lo = stack->curr;
+    const m4long *hi = stack->end;
     fprintf(out, "<%ld> ", (long)(hi - lo));
     while (hi > lo) {
         fprintf(out, "%ld ", (long)*--hi);
@@ -151,7 +211,7 @@ void m4stack_print(const m4stack *stack, FILE *out) {
 
 /* ----------------------- m4flags ----------------------- */
 
-void m4th_flags_print(m4flags fl, FILE *out) {
+void m4flags_print(m4flags fl, FILE *out) {
     m4char printed = 0;
     if (out == NULL) {
         return;
@@ -203,7 +263,7 @@ void m4string_print(m4string str, FILE *out) {
     fwrite(str.addr, 1, str.len, out);
 }
 
-m4int m4string_compare(m4string a, m4string b) {
+m4long m4string_compare(m4string a, m4string b) {
     if (a.addr == NULL || b.addr == NULL || a.len != b.len || a.len < 0) {
         return 1;
     }
@@ -215,15 +275,21 @@ m4int m4string_compare(m4string a, m4string b) {
 
 /* ----------------------- m4word ----------------------- */
 
-void m4word_code_print(const m4word *w, FILE *out) {
-    m4int i, n;
+void m4word_code_print(const m4word *w, m4long code_start_n, FILE *out) {
+    const m4enum *w_code;
+    m4long i, n;
     if (w == NULL || out == NULL) {
         return;
     }
-    n = w->code_n;
+    if (w->code_n < code_start_n) {
+        fputs("<0> \n", out);
+        return;
+    }
+    w_code = w->code + code_start_n;
+    n = w->code_n - code_start_n;
     fprintf(out, "<%ld> ", (long)n);
     for (i = 0; i < n; i++) {
-        fprintf(out, "0x%lx ", (unsigned long)w->code[i]);
+        m4enum_print(w_code[i], out);
     }
     fputc('\n', out);
 }
@@ -251,7 +317,7 @@ void m4word_print(const m4word *w, FILE *out) {
     }
     m4string_print(m4word_name(w), out);
     fputs(" {\n\tflags:\t", out);
-    m4th_flags_print((m4flags)w->flags, out);
+    m4flags_print((m4flags)w->flags, out);
     fputs(" \n\tdata_stack: \t", out);
     m4word_stack_print(w->dstack, out);
     fputs(" \n\treturn_stack:\t", out);
@@ -310,7 +376,7 @@ static const m4word *m4dict_lastword(const m4dict *d) {
 /* ----------------------- m4wordlist ----------------------- */
 
 static m4wordlist *m4wordlist_new(const m4dict *impl) {
-    m4wordlist *l = (m4wordlist *)m4mem_alloc(sizeof(m4wordlist));
+    m4wordlist *l = (m4wordlist *)m4mem_allocate(sizeof(m4wordlist));
     l->impl = impl;
     return l;
 }
@@ -322,7 +388,7 @@ static void m4wordlist_new_vec(m4wordlist *l[m4th_wordlist_n]) {
         &m4dict_m4th_impl,
     };
     enum { dict_n = sizeof(dict) / sizeof(dict[0]) };
-    m4int i;
+    m4long i;
     if (l == NULL) {
         return;
     }
@@ -340,7 +406,7 @@ static void m4wordlist_del(m4wordlist *l) {
 }
 
 static void m4wordlist_del_vec(m4wordlist *l[m4th_wordlist_n]) {
-    m4int i;
+    m4long i;
     if (l == NULL) {
         return;
     }
@@ -379,16 +445,16 @@ void m4wordlist_print(const m4wordlist *l, FILE *out) {
 /* ----------------------- m4th ----------------------- */
 
 m4th *m4th_new() {
-
-    m4th *m = (m4th *)m4mem_alloc(sizeof(m4th));
+    m4th *m = (m4th *)m4mem_allocate(sizeof(m4th));
     m->dstack = m4stack_alloc(dstack_n);
     m->rstack = m4stack_alloc(rstack_n);
     m->w = NULL;
     m->ip = NULL;
     m->c_sp = NULL;
-    m->in = m4th_cspan_alloc(inbuf_n);
-    m->out = m4th_cspan_alloc(outbuf_n);
+    m->in = m4cspan_alloc(inbuf_n);
+    m->out = m4cspan_alloc(outbuf_n);
     m->flags = m4th_flag_interpret;
+    m->etable = etable;
     m4wordlist_new_vec(m->wordlist);
     m->in_cstr = NULL;
     return m;
@@ -397,8 +463,8 @@ m4th *m4th_new() {
 void m4th_del(m4th *m) {
     if (m) {
         m4wordlist_del_vec(m->wordlist);
-        m4th_cspan_free(&m->out);
-        m4th_cspan_free(&m->in);
+        m4cspan_free(&m->out);
+        m4cspan_free(&m->in);
         m4stack_free(&m->rstack);
         m4stack_free(&m->dstack);
         m4mem_free(m);
@@ -413,4 +479,10 @@ void m4th_clear(m4th *m) {
     m->c_sp = NULL;
     m->in.curr = m->in.start;
     m->out.curr = m->out.start;
+}
+
+m4long m4func_m4th_run(m4th *m); /* assembly implementation of m4th_run() */
+
+m4long m4th_run(m4th *m) {
+    return m4func_m4th_run(m);
 }

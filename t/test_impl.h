@@ -15,21 +15,22 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "../common/asm.mh"
-#include "dict.mh"
-#include "dict_m4th.mh"
+#ifndef M4TH_T_TEST_IMPL_H
+#define M4TH_T_TEST_IMPL_H
 
-/* ---------------------------------------------------------------------------------------------- */
-DICT_START(m4th_user)
+#include "../test.h"
 
-DICTNAME(9, "m4th-user", m4th_user)
+enum {
+    tfalse = (m4long)0,
+    ttrue = (m4long)-1,
+    SZ = sizeof(m4long),
+    ISZ = sizeof(m4enum),
+    m4enum_per_m4long = (SZ + ISZ - 1) / SZ, /* # of m4enum needed to store an m4long */
+    callsz = 1 + m4enum_per_m4long,
+};
 
-DICT_WORDS_M4TH_USER(WORDNAME)
+/** padding needed for element-to-element conversion from m4long[] to m4enum[] */
+#define CELL(n) (m4long)(n), 0, 0, 0
+#define CALLXT(name) m4_call_, CELL(m4word_##name.code)
 
-WORD(less_equal,         less_equal,         DSTACK(2,1), RSTACK(0,0), WORD_PURE)
-WORD(more_equal,      less_equal,         DSTACK(2,1), RSTACK(0,0), WORD_PURE)
-WORD(zero_less_equal,    more_equal,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(zero_more_equal, zero_less_equal,    DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-
-DICT_BODY(m4th_user, zero_more_equal)
-DICT_END(m4th_user)
+#endif /* M4TH_T_TEST_IMPL_H */

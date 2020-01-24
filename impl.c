@@ -15,19 +15,39 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "common/func_fwd.h"
-
 #include "impl.h"
+#include "common/enum.h"
 
-#include <assert.h> /* assert()          */
-#include <errno.h>  /* errno             */
-#include <stdlib.h> /* strtol()          */
-#include <string.h> /* memcmp() strlen() */
+#include <assert.h> /* assert()                   */
+#include <errno.h>  /* errno                      */
+#include <stdlib.h> /* strtol()                   */
+#include <string.h> /* memcmp() memcpy() strlen() */
 
-#define dpush(val) (*--m->dstack.curr = (val))
-#define dpop(val) (*m->dstack.curr++)
+enum {
+    SZ = sizeof(m4long),
+    ISZ = sizeof(m4enum),
+    m4enum_per_m4long = (SZ + ISZ - 1) / SZ, /* # of m4enum needed to store an m4long */
+};
 
-#define ipush(val) (m->w->code[m->w->code_n++] = (val))
+static inline void dpush(m4th *m, m4long val) {
+    *--m->dstack.curr = val;
+}
+
+static inline m4enum *vec_ipush_m4long(m4enum *code, m4long val) {
+    /* store an m4long in consecutive m4enum. layout depends on endianness */
+    memcpy(code, &val, sizeof(m4long));
+    return code + m4enum_per_m4long;
+}
+
+static inline void ipush_m4long(m4th *m, m4long val) {
+    m4word *w = m->w;
+    vec_ipush_m4long(w->code + w->code_n, val);
+    w->code_n += m4enum_per_m4long;
+}
+
+static inline void ipush(m4th *m, m4enum val) {
+    m->w->code[m->w->code_n++] = val;
+}
 
 enum {
     tsuccess = 0,
@@ -45,9 +65,9 @@ enum {
 };
 
 /* warning: str must end with '\0' */
-m4int m4string_to_int(m4string str, m4int *out_n) {
+m4long m4string_to_int(m4string str, m4long *out_n) {
     char *end = NULL;
-    m4int err = tsuccess;
+    m4long err = tsuccess;
     if (str.addr == NULL || str.len == 0) {
         return teof;
     }
@@ -92,7 +112,7 @@ static const m4word *m4wordlist_lookup_word(const m4wordlist *d, m4string key) {
 static const m4word *m4th_lookup_word(m4th *m, m4string key) {
     m4wordlist *l;
     const m4word *w = NULL;
-    m4int i;
+    m4long i;
     assert(m);
     assert(key.addr);
     for (i = 0; i < m4th_wordlist_n && w == NULL; i++) {
@@ -116,31 +136,37 @@ m4eval_arg m4th_parse(m4th *m, m4string key) {
 }
 
 /** temporary C implementation of (compile-word) */
-static m4int m4th_compile_word(m4th *m, const m4word *w) {
-    ipush(m4_call_);
-    ipush((m4instr)w->code);
+static m4long m4th_compile_word(m4th *m, const m4word *w) {
+    ipush(m, m4_call_);
+    ipush_m4long(m, (m4long)w->code);
     return tsuccess;
 }
 
 /** temporary C implementation of (interpret-word) */
-static m4int m4th_interpret_word(m4th *m, const m4word *w) {
-    const m4instr *ip_save = m->ip;
-    m4instr torun[] = {m4_call_, (m4instr)w->code, m4bye};
+static m4long m4th_interpret_word(m4th *m, const m4word *w) {
+    const m4enum *ip_save = m->ip;
+    m4enum torun[2 + m4enum_per_m4long];
+    {
+        m4enum *p = torun;
+        *p++ = m4_call_;
+        p = vec_ipush_m4long(p, (m4long)w->code);
+        *p++ = m4bye;
+    }
     m->ip = torun;
-    m4int ret = m4th_run(m);
+    m4long ret = m4th_run(m);
     m->ip = ip_save;
     return ret;
 }
 
 /** temporary C implementation of (compile-number) */
-static m4int m4th_compile_number(m4th *m, m4int n) {
-    ipush(m4_lit_);
-    ipush((m4instr)n);
+static m4long m4th_compile_number(m4th *m, m4long n) {
+    ipush(m, m4_lit_);
+    ipush_m4long(m, n);
     return tsuccess;
 }
 
 /** temporary C implementation of (eval) */
-m4int m4th_eval(m4th *m, m4eval_arg arg) {
+m4long m4th_eval(m4th *m, m4eval_arg arg) {
     const m4char is_interpreting = (m->flags & m4th_flag_status_mask) == m4th_flag_interpret;
 
     if (arg.err != 0) {
@@ -153,7 +179,7 @@ m4int m4th_eval(m4th *m, m4eval_arg arg) {
         }
     } else {
         if (is_interpreting) {
-            dpush(arg.n);
+            dpush(m, arg.n);
             return tsuccess;
         } else {
             return m4th_compile_number(m, arg.n);
@@ -162,10 +188,10 @@ m4int m4th_eval(m4th *m, m4eval_arg arg) {
 }
 
 /** temporary C implementation of (repl) */
-m4int m4th_repl(m4th *m) {
+m4long m4th_repl(m4th *m) {
     m4string str;
     m4eval_arg arg;
-    m4int ret;
+    m4long ret;
 
     while ((ret = m4th_eval(m, arg = m4th_parse(m, str = m4th_read(m)))) == 0) {
     }

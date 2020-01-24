@@ -24,9 +24,10 @@
 #define M4TH_OFF_W SZ6        /* offset of m4th->w           */
 #define M4TH_OFF_IP SZ7       /* offset of m4th->ip          */
 #define M4TH_OFF_C_SP SZ8     /* offset of m4th->c_sp        */
-#define M4TH_OFF_IN SZ10      /* offset of m4th->in.curr     */
-#define M4TH_OFF_IN_END SZ11  /* offset of m4th->in.end      */
-#define M4TH_OFF_OUT SZ13     /* offset of m4th->out.curr    */
-#define M4TH_OFF_OUT_END SZ14 /* offset of m4th->out.end     */
+#define M4TH_OFF_ETABLE SZ9   /* offset of m4th->etable     */
+#define M4TH_OFF_IN SZ11      /* offset of m4th->in.curr     */
+#define M4TH_OFF_IN_END SZ12  /* offset of m4th->in.end      */
+#define M4TH_OFF_OUT SZ14     /* offset of m4th->out.curr    */
+#define M4TH_OFF_OUT_END SZ15 /* offset of m4th->out.end     */
 
 #endif /* M4TH_COMMON_M4TH_ASM_MH */

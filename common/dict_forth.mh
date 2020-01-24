@@ -18,33 +18,30 @@
 #ifndef M4TH_COMMON_DICT_FORTH_MH
 #define M4TH_COMMON_DICT_FORTH_MH
 
-#define DICT_WORDS_FORTH(X)                                                                        \
+#define DICT_WORDS_FORTH_CORE(X)                                                                   \
     X(1, "!", store)                                                                               \
-    X(1, "*", star)                                                                                \
+    X(1, "*", times)                                                                               \
     X(1, "+", plus)                                                                                \
     X(2, "+!", plus_store)                                                                         \
     X(1, "-", minus)                                                                               \
-    X(1, "/", slash)                                                                               \
-    X(4, "/mod", slash_mod)                                                                        \
+    X(1, "/", div)                                                                                 \
+    X(4, "/mod", div_mod)                                                                          \
     X(2, "0<", zero_less)                                                                          \
-    X(3, "0<>", zero_not_equals) /* core ext */                                                    \
-    X(2, "0=", zero_equals)                                                                        \
-    X(2, "0>", zero_greater_than)                                                                  \
+    X(2, "0=", zero_equal)                                                                         \
+    X(2, "0>", zero_more)                                                                          \
     X(2, "1+", one_plus)                                                                           \
     X(2, "1-", one_minus)                                                                          \
-    X(2, "2*", two_star)                                                                           \
-    X(2, "2/", two_slash)                                                                          \
-    X(1, "<", less_than)                                                                           \
-    X(2, "<>", not_equals) /* core ext */                                                          \
-    X(1, "=", equals)                                                                              \
-    X(1, ">", greater_than)                                                                        \
+    X(2, "2*", two_times)                                                                          \
+    X(2, "2/", two_div)                                                                            \
+    X(1, "<", less)                                                                                \
+    X(1, "=", equal)                                                                               \
+    X(1, ">", more)                                                                                \
     X(2, ">r", to_r)                                                                               \
-    X(4, "?dup", question_dupe)                                                                    \
+    X(4, "?dup", question_dup)                                                                     \
     X(1, "@", fetch)                                                                               \
     X(3, "abs", abs)                                                                               \
     X(3, "and", and)                                                                               \
     X(2, "bl", bl)                                                                                 \
-    X(3, "bye", bye) /* tools ext */                                                               \
     X(2, "c!", c_store)                                                                            \
     X(2, "c@", c_fetch)                                                                            \
     X(5, "cell+", cell_plus)                                                                       \
@@ -56,7 +53,6 @@
     X(4, "drop", drop)                                                                             \
     X(3, "dup", dup)                                                                               \
     X(4, "exit", exit)                                                                             \
-    X(5, "false", false) /* core ext */                                                            \
     X(1, "i", i)                                                                                   \
     X(2, "i'", i_prime)                                                                            \
     X(6, "invert", invert)                                                                         \
@@ -74,8 +70,20 @@
     X(3, "rot", rot)                                                                               \
     X(6, "rshift", rshift)                                                                         \
     X(4, "swap", swap)                                                                             \
-    X(4, "true", true) /* core ext */                                                              \
     X(6, "unloop", unloop)                                                                         \
     X(3, "xor", xor)
+
+#define DICT_WORDS_FORTH_CORE_EXT(X)                                                               \
+    X(3, "0<>", zero_ne)                                                                           \
+    X(2, "<>", ne)                                                                                 \
+    X(5, "false", false)                                                                           \
+    X(4, "true", true)
+
+#define DICT_WORDS_FORTH_TOOLS_EXT(X) X(3, "bye", bye)
+
+#define DICT_WORDS_FORTH(X)                                                                        \
+    DICT_WORDS_FORTH_CORE(X)                                                                       \
+    DICT_WORDS_FORTH_CORE_EXT(X)                                                                   \
+    DICT_WORDS_FORTH_TOOLS_EXT(X)
 
 #endif /* M4TH_COMMON_DICT_FORTH_MH */

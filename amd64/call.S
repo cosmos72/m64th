@@ -24,7 +24,7 @@
  *      passed in %rdi as per SYS V amd64 ABI,
  * execute m4th->code.start[0] and subsequent instructions until m4bye is found.
  */
-FUNC_START(th_run)
+FUNC_START(m4th_run)
         push   %rbx;                      /* save C registers                */
 #if 0 /* not clobbered by m4th */
         push   %rbp;
@@ -33,18 +33,19 @@ FUNC_START(th_run)
         push   %r13;
         push   %r14;
         push   %r15;
-        MOVE(  %rdi, M4TH)                     /* m                               */
-        STOR(  %rsp, AT(M4TH, M4TH_OFF_C_SP))  /* save C stack pointer            */
-        LOAD(  DSTK, AT(M4TH, M4TH_OFF_DSTK))  /* load data   stack pointer       */
-        LOAD(  RSTK, AT(M4TH, M4TH_OFF_RSTK))  /* load return stack pointer       */
-        LOAD(  M4XT, AT(M4TH, M4TH_OFF_W))     /* load word being compiled        */
-        LOAD(  IP,   AT(M4TH, M4TH_OFF_IP))    /* load instruction  pointer       */
+        MOVE(  %rdi, M4TH)                      /* m                               */
+        STOR(  %rsp, AT(M4TH, M4TH_OFF_C_SP))   /* save C stack pointer            */
+        LOAD(  DSTK, AT(M4TH, M4TH_OFF_DSTK))   /* load data   stack pointer       */
+        LOAD(  RSTK, AT(M4TH, M4TH_OFF_RSTK))   /* load return stack pointer       */
+        LOAD(  M4XT, AT(M4TH, M4TH_OFF_W))      /* load word being compiled        */
+        LOAD(  IP,   AT(M4TH, M4TH_OFF_IP))     /* load instruction  pointer       */
+        LOAD(  ETBL, AT(M4TH, M4TH_OFF_ETABLE)) /* load table m4enum -> m4func      */
         DPOP(  DTOP)                      /* load first data   stack element */
         RPOP(  RTOP)                      /* load first return stack element */
         ADD2(  IMM(WORD_OFF_XT), M4XT)    /* convert *m4word -> XT           */
         MOVE(  IMM(-1), RFFF)             /* set RFFF to -1                  */
         NEXT0()                           /* begin execution                 */
-FUNC_RAWEND(th_run)
+FUNC_RAWEND(m4th_run)
 
 /**
  * exit m4th interpreter and return to C:
@@ -57,12 +58,13 @@ FUNC_START(bye)
         SUB2(  IMM(WORD_OFF_XT), M4XT)    /* convert XT -> *m4word           */
         RPUSH( RTOP)                      /* save first return stack element */
         DPUSH( DTOP)                      /* save first data   stack element */
-        STOR(  IP,   AT(M4TH, M4TH_OFF_IP))    /* save instruction  pointer       */
-        STOR(  M4XT, AT(M4TH, M4TH_OFF_W))     /* save word being compiled        */
-        STOR(  RSTK, AT(M4TH, M4TH_OFF_RSTK))  /* save return stack pointer       */
-        STOR(  DSTK, AT(M4TH, M4TH_OFF_DSTK))  /* save data   stack pointer       */
-        LOAD(  %rsp, AT(M4TH, M4TH_OFF_C_SP))  /* load C stack pointer            */
-        pop    %r15;                      /* load C registers                */
+        STOR(  ETBL, AT(M4TH, M4TH_OFF_ETABLE)) /* save table m4enum -> m4func       */
+        STOR(  IP,   AT(M4TH, M4TH_OFF_IP))     /* save instruction  pointer       */
+        STOR(  M4XT, AT(M4TH, M4TH_OFF_W))      /* save word being compiled        */
+        STOR(  RSTK, AT(M4TH, M4TH_OFF_RSTK))   /* save return stack pointer       */
+        STOR(  DSTK, AT(M4TH, M4TH_OFF_DSTK))   /* save data   stack pointer       */
+        LOAD(  %rsp, AT(M4TH, M4TH_OFF_C_SP))   /* load C stack pointer            */
+        pop    %r15;                            /* load C registers                */
         pop    %r14;
         pop    %r13;
         pop    %r12;
@@ -77,10 +79,10 @@ FUNC_RAWEND(bye)
 
 /** must be followed by an XT. calls it. */
 FUNC_START(_call_)
-        RPUSH( RTOP)             /* save RTOP           */
-        lea    AT(IP, SZ2), RTOP /* save return address = IP + SZ2 */
-        LOAD(  IP,   AT(IP, SZ)) /* load XT from IP[SZ] */
-        NEXT0()                  /* jump to XT          */
+        RPUSH( RTOP)                   /* save RTOP           */
+        lea    AT(IP, ISZ+SZ), RTOP    /* save return address = IP + ISZ + SZ */
+        LOAD(  IP,   AT(IP, ISZ))      /* load XT from IP[ISZ] */
+        NEXT0()                        /* jump to XT          */
 FUNC_RAWEND(_call_)
 
 /** return from XT being executed (i.e. current forth word) */

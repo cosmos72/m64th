@@ -34,11 +34,18 @@ FUNC_START(_lit_) /* (lit)  push to dstack the number at following IP */
 FUNC_RAWEND(_lit_)
 #endif
 
+#ifndef M4_MISSING_
+FUNC_START(_missing_) /* (missing) called instead of invalid/unimplemented function */
+        ZERO(  REG1)
+        LOAD(  REG1, AT(REG1)) /* should crash */
+FUNC_END(_missing_)
+#endif
 
-FUNC_START(star) /* * */
+
+FUNC_START(times) /* * */
         DPOP(  REG1)
         MUL2(  REG1, DTOP)
-FUNC_END(star)
+FUNC_END(times)
 
 
 FUNC_START(plus) /* + */
@@ -143,9 +150,9 @@ FUNC_END(four)
 #endif
 
 
-FUNC_START(four_star)  /* 4*  m4th-impl */
+FUNC_START(four_times)  /* 4*  m4th-impl */
         SHL2(  IMM(2), DTOP)
-FUNC_END(four_star)
+FUNC_END(four_times)
 
 
 FUNC_START(four_plus)  /* 4+  m4th-impl */
@@ -161,9 +168,9 @@ FUNC_END(eight)
 #endif
 
 
-FUNC_START(eight_star) /* 8*  m4th-impl */
+FUNC_START(eight_times) /* 8*  m4th-impl */
         SHL2(  IMM(3), DTOP)
-FUNC_END(eight_star)
+FUNC_END(eight_times)
 
 
 FUNC_START(eight_plus) /* 8+  m4th-impl */
@@ -210,7 +217,7 @@ FUNC_END(c_store)
 
 
 FUNC_START(c_fetch)    /* c@ */
-        LOAD_ub(DTOP_ub, AT(DTOP));
+        LD_ub(DTOP_ub, AT(DTOP));
 FUNC_END(c_fetch)
 
 
@@ -243,9 +250,9 @@ FUNC_START(i)
 FUNC_END(i)
 
 
-FUNC_START(i_star) /* i *  m4th */
+FUNC_START(i_times) /* i *  m4th */
         MUL2(  RTOP, DTOP)
-FUNC_END(i_star)
+FUNC_END(i_times)
 
 
 FUNC_START(i_plus) /* i +  m4th */

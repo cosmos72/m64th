@@ -19,7 +19,7 @@ typedef struct pair_s {
     long first, second;
 } pair;
 
-void m4question_dupe(long dtop, long *dstk) {
+void m4question_dup(long dtop, long *dstk) {
     if (dtop != 0) {
         *--dstk = dtop;
     }
