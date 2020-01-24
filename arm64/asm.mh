@@ -208,26 +208,22 @@
     br REG0;
 
 #define NEXT() /* jump to next instruction */                                                      \
-    LD_ue(REG0_ue, AT(IP, SZe))                                                                   \
-    ADD2(IMM(SZe), IP)                                                                             \
+    LD_ue(REG0_ue, AT(IP, SZe)!)                                                                   \
     LOAD(REG0, AT(ETBL, REG0, SZ))                                                                 \
     br REG0;
 
 #define NEXT2() /* skip 2 bytes (one instruction), jump to second instruction */                   \
-    LD_ue(REG0_ue, AT(IP, SZe2))                                                                  \
-    ADD2(IMM(SZe2), IP)                                                                            \
+    LD_ue(REG0_ue, AT(IP, SZe2)!)                                                                  \
     LOAD(REG0, AT(ETBL, REG0, SZ))                                                                 \
     br REG0;
 
 #define NEXT4() /* skip 4 bytes (two instructions), jump to third instruction */                   \
-    LD_ue(REG0_ue, AT(IP, SZe3))                                                                  \
-    ADD2(IMM(SZe3), IP)                                                                            \
+    LD_ue(REG0_ue, AT(IP, SZe3)!)                                                                  \
     LOAD(REG0, AT(ETBL, REG0, SZ))                                                                 \
     br REG0;
 
 #define NEXT8() /* skip 8 bytes (four instructions), jump to fifth instruction */                  \
-    LD_ue(REG0_ue, AT(IP, SZe5))                                                                  \
-    ADD2(IMM(SZe5), IP)                                                                            \
+    LD_ue(REG0_ue, AT(IP, SZe5)!)                                                                  \
     LOAD(REG0, AT(ETBL, REG0, SZ))                                                                 \
     br REG0;
 
