@@ -25,20 +25,23 @@
 
 /* -------------- m4test_code -------------- */
 
-void m4test_code_copy(const m4long *src, m4long n, m4word *dst) {
-    m4enum *dst_code = dst->code + dst->code_n;
+void m4test_code_copy(const m4long *src, m4long n, m4enum *dst) {
     m4long i = 0;
     while (i < n) {
         m4long x = src[i];
-        dst_code[i++] = (m4enum)x;
+        dst[i++] = (m4enum)x;
         if (x == m4_call_) {
             /* copy XT */
             x = src[i];
-            memcpy(dst_code + i, &x, sizeof(m4long));
+            memcpy(dst + i, &x, sizeof(m4long));
             i += m4enum_per_m4long;
         }
     }
-    dst->code_n += i;
+}
+
+void m4test_code_copy_to_word(const m4long *src, m4long n, m4word *dst) {
+    m4test_code_copy(src, n, dst->code + dst->code_n);
+    dst->code_n += n;
 }
 
 m4long m4test_code_equal(const m4test_code *src, const m4word *dst, m4long dst_code_start_n) {

@@ -49,7 +49,8 @@ typedef struct m4test_code_s {
     m4long data[m4test_code_n];
 } m4test_code;
 
-void m4test_code_copy(const m4long *src, m4long len, m4word *dst);
+void m4test_code_copy(const m4long *src, m4long n, m4enum *dst);
+void m4test_code_copy_to_word(const m4long *src, m4long len, m4word *dst);
 m4long m4test_code_equal(const m4test_code *src, const m4word *dst, m4long dst_code_start_n);
 void m4test_code_print(const m4test_code *src, FILE *out);
 

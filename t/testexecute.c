@@ -69,10 +69,15 @@ static uint32_t crc1byte(uint32_t crc, unsigned char byte) {
  *   over xor 0xff and  cells crctable + @  swap 8 rshift xor
  * ;
  */
-static const m4long test_func_crc1byte[] = {
+static const m4long test_code_crc1byte[] = {
     m4over, m4xor,   m4_literal2s_, 0xff,          m4and, m4cells,  m4_lit_cell_, CELL(crctable),
     m4plus, m4fetch, m4swap,        m4_literal2s_, 8,     m4rshift, m4xor,        m4exit,
 };
+
+enum { test_func_crc1byte_n = sizeof(test_code_crc1byte) / sizeof(test_code_crc1byte[0]) };
+
+/* initialized by main() */
+static m4enum test_func_crc1byte[test_func_crc1byte_n];
 
 /* -------------- m4test -------------- */
 
@@ -85,11 +90,11 @@ static const m4testexecute testexecute[] = {
     {"(call) (inline)", {CALLXT(_inline_), m4bye}, {{}, {}}, {{}, {}}, {}},
     {"(call) (optimize)", {CALLXT(_optimize_), m4bye}, {{}, {}}, {{}, {}}, {}},
     {"(call) false", {CALLXT(false), m4bye}, {{}, {}}, {{1, {}}, {}}, {}},
-#if 0
     {"(call) noop", {CALLXT(noop), m4bye}, {{}, {}}, {{}, {}}, {}},
     {"(call) true", {CALLXT(true), m4bye}, {{}, {}}, {{1, {-1}}, {}}, {}},
+#if 0
     {"(call) crc+",
-     {m4_call_, (m4enum)test_func_crc1byte, m4bye},
+     {m4_call_, (m4long)test_func_crc1byte, m4bye},
      {{2, {0xffffffff, 't'}}, {}},
      {{1, {0x7a95a557 /* crc1byte(0xffffffff, 't') */}}, {}},
      {}},
@@ -223,7 +228,7 @@ static m4long m4testexecute_run(m4th *m, const m4testexecute *t, m4test_word *w)
     m4th_clear(m);
     m4test_stack_copy(&t->before.d, &m->dstack);
     m4test_stack_copy(&t->before.r, &m->rstack);
-    m4test_code_copy(t->code, m4test_code_n, &w->impl);
+    m4test_code_copy_to_word(t->code, m4test_code_n, &w->impl);
     m->w = &w->impl;
     m->ip = w->code;
     m4th_run(m);
@@ -262,6 +267,7 @@ m4long m4th_testexecute(m4th *m, FILE *out) {
     enum { n = testexecute_n };
 
     crcfill(crctable);
+    m4test_code_copy(test_code_crc1byte, test_func_crc1byte_n, test_func_crc1byte);
 
     for (i = 0; i < n; i++) {
         if (!m4testexecute_run(m, &testexecute[i], &w)) {
