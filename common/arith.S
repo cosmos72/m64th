@@ -29,7 +29,7 @@ FUNC_END(store)
 #ifndef M4_LITERAL2S
 FUNC_START(_literal2s_) /* (literal-2s) push to dstack the int16 at following IP */
         DPUSH( DTOP)
-        LD_sh( DTOP_sh, AT(IP, SZ))
+        LD_sh( DTOP_sh, AT(IP, SZe))
         NEXT2() /* skip 2 bytes */
 FUNC_RAWEND(_literal2s_)
 #endif
@@ -37,17 +37,17 @@ FUNC_RAWEND(_literal2s_)
 #ifndef M4_LITERAL4S
 FUNC_START(_literal4s_) /* (literal-4s) push to dstack the int32 at following IP */
         DPUSH( DTOP)
-        LD_sw( DTOP_sw, AT(IP, SZ))
+        LD_sw( DTOP_sw, AT(IP, SZe))
         NEXT4() /* skip 4 bytes */
-FUNC_RAWEND(_literal2s_)
+FUNC_RAWEND(_literal4s_)
 #endif
 
 #ifndef M4_LITERAL8S
 FUNC_START(_literal8s_) /* (literal-8s) push to dstack the int64 at following IP */
         DPUSH( DTOP)
-        LOAD(  DTOP, AT(IP, SZ))
+        LOAD(  DTOP, AT(IP, SZe))
         NEXT8() /* skip 8 bytes */
-FUNC_RAWEND(_literal2s_)
+FUNC_RAWEND(_literal8s_)
 #endif
 
 #ifndef M4_MISSING_

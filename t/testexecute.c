@@ -70,8 +70,8 @@ static uint32_t crc1byte(uint32_t crc, unsigned char byte) {
  * ;
  */
 static const m4long test_code_crc1byte[] = {
-    m4over, m4xor,   m4_literal2s_, 0xff,          m4and, m4cells,  m4_lit_cell_, CELL(crctable),
-    m4plus, m4fetch, m4swap,        m4_literal2s_, 8,     m4rshift, m4xor,        m4exit,
+    m4over, m4xor,   m4_lit_enum_, 0xff,         m4and, m4cells,  m4_lit_cell_, CELL(crctable),
+    m4plus, m4fetch, m4swap,       m4_lit_enum_, 8,     m4rshift, m4xor,        m4exit,
 };
 
 enum { test_func_crc1byte_n = sizeof(test_code_crc1byte) / sizeof(test_code_crc1byte[0]) };
