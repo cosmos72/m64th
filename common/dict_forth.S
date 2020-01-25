@@ -63,20 +63,8 @@ WORD_END(bye)
 WORD(c_fetch,          bye,        DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 WORD(cell_plus,        c_fetch,    DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(cells,            cell_plus,  DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD_START(char_plus,  cells)
-   WORD_FLAGS(WORD_PURE)
-   WORD_DSTACK(1,1)
-   WORD_RSTACK(0,0)
-   WORD_NATIVE_LEN(one_plus)   /* char+ is implemented as 1+ */
-   WORD_ENUMS(one_plus, exit)
-WORD_END(char_plus)
-WORD_START(chars, char_plus)
-   WORD_FLAGS(WORD_PURE)
-   WORD_DSTACK(1,1)
-   WORD_RSTACK(0,0)
-   WORD_NATIVE_LEN_0()         /* chars is implemented as noop */
-   WORD_ENUMS(exit)
-WORD_END(chars)
+WORD(char_plus,        cells,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD(chars,            char_plus,  DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 
 WORD_DECL_SYM(_inline_)        /* forward declarations */
 WORD_DECL_SYM(_optimize_)

@@ -22,6 +22,15 @@
 #include "macro.mh"          /* CAT3() */
 
 /* m4enum identifiers have lowercase prefix 'm4' */
+#define m4int_plus m4four_plus   /* int+     => 4+       */
+#define m4ints m4four_times      /* ints     => 4*       */
+#define m4uint_plus m4four_plus  /* uint+    => 4+       */
+#define m4uints m4four_times     /* uints    => 4*       */
+#define m4short_plus m4two_plus  /* short+   => 2+       */
+#define m4shorts m4two_times     /* shorts   => 2*       */
+#define m4ushort_plus m4two_plus /* ushort+  => 2+       */
+#define m4ushorts m4two_times    /* ushorts  => 2*       */
+
 #define m4_compile_short_ m4_compile2s_
 #define m4_compile_int_ m4_compile4s_
 #define m4_compile_enum_ CAT3(m4_compile, SZe, s_)
@@ -47,7 +56,16 @@
 #define m4_8_times m4eight_times /* 8*       */
 #define m4_8_plus m4eight_plus   /* 8+       */
 
-/* #define M4* numeric values (also used by assembly) have uppercase prefix 'M4' */
+/* #define M4* numeric values (also used in assembly) have uppercase prefix 'M4' */
+#define M4int_plus M4four_plus   /* int+     => 4+       */
+#define M4ints M4four_times      /* ints     => 4*       */
+#define M4uint_plus M4four_plus  /* uint+    => 4+       */
+#define M4uints M4four_times     /* uints    => 4*       */
+#define M4short_plus M4two_plus  /* short+   => 2+       */
+#define M4shorts M4two_times     /* shorts   => 2*       */
+#define M4ushort_plus M4two_plus /* ushort+  => 2+       */
+#define M4ushorts M4two_times    /* ushorts  => 2*       */
+
 #define M4_compile_short_ M4_compile2s_
 #define M4_compile_int_ M4_compile4s_
 #define M4_compile_enum_ CAT3(M4_compile, SZe, s_)
