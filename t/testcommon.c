@@ -30,8 +30,8 @@ void m4test_code_copy(const m4long *src, m4long n, m4enum *dst) {
     while (i < n) {
         m4long x = src[i];
         dst[i++] = (m4enum)x;
-        if (x == m4_call_) {
-            /* copy XT */
+        if (x == m4_call_ || x == m4_literal8s_) {
+            /* copy 8 bytes */
             x = src[i];
             memcpy(dst + i, &x, sizeof(m4long));
             i += m4enum_per_m4long;
@@ -101,3 +101,4 @@ void m4test_stack_print(const m4test_stack *src, FILE *out) {
 }
 
 #endif /* M4TH_T_TESTCOMMON_C */
+

@@ -84,7 +84,7 @@ FUNC_RAWEND(bye)
 FUNC_START(_call_)
         RPUSH( RTOP)                   /* save RTOP           */
         ADD3(  IP,   IMM(SZe+SZ), RTOP)/* save return address = IP+SZe+SZ  */
-        LOAD(  IP,   AT(IP, SZe+SZ))   /* load XT from IP[SZ] */
+        LOAD(  IP,   AT(IP, SZe))      /* load XT from IP[SZe] */
         NEXT0()                        /* jump to XT          */
 FUNC_RAWEND(_call_)
 
