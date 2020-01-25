@@ -54,7 +54,6 @@
     X(3, "dup", dup)                                                                               \
     X(4, "exit", exit)                                                                             \
     X(1, "i", i)                                                                                   \
-    X(2, "i'", i_prime)                                                                            \
     X(6, "invert", invert)                                                                         \
     X(1, "j", j)                                                                                   \
     X(7, "literal", literal)                                                                       \

@@ -82,10 +82,10 @@ static const m4testexecute testexecute[] = {
 #else
     {"0 0 (?do)", {m4_question_do_, (m4enum)2, m4bye}, {{2, {0, 0}}, {}}, {{}, {}}, {}},
     {"1 0 (?do)", {m4_question_do_, (m4enum)2, m4bye}, {{2, {1, 0}}, {}}, {{}, {2, {1, 0}}}, {}},
-#if 0
     {"(call) (inline)", {CALLXT(_inline_), m4bye}, {{}, {}}, {{}, {}}, {}},
     {"(call) (optimize)", {CALLXT(_optimize_), m4bye}, {{}, {}}, {{}, {}}, {}},
     {"(call) false", {CALLXT(false), m4bye}, {{}, {}}, {{1, {}}, {}}, {}},
+#if 0
     {"(call) noop", {CALLXT(noop), m4bye}, {{}, {}}, {{}, {}}, {}},
     {"(call) true", {CALLXT(true), m4bye}, {{}, {}}, {{1, {-1}}, {}}, {}},
     {"(call) crc+",

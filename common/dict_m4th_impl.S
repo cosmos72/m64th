@@ -17,7 +17,7 @@
 
 #include "../common/asm.mh"
 #include "../common/macro.mh"
-#include "../dispatch/sz.mh"
+#include "../dispatch/sz.mh" /* SZ SZe */
 #include "dict.mh"
 #include "dict_m4th.mh"
 
@@ -117,22 +117,23 @@ WORD_START(_optimize_, _loop_)
    WORD_NATIVE_NONE()
    WORD_ENUMS(exit) /* currently does nothing */
 WORD_END(_optimize_)
-WORD(minus_one,       _optimize_,  DSTACK(0,1), RSTACK(0,0), WORD_PURE)
-WORD(zero,            minus_one,   DSTACK(0,1), RSTACK(0,0), WORD_PURE)
-WORD(one,             zero,        DSTACK(0,1), RSTACK(0,0), WORD_PURE)
-WORD(two,             one,         DSTACK(0,1), RSTACK(0,0), WORD_PURE)
-WORD(two_plus,        two,         DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(two_minus,       two_plus,    DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(three,           two_minus,   DSTACK(0,1), RSTACK(0,0), WORD_PURE)
-WORD(four,            three,       DSTACK(0,1), RSTACK(0,0), WORD_PURE)
-WORD(four_times,       four,        DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(four_plus,       four_times,   DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(eight,           four_plus,   DSTACK(0,1), RSTACK(0,0), WORD_PURE)
-WORD(eight_times,      eight,       DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(eight_plus,      eight_times,  DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(i_times,          eight_plus,  DSTACK(1,1), RSTACK(1,1), WORD_PURE | M4FLAG_COMPILE_ONLY)
-WORD(i_plus,          i_times,      DSTACK(1,1), RSTACK(1,1), WORD_PURE | M4FLAG_COMPILE_ONLY)
-WORD(i_minus,         i_plus,      DSTACK(1,1), RSTACK(1,1), WORD_PURE | M4FLAG_COMPILE_ONLY)
+WORD(minus_one,        _optimize_, DSTACK(0,1), RSTACK(0,0), WORD_PURE)
+WORD(zero,             minus_one,  DSTACK(0,1), RSTACK(0,0), WORD_PURE)
+WORD(one,              zero,       DSTACK(0,1), RSTACK(0,0), WORD_PURE)
+WORD(two,              one,        DSTACK(0,1), RSTACK(0,0), WORD_PURE)
+WORD(two_plus,         two,        DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD(two_minus,        two_plus,   DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD(three,            two_minus,  DSTACK(0,1), RSTACK(0,0), WORD_PURE)
+WORD(four,             three,      DSTACK(0,1), RSTACK(0,0), WORD_PURE)
+WORD(four_times,       four,       DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD(four_plus,        four_times, DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD(eight,            four_plus,  DSTACK(0,1), RSTACK(0,0), WORD_PURE)
+WORD(eight_times,      eight,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD(eight_plus,       eight_times,DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD(i_prime,          eight_plus, DSTACK(0,1), RSTACK(2,2), WORD_PURE | M4FLAG_COMPILE_ONLY)
+WORD(i_times,          i_prime,    DSTACK(1,1), RSTACK(1,1), WORD_PURE | M4FLAG_COMPILE_ONLY)
+WORD(i_plus,           i_times,    DSTACK(1,1), RSTACK(1,1), WORD_PURE | M4FLAG_COMPILE_ONLY)
+WORD(i_minus,          i_plus,     DSTACK(1,1), RSTACK(1,1), WORD_PURE | M4FLAG_COMPILE_ONLY)
 WORD_START(noop, i_minus)
     WORD_FLAGS(WORD_PURE)
     WORD_DSTACK(0,0)

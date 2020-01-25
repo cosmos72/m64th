@@ -19,11 +19,13 @@
 #define M4TH_COMMON_OPT_MH
 
 #define OPT1_BODY(x, _)                                                                            \
-    x((noop), _)                     /* noop     =>          */                                    \
-        x((cell_plus), (eight_plus)) /* cell+    => 8+       FIXME use SZ */                       \
-        x((cells), (eight_times))    /* cells    => 8*       FIXME use SZ */                       \
-        x((char_plus), (one_plus))   /* char+    => 1+       */                                    \
-        x((chars), _)                /* chars    =>          */
+    x((cell_plus), (eight_plus))   /* cell+    => 8+       FIXME use SZ */                         \
+        x((cells), (eight_times))  /* cells    => 8*       FIXME use SZ */                         \
+        x((char_plus), (one_plus)) /* char+    => 1+       */                                      \
+        x((chars), _)              /* chars    =>          */                                      \
+        x((false), (zero))         /* false    => 0        */                                      \
+        x((noop), _)               /* noop     =>          */                                      \
+        x((true), (minus_one))     /* true     => -1       */
 
 #define OPT2_BODY(x, _)                                 /* note: '_' represents noop       */      \
     x((minus_one, times), (negate))                     /* -1 *            => negate       */      \

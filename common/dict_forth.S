@@ -93,16 +93,9 @@ WORD_START(exit, dup)
    /* make inliner happy: it skips the final 'exit' of a word's code when inlining */
    WORD_ENUMS(exit, exit)
 WORD_END(exit)
-WORD_START(false, exit)        /* core ext */
-    WORD_FLAGS(WORD_PURE)
-    WORD_DSTACK(0,1)
-    WORD_RSTACK(0,0)
-    WORD_NATIVE_LEN(zero)      /* false is implemented as zero */
-    WORD_ENUMS(zero, exit)
-WORD_END(false)
+WORD(false,            exit,       DSTACK(0,1), RSTACK(0,0), WORD_PURE) /* core ext */
 WORD(i,                false,      DSTACK(0,1), RSTACK(1,1), WORD_PURE | M4FLAG_COMPILE_ONLY)
-WORD(i_prime,          i,          DSTACK(0,1), RSTACK(2,2), WORD_PURE | M4FLAG_COMPILE_ONLY)
-WORD(invert,           i_prime,    DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD(invert,           i,          DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(j,                invert,     DSTACK(0,1), RSTACK(3,3), WORD_PURE | M4FLAG_COMPILE_ONLY)
 WORD_START(literal, j)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE)
@@ -154,13 +147,7 @@ WORD(r_from,           over,       DSTACK(0,1), RSTACK(1,0), WORD_PURE | M4FLAG_
 WORD(rot,              r_from,     DSTACK(3,3), RSTACK(0,0), WORD_PURE)
 WORD(rshift,           rot,        DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(swap,             rshift,     DSTACK(2,2), RSTACK(0,0), WORD_PURE)
-WORD_START(true, swap) /* core ext */
-    WORD_FLAGS(WORD_PURE)
-    WORD_DSTACK(0,1)
-    WORD_RSTACK(0,0)
-    WORD_NATIVE_LEN(minus_one)   /* true is implemented as minus_one */
-    WORD_ENUMS(minus_one, exit)
-WORD_END(true)
+WORD(true,             swap,       DSTACK(0,1), RSTACK(0,0), WORD_PURE) /* core ext */
 WORD(unloop,           true,       DSTACK(0,0), RSTACK(2,0), WORD_PURE | M4FLAG_COMPILE_ONLY)
 WORD(xor,              unloop,     DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 

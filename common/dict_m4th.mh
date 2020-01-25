@@ -58,6 +58,7 @@
     X(1, "8", eight)                                                                               \
     X(2, "8*", eight_times)                                                                        \
     X(2, "8+", eight_plus)                                                                         \
+    X(2, "i'", i_prime)                                                                            \
     X(2, "i*", i_times)                                                                            \
     X(2, "i+", i_plus)                                                                             \
     X(2, "i-", i_minus)                                                                            \

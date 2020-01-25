@@ -1,4 +1,4 @@
-FLAGS=-g
+FLAGS=-g3
 
 CC=cc
 CFLAGS=-Wall -Wextra -W $(FLAGS)
