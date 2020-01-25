@@ -38,5 +38,6 @@
 
 #define SZe 2  /* sizeof(m4enum) in bytes */
 #define SZe2 4 /* SZe * 2 */
+#define PSZe 1 /* (1 << PSZe) == SZe */
 
 #endif /* M4TH_ARM64_SZ_MH */
