@@ -17,6 +17,8 @@
 
 #include "asm.mh"
 
+#define m4func_m4th_run m4th_run
+
 /**
  * enter m4th interpreter from C:
  * save C registers,
@@ -81,8 +83,8 @@ FUNC_RAWEND(bye)
 /** must be followed by an XT. calls it. */
 FUNC_START(_call_)
         RPUSH( RTOP)                   /* save RTOP           */
-        ADD3(  IP,   IMM(SZ2), RTOP)   /* save return address = IP + SZ2 */
-        LOAD(  IP,   AT(IP, SZ))       /* load XT from IP[SZ] */
+        ADD3(  IP,   IMM(SZe+SZ), RTOP)/* save return address = IP+SZe+SZ  */
+        LOAD(  IP,   AT(IP, SZe+SZ))   /* load XT from IP[SZ] */
         NEXT0()                        /* jump to XT          */
 FUNC_RAWEND(_call_)
 

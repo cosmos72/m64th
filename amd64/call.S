@@ -17,6 +17,8 @@
 
 #include "asm.mh"
 
+#define m4func_m4th_run m4th_run
+
 /**
  * enter m4th interpreter from C:
  * save C registers,

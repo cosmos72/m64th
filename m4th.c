@@ -480,9 +480,3 @@ void m4th_clear(m4th *m) {
     m->in.curr = m->in.start;
     m->out.curr = m->out.start;
 }
-
-m4long m4func_m4th_run(m4th *m); /* assembly implementation of m4th_run() */
-
-m4long m4th_run(m4th *m) {
-    return m4func_m4th_run(m);
-}
