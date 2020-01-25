@@ -15,21 +15,15 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_T_TEST_IMPL_H
-#define M4TH_T_TEST_IMPL_H
+#ifndef M4TH_DISPATCH_SZ_MH
+#define M4TH_DISPATCH_SZ_MH
 
-#include "../test.h"
+#if defined(__x86_64__)
+#include "../amd64/sz.mh"
+#elif defined(__aarch64__)
+#include "../arm64/sz.mh"
+#else
+#error "unsupported architecture: expecting amd64 or arm64"
+#endif
 
-enum {
-    tfalse = (m4long)0,
-    ttrue = (m4long)-1,
-    m4enum_per_m4long = SZ / SZe, /* # of m4enum needed to store an m4long */
-    callsz = 1 + m4enum_per_m4long,
-};
-
-/** zero-padding needed for element-to-element conversion from m4long[] to m4enum[] */
-#define CELL(n) (m4long)(n), 0, 0, 0
-#define XT(name) CELL(m4word_##name.code)
-#define CALLXT(name) m4_call_, XT(name)
-
-#endif /* M4TH_T_TEST_IMPL_H */
+#endif /* M4TH_DISPATCH_SZ_MH */

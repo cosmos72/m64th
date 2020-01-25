@@ -16,7 +16,9 @@
  */
 
 #include "impl.h"
+#include "common/asm.mh"
 #include "common/enum.h"
+#include "dispatch/sz.mh" /* SZ SZe preprocessor macros */
 
 #include <assert.h> /* assert()                   */
 #include <errno.h>  /* errno                      */
@@ -24,9 +26,7 @@
 #include <string.h> /* memcmp() memcpy() strlen() */
 
 enum {
-    SZ = sizeof(m4long),
-    SZe = sizeof(m4enum),
-    m4enum_per_m4long = (SZ + SZe - 1) / SZ, /* # of m4enum needed to store an m4long */
+    m4enum_per_m4long = SZ / SZe, /* # of m4enum needed to store an m4long */
 };
 
 static inline void dpush(m4th *m, m4long val) {
@@ -160,7 +160,7 @@ static m4long m4th_interpret_word(m4th *m, const m4word *w) {
 
 /** temporary C implementation of (compile-number) */
 static m4long m4th_compile_number(m4th *m, m4long n) {
-    ipush(m, m4_lit_);
+    ipush(m, m4_lit_cell_);
     ipush_m4long(m, n);
     return tsuccess;
 }

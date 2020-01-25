@@ -27,8 +27,6 @@ extern "C" {
 
 #include <stdint.h>
 
-#define M4ENUM_SYM(name) m4##name
-
 #define M4ENUM_ENTRY(strlen, len, name) M4ENUM_SYM(name) = M4ENUM_VAL(name),
 
 #if defined(__cplusplus) && __cplusplus >= 201103L

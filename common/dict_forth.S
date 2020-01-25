@@ -85,7 +85,8 @@ WORD_START(compile_comma, chars)
    WORD_DSTACK(1,0)
    WORD_RSTACK(0,0)
    WORD_NATIVE_NONE()
-   WORD_ENUMS(_compile_comma_,
+   WORD_ENUMS(_lit_enum_, _call_, _compile_enum_, /* compile (call) */
+              _compile_xt_,
 #if 0   
               _call_, XT(_inline_),
               _call_, XT(_optimize_),
@@ -121,35 +122,35 @@ WORD_START(literal, j)
     WORD_RSTACK(0,0)
     WORD_NATIVE_NONE()
     WORD_ENUMS(
-      dup, _else_, NUM(7),     /* if dtop = 0                */
-        drop, _lit_, zero,     /*   change dtop to 'm4zero'  */
-        _compile_comma_, exit, /*   append it to XT, exit    */
+      dup, _else_, E(7),           /* if dtop = 0                  */
+        drop, _lit_enum_, zero,    /*   change dtop to 'm4zero'    */
+        _compile_enum_, exit,      /*   append it to XT, exit      */
       dup, one_minus,
-      _else_, NUM(7),          /* else if dtop = 1           */
-        drop, _lit_, one,      /*   change dtop to 'm4one'   */
-        _compile_comma_, exit, /*   append it to XT, exit    */
+      _else_, E(7),                /* else if dtop = 1             */
+        drop, _lit_enum_, one,     /*   change dtop to 'm4one'     */
+        _compile_enum_, exit,      /*   append it to XT, exit      */
 #if 0
       dup, two_minus,
-      _else_, N(7),            /* else if dtop = 2           */
-        drop, _lit_, two,      /*   change dtop to 'm4two'   */
-        _compile_comma_, exit, /*   append it to XT, exit    */
+      _else_, E(7),                /* else if dtop = 2             */
+        drop, _lit_enum_, two,     /*   change dtop to 'm4two'     */
+        _compile_enum_, exit,      /*   append it to XT, exit      */
       dup, four, equal,
-      _if_, N(7),              /* else if dtop = 4           */
-        drop, _lit_, four,     /*   change dtop to 'm4four'  */
-        _compile_comma_, exit, /*   append it to XT, exit    */
+      _if_, E(7),                  /* else if dtop = 4             */
+        drop, _lit_enum_, four,    /*   change dtop to 'm4four'    */
+        _compile_enum_, exit,      /*   append it to XT, exit      */
       dup, eight, equal,
-      _if_, N(7),              /* else if dtop = 8           */
-        drop, _lit_, eight,    /*   change dtop to 'm4eight' */
-        _compile_comma_, exit, /*   append it to XT, exit    */
+      _if_, E(7),                  /* else if dtop = 8             */
+        drop, _lit_enum_, eight,   /*   change dtop to 'm4eight'   */
+        _compile_enum_, exit,      /*   append it to XT, exit      */
       dup, minus_one, equal,
-      _if_, N(7),              /* else if dtop = -1           */
-        drop, _lit_, minus_one,/*   change dtop 'm4minus_one' */
-        _compile_comma_, exit, /*   append it to XT, exit     */
+      _if_, E(7),                      /* else if dtop = -1            */
+        drop, _lit_enum_, minus_one,   /*   change dtop 'm4minus_one'  */
+        _compile_enum_, exit,          /*   append it to XT, exit      */
 #endif /* 0 */      
-      _lit_,  _lit_,           /* push 'm4_lit_' to dstack   */
-      _compile_comma_,         /* append it to XT            */
-      _compile_comma_,         /* append dtop to XT          */
-      /* _call_, XT(_optimize_),  nothing to optimize        */
+      _lit_enum_,  _lit_cell_,     /* push 'm4_lit_cell_' to dstack*/
+      _compile_enum_,              /* append it to XT              */
+      _compile_cell_,              /* append dtop to XT            */
+      /* _call_, XT(_optimize_),  nothing to optimize          */
       exit
     )
 WORD_END(literal)

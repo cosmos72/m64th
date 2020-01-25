@@ -23,69 +23,8 @@
 #include "enum.mh"
 #include "func.mh"
 #include "m4th.mh"
+#include "macro.mh"
 #include "word.mh"
-
-#define CAT2_(a, b) a##b
-#define CAT2(a, b) CAT2_(a, b)
-
-/* works only for 1..25 arguments. broken for zero arguments */
-#define COUNT_ARGS_(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17,    \
-                    _18, _19, _20, _21, _22, _23, _24, _25, n, ...)                                \
-    n
-#define COUNT_ARGS(...)                                                                            \
-    COUNT_ARGS_(__VA_ARGS__, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 16, 13, 12, 11, 10, 9, 8, \
-                7, 6, 5, 4, 3, 2, 1)
-
-#define WRAP_ARGS_COMMA_1(x, _1) x(_1)
-#define WRAP_ARGS_COMMA_2(x, _1, _2) x(_1), x(_2)
-#define WRAP_ARGS_COMMA_3(x, _1, _2, _3) x(_1), x(_2), x(_3)
-#define WRAP_ARGS_COMMA_4(x, _1, _2, _3, _4) x(_1), x(_2), x(_3), x(_4)
-#define WRAP_ARGS_COMMA_5(x, _1, _2, _3, _4, _5) x(_1), x(_2), x(_3), x(_4), x(_5)
-#define WRAP_ARGS_COMMA_6(x, _1, _2, _3, _4, _5, _6) x(_1), x(_2), x(_3), x(_4), x(_5), x(_6)
-#define WRAP_ARGS_COMMA_7(x, _1, _2, _3, _4, _5, ...)                                              \
-    x(_1), x(_2), x(_3), x(_4), x(_5), WRAP_ARGS_COMMA_2(x, __VA_ARGS__)
-#define WRAP_ARGS_COMMA_8(x, _1, _2, _3, _4, _5, ...)                                              \
-    x(_1), x(_2), x(_3), x(_4), x(_5), WRAP_ARGS_COMMA_3(x, __VA_ARGS__)
-#define WRAP_ARGS_COMMA_9(x, _1, _2, _3, _4, _5, ...)                                              \
-    x(_1), x(_2), x(_3), x(_4), x(_5), WRAP_ARGS_COMMA_4(x, __VA_ARGS__)
-#define WRAP_ARGS_COMMA_10(x, _1, _2, _3, ...)                                                     \
-    x(_1), x(_2), x(_3), x(_4), x(_5), WRAP_ARGS_COMMA_5(x, __VA_ARGS__)
-#define WRAP_ARGS_COMMA_11(x, _1, _2, _3, _4, _5, ...)                                             \
-    x(_1), x(_2), x(_3), x(_4), x(_5), WRAP_ARGS_COMMA_6(x, __VA_ARGS__)
-#define WRAP_ARGS_COMMA_12(x, _1, _2, _3, _4, _5, ...)                                             \
-    x(_1), x(_2), x(_3), x(_4), x(_5), WRAP_ARGS_COMMA_7(x, __VA_ARGS__)
-#define WRAP_ARGS_COMMA_13(x, _1, _2, _3, _4, _5, ...)                                             \
-    x(_1), x(_2), x(_3), x(_4), x(_5), WRAP_ARGS_COMMA_8(x, __VA_ARGS__)
-#define WRAP_ARGS_COMMA_14(x, _1, _2, _3, _4, _5, ...)                                             \
-    x(_1), x(_2), x(_3), x(_4), x(_5), WRAP_ARGS_COMMA_9(x, __VA_ARGS__)
-#define WRAP_ARGS_COMMA_15(x, _1, _2, _3, _4, _5, ...)                                             \
-    x(_1), x(_2), x(_3), x(_4), x(_5), WRAP_ARGS_COMMA_10(x, __VA_ARGS__)
-#define WRAP_ARGS_COMMA_16(x, _1, _2, _3, _4, _5, ...)                                             \
-    x(_1), x(_2), x(_3), x(_4), x(_5), WRAP_ARGS_COMMA_11(x, __VA_ARGS__)
-#define WRAP_ARGS_COMMA_17(x, _1, _2, _3, _4, _5, ...)                                             \
-    x(_1), x(_2), x(_3), x(_4), x(_5), WRAP_ARGS_COMMA_12(x, __VA_ARGS__)
-#define WRAP_ARGS_COMMA_18(x, _1, _2, _3, _4, _5, ...)                                             \
-    x(_1), x(_2), x(_3), x(_4), x(_5), WRAP_ARGS_COMMA_13(x, __VA_ARGS__)
-#define WRAP_ARGS_COMMA_19(x, _1, _2, _3, _4, _5, ...)                                             \
-    x(_1), x(_2), x(_3), x(_4), x(_5), WRAP_ARGS_COMMA_14(x, __VA_ARGS__)
-#define WRAP_ARGS_COMMA_20(x, _1, _2, _3, _4, _5, ...)                                             \
-    x(_1), x(_2), x(_3), x(_4), x(_5), WRAP_ARGS_COMMA_15(x, __VA_ARGS__)
-#define WRAP_ARGS_COMMA_21(x, _1, _2, _3, _4, _5, ...)                                             \
-    x(_1), x(_2), x(_3), x(_4), x(_5), WRAP_ARGS_COMMA_16(x, __VA_ARGS__)
-#define WRAP_ARGS_COMMA_22(x, _1, _2, _3, _4, _5, ...)                                             \
-    x(_1), x(_2), x(_3), x(_4), x(_5), WRAP_ARGS_COMMA_17(x, __VA_ARGS__)
-#define WRAP_ARGS_COMMA_23(x, _1, _2, _3, _4, _5, ...)                                             \
-    x(_1), x(_2), x(_3), x(_4), x(_5), WRAP_ARGS_COMMA_18(x, __VA_ARGS__)
-#define WRAP_ARGS_COMMA_24(x, _1, _2, _3, _4, _5, ...)                                             \
-    x(_1), x(_2), x(_3), x(_4), x(_5), WRAP_ARGS_COMMA_19(x, __VA_ARGS__)
-#define WRAP_ARGS_COMMA_25(x, _1, _2, _3, _4, _5, ...)                                             \
-    x(_1), x(_2), x(_3), x(_4), x(_5), WRAP_ARGS_COMMA_20(x, __VA_ARGS__)
-
-#define WRAP_ARGS_COMMA(x, ...) CAT2(WRAP_ARGS_COMMA_, COUNT_ARGS(__VA_ARGS__))(x, __VA_ARGS__)
-
-/* internal m4th macros used (mostly) by assembly */
-
-#define M4FLAG_CONSUMES_IP_SZ CAT2(M4FLAG_CONSUMES_IP_, SZ)
 
 /* clang-format off */
 

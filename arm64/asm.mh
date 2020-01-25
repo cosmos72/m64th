@@ -19,30 +19,8 @@
 #define M4TH_ARM64_ASM_MH
 
 #include "../common/asm.mh"
-
-#define SZ 8     /* width of registers, m4long and void* in bytes */
-#define SZ2 16   /* SZ * 2 */
-#define SZ3 24   /* SZ * 3 */
-#define SZ4 32   /* SZ * 4 */
-#define SZ5 40   /* SZ * 5 */
-#define SZ6 48   /* SZ * 6 */
-#define SZ7 56   /* SZ * 7 */
-#define SZ8 64   /* SZ * 8 */
-#define SZ9 72   /* SZ * 9 */
-#define SZ10 80  /* SZ * 10 */
-#define SZ11 88  /* SZ * 11 */
-#define SZ12 96  /* SZ * 12 */
-#define SZ13 104 /* SZ * 13 */
-#define SZ15 120 /* SZ * 15 */
-#define SZ16 128 /* SZ * 16 */
-#define PSZ 3    /* (1 << PSZ) == SZ */
-
-#define SZe 2   /* sizeof(m4enum) in bytes */
-#define SZe2 4  /* SZe * 2 */
-#define SZe3 6  /* SZe * 3 */
-#define SZe4 8  /* SZe * 4 */
-#define SZe5 10 /* SZe * 5 */
-#define PSZe 1  /* (1 << PSZe) == SZe */
+#include "../common/macro.mh"
+#include "sz.mh"
 
 #define IMM(constant) constant /* immediate constant */
 
@@ -207,23 +185,23 @@
     LOAD(REG0, AT(ETBL, REG0, SZ))                                                                 \
     br REG0;
 
-#define NEXT() /* jump to next instruction */                                                      \
+#define NEXT() /* jump to following instruction */                                                      \
     LD_ue(REG0_ue, AT(IP, SZe)!)                                                                   \
     LOAD(REG0, AT(ETBL, REG0, SZ))                                                                 \
     br REG0;
 
-#define NEXT2() /* skip 2 bytes (one instruction), jump to second instruction */                   \
-    LD_ue(REG0_ue, AT(IP, SZe2)!)                                                                  \
+#define NEXT2() /* skip 2 bytes, jump to following instruction */                   \
+    LD_ue(REG0_ue, AT(IP, SZe+2)!)                                                                  \
     LOAD(REG0, AT(ETBL, REG0, SZ))                                                                 \
     br REG0;
 
-#define NEXT4() /* skip 4 bytes (two instructions), jump to third instruction */                   \
-    LD_ue(REG0_ue, AT(IP, SZe3)!)                                                                  \
+#define NEXT4() /* skip 4 bytes, jump to following instruction */                   \
+    LD_ue(REG0_ue, AT(IP, SZe+4)!)                                                                  \
     LOAD(REG0, AT(ETBL, REG0, SZ))                                                                 \
     br REG0;
 
-#define NEXT8() /* skip 8 bytes (four instructions), jump to fifth instruction */                  \
-    LD_ue(REG0_ue, AT(IP, SZe5)!)                                                                  \
+#define NEXT8() /* skip 8 bytes (four instructions), jump to following instruction */                  \
+    LD_ue(REG0_ue, AT(IP, SZe+8)!)                                                                  \
     LOAD(REG0, AT(ETBL, REG0, SZ))                                                                 \
     br REG0;
 

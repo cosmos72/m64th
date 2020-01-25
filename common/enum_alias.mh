@@ -1,0 +1,76 @@
+/**
+ * This file is part of m4th.
+ *
+ * m4th is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3
+ * of the License, or (at your option) any later version.
+ *
+ * m4th is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+#ifndef M4TH_COMMON_ENUM_ALIAS_MH
+#define M4TH_COMMON_ENUM_ALIAS_MH
+
+#include "../dispatch/sz.mh" /* SZ SZe */
+#include "macro.mh"          /* CAT3() */
+
+/* m4enum identifiers have lowercase prefix 'm4' */
+#define m4_compile_short_ m4_compile2s_
+#define m4_compile_int_ m4_compile4s_
+#define m4_compile_enum_ CAT3(m4_compile, SZe, s_)
+#define m4_compile_cell_ CAT3(m4_compile, SZ, s_)
+#define m4_compile_xt_ CAT3(m4_compile, SZ, s_)
+
+#define m4_lit_short_ m4_literal2s_
+#define m4_lit_int_ m4_literal4s_
+#define m4_lit_enum_ CAT3(m4_literal, SZe, s_)
+#define m4_lit_cell_ CAT3(m4_literal, SZ, s_)
+#define m4_lit_xt_ CAT3(m4_literal, SZ, s_)
+
+#define m4_0 m4zero              /* 0        */
+#define m4_1 m4one               /* 1        */
+#define m4_2 m4two               /* 2        */
+#define m4_2_plus m4two_plus     /* 2+       */
+#define m4_2_minus m4two_minus   /* 2-       */
+#define m4_3 m4three             /* 3        */
+#define m4_4 m4four              /* 4        */
+#define m4_4_times m4four_times  /* 4*       */
+#define m4_4_plus m4four_plus    /* 4+       */
+#define m4_8 m4eight             /* 8        */
+#define m4_8_times m4eight_times /* 8*       */
+#define m4_8_plus m4eight_plus   /* 8+       */
+
+/* #define M4* numeric values (also used by assembly) have uppercase prefix 'M4' */
+#define M4_compile_short_ M4_compile2s_
+#define M4_compile_int_ M4_compile4s_
+#define M4_compile_enum_ CAT3(M4_compile, SZe, s_)
+#define M4_compile_cell_ CAT3(M4_compile, SZ, s_)
+#define M4_compile_xt_ CAT3(M4_compile, SZ, s_)
+
+#define M4_lit_short_ M4_literal2s_
+#define M4_lit_int_ M4_literal4s_
+#define M4_lit_enum_ CAT3(M4_literal, SZe, s_)
+#define M4_lit_cell_ CAT3(M4_literal, SZ, s_)
+#define M4_lit_xt_ CAT3(M4_literal, SZ, s_)
+
+#define M4_0 M4zero              /* 0        */
+#define M4_1 M4one               /* 1        */
+#define M4_2 M4two               /* 2        */
+#define M4_2_plus M4two_plus     /* 2+       */
+#define M4_2_minus M4two_minus   /* 2-       */
+#define M4_3 M4three             /* 3        */
+#define M4_4 M4four              /* 4        */
+#define M4_4_times M4four_times  /* 4*       */
+#define M4_4_plus M4four_plus    /* 4+       */
+#define M4_8 M4eight             /* 8        */
+#define M4_8_times M4eight_times /* 8*       */
+#define M4_8_plus M4eight_plus   /* 8+       */
+
+#endif /* M4TH_COMMON_ENUM_ALIAS_MH */

@@ -33,15 +33,34 @@ FUNC_END(xt_code_n_fetch)
 #endif /* 0 */
 
 
-/**
- * (ushort -- ) pop m4enum or 16-bit from dstack and append it to XT being compiled.
- * the standard function 'compile,' calls this function followed by optimizations
- */
-FUNC_START(_compile_comma_)    /* (compile,) */
+/** (int16 -- ) pop int16 from dstack and append it to XT being compiled. */
+FUNC_START(_compile2s_)    /* (compile-2s,) */
         /* TODO check if enough space */
-        LD_uw(REG1_uw, AT(M4XT, XT_OFF_CODE_N)) /* xt.code_n */
-        STORe(  DTOPe,   AT(M4XT, REG1, SZe))     /* xt[xt.code_n] = (m4enum)DTOP */
-        INC1(  REG1)
+        LD_uw( REG1_uw,    AT(M4XT, XT_OFF_CODE_N))    /* xt.code_n */
+        STORh( DTOPh,      AT(M4XT, REG1, SZe))        /* xt[xt.code_n] = (int16)DTOP */
+        ADD2(  IMM(2/SZe), REG1)
         DPOP(  DTOP)
-        STORw( REG1w,    AT(M4XT, XT_OFF_CODE_N)) /* xt.code_n++ */
-FUNC_END(_compile_comma_)
+        STORw( REG1w,      AT(M4XT, XT_OFF_CODE_N))    /* xt.code_n += 2/SZe */
+FUNC_END(_compile2s_)
+
+
+/** (int32 -- ) pop int32 from dstack and append it to XT being compiled. */
+FUNC_START(_compile4s_)    /* (compile-4s,) */
+        /* TODO check if enough space */
+        LD_uw( REG1_uw,    AT(M4XT, XT_OFF_CODE_N))    /* xt.code_n */
+        STORw( DTOPw,      AT(M4XT, REG1, SZe))        /* xt[xt.code_n] = (int32)DTOP */
+        ADD2(  IMM(4/SZe), REG1)
+        DPOP(  DTOP)
+        STORw( REG1w,      AT(M4XT, XT_OFF_CODE_N))    /* xt.code_n += 4/SZe */
+FUNC_END(_compile4s_)
+
+
+/** (int64 -- ) pop int64 from dstack and append it to XT being compiled. */
+FUNC_START(_compile8s_)    /* (compile-8s,) */
+        /* TODO check if enough space */
+        LD_uw( REG1_uw,    AT(M4XT, XT_OFF_CODE_N))    /* xt.code_n */
+        STOR(  DTOP,       AT(M4XT, REG1, SZe))        /* xt[xt.code_n] = (int32)DTOP */
+        ADD2(  IMM(8/SZe), REG1)
+        DPOP(  DTOP)
+        STORw( REG1w,      AT(M4XT, XT_OFF_CODE_N))    /* xt.code_n += 8/SZe */
+FUNC_END(_compile8s_)

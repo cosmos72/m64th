@@ -37,6 +37,10 @@ typedef void (*m4func)(m4arg);
 typedef char
     m4th_assert_sizeof_m4instr_less_equal_sizeof_m4long[sizeof(m4func) <= sizeof(m4long) ? 1 : -1];
 
+typedef char m4th_assert_sizeof_m4enum_divides_sizeof_m4long[(sizeof(m4long) % sizeof(m4enum) == 0)
+                                                                 ? 1
+                                                                 : -1];
+
 /** m4th flags */
 typedef enum m4th_flags_e {
     m4th_flag_status_mask = M4TH_FLAG_STATUS_MASK,

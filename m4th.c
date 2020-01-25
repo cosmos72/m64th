@@ -20,6 +20,7 @@
 #include "common/dict_fwd.h"
 #include "common/func.mh"
 #include "common/func_fwd.h"
+#include "common/macro.mh"
 #include "common/word_fwd.h"
 
 #include <errno.h>  /* errno */
@@ -39,6 +40,9 @@ enum {
     inbuf_n = 1024,
     outbuf_n = 1024,
 };
+
+typedef char m4th_assert_sizeof_m4enum_equal_SZe[(sizeof(m4enum) == SZe) ? 1 : -1];
+typedef char m4th_assert_sizeof_m4long_equal_SZ[(sizeof(m4long) == SZ) ? 1 : -1];
 
 /* ----------------------- m4mem ----------------------- */
 

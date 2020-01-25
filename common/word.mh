@@ -55,15 +55,19 @@
 #define WORD_CODE_N(n_instr) /*     */ .4byte n_instr;
 #define WORD_DATA_NBYTES(n_bytes) /**/ .8byte n_bytes;
 #define WORD_DATA_N(n_instr) /*     */ .8byte SZe *(n_instr);
-#define WORD_CODE(...) /*           */ .8byte __VA_ARGS__;
-#define WORD_CODE_FUNC(name) /*     */ .8byte FUNC_SYM(name);
+#define WORD_RAWCODE(...) /*        */ .2byte __VA_ARGS__;
+#define WORD_CODE_ENUM(name) /*     */ .2byte M4ENUM_VAL(name);
+#define WORD_CODE_XT(xt) /*         */ .8byte WORD_SYM(name) + WORD_OFF_XT;
+#define WORD_CODE_SHORT(n) /*       */ .2byte /**/ (n)&0xFFFF;
+#define WORD_CODE_INT(n) /*         */ .4byte /**/ (n)&0xFFFFFFFF;
+#define WORD_CODE_CELL(n) /*        */ .8byte n;
 #define WORD_DATA_1(...) /*         */ .byte __VA_ARGS__;
 #define WORD_DATA_2(...) /*         */ .2byte __VA_ARGS__;
 #define WORD_DATA_4(...) /*         */ .4byte __VA_ARGS__;
 #define WORD_DATA_8(...) /*         */ .8byte __VA_ARGS__;
 #define WORD_END(name) /*           */ .size WORD_SYM(name), .- WORD_SYM(name);
 
-#define WORD_CODE_ENUMS(...) WORD_CODE(WRAP_ARGS_COMMA(M4ENUM_VAL, __VA_ARGS__))
+#define WORD_CODE_ENUMS(...) WRAP_ARGS(WORD_CODE_ENUM, __VA_ARGS__)
 
 #define WORD_ENUMS(...)                                                                            \
     WORD_CODE_N(COUNT_ARGS(__VA_ARGS__))                                                           \

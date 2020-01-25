@@ -26,12 +26,28 @@ FUNC_START(store) /* ! */
 FUNC_END(store)
 
 
-#ifndef M4_LIT_
-FUNC_START(_lit_) /* (lit)  push to dstack the number at following IP */
+#ifndef M4_LITERAL2S
+FUNC_START(_literal2s_) /* (literal-2s) push to dstack the int16 at following IP */
+        DPUSH( DTOP)
+        LD_sh( DTOP_sh, AT(IP, SZ))
+        NEXT2() /* skip 2 bytes */
+FUNC_RAWEND(_literal2s_)
+#endif
+
+#ifndef M4_LITERAL4S
+FUNC_START(_literal4s_) /* (literal-4s) push to dstack the int32 at following IP */
+        DPUSH( DTOP)
+        LD_sw( DTOP_sw, AT(IP, SZ))
+        NEXT4() /* skip 4 bytes */
+FUNC_RAWEND(_literal2s_)
+#endif
+
+#ifndef M4_LITERAL8S
+FUNC_START(_literal8s_) /* (literal-8s) push to dstack the int64 at following IP */
         DPUSH( DTOP)
         LOAD(  DTOP, AT(IP, SZ))
-        NEXT2()
-FUNC_RAWEND(_lit_)
+        NEXT8() /* skip 8 bytes */
+FUNC_RAWEND(_literal2s_)
 #endif
 
 #ifndef M4_MISSING_
@@ -219,16 +235,6 @@ FUNC_END(c_store)
 FUNC_START(c_fetch)    /* c@ */
         LD_ub(DTOP_ub, AT(DTOP));
 FUNC_END(c_fetch)
-
-
-FUNC_START(cell_plus) /* cell+ */
-        ADD2(  IMM(SZ), DTOP)
-FUNC_END(cell_plus)
-
-
-FUNC_START(cells) /* cells i.e SZ * */
-        SHL2(  IMM(PSZ), DTOP)
-FUNC_END(cells)
 
 
 FUNC_START(depth)

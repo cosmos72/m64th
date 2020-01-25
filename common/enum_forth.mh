@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
-
 #ifndef M4TH_COMMON_ENUM_FORTH_MH
 #define M4TH_COMMON_ENUM_FORTH_MH
 
@@ -77,7 +76,7 @@
 #define M4c_fetch 56           /* c@       */
 #define M4cell_plus 57         /* cell+    */
 #define M4cells 58             /* cells    */
-#define M4char 59              /* char+    */
+#define M4char 59              /* char     */
 #define M4char_plus 60         /* char+    */
 #define M4chars 61             /* chars    */
 #define M4constant 62          /* constant */

@@ -18,21 +18,27 @@
 #ifndef M4TH_COMMON_ENUM_MH
 #define M4TH_COMMON_ENUM_MH
 
+#include "enum_alias.mh"
 #include "enum_forth.mh"
 #include "enum_m4th.mh"
 
+#define M4ENUM_SYM(name) m4##name
 #define M4ENUM_VAL(name) M4##name
 
-/* used to insert an int as wide as m4enum in a sequence of m4enum */
-#define M4NUM(x) ((x)&0xFFFF)
+/* insert an int as wide as m4enum in a sequence of m4enum */
+#define m4E(x) ((x)&0xFFFF)
+#define M4E(x) ((x)&0xFFFF)
 
-/* used to insert an int16 in a sequence of m4enum */
+/* insert an int16 in a sequence of m4enum */
+#define m4SHORT(x) ((x)&0xFFFF)
 #define M4SHORT(x) ((x)&0xFFFF)
-/* used to insert an int32 in a sequence of m4enum */
+
+/* insert an int32 in a sequence of m4enum */
+#define m4INT(x) ((x)&0xFFFF), ((x) >> 16 & 0xFFFF)
 #define M4INT(x) ((x)&0xFFFF), ((x) >> 16 & 0xFFFF)
-/* used to insert an m4long in a sequence of m4enum */
-#define M4CELL(x)                                                                                  \
-    ((m4long)(x)&0xFFFF), ((m4long)(x) >> 16 & 0xFFFF), ((m4long)(x) >> 32 & 0xFFFF),              \
-        ((m4long)(x) >> 48 & 0xFFFF)
+
+/* insert an m4long in a sequence of m4enum */
+#define m4CELL(x) ((x)&0xFFFF), ((x) >> 16 & 0xFFFF), ((x) >> 32 & 0xFFFF), ((x) >> 48 & 0xFFFF)
+#define M4CELL(x) ((x)&0xFFFF), ((x) >> 16 & 0xFFFF), ((x) >> 32 & 0xFFFF), ((x) >> 48 & 0xFFFF)
 
 #endif /* M4TH_COMMON_ENUM_MH */

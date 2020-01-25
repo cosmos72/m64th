@@ -29,7 +29,7 @@
     m4func_##name
 
 #define FUNC_SYM_NEXT(name)                                                                        \
-    .Lfunc.name.next
+    .L.FUNC_SYM(name).next
 
 #define FUNC_DECL_SYM(name)                                                                        \
     .globl FUNC_SYM(name);                                                                         \

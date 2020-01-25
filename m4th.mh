@@ -26,8 +26,8 @@
 #define M4TH_FLAG_COMPILE 1     /**< m4th is currently compiling            */
 
 /* m4word flags */
-#define M4FLAG_COMPILE_ONLY (1 << 0) /**< word cannot interpreted - only compiled     */
-#define M4FLAG_IMMEDIATE (1 << 1)    /**< word is executed immediately                */
+#define M4FLAG_COMPILE_ONLY (1 << 0)  /**< word cannot interpreted - only compiled     */
+#define M4FLAG_IMMEDIATE (1 << 1)     /**< word is executed immediately                */
 #define M4FLAG_INLINE (1 << 2)        /**< forth code of word can be inlined           */
 #define M4FLAG_INLINE_ALWAYS (1 << 3) /**< forth code of word *must* always be inlined */
 

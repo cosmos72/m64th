@@ -31,14 +31,18 @@
 #define DICT_WORDS_M4TH_IMPL(X)                                                                    \
     X(5, "(?do)", _question_do_)                                                                   \
     X(6, "(call)", _call_)                                                                         \
-    X(10, "(compile,)", _compile_comma_)                                                           \
+    X(12, "(compile-2s,)", _compile2s_)                                                            \
+    X(12, "(compile-4s,)", _compile4s_)                                                            \
+    X(12, "(compile-8s,)", _compile8s_)                                                            \
     X(4, "(do)", _do_)                                                                             \
     X(6, "(else)", _else_)                                                                         \
     X(4, "(if)", _if_)                                                                             \
     X(8, "(inline)", _inline_)                                                                     \
     X(6, "(jump)", _jump_)                                                                         \
     X(7, "(leave)", _leave_)                                                                       \
-    X(5, "(lit)", _lit_)                                                                           \
+    X(12, "(literal-2s)", _literal2s_)                                                             \
+    X(12, "(literal-4s)", _literal4s_)                                                             \
+    X(12, "(literal-8s)", _literal8s_)                                                             \
     X(6, "(loop)", _loop_)                                                                         \
     X(10, "(optimize)", _optimize_)                                                                \
     X(2, "-1", minus_one)                                                                          \

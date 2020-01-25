@@ -16,6 +16,8 @@
  */
 
 #include "../common/asm.mh"
+#include "../common/macro.mh"
+#include "../dispatch/sz.mh"
 #include "dict.mh"
 #include "dict_m4th.mh"
 
@@ -27,24 +29,26 @@ DICTNAME(9, "m4th-impl", m4th_impl)
 DICT_WORDS_M4TH_IMPL(WORDNAME)
 
 WORD_START(_question_do_, _question_do_)
-   WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZ | M4FLAG_INLINE_ALWAYS | M4FLAG_MAY_JUMP)
+   WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZe | M4FLAG_INLINE_ALWAYS | M4FLAG_MAY_JUMP)
    WORD_DSTACK(2,0) /* stack effects when not jumping */
    WORD_RSTACK(0,2)
    WORD_NATIVE_NONE()
    WORD_ENUMS(_question_do_, exit)
 WORD_END(_question_do_)
 WORD_START(_call_, _question_do_)
-   WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZ | M4FLAG_INLINE_ALWAYS)
+   WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZe | M4FLAG_INLINE_ALWAYS)
    WORD_DSTACK(-1,-1) /* stack effects of called function */
    WORD_RSTACK(0,0)
    WORD_NATIVE_NONE()
    /* make inliner happy: it skips the final 'exit' of a word's code when inlining */
    WORD_ENUMS(_call_, exit)
 WORD_END(_call_)
-WORD(_compile_comma_,  _call_, DSTACK(0,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
-WORD(_do_,     _compile_comma_,DSTACK(2,0), RSTACK(0,2), WORD_PURE | M4FLAG_COMPILE_ONLY)
+WORD(_compile2s_,   _call_,        DSTACK(0,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
+WORD(_compile4s_,   _compile2s_,   DSTACK(0,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
+WORD(_compile8s_,   _compile4s_,   DSTACK(0,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
+WORD(_do_,          _compile8s_,   DSTACK(2,0), RSTACK(0,2), WORD_PURE   | M4FLAG_COMPILE_ONLY)
 WORD_START(_else_, _do_)
-   WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZ | M4FLAG_INLINE_ALWAYS | M4FLAG_MAY_JUMP)
+   WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZe | M4FLAG_INLINE_ALWAYS | M4FLAG_MAY_JUMP)
    WORD_DSTACK(1,0) /* stack effect when not jumping */
    WORD_RSTACK(0,0)
    WORD_NATIVE_NONE()
@@ -78,15 +82,29 @@ WORD_START(_leave_, _jump_)
    WORD_NATIVE_NONE()
    WORD_ENUMS(_leave_, exit)
 WORD_END(_leave_)
-WORD_START(_lit_, _leave_)
-   WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZ | M4FLAG_INLINE_ALWAYS)
+WORD_START(_literal2s_, _leave_)
+   WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_2 | M4FLAG_INLINE_ALWAYS)
    WORD_DSTACK(0,1)
    WORD_RSTACK(0,0)
    WORD_NATIVE_NONE()
-   WORD_ENUMS(_lit_, exit)
-WORD_END(_lit_)
-WORD_START(_loop_, _lit_)
-   WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZ | M4FLAG_INLINE_ALWAYS | M4FLAG_MAY_JUMP)
+   WORD_ENUMS(_literal2s_, exit)
+WORD_END(_literal2s_)
+WORD_START(_literal4s_, _literal2s_)
+   WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_4 | M4FLAG_INLINE_ALWAYS)
+   WORD_DSTACK(0,1)
+   WORD_RSTACK(0,0)
+   WORD_NATIVE_NONE()
+   WORD_ENUMS(_literal2s_, exit)
+WORD_END(_literal4s_)
+WORD_START(_literal8s_, _literal4s_)
+   WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_8 | M4FLAG_INLINE_ALWAYS)
+   WORD_DSTACK(0,1)
+   WORD_RSTACK(0,0)
+   WORD_NATIVE_NONE()
+   WORD_ENUMS(_literal8s_, exit)
+WORD_END(_literal8s_)
+WORD_START(_loop_, _literal8s_)
+   WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZe | M4FLAG_INLINE_ALWAYS | M4FLAG_MAY_JUMP)
    WORD_DSTACK(0,0) /* stack effect when not jumping */
    WORD_RSTACK(2,0)
    WORD_NATIVE_NONE()
