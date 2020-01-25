@@ -94,13 +94,13 @@ static const m4testexecute testexecute[] = {
     {"(call) true", {CALLXT(true), m4bye}, {{}, {}}, {{1, {-1}}, {}}, {}},
 #if 0
     {"(call) crc+",
-     {m4_call_, (m4long)test_func_crc1byte, m4bye},
+     {m4_call_, CELL(test_func_crc1byte), m4bye},
      {{2, {0xffffffff, 't'}}, {}},
      {{1, {0x7a95a557 /* crc1byte(0xffffffff, 't') */}}, {}},
      {}},
 #endif /* 0 */
     {"0x123 (compile2s,)",
-     {m4_compile2s_, m4bye},
+     {m4_compile_enum_, m4bye},
      {{1, {0x123}}, {}},
      {{}, {}},
      {1, {(m4enum)0x123}}},
