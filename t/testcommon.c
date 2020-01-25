@@ -25,27 +25,27 @@
 
 /* -------------- m4test_code -------------- */
 
-void m4test_code_copy(const m4long *src, m4long n, m4enum *dst) {
-    m4long i = 0;
+void m4test_code_copy(const m4cell *src, m4cell n, m4enum *dst) {
+    m4cell i = 0;
     while (i < n) {
-        m4long x = src[i];
+        m4cell x = src[i];
         dst[i++] = (m4enum)x;
         if (x == m4_call_ || x == m4_literal8s_) {
             /* copy 8 bytes */
             x = src[i];
-            memcpy(dst + i, &x, sizeof(m4long));
-            i += m4enum_per_m4long;
+            memcpy(dst + i, &x, sizeof(m4cell));
+            i += m4enum_per_m4cell;
         }
     }
 }
 
-void m4test_code_copy_to_word(const m4long *src, m4long n, m4word *dst) {
+void m4test_code_copy_to_word(const m4cell *src, m4cell n, m4word *dst) {
     m4test_code_copy(src, n, dst->code + dst->code_n);
     dst->code_n += n;
 }
 
-m4long m4test_code_equal(const m4test_code *src, const m4word *dst, m4long dst_code_start_n) {
-    m4long i, n = src->len;
+m4cell m4test_code_equal(const m4test_code *src, const m4word *dst, m4cell dst_code_start_n) {
+    m4cell i, n = src->len;
     const m4enum *dst_code;
     if (dst->code_n < dst_code_start_n || n != dst->code_n - dst_code_start_n) {
         return tfalse;
@@ -60,7 +60,7 @@ m4long m4test_code_equal(const m4test_code *src, const m4word *dst, m4long dst_c
 }
 
 void m4test_code_print(const m4test_code *src, FILE *out) {
-    m4long i, n = src->len;
+    m4cell i, n = src->len;
     fprintf(out, "<%ld> ", (long)src->len);
     for (i = 0; i < n; i++) {
         fprintf(out, "0x%lx ", (unsigned long)src->data[i]);
@@ -71,15 +71,15 @@ void m4test_code_print(const m4test_code *src, FILE *out) {
 /* -------------- m4test_stack -------------- */
 
 void m4test_stack_copy(const m4test_stack *src, m4span *dst) {
-    m4long i, len = src->len;
+    m4cell i, len = src->len;
     dst->curr = dst->end - len;
     for (i = 0; i < len; i++) {
         dst->end[-i - 1] = src->data[i];
     }
 }
 
-m4long m4test_stack_equal(const m4test_stack *src, const m4span *dst) {
-    m4long i, len = src->len;
+m4cell m4test_stack_equal(const m4test_stack *src, const m4span *dst) {
+    m4cell i, len = src->len;
     if (len != dst->end - dst->curr) {
         return 0;
     }
@@ -92,7 +92,7 @@ m4long m4test_stack_equal(const m4test_stack *src, const m4span *dst) {
 }
 
 void m4test_stack_print(const m4test_stack *src, FILE *out) {
-    m4long i;
+    m4cell i;
     fprintf(out, "<%ld> ", (long)src->len);
     for (i = 0; i < src->len; i++) {
         fprintf(out, "%ld ", (long)src->data[i]);

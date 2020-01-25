@@ -37,7 +37,7 @@
 #define m4INT(x) ((x)&0xFFFF), ((x) >> 16 & 0xFFFF)
 #define M4INT(x) ((x)&0xFFFF), ((x) >> 16 & 0xFFFF)
 
-/* insert an m4long in a sequence of m4enum */
+/* insert an m4cell in a sequence of m4enum */
 #define m4CELL(x) ((x)&0xFFFF), ((x) >> 16 & 0xFFFF), ((x) >> 32 & 0xFFFF), ((x) >> 48 & 0xFFFF)
 #define M4CELL(x) ((x)&0xFFFF), ((x) >> 16 & 0xFFFF), ((x) >> 32 & 0xFFFF), ((x) >> 48 & 0xFFFF)
 

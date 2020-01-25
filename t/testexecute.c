@@ -26,7 +26,7 @@
 
 #include <assert.h> /* assert()          */
 
-typedef m4long m4test_code_array[m4test_code_n];
+typedef m4cell m4test_code_array[m4test_code_n];
 
 typedef struct m4testexecute_s {
     const char *name;
@@ -37,9 +37,9 @@ typedef struct m4testexecute_s {
 
 /* -------------- crc -------------- */
 
-static m4long crctable[256];
+static m4cell crctable[256];
 
-static void crcfill(m4long table[256]) {
+static void crcfill(m4cell table[256]) {
     int i, j;
 
     for (i = 0; i < 256; i++) {
@@ -69,7 +69,7 @@ static uint32_t crc1byte(uint32_t crc, unsigned char byte) {
  *   over xor 0xff and  cells crctable + @  swap 8 rshift xor
  * ;
  */
-static const m4long test_code_crc1byte[] = {
+static const m4cell test_code_crc1byte[] = {
     m4over, m4xor,   m4_lit_enum_, 0xff,         m4and, m4cells,  m4_lit_cell_, CELL(crctable),
     m4plus, m4fetch, m4swap,       m4_lit_enum_, 8,     m4rshift, m4xor,        m4exit,
 };
@@ -124,7 +124,7 @@ static const m4testexecute testexecute[] = {
      {}},
     {"0 1M 0 (do) i + (loop)",
      {m4_do_, m4i, m4plus, m4_loop_, (m4enum)-2, m4bye},
-     {{3, {0, (m4long)1e6, 0}}, {}},
+     {{3, {0, (m4cell)1e6, 0}}, {}},
      {{1, {499999500000l}}, {}},
      {}},
     {"*", {m4times, m4bye}, {{2, {20, 7}}, {}}, {{1, {140}}, {}}, {}},
@@ -223,7 +223,7 @@ static const m4testexecute testexecute[] = {
 
 enum { testexecute_n = sizeof(testexecute) / sizeof(testexecute[0]) };
 
-static m4long m4testexecute_run(m4th *m, const m4testexecute *t, m4test_word *w) {
+static m4cell m4testexecute_run(m4th *m, const m4testexecute *t, m4test_word *w) {
     memset(w, '\0', sizeof(m4test_word));
     m4th_clear(m);
     m4test_stack_copy(&t->before.d, &m->dstack);
@@ -261,9 +261,9 @@ static void m4testexecute_failed(m4th *m, const m4testexecute *t, FILE *out) {
     m4word_code_print(m->w, m4test_code_n, out);
 }
 
-m4long m4th_testexecute(m4th *m, FILE *out) {
+m4cell m4th_testexecute(m4th *m, FILE *out) {
     m4test_word w;
-    m4long i, fail = 0;
+    m4cell i, fail = 0;
     enum { n = testexecute_n };
 
     crcfill(crctable);

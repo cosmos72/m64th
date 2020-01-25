@@ -18,7 +18,7 @@
 #ifndef M4TH_ARM64_SZ_MH
 #define M4TH_ARM64_SZ_MH
 
-#define SZ 8     /* width of registers, m4long and void* in bytes */
+#define SZ 8     /* width of registers, m4cell and void* in bytes */
 #define SZ2 16   /* SZ * 2 */
 #define SZ3 24   /* SZ * 3 */
 #define SZ4 32   /* SZ * 4 */

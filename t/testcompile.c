@@ -48,7 +48,7 @@ static const m4testcompile testcompile[] = {
 
 enum { testcompile_n = sizeof(testcompile) / sizeof(testcompile[0]) };
 
-static m4long m4testcompile_run(m4th *m, const m4testcompile *t, m4test_word *out) {
+static m4cell m4testcompile_run(m4th *m, const m4testcompile *t, m4test_word *out) {
     const m4test_stack empty = {};
     m4th_clear(m);
     memset(out, '\0', sizeof(m4test_word));
@@ -99,9 +99,9 @@ static void m4testcompile_failed(m4th *m, const m4testcompile *t, FILE *out) {
     m4stack_print(&m->rstack, out);
 }
 
-m4long m4th_testcompile(m4th *m, FILE *out) {
+m4cell m4th_testcompile(m4th *m, FILE *out) {
     m4test_word w;
-    m4long i, fail = 0;
+    m4cell i, fail = 0;
     enum { n = testcompile_n };
 
     for (i = 0; i < n; i++) {

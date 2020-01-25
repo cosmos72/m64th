@@ -21,14 +21,14 @@
 #include "../test.h"
 
 enum {
-    tfalse = (m4long)0,
-    ttrue = (m4long)-1,
-    m4enum_per_m4long = SZ / SZe, /* # of m4enum needed to store an m4long */
-    callsz = 1 + m4enum_per_m4long,
+    tfalse = (m4cell)0,
+    ttrue = (m4cell)-1,
+    m4enum_per_m4cell = SZ / SZe, /* # of m4enum needed to store an m4cell */
+    callsz = 1 + m4enum_per_m4cell,
 };
 
-/** zero-padding needed for element-to-element conversion from m4long[] to m4enum[] */
-#define CELL(n) (m4long)(n), 0, 0, 0
+/** zero-padding needed for element-to-element conversion from m4cell[] to m4enum[] */
+#define CELL(n) (m4cell)(n), 0, 0, 0
 #define XT(name) CELL(m4word_##name.code)
 #define CALLXT(name) m4_call_, XT(name)
 

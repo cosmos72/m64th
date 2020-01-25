@@ -24,12 +24,12 @@ typedef struct m4eval_arg_s m4eval_arg;
 
 struct m4eval_arg_s {
     const m4word *w; /* NULL if parsed word is a number */
-    m4long n;
-    m4long err;
+    m4cell n;
+    m4cell err;
 };
 
 /* warning: str must end with '\0' */
-m4long m4string_to_int(m4string str, m4long *out_n);
+m4cell m4string_to_int(m4string str, m4cell *out_n);
 
 /** temporary C implementation of (read) */
 m4string m4th_read(m4th *m);
@@ -38,9 +38,9 @@ m4string m4th_read(m4th *m);
 m4eval_arg m4th_parse(m4th *m, m4string key);
 
 /** temporary C implementation of (eval) */
-m4long m4th_eval(m4th *m, m4eval_arg arg);
+m4cell m4th_eval(m4th *m, m4eval_arg arg);
 
 /** temporary C implementation of (repl) */
-m4long m4th_repl(m4th *m);
+m4cell m4th_repl(m4th *m);
 
 #endif /* M4TH_IMPL_H */

@@ -23,11 +23,11 @@
 int main(int argc, char *argv[]) {
     m4th *m = m4th_new();
 
-    m4long fail1 = m4th_testexecute(m, stdout);
-    m4long fail2 = 0; // m4th_testcompile(m, stdout);
+    m4cell fail1 = m4th_testexecute(m, stdout);
+    m4cell fail2 = 0; // m4th_testcompile(m, stdout);
 
     m4th_del(m);
 
     /* suppress 'unused parameter' warning */
-    return (fail1 + fail2) || (0 & argc & (m4long)argv);
+    return (fail1 + fail2) || (0 & argc & (m4cell)argv);
 }

@@ -42,7 +42,7 @@ enum {
 };
 
 typedef char m4th_assert_sizeof_m4enum_equal_SZe[(sizeof(m4enum) == SZe) ? 1 : -1];
-typedef char m4th_assert_sizeof_m4long_equal_SZ[(sizeof(m4long) == SZ) ? 1 : -1];
+typedef char m4th_assert_sizeof_m4cell_equal_SZ[(sizeof(m4cell) == SZ) ? 1 : -1];
 
 /* ----------------------- m4mem ----------------------- */
 
@@ -177,7 +177,7 @@ void m4enum_print(m4enum val, FILE *out) {
 
 /* ----------------------- m4cspan ----------------------- */
 
-static m4cspan m4cspan_alloc(m4long size) {
+static m4cspan m4cspan_alloc(m4cell size) {
     m4char *p = (m4char *)m4mem_allocate(size * sizeof(m4char));
     m4cspan ret = {p, p, p + size};
     return ret;
@@ -191,21 +191,21 @@ static void m4cspan_free(m4cspan *arg) {
 
 /* ----------------------- m4stack ----------------------- */
 
-static m4stack m4stack_alloc(m4long size) {
-    m4long *p = (m4long *)m4mem_map(size * sizeof(m4long));
+static m4stack m4stack_alloc(m4cell size) {
+    m4cell *p = (m4cell *)m4mem_map(size * sizeof(m4cell));
     m4stack ret = {p, p + size - 1, p + size - 1};
     return ret;
 }
 
 static void m4stack_free(m4stack *arg) {
     if (arg) {
-        m4mem_unmap(arg->start, (arg->end - arg->start + 1) / sizeof(m4long));
+        m4mem_unmap(arg->start, (arg->end - arg->start + 1) / sizeof(m4cell));
     }
 }
 
 void m4stack_print(const m4stack *stack, FILE *out) {
-    const m4long *lo = stack->curr;
-    const m4long *hi = stack->end;
+    const m4cell *lo = stack->curr;
+    const m4cell *hi = stack->end;
     fprintf(out, "<%ld> ", (long)(hi - lo));
     while (hi > lo) {
         fprintf(out, "%ld ", (long)*--hi);
@@ -267,7 +267,7 @@ void m4string_print(m4string str, FILE *out) {
     fwrite(str.addr, 1, str.len, out);
 }
 
-m4long m4string_compare(m4string a, m4string b) {
+m4cell m4string_compare(m4string a, m4string b) {
     if (a.addr == NULL || b.addr == NULL || a.len != b.len || a.len < 0) {
         return 1;
     }
@@ -279,9 +279,9 @@ m4long m4string_compare(m4string a, m4string b) {
 
 /* ----------------------- m4word ----------------------- */
 
-void m4word_code_print(const m4word *w, m4long code_start_n, FILE *out) {
+void m4word_code_print(const m4word *w, m4cell code_start_n, FILE *out) {
     const m4enum *w_code;
-    m4long i, n;
+    m4cell i, n;
     if (w == NULL || out == NULL) {
         return;
     }
@@ -392,7 +392,7 @@ static void m4wordlist_new_vec(m4wordlist *l[m4th_wordlist_n]) {
         &m4dict_m4th_impl,
     };
     enum { dict_n = sizeof(dict) / sizeof(dict[0]) };
-    m4long i;
+    m4cell i;
     if (l == NULL) {
         return;
     }
@@ -410,7 +410,7 @@ static void m4wordlist_del(m4wordlist *l) {
 }
 
 static void m4wordlist_del_vec(m4wordlist *l[m4th_wordlist_n]) {
-    m4long i;
+    m4cell i;
     if (l == NULL) {
         return;
     }
