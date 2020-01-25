@@ -16,7 +16,7 @@
  */
 
 #ifndef M4TH_ASM_S
-#error "common/compile.h can only be included from asm.S - do not attempt to use it directly"
+#error "common/compile.S can only be included from asm.S - do not attempt to use it directly"
 #endif
 
 #if 0
@@ -44,23 +44,3 @@ FUNC_START(_compile2s_)    /* (compile-2s,) */
 FUNC_END(_compile2s_)
 
 
-/** (int32 -- ) pop int32 from dstack and append it to XT being compiled. */
-FUNC_START(_compile4s_)    /* (compile-4s,) */
-        /* TODO check if enough space */
-        LD_uw( REG1_uw,    AT(M4XT, XT_OFF_CODE_N))    /* xt.code_n */
-        STORw( DTOPw,      AT(M4XT, REG1, SZe))        /* xt[xt.code_n] = (int32)DTOP */
-        ADD2(  IMM(4/SZe), REG1)
-        DPOP(  DTOP)
-        STORw( REG1w,      AT(M4XT, XT_OFF_CODE_N))    /* xt.code_n += 4/SZe */
-FUNC_END(_compile4s_)
-
-
-/** (int64 -- ) pop int64 from dstack and append it to XT being compiled. */
-FUNC_START(_compile8s_)    /* (compile-8s,) */
-        /* TODO check if enough space */
-        LD_uw( REG1_uw,    AT(M4XT, XT_OFF_CODE_N))    /* xt.code_n */
-        STOR(  DTOP,       AT(M4XT, REG1, SZe))        /* xt[xt.code_n] = (int32)DTOP */
-        ADD2(  IMM(8/SZe), REG1)
-        DPOP(  DTOP)
-        STORw( REG1w,      AT(M4XT, XT_OFF_CODE_N))    /* xt.code_n += 8/SZe */
-FUNC_END(_compile8s_)

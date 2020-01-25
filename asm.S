@@ -29,10 +29,12 @@ SECTION_FUNC()
 #if defined(__x86_64__)
 #include "amd64/arith.S"
 #include "amd64/call.S"
+#include "amd64/compile.S"
 #include "amd64/io.S"
 #include "amd64/loop.S"
 #elif defined(__aarch64__)
 #include "arm64/arith.S"
+#include "arm64/compile.S"
 #include "arm64/call.S"
 #include "arm64/io.S"
 #include "arm64/loop.S"

@@ -17,39 +17,16 @@
 
 #include <stdint.h>
 
-int64_t load(uint64_t *addr, uint64_t i) {
-    return (long)addr[i];
+void store(char *addr, long i, long val) {
+    *(long *)(addr + i * 2) = val;
 }
 
-int64_t load_sb(int8_t *addr, uint64_t i) {
-    return (long)addr[i];
+void store_sb(char *addr, long i, int8_t val) {
+    *(int8_t *)(addr + i * 2) = val;
 }
-int64_t load_sh(int16_t *addr, uint64_t i) {
-    return (long)addr[i];
+void store_sh(char *addr, long i, int16_t val) {
+    *(int16_t *)(addr + i * 2) = val;
 }
-int64_t load_sw(int32_t *addr, uint64_t i) {
-    return (long)addr[i];
-}
-
-int64_t load_ub(uint8_t *addr, uint64_t i) {
-    return (long)addr[i];
-}
-int64_t load_uh(uint16_t *addr, uint64_t i) {
-    return (long)addr[i];
-}
-int64_t load_uw(uint32_t *addr, uint64_t i) {
-    return (long)addr[i];
-}
-
-void stor_b(uint8_t *addr, uint64_t i, uint8_t val) {
-    addr[i] = val;
-}
-void stor_h(uint16_t *addr, uint64_t i, uint16_t val) {
-    addr[i] = val;
-}
-void stor_w(uint32_t *addr, uint64_t i, uint32_t val) {
-    addr[i] = val;
-}
-void stor(uint64_t *addr, uint64_t i, uint64_t val) {
-    addr[i] = val;
+void store_sw(char *addr, long i, int32_t val) {
+    *(int32_t *)(addr + i * 2) = val;
 }
