@@ -98,8 +98,9 @@ static const m4testexecute testexecute[] = {
      {{2, {0xffffffff, 't'}}, {}},
      {{1, {0x7a95a557 /* crc1byte(0xffffffff, 't') */}}, {}},
      {}},
-    {"0x123 (compile,)",
-     {m4_compile_comma_, m4bye},
+#endif /* 0 */
+    {"0x123 (compile2s,)",
+     {m4_compile2s_, m4bye},
      {{1, {0x123}}, {}},
      {{}, {}},
      {1, {(m4enum)0x123}}},
@@ -111,7 +112,7 @@ static const m4testexecute testexecute[] = {
     {"1 (if)", {m4_if_, (m4enum)3, m4four, m4bye}, {{1, {1}}, {}}, {{1, {4}}, {}}, {}},
     {"(jump)", {m4_jump_, (m4enum)2, m4bye}, {{}, {}}, {{}, {}}, {}},
     {"(leave)", {m4_leave_, (m4enum)2, m4bye}, {{}, {2, {0, 1}}}, {{}, {}}, {}},
-    {"(lit)", {m4_lit_, (m4enum)7, m4bye}, {{}, {}}, {{1, {7}}, {}}, {}},
+    {"(lit-enum)", {m4_lit_enum_, (m4enum)7, m4bye}, {{}, {}}, {{1, {7}}, {}}, {}},
     {"0 0 (loop)", {m4_loop_, (m4enum)2, m4bye}, {{}, {2, {0, 0}}}, {{}, {2, {0, 1}}}, {}},
     {"0 1 (loop)", {m4_loop_, (m4enum)2, m4bye}, {{}, {2, {0, 1}}}, {{}, {2, {0, 2}}}, {}},
     {"1 0 (loop)", {m4_loop_, (m4enum)2, m4bye}, {{}, {2, {1, 0}}}, {{}, {}}, {}},
@@ -126,7 +127,6 @@ static const m4testexecute testexecute[] = {
      {{3, {0, (m4long)1e6, 0}}, {}},
      {{1, {499999500000l}}, {}},
      {}},
-#endif
     {"*", {m4times, m4bye}, {{2, {20, 7}}, {}}, {{1, {140}}, {}}, {}},
     {"-3 2 +", {m4plus, m4bye}, {{2, {-3, 2}}, {}}, {{1, {-1}}, {}}, {}},
     {"3 4 -", {m4minus, m4bye}, {{2, {3, 4}}, {}}, {{1, {-1}}, {}}, {}},
