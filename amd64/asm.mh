@@ -78,41 +78,41 @@
 #define REG3_uw %edx /* zero-extend 32 bits into REG3 */
 #define REG3_ue %edx /* zero-extend m4enum  into REG3 */
 
-#define DTOP    %rbx /* value of first data stack element */
-#define DTOPb   %bl  /* low  8 bits of DTOP */
-#define DTOPh   %bx  /* low 16 bits of DTOP */
-#define DTOPw   %ebx /* low 32 bits of DTOP */
-#define DTOPe   %bx  /* (m4enum)DTOP        */
-#define DTOP_sb %rbx /* sign-extend  8 bits into DTOP */
-#define DTOP_sh %rbx /* sign-extend 16 bits into DTOP */
-#define DTOP_sw %rbx /* sign-extend 32 bits into DTOP */
-#define DTOP_ub %ebx /* zero-extend  8 bits into DTOP */
-#define DTOP_uh %ebx /* zero-extend 16 bits into DTOP */
-#define DTOP_uw %ebx /* zero-extend 32 bits into DTOP */
-#define DTOP_se %rbx /* sign-extend m4enum  into DTOP */
-#define DTOP_ue %ebx /* zero-extend m4enum  into DTOP */
+#define DTOP    %rbx  /* value of first data stack element */
+#define DTOPb   %bl   /* low  8 bits of DTOP */
+#define DTOPh   %bx   /* low 16 bits of DTOP */
+#define DTOPw   %ebx  /* low 32 bits of DTOP */
+#define DTOPe   %bx   /* (m4enum)DTOP        */
+#define DTOP_sb %rbx  /* sign-extend  8 bits into DTOP */
+#define DTOP_sh %rbx  /* sign-extend 16 bits into DTOP */
+#define DTOP_sw %rbx  /* sign-extend 32 bits into DTOP */
+#define DTOP_se %rbx  /* sign-extend m4enum  into DTOP */
+#define DTOP_ub %ebx  /* zero-extend  8 bits into DTOP */
+#define DTOP_uh %ebx  /* zero-extend 16 bits into DTOP */
+#define DTOP_uw %ebx  /* zero-extend 32 bits into DTOP */
+#define DTOP_ue %ebx  /* zero-extend m4enum  into DTOP */
 
-#define RTOP    %rsi /* value of first return stack element */
-#define RTOPb   %sil /* low 8 bits of RTOP */
-#define RTOPh   %si  /* low 16 bits of RTOP */
-#define RTOPw   %esi /* low 32 bits of RTOP */
-#define RTOPe   %si  /* (m4enum)RTOP        */
-#define RTOP_sb %rsi /* sign-extend  8 bits into RTOP */
-#define RTOP_sh %rsi /* sign-extend 16 bits into RTOP */
-#define RTOP_sw %rsi /* sign-extend 32 bits into RTOP */
-#define RTOP_se %rsi /* sign-extend m4enum  into RTOP */
-#define RTOP_ub %esi /* zero-extend  8 bits into RTOP */
-#define RTOP_uh %esi /* zero-extend 16 bits into RTOP */
-#define RTOP_uw %esi /* zero-extend 32 bits into RTOP */
-#define RTOP_ue %esi /* zero-extend m4enum  into RTOP */
+#define RTOP    %r12  /* value of first data stack element */
+#define RTOPb   %r12b /* low  8 bits of RTOP */
+#define RTOPh   %r12w /* low 16 bits of RTOP */
+#define RTOPw   %r12d /* low 32 bits of RTOP */
+#define RTOPe   %r12w /* (m4enum)RTOP        */
+#define RTOP_sb %r12  /* sign-extend  8 bits into RTOP */
+#define RTOP_sh %r12  /* sign-extend 16 bits into RTOP */
+#define RTOP_sw %r12  /* sign-extend 32 bits into RTOP */
+#define RTOP_se %r12  /* sign-extend m4enum  into RTOP */
+#define RTOP_ub %r12d /* zero-extend  8 bits into RTOP */
+#define RTOP_uh %r12d /* zero-extend 16 bits into RTOP */
+#define RTOP_uw %r12d /* zero-extend 32 bits into RTOP */
+#define RTOP_ue %r12d /* zero-extend m4enum  into RTOP */
 
-#define IP    %rdi  /* forth instruction pointer */
-#define DSTK  %rsp  /* pointer to second data stack element */
-#define RFFF  %r11  /* always contains -1 */
-#define RSTK  %r12  /* pointer to second return stack element */
-#define M4XT  %r13  /* pointer to word being compiled */
-#define M4TH  %r14  /* pointer to C struct m4th */
-#define ETBL  %r15  /* pointer to table m4enum -> asm function address */
+#define DSTK  %rdi  /* pointer to second data stack element */
+#define RSTK  %rsi  /* pointer to second return stack element */
+#define M4TH  %r13  /* pointer to C struct m4th */
+#define M4XT  %r14  /* pointer to word being compiled */
+#define ETBL  %r9   /* pointer to table m4enum -> asm function address */
+#define RFFF  %r10  /* always contains -1 */
+#define IP    %r15  /* forth bytecode instruction pointer */
 #define RIP   %rip  /* x86-64 instruction pointer */
 
 #define AND2(src, dst)        and  src,     dst;   /* dst &= src     */
@@ -154,8 +154,13 @@
 
 #define FADDR(fun, dst) lea fun(RIP), dst; /* load function address */
 
-#define DPUSH(val) pushq val; /* push val to second data stack element */
-#define DPOP(val) popq val;   /* pop second data stack element into val */
+#define DPUSH(val) /* push val to second data stack element */                                     \
+    STOR(val, AT(DSTK, -SZ))                                                                       \
+    SUB2(IMM(SZ), DSTK)
+
+#define DPOP(val) /* pop second data stack element into val */                                     \
+    LOAD(val, AT(DSTK))                                                                            \
+    ADD2(IMM(SZ), DSTK)
 
 #define RPUSH(val) /* push val to second return stack element */                                   \
     STOR(val, AT(RSTK, -SZ))                                                                       \
@@ -166,31 +171,31 @@
     ADD2(IMM(SZ), RSTK)
 
 #define NEXT0() /* jump to current instruction. useful after manually updating IP              */  \
-    LD_ue(REG3_ue, AT(IP));                                                                        \
-    jmp *(ETBL, REG3, SZ);
+    ret;
 
-#define NEXT() /* jump to following instruction */                                                 \
+#define NEXT() /* jump to following instruction ______________________________________________ */  \
+    ret;
+
+#if 0    
     LD_ue(REG3_ue, AT(IP, SZe));                                                                   \
     ADD2(IMM(SZe), IP)                                                                             \
     jmp *(ETBL, REG3, SZ);
+#endif
 
 #define NEXT2() /* skip 2 bytes, jump to following instruction */                                  \
-    LD_ue(REG3_ue, AT(IP, SZe + 2));                                                               \
-    ADD2(IMM(SZe + 2), IP)                                                                         \
-    jmp *(ETBL, REG3, SZ);
+    ADD2(IMM(2), IP)                                                                               \
+    ret;
 
 #define NEXT4() /* skip 4 bytes, jump to following instruction */                                  \
-    LD_ue(REG3_ue, AT(IP, SZe + 4));                                                               \
-    ADD2(IMM(SZe + 4), IP)                                                                         \
-    jmp *(ETBL, REG3, SZ);
+    ADD2(IMM(4), IP)                                                                               \
+    ret;
 
 #define NEXT8() /* skip 8 bytes, jump to following instruction */                                  \
-    LD_ue(REG3_ue, AT(IP, SZe + 8));                                                               \
-    ADD2(IMM(SZe + 8), IP)                                                                         \
-    jmp *(ETBL, REG3, SZ);
+    ADD2(IMM(8), IP)                                                                               \
+    ret;
 
 #define RELJUMP()                 /* relative jump by number of instructions stored at next IP */  \
-    LD_se(REG3_se, AT(IP, SZe));  /* REG3 = IP jump offset */                                      \
+    LD_se(REG3_se, AT(IP));       /* REG3 = IP jump offset */                                      \
     lea /**/ (IP, REG3, SZe), IP; /* IP = TARGET_IP        */                                      \
     NEXT0()                       /* jump to TARGET_IP     */
 
