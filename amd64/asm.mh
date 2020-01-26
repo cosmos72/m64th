@@ -188,9 +188,9 @@
     ADD2(IMM(8), IP)                                                                               \
     ret;
 
-#define RELJUMP()                 /* relative jump by number of instructions stored at next IP */  \
-    LD_se(REG3_se, AT(IP));       /* REG3 = IP jump offset */                                      \
-    lea /**/ (IP, REG3, SZe), IP; /* IP = TARGET_IP        */                                      \
-    NEXT0()                       /* jump to TARGET_IP     */
+#define RELJUMP()               /* relative jump by number of instructions stored at next IP */    \
+    LD_se(REG3_se, AT(IP));     /* REG3 = IP jump offset */                                        \
+    lea SZe(IP, REG3, SZe), IP; /* IP = TARGET_IP        */                                        \
+    NEXT0()                     /* jump to TARGET_IP     */
 
 #endif /* M4TH_AMD64_ASM_MH */

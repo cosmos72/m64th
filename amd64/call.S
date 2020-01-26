@@ -27,10 +27,8 @@
  * execute m4th->code.start[0] and subsequent instructions until m4bye is found.
  */
 FUNC_START(th_run_vm)
-        push   %rbx;                      /* save C registers                */
-#if 0 /* not clobbered by m4th */
-        push   %rbp;
-#endif /* 0 */
+        push   %rbp;                   /* save C registers                */
+        push   %rbx;
         push   %r12;
         push   %r13;
         push   %r14;
@@ -85,10 +83,8 @@ FUNC_START(bye)
         pop    %r14;
         pop    %r13;
         pop    %r12;
-#if 0 /* not clobbered by m4th */
-        pop    %rbp;
-#endif /* 0 */
         pop    %rbx;
+        pop    %rbp;
         ZERO(  %rax)               /* return value = 0                */
         ret;                       /* return to C                     */
 FUNC_RAWEND(bye)

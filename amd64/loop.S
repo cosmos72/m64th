@@ -25,11 +25,9 @@ FUNC_START(_question_do_)
         cmp    DTOP, AT(DSTK);
         jne     .L_question_do_.enter;
                                            /* skip the loop:        */
-        LD_se( REG2_se,   AT(IP, SZe))     /* REG2 = IP jump offset */
         LOAD(  DTOP,      AT(DSTK, SZ))    /* reload dstack top     */
-        lea    (IP, REG2, SZe),  IP;       /* IP = TARGET_IP        */
         ADD2(  IMM(SZ2),  DSTK)            /* drop i' i from dstack */
-        NEXT0()                            /* jump to TARGET_IP     */
+        RELJUMP()
 .L_question_do_.enter:                     /* enter the loop:       */
         ADD2(  IMM(SZe), IP)               /* skip jump offset      */
         /* FALLTHROUGH */
@@ -65,8 +63,8 @@ FUNC_RAWEND(_jump_)
 FUNC_START(_else_)
         test   DTOP, DTOP;
         DPOP(  DTOP)
-        jnz    .L_else_.jump;
-        NEXT2()                        /* skip IP offset          */
+        jz     .L_else_.jump;
+        NEXT2()                    /* skip IP offset          */
 .L_else_.jump:
         RELJUMP()
 FUNC_RAWEND(_else_)
@@ -80,7 +78,7 @@ FUNC_RAWEND(_else_)
 FUNC_START(_if_)
         test   DTOP, DTOP;
         DPOP(  DTOP)
-        jz     .L_if_.jump;
+        jnz    .L_if_.jump;
         NEXT2()                    /* skip IP offset          */
 .L_if_.jump:
         RELJUMP()
@@ -91,11 +89,9 @@ FUNC_RAWEND(_if_)
  * IP offset = 0 means (leave) itself
  */
 FUNC_START(_leave_)
-        LD_se( REG2_se,    AT(IP, SZe))    /* REG2 = IP jump offset */
         LOAD(  RTOP,       AT(RSTK, SZ))   /* reload rstack top     */
-        lea   (IP, REG2, SZe),  IP;        /* IP = TARGET_IP        */
         ADD2(  IMM(SZ2),   RSTK)           /* drop i' i from rstack */
-        NEXT0()                            /* jump to TARGET_IP     */
+        RELJUMP()
 FUNC_RAWEND(_leave_)
 
 /**
@@ -105,11 +101,10 @@ FUNC_RAWEND(_leave_)
 FUNC_START(_loop_)
         inc    RTOP;               /* increment i                 */
         cmpq   (RSTK), RTOP;
-        je     .L_loop_.leave;   /* leave if i == i'            */
+        je     .L_loop_.leave;     /* leave if i == i'            */
         RELJUMP()
 .L_loop_.leave:
         LOAD(  RTOP, AT(RSTK, SZ)) /* load new top of rstack      */
-        ADD2(  IMM(SZe2),  IP)     /* IP = next instruction       */
         ADD2(  IMM(SZ2),   RSTK)   /* drop i' i from return stack */
-        NEXT0()                    /* execute next instruction    */
+        NEXT2()                    /* skip IP offset              */
 FUNC_RAWEND(_loop_)
