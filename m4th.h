@@ -131,7 +131,7 @@ struct m4th_s {       /**< m4th forth interpreter and compiler */
     m4stack rstack;   /**< return stack                        */
     m4word *w;        /**< forth word being compiled           */
     const m4enum *ip; /**< instruction pointer                 */
-    const void *c_sp; /**< C stack pointer, may be saved here by m4th_run() */
+    const void *c_sp; /**< C stack pointer, may be saved here by m4th_run_vm() */
     m4func *etable;   /**< table m4e -> asm function address   */
     m4cspan in;       /**< input  buffer                       */
     m4cspan out;      /**< output buffer                       */
@@ -156,7 +156,7 @@ void m4th_del(m4th *m);
  * main entry point from C. implemented in assembly.
  * execute m4th->ip and subsequent code until m4th_bye is found.
  */
-m4cell m4th_run(m4th *m);
+m4cell m4th_run_vm(m4th *m);
 
 /**
  * clear data stack, return stack, input buffer and output buffer.

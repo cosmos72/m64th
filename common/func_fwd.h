@@ -28,14 +28,14 @@ extern "C" {
 typedef struct m4arg_s m4arg; /* intentionally incomplete type, cannot be instantiated */
 
 /**
- * The functions m4func_* use m4th calling convention, not C !
+ * The functions m4f* use m4th calling convention, not C !
  *
  * Do not attempt to invoke them directly from C - the only useful
  * operation from C is taking their address and copying it to m4th->etable
  */
 
-#define FUNC_FWD_ENTRY(strlen, str, name) void m4func_##name(m4arg _);
-DICT_WORDS_ALL(FUNC_FWD_ENTRY) /* declare all void m4func_*(m4arg _) in one fell swoop */
+#define FUNC_FWD_ENTRY(strlen, str, name) void m4f##name(m4arg _);
+DICT_WORDS_ALL(FUNC_FWD_ENTRY) /* declare all void m4f*(m4arg _) in one fell swoop */
 #undef FUNC_FWD_ENTRY
 
 #ifdef __cplusplus

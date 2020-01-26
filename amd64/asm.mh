@@ -176,12 +176,6 @@
 #define NEXT() /* jump to following instruction ______________________________________________ */  \
     ret;
 
-#if 0    
-    LD_ue(REG3_ue, AT(IP, SZe));                                                                   \
-    ADD2(IMM(SZe), IP)                                                                             \
-    jmp *(ETBL, REG3, SZ);
-#endif
-
 #define NEXT2() /* skip 2 bytes, jump to following instruction */                                  \
     ADD2(IMM(2), IP)                                                                               \
     ret;

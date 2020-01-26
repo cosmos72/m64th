@@ -57,7 +57,7 @@ WORD_START(bye, c_store) /* tools ext */
     WORD_DSTACK(0,-1)  /* data   stack may be altered from outside */
     WORD_RSTACK(0,-1)  /* return stack may be altered from outside */
     WORD_NATIVE_NONE()
-    /* exit is reachable by subsequent m4th_run() */
+    /* exit is reachable by subsequent m4th_run_vm() */
     WORD_ENUMS(bye, exit)
 WORD_END(bye)
 WORD(c_fetch,          bye,        DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)

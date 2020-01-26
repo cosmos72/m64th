@@ -17,16 +17,16 @@
 
 #include "asm.mh"
 
-#define m4func_m4th_run m4th_run
+#define m4fth_run_vm m4th_run_vm
 
 /**
- * enter m4th interpreter from C:
+ * m4th_run_vm: enter m4th interpreter from C:
  * save C registers,
  * load m4th registers from struct (m4th*)
  *      passed in %rdi as per SYS V amd64 ABI,
  * execute m4th->code.start[0] and subsequent instructions until m4bye is found.
  */
-FUNC_START(m4th_run)
+FUNC_START(th_run_vm)
         push   %rbx;                      /* save C registers                */
 #if 0 /* not clobbered by m4th */
         push   %rbp;
@@ -42,12 +42,23 @@ FUNC_START(m4th_run)
         LOAD(  M4XT, AT(M4TH, M4TH_OFF_W))      /* load word being compiled        */
         LOAD(  IP,   AT(M4TH, M4TH_OFF_IP))     /* load instruction  pointer       */
         LOAD(  ETBL, AT(M4TH, M4TH_OFF_ETABLE)) /* load table m4enum -> m4func      */
-        DPOP(  DTOP)                      /* load first data   stack element */
-        RPOP(  RTOP)                      /* load first return stack element */
-        ADD2(  IMM(WORD_OFF_XT), M4XT)    /* convert *m4word -> XT           */
-        MOVE(  IMM(-1), RFFF)             /* set RFFF to -1                  */
-        NEXT0()                           /* begin execution                 */
-FUNC_RAWEND(m4th_run)
+        DPOP(  DTOP)                   /* load first data   stack element */
+        RPOP(  RTOP)                   /* load first return stack element */
+        ADD2(  IMM(WORD_OFF_XT), M4XT) /* convert m4word* -> XT           */
+        MOVE(  IMM(-1), RFFF)          /* set RFFF to -1                  */
+        jmp    FUNC_SYM(_vm_)          /* enter vm loop                   */
+FUNC_RAWEND(th_run_vm)
+
+
+/**
+ * forth vm main loop: fetch m4enum instructions and execute them
+ */
+FUNC_START(_vm_)
+        LD_ue(REG3_ue, AT(IP))         /* load m4enum of current vm instruction */
+        ADD2(IMM(SZe), IP)             /* increment vm IP                       */
+        call *(ETBL, REG3, SZ);        /* execute vm instruction                */
+        jmp    FUNC_SYM(_vm_);         /* loop                                  */
+FUNC_RAWEND(_vm_)
 
 /**
  * exit m4th interpreter and return to C:
@@ -60,11 +71,15 @@ FUNC_START(bye)
         SUB2(  IMM(WORD_OFF_XT), M4XT)    /* convert XT -> *m4word           */
         RPUSH( RTOP)                      /* save first return stack element */
         DPUSH( DTOP)                      /* save first data   stack element */
-        STOR(  ETBL, AT(M4TH, M4TH_OFF_ETABLE)) /* save table m4enum -> m4func       */
+        STOR(  ETBL, AT(M4TH, M4TH_OFF_ETABLE)) /* save table m4enum -> m4func     */
         STOR(  IP,   AT(M4TH, M4TH_OFF_IP))     /* save instruction  pointer       */
         STOR(  M4XT, AT(M4TH, M4TH_OFF_W))      /* save word being compiled        */
         STOR(  RSTK, AT(M4TH, M4TH_OFF_RSTK))   /* save return stack pointer       */
         STOR(  DSTK, AT(M4TH, M4TH_OFF_DSTK))   /* save data   stack pointer       */
+        /*
+         * TODO: this discards the call stack of compiled forth code
+         *       executed since m4th_run_vm(). how to preserve it?
+         */
         LOAD(  %rsp, AT(M4TH, M4TH_OFF_C_SP))   /* load C stack pointer            */
         pop    %r15;                            /* load C registers                */
         pop    %r14;
@@ -74,22 +89,20 @@ FUNC_START(bye)
         pop    %rbp;
 #endif /* 0 */
         pop    %rbx;
-        ZERO(  %rax)                      /* return value = 0                */
-        ret;                              /* return to C                     */
+        ZERO(  %rax)               /* return value = 0                */
+        ret;                       /* return to C                     */
 FUNC_RAWEND(bye)
 
 
 /** must be followed by an XT. calls it. */
 FUNC_START(_call_)
-        RPUSH( RTOP)                   /* save RTOP           */
-        lea    AT(IP, SZe+SZ), RTOP    /* save return address = IP + SZe + SZ */
-        LOAD(  IP,   AT(IP, SZe))      /* load XT from IP[SZe] */
-        NEXT0()                        /* jump to XT          */
-FUNC_RAWEND(_call_)
+        RPUSH( RTOP)               /* save RTOP                     */
+        lea    AT(IP, SZ), RTOP    /* save return address = IP + SZ */
+        LOAD(  IP,   AT(IP))       /* set IP = XT at IP[0]          */
+FUNC_END(_call_)
 
 /** return from XT being executed (i.e. current forth word) */
 FUNC_START(exit)
         MOVE(  RTOP, IP)
         RPOP(  RTOP)
-        NEXT0()
-FUNC_RAWEND(exit)
+FUNC_END(exit)

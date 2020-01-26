@@ -85,8 +85,6 @@ static const m4testexecute testexecute[] = {
 #if 0
     {"1G 0 (do) (loop)", {m4_do_, m4_loop_, (m4enum)0, m4bye}, {{2, {1e9, 0}}, {}}, {{}, {}}, {}},
 #else
-    {"(leave)", {m4_leave_, (m4enum)2, m4bye}, {{}, {2, {0, 1}}}, {{}, {}}, {}},
-    {"(lit-enum)", {m4_lit_enum_, (m4enum)7, m4bye}, {{}, {}}, {{1, {7}}, {}}, {}},
     {"*", {m4times, m4bye}, {{2, {20, 7}}, {}}, {{1, {140}}, {}}, {}},
     {"-3 2 +", {m4plus, m4bye}, {{2, {-3, 2}}, {}}, {{1, {-1}}, {}}, {}},
     {"3 4 -", {m4minus, m4bye}, {{2, {3, 4}}, {}}, {{1, {-1}}, {}}, {}},
@@ -182,6 +180,8 @@ static const m4testexecute testexecute[] = {
     {"0 0 (?do)", {m4_question_do_, (m4enum)2, m4bye}, {{2, {0, 0}}, {}}, {{}, {}}, {}},
     {"1 0 (?do)", {m4_question_do_, (m4enum)2, m4bye}, {{2, {1, 0}}, {}}, {{}, {2, {1, 0}}}, {}},
     {"(call) (inline)", {CALLXT(_inline_), m4bye}, {{}, {}}, {{}, {}}, {}},
+    {"(leave)", {m4_leave_, (m4enum)2, m4bye}, {{}, {2, {0, 1}}}, {{}, {}}, {}},
+    {"(lit-enum)", {m4_lit_enum_, (m4enum)7, m4bye}, {{}, {}}, {{1, {7}}, {}}, {}},
     {"(call) (optimize)", {CALLXT(_optimize_), m4bye}, {{}, {}}, {{}, {}}, {}},
     {"(call) false", {CALLXT(false), m4bye}, {{}, {}}, {{1, {}}, {}}, {}},
     {"(call) noop", {CALLXT(noop), m4bye}, {{}, {}}, {{}, {}}, {}},
@@ -231,7 +231,7 @@ static m4cell m4testexecute_run(m4th *m, const m4testexecute *t, m4test_word *w)
     m4test_code_copy_to_word(t->code, m4test_code_n, &w->impl);
     m->w = &w->impl;
     m->ip = w->code;
-    m4th_run(m);
+    m4th_run_vm(m);
     return m4test_stack_equal(&t->after.d, &m->dstack) &&
            m4test_stack_equal(&t->after.r, &m->rstack) &&
            /**/ m4test_code_equal(&t->codegen, m->w, m4test_code_n);

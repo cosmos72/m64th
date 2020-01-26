@@ -153,7 +153,7 @@ static m4cell m4th_interpret_word(m4th *m, const m4word *w) {
         *p++ = m4bye;
     }
     m->ip = torun;
-    m4cell ret = m4th_run(m);
+    m4cell ret = m4th_run_vm(m);
     m->ip = ip_save;
     return ret;
 }

@@ -17,16 +17,16 @@
 
 #include "asm.mh"
 
-#define m4func_m4th_run m4th_run
+#define m4fth_run_vm m4th_run_vm
 
 /**
- * enter m4th interpreter from C:
+ * m4th_run_vm: enter m4th interpreter from C:
  * save C registers,
  * load m4th registers from struct (m4th*)
  *      passed in x0 as per aarch64 ABI,
  * execute m4th->code.start[0] and subsequent instructions until m4bye is found.
  */
-FUNC_START(m4th_run)
+FUNC_START(th_run_vm)
         SUB2(  IMM(SZ8), sp)
         STOR(  x27,  AT(sp, SZ7))      /* save C registers                */
         STOR(  x26,  AT(sp, SZ6))
@@ -44,12 +44,9 @@ FUNC_START(m4th_run)
         LOAD(  ETBL, AT(M4TH, M4TH_OFF_ETABLE)) /* load table m4enum -> m4func       */
         DPOP(  DTOP)                   /* load first data   stack element */
         RPOP(  RTOP)                   /* load first return stack element */
-        ADD2(  IMM(WORD_OFF_XT), M4XT) /* convert *m4word -> XT           */
-        // NEXT0()                        /* begin execution                 */
-        LD_uh(REG0_uh, AT(IP));
-        LOAD(   REG0,  AT(ETBL, REG0, SZ))
-        br REG0;
-FUNC_RAWEND(m4th_run)
+        ADD2(  IMM(WORD_OFF_XT), M4XT) /* convert m4word* -> XT           */
+        NEXT0()                        /* begin execution                 */
+FUNC_RAWEND(th_run_vm)
 
 /**
  * exit m4th interpreter and return to C:

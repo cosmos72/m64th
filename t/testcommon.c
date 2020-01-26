@@ -30,11 +30,26 @@ void m4test_code_copy(const m4cell *src, m4cell n, m4enum *dst) {
     while (i < n) {
         m4cell x = src[i];
         dst[i++] = (m4enum)x;
-        if (x == m4_call_ || x == m4_literal8s_) {
-            /* copy 8 bytes */
+        if (x == m4_call_) {
+            /* copy SZ bytes */
             x = src[i];
-            memcpy(dst + i, &x, sizeof(m4cell));
-            i += m4enum_per_m4cell;
+            memcpy(dst + i, &x, sizeof(x));
+            i += sizeof(x) / SZe;
+        } else if (x == m4_literal8s_) {
+            /* copy 8 bytes */
+            uint64_t buf = src[i];
+            memcpy(dst + i, &buf, sizeof(buf));
+            i += sizeof(buf) / SZe;
+        } else if (x == m4_literal4s_) {
+            /* copy 4 bytes */
+            uint32_t buf = src[i];
+            memcpy(dst + i, &buf, sizeof(buf));
+            i += sizeof(buf) / SZe;
+        } else if (x == m4_literal2s_) {
+            /* copy 2 bytes */
+            uint16_t buf = src[i];
+            memcpy(dst + i, &buf, sizeof(buf));
+            i += sizeof(buf) / SZe;
         }
     }
 }
@@ -101,4 +116,3 @@ void m4test_stack_print(const m4test_stack *src, FILE *out) {
 }
 
 #endif /* M4TH_T_TESTCOMMON_C */
-
