@@ -105,26 +105,26 @@
 #define DTOP_uw w20 /* zero-extend 32 bits into DTOP */
 #define DTOP_ue w20 /* zero-extend m4enum  into DTOP */
 
-#define RTOP x23    /* value of first return stack element */
-#define RTOPb w23   /* low  8 bits of RTOP */
-#define RTOPh w23   /* low 16 bits of RTOP */
-#define RTOPw w23   /* low 32 bits of RTOP */
-#define RTOPe w23   /* (m4enum)RTOP        */
-#define RTOP_sb x23 /* sign-extend  8 bits into RTOP */
-#define RTOP_sh x23 /* sign-extend 16 bits into RTOP */
-#define RTOP_sw x23 /* sign-extend 32 bits into RTOP */
-#define RTOP_se x23 /* sign-extend m4enum  into RTOP */
-#define RTOP_ub w23 /* zero-extend  8 bits into RTOP */
-#define RTOP_uh w23 /* zero-extend 16 bits into RTOP */
-#define RTOP_uw w23 /* zero-extend 32 bits into RTOP */
-#define RTOP_ue w23 /* zero-extend m4enum  into RTOP */
+#define RTOP x22    /* value of first return stack element */
+#define RTOPb w22   /* low  8 bits of RTOP */
+#define RTOPh w22   /* low 16 bits of RTOP */
+#define RTOPw w22   /* low 32 bits of RTOP */
+#define RTOPe w22   /* (m4enum)RTOP        */
+#define RTOP_sb x22 /* sign-extend  8 bits into RTOP */
+#define RTOP_sh x22 /* sign-extend 16 bits into RTOP */
+#define RTOP_sw x22 /* sign-extend 32 bits into RTOP */
+#define RTOP_se x22 /* sign-extend m4enum  into RTOP */
+#define RTOP_ub w22 /* zero-extend  8 bits into RTOP */
+#define RTOP_uh w22 /* zero-extend 16 bits into RTOP */
+#define RTOP_uw w22 /* zero-extend 32 bits into RTOP */
+#define RTOP_ue w22 /* zero-extend m4enum  into RTOP */
 
 #define DSTK x21 /* pointer to second data stack element */
-#define IP x22   /* instruction pointer */
-#define RSTK x24 /* pointer to second return stack element */
-#define M4XT x25 /* pointer to m4word.code being compiled */
-#define M4TH x26 /* pointer to C struct m4th */
-#define ETBL x27 /* pointer to table m4enum -> asm function address */
+#define RSTK x23 /* pointer to second return stack element */
+#define M4TH x24 /* pointer to C struct m4th */
+#define M4XT x26 /* pointer to m4word.code being compiled */
+#define ETBL x26 /* pointer to table m4enum -> asm function address */
+#define IP x27   /* instruction pointer */
 
 /* clang-format off */
 
@@ -181,29 +181,27 @@
 #define RPOP(val)     ldr       val, [RSTK], SZ;   /* pop second return stack element into val */
 
 #define NEXT0() /* jump to current instruction. useful after manually updating IP              */  \
-    LD_ue(REG0_ue, AT(IP))                                                                        \
-    LOAD(REG0, AT(ETBL, REG0, SZ))                                                                 \
-    br REG0;
+    ret;
 
 #define NEXT() /* jump to following instruction */                                                      \
+    ret;
+#if 0
     LD_ue(REG0_ue, AT(IP, SZe)!)                                                                   \
     LOAD(REG0, AT(ETBL, REG0, SZ))                                                                 \
     br REG0;
+#endif /* 0 */
 
 #define NEXT2() /* skip 2 bytes, jump to following instruction */                   \
-    LD_ue(REG0_ue, AT(IP, SZe+2)!)                                                                  \
-    LOAD(REG0, AT(ETBL, REG0, SZ))                                                                 \
-    br REG0;
+    ADD2(IMM(2), IP)                                                                  \
+    ret;
 
 #define NEXT4() /* skip 4 bytes, jump to following instruction */                   \
-    LD_ue(REG0_ue, AT(IP, SZe+4)!)                                                                  \
-    LOAD(REG0, AT(ETBL, REG0, SZ))                                                                 \
-    br REG0;
+    ADD2(IMM(4), IP)                                                                  \
+    ret;
 
 #define NEXT8() /* skip 8 bytes (four instructions), jump to following instruction */                  \
-    LD_ue(REG0_ue, AT(IP, SZe+8)!)                                                                  \
-    LOAD(REG0, AT(ETBL, REG0, SZ))                                                                 \
-    br REG0;
+    ADD2(IMM(8), IP)                                                                  \
+    ret;
 
 /* clang-format on */
 
