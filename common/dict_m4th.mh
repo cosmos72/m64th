@@ -44,6 +44,7 @@
     X(12, "(literal-4s)", _literal4s_)                                                             \
     X(12, "(literal-8s)", _literal8s_)                                                             \
     X(6, "(loop)", _loop_)                                                                         \
+    X(9, "(missing)", _missing_)                                                                   \
     X(10, "(optimize)", _optimize_)                                                                \
     X(2, "-1", minus_one)                                                                          \
     X(1, "0", zero)                                                                                \

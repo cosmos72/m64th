@@ -27,8 +27,10 @@ enum {
     callsz = 1 + m4enum_per_m4cell,
 };
 
-/** zero-padding needed for element-to-element conversion from m4cell[] to m4enum[] */
+/** padding needed for element-to-element conversion from m4cell[] to m4enum[] */
 #define CELL(n) (m4cell)(n), 0, 0, 0
+/* store numeric constant as wide as m4enum in m4enum[] */
+#define E(n) (n)
 #define XT(name) CELL(m4word_##name.code)
 #define CALLXT(name) m4_call_, XT(name)
 

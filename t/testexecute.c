@@ -70,8 +70,8 @@ static uint32_t crc1byte(uint32_t crc, unsigned char byte) {
  * ;
  */
 static const m4cell test_code_crc1byte[] = {
-    m4over, m4xor,   m4_lit_enum_, 0xff,         m4and, m4cells,  m4_lit_cell_, CELL(crctable),
-    m4plus, m4fetch, m4swap,       m4_lit_enum_, 8,     m4rshift, m4xor,        m4exit,
+    m4over, m4xor,   m4_lit_enum_, E(0xff),      m4and, m4cells,  m4_lit_cell_, CELL(crctable),
+    m4plus, m4fetch, m4swap,       m4_lit_enum_, E(8),  m4rshift, m4xor,        m4exit,
 };
 
 enum { test_func_crc1byte_n = sizeof(test_code_crc1byte) / sizeof(test_code_crc1byte[0]) };
@@ -83,7 +83,7 @@ static m4enum test_func_crc1byte[test_func_crc1byte_n];
 
 static const m4testexecute testexecute[] = {
 #if 0
-    {"1G 0 (do) (loop)", {m4_do_, m4_loop_, (m4enum)0, m4bye}, {{2, {1e9, 0}}, {}}, {{}, {}}, {}},
+    {"1G 0 (do) (loop)", {m4_do_, m4_loop_, E(0), m4bye}, {{2, {1e9, 0}}, {}}, {{}, {}}, {}},
 #else
     /* ----------------------------- arithmetic ----------------------------- */
     {"*", {m4times, m4bye}, {{2, {20, 7}}, {}}, {{1, {140}}, {}}, {}},
@@ -180,18 +180,19 @@ static const m4testexecute testexecute[] = {
     /* ----------------------------- loop, if ... ----------------------------- */
     {"0 1 (do)", {m4_do_, m4bye}, {{2, {0, 1}}, {}}, {{}, {2, {0, 1}}}, {}},
     {"1 0 (do)", {m4_do_, m4bye}, {{2, {1, 0}}, {}}, {{}, {2, {1, 0}}}, {}},
-    {"0 0 (?do)", {m4_question_do_, (m4enum)0, m4bye}, {{2, {0, 0}}, {}}, {{}, {}}, {}},
-    {"1 0 (?do)", {m4_question_do_, (m4enum)0, m4bye}, {{2, {1, 0}}, {}}, {{}, {2, {1, 0}}}, {}},
-    {"0 (else)", {m4_else_, (m4enum)1, m4two, m4bye}, {{1, {}}, {}}, {{1, {2}}, {}}, {}},
-    {"1 (else)", {m4_else_, (m4enum)1, m4four, m4bye}, {{1, {1}}, {}}, {{}, {}}, {}},
-    {"0 (if)", {m4_if_, (m4enum)1, m4two, m4bye}, {{1, {}}, {}}, {{}, {}}, {}},
-    {"1 (if)", {m4_if_, (m4enum)1, m4four, m4bye}, {{1, {1}}, {}}, {{1, {4}}, {}}, {}},
-    {"(jump)", {m4_jump_, (m4enum)0, m4bye}, {{}, {}}, {{}, {}}, {}},
-    {"(leave)", {m4_leave_, (m4enum)0, m4bye}, {{}, {2, {0, 1}}}, {{}, {}}, {}},
-    {"0 0 (loop)", {m4_loop_, (m4enum)0, m4bye}, {{}, {2, {0, 0}}}, {{}, {2, {0, 1}}}, {}},
-    {"0 1 (loop)", {m4_loop_, (m4enum)0, m4bye}, {{}, {2, {0, 1}}}, {{}, {2, {0, 2}}}, {}},
-    {"1 0 (loop)", {m4_loop_, (m4enum)0, m4bye}, {{}, {2, {1, 0}}}, {{}, {}}, {}},
+    {"0 0 (?do)", {m4_question_do_, E(0), m4bye}, {{2, {0, 0}}, {}}, {{}, {}}, {}},
+    {"1 0 (?do)", {m4_question_do_, E(0), m4bye}, {{2, {1, 0}}, {}}, {{}, {2, {1, 0}}}, {}},
+    {"0 (else)", {m4_else_, E(1), m4two, m4bye}, {{1, {0}}, {}}, {{1, {2}}, {}}, {}},
+    {"1 (else)", {m4_else_, E(1), m4four, m4bye}, {{1, {1}}, {}}, {{}, {}}, {}},
+    {"0 (if)", {m4_if_, E(1), m4two, m4bye}, {{1, {}}, {}}, {{}, {}}, {}},
+    {"1 (if)", {m4_if_, E(1), m4four, m4bye}, {{1, {1}}, {}}, {{1, {4}}, {}}, {}},
+    {"(jump) E(0) bye (missing)", {m4_jump_, E(0), m4bye, m4_missing_}, {{}, {}}, {{}, {}}, {}},
+    {"(jump) E(1) (missing) bye", {m4_jump_, E(1), m4_missing_, m4bye}, {{}, {}}, {{}, {}}, {}},
 #if 0
+    {"(leave)", {m4_leave_, E(0), m4bye}, {{}, {2, {0, 1}}}, {{}, {}}, {}},
+    {"0 0 (loop)", {m4_loop_, E(0), m4bye}, {{}, {2, {0, 0}}}, {{}, {2, {0, 1}}}, {}},
+    {"0 1 (loop)", {m4_loop_, E(0), m4bye}, {{}, {2, {0, 1}}}, {{}, {2, {0, 2}}}, {}},
+    {"1 0 (loop)", {m4_loop_, E(0), m4bye}, {{}, {2, {1, 0}}}, {{}, {}}, {}},
     {"(call) (inline)", {CALLXT(_inline_), m4bye}, {{}, {}}, {{}, {}}, {}},
     {"(call) (optimize)", {CALLXT(_optimize_), m4bye}, {{}, {}}, {{}, {}}, {}},
     {"(call) false", {CALLXT(false), m4bye}, {{}, {}}, {{1, {}}, {}}, {}},
@@ -206,16 +207,16 @@ static const m4testexecute testexecute[] = {
      {m4_compile_enum_, m4bye},
      {{1, {0x123}}, {}},
      {{}, {}},
-     {1, {(m4enum)0x123}}},
-    {"(lit-enum)", {m4_lit_enum_, (m4enum)7, m4bye}, {{}, {}}, {{1, {7}}, {}}, {}},
-    {"10 0 (do) (loop)", {m4_do_, m4_loop_, (m4enum)0, m4bye}, {{2, {10, 0}}, {}}, {{}, {}}, {}},
+     {1, {0x123}}},
+    {"(lit-enum)", {m4_lit_enum_, E(7), m4bye}, {{}, {}}, {{1, {7}}, {}}, {}},
+    {"10 0 (do) (loop)", {m4_do_, m4_loop_, E(0), m4bye}, {{2, {10, 0}}, {}}, {{}, {}}, {}},
     {"5 0 (do) i (loop)",
-     {m4_do_, m4i, m4_loop_, (m4enum)-1, m4bye},
+     {m4_do_, m4i, m4_loop_, E(-1), m4bye},
      {{2, {5, 0}}, {}},
      {{5, {0, 1, 2, 3, 4}}, {}},
      {}},
     {"0 1M 0 (do) i + (loop)",
-     {m4_do_, m4i, m4plus, m4_loop_, (m4enum)-2, m4bye},
+     {m4_do_, m4i, m4plus, m4_loop_, E(-2), m4bye},
      {{3, {0, (m4cell)1e6, 0}}, {}},
      {{1, {499999500000l}}, {}},
      {}},

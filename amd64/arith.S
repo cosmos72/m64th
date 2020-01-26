@@ -17,6 +17,14 @@
 
 #include "asm.mh"
 
+#define M4_MISSING_
+FUNC_START(_missing_) /* (missing) called instead of invalid/unimplemented function */
+        ud2;                   /* should crash with SIGILL */
+        ZERO(  REG1)
+        LOAD(  REG1, AT(REG1)) /* should crash with SIGSEGV */
+FUNC_END(_missing_)
+
+
 #define M4PLUS_STORE
 FUNC_START(plus_store) /* +!   */
         DPOP(  REG1)

@@ -62,10 +62,11 @@ FUNC_RAWEND(_jump_)
  */
 FUNC_START(_else_)
         test   DTOP, DTOP;
-        DPOP(  DTOP)
-        jz     .L_else_.jump;
+        jnz    .L_else_.jump;
+        DPOP(  DTOP)               /* affects EFLAGS          */
         NEXT2()                    /* skip IP offset          */
 .L_else_.jump:
+        DPOP(  DTOP)
         RELJUMP()
 FUNC_RAWEND(_else_)
 
@@ -77,10 +78,11 @@ FUNC_RAWEND(_else_)
  */
 FUNC_START(_if_)
         test   DTOP, DTOP;
-        DPOP(  DTOP)
-        jnz    .L_if_.jump;
+        jz     .L_if_.jump;
+        DPOP(  DTOP)               /* affects EFLAGS          */
         NEXT2()                    /* skip IP offset          */
 .L_if_.jump:
+        DPOP(  DTOP)
         RELJUMP()
 FUNC_RAWEND(_if_)
 
