@@ -23,33 +23,42 @@
 #include <stdio.h>  /* fprintf() fputc() */
 #include <string.h> /* memcpy()          */
 
+extern const m4word *wtable[]; /* from m4th.c */
+
 /* -------------- m4test_code -------------- */
+
+m4cell m4test_code_copy_2_bytes(uint16_t src, m4enum *dst) {
+    memcpy(dst, &src, sizeof(src));
+    return sizeof(src) / SZe;
+}
+m4cell m4test_code_copy_4_bytes(uint32_t src, m4enum *dst) {
+    memcpy(dst, &src, sizeof(src));
+    return sizeof(src) / SZe;
+}
+m4cell m4test_code_copy_8_bytes(uint64_t src, m4enum *dst) {
+    memcpy(dst, &src, sizeof(src));
+    return sizeof(src) / SZe;
+}
 
 void m4test_code_copy(const m4cell *src, m4cell n, m4enum *dst) {
     m4cell i = 0;
     while (i < n) {
         m4cell x = src[i];
+        const m4word *w;
         dst[i++] = (m4enum)x;
-        if (x == m4_call_) {
-            /* copy SZ bytes */
-            x = src[i];
-            memcpy(dst + i, &x, sizeof(x));
-            i += sizeof(x) / SZe;
-        } else if (x == m4_literal8s_) {
-            /* copy 8 bytes */
-            uint64_t buf = src[i];
-            memcpy(dst + i, &buf, sizeof(buf));
-            i += sizeof(buf) / SZe;
-        } else if (x == m4_literal4s_) {
-            /* copy 4 bytes */
-            uint32_t buf = src[i];
-            memcpy(dst + i, &buf, sizeof(buf));
-            i += sizeof(buf) / SZe;
-        } else if (x == m4_literal2s_) {
-            /* copy 2 bytes */
-            uint16_t buf = src[i];
-            memcpy(dst + i, &buf, sizeof(buf));
-            i += sizeof(buf) / SZe;
+        if (x < 0 || x >= M4____end || (w = wtable[x]) == NULL) {
+            continue;
+        }
+        switch (w->flags & M4FLAG_CONSUMES_IP_MASK) {
+        case M4FLAG_CONSUMES_IP_2:
+            i += m4test_code_copy_2_bytes((uint16_t)src[i], dst + i);
+            break;
+        case M4FLAG_CONSUMES_IP_4:
+            i += m4test_code_copy_4_bytes((uint32_t)src[i], dst + i);
+            break;
+        case M4FLAG_CONSUMES_IP_8:
+            i += m4test_code_copy_8_bytes((uint64_t)src[i], dst + i);
+            break;
         }
     }
 }

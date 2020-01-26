@@ -26,26 +26,26 @@ FUNC_START(store) /* ! */
 FUNC_END(store)
 
 
-#ifndef M4_LITERAL2S
+#ifndef M4_LITERAL2S_
 FUNC_START(_literal2s_) /* (literal-2s) push to dstack the int16 at following IP */
         DPUSH( DTOP)
-        LD_sh( DTOP_sh, AT(IP, SZe))
+        LD_sh( DTOP_sh, AT(IP))
         NEXT2() /* skip 2 bytes */
 FUNC_RAWEND(_literal2s_)
 #endif
 
-#ifndef M4_LITERAL4S
+#ifndef M4_LITERAL4S_
 FUNC_START(_literal4s_) /* (literal-4s) push to dstack the int32 at following IP */
         DPUSH( DTOP)
-        LD_sw( DTOP_sw, AT(IP, SZe))
+        LD_sw( DTOP_sw, AT(IP))
         NEXT4() /* skip 4 bytes */
 FUNC_RAWEND(_literal4s_)
 #endif
 
-#ifndef M4_LITERAL8S
+#ifndef M4_LITERAL8S_
 FUNC_START(_literal8s_) /* (literal-8s) push to dstack the int64 at following IP */
         DPUSH( DTOP)
-        LOAD(  DTOP, AT(IP, SZe))
+        LOAD(  DTOP, AT(IP))
         NEXT8() /* skip 8 bytes */
 FUNC_RAWEND(_literal8s_)
 #endif

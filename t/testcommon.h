@@ -27,11 +27,17 @@ enum {
     callsz = 1 + m4enum_per_m4cell,
 };
 
-/** padding needed for element-to-element conversion from m4cell[] to m4enum[] */
-#define CELL(n) (m4cell)(n), 0, 0, 0
-/* store numeric constant as wide as m4enum in m4enum[] */
+/* store m4enum numeric constant in a sequence of m4enum */
 #define E(n) (n)
+/** store int16_t numeric constant in a sequence of m4enum */
+#define SHORT(n) (int16_t)(n)
+/** store int32_t numeric constant in a sequence of m4enum */
+#define INT(n) (int32_t)(n), 0
+/** store m4cell numeric constant in a sequence of m4enum */
+#define CELL(n) (m4cell)(n), 0, 0, 0
+/** store XT address in a sequence of m4enum */
 #define XT(name) CELL(m4word_##name.code)
+
 #define CALLXT(name) m4_call_, XT(name)
 
 #endif /* M4TH_T_TEST_IMPL_H */

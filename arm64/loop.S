@@ -20,7 +20,7 @@
 /**
  * pop dstack top, enter a (do) ... (loop) if <> 0.
  * must be followed by IP offset of first instruction after (loop)
- * IP offset = 0 means (?do) itself
+ * IP offset = 0 means first instruction after (?do) itself
  */
 FUNC_START(_question_do_)
         LOAD(  REG2, AT(DSTK))
@@ -49,7 +49,7 @@ FUNC_END(_do_)
 /**
  * unconditional jump.
  * must be followed by IP offset to skip.
- * IP offset = 0 means (jump) itself
+ * IP offset = 0 means first instruction after (jump) itself
  */
 FUNC_START(_jump_)
         LD_sh(  REG2_sh, AT(IP, SZe))  /* REG2 = IP jump offset   */
@@ -61,7 +61,7 @@ FUNC_END(_jump_)
  * pop dstack top.
  * if = 0 continue to next instruction, otherwise jump.
  * must be followed by IP offset to jump.
- * IP offset = 0 means (_else_) itself
+ * IP offset = 0 means first instruction after (else) itself
  */
 FUNC_START(_else_)
         cmp    DTOP, IMM(0);
@@ -78,7 +78,7 @@ FUNC_RAWEND(_else_)
  * pop dstack top.
  * if <> 0 continue to next instruction, otherwise jump.
  * must be followed by IP offset to jump.
- * IP offset = 0 means (_if_) itself
+ * IP offset = 0 means first instruction after (if) itself
  */
 FUNC_START(_if_)
         cmp    DTOP, IMM(0);
@@ -94,7 +94,7 @@ FUNC_RAWEND(_if_)
 /**
  * break from a loop.
  * must be followed by IP offset of first instruction after (loop)
- * IP offset = 0 means (leave) itself
+ * IP offset = 0 means first instruction after (leave) itself
  */
 FUNC_START(_leave_)
         LOAD(  REG2, AT(IP, SZ))
@@ -106,7 +106,7 @@ FUNC_RAWEND(_leave_)
 
 /**
  * must be followed by IP offset of first instruction after (do) - usually < 0
- * IP offset = 0 means (loop) itself
+ * IP offset = 0 means first instruction after (loop) itself
  */
 FUNC_START(_loop_)
         ADD2(  IMM(1), RTOP)        /* increment i                 */

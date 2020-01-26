@@ -19,7 +19,7 @@
 
 /*
  * must be followed by IP offset of first instruction after (loop)
- * IP offset = 0 means (?do) itself
+ * IP offset = 0 means first instruction after (?do) itself
  */
 FUNC_START(_question_do_)
         cmp    DTOP, AT(DSTK);
@@ -48,7 +48,7 @@ FUNC_SIZE(_question_do_)
 
 /**
  * unconditional jump. must be followed by IP offset to jump.
- * IP offset = 0 means (jump) itself
+ * IP offset = 0 means first instruction after (jump) itself
  */
 FUNC_START(_jump_)
         RELJUMP()
@@ -58,7 +58,7 @@ FUNC_RAWEND(_jump_)
  * pop dstack top.
  * if = 0 continue to next instruction, otherwise jump.
  * must be followed by IP offset to jump.
- * IP offset = 0 means (_else_) itself
+ * IP offset = 0 means first instruction after (else) itself
  */
 FUNC_START(_else_)
         test   DTOP, DTOP;
@@ -74,7 +74,7 @@ FUNC_RAWEND(_else_)
  * pop dstack top.
  * if <> 0 continue to next instruction, otherwise jump.
  * must be followed by IP offset to jump.
- * IP offset = 0 means (_if_) itself
+ * IP offset = 0 means first instruction after (if) itself
  */
 FUNC_START(_if_)
         test   DTOP, DTOP;
@@ -88,7 +88,7 @@ FUNC_RAWEND(_if_)
 
 /**
  * must be followed by IP offset of first instruction after (loop)
- * IP offset = 0 means (leave) itself
+ * IP offset = 0 means first instruction after (leave) itself
  */
 FUNC_START(_leave_)
         LOAD(  RTOP,       AT(RSTK, SZ))   /* reload rstack top     */
@@ -98,7 +98,7 @@ FUNC_RAWEND(_leave_)
 
 /**
  * must be followed by IP offset of first instruction after (do) - usually < 0
- * IP offset = 0 means (loop) itself
+ * IP offset = 0 means first instruction after (loop) itself
  */
 FUNC_START(_loop_)
         inc    RTOP;               /* increment i                 */

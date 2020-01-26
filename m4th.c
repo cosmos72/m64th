@@ -153,7 +153,7 @@ static m4func etable[] = {
 
 /* initialize the whole m4enum -> m4word conversion table in one fell swoop */
 #define WTABLE_ENTRY(strlen, str, name) [M4ENUM_VAL(name)] = &WORD_SYM(name),
-static const m4word *wtable[] = {
+const m4word *wtable[] = {
     DICT_WORDS_ALL(WTABLE_ENTRY) /**/[M4____end] = NULL,
 };
 #undef WTABLE_ENTRY
