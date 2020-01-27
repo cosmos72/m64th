@@ -72,14 +72,15 @@ typedef struct m4cspan_s m4cspan;
 typedef struct m4dict_s m4dict;
 typedef struct m4span_s m4span;
 typedef struct m4span_s m4stack;
+typedef struct m4stackeffect_s m4stackeffect;
 typedef struct m4string_s m4string;
 typedef struct m4word_s m4word;
 typedef struct m4wordlist_s m4wordlist;
 typedef struct m4th_s m4th;
 
-struct m4countedstring_s { /**< counted string                           */
-    m4char len;            /**< string length, in bytes                  */
-    m4char chars[1];       /**< string characters. may NOT end with '\0' */
+struct m4countedstring_s { /**< counted string                            */
+    m4char len;            /**< string length, in bytes                   */
+    m4char chars[1];       /**< string characters. does NOT end with '\0' */
 };
 
 /** array of m4char, with current size and capacity */
@@ -101,15 +102,20 @@ struct m4string_s {
     m4cell len;
 };
 
+struct m4stackeffect_s {
+    uint8_t dstack; /**< dstack # in and # out. 0xFF if unknown or variable   */
+    uint8_t rstack; /**< rstack # in and # out. 0xFF if unknown or variable   */
+};
+
 /** compiled forth word. Execution token i.e. XT is the address of m4word.code[0] */
 struct m4word_s {
     int32_t prev_off;    /**< offset of previous word,   in bytes. 0 = not present */
     int16_t name_off;    /**< offset of m4countedstring, in bytes. 0 = not present */
     uint16_t flags;      /**< m4flags                                              */
-    uint8_t dstack;      /**< dstack # in and # out. 0xFF if unknown or variable   */
-    uint8_t rstack;      /**< rstack # in and # out. 0xFF if unknown or variable   */
+    m4stackeffect eff;   /**< stack effect                                         */
+    m4stackeffect jump;  /**< stack effect if jumping                              */
     uint16_t native_len; /**< native code size, in bytes. 0xFFFF if not available  */
-    uint32_t code_n;     /**< forth code size, in m4enum:s                            */
+    uint16_t code_n;     /**< forth code size, in m4enum:s                         */
     uint64_t data_len;   /**< data size, in bytes                                  */
     m4enum code[0];      /**< code i.e. XT starts at [0], data starts at [code_n]  */
 };
@@ -131,12 +137,12 @@ struct m4th_s {       /**< m4th forth interpreter and compiler */
     m4stack rstack;   /**< return stack                        */
     m4word *w;        /**< forth word being compiled           */
     const m4enum *ip; /**< instruction pointer                 */
-    const void *c_sp; /**< C stack pointer, may be saved here by m4th_run_vm() */
     m4func *etable;   /**< table m4e -> asm function address   */
     m4cspan in;       /**< input  buffer                       */
     m4cspan out;      /**< output buffer                       */
 
-    m4cell flags; /**< m4th_flags                          */
+    m4cell flags;          /**< m4th_flags                               */
+    const void *c_regs[1]; /**< m4th_run_vm() may save C registers here  */
 
     m4wordlist *wordlist[m4th_wordlist_n]; /**< FIXME: visible wordlists     */
     const char *const *in_cstr;            /**< DELETEME: pre-parsed input   */

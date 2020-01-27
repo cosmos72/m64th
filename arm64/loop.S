@@ -59,23 +59,6 @@ FUNC_END(_jump_)
 
 /**
  * pop dstack top.
- * if = 0 continue to next instruction, otherwise jump.
- * must be followed by IP offset to jump.
- * IP offset = 0 means first instruction after (else) itself
- */
-FUNC_START(_else_)
-        cmp    DTOP, IMM(0);
-        DPOP(  DTOP)
-        b.ne   .L_else_.jump;
-        NEXT2()                      /* skip IP offset          */
-.L_else_.jump:
-        LOAD(  REG2, AT(IP, SZ))     /* REG2 = IP jump offset   */
-        add    IP, IP, REG2, lsl PSZ;/* IP   = TARGET_IP        */
-        NEXT0()                      /* jump to TARGET_IP       */
-FUNC_RAWEND(_else_)
-
-/**
- * pop dstack top.
  * if <> 0 continue to next instruction, otherwise jump.
  * must be followed by IP offset to jump.
  * IP offset = 0 means first instruction after (if) itself
@@ -84,12 +67,29 @@ FUNC_START(_if_)
         cmp    DTOP, IMM(0);
         DPOP(  DTOP)
         b.eq   .L_if_.jump;
-        NEXT2()                      /* skip IP offset          */
+        NEXTE()                      /* skip IP offset          */
 .L_if_.jump:
         LOAD(  REG2, AT(IP, SZ))     /* REG2 = IP jump offset   */
         add    IP, IP, REG2, lsl PSZ;/* IP   = TARGET_IP        */
         NEXT0()                      /* jump to TARGET_IP       */
 FUNC_RAWEND(_if_)
+
+/**
+ * pop dstack top.
+ * if = 0 continue to next instruction, otherwise jump.
+ * must be followed by IP offset to jump.
+ * IP offset = 0 means first instruction after (if-zero) itself
+ */
+FUNC_START(_if_zero_)
+        cmp    DTOP, IMM(0);
+        DPOP(  DTOP)
+        b.ne   .L_if_zero_.jump;
+        NEXTE()                      /* skip IP offset          */
+.L_if_zero_.jump:
+        LOAD(  REG2, AT(IP, SZ))     /* REG2 = IP jump offset   */
+        add    IP, IP, REG2, lsl PSZ;/* IP   = TARGET_IP        */
+        NEXT0()                      /* jump to TARGET_IP       */
+FUNC_RAWEND(_if_zero_)
 
 /**
  * break from a loop.
@@ -119,5 +119,5 @@ FUNC_START(_loop_)
 .L_loop_.break:
         LOAD(  RTOP, AT(RSTK, SZ)) /* load new top of rstack      */
         ADD2(  IMM(SZ2), RSTK)     /* drop i' i from return stack */
-        NEXT2();                   /* skip IP offset, execute next instruction */
+        NEXTE();                   /* skip IP offset, execute next instruction */
 FUNC_RAWEND(_loop_)

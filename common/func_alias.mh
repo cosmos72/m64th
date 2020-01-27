@@ -60,8 +60,6 @@
 
 #define m4fcell_plus CAT3(m4f_, SZ, _plus) /* cell+    */
 #define m4fcells CAT3(m4f_, SZ, _times)    /* cells    */
-#define m4fchar_plus m4fone_plus           /* char+    */
-#define m4fchars m4fnoop                   /* chars    */
 
 #define m4f_0 m4fzero              /* 0        */
 #define m4f_1 m4fone               /* 1        */

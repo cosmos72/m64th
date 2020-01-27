@@ -43,29 +43,37 @@
 
 /* (?do) must be followed by IP offset of 1st instruction after (loop) */
 #define M4_question_do_ 530
-#define M4_missing_ 0     /* (missing) called instead of invalid/unimplemented function */
-#define M4_call_ 531      /* (call) must be followed by XT */
-#define M4_compile2s_ 532 /* (compile2s,) append int16 to compiled code  */
-#define M4_compile4s_ 533 /* (compile4s,) append int32 to compiled code  */
-#define M4_compile8s_ 534 /* (compile8s,) append int64 to compiled code  */
-#define M4_do_ 535        /* (do)         */
-#define M4_jump_ 536      /* (jump)   must be followed by IP offset */
-#define M4_else_ 537      /* (else)   must be followed by IP offset */
-#define M4_if_ 538        /* (if)     must be followed by IP offset */
-#define M4_inline_ 539    /* (inline) try to inline calls in word being compiled */
-#define M4_literal2s_ 540 /* (literal-2s)  must be followed by int16, pushes it to dstack */
-#define M4_literal4s_ 541 /* (literal-4s)  must be followed by int32, pushes it to dstack */
-#define M4_literal8s_ 542 /* (literal-8s)  must be followed by int64, pushes it to dstack */
-#define M4_leave_ 543    /* (leave) must be followed by IP offset of 1st instruction after (loop) */
-#define M4_loop_ 544     /* (loop)  must be followed by IP offset of 1st instruction after (do)   */
-#define M4_optimize_ 545 /* (optimize) try to optimize word being compiled */
+#define M4_missing_ 0         /* (missing) called instead of invalid/unimplemented function */
+#define M4_call_ 531          /* (call) must be followed by XT */
+#define M4_compile2s_ 532     /* (compile2s,) append int16 to compiled code  */
+#define M4_compile4s_ 533     /* (compile4s,) append int32 to compiled code  */
+#define M4_compile8s_ 534     /* (compile8s,) append int64 to compiled code  */
+#define M4_do_ 535            /* (do)         */
+#define M4_jump_ 536          /* (jump)    must be followed by IP offset */
+#undef M4____gap              /*          */
+#define M4_if_ 540            /* (if)      must be followed by IP offset */
+#define M4_if_zero_ 541       /* (if-zero) must be followed by IP offset */
+#define M4_if_less_ 542       /* (if<)     must be followed by IP offset */
+#define M4_if_less_equal_ 543 /* (if<=)    must be followed by IP offset */
+#define M4_if_ne_ 544         /* (if<>)    must be followed by IP offset */
+#define M4_if_equal_ 545      /* (if=)     must be followed by IP offset */
+#define M4_if_more_ 546       /* (if>)     must be followed by IP offset */
+#define M4_if_more_equal_ 547 /* (if>=)    must be followed by IP offset */
+#undef M4____gap              /*          */
+#define M4_inline_ 550        /* (inline) try to inline calls in word being compiled */
+#define M4_literal2s_ 551     /* (literal-2s)  must be followed by int16, pushes it to dstack */
+#define M4_literal4s_ 552     /* (literal-4s)  must be followed by int32, pushes it to dstack */
+#define M4_literal8s_ 553     /* (literal-8s)  must be followed by int64, pushes it to dstack */
+#define M4_leave_ 554    /* (leave) must be followed by IP offset of 1st instruction after (loop) */
+#define M4_loop_ 555     /* (loop)  must be followed by IP offset of 1st instruction after (do)   */
+#define M4_optimize_ 556 /* (optimize) try to optimize word being compiled */
 #undef M4____gap         /*          */
-#define M4i_prime 550    /* i'       */
-#define M4i_times 551    /* i*       */
-#define M4i_plus 552     /* i+       */
-#define M4i_minus 553    /* i-       */
-#define M4noop 554       /* noop     */
+#define M4i_prime 560    /* i'       */
+#define M4i_times 561    /* i*       */
+#define M4i_plus 562     /* i+       */
+#define M4i_minus 563    /* i-       */
+#define M4noop 564       /* noop     */
 
-#define M4____end 555
+#define M4____end 565
 
 #endif /* M4TH_COMMON_ENUM_M4TH_MH */

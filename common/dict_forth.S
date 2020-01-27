@@ -56,6 +56,8 @@ WORD_START(bye, c_store) /* tools ext */
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MAY_JUMP)
     WORD_DSTACK(0,-1)  /* data   stack may be altered from outside */
     WORD_RSTACK(0,-1)  /* return stack may be altered from outside */
+    WORD_DSTACK(0,-1)
+    WORD_RSTACK(0,-1)
     WORD_NATIVE_NONE()
     /* exit is reachable by subsequent m4th_run_vm() */
     WORD_ENUMS(bye, exit)
@@ -69,29 +71,32 @@ WORD(chars,            char_plus,  DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD_DECL_SYM(_inline_)        /* forward declarations */
 WORD_DECL_SYM(_optimize_)
 WORD_START(compile_comma, chars)
-   WORD_FLAGS(WORD_IMPURE | M4FLAG_COMPILE_ONLY)
-   WORD_DSTACK(1,0)
-   WORD_RSTACK(0,0)
-   WORD_NATIVE_NONE()
-   WORD_ENUMS(_lit_enum_, _call_, _compile_enum_, /* compile (call) */
-              _compile_xt_,
-#if 0   
-              _call_, XT(_inline_),
-              _call_, XT(_optimize_),
+    WORD_FLAGS(WORD_IMPURE | M4FLAG_COMPILE_ONLY)
+    WORD_DSTACK(1,0)
+    WORD_RSTACK(0,0)
+    WORD_NOJUMP()
+    WORD_NATIVE_NONE()
+    WORD_ENUMS(_lit_enum_, _call_, _compile_enum_, /* compile (call) */
+               _compile_xt_,
+#if 0
+               _call_, XT(_inline_),
+               _call_, XT(_optimize_),
 #endif
-              exit
+               exit
    )
 WORD_END(compile_comma)
 WORD(depth,    compile_comma,      DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 WORD(drop,             depth,      DSTACK(1,0), RSTACK(0,0), WORD_PURE)
 WORD(dup,              drop,       DSTACK(1,2), RSTACK(0,0), WORD_PURE)
 WORD_START(exit, dup)
-   WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS | M4FLAG_JUMP)
-   WORD_DSTACK(0,-1)
-   WORD_RSTACK(0,-1) /* we do not yet track the return address pushed (call) */
-   WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS | M4FLAG_JUMP)
+    WORD_DSTACK(0,-1) /* stack effect when not jumping */
+    WORD_RSTACK(0,-1)
+    WORD_DSTACK(0, 0) /* stack effect when jumping */
+    WORD_RSTACK(0,-1) /* we do not yet track the return address stored in rstack */
+    WORD_NATIVE_NONE()
    /* make inliner happy: it skips the final 'exit' of a word's code when inlining */
-   WORD_ENUMS(exit, exit)
+    WORD_ENUMS(exit, exit)
 WORD_END(exit)
 WORD(false,            exit,       DSTACK(0,1), RSTACK(0,0), WORD_PURE) /* core ext */
 WORD(i,                false,      DSTACK(0,1), RSTACK(1,1), WORD_PURE | M4FLAG_COMPILE_ONLY)
@@ -101,33 +106,34 @@ WORD_START(literal, j)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE)
     WORD_DSTACK(1,0)
     WORD_RSTACK(0,0)
+    WORD_NOJUMP()
     WORD_NATIVE_NONE()
     WORD_ENUMS(
-      dup, _else_, E(7),           /* if dtop = 0                  */
+      dup, _if_zero_, E(5),         /* if dtop = 0                  */
         drop, _lit_enum_, zero,    /*   change dtop to 'm4zero'    */
         _compile_enum_, exit,      /*   append it to XT, exit      */
       dup, one_minus,
-      _else_, E(7),                /* else if dtop = 1             */
+      _if_zero_, E(5),              /* else if dtop = 1             */
         drop, _lit_enum_, one,     /*   change dtop to 'm4one'     */
         _compile_enum_, exit,      /*   append it to XT, exit      */
 #if 0
       dup, two_minus,
-      _else_, E(7),                /* else if dtop = 2             */
+      _if_zero_, E(5),              /* else if dtop = 2             */
         drop, _lit_enum_, two,     /*   change dtop to 'm4two'     */
         _compile_enum_, exit,      /*   append it to XT, exit      */
       dup, four, equal,
-      _if_, E(7),                  /* else if dtop = 4             */
+      _if_, E(5),                  /* else if dtop = 4             */
         drop, _lit_enum_, four,    /*   change dtop to 'm4four'    */
         _compile_enum_, exit,      /*   append it to XT, exit      */
       dup, eight, equal,
-      _if_, E(7),                  /* else if dtop = 8             */
+      _if_, E(5),                  /* else if dtop = 8             */
         drop, _lit_enum_, eight,   /*   change dtop to 'm4eight'   */
         _compile_enum_, exit,      /*   append it to XT, exit      */
       dup, minus_one, equal,
-      _if_, E(7),                      /* else if dtop = -1            */
+      _if_, E(5),                      /* else if dtop = -1            */
         drop, _lit_enum_, minus_one,   /*   change dtop 'm4minus_one'  */
         _compile_enum_, exit,          /*   append it to XT, exit      */
-#endif /* 0 */      
+#endif /* 0 */
       _lit_enum_,  _lit_cell_,     /* push 'm4_lit_cell_' to dstack*/
       _compile_enum_,              /* append it to XT              */
       _compile_cell_,              /* append dtop to XT            */

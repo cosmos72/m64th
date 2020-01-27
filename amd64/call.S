@@ -34,7 +34,7 @@ FUNC_START(th_run_vm)
         push   %r14;
         push   %r15;
         MOVE(  %rdi, M4TH)                      /* m                               */
-        STOR(  %rsp, AT(M4TH, M4TH_OFF_C_SP))   /* save C stack pointer            */
+        STOR(  %rsp, AT(M4TH, M4TH_OFF_C_REG0)) /* save C stack pointer            */
         LOAD(  DSTK, AT(M4TH, M4TH_OFF_DSTK))   /* load data   stack pointer       */
         LOAD(  RSTK, AT(M4TH, M4TH_OFF_RSTK))   /* load return stack pointer       */
         LOAD(  M4XT, AT(M4TH, M4TH_OFF_W))      /* load word being compiled        */
@@ -78,8 +78,8 @@ FUNC_START(bye)
          * TODO: this discards the call stack of compiled forth code
          *       executed since m4th_run_vm(). how to preserve it?
          */
-        LOAD(  %rsp, AT(M4TH, M4TH_OFF_C_SP))   /* load C stack pointer            */
-        pop    %r15;                            /* load C registers                */
+        LOAD(  %rsp, AT(M4TH, M4TH_OFF_C_REG0))    /* load C stack pointer            */
+        pop    %r15;                               /* load C registers                */
         pop    %r14;
         pop    %r13;
         pop    %r12;
@@ -94,11 +94,13 @@ FUNC_RAWEND(bye)
 FUNC_START(_call_)
         RPUSH( RTOP)               /* save RTOP                     */
         lea    AT(IP, SZ), RTOP    /* save return address = IP + SZ */
-        LOAD(  IP,   AT(IP))       /* set IP = XT at IP[0]          */
-FUNC_END(_call_)
+        LOAD(  IP,     AT(IP))     /* set IP = XT at IP[0]          */
+        NEXT0()
+FUNC_RAWEND(_call_)
 
 /** return from XT being executed (i.e. current forth word) */
 FUNC_START(exit)
         MOVE(  RTOP, IP)
         RPOP(  RTOP)
-FUNC_END(exit)
+        NEXT0()
+FUNC_RAWEND(exit)

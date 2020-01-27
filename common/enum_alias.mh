@@ -43,18 +43,20 @@
 #define m4_lit_cell_ CAT3(m4_literal, SZ, s_)
 #define m4_lit_xt_ CAT3(m4_literal, SZ, s_)
 
-#define m4_0 m4zero              /* 0        */
-#define m4_1 m4one               /* 1        */
-#define m4_2 m4two               /* 2        */
-#define m4_2_plus m4two_plus     /* 2+       */
-#define m4_2_minus m4two_minus   /* 2-       */
-#define m4_3 m4three             /* 3        */
-#define m4_4 m4four              /* 4        */
-#define m4_4_times m4four_times  /* 4*       */
-#define m4_4_plus m4four_plus    /* 4+       */
-#define m4_8 m4eight             /* 8        */
-#define m4_8_times m4eight_times /* 8*       */
-#define m4_8_plus m4eight_plus   /* 8+       */
+#define m4_0 m4zero                       /* 0        */
+#define m4_1 m4one                        /* 1        */
+#define m4_2 m4two                        /* 2        */
+#define m4_2_plus m4two_plus              /* 2+       */
+#define m4_2_minus m4two_minus            /* 2-       */
+#define m4_3 m4three                      /* 3        */
+#define m4_4 m4four                       /* 4        */
+#define m4_4_times m4four_times           /* 4*       */
+#define m4_4_plus m4four_plus             /* 4+       */
+#define m4_8 m4eight                      /* 8        */
+#define m4_8_times m4eight_times          /* 8*       */
+#define m4_8_plus m4eight_plus            /* 8+       */
+#define m4_SZ_times CAT3(m4_, SZ, _times) /* SZ*      */
+#define m4_SZ_plus CAT3(m4_, SZ, _plus)   /* SZ+      */
 
 /* #define M4* numeric values (also used in assembly) have uppercase prefix 'M4' */
 #define M4int_plus M4four_plus   /* int+     => 4+       */
@@ -90,5 +92,9 @@
 #define M4_8 M4eight             /* 8        */
 #define M4_8_times M4eight_times /* 8*       */
 #define M4_8_plus M4eight_plus   /* 8+       */
+/* SZ*      used by opt.mh to replace cells => SZ* => N* with N = SZ actual value */
+#define M4_SZ_times CAT3(M4_, SZ, _times)
+/* SZ+      used by opt.mh to replace cell+ => SZ+ => N* with N = SZ actual value */
+#define M4_SZ_plus CAT3(M4_, SZ, _plus)
 
 #endif /* M4TH_COMMON_ENUM_ALIAS_MH */

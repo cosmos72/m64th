@@ -16,11 +16,11 @@ all: m4th test
 clean:
 	rm -f m4th test ./*.o ./*~ */*.o */*~
 
-asm.o:  $(wildcard *.mh *.S */*.mh */*.S)
-impl.o: impl.c $(wildcard *.h)
-m4th.o: m4th.c $(wildcard *.h)
-main.o: main.c $(wildcard *.h)
-test.o: test.c $(wildcard *.h t/*.h t/*.c)
+asm.o:  asm.S  $(wildcard *.mh */*.mh */*.S)
+impl.o: impl.c $(wildcard *.h *.mh common/*.h common/*.mh)
+m4th.o: m4th.c $(wildcard *.h *.mh common/*.h common/*.mh)
+main.o: main.c $(wildcard *.h *.mh common/*.h common/*.mh)
+test.o: test.c $(wildcard *.h *.mh common/*.h common/*.mh t/*.h t/*.c)
 
 m4th: $(OBJS) main.o
 	$(LD) $(LDFLAGS) -o $@ $^

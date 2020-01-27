@@ -25,6 +25,7 @@
 #include "testcommon.h"
 
 #include <assert.h> /* assert()          */
+#include <string.h> /* memset()          */
 
 typedef m4cell m4test_code_array[m4test_code_n];
 
@@ -56,12 +57,10 @@ static void crcfill(m4cell table[256]) {
     }
 }
 
-#if 0
-static uint32_t crc1byte(uint32_t crc, unsigned char byte) {
+uint32_t crc1byte(uint32_t crc, unsigned char byte) {
     assert(crctable[0xff]);
     return (crc >> 8) ^ crctable[(crc & 0xff) ^ byte];
 }
-#endif /* 0 */
 
 /**
  * compiled forth version of crc1byte above. forth source would be
@@ -93,20 +92,6 @@ static const m4testexecute testexecute[] = {
     {"20 7 /", {m4div, m4bye}, {{2, {20, 7}}, {}}, {{1, {2}}, {}}, {}},
     {"-20 7 /mod", {m4div_mod, m4bye}, {{2, {-20, 7}}, {}}, {{2, {-6, -2}}, {}}, {}},
     {"20 7 /mod", {m4div_mod, m4bye}, {{2, {20, 7}}, {}}, {{2, {6, 2}}, {}}, {}},
-    {"-1 0<", {m4zero_less, m4bye}, {{1, {-1}}, {}}, {{1, {ttrue}}, {}}, {}},
-    {"0 0<", {m4zero_less, m4bye}, {{1, {}}, {}}, {{1, {tfalse}}, {}}, {}},
-    {"0 0<=", {m4zero_less_equal, m4bye}, {{1, {}}, {}}, {{1, {ttrue}}, {}}, {}},
-    {"1 0<=", {m4zero_less_equal, m4bye}, {{1, {1}}, {}}, {{1, {tfalse}}, {}}, {}},
-    {"-1 0<>", {m4zero_ne, m4bye}, {{1, {-1}}, {}}, {{1, {ttrue}}, {}}, {}},
-    {"0 0<>", {m4zero_ne, m4bye}, {{1, {}}, {}}, {{1, {tfalse}}, {}}, {}},
-    {"1 0<>", {m4zero_ne, m4bye}, {{1, {1}}, {}}, {{1, {ttrue}}, {}}, {}},
-    {"-1 0=", {m4zero_equal, m4bye}, {{1, {-1}}, {}}, {{1, {tfalse}}, {}}, {}},
-    {"0 0=", {m4zero_equal, m4bye}, {{1, {}}, {}}, {{1, {ttrue}}, {}}, {}},
-    {"1 0=", {m4zero_equal, m4bye}, {{1, {1}}, {}}, {{1, {tfalse}}, {}}, {}},
-    {"0 0>", {m4zero_more, m4bye}, {{1, {}}, {}}, {{1, {tfalse}}, {}}, {}},
-    {"1 0>", {m4zero_more, m4bye}, {{1, {1}}, {}}, {{1, {ttrue}}, {}}, {}},
-    {"-1 0>=", {m4zero_more_equal, m4bye}, {{1, {-1}}, {}}, {{1, {tfalse}}, {}}, {}},
-    {"0 0>=", {m4zero_more_equal, m4bye}, {{1, {}}, {}}, {{1, {ttrue}}, {}}, {}},
     {"-1", {m4minus_one, m4bye}, {{}, {}}, {{1, {-1}}, {}}, {}},
     {"0", {m4zero, m4bye}, {{}, {}}, {{1, {}}, {}}, {}},
     {"1", {m4one, m4bye}, {{}, {}}, {{1, {1}}, {}}, {}},
@@ -124,18 +109,6 @@ static const m4testexecute testexecute[] = {
     {"8", {m4eight, m4bye}, {{}, {}}, {{1, {8}}, {}}, {}},
     {"8+", {m4eight_plus, m4bye}, {{1, {-3}}, {}}, {{1, {5}}, {}}, {}},
     {"8*", {m4eight_times, m4bye}, {{1, {-3}}, {}}, {{1, {-24}}, {}}, {}},
-    {"1 2 <", {m4less, m4bye}, {{2, {1, 2}}, {}}, {{1, {ttrue}}, {}}, {}},
-    {"3 3 <", {m4less, m4bye}, {{2, {3, 3}}, {}}, {{1, {tfalse}}, {}}, {}},
-    {"4 4 <=", {m4less_equal, m4bye}, {{2, {4, 4}}, {}}, {{1, {ttrue}}, {}}, {}},
-    {"5 4 <=", {m4less_equal, m4bye}, {{2, {5, 4}}, {}}, {{1, {tfalse}}, {}}, {}},
-    {"1 2 <>", {m4ne, m4bye}, {{2, {1, 2}}, {}}, {{1, {ttrue}}, {}}, {}},
-    {"3 3 <>", {m4ne, m4bye}, {{2, {3, 3}}, {}}, {{1, {tfalse}}, {}}, {}},
-    {"1 2 =", {m4equal, m4bye}, {{2, {1, 2}}, {}}, {{1, {tfalse}}, {}}, {}},
-    {"3 3 =", {m4equal, m4bye}, {{2, {3, 3}}, {}}, {{1, {ttrue}}, {}}, {}},
-    {"2 1 >", {m4more, m4bye}, {{2, {2, 1}}, {}}, {{1, {ttrue}}, {}}, {}},
-    {"3 3 >", {m4more, m4bye}, {{2, {3, 3}}, {}}, {{1, {tfalse}}, {}}, {}},
-    {"-2 -1 >=", {m4more_equal, m4bye}, {{2, {-2, -1}}, {}}, {{1, {tfalse}}, {}}, {}},
-    {"-2 -2 >=", {m4more_equal, m4bye}, {{2, {-2, -2}}, {}}, {{1, {ttrue}}, {}}, {}},
     {">r", {m4to_r, m4bye}, {{1, {99}}, {}}, {{}, {1, {99}}}, {}},
     {"0 ?dup", {m4question_dup, m4bye}, {{1, {}}, {}}, {{1, {}}, {}}, {}},
     {"1 ?dup", {m4question_dup, m4bye}, {{1, {1}}, {}}, {{2, {1, 1}}, {}}, {}},
@@ -177,17 +150,62 @@ static const m4testexecute testexecute[] = {
     {"true", {m4true, m4bye}, {{}, {}}, {{1, {ttrue}}, {}}, {}},
     {"unloop", {m4unloop, m4bye}, {{}, {3, {1, 2, 3}}}, {{}, {1, {1}}}, {}},
     {"-7 14 xor", {m4xor, m4bye}, {{2, {-7, 14}}, {}}, {{1, {-7 ^ 14}}, {}}, {}},
-    /* ----------------------------- loop, if ... ----------------------------- */
+    /* ----------------------------- <=> ------------------------------------ */
+    {"-1 0<", {m4zero_less, m4bye}, {{1, {-1}}, {}}, {{1, {ttrue}}, {}}, {}},
+    {"0 0<", {m4zero_less, m4bye}, {{1, {}}, {}}, {{1, {tfalse}}, {}}, {}},
+    {"0 0<=", {m4zero_less_equal, m4bye}, {{1, {}}, {}}, {{1, {ttrue}}, {}}, {}},
+    {"1 0<=", {m4zero_less_equal, m4bye}, {{1, {1}}, {}}, {{1, {tfalse}}, {}}, {}},
+    {"-1 0<>", {m4zero_ne, m4bye}, {{1, {-1}}, {}}, {{1, {ttrue}}, {}}, {}},
+    {"0 0<>", {m4zero_ne, m4bye}, {{1, {}}, {}}, {{1, {tfalse}}, {}}, {}},
+    {"1 0<>", {m4zero_ne, m4bye}, {{1, {1}}, {}}, {{1, {ttrue}}, {}}, {}},
+    {"-1 0=", {m4zero_equal, m4bye}, {{1, {-1}}, {}}, {{1, {tfalse}}, {}}, {}},
+    {"0 0=", {m4zero_equal, m4bye}, {{1, {}}, {}}, {{1, {ttrue}}, {}}, {}},
+    {"1 0=", {m4zero_equal, m4bye}, {{1, {1}}, {}}, {{1, {tfalse}}, {}}, {}},
+    {"0 0>", {m4zero_more, m4bye}, {{1, {}}, {}}, {{1, {tfalse}}, {}}, {}},
+    {"1 0>", {m4zero_more, m4bye}, {{1, {1}}, {}}, {{1, {ttrue}}, {}}, {}},
+    {"-1 0>=", {m4zero_more_equal, m4bye}, {{1, {-1}}, {}}, {{1, {tfalse}}, {}}, {}},
+    {"0 0>=", {m4zero_more_equal, m4bye}, {{1, {}}, {}}, {{1, {ttrue}}, {}}, {}},
+    {"1 2 <", {m4less, m4bye}, {{2, {1, 2}}, {}}, {{1, {ttrue}}, {}}, {}},
+    {"3 3 <", {m4less, m4bye}, {{2, {3, 3}}, {}}, {{1, {tfalse}}, {}}, {}},
+    {"4 4 <=", {m4less_equal, m4bye}, {{2, {4, 4}}, {}}, {{1, {ttrue}}, {}}, {}},
+    {"5 4 <=", {m4less_equal, m4bye}, {{2, {5, 4}}, {}}, {{1, {tfalse}}, {}}, {}},
+    {"1 2 <>", {m4ne, m4bye}, {{2, {1, 2}}, {}}, {{1, {ttrue}}, {}}, {}},
+    {"3 3 <>", {m4ne, m4bye}, {{2, {3, 3}}, {}}, {{1, {tfalse}}, {}}, {}},
+    {"1 2 =", {m4equal, m4bye}, {{2, {1, 2}}, {}}, {{1, {tfalse}}, {}}, {}},
+    {"3 3 =", {m4equal, m4bye}, {{2, {3, 3}}, {}}, {{1, {ttrue}}, {}}, {}},
+    {"2 1 >", {m4more, m4bye}, {{2, {2, 1}}, {}}, {{1, {ttrue}}, {}}, {}},
+    {"3 3 >", {m4more, m4bye}, {{2, {3, 3}}, {}}, {{1, {tfalse}}, {}}, {}},
+    {"-2 -1 >=", {m4more_equal, m4bye}, {{2, {-2, -1}}, {}}, {{1, {tfalse}}, {}}, {}},
+    {"-2 -2 >=", {m4more_equal, m4bye}, {{2, {-2, -2}}, {}}, {{1, {ttrue}}, {}}, {}},
+    /* ----------------------------- do loop if jump ... -------------------- */
     {"0 1 (do)", {m4_do_, m4bye}, {{2, {0, 1}}, {}}, {{}, {2, {0, 1}}}, {}},
     {"1 0 (do)", {m4_do_, m4bye}, {{2, {1, 0}}, {}}, {{}, {2, {1, 0}}}, {}},
     {"0 0 (?do)", {m4_question_do_, E(0), m4bye}, {{2, {0, 0}}, {}}, {{}, {}}, {}},
     {"1 0 (?do)", {m4_question_do_, E(0), m4bye}, {{2, {1, 0}}, {}}, {{}, {2, {1, 0}}}, {}},
-    {"0 (else)", {m4_else_, E(1), m4two, m4bye}, {{1, {0}}, {}}, {{1, {2}}, {}}, {}},
-    {"1 (else)", {m4_else_, E(1), m4four, m4bye}, {{1, {1}}, {}}, {{}, {}}, {}},
     {"0 (if)", {m4_if_, E(1), m4two, m4bye}, {{1, {}}, {}}, {{}, {}}, {}},
     {"1 (if)", {m4_if_, E(1), m4four, m4bye}, {{1, {1}}, {}}, {{1, {4}}, {}}, {}},
-    {"(jump) E(0) bye (missing)", {m4_jump_, E(0), m4bye, m4_missing_}, {{}, {}}, {{}, {}}, {}},
-    {"(jump) E(1) (missing) bye", {m4_jump_, E(1), m4_missing_, m4bye}, {{}, {}}, {{}, {}}, {}},
+    {"0 (if-zero)", {m4_if_zero_, E(1), m4two, m4bye}, {{1, {0}}, {}}, {{1, {2}}, {}}, {}},
+    {"1 (if-zero)", {m4_if_zero_, E(1), m4three, m4bye}, {{1, {1}}, {}}, {{}, {}}, {}},
+    {"0 1 (if<)", {m4_if_less_, E(1), m4two, m4bye}, {{2, {0, 1}}, {}}, {{1, {2}}, {}}, {}},
+    {"2 2 (if<)", {m4_if_less_, E(1), m4one, m4bye}, {{2, {2, 2}}, {}}, {{}, {}}, {}},
+    {"4 3 (if<)", {m4_if_less_, E(1), m4zero, m4bye}, {{2, {4, 3}}, {}}, {{}, {}}, {}},
+    {"0 1 (if<=)", {m4_if_less_equal_, E(1), m4two, m4bye}, {{2, {0, 1}}, {}}, {{1, {2}}, {}}, {}},
+    {"2 2 (if<=)", {m4_if_less_equal_, E(1), m4one, m4bye}, {{2, {2, 2}}, {}}, {{1, {1}}, {}}, {}},
+    {"4 3 (if<=)", {m4_if_less_equal_, E(1), m4zero, m4bye}, {{2, {4, 3}}, {}}, {{}, {}}, {}},
+    {"0 1 (if<>)", {m4_if_ne_, E(1), m4two, m4bye}, {{2, {0, 1}}, {}}, {{1, {2}}, {}}, {}},
+    {"2 2 (if<>)", {m4_if_ne_, E(1), m4one, m4bye}, {{2, {2, 2}}, {}}, {{}, {}}, {}},
+    {"4 3 (if<>)", {m4_if_ne_, E(1), m4zero, m4bye}, {{2, {4, 3}}, {}}, {{1, {0}}, {}}, {}},
+    {"0 1 (if=)", {m4_if_equal_, E(1), m4two, m4bye}, {{2, {0, 1}}, {}}, {{}, {}}, {}},
+    {"2 2 (if=)", {m4_if_equal_, E(1), m4one, m4bye}, {{2, {2, 2}}, {}}, {{1, {1}}, {}}, {}},
+    {"4 3 (if=)", {m4_if_equal_, E(1), m4zero, m4bye}, {{2, {4, 3}}, {}}, {{}, {}}, {}},
+    {"0 1 (if>)", {m4_if_more_, E(1), m4two, m4bye}, {{2, {0, 1}}, {}}, {{}, {}}, {}},
+    {"2 2 (if>)", {m4_if_more_, E(1), m4one, m4bye}, {{2, {2, 2}}, {}}, {{}, {}}, {}},
+    {"4 3 (if>)", {m4_if_more_, E(1), m4zero, m4bye}, {{2, {4, 3}}, {}}, {{1, {0}}, {}}, {}},
+    {"0 1 (if>=)", {m4_if_more_equal_, E(1), m4two, m4bye}, {{2, {0, 1}}, {}}, {{}, {}}, {}},
+    {"2 2 (if>=)", {m4_if_more_equal_, E(1), m4one, m4bye}, {{2, {2, 2}}, {}}, {{1, {1}}, {}}, {}},
+    {"4 3 (if>=)", {m4_if_more_equal_, E(1), m4zero, m4bye}, {{2, {4, 3}}, {}}, {{1, {0}}, {}}, {}},
+    {"(jump) E(0)", {m4_jump_, E(0), m4bye, m4_missing_}, {{}, {}}, {{}, {}}, {}},
+    {"(jump) E(1)", {m4_jump_, E(1), m4true, m4bye}, {{}, {}}, {{}, {}}, {}},
     {"(leave)", {m4_leave_, E(0), m4bye}, {{}, {2, {0, 1}}}, {{}, {}}, {}},
     {"0 0 (loop)", {m4_loop_, E(0), m4bye}, {{}, {2, {0, 0}}}, {{}, {2, {0, 1}}}, {}},
     {"0 1 (loop)", {m4_loop_, E(0), m4bye}, {{}, {2, {0, 1}}}, {{}, {2, {0, 2}}}, {}},
@@ -203,6 +221,7 @@ static const m4testexecute testexecute[] = {
      {{3, {0, (m4cell)1e6, 0}}, {}},
      {{1, {499999500000l}}, {}},
      {}},
+    /* ----------------------------- literal, compile ----------------------- */
     {"(lit-enum) E(7)", {m4_lit_enum_, E(7), m4bye}, {{}, {}}, {{1, {7}}, {}}, {}},
     {"(lit-int) INT(0x10000)",
      {m4_lit_int_, INT(0x10000), m4bye},
@@ -219,16 +238,17 @@ static const m4testexecute testexecute[] = {
      {{1, {0x123}}, {}},
      {{}, {}},
      {1, {0x123}}},
-#if 0
-    {"(call) (inline)", {CALLXT(_inline_), m4bye}, {{}, {}}, {{}, {}}, {}},
-    {"(call) (optimize)", {CALLXT(_optimize_), m4bye}, {{}, {}}, {{}, {}}, {}},
-    {"(call) false", {CALLXT(false), m4bye}, {{}, {}}, {{1, {}}, {}}, {}},
-    {"(call) noop", {CALLXT(noop), m4bye}, {{}, {}}, {{}, {}}, {}},
-    {"(call) true", {CALLXT(true), m4bye}, {{}, {}}, {{1, {-1}}, {}}, {}},
-    {"(call) crc+",
-     {m4_call_, CELL(test_func_crc1byte), m4bye},E(}, {}},
+    /* ----------------------------- call ----------------------------------- */
+    {"(call) XT(false)", {m4_call_, XT(false), m4bye}, {{}, {}}, {{1, {tfalse}}, {}}, {}},
+    {"(call) XT(noop)", {m4_call_, XT(noop), m4bye}, {{}, {}}, {{}, {}}, {}},
+    {"(call) XT(true)", {m4_call_, XT(true), m4bye}, {{}, {}}, {{1, {ttrue}}, {}}, {}},
+    {"(call) XT(crc+)",
+     {m4_call_, CELL(test_func_crc1byte), m4bye},
+     {{2, {0xffffffff, 't'}}, {}},
+     {{1, {2056627543 /* crc1byte(0xffffffff, 't')*/}}, {}},
      {}},
-#endif /* 0 */
+#if 0
+#endif
 #endif
 };
 
@@ -278,6 +298,9 @@ m4cell m4th_testexecute(m4th *m, FILE *out) {
     enum { n = testexecute_n };
 
     crcfill(crctable);
+
+    /* printf("crc('t') = %u\n", (unsigned)crc1byte(0xffffffff, 't')); */
+
     m4test_code_copy(test_code_crc1byte, test_func_crc1byte_n, test_func_crc1byte);
 
     for (i = 0; i < n; i++) {

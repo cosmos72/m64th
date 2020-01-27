@@ -21,10 +21,10 @@
 /** used to insert an execution token (XT) in a sequence of functions */
 #define m4XT(x) WORD_SYM(x) + WORD_OFF_XT
 
-#define WORD_OFF_CODE_N 12 /* offset of m4word->code_n */
+#define WORD_OFF_CODE_N 14 /* offset of m4word->code_n */
 #define WORD_OFF_XT 24     /* offset of m4word->code i.e. XT */
 
-#define XT_OFF_CODE_N -12 /* offset from XT (i.e. m4word->code) to m4word->code_n */
+#define XT_OFF_CODE_N -10 /* WORD_OFF_XT - WORD_OFF_CODE_N */
 
 #define WORD_SYM(name) m4word_##name
 
@@ -49,10 +49,11 @@
 #define WORD_DSTACK_UNKNOWN() /*    */ .byte 0xFF;
 #define WORD_RSTACK(in, out) /*     */ .byte /**/ ((in)&0xF) | (((out)&0xF) << 4);
 #define WORD_RSTACK_UNKNOWN() /*    */ .byte 0xFF;
+#define WORD_NOJUMP() /*            */ WORD_DSTACK(0, 0) WORD_RSTACK(0, 0)
 #define WORD_NATIVE_LEN(name) /*    */ .2byte FUNC_SYM_NEXT(name) - FUNC_SYM(name);
 #define WORD_NATIVE_LEN_0() /*      */ .2byte 0;
 #define WORD_NATIVE_NONE() /*       */ .2byte 0xFFFF;
-#define WORD_CODE_N(n_instr) /*     */ .4byte n_instr;
+#define WORD_CODE_N(n_instr) /*     */ .2byte n_instr;
 #define WORD_DATA_NBYTES(n_bytes) /**/ .8byte n_bytes;
 #define WORD_DATA_N(n_instr) /*     */ .8byte SZe *(n_instr);
 #define WORD_RAWCODE(...) /*        */ .2byte __VA_ARGS__;
@@ -80,6 +81,7 @@
     WORD_FLAGS(flags)                                                                              \
     WORD_##dstack                                                                                  \
     WORD_##rstack                                                                                  \
+    WORD_NOJUMP()      /* simple words do not jump */                                              \
     WORD_NATIVE_LEN(name)                                                                          \
     WORD_ENUMS(name, exit)
 

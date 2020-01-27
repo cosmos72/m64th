@@ -28,19 +28,19 @@ FUNC_END(xt)
 
 
 FUNC_START(xt_code_n_fetch) /* (xt -- xt.code_n) */
-        LD_uw(DTOP_wh,   AT(DTOP, XT_OFF_CODE_N))
+        LD_uh(DTOP_uh,   AT(DTOP, XT_OFF_CODE_N))
 FUNC_END(xt_code_n_fetch)
 #endif /* 0 */
 
-
+#ifndef M4_COMPILE2S_
 /** (int16 -- ) pop int16 from dstack and append it to XT being compiled. */
 FUNC_START(_compile2s_)    /* (compile-2s,) */
         /* TODO check if enough space */
-        LD_uw( REG1_uw,    AT(M4XT, XT_OFF_CODE_N))    /* xt.code_n */
+        LD_uh( REG1_uh,    AT(M4XT, XT_OFF_CODE_N))    /* xt.code_n */
         STORh( DTOPh,      AT(M4XT, REG1, SZe))        /* xt[xt.code_n] = (int16)DTOP */
         ADD2(  IMM(2/SZe), REG1)
         DPOP(  DTOP)
-        STORw( REG1w,      AT(M4XT, XT_OFF_CODE_N))    /* xt.code_n += 2/SZe */
+        STORh( REG1h,      AT(M4XT, XT_OFF_CODE_N))    /* xt.code_n += 2/SZe */
 FUNC_END(_compile2s_)
-
+#endif
 

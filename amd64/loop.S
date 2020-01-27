@@ -56,35 +56,137 @@ FUNC_RAWEND(_jump_)
 
 /**
  * pop dstack top.
- * if = 0 continue to next instruction, otherwise jump.
- * must be followed by IP offset to jump.
- * IP offset = 0 means first instruction after (else) itself
- */
-FUNC_START(_else_)
-        test   DTOP, DTOP;
-        jnz    .L_else_.jump;
-        DPOP(  DTOP)               /* affects EFLAGS          */
-        NEXT2()                    /* skip IP offset          */
-.L_else_.jump:
-        DPOP(  DTOP)
-        RELJUMP()
-FUNC_RAWEND(_else_)
-
-/**
- * pop dstack top.
  * if <> 0 continue to next instruction, otherwise jump.
  * must be followed by IP offset to jump.
  * IP offset = 0 means first instruction after (if) itself
  */
 FUNC_START(_if_)
         test   DTOP, DTOP;
-        jz     .L_if_.jump;
+        jnz     .L_if_.enter;
         DPOP(  DTOP)               /* affects EFLAGS          */
-        NEXT2()                    /* skip IP offset          */
-.L_if_.jump:
-        DPOP(  DTOP)
         RELJUMP()
+.L_if_.enter:
+        DPOP(  DTOP)               /* affects EFLAGS          */
+        NEXTE()                    /* skip IP offset          */
 FUNC_RAWEND(_if_)
+
+/**
+ * pop dstack top.
+ * if = 0 continue to next instruction, otherwise jump.
+ * must be followed by IP offset to jump.
+ * IP offset = 0 means first instruction after (if-zero) itself
+ */
+FUNC_START(_if_zero_)
+        test   DTOP, DTOP;
+        jz     .L_if_zero_.enter;
+        DPOP(  DTOP)               /* affects EFLAGS          */
+        RELJUMP()
+.L_if_zero_.enter:
+        DPOP(  DTOP)               /* affects EFLAGS          */
+        NEXTE()                    /* skip IP offset          */
+FUNC_RAWEND(_if_zero_)
+
+/**
+ * pop dstack twice.
+ * if d1 < dtop, continue to next instruction, otherwise jump.
+ * must be followed by IP offset to jump.
+ * IP offset = 0 means first instruction after (if-zero) itself
+ */
+FUNC_START(_if_less_)
+        cmp    DTOP, AT(DSTK);
+        LOAD(  DTOP, AT(DSTK, SZ))
+        jl     .L_if_less_.enter;
+        ADD2(  IMM(SZ2),   DSTK)   /* affects EFLAGS          */
+        RELJUMP()
+.L_if_less_.enter:
+        ADD2(  IMM(SZ2),   DSTK)   /* affects EFLAGS          */
+        NEXTE()                    /* skip IP offset          */
+FUNC_RAWEND(_if_less_)
+
+/**
+ * pop dstack twice.
+ * if d1 <= dtop, continue to next instruction, otherwise jump.
+ * must be followed by IP offset to jump.
+ * IP offset = 0 means first instruction after (if-zero) itself
+ */
+FUNC_START(_if_less_equal_)
+        cmp    DTOP, AT(DSTK);
+        LOAD(  DTOP, AT(DSTK, SZ))
+        jle    .L_if_less_equal_.enter;
+        ADD2(  IMM(SZ2),   DSTK)   /* affects EFLAGS          */
+        RELJUMP()
+.L_if_less_equal_.enter:
+        ADD2(  IMM(SZ2),   DSTK)   /* affects EFLAGS          */
+        NEXTE()                    /* skip IP offset          */
+FUNC_RAWEND(_if_less_equal_)
+
+/**
+ * pop dstack twice.
+ * if d1 <> dtop, continue to next instruction, otherwise jump.
+ * must be followed by IP offset to jump.
+ * IP offset = 0 means first instruction after (if-zero) itself
+ */
+FUNC_START(_if_ne_)
+        cmp    DTOP, AT(DSTK);
+        LOAD(  DTOP, AT(DSTK, SZ))
+        jne    .L_if_ne_.enter;
+        ADD2(  IMM(SZ2),   DSTK)   /* affects EFLAGS          */
+        RELJUMP()
+.L_if_ne_.enter:
+        ADD2(  IMM(SZ2),   DSTK)   /* affects EFLAGS          */
+        NEXTE()                    /* skip IP offset          */
+FUNC_RAWEND(_if_ne_)
+
+/**
+ * pop dstack twice.
+ * if d1 = dtop, continue to next instruction, otherwise jump.
+ * must be followed by IP offset to jump.
+ * IP offset = 0 means first instruction after (if-zero) itself
+ */
+FUNC_START(_if_equal_)
+        cmp    DTOP, AT(DSTK);
+        LOAD(  DTOP, AT(DSTK, SZ))
+        je     .L_if_equal_.enter;
+        ADD2(  IMM(SZ2),   DSTK)   /* affects EFLAGS          */
+        RELJUMP()
+.L_if_equal_.enter:
+        ADD2(  IMM(SZ2),   DSTK)   /* affects EFLAGS          */
+        NEXTE()                    /* skip IP offset          */
+FUNC_RAWEND(_if_equal_)
+
+/**
+ * pop dstack twice.
+ * if d1 > dtop, continue to next instruction, otherwise jump.
+ * must be followed by IP offset to jump.
+ * IP offset = 0 means first instruction after (if-zero) itself
+ */
+FUNC_START(_if_more_)
+        cmp    DTOP, AT(DSTK);
+        LOAD(  DTOP, AT(DSTK, SZ))
+        jg     .L_if_more_.enter;
+        ADD2(  IMM(SZ2),   DSTK)   /* affects EFLAGS          */
+        RELJUMP()
+.L_if_more_.enter:
+        ADD2(  IMM(SZ2),   DSTK)   /* affects EFLAGS          */
+        NEXTE()                    /* skip IP offset          */
+FUNC_RAWEND(_if_more_)
+
+/**
+ * pop dstack twice.
+ * if d1 >= dtop, continue to next instruction, otherwise jump.
+ * must be followed by IP offset to jump.
+ * IP offset = 0 means first instruction after (if-zero) itself
+ */
+FUNC_START(_if_more_equal_)
+        cmp    DTOP, AT(DSTK);
+        LOAD(  DTOP, AT(DSTK, SZ))
+        jge    .L_if_more_equal_.enter;
+        ADD2(  IMM(SZ2),   DSTK)   /* affects EFLAGS          */
+        RELJUMP()
+.L_if_more_equal_.enter:
+        ADD2(  IMM(SZ2),   DSTK)   /* affects EFLAGS          */
+        NEXTE()                    /* skip IP offset          */
+FUNC_RAWEND(_if_more_equal_)
 
 /**
  * must be followed by IP offset of first instruction after (loop)
@@ -108,5 +210,5 @@ FUNC_START(_loop_)
 .L_loop_.leave:
         LOAD(  RTOP, AT(RSTK, SZ)) /* load new top of rstack      */
         ADD2(  IMM(SZ2),   RSTK)   /* drop i' i from return stack */
-        NEXT2()                    /* skip IP offset              */
+        NEXTE()                    /* skip IP offset              */
 FUNC_RAWEND(_loop_)

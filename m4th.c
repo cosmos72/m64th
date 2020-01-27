@@ -316,16 +316,25 @@ void m4word_stack_print(uint8_t stack_in_out, FILE *out) {
 }
 
 void m4word_print(const m4word *w, FILE *out) {
+    m4flags jump_flags = (m4flags)(w->flags & m4flag_jump_mask);
     if (w == NULL || out == NULL) {
         return;
     }
     m4string_print(m4word_name(w), out);
     fputs(" {\n\tflags:\t", out);
     m4flags_print((m4flags)w->flags, out);
-    fputs(" \n\tdata_stack: \t", out);
-    m4word_stack_print(w->dstack, out);
-    fputs(" \n\treturn_stack:\t", out);
-    m4word_stack_print(w->rstack, out);
+    if (jump_flags != m4flag_jump) {
+        fputs(" \n\tdata_stack: \t", out);
+        m4word_stack_print(w->eff.dstack, out);
+        fputs(" \n\treturn_stack:\t", out);
+        m4word_stack_print(w->eff.rstack, out);
+    }
+    if (jump_flags == m4flag_jump || jump_flags == m4flag_may_jump) {
+        fputs(" \n\tdata_stack_jump:\t", out);
+        m4word_stack_print(w->jump.dstack, out);
+        fputs(" \n\treturn_stack_jump:\t", out);
+        m4word_stack_print(w->jump.rstack, out);
+    }
     fprintf(out, "\n\tnative_len:  \t%d\n\tcode_n:      \t%lu\n\tdata_len:    \t%lu\n}\n",
             (w->native_len == (uint16_t)-1 ? (int)-1 : (int)w->native_len),
             (unsigned long)w->code_n, (unsigned long)w->data_len);
@@ -454,7 +463,7 @@ m4th *m4th_new() {
     m->rstack = m4stack_alloc(rstack_n);
     m->w = NULL;
     m->ip = NULL;
-    m->c_sp = NULL;
+    m->c_regs[0] = NULL;
     m->in = m4cspan_alloc(inbuf_n);
     m->out = m4cspan_alloc(outbuf_n);
     m->flags = m4th_flag_interpret;
@@ -480,7 +489,7 @@ void m4th_clear(m4th *m) {
     m->rstack.curr = m->rstack.end;
     m->w = NULL;
     m->ip = NULL;
-    m->c_sp = NULL;
+    m->c_regs[0] = NULL;
     m->in.curr = m->in.start;
     m->out.curr = m->out.start;
 }

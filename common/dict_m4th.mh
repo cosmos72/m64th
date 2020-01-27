@@ -31,12 +31,18 @@
 #define DICT_WORDS_M4TH_IMPL(X)                                                                    \
     X(5, "(?do)", _question_do_)                                                                   \
     X(6, "(call)", _call_)                                                                         \
-    X(12, "(compile-2s,)", _compile2s_)                                                            \
-    X(12, "(compile-4s,)", _compile4s_)                                                            \
-    X(12, "(compile-8s,)", _compile8s_)                                                            \
+    X(13, "(compile-2s,)", _compile2s_)                                                            \
+    X(13, "(compile-4s,)", _compile4s_)                                                            \
+    X(13, "(compile-8s,)", _compile8s_)                                                            \
     X(4, "(do)", _do_)                                                                             \
-    X(6, "(else)", _else_)                                                                         \
     X(4, "(if)", _if_)                                                                             \
+    X(9, "(if-zero)", _if_zero_)                                                                   \
+    X(5, "(if<)", _if_less_)                                                                       \
+    X(6, "(if<=)", _if_less_equal_)                                                                \
+    X(6, "(if<>)", _if_ne_)                                                                        \
+    X(5, "(if=)", _if_equal_)                                                                      \
+    X(5, "(if>)", _if_more_)                                                                       \
+    X(6, "(if>=)", _if_more_equal_)                                                                \
     X(8, "(inline)", _inline_)                                                                     \
     X(6, "(jump)", _jump_)                                                                         \
     X(7, "(leave)", _leave_)                                                                       \

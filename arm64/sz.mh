@@ -34,6 +34,7 @@
 #define SZ14 112 /* SZ * 14 */
 #define SZ15 120 /* SZ * 15 */
 #define SZ16 128 /* SZ * 16 */
+#define SZ17 136 /* SZ * 17 */
 #define PSZ 3    /* (1 << PSZ) == SZ */
 
 #define SZe 2  /* sizeof(m4enum) in bytes */
