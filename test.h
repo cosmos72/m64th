@@ -45,13 +45,10 @@ void m4test_stack_print(const m4test_stack *src, FILE *out);
 enum { m4test_code_n = 15 };
 
 typedef struct m4test_code_s {
-    m4cell len;
+    m4cell n;
     m4cell data[m4test_code_n];
 } m4test_code;
 
-void m4test_code_copy(const m4cell *src, m4cell n, m4enum *dst);
-void m4test_code_copy_to_word(const m4cell *src, m4cell len, m4word *dst);
-m4cell m4test_code_equal(const m4test_code *src, const m4word *dst, m4cell dst_code_start_n);
 void m4test_code_print(const m4test_code *src, FILE *out);
 
 /* -------------- m4test_word  -------------- */
@@ -61,5 +58,9 @@ typedef struct m4test_word_s {
     /* reserve space for test code + generated code */
     m4enum code[2 * m4test_code_n];
 } m4test_word;
+
+m4code m4test_word_as_code(const m4word *w, m4cell code_start_n);
+
+void m4test_slice_to_word_code(const m4slice *src, m4word *dst);
 
 #endif /* M4TH_TEST_H */

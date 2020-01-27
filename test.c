@@ -24,7 +24,7 @@ int main(int argc, char *argv[]) {
     m4th *m = m4th_new();
 
     m4cell fail1 = m4th_testexecute(m, stdout);
-    m4cell fail2 = 0; /* m4th_testcompile(m, stdout); */
+    m4cell fail2 = m4th_testcompile(m, stdout);
 
     m4th_del(m);
 

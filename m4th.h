@@ -70,17 +70,24 @@ typedef enum m4flags_e {
 typedef struct m4countedstring_s m4countedstring;
 typedef struct m4cspan_s m4cspan;
 typedef struct m4dict_s m4dict;
+typedef struct m4code_s m4code;
 typedef struct m4span_s m4span;
 typedef struct m4span_s m4stack;
 typedef struct m4stackeffect_s m4stackeffect;
 typedef struct m4string_s m4string;
+typedef struct m4slice_s m4slice;
 typedef struct m4word_s m4word;
 typedef struct m4wordlist_s m4wordlist;
 typedef struct m4th_s m4th;
 
-struct m4countedstring_s { /**< counted string                            */
-    m4char len;            /**< string length, in bytes                   */
-    m4char chars[1];       /**< string characters. does NOT end with '\0' */
+struct m4countedstring_s { /**< counted string                   */
+    m4char n;              /**< # of characters                  */
+    m4char chars[1];       /**< characters. do NOT end with '\0' */
+};
+
+struct m4code_s { /**< array of m4enum, with size */
+    m4enum *data;
+    m4cell n;
 };
 
 /** array of m4char, with current size and capacity */
@@ -97,14 +104,20 @@ struct m4span_s {
     m4cell *end;
 };
 
-struct m4string_s {
-    const m4char *addr;
-    m4cell len;
+struct m4string_s { /**< array of characters, with size */
+    const m4char *data;
+    m4cell n;
 };
 
 struct m4stackeffect_s {
     uint8_t dstack; /**< dstack # in and # out. 0xFF if unknown or variable   */
     uint8_t rstack; /**< rstack # in and # out. 0xFF if unknown or variable   */
+};
+
+/** array of m4cell, with size */
+struct m4slice_s {
+    m4cell *data;
+    m4cell n;
 };
 
 /** compiled forth word. Execution token i.e. XT is the address of m4word.code[0] */
@@ -191,7 +204,12 @@ void *m4mem_map(size_t bytes);
 /** munmap() wrapper */
 void m4mem_unmap(void *ptr, size_t bytes);
 
+m4cell m4code_equal(m4code src, m4code dst);
+void m4code_print(m4code src, FILE *out);
+
 void m4enum_print(m4enum val, FILE *out);
+
+void m4slice_copy_to_code(m4slice src, m4code *dst);
 
 void m4string_print(m4string str, FILE *out);
 m4cell m4string_compare(m4string a, m4string b);

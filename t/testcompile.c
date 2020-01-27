@@ -50,6 +50,11 @@ enum { testcompile_n = sizeof(testcompile) / sizeof(testcompile[0]) };
 
 static m4cell m4testcompile_run(m4th *m, const m4testcompile *t, m4test_word *out) {
     const m4test_stack empty = {};
+
+    m4slice t_codegen_in = {(m4cell *)t->codegen.data, t->codegen.n};
+    m4enum buf[m4test_code_n];
+    m4code t_codegen = {buf, m4test_code_n};
+
     m4th_clear(m);
     memset(out, '\0', sizeof(m4test_word));
     m4test_stack_copy(&t->dbefore, &m->dstack);
@@ -58,8 +63,10 @@ static m4cell m4testcompile_run(m4th *m, const m4testcompile *t, m4test_word *ou
     m->flags |= m4th_flag_compile;
     m->in_cstr = t->input;
     m4th_repl(m);
+    m4slice_copy_to_code(t_codegen_in, &t_codegen);
+
     return m4test_stack_equal(&empty, &m->dstack) && m4test_stack_equal(&empty, &m->rstack) &&
-           m4test_code_equal(&t->codegen, m->w, 0);
+           m4code_equal(t_codegen, m4test_word_as_code(m->w, 0));
 }
 
 static void m4testcompile_print(const m4testcompile *t, FILE *out) {

@@ -68,15 +68,15 @@ enum {
 m4cell m4string_to_int(m4string str, m4cell *out_n) {
     char *end = NULL;
     m4cell err = tsuccess;
-    if (str.addr == NULL || str.len == 0) {
+    if (str.data == NULL || str.n == 0) {
         return teof;
     }
     if (out_n == NULL) {
         return tbad_addr;
     }
     errno = 0;
-    *out_n = strtol((const char *)str.addr, &end, 0 /*base*/);
-    if ((err = errno) == 0 && end != (const char *)(str.addr + str.len)) {
+    *out_n = strtol((const char *)str.data, &end, 0 /*base*/);
+    if ((err = errno) == 0 && end != (const char *)(str.data + str.n)) {
         err = tint_trailing_junk;
     }
     return err;
@@ -89,8 +89,8 @@ m4string m4th_read(m4th *m) {
     assert(m);
     if (m->in_cstr != NULL && (cstr = *m->in_cstr) != NULL) {
         m->in_cstr++;
-        s.addr = (const m4char *)cstr;
-        s.len = strlen(cstr);
+        s.data = (const m4char *)cstr;
+        s.n = strlen(cstr);
     }
     return s;
 }
@@ -99,7 +99,7 @@ m4string m4th_read(m4th *m) {
 static const m4word *m4wordlist_lookup_word(const m4wordlist *d, m4string key) {
     const m4word *w;
     assert(d);
-    assert(key.addr);
+    assert(key.data);
     for (w = m4wordlist_lastword(d); w != NULL; w = m4word_prev(w)) {
         if (m4string_compare(key, m4word_name(w)) == 0) {
             return w;
@@ -114,7 +114,7 @@ static const m4word *m4th_lookup_word(m4th *m, m4string key) {
     const m4word *w = NULL;
     m4cell i;
     assert(m);
-    assert(key.addr);
+    assert(key.data);
     for (i = 0; i < m4th_wordlist_n && w == NULL; i++) {
         if ((l = m->wordlist[i]) != NULL) {
             w = m4wordlist_lookup_word(l, key);
@@ -126,7 +126,7 @@ static const m4word *m4th_lookup_word(m4th *m, m4string key) {
 /** temporary C implementation of (parse) */
 m4eval_arg m4th_parse(m4th *m, m4string key) {
     m4eval_arg arg = {NULL, 0, 0};
-    if (key.addr == NULL) {
+    if (key.data == NULL) {
         arg.err = teof;
     } else if ((arg.w = m4th_lookup_word(m, key)) != NULL) {
     } else {
@@ -195,7 +195,7 @@ m4cell m4th_repl(m4th *m) {
 
     while ((ret = m4th_eval(m, arg = m4th_parse(m, str = m4th_read(m)))) == 0) {
     }
-    if (ret != 0 && arg.err == ret && arg.w == NULL && str.addr != NULL) {
+    if (ret != 0 && arg.err == ret && arg.w == NULL && str.data != NULL) {
         m4string_print(str, stderr);
         fputs(" ?", stderr);
     }

@@ -68,15 +68,25 @@ uint32_t crc1byte(uint32_t crc, unsigned char byte) {
  *   over xor 0xff and  cells crctable + @  swap 8 rshift xor
  * ;
  */
-static const m4cell test_code_crc1byte[] = {
+static const m4cell test_array_crc1byte[] = {
     m4over, m4xor,   m4_lit_enum_, E(0xff),      m4and, m4cells,  m4_lit_cell_, CELL(crctable),
     m4plus, m4fetch, m4swap,       m4_lit_enum_, E(8),  m4rshift, m4xor,        m4exit,
 };
 
-enum { test_func_crc1byte_n = sizeof(test_code_crc1byte) / sizeof(test_code_crc1byte[0]) };
+enum { test_code_crc1byte_n = sizeof(test_array_crc1byte) / sizeof(test_array_crc1byte[0]) };
+
+static const m4slice test_slice_crc1byte = {
+    (m4cell *)test_array_crc1byte,
+    test_code_crc1byte_n,
+};
 
 /* initialized by main() */
-static m4enum test_func_crc1byte[test_func_crc1byte_n];
+static m4enum test_earray_crc1byte[test_code_crc1byte_n];
+
+static m4code test_code_crc1byte = {
+    test_earray_crc1byte,
+    test_code_crc1byte_n,
+};
 
 /* -------------- m4test -------------- */
 
@@ -243,7 +253,7 @@ static const m4testexecute testexecute[] = {
     {"(call) XT(noop)", {m4_call_, XT(noop), m4bye}, {{}, {}}, {{}, {}}, {}},
     {"(call) XT(true)", {m4_call_, XT(true), m4bye}, {{}, {}}, {{1, {ttrue}}, {}}, {}},
     {"(call) XT(crc+)",
-     {m4_call_, CELL(test_func_crc1byte), m4bye},
+     {m4_call_, CELL(test_earray_crc1byte), m4bye},
      {{2, {0xffffffff, 't'}}, {}},
      {{1, {2056627543 /* crc1byte(0xffffffff, 't')*/}}, {}},
      {}},
@@ -255,17 +265,25 @@ static const m4testexecute testexecute[] = {
 enum { testexecute_n = sizeof(testexecute) / sizeof(testexecute[0]) };
 
 static m4cell m4testexecute_run(m4th *m, const m4testexecute *t, m4test_word *w) {
+    m4slice t_code = {(m4cell *)t->code, m4test_code_n};
+    m4slice t_codegen_in = {(m4cell *)t->codegen.data, t->codegen.n};
+    m4enum buf[m4test_code_n];
+    m4code t_codegen = {buf, m4test_code_n};
+
     memset(w, '\0', sizeof(m4test_word));
     m4th_clear(m);
     m4test_stack_copy(&t->before.d, &m->dstack);
     m4test_stack_copy(&t->before.r, &m->rstack);
-    m4test_code_copy_to_word(t->code, m4test_code_n, &w->impl);
+    m4slice_copy_to_word_code(t_code, &w->impl);
+    m4slice_copy_to_code(t_codegen_in, &t_codegen);
+
     m->w = &w->impl;
     m->ip = w->code;
     m4th_run_vm(m);
+
     return m4test_stack_equal(&t->after.d, &m->dstack) &&
            m4test_stack_equal(&t->after.r, &m->rstack) &&
-           /**/ m4test_code_equal(&t->codegen, m->w, m4test_code_n);
+           /**/ m4code_equal(t_codegen, m4test_word_as_code(m->w, m4test_code_n));
 }
 
 static void m4testexecute_failed(m4th *m, const m4testexecute *t, FILE *out) {
@@ -283,7 +301,7 @@ static void m4testexecute_failed(m4th *m, const m4testexecute *t, FILE *out) {
     fputs("      actual return stack ", out);
     m4stack_print(&m->rstack, out);
 
-    if (t->codegen.len == 0 && m->w->code_n == 0) {
+    if (t->codegen.n == 0 && m->w->code_n == 0) {
         return;
     }
     fputs("... expected    codegen   ", out);
@@ -301,7 +319,7 @@ m4cell m4th_testexecute(m4th *m, FILE *out) {
 
     /* printf("crc('t') = %u\n", (unsigned)crc1byte(0xffffffff, 't')); */
 
-    m4test_code_copy(test_code_crc1byte, test_func_crc1byte_n, test_func_crc1byte);
+    m4slice_copy_to_code(test_slice_crc1byte, &test_code_crc1byte);
 
     for (i = 0; i < n; i++) {
         if (!m4testexecute_run(m, &testexecute[i], &w)) {

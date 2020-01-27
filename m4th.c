@@ -23,10 +23,11 @@
 #include "common/macro.mh"
 #include "common/word_fwd.h"
 
-#include <errno.h>  /* errno */
+#include <assert.h> /* assert()  */
+#include <errno.h>  /* errno     */
 #include <stdio.h>  /* fprintf() */
 #include <stdlib.h> /* exit(), free(), malloc() */
-#include <string.h> /* memset() */
+#include <string.h> /* memset()  */
 
 #ifdef __unix__
 #include <sys/mman.h> /* mmap(), munmap() */
@@ -165,7 +166,7 @@ void m4enum_print(m4enum val, FILE *out) {
         const m4word *w = wtable[val];
         if (w != NULL) {
             const m4string name = m4word_name(w);
-            if (name.addr != NULL && name.len != 0) {
+            if (name.data != NULL && name.n != 0) {
                 m4string_print(name, out);
                 fputc(' ', out);
                 return;
@@ -189,26 +190,30 @@ static void m4cspan_free(m4cspan *arg) {
     }
 }
 
-/* ----------------------- m4stack ----------------------- */
+/* ----------------------- m4code ----------------------- */
 
-static m4stack m4stack_alloc(m4cell size) {
-    m4cell *p = (m4cell *)m4mem_map(size * sizeof(m4cell));
-    m4stack ret = {p, p + size - 1, p + size - 1};
-    return ret;
-}
-
-static void m4stack_free(m4stack *arg) {
-    if (arg) {
-        m4mem_unmap(arg->start, (arg->end - arg->start + 1) / sizeof(m4cell));
+m4cell m4code_equal(m4code src, m4code dst) {
+    m4cell i, n = src.n;
+    if (dst.n != n) {
+        return 0 /*false*/;
     }
+    for (i = 0; i < n; i++) {
+        if (src.data[i] != dst.data[i]) {
+            return 0 /*false*/;
+        }
+    }
+    return -1 /*true*/;
 }
 
-void m4stack_print(const m4stack *stack, FILE *out) {
-    const m4cell *lo = stack->curr;
-    const m4cell *hi = stack->end;
-    fprintf(out, "<%ld> ", (long)(hi - lo));
-    while (hi > lo) {
-        fprintf(out, "%ld ", (long)*--hi);
+void m4code_print(m4code src, FILE *out) {
+    const m4enum *data = src.data;
+    m4cell i, n = src.n;
+    if (data == NULL || n == 0 || out == NULL) {
+        return;
+    }
+    fprintf(out, "<%ld> ", (long)n);
+    for (i = 0; i < n; i++) {
+        m4enum_print(data[i], out);
     }
     fputc('\n', out);
 }
@@ -258,44 +263,105 @@ void m4flags_print(m4flags fl, FILE *out) {
     }
 }
 
+/* ----------------------- m4slice ----------------------- */
+
+static m4cell m4_2bytes_copy_to_enum(uint16_t src, m4enum *dst) {
+    memcpy(dst, &src, sizeof(src));
+    return sizeof(src) / SZe;
+}
+static m4cell m4_4bytes_copy_to_enum(uint32_t src, m4enum *dst) {
+    memcpy(dst, &src, sizeof(src));
+    return sizeof(src) / SZe;
+}
+static m4cell m4_8bytes_copy_to_enum(uint64_t src, m4enum *dst) {
+    memcpy(dst, &src, sizeof(src));
+    return sizeof(src) / SZe;
+}
+
+void m4slice_copy_to_code(const m4slice src, m4code *dst) {
+    if (src.data == NULL || src.n == 0) {
+        if (dst != NULL) {
+            dst->n = 0;
+        }
+        return;
+    }
+    if (dst == NULL || dst->data == NULL || dst->n < src.n) {
+        fputs(" m4slice_copy_to_code(): invalid args, dst is smaller than src", stderr);
+        return;
+    }
+    m4cell i = 0, n = src.n;
+    const m4cell *sdata = src.data;
+    m4enum *ddata = dst->data;
+    while (i < n) {
+        m4cell x = sdata[i];
+        const m4word *w;
+        ddata[i++] = (m4enum)x;
+        if (x < 0 || x >= M4____end || (w = wtable[x]) == NULL) {
+            continue;
+        }
+        switch (w->flags & M4FLAG_CONSUMES_IP_MASK) {
+        case M4FLAG_CONSUMES_IP_2:
+            i += m4_2bytes_copy_to_enum((uint16_t)sdata[i], ddata + i);
+            break;
+        case M4FLAG_CONSUMES_IP_4:
+            i += m4_4bytes_copy_to_enum((uint32_t)sdata[i], ddata + i);
+            break;
+        case M4FLAG_CONSUMES_IP_8:
+            i += m4_8bytes_copy_to_enum((uint64_t)sdata[i], ddata + i);
+            break;
+        }
+    }
+    dst->n = n;
+}
+
+/* ----------------------- m4stack ----------------------- */
+
+static m4stack m4stack_alloc(m4cell size) {
+    m4cell *p = (m4cell *)m4mem_map(size * sizeof(m4cell));
+    m4stack ret = {p, p + size - 1, p + size - 1};
+    return ret;
+}
+
+static void m4stack_free(m4stack *arg) {
+    if (arg) {
+        m4mem_unmap(arg->start, (arg->end - arg->start + 1) / sizeof(m4cell));
+    }
+}
+
+void m4stack_print(const m4stack *stack, FILE *out) {
+    const m4cell *lo = stack->curr;
+    const m4cell *hi = stack->end;
+    fprintf(out, "<%ld> ", (long)(hi - lo));
+    while (hi > lo) {
+        fprintf(out, "%ld ", (long)*--hi);
+    }
+    fputc('\n', out);
+}
+
 /* ----------------------- m4string ----------------------- */
 
 void m4string_print(m4string str, FILE *out) {
-    if (out == NULL || str.addr == NULL || str.len == 0) {
+    if (out == NULL || str.data == NULL || str.n == 0) {
         return;
     }
-    fwrite(str.addr, 1, str.len, out);
+    fwrite(str.data, 1, str.n, out);
 }
 
 m4cell m4string_compare(m4string a, m4string b) {
-    if (a.addr == NULL || b.addr == NULL || a.len != b.len || a.len < 0) {
+    if (a.data == NULL || b.data == NULL || a.n != b.n || a.n < 0) {
         return 1;
     }
-    if (a.addr == b.addr || a.len == 0) {
+    if (a.data == b.data || a.n == 0) {
         return 0;
     }
-    return memcmp(a.addr, b.addr, (size_t)a.len);
+    return memcmp(a.data, b.data, (size_t)a.n);
 }
 
 /* ----------------------- m4word ----------------------- */
 
 void m4word_code_print(const m4word *w, m4cell code_start_n, FILE *out) {
-    const m4enum *w_code;
-    m4cell i, n;
-    if (w == NULL || out == NULL) {
-        return;
-    }
-    if (w->code_n < code_start_n) {
-        fputs("<0> \n", out);
-        return;
-    }
-    w_code = w->code + code_start_n;
-    n = w->code_n - code_start_n;
-    fprintf(out, "<%ld> ", (long)n);
-    for (i = 0; i < n; i++) {
-        m4enum_print(w_code[i], out);
-    }
-    fputc('\n', out);
+    const m4code code = {(m4enum *)w->code + code_start_n, w->code_n - code_start_n};
+    m4code_print(code, out);
 }
 
 void m4word_stack_print(uint8_t stack_in_out, FILE *out) {
@@ -354,8 +420,8 @@ m4string m4word_name(const m4word *w) {
         return ret;
     }
     const m4countedstring *name = (const m4countedstring *)((const m4char *)w - w->name_off);
-    ret.addr = name->chars;
-    ret.len = name->len;
+    ret.data = name->chars;
+    ret.n = name->n;
     return ret;
 }
 
@@ -374,8 +440,8 @@ static m4string m4dict_name(const m4dict *d) {
         return ret;
     }
     const m4countedstring *name = (const m4countedstring *)((const m4char *)d - d->name_off);
-    ret.addr = name->chars;
-    ret.len = name->len;
+    ret.data = name->chars;
+    ret.n = name->n;
     return ret;
 }
 
