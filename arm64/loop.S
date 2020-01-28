@@ -28,12 +28,10 @@ FUNC_START(_question_do_)
         b.eq   .L_question_do_.skip;
         ADD2(  IMM(SZe), IP)           /* skip jump offset      */
         b      FUNC_SYM(_do_);
-.L_question_do_.skip:                /* skip the loop:        */
-        LD_sh(REG2_sh, AT(IP, SZe))  /* REG2 = IP jump offset */
+.L_question_do_.skip:                  /* skip the loop:        */
         LOAD(  DTOP,   AT(DSTK, SZ))   /* reload dstack top     */
-        add    IP, IP, REG2, lsl PSZe; /* IP = TARGET_IP        */
         ADD2(  IMM(SZ2), DSTK)         /* drop i' i from dstack */
-        NEXT0()                        /* jump to TARGET_IP     */
+        RELJUMP()                      /* jump to TARGET_IP     */
 FUNC_RAWEND(_question_do_)
 
 
@@ -75,7 +73,7 @@ FUNC_RAWEND(_if_zero_)
  */
 FUNC_START(_if_less_)
         DPOP(  REG1)
-        cmp    DTOP, REG1;
+        cmp    REG1, DTOP;
 	DPOP(  DTOP)
         b.lt   .L_if_less_.enter;
 	RELJUMP()
@@ -91,7 +89,7 @@ FUNC_RAWEND(_if_less_)
  */
 FUNC_START(_if_less_equal_)
         DPOP(  REG1)
-        cmp    DTOP, REG1;
+        cmp    REG1, DTOP;
 	DPOP(  DTOP)
         b.le   .L_if_less_equal_.enter;
 	RELJUMP()
@@ -107,7 +105,7 @@ FUNC_RAWEND(_if_less_equal_)
  */
 FUNC_START(_if_ne_)
         DPOP(  REG1)
-        cmp    DTOP, REG1;
+        cmp    REG1, DTOP;
 	DPOP(  DTOP)
         b.ne   .L_if_ne_.enter;
 	RELJUMP()
@@ -123,7 +121,7 @@ FUNC_RAWEND(_if_ne_)
  */
 FUNC_START(_if_equal_)
         DPOP(  REG1)
-        cmp    DTOP, REG1;
+        cmp    REG1, DTOP;
 	DPOP(  DTOP)
         b.eq   .L_if_equal_.enter;
 	RELJUMP()
@@ -139,7 +137,7 @@ FUNC_RAWEND(_if_equal_)
  */
 FUNC_START(_if_more_)
         DPOP(  REG1)
-        cmp    DTOP, REG1;
+        cmp    REG1, DTOP;
 	DPOP(  DTOP)
         b.gt   .L_if_more_.enter;
 	RELJUMP()
@@ -155,7 +153,7 @@ FUNC_RAWEND(_if_more_)
  */
 FUNC_START(_if_more_equal_)
         DPOP(  REG1)
-        cmp    DTOP, REG1;
+        cmp    REG1, DTOP;
 	DPOP(  DTOP)
         b.ge   .L_if_more_equal_.enter;
 	RELJUMP()
@@ -169,11 +167,9 @@ FUNC_RAWEND(_if_more_equal_)
  * IP offset = 0 means first instruction after (leave) itself
  */
 FUNC_START(_leave_)
-        LOAD(  REG2, AT(IP, SZ))
         LOAD(  RTOP, AT(RSTK, SZ))   /* load new rstack top   */
-        add    IP, IP, REG2, lsl PSZ;/* IP = TARGET_IP        */
         ADD2(  IMM(SZ2), RSTK)       /* drop i' i from rstack */
-        NEXT0()                      /* jump to TARGET_IP     */
+        RELJUMP()                    /* jump to TARGET_IP     */
 FUNC_RAWEND(_leave_)
 
 /**

@@ -122,7 +122,7 @@
 #define DSTK x21 /* pointer to second data stack element */
 #define RSTK x23 /* pointer to second return stack element */
 #define M4TH x24 /* pointer to C struct m4th */
-#define M4XT x26 /* pointer to m4word.code being compiled */
+#define M4XT x25 /* pointer to m4word.code being compiled */
 #define ETBL x26 /* pointer to table m4enum -> asm function address */
 #define IP x27   /* instruction pointer */
 
@@ -180,37 +180,33 @@
 #define RPUSH(val)    str       val, [RSTK, -SZ]!; /* push val to second return stack element */
 #define RPOP(val)     ldr       val, [RSTK], SZ;   /* pop second return stack element into val */
 
-#define NEXT0() /* jump to current instruction. useful after manually updating IP              */  \
+/* clang-format on */
+
+#define NEXT0() /* jump to current instruction. useful after manually updating IP _____________ */ \
     ret;
 
-#define NEXT() /* jump to following instruction */                                                      \
-    ret;
-#if 0
-    LD_ue(REG0_ue, AT(IP, SZe)!)                                                                   \
-    LOAD(REG0, AT(ETBL, REG0, SZ))                                                                 \
-    br REG0;
-#endif /* 0 */
-
-#define NEXT2() /* skip 2 bytes, jump to following instruction */                   \
-    ADD2(IMM(2), IP)                                                                  \
+#define NEXT() /* jump to following instruction _______________________________________________ */ \
     ret;
 
-#define NEXT4() /* skip 4 bytes, jump to following instruction */                   \
-    ADD2(IMM(4), IP)                                                                  \
+#define NEXT2() /* skip 2 bytes, jump to following instruction */                                  \
+    ADD2(IMM(2), IP);                                                                              \
     ret;
 
-#define NEXT8() /* skip 8 bytes (four instructions), jump to following instruction */                  \
-    ADD2(IMM(8), IP)                                                                  \
+#define NEXT4() /* skip 4 bytes, jump to following instruction */                                  \
+    ADD2(IMM(4), IP);                                                                              \
+    ret;
+
+#define NEXT8() /* skip 8 bytes (four instructions), jump to following instruction */              \
+    ADD2(IMM(8), IP);                                                                              \
     ret;
 
 #define NEXTE() CAT2(NEXT, SZe)() /* skip SZe bytes, jump to following instruction */
 #define NEXTSZ() CAT2(NEXT, SZ)() /* skip SZ bytes,  jump to following instruction */
 
-#define RELJUMP() \
-	LD_se( REG0_se, AT(IP)) /* REG0 = IP jump offset   */ \
-        add    IP, IP, REG0, lsl PSZe;  /* IP = TARGET_IP              */ \
-        NEXT0()                         /* jump to TARGET_IP           */
-
-/* clang-format on */
+#define RELJUMP()                                                                                  \
+    LD_se(REG0_se, AT(IP));     /* REG0 = IP jump offset       */                                  \
+    add IP, IP, REG0, lsl PSZe; /* IP = TARGET_IP - SZe        */                                  \
+    ADD2(IMM(SZe), IP);         /* IP = TARGET_IP              */                                  \
+    NEXT0()                     /* jump to TARGET_IP           */
 
 #endif /* M4TH_ARM64_ASM_MH */

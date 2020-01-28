@@ -28,7 +28,7 @@
  */
 FUNC_START(th_run_vm)
         SUB2(  IMM(SZ10), sp)          /* save C registers                */
-        STOR(  lr,   AT(sp, SZ8))      /* save LR register (return addr)  */
+        STOR(  lr,   AT(sp, SZ9))      /* save LR register (return addr)  */
         STOR(  x27,  AT(sp, SZ7))
         STOR(  x26,  AT(sp, SZ6))
         STOR(  x25,  AT(sp, SZ5))
@@ -92,7 +92,7 @@ FUNC_START(bye)
         LOAD(  x25,  AT(sp, SZ5))
         LOAD(  x26,  AT(sp, SZ6))
         LOAD(  x27,  AT(sp, SZ7))
-        LOAD(  lr,   AT(sp, SZ8))               /* load LR register (return addr)  */
+        LOAD(  lr,   AT(sp, SZ9))               /* load LR register (return addr)  */
         ADD2(  IMM(SZ10), sp)
         ZERO(  x0)                     /* return value = 0                */
         ret;                           /* return to C                     */

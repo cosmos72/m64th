@@ -35,8 +35,7 @@ typedef struct m4testcompile_s {
 /* -------------- m4testcompile -------------- */
 
 static const m4testcompile testcompile[] = {
-#if 1
-    {{"literal"}, {1, {11}}, {2, {m4_literal2s_, 11}}},
+#if 0
 #else
     {{"0"}, {}, {callsz, {CALLXT(zero)}}},
     {{"1", "2", "+"}, {}, {3 * callsz, {CALLXT(one), CALLXT(two), CALLXT(plus)}}},

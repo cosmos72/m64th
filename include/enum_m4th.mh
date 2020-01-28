@@ -19,6 +19,7 @@
 #define M4TH_COMMON_ENUM_M4TH_MH
 
 /* 'm4th-user' wordlist */
+/* #define M4bye 500 */
 #define M4zero_less_equal 501 /* 0<=      */
 #define M4zero_more_equal 502 /* 0>=      */
 #define M4less_equal 503      /* <=       */
