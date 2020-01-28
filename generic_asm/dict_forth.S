@@ -76,7 +76,7 @@ WORD_START(compile_comma, chars)
     WORD_RSTACK(0,0)
     WORD_NOJUMP()
     WORD_NATIVE_NONE()
-    WORD_ENUMS(_lit_enum_, _call_, _compile_enum_, /* compile (call) */
+    WORD_ENUMS(_compile_lit_enum_, _call_, /* compile (call) */
                _compile_xt_,
 #if 0
                _call_, XT(_inline_),

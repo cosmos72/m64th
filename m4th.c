@@ -173,7 +173,7 @@ void m4enum_print(m4enum val, FILE *out) {
             }
         }
     }
-    fprintf(out, "%d ", (int)val);
+    fprintf(out, "E(%d) ", (int)(int16_t)val);
 }
 
 /* ----------------------- m4cspan ----------------------- */
