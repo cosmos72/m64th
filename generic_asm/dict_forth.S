@@ -109,17 +109,17 @@ WORD_START(literal, j)
     WORD_NOJUMP()
     WORD_NATIVE_NONE()
     WORD_ENUMS(
-      dup, _if_zero_, E(5),        /* if dtop = 0                  */
-          drop, _lit_enum_, zero,  /*     change dtop to 'm4zero'  */
-          _compile_enum_, exit,    /*     append it to XT, exit    */
+      dup, _if_zero_, E(4),        /* if dtop = 0                  */
+          _compile_lit_enum_, zero,/*     append 'm4zero' to XT    */
+          drop, exit,              /*     exit                     */
       _then_, dup, one_minus,
-      _if_zero_, E(5),             /* else if dtop = 1             */
-          drop, _lit_enum_, one,   /*     change dtop to 'm4one'   */
-          _compile_enum_, exit,    /*     append it to XT, exit    */
+      _if_zero_, E(4),             /* else if dtop = 1             */
+          _compile_lit_enum_, one, /*     append 'm4one' to XT     */
+          drop, exit,              /*     exit                     */
       _then_, dup, two_minus,
       _if_zero_, E(5),             /* else if dtop = 2             */
-          drop, _lit_enum_, two,   /*     change dtop to 'm4two'   */
-          _compile_enum_, exit,    /*     append it to XT, exit    */
+          _compile_lit_enum_, two, /*     append 'm4two' to XT     */
+          drop, exit,              /*     exit                     */
       _then_,
 #if 0
       dup, four, equal,
@@ -139,15 +139,13 @@ WORD_START(literal, j)
       _if_more_equal_, E(11),
           dup, _literal2s_, SHORT(0x7FFF),
           _if_less_equal_, E(5),
-              _lit_enum_,  _literal2s_,/* push 'm4_literal2s_' to dstack */
-              _compile_enum_,          /* append it to XT                */
-              _compile2s_, exit,       /* append (int16)dtop to XT       */
+              _compile_lit_enum_,
+              _literal2s_,             /* append 'm4_literal2s_' to XT */
+              _compile2s_, exit,       /* append (int16)dtop to XT     */
           _then_,
       _then_,
-      _lit_enum_,  _lit_cell_,         /* push 'm4_lit_cell_' to dstack*/
-      _compile_enum_,                  /* append it to XT              */
+      _compile_lit_enum_, _lit_cell_,  /* append 'm4_lit_cell_' to XT  */
       _compile_cell_,                  /* append dtop to XT            */
-      /* _call_, XT(_optimize_),  nothing to optimize          */
       exit
     )
 WORD_END(literal)
