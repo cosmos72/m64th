@@ -36,7 +36,7 @@
     X(13, "(compile-2s,)", _compile2s_)                                                            \
     X(13, "(compile-4s,)", _compile4s_)                                                            \
     X(13, "(compile-8s,)", _compile8s_)                                                            \
-    X(19, "(compile-lit-enum,)", _compile_lit_enum_)                                               \
+    X(17, "(compile-lit-2s,)", _compile_lit2s_)                                               \
     X(4, "(do)", _do_)                                                                             \
     X(6, "(else)", _else_)                                                                         \
     X(4, "(if)", _if_)                                                                             \
