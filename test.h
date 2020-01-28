@@ -59,8 +59,4 @@ typedef struct m4test_word_s {
     m4enum code[2 * m4test_code_n];
 } m4test_word;
 
-m4code m4test_word_as_code(const m4word *w, m4cell code_start_n);
-
-void m4test_slice_to_word_code(const m4slice *src, m4word *dst);
-
 #endif /* M4TH_TEST_H */

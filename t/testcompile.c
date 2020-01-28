@@ -18,8 +18,8 @@
 #ifndef M4TH_T_TESTCOMPILE_C
 #define M4TH_T_TESTCOMPILE_C
 
-#include "../common/word_fwd.h"
 #include "../impl.h"
+#include "../include/word_fwd.h"
 #include "../m4th.h"
 #include "testcommon.h"
 
@@ -35,15 +35,19 @@ typedef struct m4testcompile_s {
 /* -------------- m4testcompile -------------- */
 
 static const m4testcompile testcompile[] = {
+#if 1
+    {{"literal"}, {1, {11}}, {2, {m4_literal2s_, 11}}},
+#else
     {{"0"}, {}, {callsz, {CALLXT(zero)}}},
     {{"1", "2", "+"}, {}, {3 * callsz, {CALLXT(one), CALLXT(two), CALLXT(plus)}}},
     {{"literal"}, {1, {0}}, {1, {m4zero}}},
     {{"literal"}, {1, {1}}, {1, {m4one}}},
-    {{"literal"}, {1, {2}}, {2, {m4_lit_cell_, (m4enum)2}}},
-    {{"literal"}, {1, {11}}, {2, {m4_lit_cell_, (m4enum)11}}},
+    {{"literal"}, {1, {2}}, {1, {m4two}}},
+    {{"literal"}, {1, {11}}, {2, {m4_literal2s_, 11}}},
     {{"drop"}, {}, {callsz, {CALLXT(drop)}}},
     {{"false"}, {}, {callsz, {CALLXT(false)}}},
     {{"true"}, {}, {callsz, {CALLXT(true)}}},
+#endif
 };
 
 enum { testcompile_n = sizeof(testcompile) / sizeof(testcompile[0]) };
@@ -66,7 +70,7 @@ static m4cell m4testcompile_run(m4th *m, const m4testcompile *t, m4test_word *ou
     m4slice_copy_to_code(t_codegen_in, &t_codegen);
 
     return m4test_stack_equal(&empty, &m->dstack) && m4test_stack_equal(&empty, &m->rstack) &&
-           m4code_equal(t_codegen, m4test_word_as_code(m->w, 0));
+           m4code_equal(t_codegen, m4word_code(m->w, 0));
 }
 
 static void m4testcompile_print(const m4testcompile *t, FILE *out) {

@@ -16,7 +16,7 @@
  */
 
 #ifndef M4TH_ASM_S
-#error "common/arith.S can only be included from asm.S - do not attempt to use it directly"
+#error "generic_asm/arith.S can only be included from asm.S - do not attempt to use it directly"
 #endif
 
 FUNC_START(store) /* ! */
@@ -250,28 +250,28 @@ FUNC_START(dup)
 FUNC_END(dup)
 
 
-FUNC_START(i)
+FUNC_START(i)  /* i and r@ */
         DPUSH( DTOP)
         MOVE(  RTOP, DTOP)
 FUNC_END(i)
 
 
-FUNC_START(i_times) /* i *  m4th */
+FUNC_START(i_times) /* i*  m4th */
         MUL2(  RTOP, DTOP)
 FUNC_END(i_times)
 
 
-FUNC_START(i_plus) /* i +  m4th */
+FUNC_START(i_plus)  /* i+  m4th */
         ADD2(  RTOP, DTOP)
 FUNC_END(i_plus)
 
 
-FUNC_START(i_minus) /* i -  m4th */
+FUNC_START(i_minus) /* i-  m4th */
         SUB2(  RTOP, DTOP)
 FUNC_END(i_minus)
 
 
-FUNC_START(i_prime) /* i' */
+FUNC_START(i_prime) /* i' m4th */
         DPUSH( DTOP)
         LOAD(  DTOP, AT(RSTK))
 FUNC_END(i_prime)
@@ -318,7 +318,19 @@ FUNC_START(over)
 FUNC_END(over)
 
 
-FUNC_START(r_from) /* r> */
+FUNC_START(r_store)        /* r! */
+        MOVE(  DTOP, RTOP)
+        DPOP(  DTOP)
+FUNC_END(r_store)
+
+
+FUNC_START(r_plus)         /* r+ */
+        ADD2(  DTOP, RTOP)
+        DPOP(  DTOP)
+FUNC_END(r_plus)
+
+
+FUNC_START(r_from)         /* r> */
         DPUSH( DTOP)
         MOVE(  RTOP, DTOP)
         RPOP(  RTOP)

@@ -24,7 +24,9 @@
     X(2, "<=", less_equal)                                                                         \
     X(2, ">=", more_equal)                                                                         \
     X(3, "0<=", zero_less_equal)                                                                   \
-    X(3, "0>=", zero_more_equal)
+    X(3, "0>=", zero_more_equal)                                                                   \
+    X(2, "r!", r_store)                                                                            \
+    X(2, "r+", r_plus)
 
 #define DICT_WORDS_M4TH_CORE(X) /* currently empty */
 
@@ -35,6 +37,7 @@
     X(13, "(compile-4s,)", _compile4s_)                                                            \
     X(13, "(compile-8s,)", _compile8s_)                                                            \
     X(4, "(do)", _do_)                                                                             \
+    X(6, "(else)", _else_)                                                                         \
     X(4, "(if)", _if_)                                                                             \
     X(9, "(if-zero)", _if_zero_)                                                                   \
     X(5, "(if<)", _if_less_)                                                                       \
@@ -52,6 +55,7 @@
     X(6, "(loop)", _loop_)                                                                         \
     X(9, "(missing)", _missing_)                                                                   \
     X(10, "(optimize)", _optimize_)                                                                \
+    X(6, "(then)", _then_)                                                                         \
     X(2, "-1", minus_one)                                                                          \
     X(1, "0", zero)                                                                                \
     X(1, "1", one)                                                                                 \

@@ -15,11 +15,11 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "../common/asm.mh"
-#include "../common/macro.mh"
 #include "../dispatch/sz.mh" /* SZ SZe */
-#include "dict.mh"
-#include "dict_m4th.mh"
+#include "../include/asm.mh"
+#include "../include/macro.mh"
+#include "../include/dict.mh"
+#include "../include/dict_m4th.mh"
 
 /* ---------------------------------------------------------------------------------------------- */
 DICT_START(m4th_impl)
@@ -41,6 +41,7 @@ WORD_START(_call_, _question_do_)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZ | M4FLAG_INLINE_ALWAYS)
     WORD_DSTACK(-1,-1) /* stack effects of called XT */
     WORD_RSTACK(0,0)
+    WORD_NOJUMP()
     WORD_NATIVE_NONE()
    /* make inliner happy: it skips the final 'exit' of a word's code when inlining */
     WORD_ENUMS(_call_, exit)
@@ -49,7 +50,16 @@ WORD(_compile2s_,   _call_,        DSTACK(1,0), RSTACK(0,0), WORD_IMPURE | M4FLA
 WORD(_compile4s_,   _compile2s_,   DSTACK(1,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
 WORD(_compile8s_,   _compile4s_,   DSTACK(1,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
 WORD(_do_,          _compile8s_,   DSTACK(2,0), RSTACK(0,2), WORD_PURE   | M4FLAG_COMPILE_ONLY)
-WORD_START(_if_, _do_)
+WORD_START(_else_, _do_)
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZe | M4FLAG_INLINE_ALWAYS | M4FLAG_JUMP)
+    WORD_DSTACK(0,0) /* stack effect when not jumping */
+    WORD_RSTACK(0,0)
+    WORD_DSTACK(0,0) /* stack effect when jumping */
+    WORD_RSTACK(0,0)
+    WORD_NATIVE_NONE()
+    WORD_ENUMS(_else_, exit)
+WORD_END(_else_)
+WORD_START(_if_, _else_)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZe | M4FLAG_INLINE_ALWAYS | M4FLAG_MAY_JUMP)
     WORD_DSTACK(1,0) /* stack effect when not jumping */
     WORD_RSTACK(0,0)
@@ -189,7 +199,15 @@ WORD_START(_optimize_, _missing_)
     WORD_NATIVE_NONE()
     WORD_ENUMS(exit) /* currently does nothing */
 WORD_END(_optimize_)
-WORD(minus_one,        _optimize_, DSTACK(0,1), RSTACK(0,0), WORD_PURE)
+WORD_START(_then_, _optimize_)
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS)
+    WORD_DSTACK(0,0)
+    WORD_RSTACK(0,0)
+    WORD_NOJUMP()
+    WORD_NATIVE_LEN_0()
+    WORD_ENUMS(_then_, exit)
+WORD_END(_then_)
+WORD(minus_one,        _then_,     DSTACK(0,1), RSTACK(0,0), WORD_PURE)
 WORD(zero,             minus_one,  DSTACK(0,1), RSTACK(0,0), WORD_PURE)
 WORD(one,              zero,       DSTACK(0,1), RSTACK(0,0), WORD_PURE)
 WORD(two,              one,        DSTACK(0,1), RSTACK(0,0), WORD_PURE)

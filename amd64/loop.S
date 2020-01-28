@@ -34,25 +34,19 @@ FUNC_START(_question_do_)
 /* FUNC_RAWEND(_question_do_) */
 
 
+#define M4_DO_
 FUNC_DEF_SYM(_do_)
 /* FUNC_START(_do_) */
-        DPOP(  REG1)                   /* REG1 = i'             */
-        STOR(  RTOP, AT(RSTK, -SZ))    /* save RTOP             */
+        SUB2(  IMM(SZ2),   RSTK)       /* update rstack pointer */
+        LOAD(  REG1, AT(DSTK))         /* REG1 = i'             */
+        STOR(  RTOP, AT(RSTK, SZ))     /* save RTOP             */
         MOVE(  DTOP, RTOP)             /* RTOP = i              */
-        DPOP(  DTOP)                   /* reload dstack top     */
-        STOR(  REG1, AT(RSTK, -SZ2))   /* save i' to rstack     */
-        SUB2(  IMM(SZ2),  RSTK)        /* update rstack pointer */
+        STOR(  REG1, AT(RSTK))         /* save i' to rstack     */
+        LOAD(  DTOP, AT(DSTK, SZ))     /* reload dstack top     */
+        ADD2(  IMM(SZ2),   DSTK)       /* update dstack pointer */
 FUNC_END(_do_)
 FUNC_SIZE(_question_do_)
 
-
-/**
- * unconditional jump. must be followed by IP offset to jump.
- * IP offset = 0 means first instruction after (jump) itself
- */
-FUNC_START(_jump_)
-        RELJUMP()
-FUNC_RAWEND(_jump_)
 
 /**
  * pop dstack top.

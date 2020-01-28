@@ -16,7 +16,7 @@
  */
 
 #ifndef M4TH_ASM_S
-#error "common/compile.S can only be included from asm.S - do not attempt to use it directly"
+#error "generic_asm/compile.S can only be included from asm.S - do not attempt to use it directly"
 #endif
 
 #if 0

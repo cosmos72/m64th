@@ -66,6 +66,7 @@
     X(2, "or", or)                                                                                 \
     X(4, "over", over)                                                                             \
     X(2, "r>", r_from)                                                                             \
+    X(2, "r@", r_fetch)                                                                            \
     X(3, "rot", rot)                                                                               \
     X(6, "rshift", rshift)                                                                         \
     X(4, "swap", swap)                                                                             \

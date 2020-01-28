@@ -1,0 +1,162 @@
+/**
+ * This file is part of m4th.
+ *
+ * m4th is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3
+ * of the License, or (at your option) any later version.
+ *
+ * m4th is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+#ifndef M4TH_COMMON_MACRO_MH
+#define M4TH_COMMON_MACRO_MH
+
+/** lots of magic macros */
+
+#define CAT2_(a, b) a##b
+#define CAT2(a, b) CAT2_(a, b)
+
+#define CAT3_(a, b, c) a##b##c
+#define CAT3(a, b, c) CAT3_(a, b, c)
+
+/* works only for 1..25 arguments. broken for zero arguments */
+#define COUNT_ARGS_(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17,    \
+                    _18, _19, _20, _21, _22, _23, _24, _25, _26, _27, _28, _29, _30, _31, _32,     \
+                    _33, _34, _35, _36, _37, _38, _39, _40, _41, _42, _43, _44, _45, _46, _47,     \
+                    _48, _49, _50, _51, _52, _53, _54, _55, _56, _57, _58, _59, _60, n, ...)       \
+    n
+#define COUNT_ARGS(...)                                                                            \
+    COUNT_ARGS_(__VA_ARGS__, 60, 59, 58, 57, 56, 55, 54, 53, 52, 51, 50, 49, 48, 47, 46, 45, 44,   \
+                43, 42, 41, 40, 39, 38, 37, 36, 35, 34, 33, 32, 31, 30, 29, 28, 27, 26, 25, 24,    \
+                23, 22, 21, 20, 19, 18, 17, 16, 15, 16, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1)
+
+#define WRAP_ARGS_1(x, _1) x(_1)
+#define WRAP_ARGS_2(x, _1, _2) x(_1) x(_2)
+#define WRAP_ARGS_3(x, _1, _2, _3) x(_1) x(_2) x(_3)
+#define WRAP_ARGS_4(x, _1, _2, _3, _4) x(_1) x(_2) x(_3) x(_4)
+#define WRAP_ARGS_5(x, _1, _2, _3, _4, _5) x(_1) x(_2) x(_3) x(_4) x(_5)
+#define WRAP_ARGS_6(x, _1, _2, _3, _4, _5, _6) x(_1) x(_2) x(_3) x(_4) x(_5) x(_6)
+#define WRAP_ARGS_7(x, _1, _2, _3, _4, _5, ...)                                                    \
+    x(_1) x(_2) x(_3) x(_4) x(_5) WRAP_ARGS_2(x, __VA_ARGS__)
+#define WRAP_ARGS_8(x, _1, _2, _3, _4, _5, ...)                                                    \
+    x(_1) x(_2) x(_3) x(_4) x(_5) WRAP_ARGS_3(x, __VA_ARGS__)
+#define WRAP_ARGS_9(x, _1, _2, _3, _4, _5, ...)                                                    \
+    x(_1) x(_2) x(_3) x(_4) x(_5) WRAP_ARGS_4(x, __VA_ARGS__)
+#define WRAP_ARGS_10(x, _1, _2, _3, ...) /*                                  */                    \
+    x(_1) x(_2) x(_3) x(_4) x(_5) WRAP_ARGS_5(x, __VA_ARGS__)
+#define WRAP_ARGS_11(x, _1, _2, _3, _4, _5, ...)                                                   \
+    x(_1) x(_2) x(_3) x(_4) x(_5) WRAP_ARGS_6(x, __VA_ARGS__)
+#define WRAP_ARGS_12(x, _1, _2, _3, _4, _5, ...)                                                   \
+    x(_1) x(_2) x(_3) x(_4) x(_5) WRAP_ARGS_7(x, __VA_ARGS__)
+#define WRAP_ARGS_13(x, _1, _2, _3, _4, _5, ...)                                                   \
+    x(_1) x(_2) x(_3) x(_4) x(_5) WRAP_ARGS_8(x, __VA_ARGS__)
+#define WRAP_ARGS_14(x, _1, _2, _3, _4, _5, ...)                                                   \
+    x(_1) x(_2) x(_3) x(_4) x(_5) WRAP_ARGS_9(x, __VA_ARGS__)
+#define WRAP_ARGS_15(x, _1, _2, _3, _4, _5, ...)                                                   \
+    x(_1) x(_2) x(_3) x(_4) x(_5) WRAP_ARGS_10(x, __VA_ARGS__)
+#define WRAP_ARGS_16(x, _1, _2, _3, _4, _5, ...)                                                   \
+    x(_1) x(_2) x(_3) x(_4) x(_5) WRAP_ARGS_11(x, __VA_ARGS__)
+#define WRAP_ARGS_17(x, _1, _2, _3, _4, _5, ...)                                                   \
+    x(_1) x(_2) x(_3) x(_4) x(_5) WRAP_ARGS_12(x, __VA_ARGS__)
+#define WRAP_ARGS_18(x, _1, _2, _3, _4, _5, ...)                                                   \
+    x(_1) x(_2) x(_3) x(_4) x(_5) WRAP_ARGS_13(x, __VA_ARGS__)
+#define WRAP_ARGS_19(x, _1, _2, _3, _4, _5, ...)                                                   \
+    x(_1) x(_2) x(_3) x(_4) x(_5) WRAP_ARGS_14(x, __VA_ARGS__)
+#define WRAP_ARGS_20(x, _1, _2, _3, _4, _5, ...)                                                   \
+    x(_1) x(_2) x(_3) x(_4) x(_5) WRAP_ARGS_15(x, __VA_ARGS__)
+#define WRAP_ARGS_21(x, _1, _2, _3, _4, _5, ...)                                                   \
+    x(_1) x(_2) x(_3) x(_4) x(_5) WRAP_ARGS_16(x, __VA_ARGS__)
+#define WRAP_ARGS_22(x, _1, _2, _3, _4, _5, ...)                                                   \
+    x(_1) x(_2) x(_3) x(_4) x(_5) WRAP_ARGS_17(x, __VA_ARGS__)
+#define WRAP_ARGS_23(x, _1, _2, _3, _4, _5, ...)                                                   \
+    x(_1) x(_2) x(_3) x(_4) x(_5) WRAP_ARGS_18(x, __VA_ARGS__)
+#define WRAP_ARGS_24(x, _1, _2, _3, _4, _5, ...)                                                   \
+    x(_1) x(_2) x(_3) x(_4) x(_5) WRAP_ARGS_19(x, __VA_ARGS__)
+#define WRAP_ARGS_25(x, _1, _2, _3, _4, _5, ...)                                                   \
+    x(_1) x(_2) x(_3) x(_4) x(_5) WRAP_ARGS_20(x, __VA_ARGS__)
+#define WRAP_ARGS_26(x, _1, _2, _3, _4, _5, ...)                                                   \
+    x(_1) x(_2) x(_3) x(_4) x(_5) WRAP_ARGS_21(x, __VA_ARGS__)
+#define WRAP_ARGS_27(x, _1, _2, _3, _4, _5, ...)                                                   \
+    x(_1) x(_2) x(_3) x(_4) x(_5) WRAP_ARGS_22(x, __VA_ARGS__)
+#define WRAP_ARGS_28(x, _1, _2, _3, _4, _5, ...)                                                   \
+    x(_1) x(_2) x(_3) x(_4) x(_5) WRAP_ARGS_23(x, __VA_ARGS__)
+#define WRAP_ARGS_29(x, _1, _2, _3, _4, _5, ...)                                                   \
+    x(_1) x(_2) x(_3) x(_4) x(_5) WRAP_ARGS_24(x, __VA_ARGS__)
+#define WRAP_ARGS_30(x, _1, _2, _3, _4, _5, ...)                                                   \
+    x(_1) x(_2) x(_3) x(_4) x(_5) WRAP_ARGS_25(x, __VA_ARGS__)
+#define WRAP_ARGS_31(x, _1, _2, _3, _4, _5, ...)                                                   \
+    x(_1) x(_2) x(_3) x(_4) x(_5) WRAP_ARGS_26(x, __VA_ARGS__)
+#define WRAP_ARGS_32(x, _1, _2, _3, _4, _5, ...)                                                   \
+    x(_1) x(_2) x(_3) x(_4) x(_5) WRAP_ARGS_27(x, __VA_ARGS__)
+#define WRAP_ARGS_33(x, _1, _2, _3, _4, _5, ...)                                                   \
+    x(_1) x(_2) x(_3) x(_4) x(_5) WRAP_ARGS_28(x, __VA_ARGS__)
+#define WRAP_ARGS_34(x, _1, _2, _3, _4, _5, ...)                                                   \
+    x(_1) x(_2) x(_3) x(_4) x(_5) WRAP_ARGS_29(x, __VA_ARGS__)
+#define WRAP_ARGS_35(x, _1, _2, _3, _4, _5, ...)                                                   \
+    x(_1) x(_2) x(_3) x(_4) x(_5) WRAP_ARGS_30(x, __VA_ARGS__)
+#define WRAP_ARGS_36(x, _1, _2, _3, _4, _5, ...)                                                   \
+    x(_1) x(_2) x(_3) x(_4) x(_5) WRAP_ARGS_31(x, __VA_ARGS__)
+#define WRAP_ARGS_37(x, _1, _2, _3, _4, _5, ...)                                                   \
+    x(_1) x(_2) x(_3) x(_4) x(_5) WRAP_ARGS_32(x, __VA_ARGS__)
+#define WRAP_ARGS_38(x, _1, _2, _3, _4, _5, ...)                                                   \
+    x(_1) x(_2) x(_3) x(_4) x(_5) WRAP_ARGS_33(x, __VA_ARGS__)
+#define WRAP_ARGS_39(x, _1, _2, _3, _4, _5, ...)                                                   \
+    x(_1) x(_2) x(_3) x(_4) x(_5) WRAP_ARGS_34(x, __VA_ARGS__)
+#define WRAP_ARGS_40(x, _1, _2, _3, _4, _5, ...)                                                   \
+    x(_1) x(_2) x(_3) x(_4) x(_5) WRAP_ARGS_35(x, __VA_ARGS__)
+#define WRAP_ARGS_41(x, _1, _2, _3, _4, _5, ...)                                                   \
+    x(_1) x(_2) x(_3) x(_4) x(_5) WRAP_ARGS_36(x, __VA_ARGS__)
+#define WRAP_ARGS_42(x, _1, _2, _3, _4, _5, ...)                                                   \
+    x(_1) x(_2) x(_3) x(_4) x(_5) WRAP_ARGS_37(x, __VA_ARGS__)
+#define WRAP_ARGS_43(x, _1, _2, _3, _4, _5, ...)                                                   \
+    x(_1) x(_2) x(_3) x(_4) x(_5) WRAP_ARGS_38(x, __VA_ARGS__)
+#define WRAP_ARGS_44(x, _1, _2, _3, _4, _5, ...)                                                   \
+    x(_1) x(_2) x(_3) x(_4) x(_5) WRAP_ARGS_39(x, __VA_ARGS__)
+#define WRAP_ARGS_45(x, _1, _2, _3, _4, _5, ...)                                                   \
+    x(_1) x(_2) x(_3) x(_4) x(_5) WRAP_ARGS_40(x, __VA_ARGS__)
+#define WRAP_ARGS_46(x, _1, _2, _3, _4, _5, ...)                                                   \
+    x(_1) x(_2) x(_3) x(_4) x(_5) WRAP_ARGS_41(x, __VA_ARGS__)
+#define WRAP_ARGS_47(x, _1, _2, _3, _4, _5, ...)                                                   \
+    x(_1) x(_2) x(_3) x(_4) x(_5) WRAP_ARGS_42(x, __VA_ARGS__)
+#define WRAP_ARGS_48(x, _1, _2, _3, _4, _5, ...)                                                   \
+    x(_1) x(_2) x(_3) x(_4) x(_5) WRAP_ARGS_43(x, __VA_ARGS__)
+#define WRAP_ARGS_49(x, _1, _2, _3, _4, _5, ...)                                                   \
+    x(_1) x(_2) x(_3) x(_4) x(_5) WRAP_ARGS_44(x, __VA_ARGS__)
+#define WRAP_ARGS_50(x, _1, _2, _3, _4, _5, ...)                                                   \
+    x(_1) x(_2) x(_3) x(_4) x(_5) WRAP_ARGS_45(x, __VA_ARGS__)
+#define WRAP_ARGS_51(x, _1, _2, _3, _4, _5, ...)                                                   \
+    x(_1) x(_2) x(_3) x(_4) x(_5) WRAP_ARGS_46(x, __VA_ARGS__)
+#define WRAP_ARGS_52(x, _1, _2, _3, _4, _5, ...)                                                   \
+    x(_1) x(_2) x(_3) x(_4) x(_5) WRAP_ARGS_47(x, __VA_ARGS__)
+#define WRAP_ARGS_53(x, _1, _2, _3, _4, _5, ...)                                                   \
+    x(_1) x(_2) x(_3) x(_4) x(_5) WRAP_ARGS_48(x, __VA_ARGS__)
+#define WRAP_ARGS_54(x, _1, _2, _3, _4, _5, ...)                                                   \
+    x(_1) x(_2) x(_3) x(_4) x(_5) WRAP_ARGS_49(x, __VA_ARGS__)
+#define WRAP_ARGS_55(x, _1, _2, _3, _4, _5, ...)                                                   \
+    x(_1) x(_2) x(_3) x(_4) x(_5) WRAP_ARGS_50(x, __VA_ARGS__)
+#define WRAP_ARGS_56(x, _1, _2, _3, _4, _5, ...)                                                   \
+    x(_1) x(_2) x(_3) x(_4) x(_5) WRAP_ARGS_51(x, __VA_ARGS__)
+#define WRAP_ARGS_57(x, _1, _2, _3, _4, _5, ...)                                                   \
+    x(_1) x(_2) x(_3) x(_4) x(_5) WRAP_ARGS_52(x, __VA_ARGS__)
+#define WRAP_ARGS_58(x, _1, _2, _3, _4, _5, ...)                                                   \
+    x(_1) x(_2) x(_3) x(_4) x(_5) WRAP_ARGS_53(x, __VA_ARGS__)
+#define WRAP_ARGS_59(x, _1, _2, _3, _4, _5, ...)                                                   \
+    x(_1) x(_2) x(_3) x(_4) x(_5) WRAP_ARGS_54(x, __VA_ARGS__)
+#define WRAP_ARGS_60(x, _1, _2, _3, _4, _5, ...)                                                   \
+    x(_1) x(_2) x(_3) x(_4) x(_5) WRAP_ARGS_55(x, __VA_ARGS__)
+
+#define WRAP_ARGS(x, ...) CAT2(WRAP_ARGS_, COUNT_ARGS(__VA_ARGS__))(x, __VA_ARGS__)
+
+/* internal m4th macros used (mostly) by assembly */
+
+#define M4FLAG_CONSUMES_IP_SZ CAT2(M4FLAG_CONSUMES_IP_, SZ)
+#define M4FLAG_CONSUMES_IP_SZe CAT2(M4FLAG_CONSUMES_IP_, SZe)
+
+#endif /* M4TH_COMMON_MACRO_MH */

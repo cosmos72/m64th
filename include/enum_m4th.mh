@@ -23,6 +23,10 @@
 #define M4zero_more_equal 502 /* 0>=      */
 #define M4less_equal 503      /* <=       */
 #define M4more_equal 504      /* >=       */
+#define M4r_plus 505          /* r+       equivalent to: r> + >r    */
+#define M4r_store 506         /* r!       equivalent to: r> drop >r */
+
+/* WARNING: numeric values under this line are subject to change */
 
 /* 'm4th-impl' wordlist */
 #define M4minus_one 510   /* -1       */
@@ -39,8 +43,6 @@
 #define M4eight_times 521 /* 8*       */
 #define M4eight_plus 522  /* 8+       */
 
-/* WARNING: numeric values under this line are subject to change */
-
 /* (?do) must be followed by IP offset of 1st instruction after (loop) */
 #define M4_question_do_ 530
 #define M4_missing_ 0         /* (missing) called instead of invalid/unimplemented function */
@@ -49,7 +51,8 @@
 #define M4_compile4s_ 533     /* (compile4s,) append int32 to compiled code  */
 #define M4_compile8s_ 534     /* (compile8s,) append int64 to compiled code  */
 #define M4_do_ 535            /* (do)         */
-#define M4_jump_ 536          /* (jump)    must be followed by IP offset */
+#define M4_else_ 536          /* (else)    alias of (jump), used as marker for native compilation */
+#define M4_jump_ 537          /* (jump)    must be followed by IP offset */
 #undef M4____gap              /*          */
 #define M4_if_ 540            /* (if)      must be followed by IP offset */
 #define M4_if_zero_ 541       /* (if-zero) must be followed by IP offset */
@@ -67,6 +70,7 @@
 #define M4_leave_ 554    /* (leave) must be followed by IP offset of 1st instruction after (loop) */
 #define M4_loop_ 555     /* (loop)  must be followed by IP offset of 1st instruction after (do)   */
 #define M4_optimize_ 556 /* (optimize) try to optimize word being compiled */
+#define M4_then_ 557     /* (then) is currently a noop, used as marker for native compilation */
 #undef M4____gap         /*          */
 #define M4i_prime 560    /* i'       */
 #define M4i_times 561    /* i*       */

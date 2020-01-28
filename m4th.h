@@ -18,7 +18,7 @@
 #ifndef M4TH_M4TH_H
 #define M4TH_M4TH_H
 
-#include "common/enum.h" /* FIXME not a public header */
+#include "include/enum.h" /* FIXME not a public header */
 #include "m4th.mh"
 
 #include <stddef.h>    /* size_t    */
@@ -48,6 +48,8 @@ typedef enum m4th_flags_e {
     m4th_flag_compile = M4TH_FLAG_COMPILE,
 } m4th_flags;
 
+typedef uint8_t m4stackeffect; /**< stack # in and # out. 0xFF if unknown or variable   */
+
 /** m4word flags */
 typedef enum m4flags_e {
     m4flag_mem_fetch = M4FLAG_MEM_FETCH,
@@ -73,7 +75,7 @@ typedef struct m4dict_s m4dict;
 typedef struct m4code_s m4code;
 typedef struct m4span_s m4span;
 typedef struct m4span_s m4stack;
-typedef struct m4stackeffect_s m4stackeffect;
+typedef struct m4stackeffects_s m4stackeffects;
 typedef struct m4string_s m4string;
 typedef struct m4slice_s m4slice;
 typedef struct m4word_s m4word;
@@ -109,9 +111,9 @@ struct m4string_s { /**< array of characters, with size */
     m4cell n;
 };
 
-struct m4stackeffect_s {
-    uint8_t dstack; /**< dstack # in and # out. 0xFF if unknown or variable   */
-    uint8_t rstack; /**< rstack # in and # out. 0xFF if unknown or variable   */
+struct m4stackeffects_s {
+    m4stackeffect dstack; /**< dstack # in and # out. 0xFF if unknown or variable   */
+    m4stackeffect rstack; /**< rstack # in and # out. 0xFF if unknown or variable   */
 };
 
 /** array of m4cell, with size */
@@ -125,8 +127,8 @@ struct m4word_s {
     int32_t prev_off;    /**< offset of previous word,   in bytes. 0 = not present */
     int16_t name_off;    /**< offset of m4countedstring, in bytes. 0 = not present */
     uint16_t flags;      /**< m4flags                                              */
-    m4stackeffect eff;   /**< stack effect                                         */
-    m4stackeffect jump;  /**< stack effect if jumping                              */
+    m4stackeffects eff;  /**< stack effects if not jumping                         */
+    m4stackeffects jump; /**< stack effects if jumping                             */
     uint16_t native_len; /**< native code size, in bytes. 0xFFFF if not available  */
     uint16_t code_n;     /**< forth code size, in m4enum:s                         */
     uint64_t data_len;   /**< data size, in bytes                                  */
@@ -210,16 +212,21 @@ void m4code_print(m4code src, FILE *out);
 void m4enum_print(m4enum val, FILE *out);
 
 void m4slice_copy_to_code(m4slice src, m4code *dst);
+void m4slice_to_word_code(const m4slice *src, m4word *dst);
 
-void m4string_print(m4string str, FILE *out);
 m4cell m4string_compare(m4string a, m4string b);
+void m4string_print(m4string str, FILE *out);
+void m4string_print_hex(m4string str, FILE *out);
 
 void m4stack_print(const m4stack *stack, FILE *out);
 
+m4code m4word_code(const m4word *w, m4cell code_start_n);
+m4string m4word_data(const m4word *w, m4cell code_start_n);
 m4string m4word_name(const m4word *w);
 const m4word *m4word_prev(const m4word *w);
 void m4word_print(const m4word *w, FILE *out);
 void m4word_code_print(const m4word *w, m4cell code_start_n, FILE *out);
+void m4word_data_print(const m4word *w, m4cell data_start_n, FILE *out);
 
 m4string m4wordlist_name(const m4wordlist *d);
 const m4word *m4wordlist_lastword(const m4wordlist *d);

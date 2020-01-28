@@ -16,9 +16,9 @@
  */
 
 #include "impl.h"
-#include "common/asm.mh"
-#include "common/enum.h"
 #include "dispatch/sz.mh" /* SZ SZe preprocessor macros */
+#include "include/asm.mh"
+#include "include/enum.h"
 
 #include <assert.h> /* assert()                   */
 #include <errno.h>  /* errno                      */

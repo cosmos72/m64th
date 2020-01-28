@@ -16,12 +16,12 @@
  */
 
 #include "m4th.h"
-#include "common/dict_all.mh"
-#include "common/dict_fwd.h"
-#include "common/func.mh"
-#include "common/func_fwd.h"
-#include "common/macro.mh"
-#include "common/word_fwd.h"
+#include "include/dict_all.mh"
+#include "include/dict_fwd.h"
+#include "include/func.mh"
+#include "include/func_fwd.h"
+#include "include/macro.mh"
+#include "include/word_fwd.h"
 
 #include <assert.h> /* assert()  */
 #include <errno.h>  /* errno     */
@@ -215,7 +215,6 @@ void m4code_print(m4code src, FILE *out) {
     for (i = 0; i < n; i++) {
         m4enum_print(data[i], out);
     }
-    fputc('\n', out);
 }
 
 /* ----------------------- m4flags ----------------------- */
@@ -338,13 +337,55 @@ void m4stack_print(const m4stack *stack, FILE *out) {
     fputc('\n', out);
 }
 
+/* ----------------------- m4stackeffect ----------------------- */
+
+void m4stackeffect_print(m4stackeffect eff, FILE *out) {
+    uint8_t n = eff & 0xF;
+    if (out == NULL) {
+        return;
+    } else if (n == 0xF) {
+        fputc('?', out);
+    } else {
+        fprintf(out, "%u", (unsigned)n);
+    }
+    n = eff >> 4;
+    if (n == 0xF) {
+        fputs(" -> ?", out);
+    } else {
+        fprintf(out, " -> %u", (unsigned)n);
+    }
+}
+
+/* ----------------------- m4stackeffects ----------------------- */
+
+void m4stackeffects_print(m4stackeffects effs, const char *suffix, FILE *out) {
+    fprintf(out, " \n\tdata_stack%s: \t", suffix);
+    m4stackeffect_print(effs.dstack, out);
+    fprintf(out, " \n\treturn_stack%s:\t", suffix);
+    m4stackeffect_print(effs.rstack, out);
+}
+
 /* ----------------------- m4string ----------------------- */
 
 void m4string_print(m4string str, FILE *out) {
-    if (out == NULL || str.data == NULL || str.n == 0) {
+    if (out == NULL || str.data == NULL || str.n <= 0) {
         return;
     }
     fwrite(str.data, 1, str.n, out);
+}
+
+void m4string_print_hex(m4string str, FILE *out) {
+    static const char hexdigits[] = "0123456789abcdef";
+    const m4char *data = str.data;
+    m4cell i, n = str.n;
+    if (out == NULL || data == NULL) {
+        return;
+    }
+    for (i = 0; i < n; i++) {
+        fputc(hexdigits[(data[i] >> 4) & 0xF], out);
+        fputc(hexdigits[(data[i] >> 0) & 0xF], out);
+        fputc(' ', out);
+    }
 }
 
 m4cell m4string_compare(m4string a, m4string b) {
@@ -359,26 +400,32 @@ m4cell m4string_compare(m4string a, m4string b) {
 
 /* ----------------------- m4word ----------------------- */
 
-void m4word_code_print(const m4word *w, m4cell code_start_n, FILE *out) {
-    const m4code code = {(m4enum *)w->code + code_start_n, w->code_n - code_start_n};
-    m4code_print(code, out);
+m4code m4word_code(const m4word *w, m4cell code_start_n) {
+    m4code code = {(m4enum *)w->code + code_start_n, w->code_n - code_start_n};
+    return code;
 }
 
-void m4word_stack_print(uint8_t stack_in_out, FILE *out) {
-    uint8_t n = stack_in_out & 0xF;
-    if (out == NULL) {
+m4string m4word_data(const m4word *w, m4cell data_start_n) {
+    m4string data = {(m4char *)w->code + w->code_n + data_start_n, w->data_len - data_start_n};
+    return data;
+}
+
+void m4word_code_print(const m4word *w, m4cell code_start_n, FILE *out) {
+    if (w == NULL || out == NULL) {
         return;
-    } else if (n == 0xF) {
-        fputc('?', out);
-    } else {
-        fprintf(out, "%u", (unsigned)n);
     }
-    n = stack_in_out >> 4;
-    if (n == 0xF) {
-        fputs(" -> ?", out);
-    } else {
-        fprintf(out, " -> %u", (unsigned)n);
+    m4code_print(m4word_code(w, code_start_n), out);
+    fputc('\n', out);
+}
+
+void m4word_data_print(const m4word *w, m4cell data_start_n, FILE *out) {
+    if (w == NULL || out == NULL) {
+        return;
     }
+    m4string data = m4word_data(w, data_start_n);
+    fprintf(out, "<%ld> ", (long)data.n);
+    m4string_print_hex(data, out);
+    fputc('\n', out);
 }
 
 void m4word_print(const m4word *w, FILE *out) {
@@ -390,20 +437,18 @@ void m4word_print(const m4word *w, FILE *out) {
     fputs(" {\n\tflags:\t", out);
     m4flags_print((m4flags)w->flags, out);
     if (jump_flags != m4flag_jump) {
-        fputs(" \n\tdata_stack: \t", out);
-        m4word_stack_print(w->eff.dstack, out);
-        fputs(" \n\treturn_stack:\t", out);
-        m4word_stack_print(w->eff.rstack, out);
+        m4stackeffects_print(w->eff, "", out);
     }
     if (jump_flags == m4flag_jump || jump_flags == m4flag_may_jump) {
-        fputs(" \n\tdata_stack_jump:\t", out);
-        m4word_stack_print(w->jump.dstack, out);
-        fputs(" \n\treturn_stack_jump:\t", out);
-        m4word_stack_print(w->jump.rstack, out);
+        m4stackeffects_print(w->jump, "_jump", out);
     }
-    fprintf(out, "\n\tnative_len:  \t%d\n\tcode_n:      \t%lu\n\tdata_len:    \t%lu\n}\n",
-            (w->native_len == (uint16_t)-1 ? (int)-1 : (int)w->native_len),
-            (unsigned long)w->code_n, (unsigned long)w->data_len);
+    fprintf(out, "\n\tnative_len:  \t%d",
+            (w->native_len == (uint16_t)-1 ? (int)-1 : (int)w->native_len));
+    fputs("\n\tcode:        \t", out);
+    m4word_code_print(w, 0, out);
+    fputs("\tdata:        \t", out);
+    m4word_data_print(w, 0, out);
+    fputs("}\n", out);
 }
 
 void m4word_print_fwd_recursive(const m4word *w, FILE *out) {

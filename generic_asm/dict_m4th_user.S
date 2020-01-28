@@ -15,9 +15,9 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "../common/asm.mh"
-#include "dict.mh"
-#include "dict_m4th.mh"
+#include "../include/asm.mh"
+#include "../include/dict.mh"
+#include "../include/dict_m4th.mh"
 
 /* ---------------------------------------------------------------------------------------------- */
 DICT_START(m4th_user)
@@ -26,10 +26,12 @@ DICTNAME(9, "m4th-user", m4th_user)
 
 DICT_WORDS_M4TH_USER(WORDNAME)
 
-WORD(less_equal,         less_equal,         DSTACK(2,1), RSTACK(0,0), WORD_PURE)
-WORD(more_equal,      less_equal,         DSTACK(2,1), RSTACK(0,0), WORD_PURE)
-WORD(zero_less_equal,    more_equal,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(zero_more_equal, zero_less_equal,    DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD(less_equal,       less_equal,     DSTACK(2,1), RSTACK(0,0), WORD_PURE)
+WORD(more_equal,       less_equal,     DSTACK(2,1), RSTACK(0,0), WORD_PURE)
+WORD(zero_less_equal,  more_equal,     DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD(zero_more_equal, zero_less_equal, DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD(r_plus,          zero_more_equal, DSTACK(1,0), RSTACK(1,1), WORD_PURE | M4FLAG_COMPILE_ONLY)
+WORD(r_store,          r_plus,         DSTACK(1,0), RSTACK(1,1), WORD_PURE | M4FLAG_COMPILE_ONLY)
 
-DICT_BODY(m4th_user, zero_more_equal)
+DICT_BODY(m4th_user, r_store)
 DICT_END(m4th_user)

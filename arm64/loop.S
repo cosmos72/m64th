@@ -37,24 +37,6 @@ FUNC_START(_question_do_)
 FUNC_RAWEND(_question_do_)
 
 
-/** implementation of 'do', enters a (do) ... (loop) */
-FUNC_START(_do_)
-        RPUSH( RTOP)                 /* save rstack top       */
-        DPOP(  REG1)                 /* REG1 = i'             */
-        MOVE(  DTOP, RTOP)           /* RTOP = i              */
-        RPUSH( REG1)                 /* push i' on rstack     */
-        DPOP(  DTOP)                 /* reload dstack top     */
-FUNC_END(_do_)
-
-/**
- * unconditional jump.
- * must be followed by IP offset to skip.
- * IP offset = 0 means first instruction after (jump) itself
- */
-FUNC_START(_jump_)
-        RELJUMP()
-FUNC_END(_jump_)
-
 /**
  * pop dstack top.
  * if <> 0 continue to next instruction, otherwise jump.

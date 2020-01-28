@@ -26,6 +26,25 @@
 
 extern const m4word *wtable[]; /* from m4th.c */
 
+/* -------------- m4slice -------------- */
+
+static void m4slice_print_as_code(m4slice src, FILE *out) {
+    const m4cell *data = src.data;
+    m4cell i, n = src.n;
+    if (data == NULL || n == 0 || out == NULL) {
+        return;
+    }
+    fprintf(out, "<%ld> ", (long)n);
+    for (i = 0; i < n; i++) {
+        const m4cell val = data[i];
+        if (val >= 0 && val < M4____end) {
+            m4enum_print((m4enum)val, out);
+        } else {
+            fprintf(out, "%ld ", (long)val);
+        }
+    }
+}
+
 /* -------------- m4test_stack -------------- */
 
 void m4test_stack_copy(const m4test_stack *src, m4span *dst) {
@@ -62,11 +81,9 @@ void m4test_stack_print(const m4test_stack *src, FILE *out) {
 
 void m4test_code_print(const m4test_code *src, FILE *out) {
     if (src != NULL && out != NULL) {
-        m4slice code_in = {(m4cell *)src->data, src->n};
-        m4enum buf[m4test_code_n];
-        m4code code = {buf, m4test_code_n};
-        m4slice_copy_to_code(code_in, &code);
-        m4code_print(code, out);
+        m4slice code = {(m4cell *)src->data, src->n};
+        m4slice_print_as_code(code, out);
+        fputc('\n', out);
     }
 }
 
@@ -81,13 +98,6 @@ void m4test_code_copy_to_word_code(const m4test_code *src, m4word *w) {
     m4code dst_code = {w->code + w->code_n, src->n};
     m4slice_copy_to_code(src_code, &dst_code);
     w->code_n += dst_code.n;
-}
-
-/* -------------- m4test_word -------------- */
-
-m4code m4test_word_as_code(const m4word *w, m4cell code_start_n) {
-    m4code ret = {(m4enum *)w->code + code_start_n, w->code_n - code_start_n};
-    return ret;
 }
 
 #endif /* M4TH_T_TESTCOMMON_C */

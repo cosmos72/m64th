@@ -18,8 +18,8 @@
 #ifndef M4TH_ARM64_ASM_MH
 #define M4TH_ARM64_ASM_MH
 
-#include "../common/asm.mh"
-#include "../common/macro.mh"
+#include "../include/asm.mh"
+#include "../include/macro.mh"
 #include "sz.mh"
 
 #define IMM(constant) constant /* immediate constant */

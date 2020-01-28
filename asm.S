@@ -20,8 +20,8 @@
 
         .file "asm.S"
 
-#include "common/section.mh"
-#include "common/marker.mh"
+#include "include/section.mh"
+#include "include/marker.mh"
 
 SECTION_FUNC()
 /* MARKER(asm_func_start) */
@@ -42,16 +42,17 @@ SECTION_FUNC()
 #error "unsupported architecture: expecting amd64 or arm64"
 #endif
 
-#include "common/arith.S"
-#include "common/compile.S"
+#include "generic_asm/arith.S"
+#include "generic_asm/compile.S"
+#include "generic_asm/loop.S"
 
 /* MARKER(asm_func_end) */
 SECTION_RODATA()
 /* MARKER(asm_data_start) */
 
-#include "common/dict_forth.S"
-#include "common/dict_m4th_user.S"
-#include "common/dict_m4th_impl.S"
+#include "generic_asm/dict_forth.S"
+#include "generic_asm/dict_m4th_user.S"
+#include "generic_asm/dict_m4th_impl.S"
 
 /* MARKER(asm_data_end) */
 

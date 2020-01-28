@@ -15,9 +15,9 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "../common/asm.mh"
-#include "dict.mh"
-#include "dict_forth.mh"
+#include "../include/asm.mh"
+#include "../include/dict.mh"
+#include "../include/dict_forth.mh"
 
 /* ---------------------------------------------------------------------------------------------- */
 DICT_START(forth)
@@ -109,18 +109,19 @@ WORD_START(literal, j)
     WORD_NOJUMP()
     WORD_NATIVE_NONE()
     WORD_ENUMS(
-      dup, _if_zero_, E(5),         /* if dtop = 0                  */
-        drop, _lit_enum_, zero,    /*   change dtop to 'm4zero'    */
-        _compile_enum_, exit,      /*   append it to XT, exit      */
-      dup, one_minus,
-      _if_zero_, E(5),              /* else if dtop = 1             */
-        drop, _lit_enum_, one,     /*   change dtop to 'm4one'     */
-        _compile_enum_, exit,      /*   append it to XT, exit      */
+      dup, _if_zero_, E(5),        /* if dtop = 0                  */
+          drop, _lit_enum_, zero,  /*     change dtop to 'm4zero'  */
+          _compile_enum_, exit,    /*     append it to XT, exit    */
+      _then_, dup, one_minus,
+      _if_zero_, E(5),             /* else if dtop = 1             */
+          drop, _lit_enum_, one,   /*     change dtop to 'm4one'   */
+          _compile_enum_, exit,    /*     append it to XT, exit    */
+      _then_, dup, two_minus,
+      _if_zero_, E(5),             /* else if dtop = 2             */
+          drop, _lit_enum_, two,   /*     change dtop to 'm4two'   */
+          _compile_enum_, exit,    /*     append it to XT, exit    */
+      _then_,
 #if 0
-      dup, two_minus,
-      _if_zero_, E(5),              /* else if dtop = 2             */
-        drop, _lit_enum_, two,     /*   change dtop to 'm4two'     */
-        _compile_enum_, exit,      /*   append it to XT, exit      */
       dup, four, equal,
       _if_, E(5),                  /* else if dtop = 4             */
         drop, _lit_enum_, four,    /*   change dtop to 'm4four'    */
@@ -134,9 +135,18 @@ WORD_START(literal, j)
         drop, _lit_enum_, minus_one,   /*   change dtop 'm4minus_one'  */
         _compile_enum_, exit,          /*   append it to XT, exit      */
 #endif /* 0 */
-      _lit_enum_,  _lit_cell_,     /* push 'm4_lit_cell_' to dstack*/
-      _compile_enum_,              /* append it to XT              */
-      _compile_cell_,              /* append dtop to XT            */
+      dup, _literal2s_, SHORT(-0x8000),
+      _if_more_equal_, E(11),
+          dup, _literal2s_, SHORT(0x7FFF),
+          _if_less_equal_, E(5),
+              _lit_enum_,  _literal2s_,/* push 'm4_literal2s_' to dstack */
+              _compile_enum_,          /* append it to XT                */
+              _compile2s_, exit,       /* append (int16)dtop to XT       */
+          _then_,
+      _then_,
+      _lit_enum_,  _lit_cell_,         /* push 'm4_lit_cell_' to dstack*/
+      _compile_enum_,                  /* append it to XT              */
+      _compile_cell_,                  /* append dtop to XT            */
       /* _call_, XT(_optimize_),  nothing to optimize          */
       exit
     )
@@ -150,7 +160,8 @@ WORD(nip,              negate,     DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(or,               nip,        DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(over,             or,         DSTACK(2,3), RSTACK(0,0), WORD_PURE)
 WORD(r_from,           over,       DSTACK(0,1), RSTACK(1,0), WORD_PURE | M4FLAG_COMPILE_ONLY)
-WORD(rot,              r_from,     DSTACK(3,3), RSTACK(0,0), WORD_PURE)
+WORD(r_fetch,          r_from,     DSTACK(0,1), RSTACK(1,1), WORD_PURE | M4FLAG_COMPILE_ONLY)
+WORD(rot,              r_fetch,    DSTACK(3,3), RSTACK(0,0), WORD_PURE)
 WORD(rshift,           rot,        DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(swap,             rshift,     DSTACK(2,2), RSTACK(0,0), WORD_PURE)
 WORD(true,             swap,       DSTACK(0,1), RSTACK(0,0), WORD_PURE) /* core ext */

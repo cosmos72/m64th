@@ -18,9 +18,9 @@
 #ifndef M4TH_T_TESTEXECUTE_C
 #define M4TH_T_TESTEXECUTE_C
 
-#include "../common/enum.h"
-#include "../common/word_fwd.h"
 #include "../impl.h"
+#include "../include/enum.h"
+#include "../include/word_fwd.h"
 #include "../m4th.h"
 #include "testcommon.h"
 
@@ -81,10 +81,10 @@ static const m4slice test_slice_crc1byte = {
 };
 
 /* initialized by main() */
-static m4enum test_earray_crc1byte[test_code_crc1byte_n];
+static m4enum test_codearray_crc1byte[test_code_crc1byte_n];
 
 static m4code test_code_crc1byte = {
-    test_earray_crc1byte,
+    test_codearray_crc1byte,
     test_code_crc1byte_n,
 };
 
@@ -153,7 +153,10 @@ static const m4testexecute testexecute[] = {
     {"noop", {m4noop, m4bye}, {{}, {}}, {{}, {}}, {}},
     {"-7 14 or", {m4or, m4bye}, {{2, {-7, 14}}, {}}, {{1, {-7 | 14}}, {}}, {}},
     {"over", {m4over, m4bye}, {{2, {1, 0}}, {}}, {{3, {1, 0, 1}}, {}}, {}},
+    {"r!", {m4r_store, m4bye}, {{1, {11}}, {1, {0}}}, {{}, {1, {11}}}, {}},
+    {"r+", {m4r_plus, m4bye}, {{1, {30}}, {1, {4}}}, {{}, {1, {34}}}, {}},
     {"r>", {m4r_from, m4bye}, {{}, {1, {99}}}, {{1, {99}}, {}}, {}},
+    {"r@", {m4r_fetch, m4bye}, {{}, {1, {4}}}, {{1, {4}}, {1, {4}}}, {}},
     {"rot", {m4rot, m4bye}, {{3, {1, 2, 3}}, {}}, {{3, {2, 3, 1}}, {}}, {}},
     {"rshift", {m4rshift, m4bye}, {{2, {99, 3}}, {}}, {{1, {99 >> 3}}, {}}, {}},
     {"swap", {m4swap, m4bye}, {{2, {4, 5}}, {}}, {{2, {5, 4}}, {}}, {}},
@@ -253,7 +256,7 @@ static const m4testexecute testexecute[] = {
     {"(call) XT(noop)", {m4_call_, XT(noop), m4bye}, {{}, {}}, {{}, {}}, {}},
     {"(call) XT(true)", {m4_call_, XT(true), m4bye}, {{}, {}}, {{1, {ttrue}}, {}}, {}},
     {"(call) XT(crc+)",
-     {m4_call_, CELL(test_earray_crc1byte), m4bye},
+     {m4_call_, CELL(test_codearray_crc1byte), m4bye},
      {{2, {0xffffffff, 't'}}, {}},
      {{1, {2056627543 /* crc1byte(0xffffffff, 't')*/}}, {}},
      {}},
@@ -283,7 +286,7 @@ static m4cell m4testexecute_run(m4th *m, const m4testexecute *t, m4test_word *w)
 
     return m4test_stack_equal(&t->after.d, &m->dstack) &&
            m4test_stack_equal(&t->after.r, &m->rstack) &&
-           /**/ m4code_equal(t_codegen, m4test_word_as_code(m->w, m4test_code_n));
+           /**/ m4code_equal(t_codegen, m4word_code(m->w, m4test_code_n));
 }
 
 static void m4testexecute_failed(m4th *m, const m4testexecute *t, FILE *out) {
