@@ -46,7 +46,7 @@ FUNC_RAWEND(_question_do_)
 FUNC_START(_if_)
         cmp    DTOP, IMM(0);
         DPOP(  DTOP)
-        b.eq   .L_if_.enter;
+        b.ne   .L_if_.enter;
         RELJUMP()
 .L_if_.enter:
         NEXTE()                      /* skip IP offset          */
@@ -61,7 +61,7 @@ FUNC_RAWEND(_if_)
 FUNC_START(_if_zero_)
         cmp    DTOP, IMM(0);
         DPOP(  DTOP)
-        b.ne   .L_if_zero_.enter;
+        b.eq   .L_if_zero_.enter;
         RELJUMP()
 .L_if_zero_.enter:
         NEXTE()                      /* skip IP offset          */
@@ -114,6 +114,54 @@ FUNC_START(_if_ne_)
 .L_if_ne_.enter:
         NEXTE()                      /* skip IP offset          */
 FUNC_RAWEND(_if_ne_)
+
+/**
+ * pop dstack twice.
+ * if d2 = dtop continue to next instruction, otherwise jump.
+ * must be followed by IP offset to jump.
+ * IP offset = 0 means first instruction after (if<) itself
+ */
+FUNC_START(_if_equal_)
+        DPOP(  REG1)
+        cmp    DTOP, REG1;
+	DPOP(  DTOP)
+        b.eq   .L_if_equal_.enter;
+	RELJUMP()
+.L_if_equal_.enter:
+        NEXTE()                      /* skip IP offset          */
+FUNC_RAWEND(_if_equal_)
+
+/**
+ * pop dstack twice.
+ * if d2 < dtop continue to next instruction, otherwise jump.
+ * must be followed by IP offset to jump.
+ * IP offset = 0 means first instruction after (if<) itself
+ */
+FUNC_START(_if_more_)
+        DPOP(  REG1)
+        cmp    DTOP, REG1;
+	DPOP(  DTOP)
+        b.gt   .L_if_more_.enter;
+	RELJUMP()
+.L_if_more_.enter:
+        NEXTE()                      /* skip IP offset          */
+FUNC_RAWEND(_if_more_)
+
+/**
+ * pop dstack twice.
+ * if d2 <= dtop continue to next instruction, otherwise jump.
+ * must be followed by IP offset to jump.
+ * IP offset = 0 means first instruction after (if<) itself
+ */
+FUNC_START(_if_more_equal_)
+        DPOP(  REG1)
+        cmp    DTOP, REG1;
+	DPOP(  DTOP)
+        b.ge   .L_if_more_equal_.enter;
+	RELJUMP()
+.L_if_more_equal_.enter:
+        NEXTE()                      /* skip IP offset          */
+FUNC_RAWEND(_if_more_equal_)
 
 /**
  * break from a loop.
