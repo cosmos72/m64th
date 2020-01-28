@@ -120,12 +120,11 @@ WORD_START(literal, j)
       _if_zero_, E(4),             /* else if dtop = 2             */
           _compile_lit_enum_, two, /*     append 'm4two' to XT     */
           drop, exit,              /*     exit                     */
-      _then_,
+      _then_, dup, four,
+      _if_equal_, E(4),            /* else if dtop = 4             */
+          _compile_lit_enum_, four,/*     append 'm4four' to XT   */
+          drop, exit,              /*     exit                 */
 #if 0
-      dup, four, equal,
-      _if_, E(5),                  /* else if dtop = 4             */
-        drop, _lit_enum_, four,    /*   change dtop to 'm4four'    */
-        _compile_enum_, exit,      /*   append it to XT, exit      */
       dup, eight, equal,
       _if_, E(5),                  /* else if dtop = 8             */
         drop, _lit_enum_, eight,   /*   change dtop to 'm4eight'   */

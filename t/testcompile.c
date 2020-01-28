@@ -42,6 +42,7 @@ static const m4testcompile testcompile[] = {
     {{"literal"}, {1, {0}}, {1, {m4zero}}},
     {{"literal"}, {1, {1}}, {1, {m4one}}},
     {{"literal"}, {1, {2}}, {1, {m4two}}},
+    {{"literal"}, {1, {4}}, {1, {m4four}}},
     {{"literal"}, {1, {11}}, {2, {m4_literal2s_, 11}}},
     {{"drop"}, {}, {callsz, {CALLXT(drop)}}},
     {{"false"}, {}, {callsz, {CALLXT(false)}}},
