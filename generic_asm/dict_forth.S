@@ -117,7 +117,7 @@ WORD_START(literal, j)
           _compile_lit_enum_, one, /*     append 'm4one' to XT     */
           drop, exit,              /*     exit                     */
       _then_, dup, two_minus,
-      _if_zero_, E(5),             /* else if dtop = 2             */
+      _if_zero_, E(4),             /* else if dtop = 2             */
           _compile_lit_enum_, two, /*     append 'm4two' to XT     */
           drop, exit,              /*     exit                     */
       _then_,
@@ -136,9 +136,9 @@ WORD_START(literal, j)
         _compile_enum_, exit,          /*   append it to XT, exit      */
 #endif /* 0 */
       dup, _literal2s_, SHORT(-0x8000),
-      _if_more_equal_, E(11),
+      _if_more_equal_, E(10),
           dup, _literal2s_, SHORT(0x7FFF),
-          _if_less_equal_, E(5),
+          _if_less_equal_, E(4),
               _compile_lit_enum_,
               _literal2s_,             /* append 'm4_literal2s_' to XT */
               _compile2s_, exit,       /* append (int16)dtop to XT     */
