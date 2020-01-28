@@ -44,3 +44,17 @@ FUNC_START(_compile2s_)    /* (compile-2s,) */
 FUNC_END(_compile2s_)
 #endif
 
+
+#ifndef M4_COMPILE_LIT_ENUM_
+/** ( -- ) must be followed by m4enum, append it to XT being compiled. */
+FUNC_START(_compile_lit_enum_)    /* (compile-lit-enum,) */
+        /* TODO check if enough space */
+        LD_ue( REG2_ue,    AT(IP))                     /* REG1 = enum          */
+        LD_uh( REG1_uh,    AT(M4XT, XT_OFF_CODE_N))    /* xt.code_n            */
+        STORe( REG2e,      AT(M4XT, REG1, SZe))        /* xt[xt.code_n] = enum */
+        INC1(  REG1)
+        STORh( REG1h,      AT(M4XT, XT_OFF_CODE_N))    /* xt.code_n ++         */
+        NEXTE()                                        /* skip enum            */
+FUNC_RAWEND(_compile_lit_enum_)
+#endif
+

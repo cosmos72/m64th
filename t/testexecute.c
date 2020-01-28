@@ -252,6 +252,11 @@ static const m4testexecute testexecute[] = {
      {{1, {0x123}}, {}},
      {{}, {}},
      {1, {0x123}}},
+    {"(compile-lit-enum,) E(500)",
+     {m4_compile_lit_enum_, E(500), m4bye},
+     {{}, {}},
+     {{}, {}},
+     {1, {500}}},
     /* ----------------------------- call ----------------------------------- */
     {"(call) XT(false)", {m4_call_, XT(false), m4bye}, {{}, {}}, {{1, {tfalse}}, {}}, {}},
     {"(call) XT(noop)", {m4_call_, XT(noop), m4bye}, {{}, {}}, {{}, {}}, {}},
