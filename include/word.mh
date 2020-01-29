@@ -15,16 +15,18 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_COMMON_WORD_MH
-#define M4TH_COMMON_WORD_MH
+#ifndef M4TH_INCLUDE_WORD_MH
+#define M4TH_INCLUDE_WORD_MH
 
 /** used to insert an execution token (XT) in a sequence of functions */
 #define m4XT(x) WORD_SYM(x) + WORD_OFF_XT
 
-#define WORD_OFF_CODE_N 14 /* offset of m4word->code_n */
+#define WORD_OFF_CODE_N 14 /* offset of m4word->code_n       */
+#define WORD_OFF_DATA_N 16 /* offset of m4word->data_len     */
 #define WORD_OFF_XT 24     /* offset of m4word->code i.e. XT */
 
 #define XT_OFF_CODE_N -10 /* WORD_OFF_XT - WORD_OFF_CODE_N */
+#define XT_OFF_DATA_N -8  /* WORD_OFF_XT - WORD_OFF_DATA_N */
 
 #define WORD_SYM(name) m4word_##name
 
@@ -53,27 +55,41 @@
 #define WORD_NATIVE_LEN(name) /*    */ .2byte FUNC_SYM_NEXT(name) - FUNC_SYM(name);
 #define WORD_NATIVE_LEN_0() /*      */ .2byte 0;
 #define WORD_NATIVE_NONE() /*       */ .2byte 0xFFFF;
+
 #define WORD_CODE_N(n_instr) /*     */ .2byte n_instr;
-#define WORD_DATA_NBYTES(n_bytes) /**/ .8byte n_bytes;
-#define WORD_DATA_N(n_instr) /*     */ .8byte SZe *(n_instr);
-#define WORD_RAWCODE(...) /*        */ .2byte __VA_ARGS__;
-#define WORD_CODE_ENUM(name) /*     */ .2byte M4ENUM_VAL(name);
-#define WORD_CODE_XT(xt) /*         */ .8byte WORD_SYM(name) + WORD_OFF_XT;
+#define WORD_CODE_N_AUTO(name) /*   */                                                             \
+    .2byte /**/ (.L.WORD_SYM(name).code_end - /**/.L.WORD_SYM(name).code_start) / SZt;
+
+#define WORD_DATA_N_BYTES(n_bytes) /**/ .8byte n_bytes;
+#define WORD_DATA_N(n_instr) /*     */ .8byte SZt *(n_instr);
+#define WORD_DATA_N_AUTO(name) /*   */                                                             \
+    .8byte /**/.L.WORD_SYM(name).data_end - /**/.L.WORD_SYM(name).data_start;
+
+#define WORD_CODE_START(name) /*    */ .L.WORD_SYM(name).code_start:
+#define WORD_CODE_END(name) /*      */ .L.WORD_SYM(name).code_end:
+#define WORD_CODE_RAW(...) /*       */ CAT3(., SZt, byte) __VA_ARGS__;
+#define WORD_CODE_TOKEN(token) /*   */ CAT3(., SZt, byte) M4TOKEN_VAL(token);
+#define WORD_CODE_TOKENS(...) /*    */ WRAP_ARGS(WORD_CODE_TOKEN, __VA_ARGS__)
+#define WORD_CODE_XT(wname) /*      */ .8byte WORD_SYM(wname) + WORD_OFF_XT;
 #define WORD_CODE_SHORT(n) /*       */ .2byte /**/ (n)&0xFFFF;
 #define WORD_CODE_INT(n) /*         */ .4byte /**/ (n)&0xFFFFFFFF;
 #define WORD_CODE_CELL(n) /*        */ .8byte n;
+
+#define WORD_DATA_START(name) /*    */ .L.WORD_SYM(name).data_start:
+#define WORD_DATA_END(name) /*      */ .L.WORD_SYM(name).data_end:
 #define WORD_DATA_1(...) /*         */ .byte __VA_ARGS__;
 #define WORD_DATA_2(...) /*         */ .2byte __VA_ARGS__;
 #define WORD_DATA_4(...) /*         */ .4byte __VA_ARGS__;
 #define WORD_DATA_8(...) /*         */ .8byte __VA_ARGS__;
+#define WORD_DATA_TOKEN(token) /*   */ CAT3(., SZt, byte) M4TOKEN_VAL(token);
+#define WORD_DATA_TOKENS(...) /*    */ WRAP_ARGS(WORD_DATA_TOKEN, __VA_ARGS__)
+
 #define WORD_END(name) /*           */ .size WORD_SYM(name), .- WORD_SYM(name);
 
-#define WORD_CODE_ENUMS(...) WRAP_ARGS(WORD_CODE_ENUM, __VA_ARGS__)
-
-#define WORD_ENUMS(...)                                                                            \
+#define WORD_TOKENS(...)                                                                           \
     WORD_CODE_N(COUNT_ARGS(__VA_ARGS__))                                                           \
-    WORD_DATA_NBYTES(0)                                                                            \
-    WORD_CODE_ENUMS(__VA_ARGS__)
+    WORD_DATA_N_BYTES(0)                                                                           \
+    WORD_CODE_TOKENS(__VA_ARGS__)
 
 /* clang-format off */
 
@@ -83,7 +99,7 @@
     WORD_##rstack                                                                                  \
     WORD_NOJUMP()      /* simple words do not jump */                                              \
     WORD_NATIVE_LEN(name)                                                                          \
-    WORD_ENUMS(name, exit)
+    WORD_TOKENS(name, exit)
 
 /* clang-format on */
 
@@ -95,4 +111,4 @@
     WORD_BODY_SIMPLE(name, flags, dstack, rstack)                                                  \
     WORD_END(name)
 
-#endif /* M4TH_COMMON_WORD_MH */
+#endif /* M4TH_INCLUDE_WORD_MH */

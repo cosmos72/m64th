@@ -19,7 +19,8 @@
 #define M4TH_T_TESTEXECUTE_C
 
 #include "../impl.h"
-#include "../include/enum.h"
+#include "../include/func_fwd.h"
+#include "../include/token.h"
 #include "../include/word_fwd.h"
 #include "../m4th.h"
 #include "testcommon.h"
@@ -69,8 +70,8 @@ uint32_t crc1byte(uint32_t crc, unsigned char byte) {
  * ;
  */
 static const m4cell test_array_crc1byte[] = {
-    m4over, m4xor,   m4_lit_enum_, E(0xff),      m4and, m4cells,  m4_lit_cell_, CELL(crctable),
-    m4plus, m4fetch, m4swap,       m4_lit_enum_, E(8),  m4rshift, m4xor,        m4exit,
+    m4over, m4xor,   m4_lit_token_, T(0xff),       m4and, m4cells,  m4_lit_cell_, CELL(crctable),
+    m4plus, m4fetch, m4swap,        m4_lit_token_, T(8),  m4rshift, m4xor,        m4exit,
 };
 
 enum { test_code_crc1byte_n = sizeof(test_array_crc1byte) / sizeof(test_array_crc1byte[0]) };
@@ -81,7 +82,7 @@ static const m4slice test_slice_crc1byte = {
 };
 
 /* initialized by main() */
-static m4enum test_codearray_crc1byte[test_code_crc1byte_n];
+static m4token test_codearray_crc1byte[test_code_crc1byte_n];
 
 static m4code test_code_crc1byte = {
     test_codearray_crc1byte,
@@ -90,9 +91,9 @@ static m4code test_code_crc1byte = {
 
 /* -------------- m4test -------------- */
 
-static const m4testexecute testexecute[] = {
+static m4testexecute testexecute[] = {
 #if 0
-    {"1e9 0 (do) (loop)", {m4_do_, m4_loop_, E(-2), m4bye}, {{2, {1e9, 0}}, {}}, {{}, {}}, {}},
+    {"1e9 0 (do) (loop)", {m4_do_, m4_loop_, T(-2), m4bye}, {{2, {1e9, 0}}, {}}, {{}, {}}, {}},
 #else
     /* ----------------------------- arithmetic ----------------------------- */
     {"*", {m4times, m4bye}, {{2, {20, 7}}, {}}, {{1, {140}}, {}}, {}},
@@ -160,6 +161,56 @@ static const m4testexecute testexecute[] = {
     {"rot", {m4rot, m4bye}, {{3, {1, 2, 3}}, {}}, {{3, {2, 3, 1}}, {}}, {}},
     {"rshift", {m4rshift, m4bye}, {{2, {99, 3}}, {}}, {{1, {99 >> 3}}, {}}, {}},
     {"swap", {m4swap, m4bye}, {{2, {4, 5}}, {}}, {{2, {5, 4}}, {}}, {}},
+    {"-261 to-byte", {m4to_byte, m4bye}, {{1, {-261}}, {}}, {{1, {(int8_t)-261}}, {}}, {}},
+    {"-128 to-byte", {m4to_byte, m4bye}, {{1, {-128}}, {}}, {{1, {-128}}, {}}, {}},
+    {"127 to-byte", {m4to_byte, m4bye}, {{1, {127}}, {}}, {{1, {127}}, {}}, {}},
+    {"259 to-byte", {m4to_byte, m4bye}, {{1, {259}}, {}}, {{1, {(int8_t)259}}, {}}, {}},
+    {"-54321 to-short", {m4to_short, m4bye}, {{1, {-54321}}, {}}, {{1, {(int16_t)-54321}}, {}}, {}},
+    {"-32768 to-short", {m4to_short, m4bye}, {{1, {-32768}}, {}}, {{1, {-32768}}, {}}, {}},
+    {"32767 to-short", {m4to_short, m4bye}, {{1, {32767}}, {}}, {{1, {32767}}, {}}, {}},
+    {"54321 to-short", {m4to_short, m4bye}, {{1, {54321}}, {}}, {{1, {(int16_t)54321}}, {}}, {}},
+    {"-9876543210 to-int",
+     {m4to_int, m4bye},
+     {{1, {-9876543210l}}, {}},
+     {{1, {(int32_t)-9876543210l}}, {}},
+     {}},
+    {"9876543210 to-int",
+     {m4to_int, m4bye},
+     {{1, {9876543210l}}, {}},
+     {{1, {(int32_t)9876543210l}}, {}},
+     {}},
+    {"-261 to-char", {m4to_char, m4bye}, {{1, {-261}}, {}}, {{1, {(uint8_t)-261}}, {}}, {}},
+    {"-7 to-char", {m4to_char, m4bye}, {{1, {-7}}, {}}, {{1, {(uint8_t)-7}}, {}}, {}},
+    {"0 to-char", {m4to_char, m4bye}, {{1, {0}}, {}}, {{1, {0}}, {}}, {}},
+    {"255 to-char", {m4to_char, m4bye}, {{1, {255}}, {}}, {{1, {255}}, {}}, {}},
+    {"259 to-char", {m4to_char, m4bye}, {{1, {259}}, {}}, {{1, {(uint8_t)259}}, {}}, {}},
+    {"-76543 to-ushort",
+     {m4to_ushort, m4bye},
+     {{1, {-76543}}, {}},
+     {{1, {(uint16_t)-76543}}, {}},
+     {}},
+    {"-11 to-ushort", {m4to_ushort, m4bye}, {{1, {-11}}, {}}, {{1, {(uint16_t)-11}}, {}}, {}},
+    {"0 to-ushort", {m4to_ushort, m4bye}, {{1, {0}}, {}}, {{1, {0}}, {}}, {}},
+    {"65535 to-ushort", {m4to_ushort, m4bye}, {{1, {65535}}, {}}, {{1, {65535}}, {}}, {}},
+    {"76543 to-ushort", {m4to_ushort, m4bye}, {{1, {76543}}, {}}, {{1, {(uint16_t)76543}}, {}}, {}},
+    {"-9876543210 to-uint",
+     {m4to_uint, m4bye},
+     {{1, {-9876543210}}, {}},
+     {{1, {(uint32_t)-9876543210l}}, {}},
+     {}},
+    {"-76543 to-uint", {m4to_uint, m4bye}, {{1, {-76543}}, {}}, {{1, {(uint32_t)-76543}}, {}}, {}},
+    {"0 to-uint", {m4to_uint, m4bye}, {{1, {0}}, {}}, {{1, {0}}, {}}, {}},
+    {"65536 to-uint", {m4to_uint, m4bye}, {{1, {65536}}, {}}, {{1, {65536}}, {}}, {}},
+    {"4294967295 to-uint",
+     {m4to_uint, m4bye},
+     {{1, {4294967295u}}, {}},
+     {{1, {4294967295u}}, {}},
+     {}},
+    {"9876543210 to-uint",
+     {m4to_uint, m4bye},
+     {{1, {9876543210l}}, {}},
+     {{1, {(uint32_t)9876543210l}}, {}},
+     {}},
     {"true", {m4true, m4bye}, {{}, {}}, {{1, {ttrue}}, {}}, {}},
     {"unloop", {m4unloop, m4bye}, {{}, {3, {1, 2, 3}}}, {{}, {1, {1}}}, {}},
     {"-7 14 xor", {m4xor, m4bye}, {{2, {-7, 14}}, {}}, {{1, {-7 ^ 14}}, {}}, {}},
@@ -191,52 +242,60 @@ static const m4testexecute testexecute[] = {
     {"3 3 >", {m4more, m4bye}, {{2, {3, 3}}, {}}, {{1, {tfalse}}, {}}, {}},
     {"-2 -1 >=", {m4more_equal, m4bye}, {{2, {-2, -1}}, {}}, {{1, {tfalse}}, {}}, {}},
     {"-2 -2 >=", {m4more_equal, m4bye}, {{2, {-2, -2}}, {}}, {{1, {ttrue}}, {}}, {}},
-    /* ----------------------------- do loop if jump ------------------------ */
+    /* ----------------------------- if, exec, jump, loop ------------------ */
     {"0 1 (do)", {m4_do_, m4bye}, {{2, {0, 1}}, {}}, {{}, {2, {0, 1}}}, {}},
     {"1 0 (do)", {m4_do_, m4bye}, {{2, {1, 0}}, {}}, {{}, {2, {1, 0}}}, {}},
-    {"0 0 (?do)", {m4_question_do_, E(0), m4bye}, {{2, {0, 0}}, {}}, {{}, {}}, {}},
-    {"1 0 (?do)", {m4_question_do_, E(0), m4bye}, {{2, {1, 0}}, {}}, {{}, {2, {1, 0}}}, {}},
-    {"0 (if)", {m4_if_, E(1), m4two, m4bye}, {{1, {}}, {}}, {{}, {}}, {}},
-    {"1 (if)", {m4_if_, E(1), m4four, m4bye}, {{1, {1}}, {}}, {{1, {4}}, {}}, {}},
-    {"0 (if-zero)", {m4_if_zero_, E(1), m4two, m4bye}, {{1, {0}}, {}}, {{1, {2}}, {}}, {}},
-    {"1 (if-zero)", {m4_if_zero_, E(1), m4three, m4bye}, {{1, {1}}, {}}, {{}, {}}, {}},
-    {"0 1 (if<)", {m4_if_less_, E(1), m4two, m4bye}, {{2, {0, 1}}, {}}, {{1, {2}}, {}}, {}},
-    {"2 2 (if<)", {m4_if_less_, E(1), m4one, m4bye}, {{2, {2, 2}}, {}}, {{}, {}}, {}},
-    {"4 3 (if<)", {m4_if_less_, E(1), m4zero, m4bye}, {{2, {4, 3}}, {}}, {{}, {}}, {}},
-    {"0 1 (if<=)", {m4_if_less_equal_, E(1), m4two, m4bye}, {{2, {0, 1}}, {}}, {{1, {2}}, {}}, {}},
-    {"2 2 (if<=)", {m4_if_less_equal_, E(1), m4one, m4bye}, {{2, {2, 2}}, {}}, {{1, {1}}, {}}, {}},
-    {"4 3 (if<=)", {m4_if_less_equal_, E(1), m4zero, m4bye}, {{2, {4, 3}}, {}}, {{}, {}}, {}},
-    {"0 1 (if<>)", {m4_if_ne_, E(1), m4two, m4bye}, {{2, {0, 1}}, {}}, {{1, {2}}, {}}, {}},
-    {"2 2 (if<>)", {m4_if_ne_, E(1), m4one, m4bye}, {{2, {2, 2}}, {}}, {{}, {}}, {}},
-    {"4 3 (if<>)", {m4_if_ne_, E(1), m4zero, m4bye}, {{2, {4, 3}}, {}}, {{1, {0}}, {}}, {}},
-    {"0 1 (if=)", {m4_if_equal_, E(1), m4two, m4bye}, {{2, {0, 1}}, {}}, {{}, {}}, {}},
-    {"2 2 (if=)", {m4_if_equal_, E(1), m4one, m4bye}, {{2, {2, 2}}, {}}, {{1, {1}}, {}}, {}},
-    {"4 3 (if=)", {m4_if_equal_, E(1), m4zero, m4bye}, {{2, {4, 3}}, {}}, {{}, {}}, {}},
-    {"0 1 (if>)", {m4_if_more_, E(1), m4two, m4bye}, {{2, {0, 1}}, {}}, {{}, {}}, {}},
-    {"2 2 (if>)", {m4_if_more_, E(1), m4one, m4bye}, {{2, {2, 2}}, {}}, {{}, {}}, {}},
-    {"4 3 (if>)", {m4_if_more_, E(1), m4zero, m4bye}, {{2, {4, 3}}, {}}, {{1, {0}}, {}}, {}},
-    {"0 1 (if>=)", {m4_if_more_equal_, E(1), m4two, m4bye}, {{2, {0, 1}}, {}}, {{}, {}}, {}},
-    {"2 2 (if>=)", {m4_if_more_equal_, E(1), m4one, m4bye}, {{2, {2, 2}}, {}}, {{1, {1}}, {}}, {}},
-    {"4 3 (if>=)", {m4_if_more_equal_, E(1), m4zero, m4bye}, {{2, {4, 3}}, {}}, {{1, {0}}, {}}, {}},
-    {"(jump) E(0)", {m4_jump_, E(0), m4bye, m4_missing_}, {{}, {}}, {{}, {}}, {}},
-    {"(jump) E(1)", {m4_jump_, E(1), m4true, m4bye}, {{}, {}}, {{}, {}}, {}},
-    {"(leave)", {m4_leave_, E(0), m4bye}, {{}, {2, {0, 1}}}, {{}, {}}, {}},
-    {"0 0 (loop)", {m4_loop_, E(0), m4bye}, {{}, {2, {0, 0}}}, {{}, {2, {0, 1}}}, {}},
-    {"0 1 (loop)", {m4_loop_, E(0), m4bye}, {{}, {2, {0, 1}}}, {{}, {2, {0, 2}}}, {}},
-    {"1 0 (loop)", {m4_loop_, E(0), m4bye}, {{}, {2, {1, 0}}}, {{}, {}}, {}},
-    {"10 0 (do) (loop)", {m4_do_, m4_loop_, E(-2), m4bye}, {{2, {10, 0}}, {}}, {{}, {}}, {}},
+    {"0 0 (?do)", {m4_question_do_, T(0), m4bye}, {{2, {0, 0}}, {}}, {{}, {}}, {}},
+    {"1 0 (?do)", {m4_question_do_, T(0), m4bye}, {{2, {1, 0}}, {}}, {{}, {2, {1, 0}}}, {}},
+    {"one (exec-native)",
+     {m4_exec_native_, m4bye},
+     {{1, {(m4cell)m4fone}}, {}},
+     {{1, {1}}, {}},
+     {}},
+    {"noop (exec-native)", {m4_exec_native_, m4bye}, {{1, {(m4cell)m4fnoop}}, {}}, {{}, {}}, {}},
+    {"one (exec-token)", {m4_exec_token_, m4bye}, {{1, {m4one}}, {}}, {{1, {1}}, {}}, {}},
+    {"noop (exec-token)", {m4_exec_token_, m4bye}, {{1, {m4noop}}, {}}, {{}, {}}, {}},
+    {"0 (if)", {m4_if_, T(1), m4two, m4bye}, {{1, {}}, {}}, {{}, {}}, {}},
+    {"1 (if)", {m4_if_, T(1), m4four, m4bye}, {{1, {1}}, {}}, {{1, {4}}, {}}, {}},
+    {"0 (if-zero)", {m4_if_zero_, T(1), m4two, m4bye}, {{1, {0}}, {}}, {{1, {2}}, {}}, {}},
+    {"1 (if-zero)", {m4_if_zero_, T(1), m4three, m4bye}, {{1, {1}}, {}}, {{}, {}}, {}},
+    {"0 1 (if<)", {m4_if_less_, T(1), m4two, m4bye}, {{2, {0, 1}}, {}}, {{1, {2}}, {}}, {}},
+    {"2 2 (if<)", {m4_if_less_, T(1), m4one, m4bye}, {{2, {2, 2}}, {}}, {{}, {}}, {}},
+    {"4 3 (if<)", {m4_if_less_, T(1), m4zero, m4bye}, {{2, {4, 3}}, {}}, {{}, {}}, {}},
+    {"0 1 (if<=)", {m4_if_less_equal_, T(1), m4two, m4bye}, {{2, {0, 1}}, {}}, {{1, {2}}, {}}, {}},
+    {"2 2 (if<=)", {m4_if_less_equal_, T(1), m4one, m4bye}, {{2, {2, 2}}, {}}, {{1, {1}}, {}}, {}},
+    {"4 3 (if<=)", {m4_if_less_equal_, T(1), m4zero, m4bye}, {{2, {4, 3}}, {}}, {{}, {}}, {}},
+    {"0 1 (if<>)", {m4_if_ne_, T(1), m4two, m4bye}, {{2, {0, 1}}, {}}, {{1, {2}}, {}}, {}},
+    {"2 2 (if<>)", {m4_if_ne_, T(1), m4one, m4bye}, {{2, {2, 2}}, {}}, {{}, {}}, {}},
+    {"4 3 (if<>)", {m4_if_ne_, T(1), m4zero, m4bye}, {{2, {4, 3}}, {}}, {{1, {0}}, {}}, {}},
+    {"0 1 (if=)", {m4_if_equal_, T(1), m4two, m4bye}, {{2, {0, 1}}, {}}, {{}, {}}, {}},
+    {"2 2 (if=)", {m4_if_equal_, T(1), m4one, m4bye}, {{2, {2, 2}}, {}}, {{1, {1}}, {}}, {}},
+    {"4 3 (if=)", {m4_if_equal_, T(1), m4zero, m4bye}, {{2, {4, 3}}, {}}, {{}, {}}, {}},
+    {"0 1 (if>)", {m4_if_more_, T(1), m4two, m4bye}, {{2, {0, 1}}, {}}, {{}, {}}, {}},
+    {"2 2 (if>)", {m4_if_more_, T(1), m4one, m4bye}, {{2, {2, 2}}, {}}, {{}, {}}, {}},
+    {"4 3 (if>)", {m4_if_more_, T(1), m4zero, m4bye}, {{2, {4, 3}}, {}}, {{1, {0}}, {}}, {}},
+    {"0 1 (if>=)", {m4_if_more_equal_, T(1), m4two, m4bye}, {{2, {0, 1}}, {}}, {{}, {}}, {}},
+    {"2 2 (if>=)", {m4_if_more_equal_, T(1), m4one, m4bye}, {{2, {2, 2}}, {}}, {{1, {1}}, {}}, {}},
+    {"4 3 (if>=)", {m4_if_more_equal_, T(1), m4zero, m4bye}, {{2, {4, 3}}, {}}, {{1, {0}}, {}}, {}},
+    {"(jump) T(0)", {m4_jump_, T(0), m4bye, m4_missing_}, {{}, {}}, {{}, {}}, {}},
+    {"(jump) T(1)", {m4_jump_, T(1), m4true, m4bye}, {{}, {}}, {{}, {}}, {}},
+    {"(leave)", {m4_leave_, T(0), m4bye}, {{}, {2, {0, 1}}}, {{}, {}}, {}},
+    {"0 0 (loop)", {m4_loop_, T(0), m4bye}, {{}, {2, {0, 0}}}, {{}, {2, {0, 1}}}, {}},
+    {"0 1 (loop)", {m4_loop_, T(0), m4bye}, {{}, {2, {0, 1}}}, {{}, {2, {0, 2}}}, {}},
+    {"1 0 (loop)", {m4_loop_, T(0), m4bye}, {{}, {2, {1, 0}}}, {{}, {}}, {}},
+    {"10 0 (do) (loop)", {m4_do_, m4_loop_, T(-2), m4bye}, {{2, {10, 0}}, {}}, {{}, {}}, {}},
     {"5 0 (do) i (loop)",
-     {m4_do_, m4i, m4_loop_, E(-3), m4bye},
+     {m4_do_, m4i, m4_loop_, T(-3), m4bye},
      {{2, {5, 0}}, {}},
      {{5, {0, 1, 2, 3, 4}}, {}},
      {}},
     {"0 1M 0 (do) i + (loop)",
-     {m4_do_, m4i, m4plus, m4_loop_, E(-4), m4bye},
+     {m4_do_, m4i, m4plus, m4_loop_, T(-4), m4bye},
      {{3, {0, (m4cell)1e6, 0}}, {}},
      {{1, {499999500000l}}, {}},
      {}},
     /* ----------------------------- literal, compile ----------------------- */
-    {"(lit-enum) E(7)", {m4_lit_enum_, E(7), m4bye}, {{}, {}}, {{1, {7}}, {}}, {}},
+    {"(lit-token) T(7)", {m4_lit_token_, T(7), m4bye}, {{}, {}}, {{1, {7}}, {}}, {}},
     {"(lit-int) INT(0x10000)",
      {m4_lit_int_, INT(0x10000), m4bye},
      {{}, {}},
@@ -247,13 +306,13 @@ static const m4testexecute testexecute[] = {
      {{}, {}},
      {{1, {0x100000000}}, {}},
      {}},
-    {"0x123 (compile-enum,)",
-     {m4_compile_enum_, m4bye},
+    {"0x123 (compile-token,)",
+     {m4_compile_token_, m4bye},
      {{1, {0x123}}, {}},
      {{}, {}},
      {1, {0x123}}},
-    {"(compile-lit-enum,) E(500)",
-     {m4_compile_lit_enum_, E(500), m4bye},
+    {"(compile-lit-token,) T(500)",
+     {m4_compile_lit_token_, T(500), m4bye},
      {{}, {}},
      {{}, {}},
      {1, {500}}},
@@ -266,23 +325,34 @@ static const m4testexecute testexecute[] = {
      {{2, {0xffffffff, 't'}}, {}},
      {{1, {2056627543 /* crc1byte(0xffffffff, 't')*/}}, {}},
      {}},
+    {"(ip)", {m4_ip_, m4bye}, {{}, {}}, {{1, {-1 /* fixed by m4testexecute_fix() */}}, {}}, {}}
 #endif
 };
 
 enum { testexecute_n = sizeof(testexecute) / sizeof(testexecute[0]) };
 
-static m4cell m4testexecute_run(m4th *m, const m4testexecute *t, m4test_word *w) {
+static void m4testexecute_fix(m4testexecute *t, m4test_word *w) {
+    switch (t->code[0]) {
+    case m4_ip_:
+        t->after.d.data[0] = (m4cell)w->code;
+        break;
+    }
+}
+
+static m4cell m4testexecute_run(m4th *m, m4testexecute *t, m4test_word *w) {
     m4slice t_code = {(m4cell *)t->code, m4test_code_n};
     m4slice t_codegen_in = {(m4cell *)t->codegen.data, t->codegen.n};
-    m4enum buf[m4test_code_n];
+    m4token buf[m4test_code_n];
     m4code t_codegen = {buf, m4test_code_n};
+
+    m4testexecute_fix(t, w);
 
     memset(w, '\0', sizeof(m4test_word));
     m4th_clear(m);
-    m4test_stack_copy(&t->before.d, &m->dstack);
-    m4test_stack_copy(&t->before.r, &m->rstack);
     m4slice_copy_to_word_code(t_code, &w->impl);
     m4slice_copy_to_code(t_codegen_in, &t_codegen);
+    m4test_stack_copy(&t->before.d, &m->dstack);
+    m4test_stack_copy(&t->before.r, &m->rstack);
 
     m->w = &w->impl;
     m->ip = w->code;

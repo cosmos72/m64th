@@ -38,7 +38,7 @@ static void m4slice_print_as_code(m4slice src, FILE *out) {
     for (i = 0; i < n; i++) {
         const m4cell val = data[i];
         if (val >= 0 && val < M4____end) {
-            m4enum_print((m4enum)val, out);
+            m4token_print((m4token)val, out);
         } else {
             fprintf(out, "%ld ", (long)val);
         }

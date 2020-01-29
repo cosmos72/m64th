@@ -1,0 +1,96 @@
+/**
+ * This file is part of m4th.
+ *
+ * m4th is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3
+ * of the License, or (at your option) any later version.
+ *
+ * m4th is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+#ifndef M4TH_INCLUDE_TOKEN_M4TH_MH
+#define M4TH_INCLUDE_TOKEN_M4TH_MH
+
+/* 'm4th-user' wordlist */
+/* #define M4bye 500 */
+#define M4zero_less_equal 501 /* 0<=       */
+#define M4zero_more_equal 502 /* 0>=       */
+#define M4less_equal 503      /* <=        */
+#define M4more_equal 504      /* >=        */
+#undef M4____gap              /*           */
+#define M4r_plus 520          /* r+        equivalent to: r> + >r    */
+#define M4r_store 521         /* r!        equivalent to: r> drop >r */
+#define M4to_byte 522         /* to-byte   truncate dtop to   int8_t, sign-extend high bits  */
+#define M4to_int 523          /* to-int    truncate dtop to  int32_t, sign-extend high bits  */
+#define M4to_short 524        /* to-short  truncate dtop to  int16_t, sign-extend high bits  */
+#define M4to_char 525         /* to-char   truncate dtop to  uint8_t, zero-extend high bits  */
+#define M4to_ushort 526       /* to-ushort truncate dtop to uint16_t, zero-extend high bits  */
+#define M4to_uint 527         /* to-uint   truncate dtop to uint32_t, zero-extend high bits  */
+
+/* 'm4th-impl' wordlist */
+#define M4minus_one 530   /* -1       */
+#define M4zero 531        /* 0        */
+#define M4one 532         /* 1        */
+#define M4two 533         /* 2        */
+#define M4two_plus 534    /* 2+       */
+#define M4two_minus 535   /* 2-       */
+#define M4three 536       /* 3        */
+#define M4four 537        /* 4        */
+#define M4four_times 538  /* 4*       */
+#define M4four_plus 539   /* 4+       */
+#define M4eight 540       /* 8        */
+#define M4eight_times 541 /* 8*       */
+#define M4eight_plus 542  /* 8+       */
+#undef M4____gap          /*                                         */
+/* (?do) must be followed by IP offset of 1st instruction after (loop) */
+#define M4_question_do_ 550
+#define M4_missing_ 0     /* (missing) called instead of invalid/unimplemented function */
+#define M4_call_ 551      /* (call) must be followed by XT */
+#define M4_compile2s_ 552 /* (compile2s,) pop int16 from dstack, append it to compiled code  */
+#define M4_compile4s_ 553 /* (compile4s,) pop int32 from dstack, append it to compiled code  */
+#define M4_compile8s_ 554 /* (compile8s,) pop int64 from dstack, append it to compiled code  */
+/* (compile-lit-2s,) must be followed by int16, append it to compiled code  */
+#define M4_compile_lit2s_ 555
+#define M4_do_ 556   /* (do)                                                              */
+#define M4_else_ 557 /* (else)    alias of (jump), used as marker for native compilation  */
+                     /* (exec-native) pop address of native code from dstack and call it. */
+#define M4_exec_native_ 558
+/* (exec-token) pop m4token from dstack and call it. works only for tokens with native_len != -1 */
+#define M4_exec_token_ 559
+#define M4_jump_ 560          /* (jump)    must be followed by IP offset */
+#undef M4____gap              /*                                         */
+#define M4_if_ 570            /* (if)      must be followed by IP offset */
+#define M4_if_zero_ 571       /* (if-zero) must be followed by IP offset */
+#define M4_if_less_ 572       /* (if<)     must be followed by IP offset */
+#define M4_if_less_equal_ 573 /* (if<=)    must be followed by IP offset */
+#define M4_if_ne_ 574         /* (if<>)    must be followed by IP offset */
+#define M4_if_equal_ 575      /* (if=)     must be followed by IP offset */
+#define M4_if_more_ 576       /* (if>)     must be followed by IP offset */
+#define M4_if_more_equal_ 577 /* (if>=)    must be followed by IP offset */
+#undef M4____gap              /*          */
+#define M4_inline_ 580        /* (inline) try to inline calls in word being compiled        */
+#define M4_ip_ 581            /* (ip)     push vm's current instruction pointer to dstack   */
+#define M4_literal2s_ 582     /* (literal-2s)  must be followed by int16, push it to dstack */
+#define M4_literal4s_ 583     /* (literal-4s)  must be followed by int32, push it to dstack */
+#define M4_literal8s_ 584     /* (literal-8s)  must be followed by int64, push it to dstack */
+#define M4_leave_ 585    /* (leave) must be followed by IP offset of 1st instruction after (loop) */
+#define M4_loop_ 586     /* (loop)  must be followed by IP offset of 1st instruction after (do)   */
+#define M4_optimize_ 587 /* (optimize) try to optimize word being compiled */
+#define M4_then_ 588     /* (then) currently a noop, used as marker for native compilation */
+#undef M4____gap         /*          */
+#define M4i_prime 590    /* i'       */
+#define M4i_times 591    /* i*       */
+#define M4i_plus 592     /* i+       */
+#define M4i_minus 593    /* i-       */
+#define M4noop 594       /* noop     */
+
+#define M4____end 595
+
+#endif /* M4TH_INCLUDE_TOKEN_M4TH_MH */

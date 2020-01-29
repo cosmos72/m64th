@@ -26,7 +26,7 @@ FUNC_START(_question_do_)
         LOAD(  REG2, AT(DSTK))
         cmp    REG2, DTOP;
         b.eq   .L_question_do_.skip;
-        ADD2(  IMM(SZe), IP)           /* skip jump offset      */
+        ADD2(  IMM(SZt), IP)           /* skip jump offset      */
         b      FUNC_SYM(_do_);
 .L_question_do_.skip:                  /* skip the loop:        */
         LOAD(  DTOP,   AT(DSTK, SZ))   /* reload dstack top     */
@@ -47,7 +47,7 @@ FUNC_START(_if_)
         b.ne   .L_if_.enter;
         RELJUMP()
 .L_if_.enter:
-        NEXTE()                      /* skip IP offset          */
+        NEXTT()                      /* skip IP offset          */
 FUNC_RAWEND(_if_)
 
 /**
@@ -62,7 +62,7 @@ FUNC_START(_if_zero_)
         b.eq   .L_if_zero_.enter;
         RELJUMP()
 .L_if_zero_.enter:
-        NEXTE()                      /* skip IP offset          */
+        NEXTT()                      /* skip IP offset          */
 FUNC_RAWEND(_if_zero_)
 
 /**
@@ -78,7 +78,7 @@ FUNC_START(_if_less_)
         b.lt   .L_if_less_.enter;
 	RELJUMP()
 .L_if_less_.enter:
-        NEXTE()                      /* skip IP offset          */
+        NEXTT()                      /* skip IP offset          */
 FUNC_RAWEND(_if_less_)
 
 /**
@@ -94,7 +94,7 @@ FUNC_START(_if_less_equal_)
         b.le   .L_if_less_equal_.enter;
 	RELJUMP()
 .L_if_less_equal_.enter:
-        NEXTE()                      /* skip IP offset          */
+        NEXTT()                      /* skip IP offset          */
 FUNC_RAWEND(_if_less_equal_)
 
 /**
@@ -110,7 +110,7 @@ FUNC_START(_if_ne_)
         b.ne   .L_if_ne_.enter;
 	RELJUMP()
 .L_if_ne_.enter:
-        NEXTE()                      /* skip IP offset          */
+        NEXTT()                      /* skip IP offset          */
 FUNC_RAWEND(_if_ne_)
 
 /**
@@ -126,7 +126,7 @@ FUNC_START(_if_equal_)
         b.eq   .L_if_equal_.enter;
 	RELJUMP()
 .L_if_equal_.enter:
-        NEXTE()                      /* skip IP offset          */
+        NEXTT()                      /* skip IP offset          */
 FUNC_RAWEND(_if_equal_)
 
 /**
@@ -142,7 +142,7 @@ FUNC_START(_if_more_)
         b.gt   .L_if_more_.enter;
 	RELJUMP()
 .L_if_more_.enter:
-        NEXTE()                      /* skip IP offset          */
+        NEXTT()                      /* skip IP offset          */
 FUNC_RAWEND(_if_more_)
 
 /**
@@ -158,7 +158,7 @@ FUNC_START(_if_more_equal_)
         b.ge   .L_if_more_equal_.enter;
 	RELJUMP()
 .L_if_more_equal_.enter:
-        NEXTE()                      /* skip IP offset          */
+        NEXTT()                      /* skip IP offset          */
 FUNC_RAWEND(_if_more_equal_)
 
 /**
@@ -185,5 +185,5 @@ FUNC_START(_loop_)
 .L_loop_.break:
         LOAD(  RTOP, AT(RSTK, SZ)) /* load new top of rstack      */
         ADD2(  IMM(SZ2), RSTK)     /* drop i' i from return stack */
-        NEXTE();                   /* skip IP offset, execute next instruction */
+        NEXTT();                   /* skip IP offset, execute next instruction */
 FUNC_RAWEND(_loop_)

@@ -15,21 +15,21 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_COMMON_ASM_MH
-#define M4TH_COMMON_ASM_MH
+#ifndef M4TH_INCLUDE_ASM_MH
+#define M4TH_INCLUDE_ASM_MH
 
 #include "../m4th.mh" /* also define public macros */
 #include "countedstring.mh"
-#include "enum.mh"
 #include "func.mh"
 #include "m4th.mh"
 #include "macro.mh"
+#include "token.mh"
 #include "word.mh"
 
 /* clang-format off */
 
 /* align functions at 8 bytes. */
-/* on x86_64, aligning at 16 bytes should be faster, but wastes more memory */
+/* on amd64, aligning at 16 bytes should be faster, but wastes more memory */
 #define P_FUNC_ALIGN 3
 #define P_DATA_ALIGN 3
 
@@ -49,4 +49,4 @@
 
 /* clang-format on */
 
-#endif /* M4TH_COMMON_ASM_MH */
+#endif /* M4TH_INCLUDE_ASM_MH */

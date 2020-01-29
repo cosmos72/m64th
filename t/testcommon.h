@@ -23,19 +23,19 @@
 enum {
     tfalse = (m4cell)0,
     ttrue = (m4cell)-1,
-    m4enum_per_m4cell = SZ / SZe, /* # of m4enum needed to store an m4cell */
-    callsz = 1 + m4enum_per_m4cell,
+    m4token_per_m4cell = SZ / SZt, /* # of m4token needed to store an m4cell */
+    callsz = 1 + m4token_per_m4cell,
 };
 
-/* store m4enum numeric constant in a sequence of m4enum */
-#define E(n) (n)
-/** store int16_t numeric constant in a sequence of m4enum */
+/* store m4token numeric constant in a sequence of m4token */
+#define T(n) (n)
+/** store int16_t numeric constant in a sequence of m4token */
 #define SHORT(n) (int16_t)(n)
-/** store int32_t numeric constant in a sequence of m4enum */
+/** store int32_t numeric constant in a sequence of m4token */
 #define INT(n) (int32_t)(n), 0
-/** store m4cell numeric constant in a sequence of m4enum */
+/** store m4cell numeric constant in a sequence of m4token */
 #define CELL(n) (m4cell)(n), 0, 0, 0
-/** store XT address in a sequence of m4enum */
+/** store XT address in a sequence of m4token */
 #define XT(name) CELL(m4word_##name.code)
 
 #define CALLXT(name) m4_call_, XT(name)

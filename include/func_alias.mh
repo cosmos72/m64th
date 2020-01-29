@@ -15,8 +15,8 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_COMMON_FUNC_ALIAS_MH
-#define M4TH_COMMON_FUNC_ALIAS_MH
+#ifndef M4TH_INCLUDE_FUNC_ALIAS_MH
+#define M4TH_INCLUDE_FUNC_ALIAS_MH
 
 #include "../dispatch/sz.mh" /* SZ */
 #include "macro.mh"          /* CAT3() */
@@ -85,4 +85,4 @@
 #define m4f_inline_ m4f_missing_
 #define m4f_optimize_ m4f_missing_
 
-#endif /* M4TH_COMMON_FUNC_ALIAS_MH */
+#endif /* M4TH_INCLUDE_FUNC_ALIAS_MH */

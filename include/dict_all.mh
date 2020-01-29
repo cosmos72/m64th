@@ -15,12 +15,12 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_COMMON_DICT_ALL_MH
-#define M4TH_COMMON_DICT_ALL_MH
+#ifndef M4TH_INCLUDE_DICT_ALL_MH
+#define M4TH_INCLUDE_DICT_ALL_MH
 
 #include "dict_forth.mh"
 #include "dict_m4th.mh"
 
 #define DICT_WORDS_ALL(X) DICT_WORDS_FORTH(X) DICT_WORDS_M4TH(X)
 
-#endif /* M4TH_COMMON_DICT_ALL_MH */
+#endif /* M4TH_INCLUDE_DICT_ALL_MH */

@@ -42,7 +42,7 @@ enum {
     outbuf_n = 1024,
 };
 
-typedef char m4th_assert_sizeof_m4enum_equal_SZe[(sizeof(m4enum) == SZe) ? 1 : -1];
+typedef char m4th_assert_sizeof_m4token_equal_SZt[(sizeof(m4token) == SZt) ? 1 : -1];
 typedef char m4th_assert_sizeof_m4cell_equal_SZ[(sizeof(m4cell) == SZ) ? 1 : -1];
 
 /* ----------------------- m4mem ----------------------- */
@@ -139,21 +139,21 @@ void *m4mem_resize(void *ptr, size_t bytes) {
     return ptr;
 }
 
-/* ----------------------- m4enum ----------------------- */
+/* ----------------------- m4token ----------------------- */
 
 #if !defined(__STDC_VERSION__) || __STDC_VERSION__ < 199901L
-#warning "etable[] initialization currently requires C99"
+#warning "ttable[] initialization currently requires C99"
 #endif
 
-/* initialize the whole m4enum -> m4func conversion table in one fell swoop */
-#define ETABLE_ENTRY(strlen, str, name) [M4ENUM_VAL(name)] = FUNC_SYM(name),
-static m4func etable[] = {
-    DICT_WORDS_ALL(ETABLE_ENTRY) /**/[M4____end] = FUNC_SYM(_missing_),
+/* initialize the whole m4token -> m4func conversion table in one fell swoop */
+#define TTABLE_ENTRY(strlen, str, name) [M4TOKEN_VAL(name)] = FUNC_SYM(name),
+static m4func ttable[] = {
+    DICT_WORDS_ALL(TTABLE_ENTRY) /**/[M4____end] = FUNC_SYM(_missing_),
 };
-#undef ETABLE_ENTRY
+#undef TTABLE_ENTRY
 
-/* initialize the whole m4enum -> m4word conversion table in one fell swoop */
-#define WTABLE_ENTRY(strlen, str, name) [M4ENUM_VAL(name)] = &WORD_SYM(name),
+/* initialize the whole m4token -> m4word conversion table in one fell swoop */
+#define WTABLE_ENTRY(strlen, str, name) [M4TOKEN_VAL(name)] = &WORD_SYM(name),
 const m4word *wtable[] = {
     DICT_WORDS_ALL(WTABLE_ENTRY) /**/[M4____end] = NULL,
 };
@@ -161,7 +161,7 @@ const m4word *wtable[] = {
 
 enum { wtable_n = sizeof(wtable) / sizeof(wtable[0]) };
 
-void m4enum_print(m4enum val, FILE *out) {
+void m4token_print(m4token val, FILE *out) {
     if (/*val >= 0 &&*/ val < M4____end) {
         const m4word *w = wtable[val];
         if (w != NULL) {
@@ -173,7 +173,7 @@ void m4enum_print(m4enum val, FILE *out) {
             }
         }
     }
-    fprintf(out, "%d ", (int)val);
+    fprintf(out, "T(%d) ", (int)(int16_t)val);
 }
 
 /* ----------------------- m4cspan ----------------------- */
@@ -206,14 +206,14 @@ m4cell m4code_equal(m4code src, m4code dst) {
 }
 
 void m4code_print(m4code src, FILE *out) {
-    const m4enum *data = src.data;
+    const m4token *data = src.data;
     m4cell i, n = src.n;
     if (data == NULL || n == 0 || out == NULL) {
         return;
     }
     fprintf(out, "<%ld> ", (long)n);
     for (i = 0; i < n; i++) {
-        m4enum_print(data[i], out);
+        m4token_print(data[i], out);
     }
 }
 
@@ -264,17 +264,17 @@ void m4flags_print(m4flags fl, FILE *out) {
 
 /* ----------------------- m4slice ----------------------- */
 
-static m4cell m4_2bytes_copy_to_enum(uint16_t src, m4enum *dst) {
+static m4cell m4_2bytes_copy_to_token(uint16_t src, m4token *dst) {
     memcpy(dst, &src, sizeof(src));
-    return sizeof(src) / SZe;
+    return sizeof(src) / SZt;
 }
-static m4cell m4_4bytes_copy_to_enum(uint32_t src, m4enum *dst) {
+static m4cell m4_4bytes_copy_to_token(uint32_t src, m4token *dst) {
     memcpy(dst, &src, sizeof(src));
-    return sizeof(src) / SZe;
+    return sizeof(src) / SZt;
 }
-static m4cell m4_8bytes_copy_to_enum(uint64_t src, m4enum *dst) {
+static m4cell m4_8bytes_copy_to_token(uint64_t src, m4token *dst) {
     memcpy(dst, &src, sizeof(src));
-    return sizeof(src) / SZe;
+    return sizeof(src) / SZt;
 }
 
 void m4slice_copy_to_code(const m4slice src, m4code *dst) {
@@ -290,23 +290,23 @@ void m4slice_copy_to_code(const m4slice src, m4code *dst) {
     }
     m4cell i = 0, n = src.n;
     const m4cell *sdata = src.data;
-    m4enum *ddata = dst->data;
+    m4token *ddata = dst->data;
     while (i < n) {
         m4cell x = sdata[i];
         const m4word *w;
-        ddata[i++] = (m4enum)x;
+        ddata[i++] = (m4token)x;
         if (x < 0 || x >= M4____end || (w = wtable[x]) == NULL) {
             continue;
         }
         switch (w->flags & M4FLAG_CONSUMES_IP_MASK) {
         case M4FLAG_CONSUMES_IP_2:
-            i += m4_2bytes_copy_to_enum((uint16_t)sdata[i], ddata + i);
+            i += m4_2bytes_copy_to_token((uint16_t)sdata[i], ddata + i);
             break;
         case M4FLAG_CONSUMES_IP_4:
-            i += m4_4bytes_copy_to_enum((uint32_t)sdata[i], ddata + i);
+            i += m4_4bytes_copy_to_token((uint32_t)sdata[i], ddata + i);
             break;
         case M4FLAG_CONSUMES_IP_8:
-            i += m4_8bytes_copy_to_enum((uint64_t)sdata[i], ddata + i);
+            i += m4_8bytes_copy_to_token((uint64_t)sdata[i], ddata + i);
             break;
         }
     }
@@ -401,12 +401,13 @@ m4cell m4string_compare(m4string a, m4string b) {
 /* ----------------------- m4word ----------------------- */
 
 m4code m4word_code(const m4word *w, m4cell code_start_n) {
-    m4code code = {(m4enum *)w->code + code_start_n, w->code_n - code_start_n};
+    m4code code = {(m4token *)w->code + code_start_n, w->code_n - code_start_n};
     return code;
 }
 
 m4string m4word_data(const m4word *w, m4cell data_start_n) {
-    m4string data = {(m4char *)w->code + w->code_n + data_start_n, w->data_len - data_start_n};
+    m4string data = {(m4char *)(w->code + w->code_n) + data_start_n,
+                     (m4cell)(w->data_len - data_start_n)};
     return data;
 }
 
@@ -578,7 +579,7 @@ m4th *m4th_new() {
     m->in = m4cspan_alloc(inbuf_n);
     m->out = m4cspan_alloc(outbuf_n);
     m->flags = m4th_flag_interpret;
-    m->etable = etable;
+    m->ttable = ttable;
     m4wordlist_new_vec(m->wordlist);
     m->in_cstr = NULL;
     return m;

@@ -15,8 +15,8 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_COMMON_FUNC_FWD_H
-#define M4TH_COMMON_FUNC_FWD_H
+#ifndef M4TH_INCLUDE_FUNC_FWD_H
+#define M4TH_INCLUDE_FUNC_FWD_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -31,7 +31,7 @@ typedef struct m4arg_s m4arg; /* intentionally incomplete type, cannot be instan
  * The functions m4f* use m4th calling convention, not C !
  *
  * Do not attempt to invoke them directly from C - the only useful
- * operation from C is taking their address and copying it to m4th->etable
+ * operation from C is taking their address and copying it to m4th->ttable
  */
 
 #define FUNC_FWD_ENTRY(strlen, str, name) void m4f##name(m4arg _);
@@ -42,4 +42,4 @@ DICT_WORDS_ALL(FUNC_FWD_ENTRY) /* declare all void m4f*(m4arg _) in one fell swo
 }
 #endif
 
-#endif /* M4TH_COMMON_FUNC_FWD_H */
+#endif /* M4TH_INCLUDE_FUNC_FWD_H */

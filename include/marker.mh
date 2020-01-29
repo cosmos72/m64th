@@ -15,8 +15,8 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_COMMON_MARKER_ASM_MH
-#define M4TH_COMMON_MARKER_ASM_MH
+#ifndef M4TH_INCLUDE_MARKER_ASM_MH
+#define M4TH_INCLUDE_MARKER_ASM_MH
 
 /* clang-format off */
 
@@ -37,4 +37,4 @@
 
 /* clang-format on */
 
-#endif /* M4TH_COMMON_MARKER_ASM_MH */
+#endif /* M4TH_INCLUDE_MARKER_ASM_MH */

@@ -262,6 +262,31 @@ FUNC_START(swap)       /* swap */
 FUNC_END(swap)
 
 
+FUNC_START(to_byte)    /* to-byte */
+        movsbq   DTOPb, DTOP_sb;
+FUNC_END(to_byte)
+
+FUNC_START(to_short)   /* to-short */
+        movswq   DTOPh, DTOP_sh;
+FUNC_END(to_short)
+
+FUNC_START(to_int)     /* to-int */
+        movslq   DTOPw, DTOP_sw;
+FUNC_END(to_int)
+
+FUNC_START(to_char)    /* to-char */
+        movzbl   DTOPb, DTOP_ub;
+FUNC_END(to_char)
+
+FUNC_START(to_ushort)  /* to-ushort */
+        movzwl   DTOPh, DTOP_uh;
+FUNC_END(to_ushort)
+
+FUNC_START(to_uint)    /* to-uint */
+        movl     DTOPw, DTOP_uw;
+FUNC_END(to_uint)
+
+
 FUNC_START(xor)        /* xor  */
         DPOP(  REG1)
         xor    REG1,  DTOP;

@@ -14,8 +14,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef M4TH_COMMON_ENUM_FORTH_MH
-#define M4TH_COMMON_ENUM_FORTH_MH
+#ifndef M4TH_INCLUDE_TOKEN_FORTH_MH
+#define M4TH_INCLUDE_TOKEN_FORTH_MH
 
 /* 'forth' wordlist: 'core' word set */
 #define M4store 1              /* !        */
@@ -336,4 +336,4 @@
 /* 'forth' wordlist: 'string' word set */
 /* TODO */
 
-#endif /* M4TH_COMMON_ENUM_FORTH_MH */
+#endif /* M4TH_INCLUDE_TOKEN_FORTH_MH */

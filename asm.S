@@ -39,7 +39,7 @@ SECTION_FUNC()
 #include "arm64/io.S"
 #include "arm64/loop.S"
 #else
-#error "unsupported architecture: expecting amd64 or arm64"
+#error "unsupported architecture: expecting x86_64 (amd64) or aarch64 (arm64)"
 #endif
 
 #include "generic_asm/arith.S"

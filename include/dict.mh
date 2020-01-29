@@ -15,8 +15,8 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_COMMON_DICT_MH
-#define M4TH_COMMON_DICT_MH
+#ifndef M4TH_INCLUDE_DICT_MH
+#define M4TH_INCLUDE_DICT_MH
 
 #define DICT_SYM(name) m4dict_##name
 
@@ -37,4 +37,4 @@
     DICT_WORD_OFF(name, last_wordname)                                                             \
     DICT_NAME_OFF(name)
 
-#endif /* M4TH_COMMON_DICT_MH */
+#endif /* M4TH_INCLUDE_DICT_MH */

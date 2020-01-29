@@ -163,6 +163,31 @@ FUNC_START(rshift)
 FUNC_END(rshift)
 
 
+FUNC_START(to_byte)    /* to-byte */
+        sbfx   DTOP, DTOP, 0, 8;
+FUNC_END(to_byte)
+
+FUNC_START(to_short)   /* to-short */
+        sbfx   DTOP, DTOP, 0, 16;
+FUNC_END(to_short)
+
+FUNC_START(to_int)     /* to-int */
+        sbfx   DTOP, DTOP, 0, 32;
+FUNC_END(to_int)
+
+FUNC_START(to_char)    /* to-char */
+        ubfx   DTOPw, DTOPw, 0, 8;
+FUNC_END(to_char)
+
+FUNC_START(to_ushort)  /* to-ushort */
+        ubfx   DTOPw, DTOPw, 0, 16;
+FUNC_END(to_ushort)
+
+FUNC_START(to_uint)    /* to-uint */
+        ubfx   DTOPw, DTOPw, 0, 32;
+FUNC_END(to_uint)
+
+
 FUNC_START(xor)
         DPOP(  REG1)
         eor    DTOP, DTOP, REG1;

@@ -15,8 +15,8 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_COMMON_DICT_FORTH_MH
-#define M4TH_COMMON_DICT_FORTH_MH
+#ifndef M4TH_INCLUDE_DICT_FORTH_MH
+#define M4TH_INCLUDE_DICT_FORTH_MH
 
 #define DICT_WORDS_FORTH_CORE(X)                                                                   \
     X(1, "!", store)                                                                               \
@@ -86,4 +86,4 @@
     DICT_WORDS_FORTH_CORE_EXT(X)                                                                   \
     DICT_WORDS_FORTH_TOOLS_EXT(X)
 
-#endif /* M4TH_COMMON_DICT_FORTH_MH */
+#endif /* M4TH_INCLUDE_DICT_FORTH_MH */

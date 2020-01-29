@@ -15,40 +15,40 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_COMMON_ENUM_H
-#define M4TH_COMMON_ENUM_H
+#ifndef M4TH_INCLUDE_TOKEN_H
+#define M4TH_INCLUDE_TOKEN_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 #include "dict_all.mh"
-#include "enum.mh"
+#include "token.mh"
 
 #include <stdint.h>
 
-#define M4ENUM_ENTRY(strlen, len, name) M4ENUM_SYM(name) = M4ENUM_VAL(name),
+#define M4TOKEN_ENTRY(strlen, len, name) M4TOKEN_SYM(name) = M4TOKEN_VAL(name),
 
 #if defined(__cplusplus) && __cplusplus >= 201103L
 
-/** small enum representing a forth instruction. same as m4enum */
-enum m4_enum : uint16_t { DICT_WORDS_ALL(M4ENUM_ENTRY) };
+/** small enum representing a forth instruction. same as m4token */
+enum m4_token : uint16_t { DICT_WORDS_ALL(M4TOKEN_ENTRY) };
 /** small enum representing a forth instruction */
-typedef m4_enum m4enum;
+typedef m4_token m4token;
 
 #else /* !defined(__cplusplus) || __cplusplus < 201103L */
 
-/** enum representing a forth instruction. use m4enum for accurate sizeof() */
-typedef enum m4_enum_e { DICT_WORDS_ALL(M4ENUM_ENTRY) } m4_enum;
-/** small integer representing a forth instruction. use m4_enum for symbolic names */
-typedef uint16_t m4enum;
+/** enum representing a forth instruction. use m4token for accurate sizeof() */
+typedef enum m4_token_e { DICT_WORDS_ALL(M4TOKEN_ENTRY) } m4_token;
+/** small integer representing a forth instruction. use m4_token for symbolic names */
+typedef uint16_t m4token;
 
 #endif /* defined(__cplusplus) && __cplusplus >= 201103L */
 
-#undef M4ENUM_ENTRY
+#undef M4TOKEN_ENTRY
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* M4TH_COMMON_ENUM_H */
+#endif /* M4TH_INCLUDE_TOKEN_H */

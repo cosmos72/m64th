@@ -15,8 +15,8 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_COMMON_OPT_MH
-#define M4TH_COMMON_OPT_MH
+#ifndef M4TH_INCLUDE_OPT_MH
+#define M4TH_INCLUDE_OPT_MH
 
 #define OPT1_BODY(x, _)                                                                            \
     x((cell_plus), (SZ_plus))      /* cell+    => SZ+      */                                      \
@@ -29,7 +29,8 @@
         x((true), (minus_one))     /* true     => -1       */
 
 #define OPT2_BODY(x, _)                             /* note: '_' represents noop       */          \
-    x((minus_one, times), (negate))                 /* -1 *            => negate       */          \
+    x((_ip_, drop), _)                              /* (ip) drop       =>              */          \
+        x((minus_one, times), (negate))             /* -1 *            => negate       */          \
         x((minus_one, plus), (one_minus))           /* -1 +            => 1-           */          \
         x((minus_one, minus), (one_plus))           /* -1 -            => 1+           */          \
         x((minus_one, div), (negate))               /* -1 /            => negate       */          \
@@ -278,4 +279,4 @@
     x((r_from, plus, to_r), (r_plus))      /* r> +    >r      => r+           */                   \
         x((r_from, drop, to_r), (r_store)) /* r> drop >r      => r!           */
 
-#endif /* M4TH_COMMON_OPT_MH */
+#endif /* M4TH_INCLUDE_OPT_MH */

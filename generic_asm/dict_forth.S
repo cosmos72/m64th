@@ -60,7 +60,7 @@ WORD_START(bye, c_store) /* tools ext */
     WORD_RSTACK(0,-1)
     WORD_NATIVE_NONE()
     /* exit is reachable by subsequent m4th_run_vm() */
-    WORD_ENUMS(bye, exit)
+    WORD_TOKENS(bye, exit)
 WORD_END(bye)
 WORD(c_fetch,          bye,        DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 WORD(cell_plus,        c_fetch,    DSTACK(1,1), RSTACK(0,0), WORD_PURE)
@@ -76,7 +76,7 @@ WORD_START(compile_comma, chars)
     WORD_RSTACK(0,0)
     WORD_NOJUMP()
     WORD_NATIVE_NONE()
-    WORD_ENUMS(_lit_enum_, _call_, _compile_enum_, /* compile (call) */
+    WORD_TOKENS(_compile_lit_token_, _call_, /* compile (call) */
                _compile_xt_,
 #if 0
                _call_, XT(_inline_),
@@ -96,7 +96,7 @@ WORD_START(exit, dup)
     WORD_RSTACK(0,-1) /* we do not yet track the return address stored in rstack */
     WORD_NATIVE_NONE()
    /* make inliner happy: it skips the final 'exit' of a word's code when inlining */
-    WORD_ENUMS(exit, exit)
+    WORD_TOKENS(exit, exit)
 WORD_END(exit)
 WORD(false,            exit,       DSTACK(0,1), RSTACK(0,0), WORD_PURE) /* core ext */
 WORD(i,                false,      DSTACK(0,1), RSTACK(1,1), WORD_PURE | M4FLAG_COMPILE_ONLY)
@@ -108,46 +108,53 @@ WORD_START(literal, j)
     WORD_RSTACK(0,0)
     WORD_NOJUMP()
     WORD_NATIVE_NONE()
-    WORD_ENUMS(
-      dup, _if_zero_, E(4),        /* if dtop = 0                  */
-          _compile_lit_enum_, zero,/*     append 'm4zero' to XT    */
-          drop, exit,              /*     exit                     */
-      _then_, dup, one_minus,
-      _if_zero_, E(4),             /* else if dtop = 1             */
-          _compile_lit_enum_, one, /*     append 'm4one' to XT     */
-          drop, exit,              /*     exit                     */
-      _then_, dup, two_minus,
-      _if_zero_, E(4),             /* else if dtop = 2             */
-          _compile_lit_enum_, two, /*     append 'm4two' to XT     */
-          drop, exit,              /*     exit                     */
-      _then_,
+    WORD_CODE_N_AUTO(literal)
+    WORD_DATA_N_AUTO(literal)
+    WORD_CODE_START(literal)
+        WORD_CODE_TOKENS(
+            _ip_, drop,
+            dup, _if_zero_, T(4),            /* if dtop = 0                  */
+                _compile_lit_token_, zero,   /*     append 'm4zero' to XT    */
+                drop, exit,                  /*     exit                     */
+            _then_, dup, one_minus,
+            _if_zero_, T(4),                 /* else if dtop = 1             */
+                _compile_lit_token_, one,    /*     append 'm4one' to XT     */
+                drop, exit,                  /*     exit                     */
+            _then_, dup, two_minus,
+            _if_zero_, T(4),                 /* else if dtop = 2             */
+                _compile_lit_token_, two,    /*     append 'm4two' to XT     */
+                drop, exit,                  /*     exit                     */
+            _then_, dup, four,
+            _if_equal_, T(4),                /* else if dtop = 4             */
+                _compile_lit_token_, four,   /*     append 'm4four' to XT    */
+                drop, exit,                  /*     exit                     */
 #if 0
-      dup, four, equal,
-      _if_, E(5),                  /* else if dtop = 4             */
-        drop, _lit_enum_, four,    /*   change dtop to 'm4four'    */
-        _compile_enum_, exit,      /*   append it to XT, exit      */
-      dup, eight, equal,
-      _if_, E(5),                  /* else if dtop = 8             */
-        drop, _lit_enum_, eight,   /*   change dtop to 'm4eight'   */
-        _compile_enum_, exit,      /*   append it to XT, exit      */
-      dup, minus_one, equal,
-      _if_, E(5),                      /* else if dtop = -1            */
-        drop, _lit_enum_, minus_one,   /*   change dtop 'm4minus_one'  */
-        _compile_enum_, exit,          /*   append it to XT, exit      */
+            dup, eight, equal,
+            _if_, T(5),                      /* else if dtop = 8             */
+                drop, _lit_token_, eight,      /*   append 'm4eight' to XT     */
+                _compile_token_, exit,         /*   exit                       */
+            dup, minus_one, equal,
+            _if_, T(5),                      /* else if dtop = -1            */
+                drop, _lit_token_, minus_one,  /*   append 'm4minus_one' to XT */
+                _compile_token_, exit,         /*   exit                       */
 #endif /* 0 */
-      dup, _literal2s_, SHORT(-0x8000),
-      _if_more_equal_, E(10),
-          dup, _literal2s_, SHORT(0x7FFF),
-          _if_less_equal_, E(4),
-              _compile_lit_enum_,
-              _literal2s_,             /* append 'm4_literal2s_' to XT */
-              _compile2s_, exit,       /* append (int16)dtop to XT     */
-          _then_,
-      _then_,
-      _compile_lit_enum_, _lit_cell_,  /* append 'm4_lit_cell_' to XT  */
-      _compile_cell_,                  /* append dtop to XT            */
-      exit
-    )
+            dup, _literal2s_, SHORT(-0x8000),
+            _if_more_equal_, T(10),
+                dup, _literal2s_, SHORT(0x7FFF),
+                _if_less_equal_, T(4),
+                    _compile_lit_token_,
+                    _literal2s_,             /* append 'm4_literal2s_' to XT */
+                    _compile2s_, exit,       /* append (int16)dtop to XT     */
+                _then_,
+            _then_,
+            _compile_lit_token_, _lit_cell_,  /* append 'm4_lit_cell_' to XT  */
+            _compile_cell_,                  /* append dtop to XT            */
+            exit
+        )
+    WORD_CODE_END(literal)
+    WORD_DATA_START(literal)
+        WORD_DATA_TOKENS(zero, one, minus_one, two, three, four, eight)
+    WORD_DATA_END(literal)
 WORD_END(literal)
 WORD(lshift,           literal,    DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(max,              lshift,     DSTACK(2,1), RSTACK(0,0), WORD_PURE)

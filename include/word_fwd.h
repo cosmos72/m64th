@@ -15,8 +15,8 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_COMMON_WORD_FWD_H
-#define M4TH_COMMON_WORD_FWD_H
+#ifndef M4TH_INCLUDE_WORD_FWD_H
+#define M4TH_INCLUDE_WORD_FWD_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -37,4 +37,4 @@ DICT_WORDS_ALL(M4WORD_ENTRY)
 }
 #endif
 
-#endif /* M4TH_COMMON_WORD_FWD_H */
+#endif /* M4TH_INCLUDE_WORD_FWD_H */

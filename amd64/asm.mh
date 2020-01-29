@@ -42,75 +42,75 @@
 #define REG1b   %al  /* low  8 bits of REG1 */
 #define REG1h   %ax  /* low 16 bits of REG1 */
 #define REG1w   %eax /* low 32 bits of REG1 */
-#define REG1e   %ax  /* (m4enum)REG1        */
+#define REG1t   %ax  /* (m4token)REG1       */
 #define REG1_sb %rax /* sign-extend  8 bits into REG1 */
 #define REG1_sh %rax /* sign-extend 16 bits into REG1 */
 #define REG1_sw %rax /* sign-extend 32 bits into REG1 */
-#define REG1_se %rax /* sign-extend m4enum  into REG1 */
+#define REG1_st %rax /* sign-extend m4token into REG1 */
 #define REG1_ub %eax /* zero-extend  8 bits into REG1 */
 #define REG1_uh %eax /* zero-extend 16 bits into REG1 */
 #define REG1_uw %eax /* zero-extend 32 bits into REG1 */
-#define REG1_ue %eax /* zero-extend m4enum  into REG1 */
+#define REG1_ut %eax /* zero-extend m4token into REG1 */
 
 #define REG2b   %cl  /* low  8 bits of REG2 */
 #define REG2h   %cx  /* low 16 bits of REG2 */
 #define REG2w   %ecx /* low 32 bits of REG2 */
-#define REG2e   %cx  /* (m4enum)REG2        */
+#define REG2t   %cx  /* (m4token)REG2       */
 #define REG2_sb %rcx /* sign-extend  8 bits into REG2 */
 #define REG2_sh %rcx /* sign-extend 16 bits into REG2 */
 #define REG2_sw %rcx /* sign-extend 32 bits into REG2 */
-#define REG2_se %rcx /* sign-extend m4enum  into REG2 */
+#define REG2_st %rcx /* sign-extend m4token into REG2 */
 #define REG2_ub %ecx /* zero-extend  8 bits into REG2 */
 #define REG2_uh %ecx /* zero-extend 16 bits into REG2 */
 #define REG2_uw %ecx /* zero-extend 32 bits into REG2 */
-#define REG2_ue %ecx /* zero-extend m4enum  into REG2 */
+#define REG2_ut %ecx /* zero-extend m4token into REG2 */
 
 #define REG3b   %dl  /* low  8 bits of REG3 */
 #define REG3h   %dx  /* low 16 bits of REG3 */
 #define REG3w   %edx /* low 32 bits of REG3 */
-#define REG3e   %dx  /* (m4enum)REG3        */
+#define REG3t   %dx  /* (m4token)REG3       */
 #define REG3_sb %rdx /* sign-extend  8 bits into REG3 */
 #define REG3_sh %rdx /* sign-extend 16 bits into REG3 */
 #define REG3_sw %rdx /* sign-extend 32 bits into REG3 */
-#define REG3_se %rdx /* sign-extend m4enum  into REG3 */
+#define REG3_st %rdx /* sign-extend m4token into REG3 */
 #define REG3_ub %edx /* zero-extend  8 bits into REG3 */
 #define REG3_uh %edx /* zero-extend 16 bits into REG3 */
 #define REG3_uw %edx /* zero-extend 32 bits into REG3 */
-#define REG3_ue %edx /* zero-extend m4enum  into REG3 */
+#define REG3_ut %edx /* zero-extend m4token into REG3 */
 
 #define DTOP    %rbx  /* value of first data stack element */
 #define DTOPb   %bl   /* low  8 bits of DTOP */
 #define DTOPh   %bx   /* low 16 bits of DTOP */
 #define DTOPw   %ebx  /* low 32 bits of DTOP */
-#define DTOPe   %bx   /* (m4enum)DTOP        */
+#define DTOPt   %bx   /* (m4token)DTOP        */
 #define DTOP_sb %rbx  /* sign-extend  8 bits into DTOP */
 #define DTOP_sh %rbx  /* sign-extend 16 bits into DTOP */
 #define DTOP_sw %rbx  /* sign-extend 32 bits into DTOP */
-#define DTOP_se %rbx  /* sign-extend m4enum  into DTOP */
+#define DTOP_st %rbx  /* sign-extend m4token into DTOP */
 #define DTOP_ub %ebx  /* zero-extend  8 bits into DTOP */
 #define DTOP_uh %ebx  /* zero-extend 16 bits into DTOP */
 #define DTOP_uw %ebx  /* zero-extend 32 bits into DTOP */
-#define DTOP_ue %ebx  /* zero-extend m4enum  into DTOP */
+#define DTOP_ut %ebx  /* zero-extend m4token into DTOP */
 
 #define RTOP    %r12  /* value of first data stack element */
 #define RTOPb   %r12b /* low  8 bits of RTOP */
 #define RTOPh   %r12w /* low 16 bits of RTOP */
 #define RTOPw   %r12d /* low 32 bits of RTOP */
-#define RTOPe   %r12w /* (m4enum)RTOP        */
+#define RTOPt   %r12w /* (m4token)RTOP        */
 #define RTOP_sb %r12  /* sign-extend  8 bits into RTOP */
 #define RTOP_sh %r12  /* sign-extend 16 bits into RTOP */
 #define RTOP_sw %r12  /* sign-extend 32 bits into RTOP */
-#define RTOP_se %r12  /* sign-extend m4enum  into RTOP */
+#define RTOP_st %r12  /* sign-extend m4token into RTOP */
 #define RTOP_ub %r12d /* zero-extend  8 bits into RTOP */
 #define RTOP_uh %r12d /* zero-extend 16 bits into RTOP */
 #define RTOP_uw %r12d /* zero-extend 32 bits into RTOP */
-#define RTOP_ue %r12d /* zero-extend m4enum  into RTOP */
+#define RTOP_ut %r12d /* zero-extend m4token into RTOP */
 
 #define DSTK  %rdi  /* pointer to second data stack element */
 #define RSTK  %rsi  /* pointer to second return stack element */
 #define M4TH  %r13  /* pointer to C struct m4th */
 #define M4XT  %r14  /* pointer to word being compiled */
-#define ETBL  %r9   /* pointer to table m4enum -> asm function address */
+#define TTBL  %r9   /* pointer to table m4token -> asm function address */
 #define RFFF  %r10  /* always contains -1 */
 #define IP    %r15  /* forth bytecode instruction pointer */
 #define RIP   %rip  /* x86-64 instruction pointer */
@@ -137,18 +137,18 @@
 #define LD_sb(reg, at)        movsbq at,    reg;   /* reg = *(int8_t *)at  */
 #define LD_sh(reg, at)        movswq at,    reg;   /* reg = *(int16_t*)at  */
 #define LD_sw(reg, at)        movslq at,    reg;   /* reg = *(int32_t*)at  */
-#define LD_se(reg, at)        LD_sh(reg, at)     /* reg = *(signed m4enum*)at */
+#define LD_st(reg, at)        LD_sh(reg, at)     /* reg = *(signed m4token*)at */
 
 #define LD_ub(reg, at)        movzbl at,    reg;   /* reg = *(uint8_t *)at  */
 #define LD_uh(reg, at)        movzwl at,    reg;   /* reg = *(uint16_t*)at  */
 #define LD_uw(reg, at)        movl   at,    reg;   /* reg = *(uint32_t*)at  */
-#define LD_ue(reg, at)        LD_uh(reg, at)     /* reg = *(unsigned m4enum*)at */
+#define LD_ut(reg, at)        LD_uh(reg, at)     /* reg = *(unsigned m4token*)at */
 
 /* no difference between signed and unsigned STOR* */
 #define STORb(reg, at)        movb   reg,   at;    /* *(uint8_t *)at  = reg */
 #define STORh(reg, at)        movw   reg,   at;    /* *(uint16_t*)at  = reg */
 #define STORw(reg, at)        movl   reg,   at;    /* *(uint32_t*)at  = reg */
-#define STORe(reg, at)        STORh(reg, at)       /* *(m4enum  *)at  = reg */
+#define STORt(reg, at)        STORh(reg, at)       /* *(m4token  *)at  = reg */
 
 /* clang-format on */
 
@@ -188,12 +188,12 @@
     ADD2(IMM(8), IP)                                                                               \
     ret;
 
-#define NEXTE() CAT2(NEXT, SZe)() /* skip SZe bytes, jump to following instruction */
-#define NEXTSZ() CAT2(NEXT, SZ)() /* skip SZ bytes,  jump to following instruction */
+#define NEXTT() CAT2(NEXT, SZt)()   /* skip SZt bytes, jump to following instruction */
+#define NEXTCELL() CAT2(NEXT, SZ)() /* skip SZ bytes,  jump to following instruction */
 
 #define RELJUMP()               /* relative jump by number of instructions stored at next IP */    \
-    LD_se(REG3_se, AT(IP));     /* REG3 = IP jump offset */                                        \
-    lea SZe(IP, REG3, SZe), IP; /* IP = TARGET_IP        */                                        \
+    LD_st(REG3_st, AT(IP));     /* REG3 = IP jump offset */                                        \
+    lea SZt(IP, REG3, SZt), IP; /* IP = TARGET_IP        */                                        \
     NEXT0()                     /* jump to TARGET_IP     */
 
 #endif /* M4TH_AMD64_ASM_MH */

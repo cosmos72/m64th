@@ -18,7 +18,7 @@
 #ifndef M4TH_M4TH_H
 #define M4TH_M4TH_H
 
-#include "include/enum.h" /* FIXME not a public header */
+#include "include/token.h" /* FIXME not a public header */
 #include "m4th.mh"
 
 #include <stddef.h>    /* size_t    */
@@ -37,9 +37,9 @@ typedef void (*m4func)(m4arg);
 typedef char
     m4th_assert_sizeof_m4instr_less_equal_sizeof_m4cell[sizeof(m4func) <= sizeof(m4cell) ? 1 : -1];
 
-typedef char m4th_assert_sizeof_m4enum_divides_sizeof_m4cell[(sizeof(m4cell) % sizeof(m4enum) == 0)
-                                                                 ? 1
-                                                                 : -1];
+typedef char
+    m4th_assert_sizeof_m4token_divides_sizeof_m4cell[(sizeof(m4cell) % sizeof(m4token) == 0) ? 1
+                                                                                             : -1];
 
 /** m4th flags */
 typedef enum m4th_flags_e {
@@ -87,8 +87,8 @@ struct m4countedstring_s { /**< counted string                   */
     m4char chars[1];       /**< characters. do NOT end with '\0' */
 };
 
-struct m4code_s { /**< array of m4enum, with size */
-    m4enum *data;
+struct m4code_s { /**< array of m4token, with size */
+    m4token *data;
     m4cell n;
 };
 
@@ -130,9 +130,9 @@ struct m4word_s {
     m4stackeffects eff;  /**< stack effects if not jumping                         */
     m4stackeffects jump; /**< stack effects if jumping                             */
     uint16_t native_len; /**< native code size, in bytes. 0xFFFF if not available  */
-    uint16_t code_n;     /**< forth code size, in m4enum:s                         */
+    uint16_t code_n;     /**< forth code size, in m4token:s                         */
     uint64_t data_len;   /**< data size, in bytes                                  */
-    m4enum code[0];      /**< code i.e. XT starts at [0], data starts at [code_n]  */
+    m4token code[0];     /**< code i.e. XT starts at [0], data starts at [code_n]  */
 };
 
 struct m4wordlist_s {   /**< wordlist                                             */
@@ -147,14 +147,14 @@ struct m4dict_s {     /**< dictionary. used to implement wordlist               
 
 enum { m4th_wordlist_n = 12 };
 
-struct m4th_s {       /**< m4th forth interpreter and compiler */
-    m4stack dstack;   /**< data stack                          */
-    m4stack rstack;   /**< return stack                        */
-    m4word *w;        /**< forth word being compiled           */
-    const m4enum *ip; /**< instruction pointer                 */
-    m4func *etable;   /**< table m4e -> asm function address   */
-    m4cspan in;       /**< input  buffer                       */
-    m4cspan out;      /**< output buffer                       */
+struct m4th_s {        /**< m4th forth interpreter and compiler */
+    m4stack dstack;    /**< data stack                          */
+    m4stack rstack;    /**< return stack                        */
+    m4word *w;         /**< forth word being compiled           */
+    const m4token *ip; /**< instruction pointer                 */
+    m4func *ttable;    /**< table m4t -> asm function address   */
+    m4cspan in;        /**< input  buffer                       */
+    m4cspan out;       /**< output buffer                       */
 
     m4cell flags;          /**< m4th_flags                               */
     const void *c_regs[1]; /**< m4th_run_vm() may save C registers here  */
@@ -209,7 +209,7 @@ void m4mem_unmap(void *ptr, size_t bytes);
 m4cell m4code_equal(m4code src, m4code dst);
 void m4code_print(m4code src, FILE *out);
 
-void m4enum_print(m4enum val, FILE *out);
+void m4token_print(m4token val, FILE *out);
 
 void m4slice_copy_to_code(m4slice src, m4code *dst);
 void m4slice_to_word_code(const m4slice *src, m4word *dst);

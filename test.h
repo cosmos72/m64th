@@ -23,6 +23,10 @@
 m4cell m4th_testcompile(m4th *m, FILE *out);
 m4cell m4th_testexecute(m4th *m, FILE *out);
 
+/* -------------- m4slice  -------------- */
+
+void m4slice_copy_to_word_code(m4slice src, m4word *w);
+
 /* -------------- m4test_stack  -------------- */
 
 enum { m4test_stack_n = 5 };
@@ -56,7 +60,7 @@ void m4test_code_print(const m4test_code *src, FILE *out);
 typedef struct m4test_word_s {
     m4word impl;
     /* reserve space for test code + generated code */
-    m4enum code[2 * m4test_code_n];
+    m4token code[2 * m4test_code_n];
 } m4test_word;
 
 #endif /* M4TH_TEST_H */

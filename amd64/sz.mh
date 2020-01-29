@@ -37,8 +37,8 @@
 #define SZ17 136 /* SZ * 17 */
 #define PSZ 3    /* (1 << PSZ) == SZ */
 
-#define SZe 2  /* sizeof(m4enum) in bytes */
-#define SZe2 4 /* SZe * 2 */
-#define PSZe 1 /* (1 << PSZe) == SZe */
+#define SZt 2  /* sizeof(m4token) in bytes */
+#define SZt2 4 /* SZt * 2 */
+#define PSZt 1 /* (1 << PSZt) == SZt */
 
 #endif /* M4TH_AMD64_SZ_MH */

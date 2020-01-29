@@ -16,9 +16,9 @@
  */
 
 #include "impl.h"
-#include "dispatch/sz.mh" /* SZ SZe preprocessor macros */
+#include "dispatch/sz.mh" /* SZ SZt preprocessor macros */
 #include "include/asm.mh"
-#include "include/enum.h"
+#include "include/token.h"
 
 #include <assert.h> /* assert()                   */
 #include <errno.h>  /* errno                      */
@@ -26,26 +26,26 @@
 #include <string.h> /* memcmp() memcpy() strlen() */
 
 enum {
-    m4enum_per_m4cell = SZ / SZe, /* # of m4enum needed to store an m4cell */
+    m4token_per_m4cell = SZ / SZt, /* # of m4token needed to store an m4cell */
 };
 
 static inline void dpush(m4th *m, m4cell val) {
     *--m->dstack.curr = val;
 }
 
-static inline m4enum *vec_ipush_m4cell(m4enum *code, m4cell val) {
-    /* store an m4cell in consecutive m4enum. layout depends on endianness */
+static inline m4token *vec_ipush_m4cell(m4token *code, m4cell val) {
+    /* store an m4cell in consecutive m4token. layout depends on endianness */
     memcpy(code, &val, sizeof(m4cell));
-    return code + m4enum_per_m4cell;
+    return code + m4token_per_m4cell;
 }
 
 static inline void ipush_m4cell(m4th *m, m4cell val) {
     m4word *w = m->w;
     vec_ipush_m4cell(w->code + w->code_n, val);
-    w->code_n += m4enum_per_m4cell;
+    w->code_n += m4token_per_m4cell;
 }
 
-static inline void ipush(m4th *m, m4enum val) {
+static inline void ipush(m4th *m, m4token val) {
     m->w->code[m->w->code_n++] = val;
 }
 
@@ -144,10 +144,10 @@ static m4cell m4th_compile_word(m4th *m, const m4word *w) {
 
 /** temporary C implementation of (interpret-word) */
 static m4cell m4th_interpret_word(m4th *m, const m4word *w) {
-    const m4enum *ip_save = m->ip;
-    m4enum torun[2 + m4enum_per_m4cell];
+    const m4token *ip_save = m->ip;
+    m4token torun[2 + m4token_per_m4cell];
     {
-        m4enum *p = torun;
+        m4token *p = torun;
         *p++ = m4_call_;
         p = vec_ipush_m4cell(p, (m4cell)w->code);
         *p++ = m4bye;

@@ -37,24 +37,24 @@ FUNC_END(xt_code_n_fetch)
 FUNC_START(_compile2s_)    /* (compile-2s,) */
         /* TODO check if enough space */
         LD_uh( REG1_uh,    AT(M4XT, XT_OFF_CODE_N))    /* xt.code_n */
-        STORh( DTOPh,      AT(M4XT, REG1, SZe))        /* xt[xt.code_n] = (int16)DTOP */
-        ADD2(  IMM(2/SZe), REG1)
+        STORh( DTOPh,      AT(M4XT, REG1, SZt))        /* xt[xt.code_n] = (int16)DTOP */
+        ADD2(  IMM(2/SZt), REG1)
         DPOP(  DTOP)
-        STORh( REG1h,      AT(M4XT, XT_OFF_CODE_N))    /* xt.code_n += 2/SZe */
+        STORh( REG1h,      AT(M4XT, XT_OFF_CODE_N))    /* xt.code_n += 2/SZt */
 FUNC_END(_compile2s_)
 #endif
 
 
-#ifndef M4_COMPILE_LIT_ENUM_
-/** ( -- ) must be followed by m4enum, append it to XT being compiled. */
-FUNC_START(_compile_lit_enum_)    /* (compile-lit-enum,) */
+#ifndef M4_COMPILE_LIT2S_
+/** ( -- ) must be followed by int16, append it to XT being compiled. */
+FUNC_START(_compile_lit2s_)    /* (compile-lit-2s,) */
         /* TODO check if enough space */
-        LD_ue( REG2_ue,    AT(IP))                     /* REG1 = enum          */
-        LD_uh( REG1_uh,    AT(M4XT, XT_OFF_CODE_N))    /* xt.code_n            */
-        STORe( REG2e,      AT(M4XT, REG1, SZe))        /* xt[xt.code_n] = enum */
-        INC1(  REG1)
-        STORh( REG1h,      AT(M4XT, XT_OFF_CODE_N))    /* xt.code_n ++         */
-        NEXTE()                                        /* skip enum            */
-FUNC_RAWEND(_compile_lit_enum_)
+        LD_sh( REG2_sh,    AT(IP))                     /* REG1 = int16          */
+        LD_uh( REG1_uh,    AT(M4XT, XT_OFF_CODE_N))    /* xt.code_n             */
+        STORh( REG2h,      AT(M4XT, REG1, SZt))        /* xt[xt.code_n] = int16 */
+        ADD2(  IMM(2/SZt), REG1)
+        STORh( REG1h,      AT(M4XT, XT_OFF_CODE_N))    /* xt.code_n ++          */
+        NEXT2()                                        /* skip int16            */
+FUNC_RAWEND(_compile_lit2s_)
 #endif
 
