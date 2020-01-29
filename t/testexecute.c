@@ -92,9 +92,9 @@ static const m4cell crc1byte_array[] = {
 /* initialized by m4th_testexecute() */
 static m4token crc1byte_tarray[N_OF(crc1byte_array)];
 
-/* -------------- known-lit -------------- */
+/* -------------- token-gives-num -------------- */
 
-static const m4token knownlit_table[] = {
+static const m4token token_gives_num_table[] = {
     m4zero, m4one, m4minus_one, m4two, m4three, m4four, m4eight,
 };
 
@@ -107,15 +107,13 @@ static const m4token knownlit_table[] = {
  *   return n, false;
  * }
  */
-static const m4cell knownlit_array[] = {
+/* initialized by m4th_testexecute() */
+static const m4token token_gives_num_tarray[] = {
     m4over,         m4over,                        /* ( n token n token ) */
     m4_exec_token_, m4_if_equal_, T(4),            /* ( n token )         */
     /**/ m4nip,     m4true,       m4exit,          /* ( token true )      */
     m4_then_,       m4drop,       m4false, m4exit, /* ( n false )         */
 };
-
-/* initialized by m4th_testexecute() */
-static m4token knownlit_tarray[N_OF(knownlit_array)];
 
 /* -------------- m4test -------------- */
 
@@ -358,16 +356,31 @@ static m4testexecute testexecute[] = {
      {}},
     {"(ip)", {m4_ip_, m4bye}, {{}, {}}, {{1, {-1 /* fixed by m4testexecute_fix() */}}, {}}, {}},
 #if 1
-    /* ----------------------------- known-lit ----------------------------------- */
-    {"1 'zero (known-lit)",
-     {m4_call_, CELL(knownlit_tarray), m4bye},
+    /* ----------------------------- token-gives-num ----------------------------------- */
+    {"0 'zero (token-gives-num)",
+     {m4_call_, CELL(token_gives_num_tarray), m4bye},
+     {{2, {0, m4zero}}, {}},
+     {{2, {m4zero, ttrue}}, {}},
+     {}},
+    {"1 'zero (token-gives-num)",
+     {m4_call_, CELL(token_gives_num_tarray), m4bye},
      {{2, {1, m4zero}}, {}},
      {{2, {1, tfalse}}, {}},
      {}},
-    {"1 'one (known-lit)",
-     {m4_call_, CELL(knownlit_tarray), m4bye},
+    {"1 'one (token-gives-num)",
+     {m4_call_, CELL(token_gives_num_tarray), m4bye},
      {{2, {1, m4one}}, {}},
      {{2, {m4one, ttrue}}, {}},
+     {}},
+    {"3 'three (token-gives-num)",
+     {m4_call_, CELL(token_gives_num_tarray), m4bye},
+     {{2, {3, m4three}}, {}},
+     {{2, {m4three, ttrue}}, {}},
+     {}},
+    {"7 'eight (token-gives-num)",
+     {m4_call_, CELL(token_gives_num_tarray), m4bye},
+     {{2, {7, m4eight}}, {}},
+     {{2, {7, tfalse}}, {}},
      {}},
 #endif
 #endif
@@ -441,7 +454,6 @@ m4cell m4th_testexecute(m4th *m, FILE *out) {
     /* printf("crc('t') = %u\n", (unsigned)crc1byte(0xffffffff, 't')); */
 
     m4array_copy_to_tarray(crc1byte_array, crc1byte_tarray);
-    m4array_copy_to_tarray(knownlit_array, knownlit_tarray);
 
     for (i = 0; i < n; i++) {
         if (!m4testexecute_run(m, &testexecute[i], &w)) {
