@@ -22,6 +22,33 @@
 #include "../include/dict_m4th.mh"
 
 /* ---------------------------------------------------------------------------------------------- */
+/* --- m4th-user -------------------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------------------------------- */
+DICT_START(m4th_user)
+
+DICTNAME(9, "m4th-user", m4th_user)
+
+DICT_WORDS_M4TH_USER(WORDNAME)
+
+WORD(less_equal,       less_equal,     DSTACK(2,1), RSTACK(0,0), WORD_PURE)
+WORD(more_equal,       less_equal,     DSTACK(2,1), RSTACK(0,0), WORD_PURE)
+WORD(zero_less_equal,  more_equal,     DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD(zero_more_equal, zero_less_equal, DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD(r_plus,          zero_more_equal, DSTACK(1,0), RSTACK(1,1), WORD_PURE | M4FLAG_COMPILE_ONLY)
+WORD(r_store,          r_plus,         DSTACK(1,0), RSTACK(1,1), WORD_PURE | M4FLAG_COMPILE_ONLY)
+WORD(to_byte,          r_store,        DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD(to_int,           to_byte,        DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD(to_short,         to_int,         DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD(to_char,          to_short,       DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD(to_uint,          to_char,        DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD(to_ushort,        to_uint,        DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+
+DICT_BODY(m4th_user, to_ushort)
+DICT_END(m4th_user)
+
+/* ---------------------------------------------------------------------------------------------- */
+/* --- m4th-impl -------------------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------------------------------- */
 DICT_START(m4th_impl)
 
 DICTNAME(9, "m4th-impl", m4th_impl)

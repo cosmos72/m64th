@@ -51,8 +51,7 @@ SECTION_RODATA()
 /* MARKER(asm_data_start) */
 
 #include "generic_asm/dict_forth.S"
-#include "generic_asm/dict_m4th_user.S"
-#include "generic_asm/dict_m4th_impl.S"
+#include "generic_asm/dict_m4th.S"
 
 /* MARKER(asm_data_end) */
 
