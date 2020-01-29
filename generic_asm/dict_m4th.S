@@ -30,6 +30,9 @@ DICTNAME(9, "m4th-user", m4th_user)
 
 DICT_WORDS_M4TH_USER(WORDNAME)
 
+/* just an alias for c@, no dedicated m4token value */
+WORDNAME(5, "char@", char_fetch)
+
 WORD(less_equal,       less_equal,     DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(more_equal,       less_equal,     DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(zero_less_equal,  more_equal,     DSTACK(1,1), RSTACK(0,0), WORD_PURE)
@@ -43,7 +46,22 @@ WORD(to_char,          to_short,       DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(to_uint,          to_char,        DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(to_ushort,        to_uint,        DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 
-DICT_BODY(m4th_user, to_ushort)
+WORD(byte_fetch,       to_ushort,      DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(int_fetch,        byte_fetch,     DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(short_fetch,      int_fetch,      DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+
+WORD_START(char_fetch, short_fetch)
+    WORD_FLAGS(WORD_IMPURE | M4FLAG_MEM_FETCH)
+    WORD_DSTACK(1,1)
+    WORD_RSTACK(0,0)
+    WORD_NOJUMP()
+    WORD_NATIVE_LEN(c_fetch)
+    WORD_TOKENS(c_fetch, bye)
+WORD_END(char_fetch)
+WORD(uint_fetch,       char_fetch,     DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(ushort_fetch,     uint_fetch,     DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+
+DICT_BODY(m4th_user, ushort_fetch)
 DICT_END(m4th_user)
 
 /* ---------------------------------------------------------------------------------------------- */

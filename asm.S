@@ -45,6 +45,7 @@ SECTION_FUNC()
 #include "generic_asm/arith.S"
 #include "generic_asm/compile.S"
 #include "generic_asm/loop.S"
+#include "generic_asm/mem.S"
 
 /* MARKER(asm_func_end) */
 SECTION_RODATA()

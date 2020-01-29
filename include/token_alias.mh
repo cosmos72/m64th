@@ -66,11 +66,18 @@
 #define m4_SZ_plus CAT3(m4_, SZ, _plus)   /* SZ+      */
 
 /* used to define m4to_token below */
-#define m4to_2s m4to_short
-#define m4to_2u m4to_ushort
-#define m4to_4s m4to_int
-#define m4to_4u m4to_uint
-#define m4to_token CAT3(m4to_, SZt, u) /* to-token is an alias for to-ushort */
+#define m4_to_1u m4to_char
+#define m4_to_2u m4to_ushort
+#define m4_to_4u m4to_uint
+#define m4_to_8u m4to_noop
+#define m4to_token CAT3(m4_to_, SZt, u)
+
+/* used to define m4token_fetch below */
+#define m4_fetch_1u m4c_fetch
+#define m4_fetch_2u m4ushort_fetch
+#define m4_fetch_4u m4uint_fetch
+#define m4_fetch_8u m4fetch
+#define m4token_fetch CAT3(m4_fetch_, SZt, u) /* fetch-$(SZt)u  */
 
 /* -------------------------------------------------------------------------- */
 /* M4* numeric values have uppercase prefix 'm4'                              */
@@ -119,12 +126,17 @@
 #define M4_SZ_plus CAT3(M4_, SZ, _plus)
 
 /* used to define M4to_token below */
-#define M4to_1s M4to_byte
-#define M4to_1u M4to_char
-#define M4to_2s M4to_short
-#define M4to_2u M4to_ushort
-#define M4to_4s M4to_int
-#define M4to_4u M4to_uint
-#define M4to_token CAT3(M4to_, SZt, u) /* to-token is an alias for to-$(SZt)u */
+#define M4_to_1u M4to_char
+#define M4_to_2u M4to_ushort
+#define M4_to_4u M4to_uint
+#define M4_to_8u M4to_noop
+#define M4to_token CAT3(M4_to_, SZt, u)
+
+/* used to define M4token_fetch below */
+#define M4_fetch_1u M4c_fetch
+#define M4_fetch_2u M4ushort_fetch
+#define M4_fetch_4u M4uint_fetch
+#define M4_fetch_8u M4fetch
+#define M4token_fetch CAT3(M4_fetch_, SZt, u) /* fetch-$(SZt)u  */
 
 #endif /* M4TH_INCLUDE_TOKEN_ALIAS_MH */

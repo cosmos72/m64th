@@ -19,13 +19,6 @@
 #error "generic_asm/arith.S can only be included from asm.S - do not attempt to use it directly"
 #endif
 
-FUNC_START(store) /* ! */
-        DPOP(  REG1)
-        STOR(  REG1, AT(DTOP))
-        DPOP(  DTOP)
-FUNC_END(store)
-
-
 #ifndef M4_LITERAL2S_
 FUNC_START(_literal2s_) /* (literal-2s) push to dstack the int16 at following IP */
         DPUSH( DTOP)
@@ -201,11 +194,6 @@ FUNC_START(to_r)       /* >r */
 FUNC_END(to_r)
 
 
-FUNC_START(fetch) /* @ */
-        LOAD(  DTOP, AT(DTOP))
-FUNC_END(fetch)
-
-
 FUNC_START(and)
         DPOP(  REG1)
         AND2(  REG1,  DTOP)
@@ -223,18 +211,6 @@ FUNC_END(bl)
 FUNC_START(drop)
         DPOP(  DTOP)
 FUNC_END(drop)
-
-
-FUNC_START(c_store)    /* c! */
-        DPOP(  REG1)
-        STORb( REG1b, AT(DTOP))
-        DPOP(  DTOP)
-FUNC_END(c_store)
-
-
-FUNC_START(c_fetch)    /* c@ */
-        LD_ub(DTOP_ub, AT(DTOP));
-FUNC_END(c_fetch)
 
 
 FUNC_START(depth)

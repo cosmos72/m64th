@@ -19,14 +19,14 @@
 #define M4TH_INCLUDE_OPT_MH
 
 #define OPT1_BODY(x, _)                                                                            \
-    x((cell_plus), (SZ_plus))      /* cell+    => SZ+      */                                      \
-        x((cells), (SZ_times))     /* cells    => SZ*      */                                      \
-        x((char_plus), (one_plus)) /* char+    => 1+       */                                      \
-        x((chars), _)              /* chars    =>          */                                      \
-        x((false), (zero))         /* false    => 0        */                                      \
-        x((noop), _)               /* noop     =>          */                                      \
-        x((r_fetch), (i))          /* r@       => i        */                                      \
-        x((true), (minus_one))     /* true     => -1       */
+    x((cell_plus), (SZ_plus))      /* cell+    => SZ+          */                                  \
+        x((cells), (SZ_times))     /* cells    => SZ*          */                                  \
+        x((char_plus), (one_plus)) /* char+    => 1+           */                                  \
+        x((chars), _)              /* chars    =>              */                                  \
+        x((false), (zero))         /* false    => 0            */                                  \
+        x((noop), _)               /* noop     =>              */                                  \
+        x((r_fetch), (i))          /* r@       => i            */                                  \
+        x((true), (minus_one))     /* true     => -1           */
 
 #define OPT2_BODY(x, _)                             /* note: '_' represents noop       */          \
     x((_ip_, drop), _)                              /* (ip) drop       =>              */          \

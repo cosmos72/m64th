@@ -20,51 +20,57 @@
 
 /* 'm4th-user' wordlist */
 /* #define M4bye 500 */
-#define M4zero_less_equal 501 /* 0<=       */
-#define M4zero_more_equal 502 /* 0>=       */
-#define M4less_equal 503      /* <=        */
-#define M4more_equal 504      /* >=        */
-#undef M4____gap              /*           */
-#define M4r_plus 520          /* r+        equivalent to: r> + >r    */
-#define M4r_store 521         /* r!        equivalent to: r> drop >r */
-#define M4to_byte 522         /* to-byte   truncate dtop to   int8_t, sign-extend high bits  */
-#define M4to_int 523          /* to-int    truncate dtop to  int32_t, sign-extend high bits  */
-#define M4to_short 524        /* to-short  truncate dtop to  int16_t, sign-extend high bits  */
-#define M4to_char 525         /* to-char   truncate dtop to  uint8_t, zero-extend high bits  */
-#define M4to_ushort 526       /* to-ushort truncate dtop to uint16_t, zero-extend high bits  */
-#define M4to_uint 527         /* to-uint   truncate dtop to uint32_t, zero-extend high bits  */
+#define M4zero_less_equal 501  /* 0<=       */
+#define M4zero_more_equal 502  /* 0>=       */
+#define M4less_equal 503       /* <=        */
+#define M4more_equal 504       /* >=        */
+#undef M4____gap               /*           */
+#define M4r_plus 520           /* r+        equivalent to: r> + >r    */
+#define M4r_store 521          /* r!        equivalent to: r> drop >r */
+#define M4to_byte 522          /* to-byte   truncate dtop to   int8_t, sign-extend high bits  */
+#define M4to_int 523           /* to-int    truncate dtop to  int32_t, sign-extend high bits  */
+#define M4to_short 524         /* to-short  truncate dtop to  int16_t, sign-extend high bits  */
+#define M4to_char 525          /* to-char   truncate dtop to  uint8_t, zero-extend high bits  */
+#define M4to_ushort 526        /* to-ushort truncate dtop to uint16_t, zero-extend high bits  */
+#define M4to_uint 527          /* to-uint   truncate dtop to uint32_t, zero-extend high bits  */
+#define M4byte_fetch 528       /* byte@     read   int8_t at address dtop, sign-extend */
+#define M4int_fetch 529        /* int@      read  int32_t at address dtop, sign-extend */
+#define M4short_fetch 530      /* short@    read  int16_t at address dtop, sign-extend */
+#define M4char_fetch M4c_fetch /* char@     read  uint8_t at address dtop, sign-extend */
+#define M4uint_fetch 532       /* uint@     read uint32_t at address dtop, sign-extend */
+#define M4ushort_fetch 533     /* ushort@   read uint16_t at address dtop, sign-extend */
 
 /* 'm4th-impl' wordlist */
-#define M4minus_one 530   /* -1       */
-#define M4zero 531        /* 0        */
-#define M4one 532         /* 1        */
-#define M4two 533         /* 2        */
-#define M4two_plus 534    /* 2+       */
-#define M4two_minus 535   /* 2-       */
-#define M4three 536       /* 3        */
-#define M4four 537        /* 4        */
-#define M4four_times 538  /* 4*       */
-#define M4four_plus 539   /* 4+       */
-#define M4eight 540       /* 8        */
-#define M4eight_times 541 /* 8*       */
-#define M4eight_plus 542  /* 8+       */
+#define M4minus_one 540   /* -1       */
+#define M4zero 541        /* 0        */
+#define M4one 542         /* 1        */
+#define M4two 543         /* 2        */
+#define M4two_plus 544    /* 2+       */
+#define M4two_minus 545   /* 2-       */
+#define M4three 546       /* 3        */
+#define M4four 547        /* 4        */
+#define M4four_times 548  /* 4*       */
+#define M4four_plus 549   /* 4+       */
+#define M4eight 550       /* 8        */
+#define M4eight_times 551 /* 8*       */
+#define M4eight_plus 552  /* 8+       */
 #undef M4____gap          /*                                         */
 /* (?do) must be followed by IP offset of 1st instruction after (loop) */
-#define M4_question_do_ 550
+#define M4_question_do_ 556
 #define M4_missing_ 0     /* (missing) called instead of invalid/unimplemented function */
-#define M4_call_ 551      /* (call) must be followed by XT */
-#define M4_compile2s_ 552 /* (compile2s,) pop int16 from dstack, append it to compiled code  */
-#define M4_compile4s_ 553 /* (compile4s,) pop int32 from dstack, append it to compiled code  */
-#define M4_compile8s_ 554 /* (compile8s,) pop int64 from dstack, append it to compiled code  */
+#define M4_call_ 557      /* (call) must be followed by XT */
+#define M4_compile2s_ 558 /* (compile2s,) pop int16 from dstack, append it to compiled code  */
+#define M4_compile4s_ 559 /* (compile4s,) pop int32 from dstack, append it to compiled code  */
+#define M4_compile8s_ 560 /* (compile8s,) pop int64 from dstack, append it to compiled code  */
 /* (compile-lit-2s,) must be followed by int16, append it to compiled code  */
-#define M4_compile_lit2s_ 555
-#define M4_do_ 556   /* (do)                                                              */
-#define M4_else_ 557 /* (else)    alias of (jump), used as marker for native compilation  */
+#define M4_compile_lit2s_ 561
+#define M4_do_ 562   /* (do)                                                              */
+#define M4_else_ 563 /* (else)    alias of (jump), used as marker for native compilation  */
                      /* (exec-native) pop address of native code from dstack and call it. */
-#define M4_exec_native_ 558
+#define M4_exec_native_ 564
 /* (exec-token) pop m4token from dstack and call it. works only for tokens with native_len != -1 */
-#define M4_exec_token_ 559
-#define M4_jump_ 560          /* (jump)    must be followed by IP offset */
+#define M4_exec_token_ 565
+#define M4_jump_ 566          /* (jump)    must be followed by IP offset */
 #undef M4____gap              /*                                         */
 #define M4_if_ 570            /* (if)      must be followed by IP offset */
 #define M4_if_zero_ 571       /* (if-zero) must be followed by IP offset */
@@ -91,6 +97,6 @@
 #define M4i_minus 593    /* i-       */
 #define M4noop 594       /* noop     */
 
-#define M4____end 595
+#define M4____end 597
 
 #endif /* M4TH_INCLUDE_TOKEN_M4TH_MH */

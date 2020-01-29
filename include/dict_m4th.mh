@@ -30,7 +30,13 @@
     X(8, "to-short", to_short)                                                                     \
     X(7, "to-char", to_char)                                                                       \
     X(7, "to-uint", to_uint)                                                                       \
-    X(9, "to-ushort", to_ushort)
+    X(9, "to-ushort", to_ushort)                                                                   \
+    X(5, "byte@", byte_fetch)                                                                      \
+    X(4, "int@", int_fetch)                                                                        \
+    X(6, "short@", short_fetch)                                                                    \
+    /* X(5, "char@", char_fetch) */ /* alias for c@, no dedicated m4enum value */                  \
+    X(5, "uint@", uint_fetch)                                                                      \
+    X(7, "ushort@", ushort_fetch)
 
 #define DICT_WORDS_M4TH_CORE(X) /* currently empty */
 
@@ -81,7 +87,9 @@
     X(2, "i*", i_times)                                                                            \
     X(2, "i+", i_plus)                                                                             \
     X(2, "i-", i_minus)                                                                            \
-    X(4, "noop", noop)
+    X(4, "noop", noop)                                                                             \
+    /* X(8, "to-token", to_token)  */ /* alias for to_ushort, no dedicated m4token value */        \
+    /* X(6, "token@", token_fetch) */ /* alias for ushort@, no dedicated m4token value */
 
 #define DICT_WORDS_M4TH(X) DICT_WORDS_M4TH_USER(X) DICT_WORDS_M4TH_CORE(X) DICT_WORDS_M4TH_IMPL(X)
 
