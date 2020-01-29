@@ -234,7 +234,10 @@
         x((negate, squared), (squared))                 /* negate squared  => squared      */      \
         x((over, drop), _)                              /* over   drop     =>              */      \
         x((over, nip), (swap))                          /* over   nip      => swap         */      \
+        /* x((over, over), (two_dup)) */                /* over   over     => 2dup         */      \
         x((from_r, to_r), _)                            /* r>     >r       =>              */      \
+        x((r_from, drop), (r_from_drop))                /* r>     drop     => r>drop       */      \
+        x((r_from_drop, to_r), (r_store))               /* r>drop r>       => r!           */      \
         x((rot, minus_rot), _)                          /* rot    rot      => -rot         */      \
         x((rot, rot), (minus_rot))                      /* rot    -rot     =>              */      \
         x((swap, times), (times))                       /* swap *          => *            */      \
@@ -275,8 +278,7 @@
         x((eight_plus, uint_fetch), (uint_bracket1))    /* 8+   uint@      => uint[2]      */      \
         x((SZ_plus, fetch), (cell_bracket1))            /* SZ+  @          => cell[1]      */
 
-#define OPT3_BODY(x, _)                    /* note: '_' represents noop       */                   \
-    x((r_from, plus, to_r), (r_plus))      /* r> +    >r      => r+           */                   \
-        x((r_from, drop, to_r), (r_store)) /* r> drop >r      => r!           */
+#define OPT3_BODY(x, _)               /* note: '_' represents noop       */                        \
+    x((r_from, plus, to_r), (r_plus)) /* r> +    >r      => r+           */
 
 #endif /* M4TH_INCLUDE_OPT_MH */

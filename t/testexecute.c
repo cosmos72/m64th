@@ -37,6 +37,20 @@ typedef struct m4testexecute_s {
     m4test_code codegen;
 } m4testexecute;
 
+/* -------------- m4cell[] -> m4token[] conversion -------------- */
+
+#define N_OF(array) (sizeof(array) / sizeof((array)[0]))
+
+#define m4array_copy_to_tarray(array, tarray)                                                      \
+    m4array_n_copy_to_tarray_n(array, N_OF(array), tarray, N_OF(tarray))
+
+void m4array_n_copy_to_tarray_n(const m4cell array[], const m4cell array_n /*               */,
+                                m4token tarray[], const m4cell tarray_n) {
+    m4slice src = {(m4cell *)array, array_n};
+    m4code dst = {tarray, tarray_n};
+    m4slice_copy_to_code(src, &dst);
+}
+
 /* -------------- crc -------------- */
 
 static m4cell crctable[256];
@@ -58,6 +72,8 @@ static void crcfill(m4cell table[256]) {
     }
 }
 
+/* -------------- crc1byte -------------- */
+
 uint32_t crc1byte(uint32_t crc, unsigned char byte) {
     assert(crctable[0xff]);
     return (crc >> 8) ^ crctable[(crc & 0xff) ^ byte];
@@ -69,25 +85,37 @@ uint32_t crc1byte(uint32_t crc, unsigned char byte) {
  *   over xor 0xff and  cells crctable + @  swap 8 rshift xor
  * ;
  */
-static const m4cell test_array_crc1byte[] = {
+static const m4cell crc1byte_array[] = {
     m4over, m4xor,   m4_lit_token_, T(0xff),       m4and, m4cells,  m4_lit_cell_, CELL(crctable),
     m4plus, m4fetch, m4swap,        m4_lit_token_, T(8),  m4rshift, m4xor,        m4exit,
 };
+/* initialized by m4th_testexecute() */
+static m4token crc1byte_tarray[N_OF(crc1byte_array)];
 
-enum { test_code_crc1byte_n = sizeof(test_array_crc1byte) / sizeof(test_array_crc1byte[0]) };
+/* -------------- known-lit -------------- */
 
-static const m4slice test_slice_crc1byte = {
-    (m4cell *)test_array_crc1byte,
-    test_code_crc1byte_n,
+static const m4token knownlit_table[] = {
+    m4zero, m4one, m4minus_one, m4two, m4three, m4four, m4eight,
 };
 
-/* initialized by main() */
-static m4token test_codearray_crc1byte[test_code_crc1byte_n];
-
-static m4code test_code_crc1byte = {
-    test_codearray_crc1byte,
-    test_code_crc1byte_n,
+/**
+ * ( n token -- token true | n false )
+ *
+ * if (exec_native(token) == n) {
+ *   return token, true;
+ * } else {
+ *   return n, false;
+ * }
+ */
+static const m4cell knownlit_array[] = {
+    m4over,         m4over,                        /* ( n token n token ) */
+    m4_exec_token_, m4_if_equal_, T(4),            /* ( n token )         */
+    /**/ m4nip,     m4true,       m4exit,          /* ( token true )      */
+    m4_then_,       m4drop,       m4false, m4exit, /* ( n false )         */
 };
+
+/* initialized by m4th_testexecute() */
+static m4token knownlit_tarray[N_OF(knownlit_array)];
 
 /* -------------- m4test -------------- */
 
@@ -138,26 +166,16 @@ static m4testexecute testexecute[] = {
     {"drop", {m4drop, m4bye}, {{1, {1}}, {}}, {{}, {}}, {}},
     {"dup", {m4dup, m4bye}, {{1, {-5}}, {}}, {{2, {-5, -5}}, {}}, {}},
     {"false", {m4false, m4bye}, {{}, {}}, {{1, {tfalse}}, {}}, {}},
-    {"i", {m4i, m4bye}, {{}, {1, {9}}}, {{1, {9}}, {1, {9}}}, {}},
-    {"i*", {m4i_times, m4bye}, {{1, {2}}, {1, {9}}}, {{1, {18}}, {1, {9}}}, {}},
-    {"i+", {m4i_plus, m4bye}, {{1, {2}}, {1, {9}}}, {{1, {11}}, {1, {9}}}, {}},
-    {"i-", {m4i_minus, m4bye}, {{1, {2}}, {1, {9}}}, {{1, {-7}}, {1, {9}}}, {}},
-    {"i'", {m4i_prime, m4bye}, {{}, {2, {10, 11}}}, {{1, {10}}, {2, {10, 11}}}, {}},
-    {"j", {m4j, m4bye}, {{}, {3, {12, 13, 14}}}, {{1, {12}}, {3, {12, 13, 14}}}, {}},
     {"lshift", {m4lshift, m4bye}, {{2, {99, 3}}, {}}, {{1, {99 << 3}}, {}}, {}},
     {"max", {m4max, m4bye}, {{2, {1, 2}}, {}}, {{1, {2}}, {}}, {}},
     {"min", {m4min, m4bye}, {{2, {3, 4}}, {}}, {{1, {3}}, {}}, {}},
     {"20 7 mod", {m4mod, m4bye}, {{2, {20, 7}}, {}}, {{1, {6}}, {}}, {}},
     {"-20 7 mod", {m4mod, m4bye}, {{2, {-20, 7}}, {}}, {{1, {-6}}, {}}, {}},
     {"negate", {m4negate, m4bye}, {{1, {-12}}, {}}, {{1, {12}}, {}}, {}},
-    {"nip", {m4nip, m4bye}, {{1, {5}}, {}}, {{}, {}}, {}},
+    {"nip", {m4nip, m4bye}, {{2, {3, 4}}, {}}, {{1, {4}}, {}}, {}},
     {"noop", {m4noop, m4bye}, {{}, {}}, {{}, {}}, {}},
     {"-7 14 or", {m4or, m4bye}, {{2, {-7, 14}}, {}}, {{1, {-7 | 14}}, {}}, {}},
     {"over", {m4over, m4bye}, {{2, {1, 0}}, {}}, {{3, {1, 0, 1}}, {}}, {}},
-    {"r!", {m4r_store, m4bye}, {{1, {11}}, {1, {0}}}, {{}, {1, {11}}}, {}},
-    {"r+", {m4r_plus, m4bye}, {{1, {30}}, {1, {4}}}, {{}, {1, {34}}}, {}},
-    {"r>", {m4r_from, m4bye}, {{}, {1, {99}}}, {{1, {99}}, {}}, {}},
-    {"r@", {m4r_fetch, m4bye}, {{}, {1, {4}}}, {{1, {4}}, {1, {4}}}, {}},
     {"rot", {m4rot, m4bye}, {{3, {1, 2, 3}}, {}}, {{3, {2, 3, 1}}, {}}, {}},
     {"rshift", {m4rshift, m4bye}, {{2, {99, 3}}, {}}, {{1, {99 >> 3}}, {}}, {}},
     {"swap", {m4swap, m4bye}, {{2, {4, 5}}, {}}, {{2, {5, 4}}, {}}, {}},
@@ -242,6 +260,19 @@ static m4testexecute testexecute[] = {
     {"3 3 >", {m4more, m4bye}, {{2, {3, 3}}, {}}, {{1, {tfalse}}, {}}, {}},
     {"-2 -1 >=", {m4more_equal, m4bye}, {{2, {-2, -1}}, {}}, {{1, {tfalse}}, {}}, {}},
     {"-2 -2 >=", {m4more_equal, m4bye}, {{2, {-2, -2}}, {}}, {{1, {ttrue}}, {}}, {}},
+    /* ----------------------------- return stack ------------------ */
+    {"i", {m4i, m4bye}, {{}, {1, {9}}}, {{1, {9}}, {1, {9}}}, {}},
+    {"i*", {m4i_times, m4bye}, {{1, {2}}, {1, {9}}}, {{1, {18}}, {1, {9}}}, {}},
+    {"i+", {m4i_plus, m4bye}, {{1, {2}}, {1, {9}}}, {{1, {11}}, {1, {9}}}, {}},
+    {"i-", {m4i_minus, m4bye}, {{1, {2}}, {1, {9}}}, {{1, {-7}}, {1, {9}}}, {}},
+    {"i'", {m4i_prime, m4bye}, {{}, {2, {10, 11}}}, {{1, {10}}, {2, {10, 11}}}, {}},
+    {"j", {m4j, m4bye}, {{}, {3, {12, 13, 14}}}, {{1, {12}}, {3, {12, 13, 14}}}, {}},
+    {"r@", {m4r_fetch, m4bye}, {{}, {1, {4}}}, {{1, {4}}, {1, {4}}}, {}},
+    {"r!", {m4r_store, m4bye}, {{1, {11}}, {1, {0}}}, {{}, {1, {11}}}, {}},
+    {"r+", {m4r_plus, m4bye}, {{1, {30}}, {1, {4}}}, {{}, {1, {34}}}, {}},
+    {"r>", {m4r_from, m4bye}, {{}, {1, {99}}}, {{1, {99}}, {}}, {}},
+    {"dup>r", {m4dup_to_r, m4bye}, {{1, {33}}, {}}, {{1, {33}}, {1, {33}}}, {}},
+    {"r>drop", {m4r_from_drop, m4bye}, {{}, {1, {99}}}, {{}, {}}, {}},
     /* ----------------------------- if, exec, jump, loop ------------------ */
     {"0 1 (do)", {m4_do_, m4bye}, {{2, {0, 1}}, {}}, {{}, {2, {0, 1}}}, {}},
     {"1 0 (do)", {m4_do_, m4bye}, {{2, {1, 0}}, {}}, {{}, {2, {1, 0}}}, {}},
@@ -321,11 +352,24 @@ static m4testexecute testexecute[] = {
     {"(call) XT(noop)", {m4_call_, XT(noop), m4bye}, {{}, {}}, {{}, {}}, {}},
     {"(call) XT(true)", {m4_call_, XT(true), m4bye}, {{}, {}}, {{1, {ttrue}}, {}}, {}},
     {"(call) XT(crc+)",
-     {m4_call_, CELL(test_codearray_crc1byte), m4bye},
+     {m4_call_, CELL(crc1byte_tarray), m4bye},
      {{2, {0xffffffff, 't'}}, {}},
      {{1, {2056627543 /* crc1byte(0xffffffff, 't')*/}}, {}},
      {}},
-    {"(ip)", {m4_ip_, m4bye}, {{}, {}}, {{1, {-1 /* fixed by m4testexecute_fix() */}}, {}}, {}}
+    {"(ip)", {m4_ip_, m4bye}, {{}, {}}, {{1, {-1 /* fixed by m4testexecute_fix() */}}, {}}, {}},
+#if 1
+    /* ----------------------------- known-lit ----------------------------------- */
+    {"1 'zero (known-lit)",
+     {m4_call_, CELL(knownlit_tarray), m4bye},
+     {{2, {1, m4zero}}, {}},
+     {{2, {1, tfalse}}, {}},
+     {}},
+    {"1 'one (known-lit)",
+     {m4_call_, CELL(knownlit_tarray), m4bye},
+     {{2, {1, m4one}}, {}},
+     {{2, {m4one, ttrue}}, {}},
+     {}},
+#endif
 #endif
 };
 
@@ -396,7 +440,8 @@ m4cell m4th_testexecute(m4th *m, FILE *out) {
 
     /* printf("crc('t') = %u\n", (unsigned)crc1byte(0xffffffff, 't')); */
 
-    m4slice_copy_to_code(test_slice_crc1byte, &test_code_crc1byte);
+    m4array_copy_to_tarray(crc1byte_array, crc1byte_tarray);
+    m4array_copy_to_tarray(knownlit_array, knownlit_tarray);
 
     for (i = 0; i < n; i++) {
         if (!m4testexecute_run(m, &testexecute[i], &w)) {

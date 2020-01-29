@@ -23,6 +23,8 @@
     X(2, ">=", more_equal)                                                                         \
     X(3, "0<=", zero_less_equal)                                                                   \
     X(3, "0>=", zero_more_equal)                                                                   \
+    X(5, "dup>r", dup_to_r)                                                                        \
+    X(6, "r>drop", r_from_drop)                                                                    \
     X(2, "r!", r_store)                                                                            \
     X(2, "r+", r_plus)                                                                             \
     X(7, "to-byte", to_byte)                                                                       \

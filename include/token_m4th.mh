@@ -25,6 +25,8 @@
 #define M4less_equal 503       /* <=        */
 #define M4more_equal 504       /* >=        */
 #undef M4____gap               /*           */
+#define M4r_from_drop 518      /* r>drop    equivalent to: r> drop    */
+#define M4dup_to_r 519         /* dup>r     equivalent to: dup >r     */
 #define M4r_plus 520           /* r+        equivalent to: r> + >r    */
 #define M4r_store 521          /* r!        equivalent to: r> drop >r */
 #define M4to_byte 522          /* to-byte   truncate dtop to   int8_t, sign-extend high bits  */

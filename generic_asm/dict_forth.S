@@ -59,8 +59,7 @@ WORD_START(bye, c_store) /* tools ext */
     WORD_DSTACK(0,-1)
     WORD_RSTACK(0,-1)
     WORD_NATIVE_NONE()
-    /* exit is reachable by subsequent m4th_run_vm() */
-    WORD_TOKENS(bye, exit)
+    WORD_TOKENS(bye, exit) /* exit is reachable by subsequent m4th_run_vm() */
 WORD_END(bye)
 WORD(c_fetch,          bye,        DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 WORD(cell_plus,        c_fetch,    DSTACK(1,1), RSTACK(0,0), WORD_PURE)
@@ -113,21 +112,22 @@ WORD_START(literal, j)
     WORD_CODE_START(literal)
         WORD_CODE_TOKENS(
             _ip_, drop,
-            dup, _if_zero_, T(4),            /* if dtop = 0                  */
+            dup, _if_zero_, T(5),            /* if dtop = 0                  */
                 _compile_lit_token_, zero,   /*     append 'm4zero' to XT    */
                 drop, exit,                  /*     exit                     */
             _then_, dup, one_minus,
-            _if_zero_, T(4),                 /* else if dtop = 1             */
+            _if_zero_, T(5),                 /* else if dtop = 1             */
                 _compile_lit_token_, one,    /*     append 'm4one' to XT     */
                 drop, exit,                  /*     exit                     */
             _then_, dup, two_minus,
-            _if_zero_, T(4),                 /* else if dtop = 2             */
+            _if_zero_, T(5),                 /* else if dtop = 2             */
                 _compile_lit_token_, two,    /*     append 'm4two' to XT     */
                 drop, exit,                  /*     exit                     */
             _then_, dup, four,
-            _if_equal_, T(4),                /* else if dtop = 4             */
+            _if_equal_, T(5),                /* else if dtop = 4             */
                 _compile_lit_token_, four,   /*     append 'm4four' to XT    */
                 drop, exit,                  /*     exit                     */
+            _then_,
 #if 0
             dup, eight, equal,
             _if_, T(5),                      /* else if dtop = 8             */

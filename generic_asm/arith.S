@@ -187,13 +187,6 @@ FUNC_START(eight_plus) /* 8+  m4th-impl */
 FUNC_END(eight_plus)
 
 
-FUNC_START(to_r)       /* >r */
-        RPUSH( RTOP)
-        MOVE(  DTOP, RTOP)
-        DPOP(  DTOP)
-FUNC_END(to_r)
-
-
 FUNC_START(and)
         DPOP(  REG1)
         AND2(  REG1,  DTOP)
@@ -226,33 +219,6 @@ FUNC_START(dup)
 FUNC_END(dup)
 
 
-FUNC_START(i)  /* i and r@ */
-        DPUSH( DTOP)
-        MOVE(  RTOP, DTOP)
-FUNC_END(i)
-
-
-FUNC_START(i_times) /* i*  m4th */
-        MUL2(  RTOP, DTOP)
-FUNC_END(i_times)
-
-
-FUNC_START(i_plus)  /* i+  m4th */
-        ADD2(  RTOP, DTOP)
-FUNC_END(i_plus)
-
-
-FUNC_START(i_minus) /* i-  m4th */
-        SUB2(  RTOP, DTOP)
-FUNC_END(i_minus)
-
-
-FUNC_START(i_prime) /* i' m4th */
-        DPUSH( DTOP)
-        LOAD(  DTOP, AT(RSTK))
-FUNC_END(i_prime)
-
-
 FUNC_START(invert)
         NOT1(  DTOP)
 FUNC_END(invert)
@@ -274,7 +240,7 @@ FUNC_END(negate)
 
 
 FUNC_START(nip)
-        DPOP(  DTOP)
+        ADD2( IMM(SZ), DSTK)
 FUNC_END(nip)
 
 
@@ -294,25 +260,6 @@ FUNC_START(over)
 FUNC_END(over)
 
 
-FUNC_START(r_store)        /* r! */
-        MOVE(  DTOP, RTOP)
-        DPOP(  DTOP)
-FUNC_END(r_store)
-
-
-FUNC_START(r_plus)         /* r+ */
-        ADD2(  DTOP, RTOP)
-        DPOP(  DTOP)
-FUNC_END(r_plus)
-
-
-FUNC_START(r_from)         /* r> */
-        DPUSH( DTOP)
-        MOVE(  RTOP, DTOP)
-        RPOP(  RTOP)
-FUNC_END(r_from)
-
-
 FUNC_START(rot)
         LOAD(  REG1, AT(DSTK))
         STOR(  DTOP, AT(DSTK))
@@ -329,8 +276,3 @@ FUNC_START(swap)
 FUNC_END(swap)
 #endif
 
-
-FUNC_START(unloop)
-        LOAD(  RTOP, AT(RSTK, SZ)) /* load new top of rstack */
-        ADD2(  IMM(SZ2), RSTK)     /* pop return stack twice */
-FUNC_END(unloop)
