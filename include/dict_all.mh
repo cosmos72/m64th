@@ -21,6 +21,7 @@
 #include "dict_forth.mh"
 #include "dict_m4th.mh"
 
+#define DICT_TOKENS_ALL(X) DICT_TOKENS_FORTH(X) DICT_TOKENS_M4TH(X)
 #define DICT_WORDS_ALL(X) DICT_WORDS_FORTH(X) DICT_WORDS_M4TH(X)
 
 #endif /* M4TH_INCLUDE_DICT_ALL_MH */

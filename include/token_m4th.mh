@@ -59,20 +59,15 @@
 #undef M4____gap          /*                                         */
 /* (?do) must be followed by IP offset of 1st instruction after (loop) */
 #define M4_question_do_ 556
-#define M4_missing_ 0     /* (missing) called instead of invalid/unimplemented function */
-#define M4_call_ 557      /* (call) must be followed by XT */
-#define M4_compile2s_ 558 /* (compile2s,) pop int16 from dstack, append it to compiled code  */
-#define M4_compile4s_ 559 /* (compile4s,) pop int32 from dstack, append it to compiled code  */
-#define M4_compile8s_ 560 /* (compile8s,) pop int64 from dstack, append it to compiled code  */
-/* (compile-lit-2s,) must be followed by int16, append it to compiled code  */
-#define M4_compile_lit2s_ 561
-#define M4_do_ 562   /* (do)                                                              */
-#define M4_else_ 563 /* (else)    alias of (jump), used as marker for native compilation  */
-                     /* (exec-native) pop address of native code from dstack and call it. */
-#define M4_exec_native_ 564
+#define M4_missing_ 0 /* (missing) called instead of invalid/unimplemented function */
+#define M4_call_ 557  /* (call) must be followed by XT */
+#define M4_do_ 558    /* (do)                                                              */
+#define M4_else_ 559  /* (else)    alias of (jump), used as marker for native compilation  */
+                      /* (exec-native) pop address of native code from dstack and call it. */
+#define M4_exec_native_ 560
 /* (exec-token) pop m4token from dstack and call it. works only for tokens with native_len != -1 */
-#define M4_exec_token_ 565
-#define M4_jump_ 566          /* (jump)    must be followed by IP offset */
+#define M4_exec_token_ 561
+#define M4_jump_ 562          /* (jump)    must be followed by IP offset */
 #undef M4____gap              /*                                         */
 #define M4_if_ 570            /* (if)      must be followed by IP offset */
 #define M4_if_zero_ 571       /* (if-zero) must be followed by IP offset */
@@ -82,23 +77,29 @@
 #define M4_if_equal_ 575      /* (if=)     must be followed by IP offset */
 #define M4_if_more_ 576       /* (if>)     must be followed by IP offset */
 #define M4_if_more_equal_ 577 /* (if>=)    must be followed by IP offset */
-#undef M4____gap              /*          */
-#define M4_inline_ 580        /* (inline) try to inline calls in word being compiled        */
-#define M4_ip_ 581            /* (ip)     push vm's current instruction pointer to dstack   */
-#define M4_literal2s_ 582     /* (literal-2s)  must be followed by int16, push it to dstack */
-#define M4_literal4s_ 583     /* (literal-4s)  must be followed by int32, push it to dstack */
-#define M4_literal8s_ 584     /* (literal-8s)  must be followed by int64, push it to dstack */
-#define M4_leave_ 585    /* (leave) must be followed by IP offset of 1st instruction after (loop) */
-#define M4_loop_ 586     /* (loop)  must be followed by IP offset of 1st instruction after (do)   */
-#define M4_optimize_ 587 /* (optimize) try to optimize word being compiled */
-#define M4_then_ 588     /* (then) currently a noop, used as marker for native compilation */
+#undef M4____gap              /*                                         */
+#define M4_ip_ 580            /* (ip)     push vm's current instruction pointer to dstack   */
+#define M4_literal2s_ 581     /* (literal-2s)  must be followed by int16, push it to dstack */
+#define M4_literal4s_ 582     /* (literal-4s)  must be followed by int32, push it to dstack */
+#define M4_literal8s_ 583     /* (literal-8s)  must be followed by int64, push it to dstack */
+#define M4_leave_ 584 /* (leave) must be followed by IP offset of 1st instruction after (loop) */
+#define M4_loop_ 585  /* (loop)  must be followed by IP offset of 1st instruction after (do)   */
+#define M4_then_ 586  /* (then) currently a noop, used as marker for native compilation */
+#undef M4____gap      /*          */
+#define M4_compile2s_ 590 /* (compile2s,) pop int16 from dstack, append it to compiled code  */
+#define M4_compile4s_ 591 /* (compile4s,) pop int32 from dstack, append it to compiled code  */
+#define M4_compile8s_ 592 /* (compile8s,) pop int64 from dstack, append it to compiled code  */
+/* (compile-lit-2s,) must be followed by int16, append it to compiled code  */
+#define M4_compile_lit2s_ 593
+#define M4_inline_ 594   /* (inline) try to inline calls in word being compiled        */
+#define M4_optimize_ 595 /* (optimize) try to optimize word being compiled */
 #undef M4____gap         /*          */
-#define M4i_prime 590    /* i'       */
-#define M4i_times 591    /* i*       */
-#define M4i_plus 592     /* i+       */
-#define M4i_minus 593    /* i-       */
-#define M4noop 594       /* noop     */
+#define M4i_prime 600    /* i'       */
+#define M4i_times 601    /* i*       */
+#define M4i_plus 602     /* i+       */
+#define M4i_minus 603    /* i-       */
+#define M4noop 604       /* noop     */
 
-#define M4____end 597
+#define M4____end 605
 
 #endif /* M4TH_INCLUDE_TOKEN_M4TH_MH */

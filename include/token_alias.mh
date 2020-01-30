@@ -25,17 +25,6 @@
 /* m4token identifiers have lowercase prefix 'm4'                             */
 /* -------------------------------------------------------------------------- */
 
-#define m4int_plus m4four_plus             /* int+     => 4+       */
-#define m4ints m4four_times                /* ints     => 4*       */
-#define m4uint_plus m4four_plus            /* uint+    => 4+       */
-#define m4uints m4four_times               /* uints    => 4*       */
-#define m4short_plus m4two_plus            /* short+   => 2+       */
-#define m4shorts m4two_times               /* shorts   => 2*       */
-#define m4ushort_plus m4two_plus           /* ushort+  => 2+       */
-#define m4ushorts m4two_times              /* ushorts  => 2*       */
-#define m4tokens CAT3(m4_, SZt, _times)    /* tokens   => SZt*     */
-#define m4token_plus CAT3(m4_, SZt, _plus) /* tokens   => SZt+     */
-
 #define m4_compile_short_ m4_compile2s_
 #define m4_compile_int_ m4_compile4s_
 #define m4_compile_token_ CAT3(m4_compile, SZt, s_)
@@ -49,50 +38,56 @@
 #define m4_lit_cell_ CAT3(m4_literal, SZ, s_)
 #define m4_lit_xt_ CAT3(m4_literal, SZ, s_)
 
-/* used by m4tokens, m4token_plus, m4cells, m4cell_plus */
-#define m4_0 m4zero                       /* 0        */
-#define m4_1 m4one                        /* 1        */
-#define m4_2 m4two                        /* 2        */
-#define m4_2_plus m4two_plus              /* 2+       */
-#define m4_2_minus m4two_minus            /* 2-       */
-#define m4_3 m4three                      /* 3        */
-#define m4_4 m4four                       /* 4        */
-#define m4_4_times m4four_times           /* 4*       */
-#define m4_4_plus m4four_plus             /* 4+       */
-#define m4_8 m4eight                      /* 8        */
-#define m4_8_times m4eight_times          /* 8*       */
-#define m4_8_plus m4eight_plus            /* 8+       */
-#define m4_SZ_times CAT3(m4_, SZ, _times) /* SZ*      */
-#define m4_SZ_plus CAT3(m4_, SZ, _plus)   /* SZ+      */
+#define m4byte_plus m4one_plus   /* byte+    => 1+       */
+#define m4bytes m4noop           /* bytes    =>          */
+#define m4char_fetch m4c_fetch   /* char@ is an alias for c@ - no dedicated m4enum or m4func */
+#define m4short_plus m4two_plus  /* short+   => 2+       */
+#define m4shorts m4two_times     /* shorts   => 2*       */
+#define m4ushort_plus m4two_plus /* ushort+  => 2+       */
+#define m4ushorts m4two_times    /* ushorts  => 2*       */
+#define m4int_plus m4four_plus   /* int+     => 4+       */
+#define m4ints m4four_times      /* ints     => 4*       */
+#define m4uint_plus m4four_plus  /* uint+    => 4+       */
+#define m4uints m4four_times     /* uints    => 4*       */
 
-/* used to define m4to_token below */
+/* needed by m4tokens, m4token_plus, m4cells, m4cell_plus */
+#define m4_0 m4zero              /* 0        */
+#define m4_1 m4one               /* 1        */
+#define m4_2 m4two               /* 2        */
+#define m4_2_times m4two_times   /* 2*       */
+#define m4_2_plus m4two_plus     /* 2+       */
+#define m4_2_minus m4two_minus   /* 2-       */
+#define m4_3 m4three             /* 3        */
+#define m4_4 m4four              /* 4        */
+#define m4_4_times m4four_times  /* 4*       */
+#define m4_4_plus m4four_plus    /* 4+       */
+#define m4_8 m4eight             /* 8        */
+#define m4_8_times m4eight_times /* 8*       */
+#define m4_8_plus m4eight_plus   /* 8+       */
+
+/* needed by m4token_fetch */
+#define m4_1u_fetch m4char_fetch
+#define m4_2u_fetch m4ushort_fetch
+#define m4_4u_fetch m4uint_fetch
+#define m4_8u_fetch m4fetch
+
+/* needed by m4to_token */
 #define m4_to_1u m4to_char
 #define m4_to_2u m4to_ushort
 #define m4_to_4u m4to_uint
 #define m4_to_8u m4to_noop
+
+#define m4_SZ_times CAT3(m4_, SZ, _times)     /* SZ*      needed by cells   */
+#define m4_SZ_plus CAT3(m4_, SZ, _plus)       /* SZ+      needed by cell+   */
+#define m4token_fetch CAT3(m4_, SZt, u_fetch) /* token@   => _$(SZt)u_fetch */
+#define m4token_plus CAT3(m4_, SZt, _plus)    /* token+   => _$(SZt)_plus   */
+#define m4tokens CAT3(m4_, SZt, _times)       /* tokens   => _$(SZt)_times  */
+
 #define m4to_token CAT3(m4_to_, SZt, u)
 
-/* used to define m4token_fetch below */
-#define m4_fetch_1u m4c_fetch
-#define m4_fetch_2u m4ushort_fetch
-#define m4_fetch_4u m4uint_fetch
-#define m4_fetch_8u m4fetch
-#define m4token_fetch CAT3(m4_fetch_, SZt, u) /* fetch-$(SZt)u  */
-
 /* -------------------------------------------------------------------------- */
-/* M4* numeric values have uppercase prefix 'm4'                              */
+/* M4* numeric values have uppercase prefix 'M4'                              */
 /* -------------------------------------------------------------------------- */
-
-#define M4int_plus M4four_plus             /* int+     => 4+       */
-#define M4ints M4four_times                /* ints     => 4*       */
-#define M4uint_plus M4four_plus            /* uint+    => 4+       */
-#define M4uints M4four_times               /* uints    => 4*       */
-#define M4short_plus M4two_plus            /* short+   => 2+       */
-#define M4shorts M4two_times               /* shorts   => 2*       */
-#define M4ushort_plus M4two_plus           /* ushort+  => 2+       */
-#define M4ushorts M4two_times              /* ushorts  => 2*       */
-#define M4tokens CAT3(M4_, SZt, _times)    /* tokens   => SZt*     */
-#define M4token_plus CAT3(M4_, SZt, _plus) /* tokens   => SZt+     */
 
 #define M4_compile_short_ M4_compile2s_
 #define M4_compile_int_ M4_compile4s_
@@ -107,10 +102,23 @@
 #define M4_lit_cell_ CAT3(M4_literal, SZ, s_)
 #define M4_lit_xt_ CAT3(M4_literal, SZ, s_)
 
-/* used by M4tokens, M4token_plus, M4cells, M4cell_plus */
+#define M4byte_plus M4one_plus   /* byte+    => 1+       */
+#define M4bytes M4noop           /* bytes    =>          */
+#define M4char_fetch M4c_fetch   /* char@ is an alias for c@ - no dedicated M4enum or M4func */
+#define M4short_plus M4two_plus  /* short+   => 2+       */
+#define M4shorts M4two_times     /* shorts   => 2*       */
+#define M4ushort_plus M4two_plus /* ushort+  => 2+       */
+#define M4ushorts M4two_times    /* ushorts  => 2*       */
+#define M4int_plus M4four_plus   /* int+     => 4+       */
+#define M4ints M4four_times      /* ints     => 4*       */
+#define M4uint_plus M4four_plus  /* uint+    => 4+       */
+#define M4uints M4four_times     /* uints    => 4*       */
+
+/* needed by M4tokens, M4token_plus, M4cells, M4cell_plus */
 #define M4_0 M4zero              /* 0        */
 #define M4_1 M4one               /* 1        */
 #define M4_2 M4two               /* 2        */
+#define M4_2_times M4two_times   /* 2*       */
 #define M4_2_plus M4two_plus     /* 2+       */
 #define M4_2_minus M4two_minus   /* 2-       */
 #define M4_3 M4three             /* 3        */
@@ -120,23 +128,25 @@
 #define M4_8 M4eight             /* 8        */
 #define M4_8_times M4eight_times /* 8*       */
 #define M4_8_plus M4eight_plus   /* 8+       */
-/* SZ*      used by opt.mh to replace cells => SZ* => N* with N = SZ actual value */
-#define M4_SZ_times CAT3(M4_, SZ, _times)
-/* SZ+      used by opt.mh to replace cell+ => SZ+ => N* with N = SZ actual value */
-#define M4_SZ_plus CAT3(M4_, SZ, _plus)
 
-/* used to define M4to_token below */
+/* needed by M4token_fetch */
+#define M4_1u_fetch M4char_fetch
+#define M4_2u_fetch M4ushort_fetch
+#define M4_4u_fetch M4uint_fetch
+#define M4_8u_fetch M4fetch
+
+/* needed by M4to_token */
 #define M4_to_1u M4to_char
 #define M4_to_2u M4to_ushort
 #define M4_to_4u M4to_uint
 #define M4_to_8u M4to_noop
-#define M4to_token CAT3(M4_to_, SZt, u)
 
-/* used to define M4token_fetch below */
-#define M4_fetch_1u M4c_fetch
-#define M4_fetch_2u M4ushort_fetch
-#define M4_fetch_4u M4uint_fetch
-#define M4_fetch_8u M4fetch
-#define M4token_fetch CAT3(M4_fetch_, SZt, u) /* fetch-$(SZt)u  */
+#define M4_SZ_times CAT3(M4_, SZ, _times)     /* SZ*      needed by cells   */
+#define M4_SZ_plus CAT3(M4_, SZ, _plus)       /* SZ+      needed by cell+   */
+#define M4token_fetch CAT3(M4_, SZt, u_fetch) /* token@   => _$(SZt)u_fetch */
+#define M4token_plus CAT3(M4_, SZt, _plus)    /* token+   => _$(SZt)_plus   */
+#define M4tokens CAT3(M4_, SZt, _times)       /* tokens   => _$(SZt)_times  */
+
+#define M4to_token CAT3(M4_to_, SZt, u)
 
 #endif /* M4TH_INCLUDE_TOKEN_ALIAS_MH */

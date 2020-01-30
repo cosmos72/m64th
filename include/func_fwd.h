@@ -31,7 +31,7 @@ typedef struct m4arg_s m4arg; /* intentionally incomplete type, cannot be instan
  * The functions m4f* use m4th calling convention, not C !
  *
  * Do not attempt to invoke them directly from C - the only useful
- * operation from C is taking their address and copying it to m4th->ttable
+ * operation from C is taking their address and copying it to m4th->ftable
  */
 
 #define FUNC_FWD_ENTRY(strlen, str, name) void m4f##name(m4arg _);

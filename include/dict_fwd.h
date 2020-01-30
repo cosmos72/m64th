@@ -37,7 +37,7 @@ extern const m4dict m4dict_m4th_user;
 /**
  * Contains words that directly interact with m4th implementation.
  */
-extern const m4dict m4dict_m4th;
+extern const m4dict m4dict_m4th_core;
 /**
  * Contains words used internally by m4th implementation.
  */

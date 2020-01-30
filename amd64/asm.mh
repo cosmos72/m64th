@@ -110,7 +110,7 @@
 #define RSTK  %rsi  /* pointer to second return stack element */
 #define M4TH  %r13  /* pointer to C struct m4th */
 #define M4XT  %r14  /* pointer to word being compiled */
-#define TTBL  %r9   /* pointer to table m4token -> asm function address */
+#define FTBL  %r9   /* pointer to table m4func[m4token] containing asm function addresses */
 #define RFFF  %r10  /* always contains -1 */
 #define IP    %r15  /* forth bytecode instruction pointer */
 #define RIP   %rip  /* x86-64 instruction pointer */

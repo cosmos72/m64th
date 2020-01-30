@@ -18,7 +18,8 @@
 #ifndef M4TH_INCLUDE_DICT_M4TH_MH
 #define M4TH_INCLUDE_DICT_M4TH_MH
 
-#define DICT_WORDS_M4TH_USER(X)                                                                    \
+/* ------- m4th-user ---------------------------------------------------------------------------- */
+#define DICT_TOKENS_M4TH_USER(X)                                                                   \
     X(2, "<=", less_equal)                                                                         \
     X(2, ">=", more_equal)                                                                         \
     X(3, "0<=", zero_less_equal)                                                                   \
@@ -28,27 +29,42 @@
     X(2, "r!", r_store)                                                                            \
     X(2, "r+", r_plus)                                                                             \
     X(7, "to-byte", to_byte)                                                                       \
-    X(6, "to-int", to_int)                                                                         \
-    X(8, "to-short", to_short)                                                                     \
     X(7, "to-char", to_char)                                                                       \
-    X(7, "to-uint", to_uint)                                                                       \
+    X(8, "to-short", to_short)                                                                     \
     X(9, "to-ushort", to_ushort)                                                                   \
+    X(6, "to-int", to_int)                                                                         \
+    X(7, "to-uint", to_uint)                                                                       \
     X(5, "byte@", byte_fetch)                                                                      \
-    X(4, "int@", int_fetch)                                                                        \
     X(6, "short@", short_fetch)                                                                    \
-    /* X(5, "char@", char_fetch) */ /* alias for c@, no dedicated m4enum value */                  \
-    X(5, "uint@", uint_fetch)                                                                      \
-    X(7, "ushort@", ushort_fetch)
+    X(7, "ushort@", ushort_fetch)                                                                  \
+    X(4, "int@", int_fetch)                                                                        \
+    X(5, "uint@", uint_fetch)
 
-#define DICT_WORDS_M4TH_CORE(X) /* currently empty */
+#define DICT_WORDS_M4TH_USER(X)                                                                    \
+    DICT_TOKENS_M4TH_USER(X)                                                                       \
+    X(5, "byte+", byte_plus)       /* alias of one_plus,   no dedicated m4enum value */            \
+    X(5, "bytes", bytes)           /* alias of noop,       no dedicated m4enum value */            \
+    X(5, "char@", char_fetch)      /* alias of c@,         no dedicated m4enum value */            \
+    /* X(5, "char+", char_plus) */ /* already in forth 'core' word set                */           \
+    /* X(5, "chars", chars) */     /* already in forth 'core' word set                */           \
+    X(6, "short+", short_plus)     /* alias of two_plus,   no dedicated m4enum value */            \
+    X(6, "shorts", shorts)         /* alias of two_times,  no dedicated m4enum value */            \
+    X(7, "ushort+", ushort_plus)   /* alias of two_plus,   no dedicated m4enum value */            \
+    X(7, "ushorts", ushorts)       /* alias of two_times,  no dedicated m4enum value */            \
+    X(4, "int+", int_plus)         /* alias of four_plus,  no dedicated m4enum value */            \
+    X(4, "ints", ints)             /* alias of four_times, no dedicated m4enum value */            \
+    X(5, "uint+", uint_plus)       /* alias of four_plus,  no dedicated m4enum value */            \
+    X(5, "uints", uints)           /* alias of four_times, no dedicated m4enum value */
 
-#define DICT_WORDS_M4TH_IMPL(X)                                                                    \
+/* ------- m4th-core ---------------------------------------------------------------------------- */
+#define DICT_TOKENS_M4TH_CORE(X) /* currently empty */
+
+#define DICT_WORDS_M4TH_CORE(X) DICT_TOKENS_M4TH_CORE(X)
+
+/* ------- m4th-impl ---------------------------------------------------------------------------- */
+#define DICT_TOKENS_M4TH_IMPL(X)                                                                   \
     X(5, "(?do)", _question_do_)                                                                   \
     X(6, "(call)", _call_)                                                                         \
-    X(13, "(compile-2s,)", _compile2s_)                                                            \
-    X(13, "(compile-4s,)", _compile4s_)                                                            \
-    X(13, "(compile-8s,)", _compile8s_)                                                            \
-    X(17, "(compile-lit-2s,)", _compile_lit2s_)                                                    \
     X(4, "(do)", _do_)                                                                             \
     X(6, "(else)", _else_)                                                                         \
     X(13, "(exec-native)", _exec_native_)                                                          \
@@ -61,7 +77,6 @@
     X(5, "(if=)", _if_equal_)                                                                      \
     X(5, "(if>)", _if_more_)                                                                       \
     X(6, "(if>=)", _if_more_equal_)                                                                \
-    X(8, "(inline)", _inline_)                                                                     \
     X(4, "(ip)", _ip_)                                                                             \
     X(6, "(jump)", _jump_)                                                                         \
     X(7, "(leave)", _leave_)                                                                       \
@@ -70,8 +85,13 @@
     X(12, "(literal-8s)", _literal8s_)                                                             \
     X(6, "(loop)", _loop_)                                                                         \
     X(9, "(missing)", _missing_)                                                                   \
-    X(10, "(optimize)", _optimize_)                                                                \
     X(6, "(then)", _then_)                                                                         \
+    X(13, "[compile-2s,]", _compile2s_)                                                            \
+    X(13, "[compile-4s,]", _compile4s_)                                                            \
+    X(13, "[compile-8s,]", _compile8s_)                                                            \
+    X(17, "[compile-lit-2s,]", _compile_lit2s_)                                                    \
+    X(8, "[inline]", _inline_)                                                                     \
+    X(10, "[optimize]", _optimize_)                                                                \
     X(2, "-1", minus_one)                                                                          \
     X(1, "0", zero)                                                                                \
     X(1, "1", one)                                                                                 \
@@ -89,10 +109,20 @@
     X(2, "i*", i_times)                                                                            \
     X(2, "i+", i_plus)                                                                             \
     X(2, "i-", i_minus)                                                                            \
-    X(4, "noop", noop)                                                                             \
-    /* X(8, "to-token", to_token)  */ /* alias for to_ushort, no dedicated m4token value */        \
-    /* X(6, "token@", token_fetch) */ /* alias for ushort@, no dedicated m4token value */
+    X(4, "noop", noop)
 
-#define DICT_WORDS_M4TH(X) DICT_WORDS_M4TH_USER(X) DICT_WORDS_M4TH_CORE(X) DICT_WORDS_M4TH_IMPL(X)
+#define DICT_WORDS_M4TH_IMPL(X)                                                                    \
+    DICT_TOKENS_M4TH_IMPL(X)                                                                       \
+    X(8, "to-token", to_token)  /* alias of to_$(SZt)u,    no dedicated m4token value */           \
+    X(6, "token@", token_fetch) /* alias of fetch_$(SZt)u, no dedicated m4token value */           \
+    X(6, "token+", token_plus)  /* alias of _$(SZt)_plus,  no dedicated m4token value */           \
+    X(6, "tokens", tokens)      /* alias of _$(SZt)_times, no dedicated m4token value */
+
+/* ------- m4th-* ------------------------------------------------------------------------------- */
+#define DICT_WORDS_M4TH(X) /* contains all DICT_WORDS_M4TH_* */                                    \
+    DICT_WORDS_M4TH_USER(X) DICT_WORDS_M4TH_CORE(X) DICT_WORDS_M4TH_IMPL(X)
+
+#define DICT_TOKENS_M4TH(X) /* contains all DICT_TOKENS_M4TH_* */                                  \
+    DICT_TOKENS_M4TH_USER(X) DICT_TOKENS_M4TH_CORE(X) DICT_TOKENS_M4TH_IMPL(X)
 
 #endif /* M4TH_INCLUDE_DICT_M4TH_MH */

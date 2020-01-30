@@ -142,20 +142,20 @@ void *m4mem_resize(void *ptr, size_t bytes) {
 /* ----------------------- m4token ----------------------- */
 
 #if !defined(__STDC_VERSION__) || __STDC_VERSION__ < 199901L
-#warning "ttable[] initialization currently requires C99"
+#warning "ftable[] initialization currently requires C99"
 #endif
 
 /* initialize the whole m4token -> m4func conversion table in one fell swoop */
-#define TTABLE_ENTRY(strlen, str, name) [M4TOKEN_VAL(name)] = FUNC_SYM(name),
-static m4func ttable[] = {
-    DICT_WORDS_ALL(TTABLE_ENTRY) /**/[M4____end] = FUNC_SYM(_missing_),
+#define FTABLE_ENTRY(strlen, str, name) [M4TOKEN_VAL(name)] = FUNC_SYM(name),
+static m4func ftable[] = {
+    DICT_TOKENS_ALL(FTABLE_ENTRY) /**/[M4____end] = FUNC_SYM(_missing_),
 };
-#undef TTABLE_ENTRY
+#undef FTABLE_ENTRY
 
 /* initialize the whole m4token -> m4word conversion table in one fell swoop */
 #define WTABLE_ENTRY(strlen, str, name) [M4TOKEN_VAL(name)] = &WORD_SYM(name),
 const m4word *wtable[] = {
-    DICT_WORDS_ALL(WTABLE_ENTRY) /**/[M4____end] = NULL,
+    DICT_TOKENS_ALL(WTABLE_ENTRY) /**/[M4____end] = NULL,
 };
 #undef WTABLE_ENTRY
 
@@ -259,6 +259,9 @@ void m4flags_print(m4flags fl, FILE *out) {
     }
     if ((fl & m4flag_pure_mask) == m4flag_pure) {
         fputs(printed++ ? "|pure" : "pure", out);
+    }
+    if (fl & m4flag_data_is_code) {
+        fputs(printed++ ? "|data_tokens" : "data_tokens", out);
     }
 }
 
@@ -424,8 +427,13 @@ void m4word_data_print(const m4word *w, m4cell data_start_n, FILE *out) {
         return;
     }
     m4string data = m4word_data(w, data_start_n);
-    fprintf(out, "<%ld> ", (long)data.n);
-    m4string_print_hex(data, out);
+    if (w->flags & m4flag_data_is_code) {
+        m4code code = {(m4token *)data.data, data.n / sizeof(m4token)};
+        m4code_print(code, out);
+    } else {
+        fprintf(out, "<%ld> ", (long)data.n);
+        m4string_print_hex(data, out);
+    }
     fputc('\n', out);
 }
 
@@ -447,7 +455,7 @@ void m4word_print(const m4word *w, FILE *out) {
             (w->native_len == (uint16_t)-1 ? (int)-1 : (int)w->native_len));
     fputs("\n\tcode:        \t", out);
     m4word_code_print(w, 0, out);
-    fputs("\tdata:        \t", out);
+    fputs((w->flags & m4flag_data_is_code) ? "\tdata_is_code:\t" : "\tdata:        \t", out);
     m4word_data_print(w, 0, out);
     fputs("}\n", out);
 }
@@ -579,7 +587,7 @@ m4th *m4th_new() {
     m->in = m4cspan_alloc(inbuf_n);
     m->out = m4cspan_alloc(outbuf_n);
     m->flags = m4th_flag_interpret;
-    m->ttable = ttable;
+    m->ftable = ftable;
     m4wordlist_new_vec(m->wordlist);
     m->in_cstr = NULL;
     return m;

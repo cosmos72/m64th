@@ -25,46 +25,35 @@
 #define m4ftrue m4fminus_one /**< true  */
 #define m4fr_fetch m4fi      /**< r@    */
 
-#define m4f_1_plus m4ftwo_plus      /**< byte+ byte+ */
-#define m4f_4byte_plus m4ffour_plus /**< byte+ byte+ byte+ byte+ */
-#define m4f_8byte_plus m4feight_plus
+#define m4fbytes m4fnoop         /**< bytes */
+#define m4fbyte_plus m4fone_plus /**< byte+ */
+#define m4fchars m4fnoop         /**< chars */
+#define m4fchar_plus m4fone_plus /**< char+ */
 
-#define m4fbytes m4fnoop            /**< bytes */
-#define m4fbyte_plus m4fone_plus    /**< byte+ */
-#define m4f_2byte_plus m4ftwo_plus  /**< byte+ byte+ */
-#define m4f_4byte_plus m4ffour_plus /**< byte+ byte+ byte+ byte+ */
-#define m4f_8byte_plus m4feight_plus
+#define m4fshorts m4ftwo_times     /**< shorts */
+#define m4fshort_plus m4ftwo_plus  /**< short+ */
+#define m4fushorts m4ftwo_times    /**< ushorts */
+#define m4fushort_plus m4ftwo_plus /**< ushort+ */
 
-#define m4fchars m4fnoop            /**< chars */
-#define m4fchar_plus m4fone_plus    /**< char+ */
-#define m4f_2char_plus m4ftwo_plus  /**< char+ char+ */
-#define m4f_4char_plus m4ffour_plus /**< char+ char+ char+ char+ */
-#define m4f_8char_plus m4feight_plus
+#define m4fints m4ffour_times     /**< ints */
+#define m4fint_plus m4ffour_plus  /**< int+ */
+#define m4fuints m4ffour_times    /**< uints */
+#define m4fuint_plus m4ffour_plus /**< uint+ */
 
-#define m4fshorts m4ftwo_times        /**< shorts */
-#define m4fshort_plus m4ftwo_plus     /**< short+ */
-#define m4f_2short_plus m4ffour_plus  /**< short+ short+ */
-#define m4f_4short_plus m4feight_plus /**< short+ short+ short+ short+ */
-
-#define m4fushorts m4ftwo_times        /**< ushorts */
-#define m4fushort_plus m4ftwo_plus     /**< ushort+ */
-#define m4f_2ushort_plus m4ffour_plus  /**< ushort+ ushort+ */
-#define m4f_4ushort_plus m4feight_plus /**< ushort+ ushort+ ushort+ ushort+ */
-
-#define m4fints m4ffour_times       /**< ints */
-#define m4fint_plus m4ffour_plus    /**< int+ */
-#define m4f_2int_plus m4feight_plus /**< int+ int+ */
-
-#define m4fuints m4ffour_times       /**< uints */
-#define m4fuint_plus m4ffour_plus    /**< uint+ */
-#define m4f_2uint_plus m4feight_plus /**< uint+ uint+ */
+#define m4fchar_fetch m4fc_fetch /* char@ is an alias for c@ - no dedicated m4enum or m4func */
 
 #define m4fcell_plus CAT3(m4f_, SZ, _plus) /* cell+    */
 #define m4fcells CAT3(m4f_, SZ, _times)    /* cells    */
 
+#define m4ftoken_plus CAT3(m4f_, SZt, _plus)    /* token+    */
+#define m4ftoken_fetch CAT3(m4f_, SZt, u_fetch) /* token@    */
+#define m4ftokens CAT3(m4f_, SZt, _times)       /* tokens    */
+
+/* needed by m4fcell_plus, m4fcells, m4ftoken_plus, m4ftokens above */
 #define m4f_0 m4fzero              /* 0        */
 #define m4f_1 m4fone               /* 1        */
 #define m4f_2 m4ftwo               /* 2        */
+#define m4f_2_times m4ftwo_times   /* 2*       */
 #define m4f_2_plus m4ftwo_plus     /* 2+       */
 #define m4f_2_minus m4ftwo_minus   /* 2-       */
 #define m4f_3 m4fthree             /* 3        */
@@ -75,13 +64,16 @@
 #define m4f_8_times m4feight_times /* 8*       */
 #define m4f_8_plus m4feight_plus   /* 8+       */
 
+/* needed by m4ftoken_fetch above */
+#define m4f_1u_fetch m4fchar_fetch
+#define m4f_2u_fetch m4fushort_fetch
+#define m4f_4u_fetch m4fuint_fetch
+#define m4f_8u_fetch m4ffetch
+
 #define m4f_else_ m4f_jump_ /* alias of (jump), used as marker for native compilation */
 #define m4f_then_ m4fnoop   /* (then) is currently a noop, used as marker for native compilation */
 
 /** these are implemented in forth - thus no corresponding assembly function */
-#define m4fcompile_comma m4f_missing_
-#define m4fliteral m4f_missing_
-
 #define m4f_inline_ m4f_missing_
 #define m4f_optimize_ m4f_missing_
 

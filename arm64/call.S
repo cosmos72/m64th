@@ -44,7 +44,7 @@ FUNC_START(th_run_vm)
         LOAD(  RSTK, AT(M4TH, M4TH_OFF_RSTK))   /* load return stack pointer       */
         LOAD(  M4XT, AT(M4TH, M4TH_OFF_W))      /* load word being compiled        */
         LOAD(  IP,   AT(M4TH, M4TH_OFF_IP))     /* load instruction  pointer       */
-        LOAD(  TTBL, AT(M4TH, M4TH_OFF_TTABLE)) /* load table m4token -> m4func     */
+        LOAD(  FTBL, AT(M4TH, M4TH_OFF_FTABLE)) /* load table m4token -> m4func     */
         DPOP(  DTOP)                            /* load first data   stack element */
         RPOP(  RTOP)                            /* load first return stack element */
         ADD2(  IMM(WORD_OFF_XT), M4XT)          /* convert m4word* -> XT           */
@@ -57,7 +57,7 @@ FUNC_RAWEND(th_run_vm)
 FUNC_START(_vm_)
         LD_ut( REG3_ut, AT(IP))            /* load m4token of current vm instruction */
         ADD2(  IMM(SZt), IP)               /* pre-increment vm IP                    */
-        LOAD(  REG0, AT(TTBL, REG3, SZ))   /* load m4func of current vm instruction  */
+        LOAD(  REG0, AT(FTBL, REG3, SZ))   /* load m4func of current vm instruction  */
         blr    REG0;                       /* execute vm instruction                 */
         b      FUNC_SYM(_vm_);             /* loop                                   */
 FUNC_RAWEND(_vm_)
@@ -73,7 +73,7 @@ FUNC_START(bye)
         SUB2(  IMM(WORD_OFF_XT), M4XT) /* convert XT -> *m4word           */
         RPUSH( RTOP)                   /* save first return stack element */
         DPUSH( DTOP)                   /* save first data   stack element */
-        STOR(  TTBL, AT(M4TH, M4TH_OFF_TTABLE)) /* save table m4token -> m4func     */
+        STOR(  FTBL, AT(M4TH, M4TH_OFF_FTABLE)) /* save table m4token -> m4func     */
         STOR(  IP,   AT(M4TH, M4TH_OFF_IP))     /* save instruction  pointer       */
         STOR(  M4XT, AT(M4TH, M4TH_OFF_W))      /* save word being compiled        */
         STOR(  RSTK, AT(M4TH, M4TH_OFF_RSTK))   /* save return stack pointer       */
@@ -118,7 +118,7 @@ FUNC_RAWEND(_exec_native_)
 /** pop m4token from dstack and call it. works only for tokens with native_len != -1 */
 FUNC_START(_exec_token_)
         ubfx   REG0t,  DTOP_ut, 0, SZt*8;  /* REG0 = m4token                */
-        LOAD(  REG0,   AT(TTBL, REG0, SZ)) /* REG0 = m4func                 */
+        LOAD(  REG0,   AT(FTBL, REG0, SZ)) /* REG0 = m4func                 */
         DPOP(  DTOP)                       /* reload dstack top             */
         br     REG0;                       /* tail-call optimization: jump to token */
 FUNC_RAWEND(_exec_token_)

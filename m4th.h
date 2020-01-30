@@ -67,6 +67,7 @@ typedef enum m4flags_e {
     m4flag_consumes_ip_2 = M4FLAG_CONSUMES_IP_2,
     m4flag_consumes_ip_4 = M4FLAG_CONSUMES_IP_4,
     m4flag_consumes_ip_8 = M4FLAG_CONSUMES_IP_8,
+    m4flag_data_is_code = M4FLAG_DATA_IS_CODE,
 } m4flags;
 
 typedef struct m4countedstring_s m4countedstring;
@@ -152,7 +153,7 @@ struct m4th_s {        /**< m4th forth interpreter and compiler */
     m4stack rstack;    /**< return stack                        */
     m4word *w;         /**< forth word being compiled           */
     const m4token *ip; /**< instruction pointer                 */
-    m4func *ttable;    /**< table m4t -> asm function address   */
+    m4func *ftable;    /**< table m4t -> asm function address   */
     m4cspan in;        /**< input  buffer                       */
     m4cspan out;       /**< output buffer                       */
 

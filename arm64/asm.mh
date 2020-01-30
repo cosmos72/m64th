@@ -123,7 +123,7 @@
 #define RSTK x23 /* pointer to second return stack element */
 #define M4TH x24 /* pointer to C struct m4th */
 #define M4XT x25 /* pointer to m4word.code being compiled */
-#define TTBL x26 /* pointer to table m4token -> asm function address */
+#define FTBL x26 /* pointer to table m4func[m4token] containing asm function addresses */
 #define IP x27   /* instruction pointer */
 
 /* clang-format off */

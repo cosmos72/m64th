@@ -32,14 +32,14 @@ extern "C" {
 #if defined(__cplusplus) && __cplusplus >= 201103L
 
 /** small enum representing a forth instruction. same as m4token */
-enum m4_token : uint16_t { DICT_WORDS_ALL(M4TOKEN_ENTRY) };
+enum m4_token : uint16_t { DICT_TOKENS_ALL(M4TOKEN_ENTRY) };
 /** small enum representing a forth instruction */
 typedef m4_token m4token;
 
 #else /* !defined(__cplusplus) || __cplusplus < 201103L */
 
 /** enum representing a forth instruction. use m4token for accurate sizeof() */
-typedef enum m4_token_e { DICT_WORDS_ALL(M4TOKEN_ENTRY) } m4_token;
+typedef enum m4_token_e { DICT_TOKENS_ALL(M4TOKEN_ENTRY) } m4_token;
 /** small integer representing a forth instruction. use m4_token for symbolic names */
 typedef uint16_t m4token;
 

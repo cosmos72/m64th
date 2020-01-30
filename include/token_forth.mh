@@ -107,7 +107,7 @@
 #define M4j 87                 /* j        */
 #define M4key 88               /* key      */
 #define M4leave 89             /* leave    */
-#define M4literal 90           /* literal  */
+#undef M4literal /*90*/        /* literal  implemented in forth, no dedicated token */
 #define M4loop 91              /* loop     */
 #define M4lshift 92            /* lshift   */
 #define M4m_times 93           /* m*       */
@@ -153,55 +153,55 @@
 #define M4right_bracket 133    /* ]        */
 
 /* 'forth' wordlist: 'core ext' word set */
-#undef M4dot_paren          /* .(       */
-#undef M4dot_r              /* .r       */
-#define M4zero_ne 153       /* 0<>      */
-#define M4zero_more 154     /* 0>       */
-#undef M4two_to_r           /* 2>r      */
-#undef M4two_r_from         /* 2r>      */
-#undef M4two_r_fetch        /* 2r@      */
-#undef M4colon_noname       /* :noname  */
-#define M4ne 159            /* <>       */
-#undef M4question_do        /* ?do      */
-#undef M4action_of          /* action_of    */
-#undef M4again              /* again    */
-#undef M4buffer_colon       /* buffer:  */
-#undef M4c_quote            /* c"       */
-#undef M4case               /* case     */
-#define M4compile_comma 206 /* compile, */
-#undef M4defer              /* defer    */
-#undef M4defer_store        /* defer!   */
-#undef M4defer_fetch        /* defer@   */
-#undef M4endcase            /* endcase  */
-#undef M4endof              /* endof    */
-#undef M4erase              /* erase    */
-#define M4false 213         /* false    */
-#undef M4hex                /* hex      */
-#undef M4holds              /* holds    */
-#undef M4is                 /* is       */
-#undef M4marker             /* marker   */
-#define M4nip 218           /* nip      */
-#undef M4of                 /* of       */
-#undef M4pad                /* pad      */
-#undef M4parse              /* parse    */
-#undef M4parse_name         /* parse-name   */
-#undef M4pick               /* pick     */
-#undef M4refill             /* refill   */
-#undef M4restore_input      /* restore-input    */
-#undef M4roll               /* roll     */
-#undef M4s_equote           /* s\"      */
-#undef M4save_input         /* save-input   */
-#undef M4source_id          /* source-id    */
-#undef M4to                 /* to       */
-#define M4true 231          /* true     */
-#undef M4tuck               /* tuck     */
-#undef M4u_dot_r            /* u.r      */
-#undef M4u_more             /* u>       */
-#undef M4unused             /* unused   */
-#undef M4value              /* value    */
-#undef M4within             /* within   */
-#undef M4bracket_compile    /* [compile]    */
-#undef M4backslash          /* \        */
+#undef M4dot_paren             /* .(       */
+#undef M4dot_r                 /* .r       */
+#define M4zero_ne 153          /* 0<>      */
+#define M4zero_more 154        /* 0>       */
+#undef M4two_to_r              /* 2>r      */
+#undef M4two_r_from            /* 2r>      */
+#undef M4two_r_fetch           /* 2r@      */
+#undef M4colon_noname          /* :noname  */
+#define M4ne 159               /* <>       */
+#undef M4question_do           /* ?do      */
+#undef M4action_of             /* action_of    */
+#undef M4again                 /* again    */
+#undef M4buffer_colon          /* buffer:  */
+#undef M4c_quote               /* c"       */
+#undef M4case                  /* case     */
+#undef M4compile_comma /*206*/ /* compile, implemented in forth, no dedicated token */
+#undef M4defer                 /* defer    */
+#undef M4defer_store           /* defer!   */
+#undef M4defer_fetch           /* defer@   */
+#undef M4endcase               /* endcase  */
+#undef M4endof                 /* endof    */
+#undef M4erase                 /* erase    */
+#define M4false 213            /* false    */
+#undef M4hex                   /* hex      */
+#undef M4holds                 /* holds    */
+#undef M4is                    /* is       */
+#undef M4marker                /* marker   */
+#define M4nip 218              /* nip      */
+#undef M4of                    /* of       */
+#undef M4pad                   /* pad      */
+#undef M4parse                 /* parse    */
+#undef M4parse_name            /* parse-name   */
+#undef M4pick                  /* pick     */
+#undef M4refill                /* refill   */
+#undef M4restore_input         /* restore-input    */
+#undef M4roll                  /* roll     */
+#undef M4s_equote              /* s\"      */
+#undef M4save_input            /* save-input   */
+#undef M4source_id             /* source-id    */
+#undef M4to                    /* to       */
+#define M4true 231             /* true     */
+#undef M4tuck                  /* tuck     */
+#undef M4u_dot_r               /* u.r      */
+#undef M4u_more                /* u>       */
+#undef M4unused                /* unused   */
+#undef M4value                 /* value    */
+#undef M4within                /* within   */
+#undef M4bracket_compile       /* [compile]    */
+#undef M4backslash             /* \        */
 
 #undef M4number_t_i_b /* #tib     (removed in Forth 2012) */
 #undef M4convert      /* convert  (removed in Forth 2012) */

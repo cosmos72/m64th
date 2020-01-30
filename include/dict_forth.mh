@@ -18,7 +18,8 @@
 #ifndef M4TH_INCLUDE_DICT_FORTH_MH
 #define M4TH_INCLUDE_DICT_FORTH_MH
 
-#define DICT_WORDS_FORTH_CORE(X)                                                                   \
+/* ------- forth 2012: core --------------------------------------------------------------------- */
+#define DICT_TOKENS_FORTH_CORE(X)                                                                  \
     X(1, "!", store)                                                                               \
     X(1, "*", times)                                                                               \
     X(1, "+", plus)                                                                                \
@@ -48,7 +49,6 @@
     X(5, "cells", cells)                                                                           \
     X(5, "char+", char_plus)                                                                       \
     X(5, "chars", chars)                                                                           \
-    X(8, "compile,", compile_comma)                                                                \
     X(5, "depth", depth)                                                                           \
     X(4, "drop", drop)                                                                             \
     X(3, "dup", dup)                                                                               \
@@ -56,7 +56,6 @@
     X(1, "i", i)                                                                                   \
     X(6, "invert", invert)                                                                         \
     X(1, "j", j)                                                                                   \
-    X(7, "literal", literal)                                                                       \
     X(6, "lshift", lshift)                                                                         \
     X(3, "max", max)                                                                               \
     X(3, "min", min)                                                                               \
@@ -73,13 +72,30 @@
     X(6, "unloop", unloop)                                                                         \
     X(3, "xor", xor)
 
-#define DICT_WORDS_FORTH_CORE_EXT(X)                                                               \
+#define DICT_WORDS_FORTH_CORE(X)                                                                   \
+    DICT_TOKENS_FORTH_CORE(X)                                                                      \
+    X(8, "compile,", compile_comma) /* no dedicated m4token */                                     \
+    X(7, "literal", literal)        /* no dedicated m4token */
+
+/* ------- forth 2012: core ext ----------------------------------------------------------------- */
+#define DICT_TOKENS_FORTH_CORE_EXT(X)                                                              \
     X(3, "0<>", zero_ne)                                                                           \
     X(2, "<>", ne)                                                                                 \
     X(5, "false", false)                                                                           \
     X(4, "true", true)
 
-#define DICT_WORDS_FORTH_TOOLS_EXT(X) X(3, "bye", bye)
+#define DICT_WORDS_FORTH_CORE_EXT(X) DICT_TOKENS_FORTH_CORE_EXT(X)
+
+/* ------- forth 2012: tools ext ---------------------------------------------------------------- */
+#define DICT_TOKENS_FORTH_TOOLS_EXT(X) X(3, "bye", bye)
+
+#define DICT_WORDS_FORTH_TOOLS_EXT(X) DICT_TOKENS_FORTH_TOOLS_EXT(X)
+
+/* ------- forth 2012 --------------------------------------------------------------------------- */
+#define DICT_TOKENS_FORTH(X)                                                                       \
+    DICT_TOKENS_FORTH_CORE(X)                                                                      \
+    DICT_TOKENS_FORTH_CORE_EXT(X)                                                                  \
+    DICT_TOKENS_FORTH_TOOLS_EXT(X)
 
 #define DICT_WORDS_FORTH(X)                                                                        \
     DICT_WORDS_FORTH_CORE(X)                                                                       \
