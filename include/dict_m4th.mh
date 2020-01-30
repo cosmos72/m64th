@@ -59,7 +59,12 @@
 /* ------- m4th-core ---------------------------------------------------------------------------- */
 #define DICT_TOKENS_M4TH_CORE(X) /* currently empty */
 
-#define DICT_WORDS_M4TH_CORE(X) DICT_TOKENS_M4TH_CORE(X)
+#define DICT_WORDS_M4TH_CORE(X)                                                                    \
+    DICT_TOKENS_M4TH_CORE(X)                                                                       \
+    X(8, "to-token", to_token)  /* alias of to_$(SZt)u,    no dedicated m4token value */           \
+    X(6, "token@", token_fetch) /* alias of fetch_$(SZt)u, no dedicated m4token value */           \
+    X(6, "token+", token_plus)  /* alias of _$(SZt)_plus,  no dedicated m4token value */           \
+    X(6, "tokens", tokens)      /* alias of _$(SZt)_times, no dedicated m4token value */
 
 /* ------- m4th-impl ---------------------------------------------------------------------------- */
 #define DICT_TOKENS_M4TH_IMPL(X)                                                                   \
@@ -90,8 +95,6 @@
     X(13, "[compile-4s,]", _compile4s_)                                                            \
     X(13, "[compile-8s,]", _compile8s_)                                                            \
     X(17, "[compile-lit-2s,]", _compile_lit2s_)                                                    \
-    X(8, "[inline]", _inline_)                                                                     \
-    X(10, "[optimize]", _optimize_)                                                                \
     X(2, "-1", minus_one)                                                                          \
     X(1, "0", zero)                                                                                \
     X(1, "1", one)                                                                                 \
@@ -113,10 +116,9 @@
 
 #define DICT_WORDS_M4TH_IMPL(X)                                                                    \
     DICT_TOKENS_M4TH_IMPL(X)                                                                       \
-    X(8, "to-token", to_token)  /* alias of to_$(SZt)u,    no dedicated m4token value */           \
-    X(6, "token@", token_fetch) /* alias of fetch_$(SZt)u, no dedicated m4token value */           \
-    X(6, "token+", token_plus)  /* alias of _$(SZt)_plus,  no dedicated m4token value */           \
-    X(6, "tokens", tokens)      /* alias of _$(SZt)_times, no dedicated m4token value */
+    X(8, "[inline]", _inline_)                                                                     \
+    X(10, "[optimize]", _optimize_)                                                                \
+    X(19, "[token-gives-cell?]", _token_gives_cell_q_)
 
 /* ------- m4th-* ------------------------------------------------------------------------------- */
 #define DICT_WORDS_M4TH(X) /* contains all DICT_WORDS_M4TH_* */                                    \

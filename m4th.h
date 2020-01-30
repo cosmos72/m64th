@@ -210,7 +210,15 @@ void m4mem_unmap(void *ptr, size_t bytes);
 m4cell m4code_equal(m4code src, m4code dst);
 void m4code_print(m4code src, FILE *out);
 
+/** return how many bytes of code are consumed by token or word marked with given flags */
+m4cell m4flags_consume_ip(m4flags fl);
+void m4flags_print(m4flags fl, FILE *out);
+
+/** return how many bytes of code are consumed by executing token */
+m4cell m4token_consumes_ip(m4token tok);
 void m4token_print(m4token val, FILE *out);
+/** try to find the m4word that describes given token */
+const m4word *m4token_to_word(m4token tok);
 
 void m4slice_copy_to_code(m4slice src, m4code *dst);
 void m4slice_to_word_code(const m4slice *src, m4word *dst);

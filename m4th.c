@@ -139,6 +139,72 @@ void *m4mem_resize(void *ptr, size_t bytes) {
     return ptr;
 }
 
+/* ----------------------- m4flags ----------------------- */
+
+/** return how many bytes of code are consumed by token or word marked with given flags */
+m4cell m4flags_consume_ip(m4flags fl) {
+    fl &= m4flag_consumes_ip_mask;
+    if (fl == m4flag_consumes_ip_2) {
+        return 2;
+    } else if (fl == m4flag_consumes_ip_4) {
+        return 4;
+    } else if (fl == m4flag_consumes_ip_8) {
+        return 8;
+    } else {
+        return 0;
+    }
+}
+
+void m4flags_print(m4flags fl, FILE *out) {
+    m4char printed = 0;
+    if (out == NULL) {
+        return;
+    }
+    if (!fl) {
+        fputc('0', out);
+    }
+    if (fl & m4flag_compile_only) {
+        fputs("compile_only", out);
+        printed++;
+    }
+    switch (m4flags_consume_ip(fl)) {
+    case 2:
+        fputs(printed++ ? "|consumes_ip_2" : "consumes_ip_2", out);
+        break;
+    case 4:
+        fputs(printed++ ? "|consumes_ip_4" : "consumes_ip_4", out);
+        break;
+    case 8:
+        fputs(printed++ ? "|consumes_ip_8" : "consumes_ip_8", out);
+        break;
+    }
+    if (fl & m4flag_immediate) {
+        fputs(printed++ ? "|immediate" : "immediate", out);
+    }
+    if (fl & m4flag_inline_always) {
+        fputs(printed++ ? "|inline_always" : "inline_always", out);
+    } else if (fl & m4flag_inline) {
+        fputs(printed++ ? "|inline" : "inline", out);
+    }
+    if ((fl & m4flag_jump_mask) == m4flag_jump) {
+        fputs(printed++ ? "|jump" : "jump", out);
+    } else if ((fl & m4flag_jump_mask) == m4flag_may_jump) {
+        fputs(printed++ ? "|may_jump" : "may_jump", out);
+    }
+    if (fl & m4flag_mem_fetch) {
+        fputs(printed++ ? "|mem_fetch" : "mem_fetch", out);
+    }
+    if (fl & m4flag_mem_store) {
+        fputs(printed++ ? "|mem_store" : "mem_store", out);
+    }
+    if ((fl & m4flag_pure_mask) == m4flag_pure) {
+        fputs(printed++ ? "|pure" : "pure", out);
+    }
+    if (fl & m4flag_data_is_code) {
+        fputs(printed++ ? "|data_tokens" : "data_tokens", out);
+    }
+}
+
 /* ----------------------- m4token ----------------------- */
 
 #if !defined(__STDC_VERSION__) || __STDC_VERSION__ < 199901L
@@ -161,19 +227,34 @@ const m4word *wtable[] = {
 
 enum { wtable_n = sizeof(wtable) / sizeof(wtable[0]) };
 
-void m4token_print(m4token val, FILE *out) {
-    if (/*val >= 0 &&*/ val < M4____end) {
-        const m4word *w = wtable[val];
-        if (w != NULL) {
-            const m4string name = m4word_name(w);
-            if (name.data != NULL && name.n != 0) {
-                m4string_print(name, out);
-                fputc(' ', out);
-                return;
-            }
+/** try to find the m4word that describes given token */
+const m4word *m4token_to_word(m4token tok) {
+    if (/*tok >= 0 &&*/ tok < M4____end) {
+        return wtable[tok];
+    }
+    return NULL;
+}
+
+void m4token_print(m4token tok, FILE *out) {
+    const m4word *w = m4token_to_word(tok);
+    if (w != NULL) {
+        const m4string name = m4word_name(w);
+        if (name.data != NULL && name.n != 0) {
+            m4string_print(name, out);
+            fputc(' ', out);
+            return;
         }
     }
-    fprintf(out, "T(%d) ", (int)(int16_t)val);
+    fprintf(out, "T(%d) ", (int)(int16_t)tok);
+}
+
+/** return how many bytes of code are skipped by executing token */
+m4cell m4token_consumes_ip(m4token tok) {
+    const m4word *w = m4token_to_word(tok);
+    if (w != NULL) {
+        return m4flags_consume_ip(w->flags);
+    }
+    return 0;
 }
 
 /* ----------------------- m4cspan ----------------------- */
@@ -205,63 +286,56 @@ m4cell m4code_equal(m4code src, m4code dst) {
     return -1 /*true*/;
 }
 
+static m4cell m4code_print_int16(const m4token *code, FILE *out) {
+    int16_t val;
+    memcpy(&val, code, sizeof(val));
+    fprintf(out, "%s(%d) ", (sizeof(val) == sizeof(m4token) ? "E" : "SHORT"), (int)val);
+    return sizeof(val) / sizeof(m4token);
+}
+
+static m4cell m4code_print_int32(const m4token *code, FILE *out) {
+    int32_t val;
+    memcpy(&val, code, sizeof(val));
+    fprintf(out, "INT(%ld) ", (long)val);
+    return sizeof(val) / sizeof(m4token);
+}
+
+static m4cell m4code_print_int64(const m4token *code, FILE *out) {
+    int64_t val;
+    memcpy(&val, code, sizeof(val));
+    if (val >= -1000 && val <= 1000) {
+        fprintf(out, "CELL(%ld) ", (long)val);
+    }
+    fprintf(out, "CELL(0x%lx) ", (unsigned long)val);
+    return sizeof(val) / sizeof(m4token);
+}
+
 void m4code_print(m4code src, FILE *out) {
-    const m4token *data = src.data;
+    const m4token *const code = src.data;
     m4cell i, n = src.n;
-    if (data == NULL || n == 0 || out == NULL) {
+    if (code == NULL || n == 0 || out == NULL) {
         return;
     }
     fprintf(out, "<%ld> ", (long)n);
-    for (i = 0; i < n; i++) {
-        m4token_print(data[i], out);
-    }
-}
-
-/* ----------------------- m4flags ----------------------- */
-
-void m4flags_print(m4flags fl, FILE *out) {
-    m4char printed = 0;
-    if (out == NULL) {
-        return;
-    }
-    if (!fl) {
-        fputc('0', out);
-    }
-    if (fl & m4flag_compile_only) {
-        fputs("compile_only", out);
-        printed++;
-    }
-    if ((fl & m4flag_consumes_ip_mask) == m4flag_consumes_ip_2) {
-        fputs(printed++ ? "|consumes_ip_2" : "consumes_ip_2", out);
-    } else if ((fl & m4flag_consumes_ip_mask) == m4flag_consumes_ip_4) {
-        fputs(printed++ ? "|consumes_ip_4" : "consumes_ip_4", out);
-    } else if ((fl & m4flag_consumes_ip_mask) == m4flag_consumes_ip_8) {
-        fputs(printed++ ? "|consumes_ip_8" : "consumes_ip_8", out);
-    }
-    if (fl & m4flag_immediate) {
-        fputs(printed++ ? "|immediate" : "immediate", out);
-    }
-    if (fl & m4flag_inline_always) {
-        fputs(printed++ ? "|inline_always" : "inline_always", out);
-    } else if (fl & m4flag_inline) {
-        fputs(printed++ ? "|inline" : "inline", out);
-    }
-    if ((fl & m4flag_jump_mask) == m4flag_jump) {
-        fputs(printed++ ? "|jump" : "jump", out);
-    } else if ((fl & m4flag_jump_mask) == m4flag_may_jump) {
-        fputs(printed++ ? "|may_jump" : "may_jump", out);
-    }
-    if (fl & m4flag_mem_fetch) {
-        fputs(printed++ ? "|mem_fetch" : "mem_fetch", out);
-    }
-    if (fl & m4flag_mem_store) {
-        fputs(printed++ ? "|mem_store" : "mem_store", out);
-    }
-    if ((fl & m4flag_pure_mask) == m4flag_pure) {
-        fputs(printed++ ? "|pure" : "pure", out);
-    }
-    if (fl & m4flag_data_is_code) {
-        fputs(printed++ ? "|data_tokens" : "data_tokens", out);
+    for (i = 0; i < n;) {
+        const m4token tok = code[i++];
+        m4token_print(tok, out);
+        switch (m4token_consumes_ip(tok)) {
+        case 2:
+            if (sizeof(m4token) == 2) {
+                fputc('\'', out);
+                m4token_print(code[i++], out);
+            } else {
+                i += m4code_print_int16(code + i, out);
+            }
+            break;
+        case 4:
+            i += m4code_print_int32(code + i, out);
+            break;
+        case 8:
+            i += m4code_print_int64(code + i, out);
+            break;
+        }
     }
 }
 
@@ -518,6 +592,7 @@ static void m4wordlist_new_vec(m4wordlist *l[m4th_wordlist_n]) {
     static const m4dict *dict[] = {
         &m4dict_forth,
         &m4dict_m4th_user,
+        &m4dict_m4th_core,
         &m4dict_m4th_impl,
     };
     enum { dict_n = sizeof(dict) / sizeof(dict[0]) };

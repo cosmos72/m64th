@@ -111,44 +111,27 @@ WORD_START(literal, j)
     WORD_DATA_N_AUTO(literal)
     WORD_CODE_START(literal)
         WORD_CODE_TOKENS(
-            _ip_, drop,
-            dup, _if_zero_, T(5),            /* if dtop = 0                  */
-                _compile_lit_token_, zero,   /*     append 'm4zero' to XT    */
-                drop, exit,                  /*     exit                     */
-            _then_, dup, one_minus,
-            _if_zero_, T(5),                 /* else if dtop = 1             */
-                _compile_lit_token_, one,    /*     append 'm4one' to XT     */
-                drop, exit,                  /*     exit                     */
-            _then_, dup, two_minus,
-            _if_zero_, T(5),                 /* else if dtop = 2             */
-                _compile_lit_token_, two,    /*     append 'm4two' to XT     */
-                drop, exit,                  /*     exit                     */
-            _then_, dup, four,
-            _if_equal_, T(5),                /* else if dtop = 4             */
-                _compile_lit_token_, four,   /*     append 'm4four' to XT    */
-                drop, exit,                  /*     exit                     */
+            _ip_, _call_)
+        WORD_CODE_XT(
+            _token_gives_cell_q_)            /* if executing token gives n */
+        WORD_CODE_TOKENS(
+            _if_, T(3), _compile_token_,     /* append token to XT         */
+                exit,               
+            _then_, 
+            dup, dup, to_short,
+            _if_equal_, T(5),                /* if n == to_short(n)        */
+                _compile_lit_token_,
+                _literal2s_,                 /* append _literal2s_ to XT   */
+                _compile2s_, exit,           /* append (int16)n    to XT   */
             _then_,
-#if 0
-            dup, eight, equal,
-            _if_, T(5),                      /* else if dtop = 8             */
-                drop, _lit_token_, eight,      /*   append 'm4eight' to XT     */
-                _compile_token_, exit,         /*   exit                       */
-            dup, minus_one, equal,
-            _if_, T(5),                      /* else if dtop = -1            */
-                drop, _lit_token_, minus_one,  /*   append 'm4minus_one' to XT */
-                _compile_token_, exit,         /*   exit                       */
-#endif /* 0 */
-            dup, _literal2s_, SHORT(-0x8000),
-            _if_more_equal_, T(10),
-                dup, _literal2s_, SHORT(0x7FFF),
-                _if_less_equal_, T(4),
-                    _compile_lit_token_,
-                    _literal2s_,             /* append 'm4_literal2s_' to XT */
-                    _compile2s_, exit,       /* append (int16)dtop to XT     */
-                _then_,
+            dup, dup, to_int,
+            _if_equal_, T(5),                /* if n == to_int(n)          */
+                _compile_lit_token_,
+                _literal4s_,                 /* append _literal4s_ to XT   */
+                _compile4s_, exit,           /* append (int32)n    to XT   */
             _then_,
-            _compile_lit_token_, _lit_cell_,  /* append 'm4_lit_cell_' to XT  */
-            _compile_cell_,                  /* append dtop to XT            */
+            _compile_lit_token_, _lit_cell_, /* append _lit_cell_  to XT   */
+            _compile_cell_,                  /* append dtop to XT          */
             exit
         )
     WORD_CODE_END(literal)

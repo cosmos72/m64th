@@ -69,6 +69,22 @@ DICT_END(m4th_user)
 /* ---------------------------------------------------------------------------------------------- */
 /* --- m4th-impl -------------------------------------------------------------------------------- */
 /* ---------------------------------------------------------------------------------------------- */
+DICT_START(m4th_core)
+
+DICTNAME(9, "m4th-core", m4th_core)
+
+DICT_WORDS_M4TH_CORE(WORDNAME)
+
+WORD(token_fetch,      token_fetch,DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(token_plus,       token_fetch,DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD(tokens,           token_plus, DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+
+DICT_BODY(m4th_core, tokens)
+DICT_END(m4th_core)
+
+/* ---------------------------------------------------------------------------------------------- */
+/* --- m4th-impl -------------------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------------------------------- */
 DICT_START(m4th_impl)
 
 DICTNAME(9, "m4th-impl", m4th_impl)
@@ -286,7 +302,25 @@ WORD_START(_optimize_, _inline_)
     WORD_NATIVE_NONE()
     WORD_TOKENS(exit) /* currently does nothing */
 WORD_END(_optimize_)
-WORD(minus_one,        _optimize_, DSTACK(0,1), RSTACK(0,0), WORD_PURE)
+/**
+ * test whether executing a token produces the given cell value
+ * ( x token -- token true | x false )
+ */
+WORD_START(_token_gives_cell_q_, _optimize_)
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_DSTACK(2,2)
+    WORD_RSTACK(0,0)
+    WORD_NOJUMP()
+    WORD_NATIVE_NONE()
+    WORD_TOKENS(
+        over, over,                        /* ( x token x token ) */
+        _exec_token_, _if_equal_, T(4),    /* ( x token )         */
+            nip, true, exit,               /* ( token true )      */
+        _then_,
+            drop, false, exit              /* ( x false )         */
+    )
+WORD_END(_token_gives_cell_q_)
+WORD(minus_one,        _token_gives_cell_q_, DSTACK(0,1), RSTACK(0,0), WORD_PURE)
 WORD(zero,             minus_one,  DSTACK(0,1), RSTACK(0,0), WORD_PURE)
 WORD(one,              zero,       DSTACK(0,1), RSTACK(0,0), WORD_PURE)
 WORD(two,              one,        DSTACK(0,1), RSTACK(0,0), WORD_PURE)
@@ -311,10 +345,7 @@ WORD_START(noop, i_minus)
     WORD_NATIVE_LEN_0()
     WORD_TOKENS(exit)
 WORD_END(noop)
-WORD(token_fetch,      noop,       DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD(token_plus,       token_fetch,DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(tokens,           token_plus, DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 
-DICT_BODY(m4th_impl, tokens)
+DICT_BODY(m4th_impl, noop)
 DICT_END(m4th_impl)
 

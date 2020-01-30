@@ -91,14 +91,12 @@
 #define M4_compile8s_ 592 /* (compile8s,) pop int64 from dstack, append it to compiled code  */
 /* (compile-lit-2s,) must be followed by int16, append it to compiled code  */
 #define M4_compile_lit2s_ 593
-#define M4_inline_ 594   /* (inline) try to inline calls in word being compiled        */
-#define M4_optimize_ 595 /* (optimize) try to optimize word being compiled */
-#undef M4____gap         /*          */
-#define M4i_prime 600    /* i'       */
-#define M4i_times 601    /* i*       */
-#define M4i_plus 602     /* i+       */
-#define M4i_minus 603    /* i-       */
-#define M4noop 604       /* noop     */
+#undef M4____gap      /*          */
+#define M4i_prime 600 /* i'       */
+#define M4i_times 601 /* i*       */
+#define M4i_plus 602  /* i+       */
+#define M4i_minus 603 /* i-       */
+#define M4noop 604    /* noop     */
 
 #define M4____end 605
 
