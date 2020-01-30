@@ -42,6 +42,10 @@
 #define M4uint_fetch 532       /* uint@     read uint32_t at address dtop, sign-extend */
 #define M4ushort_fetch 533     /* ushort@   read uint16_t at address dtop, sign-extend */
 
+/* 'm4th-core' wordlist */
+#define M4xt_to_code 536 /* ( XT -- taddr n )    get code array from XT */
+#define M4xt_to_data 537 /* ( XT -- caddr n )    get data array from XT */
+
 /* 'm4th-impl' wordlist */
 #define M4minus_one 540   /* -1       */
 #define M4zero 541        /* 0        */

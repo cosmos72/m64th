@@ -57,7 +57,9 @@
     X(5, "uints", uints)           /* alias of four_times, no dedicated m4enum value */
 
 /* ------- m4th-core ---------------------------------------------------------------------------- */
-#define DICT_TOKENS_M4TH_CORE(X) /* currently empty */
+#define DICT_TOKENS_M4TH_CORE(X)                                                                   \
+    X(7, "xt>code", xt_to_code) /* ( XT -- taddr n )    get code array from XT */                  \
+    X(7, "xt>data", xt_to_data) /* ( XT -- caddr n )    get data array from XT */
 
 #define DICT_WORDS_M4TH_CORE(X)                                                                    \
     DICT_TOKENS_M4TH_CORE(X)                                                                       \

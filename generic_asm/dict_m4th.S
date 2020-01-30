@@ -67,7 +67,7 @@ DICT_BODY(m4th_user, uints)
 DICT_END(m4th_user)
 
 /* ---------------------------------------------------------------------------------------------- */
-/* --- m4th-impl -------------------------------------------------------------------------------- */
+/* --- m4th-core -------------------------------------------------------------------------------- */
 /* ---------------------------------------------------------------------------------------------- */
 DICT_START(m4th_core)
 
@@ -78,8 +78,10 @@ DICT_WORDS_M4TH_CORE(WORDNAME)
 WORD(token_fetch,      token_fetch,DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 WORD(token_plus,       token_fetch,DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(tokens,           token_plus, DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD(xt_to_code,       tokens,     DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(xt_to_data,       xt_to_code, DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 
-DICT_BODY(m4th_core, tokens)
+DICT_BODY(m4th_core, xt_to_data)
 DICT_END(m4th_core)
 
 /* ---------------------------------------------------------------------------------------------- */
