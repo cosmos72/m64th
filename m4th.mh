@@ -65,7 +65,7 @@
 #define M4FLAG_CONSUMES_IP_8 ((3 << 6) | M4FLAG_INLINE_ALWAYS)
 
 /** word data contains m4tokens */
-#define M4FLAG_DATA_IS_CODE (1 << 8)
+#define M4FLAG_DATA_TOKENS (1 << 8)
 
 /** word dereferences some pointer and reads from i */
 #define M4FLAG_MEM_FETCH (1 << 9)

@@ -200,7 +200,7 @@ void m4flags_print(m4flags fl, FILE *out) {
     if ((fl & m4flag_pure_mask) == m4flag_pure) {
         fputs(printed++ ? "|pure" : "pure", out);
     }
-    if (fl & m4flag_data_is_code) {
+    if (fl & m4flag_data_tokens) {
         fputs(printed++ ? "|data_tokens" : "data_tokens", out);
     }
 }
@@ -507,7 +507,7 @@ void m4word_data_print(const m4word *w, m4cell data_start_n, FILE *out) {
         return;
     }
     m4string data = m4word_data(w, data_start_n);
-    if (w->flags & m4flag_data_is_code) {
+    if (w->flags & m4flag_data_tokens) {
         m4code code = {(m4token *)data.data, data.n / sizeof(m4token)};
         m4code_print(code, out);
     } else {
@@ -535,7 +535,7 @@ void m4word_print(const m4word *w, FILE *out) {
             (w->native_len == (uint16_t)-1 ? (int)-1 : (int)w->native_len));
     fputs("\n\tcode:        \t", out);
     m4word_code_print(w, 0, out);
-    fputs((w->flags & m4flag_data_is_code) ? "\tdata_is_code:\t" : "\tdata:        \t", out);
+    fputs((w->flags & m4flag_data_tokens) ? "\tdata_tokens:\t" : "\tdata:        \t", out);
     m4word_data_print(w, 0, out);
     fputs("}\n", out);
 }
