@@ -74,8 +74,8 @@
 
 #define DICT_WORDS_FORTH_CORE(X)                                                                   \
     DICT_TOKENS_FORTH_CORE(X)                                                                      \
-    X(8, "compile,", compile_comma) /* no dedicated m4token */                                     \
-    X(7, "literal", literal)        /* no dedicated m4token */
+    X(8, "compile,", compile_comma) /* implemented in forth, no dedicated m4token */               \
+    X(7, "literal", literal)        /* implemented in forth, no dedicated m4token */
 
 /* ------- forth 2012: core ext ----------------------------------------------------------------- */
 #define DICT_TOKENS_FORTH_CORE_EXT(X)                                                              \

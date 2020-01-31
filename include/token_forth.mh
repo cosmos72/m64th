@@ -124,7 +124,7 @@
 #define M4r_fetch 104          /* r@       */
 #define M4recurse 105          /* recurse  */
 #define M4repeat 106           /* repeat   */
-#define M4rot 107              /* rot      */
+#define M4rot 107              /* rot      ( a b c -- b c a ) */
 #define M4rshift 108           /* rshift   */
 #define M4s_quote 109          /* s"       */
 #define M4s_to_d 110           /* s>d      */

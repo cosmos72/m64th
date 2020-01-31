@@ -260,13 +260,20 @@ FUNC_START(over)
 FUNC_END(over)
 
 
-FUNC_START(rot)
-        LOAD(  REG1, AT(DSTK))
-        STOR(  DTOP, AT(DSTK))
-        LOAD(  DTOP, AT(DSTK, SZ))
-        STOR(  REG1, AT(DSTK, SZ))
+FUNC_START(rot)        /* rot   ( a b c -- b c a ) */
+        LOAD(  REG1, AT(DSTK))     /* REG1 = b */
+        STOR(  DTOP, AT(DSTK))     /* store  c */
+        LOAD(  DTOP, AT(DSTK, SZ)) /* DTOP = a */
+        STOR(  REG1, AT(DSTK, SZ)) /* store  b */
 FUNC_END(rot)
 
+
+FUNC_START(minus_rot)  /* rot   ( a b c -- c a b ) */
+        LOAD(  REG1, AT(DSTK,SZ))  /* REG1 = a */
+        STOR(  DTOP, AT(DSTK,SZ))  /* store  c */
+        LOAD(  DTOP, AT(DSTK))     /* DTOP = b */
+        STOR(  REG1, AT(DSTK))     /* store  a */
+FUNC_END(minus_rot)
 
 #ifndef M4SWAP
 FUNC_START(swap)

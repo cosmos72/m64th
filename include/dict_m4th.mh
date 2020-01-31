@@ -41,6 +41,7 @@
     X(6, "r>drop", r_from_drop)                                                                    \
     X(2, "r!", r_store)                                                                            \
     X(2, "r+", r_plus)                                                                             \
+    X(4, "-rot", minus_rot)                                                                        \
     /*                          */ /*                                                */            \
     X(5, "byte@", byte_fetch)                                                                      \
     /* X(5, "char@", char_fetch)*/ /*  alias of c@                                   */            \
