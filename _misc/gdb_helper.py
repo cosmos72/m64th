@@ -11,21 +11,25 @@ class PrintDataStack(gdb.Command):
         dstk = int(frame.read_register("rdi"))
         rstk = int(frame.read_register("rsi"))
         m4th = int(frame.read_register("r13"))
+        ip   = int(frame.read_register("r15"))
         dend = int(gdb.parse_and_eval("((m4th *)%d)->dstack.end" % m4th))
         rend = int(gdb.parse_and_eval("((m4th *)%d)->rstack.end" % m4th))
         dn = int((dend - dstk) / self.sz) + 1
         rn = int((rend - rstk) / self.sz) + 1
         self.stack_print(inf, "dstack", dtop, dstk, dn)
         self.stack_print(inf, "rstack", rtop, rstk, rn)
+        self.code_print(inf, "code   ", ip)
     def stack_print(self, inf, label, top, stk, n):
         gdb.write("%s <%d> " % (label, n))
         if n > 0:
             gdb.write("%d " % top)
             if n > 1:
-                for i in range(n-1):
-                    self.m4cell_print(inf, stk)
+                self.slice_print(inf, stk, n - 1)
         gdb.write("\n")
-    def m4cell_print(self, inf, addr):
+    def slice_print(self, inf, addr, n):
+        for i in range(n):
+            self.cell_print(inf, addr + i * self.sz)
+    def cell_print(self, inf, addr):
         self.mem_print(inf, addr, self.sz)
     def mem_print(self, inf, addr, size):
         val = 0
@@ -34,5 +38,20 @@ class PrintDataStack(gdb.Command):
             val |= (b[0] << shift)
             shift += 8
         gdb.write("%d " % val)
+    def code_print(self, inf, label, addr):
+        gdb.write(label)
+        for _ in range(10):
+            tok = self.token_at(inf, addr)
+            gdb.write(tok)
+            gdb.write(" ")
+            if tok == "bye" or tok == "m4bye":
+                break
+            addr += self.szt
+        gdb.write("\n")
+    def token_at(self, inf, addr):
+        s = str(gdb.parse_and_eval("(enum m4_token_e)*(m4token*)%d" % addr))
+        if len(s) > 2 and s[:2] == "m4":
+            s = s[2:]
+        return s
 
 PrintDataStack()
