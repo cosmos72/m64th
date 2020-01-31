@@ -49,6 +49,20 @@ static const m4testcompile testcompile[] = {
     {{"literal"}, {1, {8}}, {1, {m4eight}}},
     {{"literal"}, {1, {11}}, {2, {m4_literal2s_, 11}}},
     {{"literal"}, {1, {-2}}, {2, {m4_literal2s_, -2}}},
+    {{"literal"}, {1, {0x7fff}}, {2, {m4_literal2s_, 0x7fff}}},
+    {{"literal"}, {1, {-0x8000}}, {2, {m4_literal2s_, -0x8000}}},
+#if SZ >= 4
+    {{"literal"}, {1, {0x8000}}, {3, {m4_literal4s_, INT(0x8000)}}},
+    {{"literal"}, {1, {-0x8001}}, {3, {m4_literal4s_, INT(-0x8001)}}},
+    {{"literal"}, {1, {0x7fffffffl}}, {3, {m4_literal4s_, INT(0x7fffffffl)}}},
+    {{"literal"}, {1, {-0x80000000l}}, {3, {m4_literal4s_, INT(-0x80000000l)}}},
+#endif
+#if SZ >= 8
+    {{"literal"}, {1, {0x80000000l}}, {5, {m4_literal8s_, CELL(0x80000000l)}}},
+    {{"literal"}, {1, {-0x80000001l}}, {5, {m4_literal8s_, CELL(-0x80000001l)}}},
+    {{"literal"}, {1, {0x7fffffffffffffffl}}, {5, {m4_literal8s_, CELL(0x7fffffffffffffffl)}}},
+    {{"literal"}, {1, {-0x8000000000000000l}}, {5, {m4_literal8s_, CELL(-0x8000000000000000l)}}},
+#endif
     {{"drop"}, {}, {callsz, {CALLXT(drop)}}},
     {{"false"}, {}, {callsz, {CALLXT(false)}}},
     {{"true"}, {}, {callsz, {CALLXT(true)}}},
