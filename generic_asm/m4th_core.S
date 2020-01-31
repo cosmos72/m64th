@@ -27,7 +27,7 @@ FUNC_END(xt_to_code)
 
 FUNC_START(xt_to_data) /* ( xt -- caddr n ) */
         LD_uh( REG1_uh,    AT(DTOP, XT_OFF_CODE_N)) /* REG1 = code_n    */
-        SHL2(  IMM(SZt),   REG1)                    /* REG1 = data offset in bytes */
+        SHL2(  IMM(PSZt),  REG1)                    /* REG1 = data offset in bytes */
         ADD2(  DTOP,       REG1)                    /* REG1 = data_addr */
         LOAD(  DTOP,       AT(DTOP, XT_OFF_DATA_N)) /* dtop = data_n    */
         DPUSH( REG1)                                /*  d2 = data_addr  */

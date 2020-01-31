@@ -111,9 +111,9 @@ WORD_START(literal, j)
     WORD_DATA_N_AUTO(literal)
     WORD_CODE_START(literal)
         WORD_CODE_TOKENS(
-            _ip_, _call_)
+            _ip_, xt_to_data, div_token, _call_) /* ( n taddr tn )         */
         WORD_CODE_XT(
-            _token_gives_cell_q_)            /* if executing token gives n */
+            _any_token_gives_cell_q_)        /* if executing token gives n */
         WORD_CODE_TOKENS(
             _if_, T(3), _compile_token_,     /* append token to XT         */
                 exit,
