@@ -45,14 +45,14 @@ class PrintDataStack(gdb.Command):
     def stack_print(self, inf, label, top, stk, n):
         gdb.write("%s <%d> " % (label, n))
         if n > 0:
-            gdb.write("%d " % top)
             if n > 1:
-                self.slice_print(inf, stk, n - 1)
+                self.slice_reverse_print(inf, stk, n - 1)
+            self.number_print(top)
         gdb.write("\n")
-    def slice_print(self, inf, addr, n):
+    def slice_reverse_print(self, inf, addr, n):
         for i in range(n):
-            self.cell_print(inf, addr + i * self.sz)
-    def cell_print(self, inf, addr):
+            self.mem_cell_print(inf, addr + (n - i - 1) * self.sz)
+    def mem_cell_print(self, inf, addr):
         self.mem_print(inf, addr, self.sz)
     def mem_print(self, inf, addr, size):
         val = 0
@@ -60,7 +60,12 @@ class PrintDataStack(gdb.Command):
         for b in inf.read_memory(addr, size):
             val |= (b[0] << shift)
             shift += 8
-        gdb.write("%d " % val)
+        self.number_print(val)
+    def number_print(self, val):
+        if val < -1000 or val > 1000:
+            gdb.write("%s " % hex(val))
+        else:
+            gdb.write("%d " % val)
     def code_print(self, inf, label, addr):
         gdb.write(label)
         for _ in range(10):
