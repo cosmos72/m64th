@@ -34,13 +34,14 @@ class PrintDataStack(gdb.Command):
         dstk = int(frame.read_register("rdi"))
         rstk = int(frame.read_register("rsi"))
         m4th = int(frame.read_register("r13"))
-        ip   = int(frame.read_register("r15"))
+        ip   = int(frame.read_register("r15")) - self.szt
         dend = int(gdb.parse_and_eval("((m4th *)%d)->dstack.end" % m4th))
         rend = int(gdb.parse_and_eval("((m4th *)%d)->rstack.end" % m4th))
         dn = int((dend - dstk) / self.sz) + 1
         rn = int((rend - rstk) / self.sz) + 1
         self.stack_print(inf, "dstack", dtop, dstk, dn)
         self.stack_print(inf, "rstack", rtop, rstk, rn)
+        self.ip_print("ip    ", ip)
         self.code_print(inf, "code   ", ip)
     def stack_print(self, inf, label, top, stk, n):
         gdb.write("%s <%d> " % (label, n))
@@ -62,10 +63,14 @@ class PrintDataStack(gdb.Command):
             shift += 8
         self.number_print(val)
     def number_print(self, val):
+        gdb.write("%s " % self.number_to_str(val))
+    def number_to_str(self, val):
         if val < -1000 or val > 1000:
-            gdb.write("%s " % hex(val))
+            return hex(val)
         else:
-            gdb.write("%d " % val)
+            return str(val)
+    def ip_print(self, label, ip):
+        gdb.write("%s %s\n" % (label, self.number_to_str(ip)))
     def code_print(self, inf, label, addr):
         gdb.write(label)
         for _ in range(10):

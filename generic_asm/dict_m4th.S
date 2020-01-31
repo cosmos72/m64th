@@ -359,16 +359,17 @@ WORD_START(_any_token_gives_cell_q_, _token_gives_cell_q_)
     WORD_DATA_N(0)
     WORD_CODE_START(_any_token_gives_cell_q_)
         WORD_CODE_TOKENS(
-            zero, _question_do_, T(12+SZ/SZt),   /* loop if tn != 0          */
+            zero, _question_do_, T(14+SZ/SZt),   /* loop if tn != 0          */
                                                  /* ( x taddr )              */
                 dup_to_r, token_fetch, _call_)   /* ( x token ) (R taddr )   */
-        WORD_CODE_XT(_token_gives_cell_q_)         
+        WORD_CODE_XT(_token_gives_cell_q_)
         WORD_CODE_TOKENS(                        /* ( token true | x false ) (R taddr ) */
-                _if_, T(4),                      
-                    r_from_drop, true, exit,     /* ( token true ) exit      */
+                _if_, T(5),
+                    r_from_drop, true,           /* ( token true )           */
+                    unloop, exit,                /* exit                     */
                 _then_,
                 r_from, token_plus,              /* ( x taddr )              */
-            _loop_,
+            _loop_, T(-14-SZ/SZt),
             drop, false, exit                    /* ( x false )              */
         )
     WORD_CODE_END(_any_token_gives_cell_q_)

@@ -116,7 +116,7 @@ WORD_START(literal, j)
             _token_gives_cell_q_)            /* if executing token gives n */
         WORD_CODE_TOKENS(
             _if_, T(3), _compile_token_,     /* append token to XT         */
-                exit,               
+                exit,
             _then_, 
             dup, dup, to_short,
             _if_equal_, T(5),                /* if n == to_short(n)        */

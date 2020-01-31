@@ -39,7 +39,7 @@ static const m4testcompile testcompile[] = {
 #else
     {{"0"}, {}, {callsz, {CALLXT(zero)}}},
     {{"1", "2", "+"}, {}, {3 * callsz, {CALLXT(one), CALLXT(two), CALLXT(plus)}}},
-#if 0  /* currently broken */    
+#if 0  /* currently broken */
     {{"literal"}, {1, {0}}, {1, {m4zero}}},
     {{"literal"}, {1, {1}}, {1, {m4one}}},
     {{"literal"}, {1, {2}}, {1, {m4two}}},
