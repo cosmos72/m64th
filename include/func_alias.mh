@@ -21,26 +21,25 @@
 #include "../dispatch/sz.mh" /* SZ */
 #include "macro.mh"          /* CAT3() */
 
-#define m4ffalse m4fzero     /**< false */
-#define m4ftrue m4fminus_one /**< true  */
-#define m4fr_fetch m4fi      /**< r@    */
-
-#define m4fbytes m4fnoop         /**< bytes */
-#define m4fbyte_plus m4fone_plus /**< byte+ */
-#define m4fchars m4fnoop         /**< chars */
-#define m4fchar_plus m4fone_plus /**< char+ */
-
-#define m4fshorts m4ftwo_times     /**< shorts */
-#define m4fshort_plus m4ftwo_plus  /**< short+ */
-#define m4fushorts m4ftwo_times    /**< ushorts */
-#define m4fushort_plus m4ftwo_plus /**< ushort+ */
-
-#define m4fints m4ffour_times     /**< ints */
-#define m4fint_plus m4ffour_plus  /**< int+ */
-#define m4fuints m4ffour_times    /**< uints */
-#define m4fuint_plus m4ffour_plus /**< uint+ */
-
+#define m4ffalse m4fzero         /* false */
+#define m4ftrue m4fminus_one     /* true  */
+#define m4fr_fetch m4fi          /* r@    */
 #define m4fchar_fetch m4fc_fetch /* char@ is an alias for c@ - no dedicated m4enum or m4func */
+
+#define m4fbytes m4fnoop         /* bytes */
+#define m4fbyte_plus m4fone_plus /* byte+ */
+#define m4fchars m4fnoop         /* chars */
+#define m4fchar_plus m4fone_plus /* char+ */
+
+#define m4fshorts m4ftwo_times     /* shorts */
+#define m4fshort_plus m4ftwo_plus  /* short+ */
+#define m4fushorts m4ftwo_times    /* ushorts */
+#define m4fushort_plus m4ftwo_plus /* ushort+ */
+
+#define m4fint_plus m4ffour_plus  /* int+ */
+#define m4fints m4ffour_times     /* ints */
+#define m4fuint_plus m4ffour_plus /* uint+ */
+#define m4fuints m4ffour_times    /* uints */
 
 #define m4fcell_plus CAT3(m4f_, SZ, _plus) /* cell+    */
 #define m4fcells CAT3(m4f_, SZ, _times)    /* cells    */
@@ -49,26 +48,48 @@
 #define m4ftoken_fetch CAT3(m4f_, SZt, u_fetch) /* token@    */
 #define m4ftokens CAT3(m4f_, SZt, _times)       /* tokens    */
 
-/* needed by m4fcell_plus, m4fcells, m4ftoken_plus, m4ftokens above */
+#define m4fdiv_byte m4fnoop                /* /byte    =>      */
+#define m4fdiv_char m4fnoop                /* /char    =>      */
+#define m4fdiv_short m4ftwo_div            /* /short   => 2/   */
+#define m4fdiv_ushort m4ftwo_div           /* /ushort  => 2/   */
+#define m4fdiv_int m4ffour_div             /* /int     => 4/   */
+#define m4fdiv_uint m4ffour_div            /* /uint    => 4/   */
+#define m4fdiv_cell CAT3(m4f_, SZ, _div)   /* /cell    => SZ/  */
+#define m4fdiv_token CAT3(m4f_, SZt, _div) /* /token   => SZt/ */
+
+#define m4fto_token CAT3(m4f_to_, SZt, u) /* to-token => to-SZt   */
+
+/* needed by m4fcell_plus, m4fcells, m4fdiv_cell, m4ftoken_plus, m4ftokens, m4fdiv_token above */
 #define m4f_0 m4fzero              /* 0        */
 #define m4f_1 m4fone               /* 1        */
+#define m4f_1_times m4fnoop        /* 1*       */
+#define m4f_1_div m4fnoop          /* 1/       */
 #define m4f_2 m4ftwo               /* 2        */
 #define m4f_2_times m4ftwo_times   /* 2*       */
 #define m4f_2_plus m4ftwo_plus     /* 2+       */
 #define m4f_2_minus m4ftwo_minus   /* 2-       */
+#define m4f_2_div m4ftwo_div       /* 2/       */
 #define m4f_3 m4fthree             /* 3        */
 #define m4f_4 m4ffour              /* 4        */
 #define m4f_4_times m4ffour_times  /* 4*       */
 #define m4f_4_plus m4ffour_plus    /* 4+       */
+#define m4f_4_div m4ffour_div      /* 4/       */
 #define m4f_8 m4feight             /* 8        */
 #define m4f_8_times m4feight_times /* 8*       */
 #define m4f_8_plus m4feight_plus   /* 8+       */
+#define m4f_8_div m4feight_div     /* 8/       */
 
 /* needed by m4ftoken_fetch above */
 #define m4f_1u_fetch m4fchar_fetch
 #define m4f_2u_fetch m4fushort_fetch
 #define m4f_4u_fetch m4fuint_fetch
 #define m4f_8u_fetch m4ffetch
+
+/* needed by m4fto_token above */
+#define m4f_to_1u m4fto_char
+#define m4f_to_2u m4fto_ushort
+#define m4f_to_4u m4fto_uint
+#define m4f_to_8u m4fnoop
 
 #define m4f_else_ m4f_jump_ /* alias of (jump), used as marker for native compilation */
 #define m4f_then_ m4fnoop   /* (then) is currently a noop, used as marker for native compilation */

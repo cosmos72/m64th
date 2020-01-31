@@ -92,27 +92,10 @@ static const m4cell crc1byte_array[] = {
 /* initialized by m4th_testexecute() */
 static m4token crc1byte_tarray[N_OF(crc1byte_array)];
 
-/* -------------- token-gives-num -------------- */
+/* -------------- [any-token-gives-cell?] -------------- */
 
-static const m4token token_gives_num_table[] = {
-    m4zero, m4one, m4minus_one, m4two, m4three, m4four, m4eight,
-};
-
-/**
- * ( n token -- token true | n false )
- *
- * if (exec_native(token) == n) {
- *   return token, true;
- * } else {
- *   return n, false;
- * }
- */
-/* initialized by m4th_testexecute() */
-static const m4token token_gives_num_tarray[] = {
-    m4over,         m4over,                        /* ( n token n token ) */
-    m4_exec_token_, m4_if_equal_, T(4),            /* ( n token )         */
-    /**/ m4nip,     m4true,       m4exit,          /* ( token true )      */
-    m4_then_,       m4drop,       m4false, m4exit, /* ( n false )         */
+static const m4token testdata_any_token_gives_cell_q_[] = {
+    m4zero, m4one, m4minus_one, m4two, m4four, m4eight,
 };
 
 /* -------------- m4test -------------- */
@@ -129,6 +112,20 @@ static m4testexecute testexecute[] = {
     {"20 7 /", {m4div, m4bye}, {{2, {20, 7}}, {}}, {{1, {2}}, {}}, {}},
     {"-20 7 /mod", {m4div_mod, m4bye}, {{2, {-20, 7}}, {}}, {{2, {-6, -2}}, {}}, {}},
     {"20 7 /mod", {m4div_mod, m4bye}, {{2, {20, 7}}, {}}, {{2, {6, 2}}, {}}, {}},
+    {"/byte", {m4div_byte, m4bye}, {{1, {-13}}, {}}, {{1, {-13}}, {}}, {}},
+    {"/char", {m4div_char, m4bye}, {{1, {-14}}, {}}, {{1, {-14}}, {}}, {}},
+    {"n /short", {m4div_short, m4bye}, {{1, {-15}}, {}}, {{1, {-15 / 2}}, {}}, {}},
+    {"u /short", {m4div_short, m4bye}, {{1, {15}}, {}}, {{1, {15 / 2}}, {}}, {}},
+    {"n /ushort", {m4div_ushort, m4bye}, {{1, {-15}}, {}}, {{1, {-15 / 2}}, {}}, {}},
+    {"u /ushort", {m4div_ushort, m4bye}, {{1, {15}}, {}}, {{1, {15 / 2}}, {}}, {}},
+    {"n /int", {m4div_int, m4bye}, {{1, {-15}}, {}}, {{1, {-15 / 4}}, {}}, {}},
+    {"u /int", {m4div_int, m4bye}, {{1, {15}}, {}}, {{1, {15 / 4}}, {}}, {}},
+    {"n /uint", {m4div_uint, m4bye}, {{1, {-15}}, {}}, {{1, {-15 / 4}}, {}}, {}},
+    {"u /uint", {m4div_uint, m4bye}, {{1, {15}}, {}}, {{1, {15 / 4}}, {}}, {}},
+    {"n /cell", {m4div_cell, m4bye}, {{1, {-13}}, {}}, {{1, {-13 / SZ}}, {}}, {}},
+    {"u /cell", {m4div_cell, m4bye}, {{1, {13}}, {}}, {{1, {13 / SZ}}, {}}, {}},
+    {"n /token", {m4div_token, m4bye}, {{1, {-13}}, {}}, {{1, {-13 / SZt}}, {}}, {}},
+    {"u /token", {m4div_token, m4bye}, {{1, {13}}, {}}, {{1, {13 / SZt}}, {}}, {}},
     {"-1", {m4minus_one, m4bye}, {{}, {}}, {{1, {-1}}, {}}, {}},
     {"0", {m4zero, m4bye}, {{}, {}}, {{1, {}}, {}}, {}},
     {"1", {m4one, m4bye}, {{}, {}}, {{1, {1}}, {}}, {}},
@@ -138,14 +135,19 @@ static m4testexecute testexecute[] = {
     {"2-", {m4two_minus, m4bye}, {{1, {-3}}, {}}, {{1, {-5}}, {}}, {}},
     {"2+", {m4two_plus, m4bye}, {{1, {-6}}, {}}, {{1, {-4}}, {}}, {}},
     {"2*", {m4two_times, m4bye}, {{1, {-6}}, {}}, {{1, {-12}}, {}}, {}},
-    {"2/", {m4two_div, m4bye}, {{1, {-5}}, {}}, {{1, {-2}}, {}}, {}},
+    {"n 2/", {m4two_div, m4bye}, {{1, {-5}}, {}}, {{1, {-2}}, {}}, {}},
+    {"u 2/", {m4two_div, m4bye}, {{1, {5}}, {}}, {{1, {2}}, {}}, {}},
     {"3", {m4three, m4bye}, {{}, {}}, {{1, {3}}, {}}, {}},
     {"4", {m4four, m4bye}, {{}, {}}, {{1, {4}}, {}}, {}},
     {"4+", {m4four_plus, m4bye}, {{1, {-7}}, {}}, {{1, {-3}}, {}}, {}},
     {"4*", {m4four_times, m4bye}, {{1, {-7}}, {}}, {{1, {-28}}, {}}, {}},
+    {"n 4/", {m4four_div, m4bye}, {{1, {-27}}, {}}, {{1, {-6}}, {}}, {}},
+    {"u 4/", {m4four_div, m4bye}, {{1, {15}}, {}}, {{1, {3}}, {}}, {}},
     {"8", {m4eight, m4bye}, {{}, {}}, {{1, {8}}, {}}, {}},
     {"8+", {m4eight_plus, m4bye}, {{1, {-3}}, {}}, {{1, {5}}, {}}, {}},
     {"8*", {m4eight_times, m4bye}, {{1, {-3}}, {}}, {{1, {-24}}, {}}, {}},
+    {"n 8/", {m4eight_div, m4bye}, {{1, {-25}}, {}}, {{1, {-3}}, {}}, {}},
+    {"u 8/", {m4eight_div, m4bye}, {{1, {31}}, {}}, {{1, {3}}, {}}, {}},
     {">r", {m4to_r, m4bye}, {{1, {99}}, {}}, {{}, {1, {99}}}, {}},
     {"0 ?dup", {m4question_dup, m4bye}, {{1, {}}, {}}, {{1, {}}, {}}, {}},
     {"1 ?dup", {m4question_dup, m4bye}, {{1, {1}}, {}}, {{2, {1, 1}}, {}}, {}},
@@ -154,10 +156,25 @@ static m4testexecute testexecute[] = {
     {"-3 abs", {m4abs, m4bye}, {{1, {-3}}, {}}, {{1, {3}}, {}}, {}},
     {"-7 14 and", {m4and, m4bye}, {{2, {-7, 14}}, {}}, {{1, {-7 & 14}}, {}}, {}},
     {"bl", {m4bl, m4bye}, {{}, {}}, {{1, {' '}}, {}}, {}},
-    {"cell+", {m4cell_plus, m4bye}, {{1, {12}}, {}}, {{1, {SZ + 12}}, {}}, {}},
-    {"cells", {m4cells, m4bye}, {{1, {3}}, {}}, {{1, {SZ * 3}}, {}}, {}},
+    /*                                                                          */
+    {"byte+", {m4byte_plus, m4bye}, {{1, {6}}, {}}, {{1, {7}}, {}}, {}},
     {"char+", {m4char_plus, m4bye}, {{1, {6}}, {}}, {{1, {7}}, {}}, {}},
+    {"short+", {m4short_plus, m4bye}, {{1, {12}}, {}}, {{1, {12 + 2}}, {}}, {}},
+    {"ushort+", {m4ushort_plus, m4bye}, {{1, {12}}, {}}, {{1, {12 + 2}}, {}}, {}},
+    {"int+", {m4int_plus, m4bye}, {{1, {12}}, {}}, {{1, {12 + 4}}, {}}, {}},
+    {"uint+", {m4uint_plus, m4bye}, {{1, {12}}, {}}, {{1, {12 + 4}}, {}}, {}},
+    {"cell+", {m4cell_plus, m4bye}, {{1, {12}}, {}}, {{1, {12 + SZ}}, {}}, {}},
+    {"token+", {m4token_plus, m4bye}, {{1, {12}}, {}}, {{1, {12 + SZt}}, {}}, {}},
+    /*                                                                          */
+    {"bytes", {m4bytes, m4bye}, {{1, {8}}, {}}, {{1, {8}}, {}}, {}},
     {"chars", {m4chars, m4bye}, {{1, {8}}, {}}, {{1, {8}}, {}}, {}},
+    {"shorts", {m4shorts, m4bye}, {{1, {8}}, {}}, {{1, {8 * 2}}, {}}, {}},
+    {"ushorts", {m4ushorts, m4bye}, {{1, {8}}, {}}, {{1, {8 * 2}}, {}}, {}},
+    {"ints", {m4ints, m4bye}, {{1, {8}}, {}}, {{1, {8 * 4}}, {}}, {}},
+    {"uints", {m4uints, m4bye}, {{1, {8}}, {}}, {{1, {8 * 4}}, {}}, {}},
+    {"cells", {m4cells, m4bye}, {{1, {3}}, {}}, {{1, {3 * SZ}}, {}}, {}},
+    {"tokens", {m4tokens, m4bye}, {{1, {3}}, {}}, {{1, {3 * SZt}}, {}}, {}},
+    /*                                                                          */
     {"depth", {m4depth, m4bye}, {{}, {}}, {{1, {}}, {}}, {}},
     {"_ depth", {m4depth, m4bye}, {{1, {3}}, {}}, {{2, {3, 1}}, {}}, {}},
     {"_ _ depth", {m4depth, m4bye}, {{2, {3, 4}}, {}}, {{3, {3, 4, 2}}, {}}, {}},
@@ -177,6 +194,7 @@ static m4testexecute testexecute[] = {
     {"rot", {m4rot, m4bye}, {{3, {1, 2, 3}}, {}}, {{3, {2, 3, 1}}, {}}, {}},
     {"rshift", {m4rshift, m4bye}, {{2, {99, 3}}, {}}, {{1, {99 >> 3}}, {}}, {}},
     {"swap", {m4swap, m4bye}, {{2, {4, 5}}, {}}, {{2, {5, 4}}, {}}, {}},
+    /*                                                                          */
     {"-261 to-byte", {m4to_byte, m4bye}, {{1, {-261}}, {}}, {{1, {(int8_t)-261}}, {}}, {}},
     {"-128 to-byte", {m4to_byte, m4bye}, {{1, {-128}}, {}}, {{1, {-128}}, {}}, {}},
     {"127 to-byte", {m4to_byte, m4bye}, {{1, {127}}, {}}, {{1, {127}}, {}}, {}},
@@ -355,32 +373,52 @@ static m4testexecute testexecute[] = {
      {{1, {2056627543 /* crc1byte(0xffffffff, 't')*/}}, {}},
      {}},
     {"(ip)", {m4_ip_, m4bye}, {{}, {}}, {{1, {-1 /* fixed by m4testexecute_fix() */}}, {}}, {}},
-#if 1
-    /* ----------------------------- token-gives-num ----------------------------------- */
-    {"0 'zero (token-gives-num)",
-     {m4_call_, CELL(token_gives_num_tarray), m4bye},
+    /* ----------------------------- [token-gives-cell?] -------------------- */
+    {"0 'zero [token-gives-cell?]",
+     {m4_call_, XT(_token_gives_cell_q_), m4bye},
      {{2, {0, m4zero}}, {}},
      {{2, {m4zero, ttrue}}, {}},
      {}},
-    {"1 'zero (token-gives-num)",
-     {m4_call_, CELL(token_gives_num_tarray), m4bye},
+    {"1 'zero [token-gives-cell?]",
+     {m4_call_, XT(_token_gives_cell_q_), m4bye},
      {{2, {1, m4zero}}, {}},
      {{2, {1, tfalse}}, {}},
      {}},
-    {"1 'one (token-gives-num)",
-     {m4_call_, CELL(token_gives_num_tarray), m4bye},
+    {"1 'one [token-gives-cell?]",
+     {m4_call_, XT(_token_gives_cell_q_), m4bye},
      {{2, {1, m4one}}, {}},
      {{2, {m4one, ttrue}}, {}},
      {}},
-    {"3 'three (token-gives-num)",
-     {m4_call_, CELL(token_gives_num_tarray), m4bye},
+    {"3 'three [token-gives-cell?]",
+     {m4_call_, XT(_token_gives_cell_q_), m4bye},
      {{2, {3, m4three}}, {}},
      {{2, {m4three, ttrue}}, {}},
      {}},
-    {"7 'eight (token-gives-num)",
-     {m4_call_, CELL(token_gives_num_tarray), m4bye},
+    {"7 'eight [token-gives-cell?]",
+     {m4_call_, XT(_token_gives_cell_q_), m4bye},
      {{2, {7, m4eight}}, {}},
      {{2, {7, tfalse}}, {}},
+     {}},
+    {"8 'eight [token-gives-cell?]",
+     {m4_call_, XT(_token_gives_cell_q_), m4bye},
+     {{2, {8, m4eight}}, {}},
+     {{2, {m4eight, ttrue}}, {}},
+     {}},
+    {"8 'eight [token-gives-cell?]",
+     {m4_call_, XT(_token_gives_cell_q_), m4bye},
+     {{2, {8, m4eight}}, {}},
+     {{2, {m4eight, ttrue}}, {}},
+     {}},
+    {"8 NULL 0 [any-token-gives-cell?]",
+     {m4_call_, XT(_any_token_gives_cell_q_), m4bye},
+     {{3, {8, (m4cell)NULL, 0}}, {}},
+     {{2, {8, tfalse}}, {}},
+     {}},
+#if 0     
+    {"8 tarray tn [any-token-gives-cell?]",
+     {m4_call_, XT(_any_token_gives_cell_q_), m4bye},
+     {{3, {8, (m4cell)testdata_any_token_gives_cell_q_, 1}}, {}},
+     {{2, {m4eight, ttrue}}, {}},
      {}},
 #endif
 #endif

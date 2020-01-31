@@ -59,21 +59,38 @@ FUNC_START(zero_more)  /* 0>   */
 FUNC_END(zero_more)
 
 
-FUNC_START(zero_more_equal)/* 0>=  m4th-user  */
+FUNC_START(zero_more_equal)    /* 0>=  m4th-user  */
         cmp    DTOP, IMM(0);
         csetm  DTOP, ge;
 FUNC_END(zero_more_equal)
 
 
-FUNC_START(two_div)  /* 2/   */
+FUNC_START(two_div)    /* 2/   */
         add    DTOP, DTOP, DTOP, lsr IMM(63);
         asr    DTOP, DTOP, IMM(1);
 FUNC_END(two_div)
 
 
-FUNC_START(two_times)   /* 2*   */
+FUNC_START(two_times)  /* 2*   */
         lsl    DTOP, DTOP, IMM(1);
 FUNC_END(two_times)
+
+
+FUNC_START(four_div)   /* 4/   m4th-user */
+        cmp    DTOP,   IMM(0);
+        add    REG1,   DTOP,   IMM(3);     /* add 3 if negative */
+        csel   DTOP,   REG1,   DTOP,   lt;
+        asr    DTOP,   DTOP,   IMM(2);     /* because asr rounds toward -infinity */
+FUNC_END(four_div)
+
+
+
+FUNC_START(eight_div)  /* 8/   m4th-user */
+        cmp    DTOP,   IMM(0);
+        add    REG1,   DTOP,   IMM(7);     /* add 7 if negative */
+        csel   DTOP,   REG1,   DTOP,   lt;
+        asr    DTOP,   DTOP,   IMM(3);     /* because asr rounds toward -infinity */
+FUNC_END(eight_div)
 
 
 FUNC_START(less)  /* <    */

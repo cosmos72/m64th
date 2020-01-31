@@ -1,4 +1,5 @@
 FLAGS=-g
+#FLAGS=-gdwarf-2 -g3
 
 CC=cc
 CFLAGS=-Wall -Wextra -W $(FLAGS)

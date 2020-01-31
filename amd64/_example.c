@@ -17,6 +17,15 @@
 
 #include <stdint.h>
 
+long _4_div(long val) {
+    return val / 4;
+}
+
+long _8_div(long val) {
+    return val / 8;
+}
+
+
 void store(char *addr, long i, long val) {
     *(long *)(addr + i * 2) = val;
 }

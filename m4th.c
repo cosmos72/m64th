@@ -227,6 +227,15 @@ const m4word *wtable[] = {
 
 enum { wtable_n = sizeof(wtable) / sizeof(wtable[0]) };
 
+/** return how many bytes of code are skipped by executing token */
+m4cell m4token_consumes_ip(m4token tok) {
+    const m4word *w = m4token_to_word(tok);
+    if (w != NULL) {
+        return m4flags_consume_ip(w->flags);
+    }
+    return 0;
+}
+
 /** try to find the m4word that describes given token */
 const m4word *m4token_to_word(m4token tok) {
     if (/*tok >= 0 &&*/ tok < M4____end) {
@@ -248,13 +257,49 @@ void m4token_print(m4token tok, FILE *out) {
     fprintf(out, "T(%d) ", (int)(int16_t)tok);
 }
 
-/** return how many bytes of code are skipped by executing token */
-m4cell m4token_consumes_ip(m4token tok) {
-    const m4word *w = m4token_to_word(tok);
-    if (w != NULL) {
-        return m4flags_consume_ip(w->flags);
+static m4cell m4token_print_int16(const m4token *code, FILE *out) {
+    int16_t val;
+    memcpy(&val, code, sizeof(val));
+    fprintf(out, "%s(%d) ", (sizeof(val) == sizeof(m4token) ? "E" : "SHORT"), (int)val);
+    return sizeof(val) / sizeof(m4token);
+}
+
+static m4cell m4token_print_int32(const m4token *code, FILE *out) {
+    int32_t val;
+    memcpy(&val, code, sizeof(val));
+    fprintf(out, "INT(%ld) ", (long)val);
+    return sizeof(val) / sizeof(m4token);
+}
+
+static m4cell m4token_print_int64(const m4token *code, FILE *out) {
+    int64_t val;
+    memcpy(&val, code, sizeof(val));
+    if (val >= -1000 && val <= 1000) {
+        fprintf(out, "CELL(%ld) ", (long)val);
     }
-    return 0;
+    fprintf(out, "CELL(0x%lx) ", (unsigned long)val);
+    return sizeof(val) / sizeof(m4token);
+}
+
+m4cell m4token_print_consumed_ip(m4token tok, const m4token *code, m4cell maxn, FILE *out) {
+    const m4cell nbytes = m4token_consumes_ip(tok);
+    if (nbytes == 0 || nbytes / SZt >= maxn) {
+        return 0;
+    } else if (nbytes == sizeof(m4token)) {
+        fputc('\'', out);
+        m4token_print(code[0], out);
+        return 1;
+    }
+    switch (nbytes) {
+    case 2:
+        return m4token_print_int16(code, out);
+    case 4:
+        return m4token_print_int32(code, out);
+    case 8:
+        return m4token_print_int64(code, out);
+    default:
+        return 0;
+    }
 }
 
 /* ----------------------- m4cspan ----------------------- */
@@ -286,30 +331,6 @@ m4cell m4code_equal(m4code src, m4code dst) {
     return -1 /*true*/;
 }
 
-static m4cell m4code_print_int16(const m4token *code, FILE *out) {
-    int16_t val;
-    memcpy(&val, code, sizeof(val));
-    fprintf(out, "%s(%d) ", (sizeof(val) == sizeof(m4token) ? "E" : "SHORT"), (int)val);
-    return sizeof(val) / sizeof(m4token);
-}
-
-static m4cell m4code_print_int32(const m4token *code, FILE *out) {
-    int32_t val;
-    memcpy(&val, code, sizeof(val));
-    fprintf(out, "INT(%ld) ", (long)val);
-    return sizeof(val) / sizeof(m4token);
-}
-
-static m4cell m4code_print_int64(const m4token *code, FILE *out) {
-    int64_t val;
-    memcpy(&val, code, sizeof(val));
-    if (val >= -1000 && val <= 1000) {
-        fprintf(out, "CELL(%ld) ", (long)val);
-    }
-    fprintf(out, "CELL(0x%lx) ", (unsigned long)val);
-    return sizeof(val) / sizeof(m4token);
-}
-
 void m4code_print(m4code src, FILE *out) {
     const m4token *const code = src.data;
     m4cell i, n = src.n;
@@ -320,22 +341,7 @@ void m4code_print(m4code src, FILE *out) {
     for (i = 0; i < n;) {
         const m4token tok = code[i++];
         m4token_print(tok, out);
-        switch (m4token_consumes_ip(tok)) {
-        case 2:
-            if (sizeof(m4token) == 2) {
-                fputc('\'', out);
-                m4token_print(code[i++], out);
-            } else {
-                i += m4code_print_int16(code + i, out);
-            }
-            break;
-        case 4:
-            i += m4code_print_int32(code + i, out);
-            break;
-        case 8:
-            i += m4code_print_int64(code + i, out);
-            break;
-        }
+        i += m4token_print_consumed_ip(tok, code + i, n - i, out);
     }
 }
 

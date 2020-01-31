@@ -137,10 +137,18 @@ FUNC_END(three)
 
 
 #define M4FOUR
-FUNC_START(four)       /* 4    m4th-impl */
+FUNC_START(four)        /* 4    m4th-impl */
         DPUSH( DTOP)
         MOVE(  IMM(4), DTOPw)
 FUNC_END(four)
+
+
+FUNC_START(four_div)   /* 4/   m4th-user */
+        test   DTOP,   DTOP
+        lea    3(DTOP),REG1;  /* add 3 if negative */
+        cmovs  REG1,   DTOP;
+        sar    IMM(2), DTOP;  /* because sar rounds toward -infinity */
+FUNC_END(four_div)
 
 
 #define M4EIGHT
@@ -148,6 +156,14 @@ FUNC_START(eight)      /* 8   m4th-impl */
         DPUSH( DTOP)
         MOVE(  IMM(8), DTOPw)
 FUNC_END(eight)
+
+
+FUNC_START(eight_div)  /* 8/   m4th-user */
+        test   DTOP,   DTOP
+        lea    7(DTOP),REG1;  /* add 7 if negative */
+        cmovs  REG1,   DTOP;
+        sar    IMM(3), DTOP;  /* because sar rounds toward -infinity */
+FUNC_END(eight_div)
 
 
 FUNC_START(less)          /* <   */
