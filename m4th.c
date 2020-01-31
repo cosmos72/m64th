@@ -283,7 +283,7 @@ static m4cell m4token_print_int64(const m4token *code, FILE *out) {
 
 m4cell m4token_print_consumed_ip(m4token tok, const m4token *code, m4cell maxn, FILE *out) {
     const m4cell nbytes = m4token_consumes_ip(tok);
-    if (nbytes == 0 || nbytes / SZt >= maxn) {
+    if (nbytes == 0 || nbytes / SZt > maxn) {
         return 0;
     } else if (nbytes == sizeof(m4token)) {
         fputc('\'', out);
