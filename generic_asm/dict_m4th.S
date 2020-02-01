@@ -241,16 +241,7 @@ WORD_START(_ip_, _if_more_equal_)
     WORD_NATIVE_NONE()
     WORD_TOKENS(_ip_, exit)
 WORD_END(_ip_)
-WORD_START(_jump_, _ip_)
-    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_INLINE_ALWAYS | M4FLAG_JUMP)
-    WORD_DSTACK(0,0) /* stack effect when not jumping */
-    WORD_RSTACK(0,0)
-    WORD_DSTACK(0,0) /* stack effect when jumping */
-    WORD_RSTACK(0,0)
-    WORD_NATIVE_NONE()
-    WORD_TOKENS(_jump_, exit)
-WORD_END(_jump_)
-WORD_START(_leave_, _jump_)
+WORD_START(_leave_, _ip_)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_INLINE_ALWAYS | M4FLAG_JUMP)
     WORD_DSTACK(0,0) /* stack effect when not jumping */
     WORD_RSTACK(2,0)

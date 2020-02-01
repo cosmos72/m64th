@@ -31,14 +31,14 @@ FUNC_END(_do_)
 #endif
 
 /**
- * unconditional jump.
+ * implementation of 'else'.
  * must be followed by IP offset to skip.
- * IP offset = 0 means first instruction after (jump) itself
+ * IP offset = 0 means first instruction after (else) itself
  */
-#ifndef M4_JUMP_
-FUNC_START(_jump_)
+#ifndef M4_ELSE_
+FUNC_START(_else_)
         RELJUMP()
-FUNC_END(_jump_)
+FUNC_END(_else_)
 #endif
 
 

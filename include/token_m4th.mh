@@ -74,14 +74,13 @@
 /* (?do) must be followed by IP offset of 1st instruction after (loop) */
 #define M4_question_do_ 560
 #define M4_missing_ 0 /* (missing) called instead of invalid/unimplemented function */
-#define M4_call_ 561  /* (call) must be followed by XT */
-#define M4_do_ 562    /* (do)                                                              */
-#define M4_else_ 563  /* (else)    alias of (jump), used as marker for native compilation  */
+#define M4_call_ 561  /* (call) must be followed by XT                              */
+#define M4_do_ 562    /* (do)                                                       */
+#define M4_else_ 563  /* (else) must be followed by IP offset                       */
                       /* (exec-native) pop address of native code from dstack and call it. */
 #define M4_exec_native_ 564
 /* (exec-token) pop m4token from dstack and call it. works only for tokens with native_len != -1 */
 #define M4_exec_token_ 565
-#define M4_jump_ 566          /* (jump)    must be followed by IP offset */
 #undef M4____gap              /*                                         */
 #define M4_if_ 570            /* (if)      must be followed by IP offset */
 #define M4_if_zero_ 571       /* (if-zero) must be followed by IP offset */

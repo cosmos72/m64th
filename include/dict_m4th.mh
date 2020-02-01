@@ -113,7 +113,6 @@
     X(5, "(if>)", _if_more_)                                                                       \
     X(6, "(if>=)", _if_more_equal_)                                                                \
     X(4, "(ip)", _ip_)                                                                             \
-    X(6, "(jump)", _jump_)                                                                         \
     X(7, "(leave)", _leave_)                                                                       \
     X(12, "(literal-2s)", _literal2s_)                                                             \
     X(12, "(literal-4s)", _literal4s_)                                                             \
