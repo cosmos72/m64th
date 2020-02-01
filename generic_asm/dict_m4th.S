@@ -387,7 +387,7 @@ WORD_START(_any_token_gives_cell_q_, _token_gives_cell_q_)
         drop, false, exit                    /* ( x false )              */
     )
 WORD_END(_token_gives_cell_q_)
-WORD(_xt_,  _token_gives_cell_q_,      DSTACK(0,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
+WORD(_xt_,  _any_token_gives_cell_q_,  DSTACK(0,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
 WORD(minus_one,        _xt_,           DSTACK(0,1), RSTACK(0,0), WORD_PURE)
 WORD(zero,             minus_one,      DSTACK(0,1), RSTACK(0,0), WORD_PURE)
 WORD(one,              zero,           DSTACK(0,1), RSTACK(0,0), WORD_PURE)
