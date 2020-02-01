@@ -21,12 +21,12 @@
 #define M4F_COMPILE4S_
 FUNC_START(_compile4s_)    /* (compile-4s,) */
         /* TODO check if enough space */
-        LD_uh( REG1_uh,    AT(M4XT, XT_OFF_CODE_N))    /* xt.code_n */
+        LD_uh( REG1_uh,    AT(RXT, XT_OFF_CODE_N))     /* xt.code_n */
         lsl    REG2,       REG1,    IMM(PSZt);
-        STORw( DTOPw,      AT(M4XT, REG2))             /* xt[xt.code_n] = (int32)DTOP */
+        STORw( DTOPw,      AT(RXT, REG2))              /* xt[xt.code_n] = (int32)DTOP */
         ADD2(  IMM(4/SZt), REG1)
         DPOP(  DTOP)
-        STORh( REG1h,      AT(M4XT, XT_OFF_CODE_N))    /* xt.code_n += 4/SZt */
+        STORh( REG1h,      AT(RXT, XT_OFF_CODE_N))     /* xt.code_n += 4/SZt */
 FUNC_END(_compile4s_)
 
 
@@ -34,10 +34,10 @@ FUNC_END(_compile4s_)
 #define M4F_COMPILE8S_
 FUNC_START(_compile8s_)    /* (compile-8s,) */
         /* TODO check if enough space */
-        LD_uh( REG1_uh,    AT(M4XT, XT_OFF_CODE_N))    /* xt.code_n */
+        LD_uh( REG1_uh,    AT(RXT, XT_OFF_CODE_N))     /* xt.code_n */
         lsl    REG2,       REG1,    IMM(PSZt);
-        STOR(  DTOP,       AT(M4XT, REG2))             /* xt[xt.code_n] = (int32)DTOP */
+        STOR(  DTOP,       AT(RXT, REG2))              /* xt[xt.code_n] = (int32)DTOP */
         ADD2(  IMM(8/SZt), REG1)
         DPOP(  DTOP)
-        STORh( REG1h,      AT(M4XT, XT_OFF_CODE_N))    /* xt.code_n += 8/SZt */
+        STORh( REG1h,      AT(RXT, XT_OFF_CODE_N))     /* xt.code_n += 8/SZt */
 FUNC_END(_compile8s_)

@@ -59,7 +59,7 @@ WORD_START(bye, c_store) /* tools ext */
     WORD_DSTACK(0,-1)
     WORD_RSTACK(0,-1)
     WORD_NATIVE_NONE()
-    WORD_TOKENS(bye, exit) /* exit is reachable by subsequent m4th_run_vm() */
+    WORD_CODE(bye, exit) /* exit is reachable by subsequent m4th_run_vm() */
 WORD_END(bye)
 WORD(c_fetch,          bye,        DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 WORD(cell_plus,        c_fetch,    DSTACK(1,1), RSTACK(0,0), WORD_PURE)
@@ -75,7 +75,7 @@ WORD_START(compile_comma, chars)
     WORD_RSTACK(0,0)
     WORD_NOJUMP()
     WORD_NATIVE_NONE()
-    WORD_TOKENS(_compile_lit_token_, _call_, /* compile (call) */
+    WORD_CODE(_compile_lit_token_, _call_, /* compile (call) */
                _compile_xt_,
 #if 0
                _call_, XT(_inline_),
@@ -96,13 +96,13 @@ WORD_START(else, dup)
     WORD_CODE_N_AUTO(else)
     WORD_DATA_N(0)
     WORD_CODE_START(else)
-        WORD_CODE_TOKENS(
-            _compile_lit_token_, _else_,
-            _compile_lit_token_, T(-1),
-            /* TODO: call '[resolve-if-else]' */
-            _num_compiled_,                        /* ( #tokens )   */
-            exit
-        )
+    WORD_CODE_BODY(
+        _compile_lit_token_, _else_,
+        _compile_lit_token_, T(-1),
+        /* TODO: call '[resolve-if-else]' */
+        _num_compiled_,                        /* ( #tokens )   */
+        exit
+    )
     WORD_CODE_END(else)
 WORD_END(else)
 WORD_START(exit, else)
@@ -113,7 +113,7 @@ WORD_START(exit, else)
     WORD_RSTACK(0,-1) /* we do not yet track the return address stored in rstack */
     WORD_NATIVE_NONE()
    /* make inliner happy: it skips the final 'exit' of a word's code when inlining */
-    WORD_TOKENS(exit, exit)
+    WORD_CODE(exit, exit)
 WORD_END(exit)
 WORD(false,            exit,       DSTACK(0,1), RSTACK(0,0), WORD_PURE) /* core ext */
 WORD(i,                false,      DSTACK(0,1), RSTACK(1,1), WORD_R_PURE)
@@ -126,12 +126,12 @@ WORD_START(if, i)
     WORD_CODE_N_AUTO(if)
     WORD_DATA_N(0)
     WORD_CODE_START(if)
-        WORD_CODE_TOKENS(
-            _compile_lit_token_, _if_,
-            _compile_lit_token_, T(-1),
-            _num_compiled_,                        /* ( #tokens )   */
-            exit
-        )
+    WORD_CODE_BODY(
+        _compile_lit_token_, _if_,
+        _compile_lit_token_, T(-1),
+        _num_compiled_,                        /* ( #tokens )   */
+        exit
+    )
     WORD_CODE_END(if)
 WORD_END(if)
 WORD(invert,           if,         DSTACK(1,1), RSTACK(0,0), WORD_PURE)
@@ -145,30 +145,28 @@ WORD_START(literal, j)
     WORD_CODE_N_AUTO(literal)
     WORD_DATA_N_AUTO(literal)
     WORD_CODE_START(literal)
-        WORD_CODE_TOKENS(
-            _ip_, xt_to_data, div_token, _call_) /* ( n taddr tn )         */
-        WORD_CODE_XT(
-            _any_token_gives_cell_q_)        /* if executing token gives n */
-        WORD_CODE_TOKENS(
-            _if_, T(3), _compile_token_,     /* append token to XT         */
-                exit,
-            _then_, 
-            dup, dup, to_short,
-            _if_equal_, T(5),                /* if n == to_short(n)        */
-                _compile_lit_token_,
-                _literal2s_,                 /* append _literal2s_ to XT   */
-                _compile2s_, exit,           /* append (int16)n    to XT   */
-            _then_,
-            dup, dup, to_int,
-            _if_equal_, T(5),                /* if n == to_int(n)          */
-                _compile_lit_token_,
-                _literal4s_,                 /* append _literal4s_ to XT   */
-                _compile4s_, exit,           /* append (int32)n    to XT   */
-            _then_,
-            _compile_lit_token_, _lit_cell_, /* append _lit_cell_  to XT   */
-            _compile_cell_,                  /* append dtop to XT          */
-            exit
-        )
+    WORD_CODE_BODY(
+        _ip_, xt_to_data, div_token,      /* ( n taddr tn )            */
+        _call_, XT(_any_token_gives_cell_q_),
+        _if_, T(3), _compile_token_,     /* if executing token gives n */
+            exit,                        /* append token to XT, exit   */
+        _then_, 
+        dup, dup, to_short,
+        _if_equal_, T(5),                /* if n == to_short(n)        */
+            _compile_lit_token_,
+            _literal2s_,                 /* append _literal2s_ to XT   */
+            _compile2s_, exit,           /* append (int16)n    to XT   */
+        _then_,
+        dup, dup, to_int,
+        _if_equal_, T(5),                /* if n == to_int(n)          */
+            _compile_lit_token_,
+            _literal4s_,                 /* append _literal4s_ to XT   */
+            _compile4s_, exit,           /* append (int32)n    to XT   */
+        _then_,
+        _compile_lit_token_, _lit_cell_, /* append _lit_cell_  to XT   */
+        _compile_cell_,                  /* append dtop to XT          */
+        exit
+    )
     WORD_CODE_END(literal)
     WORD_DATA_START(literal)
         WORD_DATA_TOKENS(zero, one, minus_one, two, three, four, eight)
@@ -196,15 +194,15 @@ WORD_START(then, swap)
     WORD_CODE_N_AUTO(then)
     WORD_DATA_N(0)
     WORD_CODE_START(then)
-        WORD_CODE_TOKENS(
-            _compile_lit_token_, _then_,
-            /* TODO: move the code below to '[resolve-if-else]', to let 'else' call it */
-            dup,
-            negate, _num_compiled_, plus,  /* ( #tokens IP-offset )    */
-            swap, one_minus, tokens,       /* ( IP-offset toffset ) toffset of token after (if) or (else) */
-            _xt_, xt_to_code_addr, plus,   /* ( IP-offset taddr   ) taddr   of token after (if) or (else) */
-            token_store, exit
-        )
+    WORD_CODE_BODY(
+        _compile_lit_token_, _then_,
+        /* TODO: move the code below to '[resolve-if-else]', to let 'else' call it */
+        dup,
+        negate, _num_compiled_, plus,  /* ( #tokens IP-offset )    */
+        swap, one_minus, tokens,       /* ( IP-offset toffset ) toffset of token after (if) or (else) */
+        _xt_, xt_to_code_addr, plus,   /* ( IP-offset taddr   ) taddr   of token after (if) or (else) */
+        token_store, exit
+    )
     WORD_CODE_END(then)
 WORD_END(then)
 WORD(true,             then,       DSTACK(0,1), RSTACK(0,0), WORD_PURE) /* core ext */

@@ -22,7 +22,7 @@
 /** ( -- xt ) XT of word currently being compiled */
 FUNC_START(_xt_) /* [xt] */
         DPUSH( DTOP)
-        MOVE(  M4XT, DTOP)
+        MOVE(  RXT,    DTOP)
 FUNC_END(_xt_)
 
 
@@ -35,7 +35,7 @@ FUNC_END(xt_code_n_fetch)
 /** ( -- xt.code_n) code size i.e. # of tokens in word being compiled  */
 FUNC_START(_num_compiled_)  /* [#compiled] */
         DPUSH( DTOP)
-        LD_uh( DTOP_uh,   AT(M4XT, XT_OFF_CODE_N))
+        LD_uh( DTOP_uh,    AT(RXT, XT_OFF_CODE_N))
 FUNC_END(_num_compiled_)
 
 
@@ -43,11 +43,11 @@ FUNC_END(_num_compiled_)
 /** (int16 -- ) pop int16 from dstack and append it to XT being compiled. */
 FUNC_START(_compile2s_)    /* [compile-2s,] */
         /* TODO check if enough space */
-        LD_uh( REG1_uh,    AT(M4XT, XT_OFF_CODE_N))    /* xt.code_n */
-        STORh( DTOPh,      AT(M4XT, REG1, SZt))        /* xt[xt.code_n] = (int16)DTOP */
+        LD_uh( REG1_uh,    AT(RXT, XT_OFF_CODE_N))     /* xt.code_n */
+        STORh( DTOPh,      AT(RXT, REG1, SZt))         /* xt[xt.code_n] = (int16)DTOP */
         ADD2(  IMM(2/SZt), REG1)
         DPOP(  DTOP)
-        STORh( REG1h,      AT(M4XT, XT_OFF_CODE_N))    /* xt.code_n += 2/SZt */
+        STORh( REG1h,      AT(RXT, XT_OFF_CODE_N))     /* xt.code_n += 2/SZt */
 FUNC_END(_compile2s_)
 #endif
 
@@ -57,10 +57,10 @@ FUNC_END(_compile2s_)
 FUNC_START(_compile_lit2s_)    /* [compile-lit-2s,] */
         /* TODO check if enough space */
         LD_sh( REG2_sh,    AT(IP))                     /* REG1 = int16          */
-        LD_uh( REG1_uh,    AT(M4XT, XT_OFF_CODE_N))    /* xt.code_n             */
-        STORh( REG2h,      AT(M4XT, REG1, SZt))        /* xt[xt.code_n] = int16 */
+        LD_uh( REG1_uh,    AT(RXT, XT_OFF_CODE_N))     /* xt.code_n             */
+        STORh( REG2h,      AT(RXT, REG1, SZt))         /* xt[xt.code_n] = int16 */
         ADD2(  IMM(2/SZt), REG1)
-        STORh( REG1h,      AT(M4XT, XT_OFF_CODE_N))    /* xt.code_n ++          */
+        STORh( REG1h,      AT(RXT, XT_OFF_CODE_N))     /* xt.code_n ++          */
         NEXT2()                                        /* skip int16            */
 FUNC_RAWEND(_compile_lit2s_)
 #endif

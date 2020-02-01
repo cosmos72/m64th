@@ -20,20 +20,20 @@
 /** (int32 -- ) pop int32 from dstack and append it to XT being compiled. */
 FUNC_START(_compile4s_)    /* (compile-4s,) */
         /* TODO check if enough space */
-        LD_uh( REG1_uh,    AT(M4XT, XT_OFF_CODE_N))    /* xt.code_n */
-        STORw( DTOPw,      AT(M4XT, REG1, SZt))        /* xt[xt.code_n] = (int32)DTOP  unaligned */
+        LD_uh( REG1_uh,    AT(RXT, XT_OFF_CODE_N))     /* xt.code_n */
+        STORw( DTOPw,      AT(RXT, REG1, SZt))         /* xt[xt.code_n] = (int32)DTOP  unaligned */
         ADD2(  IMM(4/SZt), REG1)
         DPOP(  DTOP)
-        STORh( REG1h,      AT(M4XT, XT_OFF_CODE_N))    /* xt.code_n += 4/SZt */
+        STORh( REG1h,      AT(RXT, XT_OFF_CODE_N))     /* xt.code_n += 4/SZt */
 FUNC_END(_compile4s_)
 
 
 /** (int64 -- ) pop int64 from dstack and append it to XT being compiled. */
 FUNC_START(_compile8s_)    /* (compile-8s,) */
         /* TODO check if enough space */
-        LD_uh( REG1_uh,    AT(M4XT, XT_OFF_CODE_N))    /* xt.code_n */
-        STOR(  DTOP,       AT(M4XT, REG1, SZt))        /* xt[xt.code_n] = (int64)DTOP unaligned */
+        LD_uh( REG1_uh,    AT(RXT, XT_OFF_CODE_N))     /* xt.code_n */
+        STOR(  DTOP,       AT(RXT, REG1, SZt))         /* xt[xt.code_n] = (int64)DTOP unaligned */
         ADD2(  IMM(8/SZt), REG1)
         DPOP(  DTOP)
-        STORh( REG1h,      AT(M4XT, XT_OFF_CODE_N))    /* xt.code_n += 8/SZt */
+        STORh( REG1h,      AT(RXT, XT_OFF_CODE_N))     /* xt.code_n += 8/SZt */
 FUNC_END(_compile8s_)
