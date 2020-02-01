@@ -379,7 +379,7 @@ WORD_START(_any_token_gives_cell_q_, _token_gives_cell_q_)
     WORD_CODE_START(_any_token_gives_cell_q_)
     WORD_CODE_BODY(
         zero, _question_do_, T(14+SZ/SZt),   /* loop if tn != 0          */
-                                                /* ( x taddr )              */
+                                             /* ( x taddr )              */
             dup_to_r, token_fetch,           /* ( x token ) (R taddr )   */
             _call_, XT(_token_gives_cell_q_),/* ( token true | x false ) (R taddr ) */
             _if_, T(5),

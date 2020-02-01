@@ -99,8 +99,8 @@ WORD_START(else, dup)
     WORD_CODE_BODY(
         _compile_lit_token_, _else_,
         _compile_lit_token_, T(-1),
-        /* TODO: call '[resolve-if-else]' */
-        _num_compiled_,                        /* ( #tokens )   */
+        _call_, XT(_resolve_if_else_),         /* resolve jump offset of previous 'if' */
+        _num_compiled_,                        /* ( #tokens ) push our jump offset     */
         exit
     )
     WORD_CODE_END(else)
