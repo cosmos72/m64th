@@ -191,14 +191,10 @@ WORD_START(then, swap)
     WORD_RSTACK(0,0)
     WORD_NOJUMP()
     WORD_NATIVE_NONE()
-    WORD_CODE_N_AUTO(then)
-    WORD_DATA_N(0)
-    WORD_CODE_START(then)
-    WORD_CODE_BODY(
+    WORD_CODE(
         _compile_lit_token_, _then_,
         _call_, XT(_resolve_if_else_), exit
     )
-    WORD_CODE_END(then)
 WORD_END(then)
 WORD(true,             then,       DSTACK(0,1), RSTACK(0,0), WORD_PURE) /* core ext */
 WORD(unloop,           true,       DSTACK(0,0), RSTACK(2,0), WORD_R_PURE)
