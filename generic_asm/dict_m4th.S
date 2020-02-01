@@ -313,7 +313,7 @@ WORD_START(_compile_lit2s_, _compile4s_)
     WORD_CODE(_compile_lit2s_, exit)
 WORD_END(_compile_lit2s_)
 WORD_START(_inline_, _compile_lit2s_)
-    WORD_FLAGS(WORD_IMPURE | M4FLAG_COMPILE_ONLY)
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)
     WORD_NOJUMP()
@@ -321,7 +321,7 @@ WORD_START(_inline_, _compile_lit2s_)
     WORD_CODE(exit) /* currently does nothing */
 WORD_END(_inline_)
 WORD_START(_optimize_, _inline_)
-    WORD_FLAGS(WORD_IMPURE | M4FLAG_COMPILE_ONLY)
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)
     WORD_NOJUMP()
@@ -329,20 +329,19 @@ WORD_START(_optimize_, _inline_)
     WORD_CODE(exit) /* currently does nothing */
 WORD_END(_optimize_)
 /**
- * called by 'then' and 'else': update the jump offset of a preceding 'if' or 'else'
- * ( #tokens-if -- )
+ * called by 'then' and 'else': resolve the jump offset of a preceding 'if' or 'else'
+ * ( #tokens-if-or-else -- )
  */
 WORD_START(_resolve_if_else_, _optimize_)
-    WORD_FLAGS(WORD_IMPURE | M4FLAG_COMPILE_ONLY)
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE)
     WORD_DSTACK(1,0)
     WORD_RSTACK(0,0)
     WORD_NOJUMP()
     WORD_NATIVE_NONE()
     WORD_CODE(
-        dup,
-        negate, _num_compiled_, plus,  /* ( #tokens IP-offset )    */
-        swap, one_minus, tokens,       /* ( IP-offset toffset ) toffset of token after (if) or (else) */
-        _xt_, xt_to_code_addr, plus,   /* ( IP-offset taddr   ) taddr   of token after (if) or (else) */
+        dup, negate, _num_compiled_, plus, /* ( #tokens IP-offset )    */
+        swap, one_minus, tokens,           /* ( IP-offset toffset ) toffset of token after (if) or (else) */
+        _xt_, xt_to_code_addr, plus,       /* ( IP-offset taddr   ) taddr   of token after (if) or (else) */
         token_store, exit
     )
 WORD_END(_resolve_if_else_)
