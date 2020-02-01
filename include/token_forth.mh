@@ -89,7 +89,7 @@
 #define M4does 69              /* does     */
 #define M4drop 70              /* drop     */
 #define M4dup 71               /* dup      */
-#define M4else 72              /* else     */
+#undef M4else /*72*/           /* else     implemented in forth, no dedicated m4token */
 #define M4emit 73              /* emit     */
 #define M4environment_query 74 /* environment? */
 #define M4evaluate 75          /* evaluate */

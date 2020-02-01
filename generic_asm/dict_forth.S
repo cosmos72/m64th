@@ -87,7 +87,25 @@ WORD_END(compile_comma)
 WORD(depth,    compile_comma,      DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 WORD(drop,             depth,      DSTACK(1,0), RSTACK(0,0), WORD_PURE)
 WORD(dup,              drop,       DSTACK(1,2), RSTACK(0,0), WORD_PURE)
-WORD_START(exit, dup)
+WORD_START(else, dup)
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE)
+    WORD_DSTACK(1,1)
+    WORD_RSTACK(0,0)
+    WORD_NOJUMP()
+    WORD_NATIVE_NONE()
+    WORD_CODE_N_AUTO(else)
+    WORD_DATA_N(0)
+    WORD_CODE_START(else)
+        WORD_CODE_TOKENS(
+            _compile_lit_token_, _else_,
+            _compile_lit_token_, T(-1),
+            /* TODO: call '[resolve-if-else]' */
+            _num_compiled_,                        /* ( #tokens )   */
+            exit
+        )
+    WORD_CODE_END(else)
+WORD_END(else)
+WORD_START(exit, else)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS | M4FLAG_JUMP)
     WORD_DSTACK(0,-1) /* stack effect when not jumping */
     WORD_RSTACK(0,-1)
@@ -179,7 +197,9 @@ WORD_START(then, swap)
     WORD_DATA_N(0)
     WORD_CODE_START(then)
         WORD_CODE_TOKENS(
-            _compile_lit_token_, _then_, dup,
+            _compile_lit_token_, _then_,
+            /* TODO: move the code below to '[resolve-if-else]', to let 'else' call it */
+            dup,
             negate, _num_compiled_, plus,  /* ( #tokens IP-offset )    */
             swap, one_minus, tokens,       /* ( IP-offset toffset ) toffset of token after (if) or (else) */
             _xt_, xt_to_code_addr, plus,   /* ( IP-offset taddr   ) taddr   of token after (if) or (else) */
