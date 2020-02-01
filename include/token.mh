@@ -25,20 +25,18 @@
 #define M4TOKEN_SYM(name) m4##name
 #define M4TOKEN_VAL(name) M4##name
 
-/* insert an int as wide as m4token in a sequence of m4token */
-#define m4T(x) ((x)&0xFFFF)
+/* assembler macro: insert an int as wide as m4token in a sequence of m4token */
 #define M4T(x) ((x)&0xFFFF)
 
-/* insert an int16 in a sequence of m4token */
-#define m4SHORT(x) ((x)&0xFFFF)
+/* assembler macro: insert an int16 in a sequence of m4token */
 #define M4SHORT(x) ((x)&0xFFFF)
 
-/* insert an int32 in a sequence of m4token */
-#define m4INT(x) ((x)&0xFFFF), ((x) >> 16 & 0xFFFF)
-#define M4INT(x) ((x)&0xFFFF), ((x) >> 16 & 0xFFFF)
+/* assembler macro: insert an int32 in a sequence of m4token */
+#define M4INT(x) ((x)&0xFFFFFFFF)
 
-/* insert an m4cell in a sequence of m4token */
-#define m4CELL(x) ((x)&0xFFFF), ((x) >> 16 & 0xFFFF), ((x) >> 32 & 0xFFFF), ((x) >> 48 & 0xFFFF)
-#define M4CELL(x) ((x)&0xFFFF), ((x) >> 16 & 0xFFFF), ((x) >> 32 & 0xFFFF), ((x) >> 48 & 0xFFFF)
+/* assembler macro: insert an m4cell in a sequence of m4token */
+#define M4CELL(x) (x)
+
+#define M4TOKEN_SIZEOF(token) M4TOKEN_SIZEOF_(M4TOKEN_VAL(token))
 
 #endif /* M4TH_INCLUDE_TOKEN_MH */

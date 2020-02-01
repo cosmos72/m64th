@@ -70,10 +70,10 @@
 #define WORD_CODE_RAW(...) /*       */ CAT3(., SZt, byte) __VA_ARGS__;
 #define WORD_CODE_TOKEN(token) /*   */ CAT3(., SZt, byte) M4TOKEN_VAL(token);
 #define WORD_CODE_TOKENS(...) /*    */ WRAP_ARGS(WORD_CODE_TOKEN, __VA_ARGS__)
-#define WORD_CODE_XT(wname) /*      */ .8byte WORD_SYM(wname) + WORD_OFF_XT;
+#define WORD_CODE_XT(wname) /*      */ CAT3(., SZ, byte) WORD_SYM(wname) + WORD_OFF_XT;
 #define WORD_CODE_SHORT(n) /*       */ .2byte /**/ (n)&0xFFFF;
 #define WORD_CODE_INT(n) /*         */ .4byte /**/ (n)&0xFFFFFFFF;
-#define WORD_CODE_CELL(n) /*        */ .8byte n;
+#define WORD_CODE_CELL(n) /*        */ CAT3(., SZ, byte) n;
 
 #define WORD_DATA_START(name) /*    */ .L.WORD_SYM(name).data_start:
 #define WORD_DATA_END(name) /*      */ .L.WORD_SYM(name).data_end:
