@@ -34,7 +34,7 @@ FUNC_START(_question_do_)
 /* FUNC_RAWEND(_question_do_) */
 
 
-#define M4_DO_
+#define M4F_DO_
 FUNC_DEF_SYM(_do_)
 /* FUNC_START(_do_) */
         SUB2(  IMM(SZ2),   RSTK)       /* update rstack pointer */

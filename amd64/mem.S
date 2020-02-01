@@ -17,7 +17,7 @@
 
 #include "asm.mh"
 
-#define M4C_STORE
+#define M4FC_STORE
 FUNC_START(c_store)    /* c! */
         LOAD(  REG1,  AT(DSTK))
         STORb( REG1b, AT(DTOP))
@@ -26,7 +26,7 @@ FUNC_START(c_store)    /* c! */
 FUNC_END(c_store)
 
 
-#define M4SHORT_STORE
+#define M4FSHORT_STORE
 FUNC_START(short_store)    /* short! */
         LOAD(  REG1,  AT(DSTK))
         STORh( REG1h, AT(DTOP))
@@ -35,7 +35,7 @@ FUNC_START(short_store)    /* short! */
 FUNC_END(short_store)
 
 
-#define M4INT_STORE
+#define M4FINT_STORE
 FUNC_START(int_store)    /* int! */
         LOAD(  REG1,  AT(DSTK))
         STORw( REG1w, AT(DTOP))
@@ -44,7 +44,7 @@ FUNC_START(int_store)    /* int! */
 FUNC_END(int_store)
 
 
-#define M4STORE
+#define M4FSTORE
 FUNC_START(store)    /* ! */
         LOAD(  REG1,  AT(DSTK))
         STOR(  REG1,  AT(DTOP))

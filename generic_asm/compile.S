@@ -39,7 +39,7 @@ FUNC_START(_num_compiled_)  /* [#compiled] */
 FUNC_END(_num_compiled_)
 
 
-#ifndef M4_COMPILE2S_
+#ifndef M4F_COMPILE2S_
 /** (int16 -- ) pop int16 from dstack and append it to XT being compiled. */
 FUNC_START(_compile2s_)    /* [compile-2s,] */
         /* TODO check if enough space */
@@ -52,7 +52,7 @@ FUNC_END(_compile2s_)
 #endif
 
 
-#ifndef M4_COMPILE_LIT2S_
+#ifndef M4F_COMPILE_LIT2S_
 /** ( -- ) must be followed by int16, append it to XT being compiled. */
 FUNC_START(_compile_lit2s_)    /* [compile-lit-2s,] */
         /* TODO check if enough space */

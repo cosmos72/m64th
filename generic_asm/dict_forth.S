@@ -183,7 +183,7 @@ WORD_START(then, swap)
             dup, one_minus, tokens,        /* ( #tokens toffset ) of token after (if) or (else) */
             xt_to_code, drop, plus, swap,  /* ( taddr   #tokens ) of token after (if) or (else) */
             negate, _num_compiled_, plus,  /* ( taddr IP-offset )                               */
-            /*token_store,*/ exit    
+            token_store, exit
         )
     WORD_CODE_END(then)
 WORD_END(then)

@@ -17,7 +17,7 @@
 
 #include "asm.mh"
 
-#define M4_MISSING_
+#define M4F_MISSING_
 FUNC_START(_missing_) /* (missing) called instead of invalid/unimplemented function */
         ud2;                   /* should crash with SIGILL */
         ZERO(  REG1)
@@ -25,16 +25,17 @@ FUNC_START(_missing_) /* (missing) called instead of invalid/unimplemented funct
 FUNC_END(_missing_)
 
 
-#define M4PLUS_STORE
+#define M4FPLUS_STORE
 FUNC_START(plus_store) /* +!   */
-        DPOP(  REG1)
-        ADD2(  REG1, AT(DTOP))
-        DPOP(  DTOP)
+        LOAD(  REG1,   AT(DSTK))
+        ADD2(  REG1,   AT(DTOP))
+        LOAD(  DTOP,   AT(DSTK, SZ))
+        ADD2(  IMM(SZ2), DSTK)
 FUNC_END(plus_store)
 
 
 
-#define M4MINUS_ONE
+#define M4FMINUS_ONE
 FUNC_START(minus_one)  /* -1   m4th-impl */
         DPUSH( DTOP)
         MOVE(  RFFF, DTOP)
@@ -60,8 +61,8 @@ FUNC_START(div_mod)          /* /mod */
 FUNC_END(div_mod)
 
 
-#define M4ZERO
-FUNC_START(zero)       /* 0    m4th-impl */
+#define M4FZERO
+FUNC_START(zero)           /* 0    m4th-impl */
         DPUSH( DTOP)
         ZERO(  DTOPw)
 FUNC_END(zero)
@@ -74,21 +75,21 @@ FUNC_START(zero_less_equal)   /* 0<=  m4th-user */
 FUNC_END(zero_less_equal)
 
 
-FUNC_START(zero_ne)    /* 0<>  core ext */
+FUNC_START(zero_ne)        /* 0<>  core ext */
         test   DTOP, DTOP;
         mov    IMM(0), DTOPw;      /* xor would affect EFLAGS */
         cmovne RFFF,   DTOP;
 FUNC_END(zero_ne)
 
 
-FUNC_START(zero_equal)        /* 0=   */
+FUNC_START(zero_equal)     /* 0=   */
         test   DTOP, DTOP;
         mov    IMM(0), DTOPw;      /* xor would affect EFLAGS */
         cmove  RFFF,   DTOP;
 FUNC_END(zero_equal)
 
 
-FUNC_START(zero_more)  /* 0>   */
+FUNC_START(zero_more)      /* 0>   */
         test   DTOP,   DTOP;
         mov    IMM(0), DTOPw;      /* xor would affect EFLAGS */
         cmovg  RFFF,   DTOP;
@@ -102,14 +103,14 @@ FUNC_START(zero_more_equal)/* 0>=  m4th-user */
 FUNC_END(zero_more_equal)
 
 
-#define M4ONE
+#define M4FONE
 FUNC_START(one)        /* 1    m4th-impl */
         DPUSH( DTOP)
         MOVE(  IMM(1), DTOPw)
 FUNC_END(one)
 
 
-#define M4TWO
+#define M4FTWO
 FUNC_START(two)        /* 2    m4th-impl */
         DPUSH( DTOP)
         MOVE(  IMM(2), DTOPw)
@@ -129,14 +130,14 @@ FUNC_START(two_div)  /* 2/   */
 FUNC_END(two_div)
 
 
-#define M4THREE
+#define M4FTHREE
 FUNC_START(three)      /* 3   m4th-impl */
         DPUSH( DTOP)
         MOVE(  IMM(3), DTOPw)
 FUNC_END(three)
 
 
-#define M4FOUR
+#define M4FFOUR
 FUNC_START(four)        /* 4    m4th-impl */
         DPUSH( DTOP)
         MOVE(  IMM(4), DTOPw)
@@ -151,7 +152,7 @@ FUNC_START(four_div)   /* 4/   m4th-user */
 FUNC_END(four_div)
 
 
-#define M4EIGHT
+#define M4FEIGHT
 FUNC_START(eight)      /* 8   m4th-impl */
         DPUSH( DTOP)
         MOVE(  IMM(8), DTOPw)
@@ -228,7 +229,7 @@ FUNC_START(abs)        /* abs */
 FUNC_END(abs)
 
 
-#define M4BL
+#define M4FBL
 FUNC_START(bl)         /* bl   */
         DPUSH( DTOP)
         MOVE(  IMM(32), DTOPw)
@@ -272,7 +273,7 @@ FUNC_START(rshift)     /* rshift */
 FUNC_END(rshift)
 
 
-#define M4SWAP
+#define M4FSWAP
 FUNC_START(swap)       /* swap */
         xchg   (DSTK), DTOP;
 FUNC_END(swap)

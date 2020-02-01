@@ -18,7 +18,7 @@
 #include "asm.mh"
 
 /** (int32 -- ) pop int32 from dstack and append it to XT being compiled. */
-#define M4_COMPILE4S_
+#define M4F_COMPILE4S_
 FUNC_START(_compile4s_)    /* (compile-4s,) */
         /* TODO check if enough space */
         LD_uh( REG1_uh,    AT(M4XT, XT_OFF_CODE_N))    /* xt.code_n */
@@ -31,7 +31,7 @@ FUNC_END(_compile4s_)
 
 
 /** (int64 -- ) pop int64 from dstack and append it to XT being compiled. */
-#define M4_COMPILE8S_
+#define M4F_COMPILE8S_
 FUNC_START(_compile8s_)    /* (compile-8s,) */
         /* TODO check if enough space */
         LD_uh( REG1_uh,    AT(M4XT, XT_OFF_CODE_N))    /* xt.code_n */

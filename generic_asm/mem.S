@@ -19,7 +19,7 @@
 #error "generic_asm/mem.S can only be included from asm.S - do not attempt to use it directly"
 #endif
 
-#ifndef M4C_STORE
+#ifndef M4FC_STORE
 FUNC_START(c_store)        /* c! */
         DPOP(  REG1)
         STORb( REG1b, AT(DTOP))
@@ -27,7 +27,7 @@ FUNC_START(c_store)        /* c! */
 FUNC_END(c_store)
 #endif
 
-#ifndef M4SHORT_STORE
+#ifndef M4FSHORT_STORE
 FUNC_START(short_store)    /* short! */
         DPOP(  REG1)
         STORh( REG1h, AT(DTOP))
@@ -35,7 +35,7 @@ FUNC_START(short_store)    /* short! */
 FUNC_END(short_store)
 #endif
 
-#ifndef M4INT_STORE
+#ifndef M4FINT_STORE
 FUNC_START(int_store)      /* int! */
         DPOP(  REG1)
         STORw( REG1w, AT(DTOP))
@@ -43,7 +43,7 @@ FUNC_START(int_store)      /* int! */
 FUNC_END(int_store)
 #endif
 
-#ifndef M4STORE
+#ifndef M4FSTORE
 FUNC_START(store)          /* ! */
         DPOP(  REG1)
         STOR(  REG1, AT(DTOP))

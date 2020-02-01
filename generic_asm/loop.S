@@ -20,7 +20,7 @@
 #endif
 
 /** implementation of 'do', enters a (do) ... (loop) */
-#ifndef M4_DO_
+#ifndef M4F_DO_
 FUNC_START(_do_)
         RPUSH( RTOP)                 /* save rstack top       */
         DPOP(  REG1)                 /* REG1 = i'             */
@@ -35,7 +35,7 @@ FUNC_END(_do_)
  * must be followed by IP offset to skip.
  * IP offset = 0 means first instruction after (else) itself
  */
-#ifndef M4_ELSE_
+#ifndef M4F_ELSE_
 FUNC_START(_else_)
         RELJUMP()
 FUNC_END(_else_)
