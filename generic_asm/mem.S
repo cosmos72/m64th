@@ -19,10 +19,46 @@
 #error "generic_asm/mem.S can only be included from asm.S - do not attempt to use it directly"
 #endif
 
+#ifndef M4C_STORE
+FUNC_START(c_store)        /* c! */
+        DPOP(  REG1)
+        STORb( REG1b, AT(DTOP))
+        DPOP(  DTOP)
+FUNC_END(c_store)
+#endif
 
-FUNC_START(byte_fetch)    /* byte@ */
+#ifndef M4SHORT_STORE
+FUNC_START(short_store)    /* short! */
+        DPOP(  REG1)
+        STORh( REG1h, AT(DTOP))
+        DPOP(  DTOP)
+FUNC_END(short_store)
+#endif
+
+#ifndef M4INT_STORE
+FUNC_START(int_store)      /* int! */
+        DPOP(  REG1)
+        STORw( REG1w, AT(DTOP))
+        DPOP(  DTOP)
+FUNC_END(int_store)
+#endif
+
+#ifndef M4STORE
+FUNC_START(store)          /* ! */
+        DPOP(  REG1)
+        STOR(  REG1, AT(DTOP))
+        DPOP(  DTOP)
+FUNC_END(store)
+#endif
+
+FUNC_START(byte_fetch)     /* byte@ */
         LD_sb(DTOP_sb, AT(DTOP))
 FUNC_END(byte_fetch)
+
+
+FUNC_START(c_fetch)        /* c@ */
+        LD_ub(DTOP_ub, AT(DTOP))
+FUNC_END(c_fetch)
 
 
 FUNC_START(short_fetch)    /* short@ */
@@ -30,41 +66,21 @@ FUNC_START(short_fetch)    /* short@ */
 FUNC_END(short_fetch)
 
 
-FUNC_START(int_fetch)    /* int@ */
-        LD_sw(DTOP_sw, AT(DTOP))
-FUNC_END(int_fetch)
-
-
-FUNC_START(fetch) /* @ */
-        LOAD(  DTOP, AT(DTOP))
-FUNC_END(fetch)
-
-
-FUNC_START(c_fetch)    /* c@ */
-        LD_ub(DTOP_ub, AT(DTOP))
-FUNC_END(c_fetch)
-
-
-FUNC_START(ushort_fetch)    /* ushort@ */
+FUNC_START(ushort_fetch)   /* ushort@ */
         LD_uh(DTOP_uh, AT(DTOP))
 FUNC_END(ushort_fetch)
 
 
-FUNC_START(uint_fetch)    /* uint@ */
+FUNC_START(int_fetch)      /* int@ */
+        LD_sw(DTOP_sw, AT(DTOP))
+FUNC_END(int_fetch)
+
+
+FUNC_START(uint_fetch)     /* uint@ */
         LD_uw(DTOP_uw, AT(DTOP))
 FUNC_END(uint_fetch)
 
 
-FUNC_START(c_store)    /* c! */
-        DPOP(  REG1)
-        STORb( REG1b, AT(DTOP))
-        DPOP(  DTOP)
-FUNC_END(c_store)
-
-
-FUNC_START(store) /* ! */
-        DPOP(  REG1)
-        STOR(  REG1, AT(DTOP))
-        DPOP(  DTOP)
-FUNC_END(store)
-
+FUNC_START(fetch)          /* @ */
+        LOAD(  DTOP, AT(DTOP))
+FUNC_END(fetch)

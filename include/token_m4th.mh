@@ -20,47 +20,54 @@
 
 /* 'm4th-user' wordlist */
 /* #define M4bye 500 */
-#define M4less_equal 501       /* <=                    */
-#define M4more_equal 502       /* >=                    */
-#define M4zero_less_equal 503  /* 0<=                   */
-#define M4zero_more_equal 504  /* 0>=                   */
-#define M4two_plus 505         /* 2+                    */
-#define M4two_minus 506        /* 2-                    */
-#define M4four_times 507       /* 4*                    */
-#define M4four_plus 508        /* 4+                    */
-#define M4four_div 509         /* 4/                    */
-#define M4eight_times 510      /* 8*                    */
-#define M4eight_plus 511       /* 8+                    */
-#define M4eight_div 512        /* 8/                    */
-#undef M4____gap               /*                       */
-#define M4i_times 515          /* i*                    */
-#define M4i_plus 516           /* i+                    */
-#define M4i_minus 517          /* i-                    */
-#define M4noop 518             /* noop                  */
-#undef M4____gap               /*                       */
-#define M4dup_to_r 520         /* dup>r     equivalent to: dup >r     */
-#define M4r_from_drop 521      /* r>drop    equivalent to: r> drop    */
-#define M4r_plus 522           /* r+        equivalent to: r> + >r    */
-#define M4r_store 523          /* r!        equivalent to: r> drop >r */
-#define M4minus_rot 524        /* -rot      equivalent to: rot rot    */
-#undef M4____gap               /*                       */
-#define M4byte_fetch 527       /* byte@     read   int8_t at address dtop, sign-extend */
-#define M4char_fetch M4c_fetch /* char@     read  uint8_t at address dtop, sign-extend */
-#define M4short_fetch 528      /* short@    read  int16_t at address dtop, sign-extend */
-#define M4ushort_fetch 529     /* ushort@   read uint16_t at address dtop, sign-extend */
-#define M4int_fetch 530        /* int@      read  int32_t at address dtop, sign-extend */
-#define M4uint_fetch 531       /* uint@     read uint32_t at address dtop, sign-extend */
-#undef M4____gap               /*                       */
-#define M4to_byte 533          /* to-byte   truncate dtop to   int8_t, sign-extend high bits  */
-#define M4to_char 534          /* to-char   truncate dtop to  uint8_t, zero-extend high bits  */
-#define M4to_short 535         /* to-short  truncate dtop to  int16_t, sign-extend high bits  */
-#define M4to_ushort 536        /* to-ushort truncate dtop to uint16_t, zero-extend high bits  */
-#define M4to_int 537           /* to-int    truncate dtop to  int32_t, sign-extend high bits  */
-#define M4to_uint 538          /* to-uint   truncate dtop to uint32_t, zero-extend high bits  */
+#define M4less_equal 501             /* <=                    */
+#define M4more_equal 502             /* >=                    */
+#define M4zero_less_equal 503        /* 0<=                   */
+#define M4zero_more_equal 504        /* 0>=                   */
+#define M4two_plus 505               /* 2+                    */
+#define M4two_minus 506              /* 2-                    */
+#define M4four_times 507             /* 4*                    */
+#define M4four_plus 508              /* 4+                    */
+#define M4four_div 509               /* 4/                    */
+#define M4eight_times 510            /* 8*                    */
+#define M4eight_plus 511             /* 8+                    */
+#define M4eight_div 512              /* 8/                    */
+#undef M4____gap                     /*                       */
+#define M4i_times 515                /* i*                    */
+#define M4i_plus 516                 /* i+                    */
+#define M4i_minus 517                /* i-                    */
+#define M4noop 518                   /* noop                  */
+#undef M4____gap                     /*                       */
+#define M4dup_to_r 520               /* dup>r     equivalent to: dup >r     */
+#define M4r_from_drop 521            /* r>drop    equivalent to: r> drop    */
+#define M4r_plus 522                 /* r+        equivalent to: r> + >r    */
+#define M4r_store 523                /* r!        equivalent to: r> drop >r */
+#define M4minus_rot 524              /* -rot      equivalent to: rot rot    */
+#undef M4____gap                     /*                       */
+#define M4byte_fetch 527             /* byte@     read   int8_t at address dtop, sign-extend */
+#define M4char_fetch M4c_fetch       /* char@     read  uint8_t at address dtop, sign-extend */
+#define M4short_fetch 528            /* short@    read  int16_t at address dtop, sign-extend */
+#define M4ushort_fetch 529           /* ushort@   read uint16_t at address dtop, sign-extend */
+#define M4int_fetch 530              /* int@      read  int32_t at address dtop, sign-extend */
+#define M4uint_fetch 531             /* uint@     read uint32_t at address dtop, sign-extend */
+#undef M4____gap                     /*                       */
+#define M4byte_store M4c_store       /* byte!     write   (int8_t)dtop at address d2         */
+#define M4char_store M4c_store       /* char!     write  (uint8_t)dtop at address d2         */
+#define M4short_store 532            /* short!    write  (int16_t)dtop at address d2         */
+#define M4ushort_store M4short_store /* ushort!   write (uint16_t)dtop at address d2         */
+#define M4int_store 534              /* int!      write  (int32_t)dtop at address d2         */
+#define M4uint_store M4int_store     /* uint!     write (uint32_t)dtop at address d2         */
+#undef M4____gap                     /*                       */
+#define M4to_byte 535   /* to-byte   truncate dtop to   int8_t, sign-extend high bits  */
+#define M4to_char 536   /* to-char   truncate dtop to  uint8_t, zero-extend high bits  */
+#define M4to_short 537  /* to-short  truncate dtop to  int16_t, sign-extend high bits  */
+#define M4to_ushort 538 /* to-ushort truncate dtop to uint16_t, zero-extend high bits  */
+#define M4to_int 539    /* to-int    truncate dtop to  int32_t, sign-extend high bits  */
+#define M4to_uint 540   /* to-uint   truncate dtop to uint32_t, zero-extend high bits  */
 
 /* 'm4th-core' wordlist */
-#define M4xt_to_code 540 /* xt>code ( XT -- taddr n )    get code array from XT */
-#define M4xt_to_data 541 /* xt>data ( XT -- caddr n )    get data array from XT */
+#define M4xt_to_code 544 /* xt>code ( XT -- taddr n )    get code array from XT */
+#define M4xt_to_data 545 /* xt>data ( XT -- caddr n )    get data array from XT */
 
 /* 'm4th-impl' wordlist */
 #define M4minus_one 550 /* -1       */

@@ -38,6 +38,12 @@
 #define m4_lit_cell_ CAT3(m4_literal, SZ, s_)
 #define m4_lit_xt_ CAT3(m4_literal, SZ, s_)
 
+#define m4char_fetch m4c_fetch       /* char@   is an alias for c@     - no dedicated m4token */
+#define m4byte_store m4c_store       /* byte!   is an alias for c!     - no dedicated m4token */
+#define m4char_store m4c_store       /* char!   is an alias for c!     - no dedicated m4token */
+#define m4ushort_store m4short_store /* ushort! is an alias for short! - no dedicated m4token */
+#define m4uint_store m4int_store     /* uint!   is an alias for int!   - no dedicated m4token */
+
 #define m4div_byte m4noop        /* /byte     divide dtop by sizeof(byte)   */
 #define m4div_char m4noop        /* /char     divide dtop by sizeof(char)   */
 #define m4div_short m4two_div    /* /short    divide dtop by sizeof(short)  */
@@ -62,6 +68,7 @@
 
 #define m4div_cell CAT3(m4_, SZ, _div)        /* /cell    => _SZ/        */
 #define m4div_token CAT3(m4_, SZt, _div)      /* /token   => _SZt/       */
+#define m4token_store CAT3(m4_, SZt, u_store) /* token!   => _SZtu_store */
 #define m4token_fetch CAT3(m4_, SZt, u_fetch) /* token@   => _SZtu_fetch */
 #define m4token_plus CAT3(m4_, SZt, _plus)    /* token+   => _SZt_plus   */
 #define m4tokens CAT3(m4_, SZt, _times)       /* tokens   => _SZt_times  */
@@ -86,6 +93,12 @@
 #define m4_8_times m4eight_times /* 8*       */
 #define m4_8_plus m4eight_plus   /* 8+       */
 #define m4_8_div m4eight_div     /* 8/       */
+
+/* needed by m4token_store */
+#define m4_1u_store m4c_store
+#define m4_2u_store m4short_store
+#define m4_4u_store m4int_store
+#define m4_8u_store m4store
 
 /* needed by m4token_fetch */
 #define m4_1u_fetch m4char_fetch
@@ -116,6 +129,12 @@
 #define M4_lit_cell_ CAT3(M4_literal, SZ, s_)
 #define M4_lit_xt_ CAT3(M4_literal, SZ, s_)
 
+#define M4char_fetch M4c_fetch       /* char@   is an alias for c@     - no dedicated m4token */
+#define M4byte_store M4c_store       /* byte!   is an alias for c!     - no dedicated m4token */
+#define M4char_store M4c_store       /* char!   is an alias for c!     - no dedicated m4token */
+#define M4ushort_store M4short_store /* ushort! is an alias for short! - no dedicated m4token */
+#define M4uint_store M4int_store     /* uint!   is an alias for int!   - no dedicated m4token */
+
 #define M4div_byte M4noop        /* /byte     divide dtop by sizeof(byte)   */
 #define M4div_char M4noop        /* /char     divide dtop by sizeof(char)   */
 #define M4div_short M4two_div    /* /short    divide dtop by sizeof(short)  */
@@ -140,6 +159,7 @@
 
 #define M4div_cell CAT3(M4_, SZ, _div)        /* /cell    => _SZ/        */
 #define M4div_token CAT3(M4_, SZt, _div)      /* /token   => _SZt/       */
+#define M4token_store CAT3(M4_, SZt, u_store) /* token!   => _SZtu_store */
 #define M4token_fetch CAT3(M4_, SZt, u_fetch) /* token@   => _SZtu_fetch */
 #define M4token_plus CAT3(M4_, SZt, _plus)    /* token+   => _SZt_plus   */
 #define M4tokens CAT3(M4_, SZt, _times)       /* tokens   => _SZt_times  */
@@ -164,6 +184,12 @@
 #define M4_8_times M4eight_times /* 8*       */
 #define M4_8_plus M4eight_plus   /* 8+       */
 #define M4_8_div M4eight_div     /* 8/       */
+
+/* needed by M4token_store */
+#define M4_1u_store M4c_store
+#define M4_2u_store M4short_store
+#define M4_4u_store M4int_store
+#define M4_8u_store M4store
 
 /* needed by M4token_fetch */
 #define M4_1u_fetch M4char_fetch

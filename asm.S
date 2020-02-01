@@ -32,12 +32,14 @@ SECTION_FUNC()
 #include "amd64/compile.S"
 #include "amd64/io.S"
 #include "amd64/loop.S"
+#include "amd64/mem.S"
 #elif defined(__aarch64__)
 #include "arm64/arith.S"
 #include "arm64/compile.S"
 #include "arm64/call.S"
 #include "arm64/io.S"
 #include "arm64/loop.S"
+#include "arm64/mem.S"
 #else
 #error "unsupported architecture: expecting x86_64 (amd64) or aarch64 (arm64)"
 #endif

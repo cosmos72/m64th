@@ -21,10 +21,14 @@
 #include "../dispatch/sz.mh" /* SZ */
 #include "macro.mh"          /* CAT3() */
 
-#define m4ffalse m4fzero         /* false */
-#define m4ftrue m4fminus_one     /* true  */
-#define m4fr_fetch m4fi          /* r@    */
-#define m4fchar_fetch m4fc_fetch /* char@ is an alias for c@ - no dedicated m4enum or m4func */
+#define m4ffalse m4fzero               /* false */
+#define m4ftrue m4fminus_one           /* true  */
+#define m4fr_fetch m4fi                /* r@    */
+#define m4fchar_fetch m4fc_fetch       /* char@   is an alias for c@     - no dedicated m4func */
+#define m4fbyte_store m4fc_store       /* byte!   is an alias for c!     - no dedicated m4func */
+#define m4fchar_store m4fc_store       /* char!   is an alias for c!     - no dedicated m4func */
+#define m4fushort_store m4fshort_store /* ushort! is an alias for short! - no dedicated m4func */
+#define m4fuint_store m4fint_store     /* uint!   is an alias for int!   - no dedicated m4func */
 
 #define m4fbytes m4fnoop         /* bytes */
 #define m4fbyte_plus m4fone_plus /* byte+ */
@@ -45,6 +49,7 @@
 #define m4fcells CAT3(m4f_, SZ, _times)    /* cells    */
 
 #define m4ftoken_plus CAT3(m4f_, SZt, _plus)    /* token+    */
+#define m4ftoken_store CAT3(m4f_, SZt, u_store) /* token!    */
 #define m4ftoken_fetch CAT3(m4f_, SZt, u_fetch) /* token@    */
 #define m4ftokens CAT3(m4f_, SZt, _times)       /* tokens    */
 
@@ -78,6 +83,12 @@
 #define m4f_8_times m4feight_times /* 8*       */
 #define m4f_8_plus m4feight_plus   /* 8+       */
 #define m4f_8_div m4feight_div     /* 8/       */
+
+/* needed by m4ftoken_store above */
+#define m4f_1u_store m4fchar_store
+#define m4f_2u_store m4fushort_store
+#define m4f_4u_store m4fuint_store
+#define m4f_8u_store m4fstore
 
 /* needed by m4ftoken_fetch above */
 #define m4f_1u_fetch m4fchar_fetch
