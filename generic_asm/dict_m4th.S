@@ -329,10 +329,28 @@ WORD_START(_optimize_, _inline_)
     WORD_CODE(exit) /* currently does nothing */
 WORD_END(_optimize_)
 /**
+ * called by 'then' and 'else': update the jump offset of a preceding 'if' or 'else'
+ * ( #tokens-if -- )
+ */
+WORD_START(_resolve_if_else_, _optimize_)
+    WORD_FLAGS(WORD_IMPURE | M4FLAG_COMPILE_ONLY)
+    WORD_DSTACK(1,0)
+    WORD_RSTACK(0,0)
+    WORD_NOJUMP()
+    WORD_NATIVE_NONE()
+    WORD_CODE(
+        dup,
+        negate, _num_compiled_, plus,  /* ( #tokens IP-offset )    */
+        swap, one_minus, tokens,       /* ( IP-offset toffset ) toffset of token after (if) or (else) */
+        _xt_, xt_to_code_addr, plus,   /* ( IP-offset taddr   ) taddr   of token after (if) or (else) */
+        token_store, exit
+    )
+WORD_END(_resolve_if_else_)
+/**
  * test whether executing a token produces the given cell value
  * ( x token -- token true | x false )
  */
-WORD_START(_token_gives_cell_q_, _optimize_)
+WORD_START(_token_gives_cell_q_, _resolve_if_else_)
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_DSTACK(2,2)
     WORD_RSTACK(0,0)

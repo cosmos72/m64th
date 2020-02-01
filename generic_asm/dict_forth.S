@@ -196,12 +196,7 @@ WORD_START(then, swap)
     WORD_CODE_START(then)
     WORD_CODE_BODY(
         _compile_lit_token_, _then_,
-        /* TODO: move the code below to '[resolve-if-else]', to let 'else' call it */
-        dup,
-        negate, _num_compiled_, plus,  /* ( #tokens IP-offset )    */
-        swap, one_minus, tokens,       /* ( IP-offset toffset ) toffset of token after (if) or (else) */
-        _xt_, xt_to_code_addr, plus,   /* ( IP-offset taddr   ) taddr   of token after (if) or (else) */
-        token_store, exit
+        _call_, XT(_resolve_if_else_), exit
     )
     WORD_CODE_END(then)
 WORD_END(then)

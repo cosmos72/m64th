@@ -153,6 +153,7 @@
     X(23, "[any-token-gives-cell?]", _any_token_gives_cell_q_)                                     \
     X(8, "[inline]", _inline_)                                                                     \
     X(10, "[optimize]", _optimize_)                                                                \
+    X(17, "[resolve-if-else]", _resolve_if_else_) /* common back-end of 'else' and 'then' */       \
     X(19, "[token-gives-cell?]", _token_gives_cell_q_)
 
 /* ------- m4th-* ------------------------------------------------------------------------------- */
