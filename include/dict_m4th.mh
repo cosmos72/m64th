@@ -96,17 +96,18 @@
 
 /* ------- m4th-core ---------------------------------------------------------------------------- */
 #define DICT_TOKENS_M4TH_CORE(X)                                                                   \
-    X(7, "xt>code", xt_to_code) /* ( XT -- taddr n )    get code array from XT */                  \
-    X(7, "xt>data", xt_to_data) /* ( XT -- caddr n )    get data array from XT */
+    X(7, "xt>code", xt_to_code) /* ( XT -- taddr n )    get code array   from XT */                \
+    X(7, "xt>data", xt_to_data) /* ( XT -- caddr n )    get data array   from XT */
 
 #define DICT_WORDS_M4TH_CORE(X)                                                                    \
     DICT_TOKENS_M4TH_CORE(X)                                                                       \
-    X(8, "to-token", to_token)  /* alias of to_SZtu,     no dedicated m4token */                   \
-    X(6, "/token", div_token)   /* alias of _SZt_div,    no dedicated m4token */                   \
-    X(6, "token!", token_store) /* alias of _SZtu_store, no dedicated m4token */                   \
-    X(6, "token@", token_fetch) /* alias of _SZtu_fetch, no dedicated m4token */                   \
-    X(6, "token+", token_plus)  /* alias of _SZt_plus,   no dedicated m4token */                   \
-    X(6, "tokens", tokens)      /* alias of _SZt_times,  no dedicated m4token */
+    X(8, "to-token", to_token)             /* alias of to_SZtu,     no dedicated m4token */        \
+    X(6, "/token", div_token)              /* alias of _SZt_div,    no dedicated m4token */        \
+    X(6, "token!", token_store)            /* alias of _SZtu_store, no dedicated m4token */        \
+    X(6, "token@", token_fetch)            /* alias of _SZtu_fetch, no dedicated m4token */        \
+    X(6, "token+", token_plus)             /* alias of _SZt_plus,   no dedicated m4token */        \
+    X(6, "tokens", tokens)                 /* alias of _SZt_times,  no dedicated m4token */        \
+    X(12, "xt>code>addr", xt_to_code_addr) /* ( XT -- taddr )   get code address from XT */
 
 /* ------- m4th-impl ---------------------------------------------------------------------------- */
 #define DICT_TOKENS_M4TH_IMPL(X)                                                                   \
@@ -137,6 +138,7 @@
     X(13, "[compile-4s,]", _compile4s_)                                                            \
     X(13, "[compile-8s,]", _compile8s_)                                                            \
     X(17, "[compile-lit-2s,]", _compile_lit2s_)                                                    \
+    X(4, "[xt]", _xt_)                                                                             \
     X(2, "-1", minus_one)                                                                          \
     X(1, "0", zero)                                                                                \
     X(1, "1", one)                                                                                 \

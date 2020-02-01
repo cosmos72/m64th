@@ -19,14 +19,14 @@
 #error "generic_asm/compile.S can only be included from asm.S - do not attempt to use it directly"
 #endif
 
-#if 0
-/** push to dstack the XT of word currently being compiled */
-FUNC_START(xt) /* (-- xt) */
+/** ( -- xt ) XT of word currently being compiled */
+FUNC_START(_xt_) /* [xt] */
         DPUSH( DTOP)
         MOVE(  M4XT, DTOP)
-FUNC_END(xt)
+FUNC_END(_xt_)
 
 
+#if 0
 FUNC_START(xt_code_n_fetch) /* (xt -- xt.code_n) */
         LD_uh( DTOP_uh,   AT(DTOP, XT_OFF_CODE_N))
 FUNC_END(xt_code_n_fetch)

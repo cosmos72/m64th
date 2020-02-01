@@ -38,6 +38,8 @@
 #define m4_lit_cell_ CAT3(m4_literal, SZ, s_)
 #define m4_lit_xt_ CAT3(m4_literal, SZ, s_)
 
+#define m4xt_to_code_addr m4noop /* xt>code>addr is noop because XT == code>addr */
+
 #define m4char_fetch m4c_fetch       /* char@   is an alias for c@     - no dedicated m4token */
 #define m4byte_store m4c_store       /* byte!   is an alias for c!     - no dedicated m4token */
 #define m4char_store m4c_store       /* char!   is an alias for c!     - no dedicated m4token */
@@ -128,6 +130,8 @@
 #define M4_lit_token_ CAT3(M4_literal, SZt, s_)
 #define M4_lit_cell_ CAT3(M4_literal, SZ, s_)
 #define M4_lit_xt_ CAT3(M4_literal, SZ, s_)
+
+#define M4xt_to_code_addr M4noop /* xt>code>addr is noop because XT == code>addr */
 
 #define M4char_fetch M4c_fetch       /* char@   is an alias for c@     - no dedicated m4token */
 #define M4byte_store M4c_store       /* byte!   is an alias for c!     - no dedicated m4token */

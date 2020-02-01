@@ -179,10 +179,10 @@ WORD_START(then, swap)
     WORD_DATA_N(0)
     WORD_CODE_START(then)
         WORD_CODE_TOKENS(
-            _compile_lit_token_, _then_,
-            dup, one_minus, tokens,        /* ( #tokens toffset ) of token after (if) or (else) */
-            xt_to_code, drop, plus, swap,  /* ( taddr   #tokens ) of token after (if) or (else) */
-            negate, _num_compiled_, plus,  /* ( taddr IP-offset )                               */
+            _compile_lit_token_, _then_, dup,
+            negate, _num_compiled_, plus,  /* ( #tokens IP-offset )    */
+            swap, one_minus, tokens,       /* ( IP-offset toffset ) toffset of token after (if) or (else) */
+            _xt_, xt_to_code_addr, plus,   /* ( IP-offset taddr   ) taddr   of token after (if) or (else) */
             token_store, exit
         )
     WORD_CODE_END(then)

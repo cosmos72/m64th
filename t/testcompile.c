@@ -28,7 +28,7 @@
 
 typedef struct m4testcompile_s {
     const char *input[8];
-    m4test_stack dbefore;
+    m4test_stack dbefore, dafter;
     m4test_code codegen;
 } m4testcompile;
 
@@ -37,35 +37,40 @@ typedef struct m4testcompile_s {
 static const m4testcompile testcompile[] = {
 #if 0
 #else
-    {{"0"}, {}, {callsz, {CALLXT(zero)}}},
-    {{"1", "2", "+"}, {}, {3 * callsz, {CALLXT(one), CALLXT(two), CALLXT(plus)}}},
-    {{"literal"}, {1, {0}}, {1, {m4zero}}},
-    {{"literal"}, {1, {1}}, {1, {m4one}}},
-    {{"literal"}, {1, {-1}}, {1, {m4minus_one}}},
-    {{"literal"}, {1, {2}}, {1, {m4two}}},
-    {{"literal"}, {1, {3}}, {1, {m4three}}},
-    {{"literal"}, {1, {4}}, {1, {m4four}}},
-    {{"literal"}, {1, {5}}, {2, {m4_literal2s_, 5}}},
-    {{"literal"}, {1, {8}}, {1, {m4eight}}},
-    {{"literal"}, {1, {11}}, {2, {m4_literal2s_, 11}}},
-    {{"literal"}, {1, {-2}}, {2, {m4_literal2s_, -2}}},
-    {{"literal"}, {1, {0x7fff}}, {2, {m4_literal2s_, 0x7fff}}},
-    {{"literal"}, {1, {-0x8000}}, {2, {m4_literal2s_, -0x8000}}},
+    {{"0"}, {}, {}, {callsz, {CALLXT(zero)}}},
+    {{"1", "2", "+"}, {}, {}, {3 * callsz, {CALLXT(one), CALLXT(two), CALLXT(plus)}}},
+    {{"if"}, {}, {1, {2}}, {2, {m4_if_, T(-1)}}},
+    {{"if", "then"}, {}, {}, {3, {m4_if_, T(1), m4_then_}}},
+    {{"literal"}, {1, {0}}, {}, {1, {m4zero}}},
+    {{"literal"}, {1, {1}}, {}, {1, {m4one}}},
+    {{"literal"}, {1, {-1}}, {}, {1, {m4minus_one}}},
+    {{"literal"}, {1, {2}}, {}, {1, {m4two}}},
+    {{"literal"}, {1, {3}}, {}, {1, {m4three}}},
+    {{"literal"}, {1, {4}}, {}, {1, {m4four}}},
+    {{"literal"}, {1, {5}}, {}, {2, {m4_literal2s_, 5}}},
+    {{"literal"}, {1, {8}}, {}, {1, {m4eight}}},
+    {{"literal"}, {1, {11}}, {}, {2, {m4_literal2s_, 11}}},
+    {{"literal"}, {1, {-2}}, {}, {2, {m4_literal2s_, -2}}},
+    {{"literal"}, {1, {0x7fff}}, {}, {2, {m4_literal2s_, 0x7fff}}},
+    {{"literal"}, {1, {-0x8000}}, {}, {2, {m4_literal2s_, -0x8000}}},
 #if SZ >= 4
-    {{"literal"}, {1, {0x8000}}, {3, {m4_literal4s_, INT(0x8000)}}},
-    {{"literal"}, {1, {-0x8001}}, {3, {m4_literal4s_, INT(-0x8001)}}},
-    {{"literal"}, {1, {0x7fffffffl}}, {3, {m4_literal4s_, INT(0x7fffffffl)}}},
-    {{"literal"}, {1, {-0x80000000l}}, {3, {m4_literal4s_, INT(-0x80000000l)}}},
+    {{"literal"}, {1, {0x8000}}, {}, {3, {m4_literal4s_, INT(0x8000)}}},
+    {{"literal"}, {1, {-0x8001}}, {}, {3, {m4_literal4s_, INT(-0x8001)}}},
+    {{"literal"}, {1, {0x7fffffffl}}, {}, {3, {m4_literal4s_, INT(0x7fffffffl)}}},
+    {{"literal"}, {1, {-0x80000000l}}, {}, {3, {m4_literal4s_, INT(-0x80000000l)}}},
 #endif
 #if SZ >= 8
-    {{"literal"}, {1, {0x80000000l}}, {5, {m4_literal8s_, CELL(0x80000000l)}}},
-    {{"literal"}, {1, {-0x80000001l}}, {5, {m4_literal8s_, CELL(-0x80000001l)}}},
-    {{"literal"}, {1, {0x7fffffffffffffffl}}, {5, {m4_literal8s_, CELL(0x7fffffffffffffffl)}}},
-    {{"literal"}, {1, {-0x8000000000000000l}}, {5, {m4_literal8s_, CELL(-0x8000000000000000l)}}},
+    {{"literal"}, {1, {0x80000000l}}, {}, {5, {m4_literal8s_, CELL(0x80000000l)}}},
+    {{"literal"}, {1, {-0x80000001l}}, {}, {5, {m4_literal8s_, CELL(-0x80000001l)}}},
+    {{"literal"}, {1, {0x7fffffffffffffffl}}, {}, {5, {m4_literal8s_, CELL(0x7fffffffffffffffl)}}},
+    {{"literal"},
+     {1, {-0x8000000000000000l}},
+     {},
+     {5, {m4_literal8s_, CELL(-0x8000000000000000l)}}},
 #endif
-    {{"drop"}, {}, {callsz, {CALLXT(drop)}}},
-    {{"false"}, {}, {callsz, {CALLXT(false)}}},
-    {{"true"}, {}, {callsz, {CALLXT(true)}}},
+    {{"drop"}, {}, {}, {callsz, {CALLXT(drop)}}},
+    {{"false"}, {}, {}, {callsz, {CALLXT(false)}}},
+    {{"true"}, {}, {}, {callsz, {CALLXT(true)}}},
 #endif
 };
 
@@ -88,7 +93,7 @@ static m4cell m4testcompile_run(m4th *m, const m4testcompile *t, m4test_word *ou
     m4th_repl(m);
     m4slice_copy_to_code(t_codegen_in, &t_codegen);
 
-    return m4test_stack_equal(&empty, &m->dstack) && m4test_stack_equal(&empty, &m->rstack) &&
+    return m4test_stack_equal(&t->dafter, &m->dstack) && m4test_stack_equal(&empty, &m->rstack) &&
            m4code_equal(t_codegen, m4word_code(m->w, 0));
 }
 
@@ -119,7 +124,7 @@ static void m4testcompile_failed(m4th *m, const m4testcompile *t, FILE *out) {
         return;
     }
     fputs("... expected  data  stack ", out);
-    m4test_stack_print(&empty, out);
+    m4test_stack_print(&t->dafter, out);
     fputs("      actual  data  stack ", out);
     m4stack_print(&m->dstack, out);
 

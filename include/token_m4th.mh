@@ -111,6 +111,7 @@
 #define M4_compile8s_ 591    /* [compile8s,] pop int64 from dstack, append it to compiled code  */
 /* [compile-lit-2s,] must be followed by int16, append it to compiled code  */
 #define M4_compile_lit2s_ 592
+#define M4_xt_ 593    /* [xt] ( -- xt ) XT of word being compiled */
 #undef M4____gap      /*          */
 #define M4i_prime 600 /* i'       */
 #undef M4____gap      /*          */
