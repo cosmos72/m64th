@@ -374,10 +374,7 @@ WORD_START(_any_token_gives_cell_q_, _token_gives_cell_q_)
     WORD_RSTACK(0,0)
     WORD_NOJUMP()
     WORD_NATIVE_NONE()
-    WORD_CODE_N_AUTO(_any_token_gives_cell_q_)
-    WORD_DATA_N(0)
-    WORD_CODE_START(_any_token_gives_cell_q_)
-    WORD_CODE_BODY(
+    WORD_CODE(
         zero, _question_do_, T(14+SZ/SZt),   /* loop if tn != 0          */
                                              /* ( x taddr )              */
             dup_to_r, token_fetch,           /* ( x token ) (R taddr )   */
@@ -390,7 +387,6 @@ WORD_START(_any_token_gives_cell_q_, _token_gives_cell_q_)
         _loop_, T(-14-SZ/SZt),
         drop, false, exit                    /* ( x false )              */
     )
-    WORD_CODE_END(_any_token_gives_cell_q_)
 WORD_END(_token_gives_cell_q_)
 WORD(_xt_,  _token_gives_cell_q_,      DSTACK(0,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
 WORD(minus_one,        _xt_,           DSTACK(0,1), RSTACK(0,0), WORD_PURE)

@@ -93,17 +93,13 @@ WORD_START(else, dup)
     WORD_RSTACK(0,0)
     WORD_NOJUMP()
     WORD_NATIVE_NONE()
-    WORD_CODE_N_AUTO(else)
-    WORD_DATA_N(0)
-    WORD_CODE_START(else)
-    WORD_CODE_BODY(
+    WORD_CODE(
         _compile_lit_token_, _else_,
         _compile_lit_token_, T(-1),
         _call_, XT(_resolve_if_else_),         /* resolve jump offset of previous 'if' */
         _num_compiled_,                        /* ( #tokens ) push our jump offset     */
         exit
     )
-    WORD_CODE_END(else)
 WORD_END(else)
 WORD_START(exit, else)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS | M4FLAG_JUMP)
@@ -123,16 +119,12 @@ WORD_START(if, i)
     WORD_RSTACK(0,0)
     WORD_NOJUMP()
     WORD_NATIVE_NONE()
-    WORD_CODE_N_AUTO(if)
-    WORD_DATA_N(0)
-    WORD_CODE_START(if)
-    WORD_CODE_BODY(
+    WORD_CODE(
         _compile_lit_token_, _if_,
         _compile_lit_token_, T(-1),
         _num_compiled_,                        /* ( #tokens )   */
         exit
     )
-    WORD_CODE_END(if)
 WORD_END(if)
 WORD(invert,           if,         DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(j,                invert,     DSTACK(0,1), RSTACK(3,3), WORD_R_PURE)
