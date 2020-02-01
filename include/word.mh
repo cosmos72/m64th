@@ -104,7 +104,10 @@
 /* clang-format on */
 
 #define WORD_IMPURE M4FLAG_INLINE
-#define WORD_PURE M4FLAG_INLINE | M4FLAG_PURE
+/* result only depends on input, only accesses dstack (not rstack or memory)*/
+#define WORD_PURE M4FLAG_INLINE | M4FLAG_PURE 
+/* result only depends on input, only accesses dstack and rstack (not memory)*/
+#define WORD_R_PURE M4FLAG_INLINE_ALWAYS | M4FLAG_PURE | M4FLAG_COMPILE_ONLY
 
 #define WORD(name, prev, dstack, rstack, flags)                                                    \
     WORD_START(name, prev)                                                                         \
