@@ -159,6 +159,13 @@
 
 /* internal m4th macros used (mostly) by assembly */
 
+#define M4ANY_SIZEOF_SHORT(x) _, 2
+#define M4ANY_SIZEOF_INT(x) _, 4
+#define M4ANY_SIZEOF_CELL(x) _, SZ
+#define M4ANY_SIZEOF_XT(x) _, SZ
+
+#define M4ANY_SIZEOF(token) SECOND_ARG(M4ANY_SIZEOF_##token, SZt)
+
 #define M4FLAG_CONSUMES_IP_SZ CAT2(M4FLAG_CONSUMES_IP_, SZ)
 #define M4FLAG_CONSUMES_IP_SZt CAT2(M4FLAG_CONSUMES_IP_, SZt)
 

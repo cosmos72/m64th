@@ -18,7 +18,6 @@
 #ifndef M4TH_INCLUDE_TOKEN_MH
 #define M4TH_INCLUDE_TOKEN_MH
 
-#include "macro.mh" /* SECOND_ARG() CAT2() */
 #include "token_alias.mh"
 #include "token_forth.mh"
 #include "token_m4th.mh"
@@ -41,12 +40,5 @@
 
 /* assembler macro: insert an XT in a sequence of m4token */
 #define M4XT(wordname) (WORD_SYM(wordname) + WORD_OFF_XT)
-
-#define M4TOKEN_SIZEOF_SHORT(x) _, 2
-#define M4TOKEN_SIZEOF_INT(x) _, 4
-#define M4TOKEN_SIZEOF_CELL(x) _, SZ
-#define M4TOKEN_SIZEOF_XT(x) _, SZ
-
-#define M4TOKEN_SIZEOF(token) SECOND_ARG(M4TOKEN_SIZEOF_##token, SZt)
 
 #endif /* M4TH_INCLUDE_TOKEN_MH */

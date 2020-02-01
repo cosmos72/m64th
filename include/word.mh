@@ -68,7 +68,7 @@
 #define WORD_CODE_START(name) /*    */ .L.WORD_SYM(name).code_start:
 #define WORD_CODE_END(name) /*      */ .L.WORD_SYM(name).code_end:
 #define WORD_CODE_RAW(...) /*       */ CAT3(., SZt, byte) __VA_ARGS__;
-#define WORD_CODE_ANY(token) /*     */ CAT3(., M4TOKEN_SIZEOF(token), byte) M4TOKEN_VAL(token);
+#define WORD_CODE_ANY(token) /*     */ CAT3(., M4ANY_SIZEOF(token), byte) M4TOKEN_VAL(token);
 #define WORD_CODE_BODY(...) /*      */ WRAP_ARGS(WORD_CODE_ANY, __VA_ARGS__)
 
 #define WORD_DATA_START(name) /*    */ .L.WORD_SYM(name).data_start:
