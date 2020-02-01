@@ -28,13 +28,20 @@ FUNC_END(xt)
 
 
 FUNC_START(xt_code_n_fetch) /* (xt -- xt.code_n) */
-        LD_uh(DTOP_uh,   AT(DTOP, XT_OFF_CODE_N))
+        LD_uh( DTOP_uh,   AT(DTOP, XT_OFF_CODE_N))
 FUNC_END(xt_code_n_fetch)
 #endif /* 0 */
 
+/** ( -- xt.code_n) code size i.e. # of tokens in word being compiled  */
+FUNC_START(_num_compiled_)  /* [#compiled] */
+        DPUSH( DTOP)
+        LD_uh( DTOP_uh,   AT(M4XT, XT_OFF_CODE_N))
+FUNC_END(_num_compiled_)
+
+
 #ifndef M4_COMPILE2S_
 /** (int16 -- ) pop int16 from dstack and append it to XT being compiled. */
-FUNC_START(_compile2s_)    /* (compile-2s,) */
+FUNC_START(_compile2s_)    /* [compile-2s,] */
         /* TODO check if enough space */
         LD_uh( REG1_uh,    AT(M4XT, XT_OFF_CODE_N))    /* xt.code_n */
         STORh( DTOPh,      AT(M4XT, REG1, SZt))        /* xt[xt.code_n] = (int16)DTOP */
@@ -47,7 +54,7 @@ FUNC_END(_compile2s_)
 
 #ifndef M4_COMPILE_LIT2S_
 /** ( -- ) must be followed by int16, append it to XT being compiled. */
-FUNC_START(_compile_lit2s_)    /* (compile-lit-2s,) */
+FUNC_START(_compile_lit2s_)    /* [compile-lit-2s,] */
         /* TODO check if enough space */
         LD_sh( REG2_sh,    AT(IP))                     /* REG1 = int16          */
         LD_uh( REG1_uh,    AT(M4XT, XT_OFF_CODE_N))    /* xt.code_n             */

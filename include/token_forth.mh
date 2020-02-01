@@ -101,13 +101,13 @@
 #define M4here 81              /* here     */
 #define M4hold 82              /* hold     */
 #define M4i 83                 /* i        */
-#define M4if 84                /* if       */
+#undef M4if /*84*/             /* if       implemented in forth, no dedicated m4token */
 #define M4immediate 85         /* immediate    */
 #define M4invert 86            /* invert   */
 #define M4j 87                 /* j        */
 #define M4key 88               /* key      */
 #define M4leave 89             /* leave    */
-#undef M4literal /*90*/        /* literal  implemented in forth, no dedicated token */
+#undef M4literal /*90*/        /* literal  implemented in forth, no dedicated m4token */
 #define M4loop 91              /* loop     */
 #define M4lshift 92            /* lshift   */
 #define M4m_times 93           /* m*       */
@@ -135,7 +135,7 @@
 #define M4spaces 115           /* space    */
 #define M4state 116            /* state    */
 #define M4swap 117             /* swap     */
-#define M4then 118             /* then     */
+#undef M4then /*118*/          /* then     implemented in forth, no dedicated m4token */
 #define M4type 119             /* type     */
 #define M4u_dot 120            /* u.       */
 #define M4u_less 121           /* u<       */
@@ -168,7 +168,7 @@
 #undef M4buffer_colon          /* buffer:  */
 #undef M4c_quote               /* c"       */
 #undef M4case                  /* case     */
-#undef M4compile_comma /*206*/ /* compile, implemented in forth, no dedicated token */
+#undef M4compile_comma /*206*/ /* compile, implemented in forth, no dedicated m4token */
 #undef M4defer                 /* defer    */
 #undef M4defer_store           /* defer!   */
 #undef M4defer_fetch           /* defer@   */

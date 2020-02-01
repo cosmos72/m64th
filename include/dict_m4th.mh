@@ -120,6 +120,7 @@
     X(6, "(loop)", _loop_)                                                                         \
     X(9, "(missing)", _missing_)                                                                   \
     X(6, "(then)", _then_)                                                                         \
+    X(11, "[#compiled]", _num_compiled_)                                                           \
     X(13, "[compile-2s,]", _compile2s_)                                                            \
     X(13, "[compile-4s,]", _compile4s_)                                                            \
     X(13, "[compile-8s,]", _compile8s_)                                                            \

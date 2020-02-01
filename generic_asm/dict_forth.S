@@ -99,7 +99,24 @@ WORD_START(exit, dup)
 WORD_END(exit)
 WORD(false,            exit,       DSTACK(0,1), RSTACK(0,0), WORD_PURE) /* core ext */
 WORD(i,                false,      DSTACK(0,1), RSTACK(1,1), WORD_PURE | M4FLAG_COMPILE_ONLY)
-WORD(invert,           i,          DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD_START(if, i)
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE)
+    WORD_DSTACK(0,1)
+    WORD_RSTACK(0,0)
+    WORD_NOJUMP()
+    WORD_NATIVE_NONE()
+    WORD_CODE_N_AUTO(if)
+    WORD_DATA_N(0)
+    WORD_CODE_START(if)
+        WORD_CODE_TOKENS(
+            _compile_lit_token_, _if_,
+            _compile_lit_token_, T(-1),
+            _num_compiled_,                        /* ( #tokens )   */
+            exit
+        )
+    WORD_CODE_END(if)
+WORD_END(if)
+WORD(invert,           if,         DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(j,                invert,     DSTACK(0,1), RSTACK(3,3), WORD_PURE | M4FLAG_COMPILE_ONLY)
 WORD_START(literal, j)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE | M4FLAG_DATA_TOKENS)
@@ -152,7 +169,25 @@ WORD(r_fetch,          r_from,     DSTACK(0,1), RSTACK(1,1), WORD_PURE | M4FLAG_
 WORD(rot,              r_fetch,    DSTACK(3,3), RSTACK(0,0), WORD_PURE)
 WORD(rshift,           rot,        DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(swap,             rshift,     DSTACK(2,2), RSTACK(0,0), WORD_PURE)
-WORD(true,             swap,       DSTACK(0,1), RSTACK(0,0), WORD_PURE) /* core ext */
+WORD_START(then, swap)
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE)
+    WORD_DSTACK(1,0)
+    WORD_RSTACK(0,0)
+    WORD_NOJUMP()
+    WORD_NATIVE_NONE()
+    WORD_CODE_N_AUTO(then)
+    WORD_DATA_N(0)
+    WORD_CODE_START(then)
+        WORD_CODE_TOKENS(
+            _compile_lit_token_, _then_,
+            dup, one_minus, tokens,        /* ( #tokens toffset ) of token after (if) or (else) */
+            xt_to_code, drop, plus, swap,  /* ( taddr   #tokens ) of token after (if) or (else) */
+            negate, _num_compiled_, plus,  /* ( taddr IP-offset )                               */
+            /*token_store,*/ exit    
+        )
+    WORD_CODE_END(then)
+WORD_END(then)
+WORD(true,             then,       DSTACK(0,1), RSTACK(0,0), WORD_PURE) /* core ext */
 WORD(unloop,           true,       DSTACK(0,0), RSTACK(2,0), WORD_PURE | M4FLAG_COMPILE_ONLY)
 WORD(xor,              unloop,     DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 

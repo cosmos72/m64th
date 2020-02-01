@@ -334,7 +334,7 @@ m4cell m4code_equal(m4code src, m4code dst) {
 void m4code_print(m4code src, FILE *out) {
     const m4token *const code = src.data;
     m4cell i, n = src.n;
-    if (code == NULL || n == 0 || out == NULL) {
+    if (code == NULL || n < 0 || out == NULL) {
         return;
     }
     fprintf(out, "<%ld> ", (long)n);
