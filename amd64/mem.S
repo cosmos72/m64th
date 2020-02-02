@@ -17,6 +17,14 @@
 
 #include "asm.mh"
 
+#define M4FSTORE
+FUNC_START(store)    /* ! */
+        LOAD(  REG1,  AT(DSTK))
+        STOR(  REG1,  AT(DTOP))
+        LOAD(  DTOP,  AT(DSTK, SZ2))
+        ADD2(  IMM(SZ2), DSTK)
+FUNC_END(store)
+
 #define M4FC_STORE
 FUNC_START(c_store)    /* c! */
         LOAD(  REG1,  AT(DSTK))
@@ -44,11 +52,20 @@ FUNC_START(int_store)    /* int! */
 FUNC_END(int_store)
 
 
-#define M4FSTORE
-FUNC_START(store)    /* ! */
-        LOAD(  REG1,  AT(DSTK))
-        STOR(  REG1,  AT(DTOP))
-        LOAD(  DTOP,  AT(DSTK, SZ2))
-        ADD2(  IMM(SZ2), DSTK)
-FUNC_END(store)
+#define M4FCMOVE
+FUNC_START(cmove)    /* cmove   'string' word set */
+        MOVE(  %rdi,  %rax)            /* save DSTK == %rdi */
+        MOVE(  %rsi,  %rdx)            /* save RSTK == %rsi */
+        LOAD(  %rdi,  AT(%rax, SZ))    /* src               */
+        LOAD(  %rsi,  AT(%rax))        /* dst               */
+        MOVE(  DTOP,  %rcx)            /* n                 */
+
+        cld;                           /* forward direction */
+        rep    movsb (%rsi), (%rdi);   /* copy string       */
+        
+        lea    AT(%rax,SZ3), DSTK;     /* load DSTK         */
+        MOVE(  AT(%rax,SZ2), DTOP)     /* load dstack top   */
+        MOVE(  %rdx,   %rsi)           /* load RSTK         */
+FUNC_END(cmove)
+
 

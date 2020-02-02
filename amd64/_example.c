@@ -17,25 +17,12 @@
 
 #include <stdint.h>
 
-long _4_div(long val) {
-    return val / 4;
+void cmove(char *restrict src, char *restrict dst, unsigned long n) {
+    while (n) {
+        *src++ = *dst++;
+        n--;
+    }
 }
 
-long _8_div(long val) {
-    return val / 8;
-}
-
-
-void store(char *addr, long i, long val) {
-    *(long *)(addr + i * 2) = val;
-}
-
-void store_sb(char *addr, long i, int8_t val) {
-    *(int8_t *)(addr + i * 2) = val;
-}
-void store_sh(char *addr, long i, int16_t val) {
-    *(int16_t *)(addr + i * 2) = val;
-}
-void store_sw(char *addr, long i, int32_t val) {
-    *(int32_t *)(addr + i * 2) = val;
+int main(void) {
 }
