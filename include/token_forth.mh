@@ -264,22 +264,74 @@
 /*extends M4abort_quote*/ /*264*/ /* abort"   extended definition */
 
 /* 'forth' wordlist: 'facility' word set */
-#undef M4at_x_y /*271*/       /* at-x-y   */
-#undef M4key_question /*272*/ /* key?     */
-#undef M4page /*273*/         /* page     */
+#undef M4at_x_y /*268*/       /* at-x-y   */
+#undef M4key_question /*269*/ /* key?     */
+#undef M4page /*270*/         /* page     */
 
 /* 'forth' wordlist: 'facility ext' word set */
-#undef M4e_key          /* ekey     */
-#undef M4e_key_to_char  /* ekey>char    */
-#undef M4e_key_question /* ekey?    */
-#undef M4emit_question  /* emit?    */
-#undef M4ms             /* ms       */
-#undef M4time_and_date  /* time&date    */
+#undef M4plus_field /*271*/      /* +field*/
+#undef M4begin_structure /*272*/ /* begin-structure */
+#undef M4cfield_colon /*273*/    /* cfield: */
+#undef M4ekey /*274*/            /* ekey */
+#undef M4ekey_to_char /*275*/    /* ekey>char */
+#undef M4ekey_to_fkey /*276*/    /* ekey>fkey */
+#undef M4ekey_question /*277*/   /* ekey? */
+#undef M4emit_question /*278*/   /* emit? */
+#undef M4end_structure /*279*/   /* end-structure */
+#undef M4field_colon /*280*/     /* field: */
+#undef M4k_alt_mask /*281*/      /* k-alt-mask */
+#undef M4k_ctrl_mask /*282*/     /* k-ctrl-mask */
+#undef M4k_delete /*283*/        /* k-delete */
+#undef M4k_down /*284*/          /* k-down */
+#undef M4k_end /*285*/           /* k-end */
+#undef M4k_f1 /*286*/            /* k-f1 */
+#undef M4k_f2 /*287*/            /* k-f2 */
+#undef M4k_f3 /*288*/            /* k-f3 */
+#undef M4k_f4 /*289*/            /* k-f4 */
+#undef M4k_f5 /*290*/            /* k-f5 */
+#undef M4k_f6 /*291*/            /* k-f6     */
+#undef M4k_f7 /*291*/            /* k-f7     */
+#undef M4k_f8 /*292*/            /* k-f8     */
+#undef M4k_f9 /*293*/            /* k-f9     */
+#undef M4k_f10 /*294*/           /* k-f10    */
+#undef M4k_f11 /*295*/           /* k-f11    */
+#undef M4k_f12 /*296*/           /* k-f12    */
+#undef M4k_home /*297*/          /* k-home   */
+#undef M4k_insert /*298*/        /* k-insert */
+#undef M4k_left /*299*/          /* k-left   */
+#undef M4k_next /*300*/          /* k-next   */
+#undef M4k_prior /*301*/         /* k-prior  */
+#undef M4k_right /*302*/         /* k-right  */
+#undef M4k_shift_mask /*303*/    /* k-shift-mask */
+#undef M4k_up /*304*/            /* k-up     */
+#undef M4ms /*305*/              /* ms       */
+#undef M4time_and_date /*306*/   /* time&date    */
 
 /* 'forth' wordlist: 'file' word set */
-/* TODO */
+/*#undef M4paren*/ /*311*/       /* (             extended definition */
+#undef M4bin /*312*/             /* bin           */
+#undef M4close_file /*313*/      /* close-file    */
+#undef M4create_file /*314*/     /* create-file   */
+#undef M4delete_file /*315*/     /* delete-file   */
+#undef M4file_position /*316*/   /* file-position */
+#undef M4file_size /*317*/       /* file-size     */
+#undef M4include_file /*318*/    /* include-file  */
+#undef M4included /*319*/        /* included      */
+#undef M4open_file /*320*/       /* open-file     */
+#undef M4r_div_o /*321*/         /* r/o           */
+#undef M4r_div_w /*322*/         /* r/w           */
+#undef M4read_file /*323*/       /* read-file     */
+#undef M4read_line /*324*/       /* read-line     */
+#undef M4reposition_file /*325*/ /* reposition-file */
+#undef M4resize_file /*326*/     /* resize-file   */
+/*#undef M4s_quote*/ /*327*/     /* s"            extended definition */
+/*#undef M4source_id*/ /*328*/   /* source-id     extended definition */
+#undef M4w_div_o /*329*/         /* w/o           */
+#undef M4write_file /*330*/      /* write-file    */
+#undef M4write_line /*331*/      /* write-line    */
 
 /* 'forth' wordlist: 'file ext' word set */
+/*#undef M4s_equote*/ /*327*/ /* s\"           extended definition */
 /* TODO */
 
 /* 'forth' wordlist: 'float' word set */
