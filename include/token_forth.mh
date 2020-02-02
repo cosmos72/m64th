@@ -308,34 +308,70 @@
 #undef M4time_and_date /*306*/   /* time&date    */
 
 /* 'forth' wordlist: 'file' word set */
-/*#undef M4paren*/ /*311*/       /* (             extended definition */
-#undef M4bin /*312*/             /* bin           */
-#undef M4close_file /*313*/      /* close-file    */
-#undef M4create_file /*314*/     /* create-file   */
-#undef M4delete_file /*315*/     /* delete-file   */
-#undef M4file_position /*316*/   /* file-position */
-#undef M4file_size /*317*/       /* file-size     */
-#undef M4include_file /*318*/    /* include-file  */
-#undef M4included /*319*/        /* included      */
-#undef M4open_file /*320*/       /* open-file     */
-#undef M4r_div_o /*321*/         /* r/o           */
-#undef M4r_div_w /*322*/         /* r/w           */
-#undef M4read_file /*323*/       /* read-file     */
-#undef M4read_line /*324*/       /* read-line     */
+/*#undef M4paren*/ /*311*/       /* (            extended definition */
+#undef M4bin /*312*/             /* bin          */
+#undef M4close_file /*313*/      /* close-file   */
+#undef M4create_file /*314*/     /* create-file  */
+#undef M4delete_file /*315*/     /* delete-file  */
+#undef M4file_position /*316*/   /* file-position*/
+#undef M4file_size /*317*/       /* file-size    */
+#undef M4include_file /*318*/    /* include-file */
+#undef M4included /*319*/        /* included     */
+#undef M4open_file /*320*/       /* open-file    */
+#undef M4r_div_o /*321*/         /* r/o          */
+#undef M4r_div_w /*322*/         /* r/w          */
+#undef M4read_file /*323*/       /* read-file    */
+#undef M4read_line /*324*/       /* read-line    */
 #undef M4reposition_file /*325*/ /* reposition-file */
-#undef M4resize_file /*326*/     /* resize-file   */
-/*#undef M4s_quote*/ /*327*/     /* s"            extended definition */
-/*#undef M4source_id*/ /*328*/   /* source-id     extended definition */
-#undef M4w_div_o /*329*/         /* w/o           */
-#undef M4write_file /*330*/      /* write-file    */
-#undef M4write_line /*331*/      /* write-line    */
+#undef M4resize_file /*326*/     /* resize-file  */
+/*#undef M4s_quote*/ /*327*/     /* s"           extended definition */
+/*#undef M4source_id*/ /*328*/   /* source-id    extended definition */
+#undef M4w_div_o /*329*/         /* w/o          */
+#undef M4write_file /*330*/      /* write-file   */
+#undef M4write_line /*331*/      /* write-line   */
 
 /* 'forth' wordlist: 'file ext' word set */
-/*#undef M4s_equote*/ /*327*/ /* s\"           extended definition */
-/* TODO */
+#undef M4file_status /*332*/  /* file-status  */
+/*#undef M4s_equote*/ /*333*/ /* s\"          extended definition */
+#undef M4flush_file /*334*/   /* flush-file   */
+#undef M4include /*335*/      /* include      */
+#undef M4refill /*336*/       /* refill       */
+#undef M4rename_file /*337*/  /* rename-file  */
+#undef M4require /*338*/      /* require      */
+#undef M4required /*339*/     /* required     */
 
 /* 'forth' wordlist: 'float' word set */
-/* TODO */
+#undef M4to_float /*341*/     /* >float */
+#undef M4d_to_f /*342*/       /* d>f    */
+#undef M4f_store /*343*/      /* f!     */
+#undef M4f_times /*344*/      /* f*     */
+#undef M4f_plus /*345*/       /* f+     */
+#undef M4f_minus /*346*/      /* f-     */
+#undef M4f_div /*347*/        /* f/     */
+#undef M4f_zero_less /*348*/  /* f0<    */
+#undef M4f_zero_equal /*349*/ /* f0=    */
+#undef M4f_less /*350*/       /* f<     */
+#undef M4f_to_d /*351*/       /* f>d    */
+#undef M4f_fetch /*352*/      /* f@     */
+#undef M4falign /*353*/       /* falign */
+#undef M4faligned /*354*/     /* faligned   */
+#undef M4fconstant /*355*/    /* fconstant  */
+#undef M4fdepth /*356*/       /* fdepth */
+#undef M4fdrop /*357*/        /* fdrop  */
+#undef M4fdup /*358*/         /* fdup   */
+#undef M4fliteral /*359*/     /* fliteral   */
+#undef M4float_plus /*360*/   /* float+ */
+#undef M4floats /*361*/       /* floats */
+#undef M4floor /*362*/        /* floor  */
+#undef M4fmax /*363*/         /* fmax   */
+#undef M4fmin /*364*/         /* fmin   */
+#undef M4fnegate /*365*/      /* fnegate*/
+#undef M4fover /*366*/        /* fover  */
+#undef M4frot /*367*/         /* frot   */
+#undef M4fround /*368*/       /* fround */
+#undef M4fswap /*369*/        /* fswap  */
+#undef M4fvariable /*370*/    /* fvariable  */
+#undef M4represent /*371*/    /* represent  */
 
 /* 'forth' wordlist: 'float ext' word set */
 /* TODO */
