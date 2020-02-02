@@ -30,7 +30,7 @@ typedef struct m4arg_s m4arg; /**< intentionally incomplete type, cannot be inst
 
 typedef unsigned char m4char;
 typedef size_t m4uint;
-typedef ssize_t m4cell;
+typedef ssize_t m4cell; /* main forth type: number or pointer */
 /** forth instruction. uses forth calling convention, cannot be invoked from C */
 typedef void (*m4func)(m4arg);
 
@@ -162,6 +162,13 @@ struct m4th_s {        /**< m4th forth interpreter and compiler */
 
     m4wordlist *wordlist[m4th_wordlist_n]; /**< FIXME: visible wordlists     */
     const char *const *in_cstr;            /**< DELETEME: pre-parsed input   */
+
+    m4func on_abort; /**< forth function to execute on abort. usually m4fbye or m4frepl */
+    m4cell err;      /**< last error code */
+    struct {
+        m4countedstring impl;
+        m4char buf[30];
+    } errmsg; /**< last error message */
 };
 
 #ifdef __cplusplus
