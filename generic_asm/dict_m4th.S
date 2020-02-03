@@ -118,9 +118,9 @@ WORD_START(xt_inline_query,  to_token)
     WORD_CODE(
         dup, xt_to_flags,
         dup, _literal2s_, SHORT(M4FLAG_INLINE_ALWAYS), and, _if_, T(4),
-            drop, true, exit,
+            drop, drop, true, exit,
         _then_,
-        dup, _literal2s_, SHORT(M4FLAG_INLINE), and, _if_zero_, T(4),
+        _literal2s_, SHORT(M4FLAG_INLINE), and, _if_zero_, T(4),
             drop, false, exit,
         _then_,
         xt_to_code, nip, _literal2s_, SHORT(2 + SZ/SZt), less_equal,
