@@ -97,8 +97,11 @@
 /* ------- m4th-core ---------------------------------------------------------------------------- */
 #define DICT_TOKENS_M4TH_CORE(X)                                                                   \
     X(7, "xt>code", xt_to_code)            /* ( XT -- taddr n )   get code array    from XT */     \
+    X(9, "xt>code>n", xt_to_code_n)        /* ( XT -- n )         get code size     from XT */     \
     X(7, "xt>data", xt_to_data)            /* ( XT -- caddr n )   get data array    from XT */     \
-    X(12, "xt>data>addr", xt_to_data_addr) /* ( XT -- caddr )     get data address  from XT */
+    X(12, "xt>data>addr", xt_to_data_addr) /* ( XT -- caddr )     get data address  from XT */     \
+    X(9, "xt>data>n", xt_to_data_n)        /* ( XT -- n )         get data size     from XT */     \
+    X(8, "xt>flags", xt_to_flags)          /* ( XT -- m4flags )   get m4flags       from XT */
 
 #define DICT_WORDS_M4TH_CORE(X)                                                                    \
     DICT_TOKENS_M4TH_CORE(X)                                                                       \
@@ -108,6 +111,7 @@
     X(6, "token@", token_fetch)            /* alias of _SZtu_fetch, no dedicated m4token */        \
     X(6, "token+", token_plus)             /* alias of _SZt_plus,   no dedicated m4token */        \
     X(6, "tokens", tokens)                 /* alias of _SZt_times,  no dedicated m4token */        \
+    X(10, "xt-inline?", xt_inline_query)   /* ( XT -- flag ) calls to XT should be inlined? */     \
     X(12, "xt>code>addr", xt_to_code_addr) /* ( XT -- taddr )   get code address from XT */
 
 /* ------- m4th-impl ---------------------------------------------------------------------------- */

@@ -109,12 +109,33 @@ WORD(tokens,           token_plus,     DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(token_store,      tokens,         DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE)
 WORD(token_fetch,      token_store,    DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 WORD(to_token,         token_fetch,    DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(xt_to_code,       to_token,       DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD_START(xt_inline_query,  to_token)
+    WORD_FLAGS(WORD_IMPURE | M4FLAG_MEM_FETCH)
+    WORD_DSTACK(1,1)
+    WORD_RSTACK(0,0)
+    WORD_NOJUMP()
+    WORD_NATIVE_NONE()
+    WORD_CODE(
+        dup, xt_to_flags,
+        dup, _literal2s_, SHORT(M4FLAG_INLINE_ALWAYS), and, _if_, T(4),
+            drop, true, exit,
+        _then_,
+        dup, _literal2s_, SHORT(M4FLAG_INLINE), and, _if_zero_, T(4),
+            drop, false, exit,
+        _then_,
+        xt_to_code, nip, _literal2s_, SHORT(2 + SZ/SZt), less_equal,
+        exit
+    )
+WORD_END(xt_inline_query)    
+WORD(xt_to_code,       xt_inline_query,DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 WORD(xt_to_code_addr,  xt_to_code,     DSTACK(1,1), RSTACK(0,0), WORD_PURE) /* currently a noop */
-WORD(xt_to_data,      xt_to_code_addr, DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(xt_to_code_n,     xt_to_code_addr,DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(xt_to_data,       xt_to_code_n,   DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 WORD(xt_to_data_addr,  xt_to_data,     DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(xt_to_data_n,     xt_to_data_addr,DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(xt_to_flags,      xt_to_data_n,   DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 
-DICT_BODY(m4th_core, xt_to_data_addr)
+DICT_BODY(m4th_core, xt_to_flags)
 DICT_END(m4th_core)
 
 /* ---------------------------------------------------------------------------------------------- */

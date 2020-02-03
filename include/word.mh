@@ -21,12 +21,14 @@
 /** used to insert an execution token (XT) in a sequence of functions */
 #define m4XT(x) WORD_SYM(x) + WORD_OFF_XT
 
+#define WORD_OFF_FLAGS 6   /* offset of m4word->flags        */
 #define WORD_OFF_CODE_N 14 /* offset of m4word->code_n       */
 #define WORD_OFF_DATA_N 16 /* offset of m4word->data_len     */
 #define WORD_OFF_XT 24     /* offset of m4word->code i.e. XT */
 
-#define XT_OFF_CODE_N -10 /* WORD_OFF_XT - WORD_OFF_CODE_N */
-#define XT_OFF_DATA_N -8  /* WORD_OFF_XT - WORD_OFF_DATA_N */
+#define XT_OFF_FLAGS -18  /* WORD_OFF_FLAGS  - WORD_OFF_XT  */
+#define XT_OFF_CODE_N -10 /* WORD_OFF_CODE_N - WORD_OFF_XT  */
+#define XT_OFF_DATA_N -8  /* WORD_OFF_DATA_N - WORD_OFF_XT  */
 
 #define WORD_SYM(name) m4word_##name
 
@@ -112,9 +114,9 @@
 
 #define WORD_IMPURE M4FLAG_INLINE
 /* result only depends on input, only accesses dstack (not rstack or memory)*/
-#define WORD_PURE M4FLAG_INLINE | M4FLAG_PURE
+#define WORD_PURE (M4FLAG_INLINE | M4FLAG_PURE)
 /* result only depends on input, only accesses dstack and rstack (not memory)*/
-#define WORD_R_PURE M4FLAG_INLINE_ALWAYS | M4FLAG_PURE | M4FLAG_COMPILE_ONLY
+#define WORD_R_PURE (M4FLAG_INLINE_ALWAYS | M4FLAG_PURE | M4FLAG_COMPILE_ONLY)
 
 #define WORD(name, prev, dstack, rstack, flags)                                                    \
     WORD_START(name, prev)                                                                         \

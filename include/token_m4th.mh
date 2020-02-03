@@ -74,9 +74,11 @@
 
 /* 'm4th-core' wordlist */
 #define M4xt_to_code 576      /* xt>code    ( XT -- taddr n ) get code array   from XT */
-#define M4xt_to_data 577      /* xt>data    ( XT -- caddr n ) get data array   from XT */
-#define M4xt_to_data_addr 578 /* xt>data>addr ( XT -- caddr ) get data address from XT */
-#define M4_xt_ 579            /* [xt] ( -- xt ) XT of word being compiled */
+#define M4xt_to_code_n 577    /* xt>code>n  ( XT -- n )       get code size    from XT */
+#define M4xt_to_data 578      /* xt>data    ( XT -- caddr n ) get data array   from XT */
+#define M4xt_to_data_addr 579 /* xt>data>addr ( XT -- caddr ) get data address from XT */
+#define M4xt_to_data_n 580    /* xt>data>n  ( XT -- n )       get data size    from XT */
+#define M4xt_to_flags 581     /* xt>flags   ( XT -- m4flags ) get m4flags      from XT */
 #undef M4____gap              /*                       */
 #undef M4____gap              /*                       */
 #undef M4____gap              /*                       */
@@ -93,9 +95,7 @@
 #undef M4____gap              /*                       */
 #undef M4____gap              /*                       */
 #undef M4____gap              /*                       */
-#undef M4____gap              /*                       */
-#undef M4____gap              /*                       */
-#undef M4____gap              /*                       */
+#define M4_xt_ 598            /* [xt] ( -- xt ) XT of word being compiled */
 
 /* 'm4th-impl' wordlist */
 #define M4minus_one 601     /* -1       */

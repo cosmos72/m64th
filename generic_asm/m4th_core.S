@@ -24,6 +24,11 @@ FUNC_START(xt_to_code) /* ( xt -- taddr n ) */
 FUNC_END(xt_to_code)
 
 
+FUNC_START(xt_to_code_n) /* ( xt -- n ) */
+        LD_uh( DTOP_uh,    AT(DTOP, XT_OFF_CODE_N)) /* dtop = code_n    */
+FUNC_END(xt_to_code_n)
+
+
 FUNC_START(xt_to_data) /* ( xt -- caddr n ) */
         LD_uh( REG1_uh,    AT(DTOP, XT_OFF_CODE_N)) /* REG1 = code_n    */
         SHL2(  IMM(PSZt),  REG1)                    /* REG1 = data offset in bytes */
@@ -33,10 +38,18 @@ FUNC_START(xt_to_data) /* ( xt -- caddr n ) */
 FUNC_END(xt_to_data)
 
 
-
 FUNC_START(xt_to_data_addr) /* ( xt -- caddr ) */
         LD_uh( REG1_uh,    AT(DTOP, XT_OFF_CODE_N)) /* REG1 = code_n    */
         SHL2(  IMM(PSZt),  REG1)                    /* REG1 = data offset in bytes */
         ADD2(  REG1,       DTOP)                    /* DTOP = data_addr */
 FUNC_END(xt_to_data_addr)
 
+
+FUNC_START(xt_to_data_n) /* ( xt -- n ) */
+        LOAD(  DTOP,       AT(DTOP, XT_OFF_DATA_N)) /* dtop = data_n    */
+FUNC_END(xt_to_data_n)
+
+
+FUNC_START(xt_to_flags) /* ( xt -- m4flags ) */
+        LD_uh( DTOP_uh,    AT(DTOP, XT_OFF_FLAGS)) /* dtop = m4flags    */
+FUNC_END(xt_to_flags)

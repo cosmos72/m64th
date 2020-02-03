@@ -102,7 +102,7 @@ static const m4token testdata_any[] = {
 
 /* static m4char testbuf_in[16] = "foobar", testbuf_out[16] = "###############"; */
 
-static m4testexecute testexecute[] = {
+static m4testexecute testexecute_a[] = {
 #if 0
     {"cmove",
      {m4cmove, m4bye},
@@ -256,6 +256,10 @@ static m4testexecute testexecute[] = {
     {"true", {m4true, m4bye}, {{}, {}}, {{1, {ttrue}}, {}}, {}},
     {"unloop", {m4unloop, m4bye}, {{}, {3, {1, 2, 3}}}, {{}, {1, {1}}}, {}},
     {"-7 14 xor", {m4xor, m4bye}, {{2, {-7, 14}}, {}}, {{1, {-7 ^ 14}}, {}}, {}},
+#endif
+};
+
+static m4testexecute testexecute_b[] = {
     /* ----------------------------- 0<=> ----------------------------------- */
     {"-1 0<", {m4zero_less, m4bye}, {{1, {-1}}, {}}, {{1, {ttrue}}, {}}, {}},
     {"0 0<", {m4zero_less, m4bye}, {{1, {}}, {}}, {{1, {tfalse}}, {}}, {}},
@@ -341,6 +345,9 @@ static m4testexecute testexecute[] = {
      {{3, {0, (m4cell)1e6, 0}}, {}},
      {{1, {499999500000l}}, {}},
      {}},
+};
+
+static m4testexecute testexecute_c[] = {
     /* ----------------------------- literal, compile ----------------------- */
     {"(lit-token) T(7)", {m4_lit_token_, T(7), m4bye}, {{}, {}}, {{1, {7}}, {}}, {}},
     {"(lit-int) INT(0x10000)",
@@ -489,10 +496,25 @@ static m4testexecute testexecute[] = {
      {{3, {8, (m4cell)testdata_any, N_OF(testdata_any)}}, {}},
      {{2, {m4eight, ttrue}}, {}},
      {}},
-#endif
 };
 
-enum { testexecute_n = sizeof(testexecute) / sizeof(testexecute[0]) };
+static m4testexecute testexecute_d[] = {
+    /* ----------------------------- xt* ------------------------------------ */
+    {"' noop xt>flags",
+     {m4_call_, XT(xt_to_flags), m4bye},
+     {{1, {(m4cell)m4word_noop.code}}, {}},
+     {{1, {WORD_PURE}}, {}},
+     {}},
+#if 0
+              {"' noop xt>code", {m4xt_to_code, m4bye}, {{1, {(m4cell)m4word_noop.code}}, {}}, {{2, {(m4cell)m4word_noop.code, 7}}, {}}, {}},
+
+    {"' noop xt-inline?",
+     {m4_call_, XT(xt_inline_query), m4bye},
+     {{1, {XT(noop)}}, {}},
+     {{1, {ttrue}}, {}},
+     {}},
+#endif
+};
 
 static void m4testexecute_fix(m4testexecute *t, m4test_word *w) {
     switch (t->code[0]) {
@@ -550,22 +572,35 @@ static void m4testexecute_failed(m4th *m, const m4testexecute *t, FILE *out) {
     m4word_code_print(m->w, m4test_code_n, out);
 }
 
-m4cell m4th_testexecute(m4th *m, FILE *out) {
+m4cell m4th_testexecute_bunch(m4th *m, m4testexecute bunch[], m4cell n, FILE *out) {
     m4test_word w;
     m4cell i, fail = 0;
-    enum { n = testexecute_n };
-
-    crcfill(crctable);
-
-    /* printf("crc('t') = %u\n", (unsigned)crc1byte(0xffffffff, 't')); */
-
-    m4array_copy_to_tarray(crc1byte_array, crc1byte_tarray);
-
     for (i = 0; i < n; i++) {
-        if (!m4testexecute_run(m, &testexecute[i], &w)) {
-            fail++, m4testexecute_failed(m, &testexecute[i], out);
+        if (!m4testexecute_run(m, &bunch[i], &w)) {
+            fail++, m4testexecute_failed(m, &bunch[i], out);
         }
     }
+    return fail;
+}
+
+m4cell m4th_testexecute(m4th *m, FILE *out) {
+    m4cell fail = 0;
+    enum {
+        n_a = N_OF(testexecute_a),
+        n_b = N_OF(testexecute_b),
+        n_c = N_OF(testexecute_c),
+        n_d = N_OF(testexecute_d),
+        n = n_a + n_b + n_c + n_d,
+    };
+    crcfill(crctable);
+    m4array_copy_to_tarray(crc1byte_array, crc1byte_tarray);
+    /* printf("crc('t') = %u\n", (unsigned)crc1byte(0xffffffff, 't')); */
+
+    fail += m4th_testexecute_bunch(m, testexecute_a, n_a, out);
+    fail += m4th_testexecute_bunch(m, testexecute_b, n_b, out);
+    fail += m4th_testexecute_bunch(m, testexecute_c, n_c, out);
+    fail += m4th_testexecute_bunch(m, testexecute_d, n_d, out);
+
     if (out != NULL) {
         if (fail == 0) {
             fprintf(out, "all %3u execute tests passed\n", (unsigned)n);
