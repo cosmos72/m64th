@@ -15,9 +15,8 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_ASM_S
-#error "generic_asm/mem.S can only be included from asm.S - do not attempt to use it directly"
-#endif
+#include "../dispatch/asm.mh"
+
 
 #ifndef M4FC_STORE
 FUNC_START(c_store)        /* c! */
@@ -84,3 +83,5 @@ FUNC_END(uint_fetch)
 FUNC_START(fetch)          /* @ */
         LOAD(  DTOP, AT(DTOP))
 FUNC_END(fetch)
+
+

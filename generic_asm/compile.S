@@ -15,9 +15,8 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_ASM_S
-#error "generic_asm/compile.S can only be included from asm.S - do not attempt to use it directly"
-#endif
+#include "../dispatch/asm.mh"
+
 
 /** ( -- xt ) XT of word currently being compiled */
 FUNC_START(_xt_) /* [xt] */
@@ -32,7 +31,7 @@ FUNC_START(xt_code_n_fetch) /* (xt -- xt.code_n) */
 FUNC_END(xt_code_n_fetch)
 #endif /* 0 */
 
-/** ( -- xt.code_n) code size i.e. # of tokens in word being compiled  */
+/** ( -- [xt].code_n) code size i.e. # of tokens in word being compiled  */
 FUNC_START(_num_compiled_)  /* [#compiled] */
         DPUSH( DTOP)
         LD_uh( DTOP_uh,    AT(RXT, XT_OFF_CODE_N))
@@ -54,7 +53,7 @@ FUNC_END(_compile2s_)
 
 #ifndef M4F_COMPILE_LIT2S_
 /** ( -- ) must be followed by int16, append it to XT being compiled. */
-FUNC_START(_compile_lit2s_)    /* [compile-lit-2s,] */
+FUNC_START(_compile_lit2s_)    /* [compile-lit-2s] */
         /* TODO check if enough space */
         LD_sh( REG2_sh,    AT(IP))                     /* REG1 = int16          */
         LD_uh( REG1_uh,    AT(RXT, XT_OFF_CODE_N))     /* xt.code_n             */
@@ -63,5 +62,30 @@ FUNC_START(_compile_lit2s_)    /* [compile-lit-2s,] */
         STORh( REG1h,      AT(RXT, XT_OFF_CODE_N))     /* xt.code_n ++          */
         NEXT2()                                        /* skip int16            */
 FUNC_RAWEND(_compile_lit2s_)
+#endif
+
+
+#ifndef M4F_COMPILE_UNRESOLVED_JUMP
+/**
+ * ( -- [xt].code_n ) must be followed by m4token, append it and T(-1) to XT being compiled,
+ * then push to dstack # of tokens of XT being compiled.
+ */
+FUNC_START(_compile_unresolved_jump_)    /* [compile-unresolved-jump] */
+        /* TODO check if enough space */
+        DPUSH( DTOP)
+        LD_ut( REG2_ut,    AT(IP))                     /* b = m4token               */
+        LD_uh( DTOP_uh,    AT(RXT, XT_OFF_CODE_N))     /* dtop = code_n = xt.code_n */
+        STORt( REG2t,      AT(RXT, DTOP, SZt))         /* xt[code_n] = int16        */
+        INC1(  DTOP)                                   /* code_n ++                 */
+#ifdef RFFFt
+        STORt( RFFFt,      AT(RXT, DTOP, SZt))         /* xt[code_n] = -1          */
+#else
+        MOVE(  IMM(-1),    REG2)                       /* b = unresolved jump = -1  */
+        STORt( REG2t,      AT(RXT, DTOP, SZt))         /* xt[code_n] = b            */
+#endif
+        INC1(  DTOP)                                   /* code_n ++                 */
+        STORh( DTOPh,      AT(RXT, XT_OFF_CODE_N))     /* xt.code_n = code_n        */
+        NEXTT()                                        /* skip m4token              */
+FUNC_RAWEND(_compile_unresolved_jump_)
 #endif
 

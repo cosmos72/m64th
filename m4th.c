@@ -203,6 +203,9 @@ void m4flags_print(m4flags fl, FILE *out) {
     if (fl & m4flag_data_tokens) {
         fputs(printed++ ? "|data_tokens" : "data_tokens", out);
     }
+    if (fl & m4flag_data_is_compiler) {
+        fputs(printed++ ? "|compiler" : "compiler", out);
+    }
 }
 
 /* ----------------------- m4token ----------------------- */
@@ -276,8 +279,9 @@ static m4cell m4token_print_int64(const m4token *code, FILE *out) {
     memcpy(&val, code, sizeof(val));
     if (val >= -1000 && val <= 1000) {
         fprintf(out, "CELL(%ld) ", (long)val);
+    } else {
+        fprintf(out, "CELL(0x%lx) ", (unsigned long)val);
     }
-    fprintf(out, "CELL(0x%lx) ", (unsigned long)val);
     return sizeof(val) / sizeof(m4token);
 }
 
@@ -302,15 +306,15 @@ m4cell m4token_print_consumed_ip(m4token tok, const m4token *code, m4cell maxn, 
     }
 }
 
-/* ----------------------- m4cspan ----------------------- */
+/* ----------------------- m4cbuf ----------------------- */
 
-static m4cspan m4cspan_alloc(m4cell size) {
+static m4cbuf m4cbuf_alloc(m4cell size) {
     m4char *p = (m4char *)m4mem_allocate(size * sizeof(m4char));
-    m4cspan ret = {p, p, p + size};
+    m4cbuf ret = {p, p, p + size};
     return ret;
 }
 
-static void m4cspan_free(m4cspan *arg) {
+static void m4cbuf_free(m4cbuf *arg) {
     if (arg) {
         m4mem_free(arg->start);
     }
@@ -507,7 +511,7 @@ void m4word_data_print(const m4word *w, m4cell data_start_n, FILE *out) {
         return;
     }
     m4string data = m4word_data(w, data_start_n);
-    if (w->flags & m4flag_data_tokens) {
+    if (w->flags & (m4flag_data_tokens | m4flag_data_is_compiler)) {
         m4code code = {(m4token *)data.data, data.n / sizeof(m4token)};
         m4code_print(code, out);
     } else {
@@ -535,7 +539,13 @@ void m4word_print(const m4word *w, FILE *out) {
             (w->native_len == (uint16_t)-1 ? (int)-1 : (int)w->native_len));
     fputs("\n\tcode:        \t", out);
     m4word_code_print(w, 0, out);
-    fputs((w->flags & m4flag_data_tokens) ? "\tdata_tokens:\t" : "\tdata:        \t", out);
+    if (w->flags & m4flag_data_is_compiler) {
+        fputs("\tcompiler:    \t", out);
+    } else if (w->flags & m4flag_data_tokens) {
+        fputs("\tdata_tokens: \t", out);
+    } else {
+        fputs("\tdata:        \t", out);
+    }
     m4word_data_print(w, 0, out);
     fputs("}\n", out);
 }
@@ -664,21 +674,24 @@ m4th *m4th_new() {
     m->rstack = m4stack_alloc(rstack_n);
     m->w = NULL;
     m->ip = NULL;
-    m->c_regs[0] = NULL;
-    m->in = m4cspan_alloc(inbuf_n);
-    m->out = m4cspan_alloc(outbuf_n);
-    m->flags = m4th_flag_interpret;
     m->ftable = ftable;
+    m->in = m4cbuf_alloc(inbuf_n);
+    m->out = m4cbuf_alloc(outbuf_n);
+    m->flags = m4th_flag_interpret;
+    memset(m->c_regs, '\0', sizeof(m->c_regs));
     m4wordlist_new_vec(m->wordlist);
     m->in_cstr = NULL;
+    m->quit = m4fbye;
+    m->err.id = 0;
+    m->err.msg.impl.n = 0;
     return m;
 }
 
 void m4th_del(m4th *m) {
     if (m) {
         m4wordlist_del_vec(m->wordlist);
-        m4cspan_free(&m->out);
-        m4cspan_free(&m->in);
+        m4cbuf_free(&m->out);
+        m4cbuf_free(&m->in);
         m4stack_free(&m->rstack);
         m4stack_free(&m->dstack);
         m4mem_free(m);
@@ -690,7 +703,9 @@ void m4th_clear(m4th *m) {
     m->rstack.curr = m->rstack.end;
     m->w = NULL;
     m->ip = NULL;
-    m->c_regs[0] = NULL;
+    memset(m->c_regs, '\0', sizeof(m->c_regs));
     m->in.curr = m->in.start;
     m->out.curr = m->out.start;
+    m->err.id = 0;
+    m->err.msg.impl.n = 0;
 }

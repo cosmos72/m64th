@@ -15,9 +15,8 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_ASM_S
-#error "generic_asm/arith.S can only be included from asm.S - do not attempt to use it directly"
-#endif
+#include "../dispatch/asm.mh"
+
 
 #ifndef M4F_LITERAL2S_
 FUNC_START(_literal2s_) /* (literal-2s) push to dstack the int16 at following IP */

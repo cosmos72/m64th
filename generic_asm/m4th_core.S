@@ -15,9 +15,8 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_ASM_S
-#error "generic_asm/m4th_core.S can only be included from asm.S - do not attempt to use it directly"
-#endif
+#include "../dispatch/asm.mh"
+
 
 FUNC_START(xt_to_code) /* ( xt -- taddr n ) */
         DPUSH( DTOP)                                /*  d2 = taddr = xt */
@@ -32,4 +31,12 @@ FUNC_START(xt_to_data) /* ( xt -- caddr n ) */
         LOAD(  DTOP,       AT(DTOP, XT_OFF_DATA_N)) /* dtop = data_n    */
         DPUSH( REG1)                                /*  d2 = data_addr  */
 FUNC_END(xt_to_data)
+
+
+
+FUNC_START(xt_to_data_addr) /* ( xt -- caddr ) */
+        LD_uh( REG1_uh,    AT(DTOP, XT_OFF_CODE_N)) /* REG1 = code_n    */
+        SHL2(  IMM(PSZt),  REG1)                    /* REG1 = data offset in bytes */
+        ADD2(  REG1,       DTOP)                    /* DTOP = data_addr */
+FUNC_END(xt_to_data_addr)
 

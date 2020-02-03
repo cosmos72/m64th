@@ -52,6 +52,7 @@
     X(5, "depth", depth)                                                                           \
     X(4, "drop", drop)                                                                             \
     X(3, "dup", dup)                                                                               \
+    X(7, "execute", execute)                                                                       \
     X(4, "exit", exit)                                                                             \
     X(1, "i", i)                                                                                   \
     X(6, "invert", invert)                                                                         \
@@ -96,7 +97,7 @@
 
 /* ------- forth 2012: string ------------------------------------------------------------------- */
 #define DICT_TOKENS_FORTH_STRING(X)                                                                \
-    /*X(5, "cmove", cmove)*/                                                                       \
+    X(5, "cmove", cmove)                                                                           \
     /*X(6, "cmove>", cmove_top)*/
 
 #define DICT_WORDS_FORTH_STRING(X) DICT_TOKENS_FORTH_STRING(X)

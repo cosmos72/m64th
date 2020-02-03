@@ -40,8 +40,8 @@ typedef struct m4test_stacks_s {
     m4test_stack d, r;
 } m4test_stacks;
 
-void m4test_stack_copy(const m4test_stack *src, m4span *dst);
-m4cell m4test_stack_equal(const m4test_stack *src, const m4span *dst);
+void m4test_stack_copy(const m4test_stack *src, m4buf *dst);
+m4cell m4test_stack_equal(const m4test_stack *src, const m4buf *dst);
 void m4test_stack_print(const m4test_stack *src, FILE *out);
 
 /* -------------- m4test_code  -------------- */

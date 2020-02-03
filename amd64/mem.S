@@ -52,12 +52,11 @@ FUNC_START(int_store)    /* int! */
 FUNC_END(int_store)
 
 
-#define M4FCMOVE
 FUNC_START(cmove)    /* cmove   'string' word set */
         MOVE(  %rdi,  %rax)            /* save DSTK == %rdi */
         MOVE(  %rsi,  %rdx)            /* save RSTK == %rsi */
-        LOAD(  %rdi,  AT(%rax, SZ))    /* src               */
-        LOAD(  %rsi,  AT(%rax))        /* dst               */
+        LOAD(  %rdi,  AT(%rax))        /* src               */
+        LOAD(  %rsi,  AT(%rax, SZ))    /* dst               */
         MOVE(  DTOP,  %rcx)            /* n                 */
 
         cld;                           /* forward direction */

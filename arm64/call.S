@@ -124,14 +124,6 @@ FUNC_START(_exec_token_)
 FUNC_RAWEND(_exec_token_)
 
 
-/** exit from current XT being executed */
-FUNC_START(exit)
-        MOVE(  RTOP, IP)
-        RPOP(  RTOP)
-        NEXT0()
-FUNC_RAWEND(exit)
-
-
 /**
   * push to dstack vm's current instruction pointer,
   * i.e. the address of the (ip) m4token itself inside the code being executed

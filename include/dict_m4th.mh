@@ -96,8 +96,9 @@
 
 /* ------- m4th-core ---------------------------------------------------------------------------- */
 #define DICT_TOKENS_M4TH_CORE(X)                                                                   \
-    X(7, "xt>code", xt_to_code) /* ( XT -- taddr n )    get code array   from XT */                \
-    X(7, "xt>data", xt_to_data) /* ( XT -- caddr n )    get data array   from XT */
+    X(7, "xt>code", xt_to_code)            /* ( XT -- taddr n )   get code array    from XT */     \
+    X(7, "xt>data", xt_to_data)            /* ( XT -- caddr n )   get data array    from XT */     \
+    X(12, "xt>data>addr", xt_to_data_addr) /* ( XT -- caddr )     get data address  from XT */
 
 #define DICT_WORDS_M4TH_CORE(X)                                                                    \
     DICT_TOKENS_M4TH_CORE(X)                                                                       \
@@ -137,7 +138,8 @@
     X(13, "[compile-2s,]", _compile2s_)                                                            \
     X(13, "[compile-4s,]", _compile4s_)                                                            \
     X(13, "[compile-8s,]", _compile8s_)                                                            \
-    X(17, "[compile-lit-2s,]", _compile_lit2s_)                                                    \
+    X(16, "[compile-lit-2s]", _compile_lit2s_)                                                     \
+    X(25, "[compile-unresolved-jump]", _compile_unresolved_jump_)                                  \
     X(4, "[xt]", _xt_)                                                                             \
     X(2, "-1", minus_one)                                                                          \
     X(1, "0", zero)                                                                                \
@@ -153,7 +155,7 @@
     X(23, "[any-token-gives-cell?]", _any_token_gives_cell_q_)                                     \
     X(8, "[inline]", _inline_)                                                                     \
     X(10, "[optimize]", _optimize_)                                                                \
-    X(17, "[resolve-if-else]", _resolve_if_else_) /* common back-end of 'else' and 'then' */       \
+    X(19, "[resolve-jump-here]", _resolve_jump_here_) /* common back-end of 'else' and 'then' */   \
     X(19, "[token-gives-cell?]", _token_gives_cell_q_)
 
 /* ------- m4th-* ------------------------------------------------------------------------------- */

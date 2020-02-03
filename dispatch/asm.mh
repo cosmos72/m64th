@@ -15,22 +15,15 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "asm.mh"
+#ifndef M4TH_DISPATCH_ASM_MH
+#define M4TH_DISPATCH_ASM_MH
 
+#if defined(__x86_64__)
+#include "../amd64/asm.mh"
+#elif defined(__aarch64__)
+#include "../arm64/asm.mh"
+#else
+#error "unsupported architecture: expecting amd64 or arm64"
+#endif
 
-FUNC_START(cmove)    /* cmove   'string' word set */
-        DPOP(  REG2)            /* REG2 = dst   */
-        DPOP(  REG1)            /* REG1 = src   */
-        ZERO(  REG0)            /* REG0 = index */
-        b      .Lcmove.test;
-.Lcmove.loop:
-        LD_ub( REG3_ub,AT(REG1, REG0))
-        STORb( REG3b,  AT(REG2, REG0))
-        ADD2(  IMM(1), REG0)
-.Lcmove.test:
-        cmp    REG0,   DTOP;
-        b.lt   .Lcmove.loop;
-        DPOP(  DTOP)
-FUNC_END(cmove)
-
-
+#endif /* M4TH_DISPATCH_ASM_MH */

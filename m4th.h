@@ -68,24 +68,35 @@ typedef enum m4flags_e {
     m4flag_consumes_ip_4 = M4FLAG_CONSUMES_IP_4,
     m4flag_consumes_ip_8 = M4FLAG_CONSUMES_IP_8,
     m4flag_data_tokens = M4FLAG_DATA_TOKENS,
+    m4flag_data_is_compiler = M4FLAG_DATA_IS_COMPILER,
 } m4flags;
 
-typedef struct m4countedstring_s m4countedstring;
-typedef struct m4cspan_s m4cspan;
-typedef struct m4dict_s m4dict;
+typedef struct m4buf_s m4buf;
+typedef struct m4cbuf_s m4cbuf;
 typedef struct m4code_s m4code;
-typedef struct m4span_s m4span;
-typedef struct m4span_s m4stack;
+typedef struct m4countedstring_s m4countedstring;
+typedef struct m4err_s m4err;
+typedef struct m4dict_s m4dict;
+typedef struct m4slice_s m4slice;
+typedef struct m4buf_s m4stack;
 typedef struct m4stackeffects_s m4stackeffects;
 typedef struct m4string_s m4string;
-typedef struct m4slice_s m4slice;
+typedef struct m4th_s m4th;
 typedef struct m4word_s m4word;
 typedef struct m4wordlist_s m4wordlist;
-typedef struct m4th_s m4th;
 
-struct m4countedstring_s { /**< counted string                   */
-    m4char n;              /**< # of characters                  */
-    m4char chars[1];       /**< characters. do NOT end with '\0' */
+/** array of m4cell, with current size and capacity */
+struct m4buf_s {
+    m4cell *start;
+    m4cell *curr;
+    m4cell *end;
+};
+
+/** array of m4char, with current size and capacity */
+struct m4cbuf_s {
+    m4char *start;
+    m4char *curr;
+    m4char *end;
 };
 
 struct m4code_s { /**< array of m4token, with size */
@@ -93,21 +104,25 @@ struct m4code_s { /**< array of m4token, with size */
     m4cell n;
 };
 
-/** array of m4char, with current size and capacity */
-struct m4cspan_s {
-    m4char *start;
-    m4char *curr;
-    m4char *end;
+struct m4countedstring_s { /**< counted string                   */
+    m4char n;              /**< # of characters                  */
+    m4char chars[1];       /**< characters. do NOT end with '\0' */
 };
 
-/** array of m4cell, with current size and capacity */
-struct m4span_s {
-    m4cell *start;
-    m4cell *curr;
-    m4cell *end;
+struct m4dict_s {     /**< dictionary. used to implement wordlist                */
+    int32_t word_off; /**< offset of last m4word*,     in bytes. 0 = not present */
+    int16_t name_off; /**< offset of m4countedstring*, in bytes. 0 = not present */
 };
 
-struct m4string_s { /**< array of characters, with size */
+struct m4err_s {
+    m4cell id; /**< error code */
+    struct {
+        m4countedstring impl;
+        m4char buf[30];
+    } msg; /**< error message */
+};
+
+struct m4string_s { /**< array of m4char, with size */
     const m4char *data;
     m4cell n;
 };
@@ -117,8 +132,7 @@ struct m4stackeffects_s {
     m4stackeffect rstack; /**< rstack # in and # out. 0xFF if unknown or variable   */
 };
 
-/** array of m4cell, with size */
-struct m4slice_s {
+struct m4slice_s { /**< array of m4cell, with size */
     m4cell *data;
     m4cell n;
 };
@@ -141,11 +155,6 @@ struct m4wordlist_s {   /**< wordlist                                           
     /* TODO hash table of contained words */
 };
 
-struct m4dict_s {     /**< dictionary. used to implement wordlist                */
-    int32_t word_off; /**< offset of last m4word*,     in bytes. 0 = not present */
-    int16_t name_off; /**< offset of m4countedstring*, in bytes. 0 = not present */
-};
-
 enum { m4th_wordlist_n = 12 };
 
 struct m4th_s {        /**< m4th forth interpreter and compiler */
@@ -154,8 +163,8 @@ struct m4th_s {        /**< m4th forth interpreter and compiler */
     m4word *w;         /**< forth word being compiled           */
     const m4token *ip; /**< instruction pointer                 */
     m4func *ftable;    /**< table m4t -> asm function address   */
-    m4cspan in;        /**< input  buffer                       */
-    m4cspan out;       /**< output buffer                       */
+    m4cbuf in;         /**< input  buffer                       */
+    m4cbuf out;        /**< output buffer                       */
 
     m4cell flags;          /**< m4th_flags                               */
     const void *c_regs[1]; /**< m4th_run_vm() may save C registers here  */
@@ -163,12 +172,8 @@ struct m4th_s {        /**< m4th forth interpreter and compiler */
     m4wordlist *wordlist[m4th_wordlist_n]; /**< FIXME: visible wordlists     */
     const char *const *in_cstr;            /**< DELETEME: pre-parsed input   */
 
-    m4func on_abort; /**< forth function to execute on abort. usually m4fbye or m4frepl */
-    m4cell err;      /**< last error code */
-    struct {
-        m4countedstring impl;
-        m4char buf[30];
-    } errmsg; /**< last error message */
+    m4func quit; /**< forth function to execute on quit. usually m4fbye or m4fquit */
+    m4err err;
 };
 
 #ifdef __cplusplus

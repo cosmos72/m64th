@@ -15,9 +15,8 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_ASM_S
-#error "generic_asm/loop.S can only be included from asm.S - do not attempt to use it directly"
-#endif
+#include "../dispatch/asm.mh"
+
 
 /** implementation of 'do', enters a (do) ... (loop) */
 #ifndef M4F_DO_

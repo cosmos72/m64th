@@ -47,7 +47,7 @@ static void m4slice_print_as_code(m4slice src, FILE *out) {
 
 /* -------------- m4test_stack -------------- */
 
-void m4test_stack_copy(const m4test_stack *src, m4span *dst) {
+void m4test_stack_copy(const m4test_stack *src, m4buf *dst) {
     m4cell i, len = src->len;
     dst->curr = dst->end - len;
     for (i = 0; i < len; i++) {
@@ -55,7 +55,7 @@ void m4test_stack_copy(const m4test_stack *src, m4span *dst) {
     }
 }
 
-m4cell m4test_stack_equal(const m4test_stack *src, const m4span *dst) {
+m4cell m4test_stack_equal(const m4test_stack *src, const m4buf *dst) {
     m4cell i, len = src->len;
     if (len != dst->end - dst->curr) {
         return 0;

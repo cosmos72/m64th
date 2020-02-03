@@ -100,8 +100,15 @@ static const m4token testdata_any[] = {
 
 /* -------------- m4test -------------- */
 
+/* static m4char testbuf_in[16] = "foobar", testbuf_out[16] = "###############"; */
+
 static m4testexecute testexecute[] = {
 #if 0
+    {"cmove",
+     {m4cmove, m4bye},
+     {{3, {(m4cell)testbuf_in, (m4cell)testbuf_out, 6}}, {}},
+     {{}, {}},
+     {}},
     {"1e9 0 (do) (loop)", {m4_do_, m4_loop_, T(-2), m4bye}, {{2, {1e9, 0}}, {}}, {{}, {}}, {}},
 #else
     /* ----------------------------- arithmetic ----------------------------- */
@@ -290,19 +297,11 @@ static m4testexecute testexecute[] = {
     {"r>", {m4r_from, m4bye}, {{}, {1, {99}}}, {{1, {99}}, {}}, {}},
     {"dup>r", {m4dup_to_r, m4bye}, {{1, {33}}, {}}, {{1, {33}}, {1, {33}}}, {}},
     {"r>drop", {m4r_from_drop, m4bye}, {{}, {1, {99}}}, {{}, {}}, {}},
-    /* ----------------------------- if, exec, jump, loop ------------------ */
+    /* ----------------------------- if, else, loop ------------------------- */
     {"0 1 (do)", {m4_do_, m4bye}, {{2, {0, 1}}, {}}, {{}, {2, {0, 1}}}, {}},
     {"1 0 (do)", {m4_do_, m4bye}, {{2, {1, 0}}, {}}, {{}, {2, {1, 0}}}, {}},
     {"0 0 (?do)", {m4_question_do_, T(0), m4bye}, {{2, {0, 0}}, {}}, {{}, {}}, {}},
     {"1 0 (?do)", {m4_question_do_, T(0), m4bye}, {{2, {1, 0}}, {}}, {{}, {2, {1, 0}}}, {}},
-    {"one (exec-native)",
-     {m4_exec_native_, m4bye},
-     {{1, {(m4cell)m4fone}}, {}},
-     {{1, {1}}, {}},
-     {}},
-    {"noop (exec-native)", {m4_exec_native_, m4bye}, {{1, {(m4cell)m4fnoop}}, {}}, {{}, {}}, {}},
-    {"one (exec-token)", {m4_exec_token_, m4bye}, {{1, {m4one}}, {}}, {{1, {1}}, {}}, {}},
-    {"noop (exec-token)", {m4_exec_token_, m4bye}, {{1, {m4noop}}, {}}, {{}, {}}, {}},
     {"0 (if)", {m4_if_, T(1), m4two, m4bye}, {{1, {}}, {}}, {{}, {}}, {}},
     {"1 (if)", {m4_if_, T(1), m4four, m4bye}, {{1, {1}}, {}}, {{1, {4}}, {}}, {}},
     {"0 (if-zero)", {m4_if_zero_, T(1), m4two, m4bye}, {{1, {0}}, {}}, {{1, {2}}, {}}, {}},
@@ -364,7 +363,7 @@ static m4testexecute testexecute[] = {
      {{}, {}},
      {{}, {}},
      {1, {500}}},
-    /* ----------------------------- call ----------------------------------- */
+    /* ----------------------------- execute, call -------------------------- */
     {"(call) XT(false)", {m4_call_, XT(false), m4bye}, {{}, {}}, {{1, {tfalse}}, {}}, {}},
     {"(call) XT(noop)", {m4_call_, XT(noop), m4bye}, {{}, {}}, {{}, {}}, {}},
     {"(call) XT(true)", {m4_call_, XT(true), m4bye}, {{}, {}}, {{1, {ttrue}}, {}}, {}},
@@ -372,6 +371,25 @@ static m4testexecute testexecute[] = {
      {m4_call_, CELL(crc1byte_tarray), m4bye},
      {{2, {0xffffffff, 't'}}, {}},
      {{1, {2056627543 /* crc1byte(0xffffffff, 't')*/}}, {}},
+     {}},
+    {"' one (exec-native)",
+     {m4_exec_native_, m4bye},
+     {{1, {(m4cell)m4fone}}, {}},
+     {{1, {1}}, {}},
+     {}},
+    {"' noop (exec-native)", {m4_exec_native_, m4bye}, {{1, {(m4cell)m4fnoop}}, {}}, {{}, {}}, {}},
+    {"' one (exec-token)", {m4_exec_token_, m4bye}, {{1, {m4one}}, {}}, {{1, {1}}, {}}, {}},
+    {"' noop (exec-token)", {m4_exec_token_, m4bye}, {{1, {m4noop}}, {}}, {{}, {}}, {}},
+    {"' noop execute", {m4execute, m4bye}, {{1, {(m4cell)m4word_noop.code}}, {}}, {{}, {}}, {}},
+    {"' eight execute",
+     {m4execute, m4bye},
+     {{1, {(m4cell)m4word_eight.code}}, {}},
+     {{1, {8}}, {}},
+     {}},
+    {"6 7 ' plus execute",
+     {m4execute, m4bye},
+     {{3, {6, 7, (m4cell)m4word_plus.code}}, {}},
+     {{1, {13}}, {}},
      {}},
     {"(ip)", {m4_ip_, m4bye}, {{}, {}}, {{1, {-1 /* fixed by m4testexecute_fix() */}}, {}}, {}},
     /* ----------------------------- [token-gives-cell?] -------------------- */

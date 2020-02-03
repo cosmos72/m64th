@@ -45,6 +45,7 @@ SECTION_FUNC()
 #endif
 
 #include "generic_asm/arith.S"
+#include "generic_asm/call.S"
 #include "generic_asm/compile.S"
 #include "generic_asm/loop.S"
 #include "generic_asm/m4th_core.S"

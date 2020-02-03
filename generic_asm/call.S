@@ -15,22 +15,22 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "asm.mh"
+#include "../dispatch/asm.mh"
 
 
-FUNC_START(cmove)    /* cmove   'string' word set */
-        DPOP(  REG2)            /* REG2 = dst   */
-        DPOP(  REG1)            /* REG1 = src   */
-        ZERO(  REG0)            /* REG0 = index */
-        b      .Lcmove.test;
-.Lcmove.loop:
-        LD_ub( REG3_ub,AT(REG1, REG0))
-        STORb( REG3b,  AT(REG2, REG0))
-        ADD2(  IMM(1), REG0)
-.Lcmove.test:
-        cmp    REG0,   DTOP;
-        b.lt   .Lcmove.loop;
-        DPOP(  DTOP)
-FUNC_END(cmove)
+/** pop XT from dstack and call it. */
+FUNC_START(execute)
+        RPUSH( RTOP)               /* save RTOP                */
+        MOVE(  IP,     RTOP)       /* save return address = IP */
+        MOVE(  DTOP,   IP)         /* set IP = XT              */
+        DPOP(  DTOP)               /* reload dstack top        */
+        NEXT0()
+FUNC_RAWEND(execute)
 
 
+/** exit from current XT being executed */
+FUNC_START(exit)
+        MOVE(  RTOP, IP)
+        RPOP(  RTOP)
+        NEXT0()
+FUNC_RAWEND(exit)

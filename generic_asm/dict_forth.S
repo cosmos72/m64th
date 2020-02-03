@@ -66,10 +66,11 @@ WORD(cell_plus,        c_fetch,    DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(cells,            cell_plus,  DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(char_plus,        cells,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(chars,            char_plus,  DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD(cmove,            chars,      DSTACK(3,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH | M4FLAG_MEM_STORE) /* core ext */
 
 WORD_DECL_SYM(_inline_)        /* forward declarations */
 WORD_DECL_SYM(_optimize_)
-WORD_START(compile_comma, chars)
+WORD_START(compile_comma, cmove)
     WORD_FLAGS(WORD_IMPURE | M4FLAG_COMPILE_ONLY)
     WORD_DSTACK(1,0)
     WORD_RSTACK(0,0)
@@ -96,17 +97,26 @@ WORD_START(else, dup)
     WORD_CODE(
         _compile_lit_token_, _else_,
         _compile_lit_token_, T(-1),
-        _call_, XT(_resolve_if_else_),         /* resolve jump offset of previous 'if' */
+        _call_, XT(_resolve_jump_here_),       /* resolve jump offset of previous 'if' */
         _num_compiled_,                        /* ( #tokens ) push our jump offset     */
         exit
     )
 WORD_END(else)
-WORD_START(exit, else)
+WORD_START(execute, else)
+    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MAY_JUMP)
+    WORD_DSTACK(-1,-1) /* pops XT + stack effects of called XT */
+    WORD_RSTACK(0,0)
+    WORD_DSTACK(0,0) /* stack effect when calling */
+    WORD_RSTACK(0,1)
+    WORD_NATIVE_NONE()
+    WORD_CODE(execute, exit)
+WORD_END(execute)
+WORD_START(exit, execute)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS | M4FLAG_JUMP)
-    WORD_DSTACK(0,-1) /* stack effect when not jumping */
+    WORD_DSTACK(0,-1) /* dummy, it always jumps */
     WORD_RSTACK(0,-1)
-    WORD_DSTACK(0, 0) /* stack effect when jumping */
-    WORD_RSTACK(0,-1) /* we do not yet track the return address stored in rstack */
+    WORD_DSTACK(0, 0) /* stack effect when exiting */
+    WORD_RSTACK(1, 0)
     WORD_NATIVE_NONE()
    /* make inliner happy: it skips the final 'exit' of a word's code when inlining */
     WORD_CODE(exit, exit)
@@ -120,26 +130,21 @@ WORD_START(if, i)
     WORD_NOJUMP()
     WORD_NATIVE_NONE()
     WORD_CODE(
-        _compile_lit_token_, _if_,
-        _compile_lit_token_, T(-1),
-        _num_compiled_,                        /* ( #tokens )   */
-        exit
+        _compile_unresolved_jump_, _if_, exit
     )
 WORD_END(if)
 WORD(invert,           if,         DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(j,                invert,     DSTACK(0,1), RSTACK(3,3), WORD_R_PURE)
 WORD_START(literal, j)
-    /* HACK: 'literal' uses (ip) to access its own data, cannot be inlined */
-    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE | M4FLAG_DATA_TOKENS)
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE | M4FLAG_DATA_TOKENS)
     WORD_DSTACK(1,0)
     WORD_RSTACK(0,0)
     WORD_NOJUMP()
     WORD_NATIVE_NONE()
-    WORD_CODE_N_AUTO(literal)
-    WORD_DATA_N_AUTO(literal)
-    WORD_CODE_START(literal)
-    WORD_CODE_BODY(
-        _ip_, xt_to_data, div_token,      /* ( n taddr tn )            */
+    WORD_CODE_AND_DATA(
+      literal,
+      WORD_CODE_TOKENS(
+        _lit_xt_, XT(literal), xt_to_data, div_token,/* ( n taddr tn ) */
         _call_, XT(_any_token_gives_cell_q_),
         _if_, T(3), _compile_token_,     /* if executing token gives n */
             exit,                        /* append token to XT, exit   */
@@ -159,11 +164,11 @@ WORD_START(literal, j)
         _compile_lit_token_, _lit_cell_, /* append _lit_cell_  to XT   */
         _compile_cell_,                  /* append dtop to XT          */
         exit
+      ),
+      WORD_DATA_TOKENS(
+        zero, one, minus_one, two, three, four, eight
+      )
     )
-    WORD_CODE_END(literal)
-    WORD_DATA_START(literal)
-        WORD_DATA_TOKENS(zero, one, minus_one, two, three, four, eight)
-    WORD_DATA_END(literal)
 WORD_END(literal)
 WORD(lshift,           literal,    DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(max,              lshift,     DSTACK(2,1), RSTACK(0,0), WORD_PURE)
@@ -186,7 +191,7 @@ WORD_START(then, swap)
     WORD_NATIVE_NONE()
     WORD_CODE(
         _compile_lit_token_, _then_,
-        _call_, XT(_resolve_if_else_), exit
+        _call_, XT(_resolve_jump_here_), exit
     )
 WORD_END(then)
 WORD(true,             then,       DSTACK(0,1), RSTACK(0,0), WORD_PURE) /* core ext */

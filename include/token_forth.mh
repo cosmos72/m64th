@@ -487,7 +487,7 @@
 #undef M4minus_trailing /*467*/ /* -trailing  */
 #undef M4div_string /*468*/     /* /string    */
 #undef M4blank /*469*/          /* blank      */
-#undef M4cmove /*470*/          /* cmove      */
+#define M4cmove 470             /* cmove      */
 #undef M4cmove_top /*471*/      /* cmove>     */
 #undef M4compare /*472*/        /* compare    */
 #undef M4replaces /*473*/       /* replaces   */
