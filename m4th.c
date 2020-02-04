@@ -178,9 +178,6 @@ void m4flags_print(m4flags fl, FILE *out) {
         fputs(printed++ ? "|consumes_ip_8" : "consumes_ip_8", out);
         break;
     }
-    if (fl & m4flag_immediate) {
-        fputs(printed++ ? "|immediate" : "immediate", out);
-    }
     if (fl & m4flag_inline_always) {
         fputs(printed++ ? "|inline_always" : "inline_always", out);
     } else if (fl & m4flag_inline) {
@@ -200,11 +197,11 @@ void m4flags_print(m4flags fl, FILE *out) {
     if ((fl & m4flag_pure_mask) == m4flag_pure) {
         fputs(printed++ ? "|pure" : "pure", out);
     }
+    if (fl & m4flag_immediate) {
+        fputs(printed++ ? "|immediate" : "immediate", out);
+    }
     if (fl & m4flag_data_tokens) {
         fputs(printed++ ? "|data_tokens" : "data_tokens", out);
-    }
-    if (fl & m4flag_data_is_compiler) {
-        fputs(printed++ ? "|compiler" : "compiler", out);
     }
 }
 
@@ -285,6 +282,22 @@ static m4cell m4token_print_int64(const m4token *code, FILE *out) {
     return sizeof(val) / sizeof(m4token);
 }
 
+static m4cell m4token_print_xt(const m4token *code, FILE *out) {
+    m4cell val;
+    memcpy(&val, code, sizeof(val));
+    if (val > 4096) {
+        const m4word *w = (const m4word *)(val - WORD_OFF_XT);
+        const m4string name = m4word_name(w);
+        if (name.data && name.n > 0) {
+            fputs("XT(", out);
+            m4string_print(name, out);
+            fputs(") ", out);
+            return sizeof(val) / sizeof(m4token);
+        }
+    }
+    return m4token_print_int64(code, out);
+}
+
 m4cell m4token_print_consumed_ip(m4token tok, const m4token *code, m4cell maxn, FILE *out) {
     const m4cell nbytes = m4token_consumes_ip(tok);
     if (nbytes == 0 || nbytes / SZt > maxn) {
@@ -293,6 +306,8 @@ m4cell m4token_print_consumed_ip(m4token tok, const m4token *code, m4cell maxn, 
         fputc('\'', out);
         m4token_print(code[0], out);
         return 1;
+    } else if (tok == m4_call_ && nbytes == SZ) {
+        return m4token_print_xt(code, out);
     }
     switch (nbytes) {
     case 2:
@@ -511,7 +526,7 @@ void m4word_data_print(const m4word *w, m4cell data_start_n, FILE *out) {
         return;
     }
     m4string data = m4word_data(w, data_start_n);
-    if (w->flags & (m4flag_data_tokens | m4flag_data_is_compiler)) {
+    if (w->flags & m4flag_data_tokens) {
         m4code code = {(m4token *)data.data, data.n / sizeof(m4token)};
         m4code_print(code, out);
     } else {
@@ -535,17 +550,11 @@ void m4word_print(const m4word *w, FILE *out) {
     if (jump_flags == m4flag_jump || jump_flags == m4flag_may_jump) {
         m4stackeffects_print(w->jump, "_jump", out);
     }
-    fprintf(out, "\n\tnative_len:  \t%d",
-            (w->native_len == (uint16_t)-1 ? (int)-1 : (int)w->native_len));
-    fputs("\n\tcode:        \t", out);
+    fprintf(out, "\n\tnative_len:  \t%d\n\tcode:        \t",
+            w->native_len == (uint16_t)-1 ? (int)-1 : (int)w->native_len);
     m4word_code_print(w, 0, out);
-    if (w->flags & m4flag_data_is_compiler) {
-        fputs("\tcompiler:    \t", out);
-    } else if (w->flags & m4flag_data_tokens) {
-        fputs("\tdata_tokens: \t", out);
-    } else {
-        fputs("\tdata:        \t", out);
-    }
+
+    fputs((w->flags & m4flag_data_tokens) ? "\tdata_tokens: \t" : "\tdata:        \t", out);
     m4word_data_print(w, 0, out);
     fputs("}\n", out);
 }
@@ -708,4 +717,20 @@ void m4th_clear(m4th *m) {
     m->out.curr = m->out.start;
     m->err.id = 0;
     m->err.msg.impl.n = 0;
+}
+
+m4cell m4th_execute_word(m4th *m, const m4word *w) {
+    m4token code[2 + SZ / SZt];
+    const m4token *save_ip = m->ip;
+    m4cell ret;
+    {
+        m4cell xt = (m4cell)w->code;
+        code[0] = m4_call_;
+        memcpy(code + 1, &xt, SZ);
+        code[1 + SZ / SZt] = m4bye;
+    }
+    m->ip = code;
+    ret = m4th_run(m);
+    m->ip = save_ip;
+    return ret;
 }

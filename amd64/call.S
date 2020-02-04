@@ -17,16 +17,16 @@
 
 #include "asm.mh"
 
-#define m4fth_run_vm m4th_run_vm
+#define m4fth_run m4th_run
 
 /**
- * m4th_run_vm: enter m4th interpreter from C:
+ * m4th_run: enter m4th interpreter from C:
  * save C registers,
  * load m4th registers from struct (m4th*)
  *      passed in %rdi as per SYS V amd64 ABI,
  * execute m4th->code.start[0] and subsequent instructions until m4bye is found.
  */
-FUNC_START(th_run_vm)
+FUNC_START(th_run)
         push   %rbp;                   /* save C registers                */
         push   %rbx;
         push   %r12;
@@ -45,7 +45,7 @@ FUNC_START(th_run_vm)
         ADD2(  IMM(WORD_OFF_XT), RXT)  /* convert m4word* -> XT           */
         MOVE(  IMM(-1), RFFF)          /* set RFFF to -1                  */
         jmp    FUNC_SYM(_vm_)          /* enter vm loop                   */
-FUNC_RAWEND(th_run_vm)
+FUNC_RAWEND(th_run)
 
 
 /**
@@ -76,7 +76,7 @@ FUNC_START(bye)
         STOR(  DSTK, AT(M4TH, M4TH_OFF_DSTK))   /* save data   stack pointer       */
         /*
          * TODO: this discards the call stack of compiled forth code
-         *       executed since m4th_run_vm(). how to preserve it?
+         *       executed since m4th_run(). how to preserve it?
          */
         LOAD(  %rsp, AT(M4TH, M4TH_OFF_C_REG0))    /* load C stack pointer            */
         pop    %r15;                               /* load C registers                */

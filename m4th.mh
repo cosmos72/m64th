@@ -64,15 +64,12 @@
 #define M4FLAG_CONSUMES_IP_4 ((2 << 6) | M4FLAG_INLINE_ALWAYS)
 #define M4FLAG_CONSUMES_IP_8 ((3 << 6) | M4FLAG_INLINE_ALWAYS)
 
-/** word dereferences some pointer and reads from i */
+/** word dereferences pointer argument(s) and reads from it */
 #define M4FLAG_MEM_FETCH (1 << 8)
-/** word dereferences some pointer and writes to it */
+/** word dereferences pointer arguments(s) and writes to it */
 #define M4FLAG_MEM_STORE (1 << 9)
 
 /** word data contains m4tokens */
 #define M4FLAG_DATA_TOKENS (1 << 10)
-
-/** word data contains compiler */
-#define M4FLAG_DATA_IS_COMPILER (1 << 11)
 
 #endif /* M4TH_M4TH_MH */

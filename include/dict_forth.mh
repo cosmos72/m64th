@@ -75,11 +75,16 @@
 
 #define DICT_WORDS_FORTH_CORE(X)                                                                   \
     DICT_TOKENS_FORTH_CORE(X)                                                                      \
-    X(8, "compile,", compile_comma) /* implemented in forth, no dedicated m4token */               \
-    X(4, "else,", else)             /* implemented in forth, no dedicated m4token */               \
-    X(2, "if,", if)                 /* implemented in forth, no dedicated m4token */               \
-    X(7, "literal", literal)        /* implemented in forth, no dedicated m4token */               \
-    X(4, "then", then)              /* implemented in forth, no dedicated m4token */
+    /* the following words are implemented in forth, thus no dedicated m4token value */            \
+    X(3, "?do,", question_do)                                                                      \
+    X(8, "compile,", compile_comma)                                                                \
+    X(2, "do,", do)                                                                                \
+    X(4, "else,", else)                                                                            \
+    X(2, "if,", if)                                                                                \
+    X(5, "leave", leave)                                                                           \
+    X(7, "literal", literal)                                                                       \
+    X(4, "loop", loop)                                                                             \
+    X(4, "then", then)
 
 /* ------- forth 2012: core ext ----------------------------------------------------------------- */
 #define DICT_TOKENS_FORTH_CORE_EXT(X)                                                              \

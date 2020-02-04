@@ -55,9 +55,9 @@ FUNC_END(_compile2s_)
 /** ( -- ) must be followed by int16, append it to XT being compiled. */
 FUNC_START(_compile_lit2s_)    /* [compile-lit-2s] */
         /* TODO check if enough space */
-        LD_sh( REG2_sh,    AT(IP))                     /* REG1 = int16          */
+        LD_sh( REG2_sh,    AT(IP))                     /* b = int16             */
         LD_uh( REG1_uh,    AT(RXT, XT_OFF_CODE_N))     /* xt.code_n             */
-        STORh( REG2h,      AT(RXT, REG1, SZt))         /* xt[xt.code_n] = int16 */
+        STORh( REG2h,      AT(RXT, REG1, SZt))         /* xt[xt.code_n] = b     */
         ADD2(  IMM(2/SZt), REG1)
         STORh( REG1h,      AT(RXT, XT_OFF_CODE_N))     /* xt.code_n ++          */
         NEXT2()                                        /* skip int16            */
@@ -67,25 +67,27 @@ FUNC_RAWEND(_compile_lit2s_)
 
 #ifndef M4F_COMPILE_UNRESOLVED_JUMP
 /**
- * ( -- [xt].code_n ) must be followed by m4token, append it and T(-1) to XT being compiled,
- * then push to dstack # of tokens of XT being compiled.
+ * ( -- jump_address jump_token ) must be followed by m4token, append it and T(-1) to XT being compiled,
+ * then push to dstack jump_address (= # of tokens of XT being compiled) and m4token.
  */
 FUNC_START(_compile_unresolved_jump_)    /* [compile-unresolved-jump] */
         /* TODO check if enough space */
         DPUSH( DTOP)
-        LD_ut( REG2_ut,    AT(IP))                     /* b = m4token               */
-        LD_uh( DTOP_uh,    AT(RXT, XT_OFF_CODE_N))     /* dtop = code_n = xt.code_n */
-        STORt( REG2t,      AT(RXT, DTOP, SZt))         /* xt[code_n] = int16        */
-        INC1(  DTOP)                                   /* code_n ++                 */
+        LD_ut( REG2_ut,    AT(IP))                     /* b = jump_token             */
+        LD_uh( DTOP_uh,    AT(RXT, XT_OFF_CODE_N))     /* dtop = code_n = xt.code_n  */
+        STORt( REG2t,      AT(RXT, DTOP, SZt))         /* xt[code_n] = b             */
+        INC1(  DTOP)                                   /* code_n ++                  */
 #ifdef RFFFt
-        STORt( RFFFt,      AT(RXT, DTOP, SZt))         /* xt[code_n] = -1          */
+        STORt( RFFFt,      AT(RXT, DTOP, SZt))         /* xt[code_n] = -1            */
 #else
-        MOVE(  IMM(-1),    REG2)                       /* b = unresolved jump = -1  */
-        STORt( REG2t,      AT(RXT, DTOP, SZt))         /* xt[code_n] = b            */
+        MOVE(  IMM(-1),    REG1)                       /* a = -1                     */
+        STORt( REG1t,      AT(RXT, DTOP, SZt))         /* xt[code_n] = a             */
 #endif
-        INC1(  DTOP)                                   /* code_n ++                 */
-        STORh( DTOPh,      AT(RXT, XT_OFF_CODE_N))     /* xt.code_n = code_n        */
-        NEXTT()                                        /* skip m4token              */
+        INC1(  DTOP)                                   /* code_n ++                  */
+        STORh( DTOPh,      AT(RXT, XT_OFF_CODE_N))     /* xt.code_n = code_n         */
+        DPUSH( DTOP)                                   /* d2 = jump_address = code_n */
+        MOVE(  REG2,       DTOP)                       /* dtop = jump_token = b      */
+        NEXTT()                                        /* skip m4token               */
 FUNC_RAWEND(_compile_unresolved_jump_)
 #endif
 

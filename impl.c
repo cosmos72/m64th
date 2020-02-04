@@ -19,6 +19,7 @@
 #include "dispatch/sz.mh" /* SZ SZt preprocessor macros */
 #include "include/asm.mh"
 #include "include/token.h"
+#include "include/word_fwd.h"
 
 #include <assert.h> /* assert()                   */
 #include <errno.h>  /* errno                      */
@@ -52,15 +53,16 @@ static inline void ipush(m4th *m, m4token val) {
 enum {
     tsuccess = 0,
     teof = -1,
+    tsyntax_error = -2,
 #ifdef EFAULT
     tbad_addr = EFAULT,
 #else
-    tbad_addr = -2,
+    tbad_addr = -3,
 #endif
 #ifdef EINVAL
     tint_trailing_junk = EINVAL,
 #else
-    tint_trailing_junk = -3,
+    tint_trailing_junk = -4,
 #endif
 };
 
@@ -137,25 +139,9 @@ m4eval_arg m4th_parse(m4th *m, m4string key) {
 
 /** temporary C implementation of (compile-word) */
 static m4cell m4th_compile_word(m4th *m, const m4word *w) {
-    ipush(m, m4_call_);
-    ipush_m4cell(m, (m4cell)w->code);
+    dpush(m, (m4cell)w->code);
+    m4th_execute_word(m, &m4word_compile_comma);
     return tsuccess;
-}
-
-/** temporary C implementation of (interpret-word) */
-static m4cell m4th_interpret_word(m4th *m, const m4word *w) {
-    const m4token *ip_save = m->ip;
-    m4token torun[2 + m4token_per_m4cell];
-    {
-        m4token *p = torun;
-        *p++ = m4_call_;
-        p = vec_ipush_m4cell(p, (m4cell)w->code);
-        *p++ = m4bye;
-    }
-    m->ip = torun;
-    m4cell ret = m4th_run_vm(m);
-    m->ip = ip_save;
-    return ret;
 }
 
 /** temporary C implementation of (compile-number) */
@@ -173,7 +159,14 @@ m4cell m4th_eval(m4th *m, m4eval_arg arg) {
         return arg.err;
     } else if (arg.w != NULL) {
         if (is_interpreting || (arg.w->flags & m4flag_immediate)) {
-            return m4th_interpret_word(m, arg.w);
+            if (is_interpreting && (arg.w->flags & m4flag_compile_only)) {
+                FILE *out = stderr;
+                fputs("cannot execute compile-only word while interpreting: ", out);
+                m4string_print(m4word_name(arg.w), out);
+                fputc('\n', out);
+                return tsyntax_error;
+            }
+            return m4th_execute_word(m, arg.w);
         } else {
             return m4th_compile_word(m, arg.w);
         }

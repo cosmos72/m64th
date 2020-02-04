@@ -68,7 +68,6 @@ typedef enum m4flags_e {
     m4flag_consumes_ip_4 = M4FLAG_CONSUMES_IP_4,
     m4flag_consumes_ip_8 = M4FLAG_CONSUMES_IP_8,
     m4flag_data_tokens = M4FLAG_DATA_TOKENS,
-    m4flag_data_is_compiler = M4FLAG_DATA_IS_COMPILER,
 } m4flags;
 
 typedef struct m4buf_s m4buf;
@@ -167,7 +166,7 @@ struct m4th_s {        /**< m4th forth interpreter and compiler */
     m4cbuf out;        /**< output buffer                       */
 
     m4cell flags;          /**< m4th_flags                               */
-    const void *c_regs[1]; /**< m4th_run_vm() may save C registers here  */
+    const void *c_regs[1]; /**< m4th_run() may save C registers here  */
 
     m4wordlist *wordlist[m4th_wordlist_n]; /**< FIXME: visible wordlists     */
     const char *const *in_cstr;            /**< DELETEME: pre-parsed input   */
@@ -190,7 +189,10 @@ void m4th_del(m4th *m);
  * main entry point from C. implemented in assembly.
  * execute m4th->ip and subsequent code until m4th_bye is found.
  */
-m4cell m4th_run_vm(m4th *m);
+m4cell m4th_run(m4th *m);
+
+/** execute the specified m4word, then return. preserves m4th->ip */
+m4cell m4th_execute_word(m4th *m, const m4word *w);
 
 /**
  * clear data stack, return stack, input buffer and output buffer.

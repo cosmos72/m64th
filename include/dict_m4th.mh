@@ -157,9 +157,10 @@
 #define DICT_WORDS_M4TH_IMPL(X)                                                                    \
     DICT_TOKENS_M4TH_IMPL(X)                                                                       \
     X(23, "[any-token-gives-cell?]", _any_token_gives_cell_q_)                                     \
-    X(8, "[inline]", _inline_)                                                                     \
-    X(10, "[optimize]", _optimize_)                                                                \
+    X(8, "[inline]", _inline_)      /* ( XT -- ) inline a call to XT into word being compiled */   \
+    X(10, "[optimize]", _optimize_) /* optimize word being compiled  */                            \
     X(19, "[resolve-jump-here]", _resolve_jump_here_) /* common back-end of 'else' and 'then' */   \
+    X(14, "[resolve-loop]", _resolve_loop_)                                                        \
     X(19, "[token-gives-cell?]", _token_gives_cell_q_)
 
 /* ------- m4th-* ------------------------------------------------------------------------------- */

@@ -37,18 +37,17 @@ typedef struct m4testcompile_s {
 static const m4testcompile testcompile[] = {
 #if 0
 #else
-    {{"0"}, {}, {}, {callsz, {CALLXT(zero)}}},
-    {{"1", "2", "+"}, {}, {}, {3 * callsz, {CALLXT(one), CALLXT(two), CALLXT(plus)}}},
-    {{"if"}, {}, {1, {2}}, {2, {m4_if_, T(-1)}}},
+    {{"0"}, {}, {}, {1, {m4zero}}},
+    {{"1", "2", "+"}, {}, {}, {3, {m4one, m4two, m4plus}}},
+    {{"if"}, {}, {2, {2, m4_if_}}, {2, {m4_if_, T(-1)}}},
     {{"if", "then"}, {}, {}, {3, {m4_if_, T(1), m4_then_}}},
-    {{"if", "1", "then"}, {}, {}, {3 + callsz, {m4_if_, T(1 + callsz), CALLXT(one), m4_then_}}},
-    {{"if", "else"}, {}, {1, {4}}, {4, {m4_if_, T(2), m4_else_, T(-1)}}},
+    {{"if", "1", "then"}, {}, {}, {4, {m4_if_, T(2), m4one, m4_then_}}},
+    {{"if", "else"}, {}, {2, {4, m4_else_}}, {4, {m4_if_, T(2), m4_else_, T(-1)}}},
     {{"if", "else", "then"}, {}, {}, {5, {m4_if_, T(2), m4_else_, T(1), m4_then_}}},
     {{"if", "1", "else", "2", "then"},
      {},
      {},
-     {5 + 2 * callsz,
-      {m4_if_, T(2 + callsz), CALLXT(one), m4_else_, T(1 + callsz), CALLXT(two), m4_then_}}},
+     {7, {m4_if_, T(3), m4one, m4_else_, T(2), m4two, m4_then_}}},
     {{"literal"}, {1, {0}}, {}, {1, {m4zero}}},
     {{"literal"}, {1, {1}}, {}, {1, {m4one}}},
     {{"literal"}, {1, {-1}}, {}, {1, {m4minus_one}}},
@@ -76,9 +75,9 @@ static const m4testcompile testcompile[] = {
      {},
      {5, {m4_literal8s_, CELL(-0x8000000000000000l)}}},
 #endif
-    {{"drop"}, {}, {}, {callsz, {CALLXT(drop)}}},
-    {{"false"}, {}, {}, {callsz, {CALLXT(false)}}},
-    {{"true"}, {}, {}, {callsz, {CALLXT(true)}}},
+    {{"drop"}, {}, {}, {1, {m4drop}}},
+    {{"false"}, {}, {}, {1, {m4false}}},
+    {{"true"}, {}, {}, {1, {m4true}}},
 #endif
 };
 
@@ -162,9 +161,9 @@ m4cell m4th_testcompile(m4th *m, FILE *out) {
     }
     if (out != NULL) {
         if (fail == 0) {
-            fprintf(out, "all %3u compile tests passed\n", (unsigned)n);
+            fprintf(out, "all %3u compile tests passed\n", (unsigned)i);
         } else {
-            fprintf(out, "\ncompile tests failed: %3u of %3u\n", (unsigned)fail, (unsigned)n);
+            fprintf(out, "\ncompile tests failed: %3u of %3u\n", (unsigned)fail, (unsigned)i);
         }
     }
     return fail;

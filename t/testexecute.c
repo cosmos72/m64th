@@ -499,7 +499,7 @@ static m4testexecute testexecute_c[] = {
 };
 
 static m4testexecute testexecute_d[] = {
-    /* ----------------------------- xt* ------------------------------------ */
+    /* ----------------------------- compile, ------------------------------- */
     {"' noop xt>flags",
      {m4_call_, XT(xt_to_flags), m4bye},
      {{1, {(m4cell)m4word_noop.code}}, {}},
@@ -513,6 +513,11 @@ static m4testexecute testexecute_d[] = {
     {"' (if) xt-inline?",
      {m4_call_, XT(xt_inline_query), m4bye},
      {{1, {(m4cell)m4word__if_.code}}, {}},
+     {{1, {ttrue}}, {}},
+     {}},
+    {"' + xt-inline?",
+     {m4_call_, XT(xt_inline_query), m4bye},
+     {{1, {(m4cell)m4word_plus.code}}, {}},
      {{1, {ttrue}}, {}},
      {}},
     {"' if xt-inline?",
@@ -535,6 +540,26 @@ static m4testexecute testexecute_d[] = {
      {{1, {(m4cell)m4word_xt_inline_query.code}}, {}},
      {{1, {tfalse}}, {}},
      {}},
+    {"' + [inline]",
+     {m4_call_, XT(_inline_), m4bye},
+     {{1, {(m4cell)m4word_plus.code}}, {}},
+     {{}, {}},
+     {1, {m4plus}}},
+    {"' 1 [inline] ' 3 [inline] ' + [inline]",
+     {m4_call_, XT(_inline_), m4_call_, XT(_inline_), m4_call_, XT(_inline_), m4bye},
+     {{3, {(m4cell)m4word_plus.code, (m4cell)m4word_three.code, (m4cell)m4word_one.code}}, {}},
+     {{}, {}},
+     {3, {m4one, m4three, m4plus}}},
+    {"' noop compile,",
+     {m4_call_, XT(compile_comma), m4bye},
+     {{1, {(m4cell)m4word_noop.code}}, {}},
+     {{}, {}},
+     {1, {m4noop}}},
+    {"' 1+ compile, ' and compile,",
+     {m4_call_, XT(compile_comma), m4_call_, XT(compile_comma), m4bye},
+     {{2, {(m4cell)m4word_and.code, (m4cell)m4word_one_plus.code}}, {}},
+     {{}, {}},
+     {2, {m4one_plus, m4and}}},
 };
 
 static void m4testexecute_fix(m4testexecute *t, m4test_word *w) {
@@ -562,7 +587,7 @@ static m4cell m4testexecute_run(m4th *m, m4testexecute *t, m4test_word *w) {
 
     m->w = &w->impl;
     m->ip = w->code;
-    m4th_run_vm(m);
+    m4th_run(m);
 
     return m4test_stack_equal(&t->after.d, &m->dstack) &&
            m4test_stack_equal(&t->after.r, &m->rstack) &&
@@ -593,7 +618,13 @@ static void m4testexecute_failed(m4th *m, const m4testexecute *t, FILE *out) {
     m4word_code_print(m->w, m4test_code_n, out);
 }
 
-m4cell m4th_testexecute_bunch(m4th *m, m4testexecute bunch[], m4cell n, FILE *out) {
+typedef struct m4testcount_s {
+    m4cell failed;
+    m4cell total;
+} m4testcount;
+
+void m4th_testexecute_bunch(m4th *m, m4testexecute bunch[], m4cell n, m4testcount *count,
+                            FILE *out) {
     m4test_word w;
     m4cell i, fail = 0;
     for (i = 0; i < n; i++) {
@@ -601,35 +632,30 @@ m4cell m4th_testexecute_bunch(m4th *m, m4testexecute bunch[], m4cell n, FILE *ou
             fail++, m4testexecute_failed(m, &bunch[i], out);
         }
     }
-    return fail;
+    count->failed += fail;
+    count->total += n;
 }
 
 m4cell m4th_testexecute(m4th *m, FILE *out) {
-    m4cell fail = 0;
-    enum {
-        n_a = N_OF(testexecute_a),
-        n_b = N_OF(testexecute_b),
-        n_c = N_OF(testexecute_c),
-        n_d = N_OF(testexecute_d),
-        n = n_a + n_b + n_c + n_d,
-    };
+    m4testcount count = {};
     crcfill(crctable);
     m4array_copy_to_tarray(crc1byte_array, crc1byte_tarray);
     /* printf("crc('t') = %u\n", (unsigned)crc1byte(0xffffffff, 't')); */
 
-    fail += m4th_testexecute_bunch(m, testexecute_a, n_a, out);
-    fail += m4th_testexecute_bunch(m, testexecute_b, n_b, out);
-    fail += m4th_testexecute_bunch(m, testexecute_c, n_c, out);
-    fail += m4th_testexecute_bunch(m, testexecute_d, n_d, out);
+    m4th_testexecute_bunch(m, testexecute_a, N_OF(testexecute_a), &count, out);
+    m4th_testexecute_bunch(m, testexecute_b, N_OF(testexecute_b), &count, out);
+    m4th_testexecute_bunch(m, testexecute_c, N_OF(testexecute_c), &count, out);
+    m4th_testexecute_bunch(m, testexecute_d, N_OF(testexecute_d), &count, out);
 
     if (out != NULL) {
-        if (fail == 0) {
-            fprintf(out, "all %3u execute tests passed\n", (unsigned)n);
+        if (count.failed == 0) {
+            fprintf(out, "all %3u execute tests passed\n", (unsigned)count.total);
         } else {
-            fprintf(out, "\nexecute tests failed: %3u of %3u\n", (unsigned)fail, (unsigned)n);
+            fprintf(out, "\nexecute tests failed: %3u of %3u\n", (unsigned)count.failed,
+                    (unsigned)count.total);
         }
     }
-    return fail;
+    return count.failed;
 }
 
 #endif /* M4TH_T_TESTEXECUTE_C */

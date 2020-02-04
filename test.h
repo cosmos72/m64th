@@ -46,7 +46,7 @@ void m4test_stack_print(const m4test_stack *src, FILE *out);
 
 /* -------------- m4test_code  -------------- */
 
-enum { m4test_code_n = 15 };
+enum { m4test_code_n = 16 };
 
 typedef struct m4test_code_s {
     m4cell n;
