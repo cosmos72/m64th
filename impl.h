@@ -21,15 +21,19 @@
 #include "m4th.h"
 
 typedef struct m4eval_arg_s m4eval_arg;
+typedef struct m4pair_s m4pair;
+
+struct m4pair_s {
+    m4cell num, err;
+};
 
 struct m4eval_arg_s {
     const m4word *w; /* NULL if parsed word is a number */
-    m4cell n;
-    m4cell err;
+    struct m4pair_s pair;
 };
 
 /* warning: str must end with '\0' */
-m4cell m4string_to_int(m4string str, m4cell *out_n);
+m4pair m4string_to_int(m4string str);
 
 /** temporary C implementation of (read) */
 m4string m4th_read(m4th *m);

@@ -67,21 +67,19 @@ enum {
 };
 
 /* warning: str must end with '\0' */
-m4cell m4string_to_int(m4string str, m4cell *out_n) {
+m4pair m4string_to_int(m4string str) {
+    m4pair ret = {};
     char *end = NULL;
-    m4cell err = tsuccess;
     if (str.data == NULL || str.n == 0) {
-        return teof;
-    }
-    if (out_n == NULL) {
-        return tbad_addr;
+        ret.err = teof;
+        return ret;
     }
     errno = 0;
-    *out_n = strtol((const char *)str.data, &end, 0 /*base*/);
-    if ((err = errno) == 0 && end != (const char *)(str.data + str.n)) {
-        err = tint_trailing_junk;
+    ret.num = strtol((const char *)str.data, &end, 0 /*base*/);
+    if ((ret.err = errno) == 0 && end != (const char *)(str.data + str.n)) {
+        ret.err = tint_trailing_junk;
     }
-    return err;
+    return ret;
 }
 
 /** temporary C implementation of (read) */
@@ -127,12 +125,12 @@ static const m4word *m4th_lookup_word(m4th *m, m4string key) {
 
 /** temporary C implementation of (parse) */
 m4eval_arg m4th_parse(m4th *m, m4string key) {
-    m4eval_arg arg = {NULL, 0, 0};
+    m4eval_arg arg = {};
     if (key.data == NULL) {
-        arg.err = teof;
+        arg.pair.err = teof;
     } else if ((arg.w = m4th_lookup_word(m, key)) != NULL) {
     } else {
-        arg.err = m4string_to_int(key, &arg.n);
+        arg.pair = m4string_to_int(key);
     }
     return arg;
 }
@@ -140,23 +138,21 @@ m4eval_arg m4th_parse(m4th *m, m4string key) {
 /** temporary C implementation of (compile-word) */
 static m4cell m4th_compile_word(m4th *m, const m4word *w) {
     dpush(m, (m4cell)w->code);
-    m4th_execute_word(m, &m4word_compile_comma);
-    return tsuccess;
+    return m4th_execute_word(m, &m4word_compile_comma);
 }
 
 /** temporary C implementation of (compile-number) */
-static m4cell m4th_compile_number(m4th *m, m4cell n) {
-    ipush(m, m4_lit_cell_);
-    ipush_m4cell(m, n);
-    return tsuccess;
+static m4cell m4th_compile_number(m4th *m, m4cell num) {
+    dpush(m, num);
+    return m4th_execute_word(m, &m4word_literal);
 }
 
 /** temporary C implementation of (eval) */
 m4cell m4th_eval(m4th *m, m4eval_arg arg) {
     const m4char is_interpreting = (m->flags & m4th_flag_status_mask) == m4th_flag_interpret;
 
-    if (arg.err != 0) {
-        return arg.err;
+    if (arg.pair.err != 0) {
+        return arg.pair.err;
     } else if (arg.w != NULL) {
         if (is_interpreting || (arg.w->flags & m4flag_immediate)) {
             if (is_interpreting && (arg.w->flags & m4flag_compile_only)) {
@@ -172,10 +168,10 @@ m4cell m4th_eval(m4th *m, m4eval_arg arg) {
         }
     } else {
         if (is_interpreting) {
-            dpush(m, arg.n);
+            dpush(m, arg.pair.num);
             return tsuccess;
         } else {
-            return m4th_compile_number(m, arg.n);
+            return m4th_compile_number(m, arg.pair.num);
         }
     }
 }
@@ -188,7 +184,7 @@ m4cell m4th_repl(m4th *m) {
 
     while ((ret = m4th_eval(m, arg = m4th_parse(m, str = m4th_read(m)))) == 0) {
     }
-    if (ret != 0 && arg.err == ret && arg.w == NULL && str.data != NULL) {
+    if (ret != 0 && arg.pair.err == ret && arg.w == NULL && str.data != NULL) {
         m4string_print(str, stderr);
         fputs(" ?", stderr);
     }
