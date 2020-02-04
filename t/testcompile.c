@@ -41,6 +41,7 @@ static const m4testcompile testcompile[] = {
     {{"1", "2", "+"}, {}, {}, {3, {m4one, m4two, m4plus}}},
     {{"3", "4", "8"}, {}, {}, {3, {m4three, m4four, m4eight}}},
     {{"-1", "5"}, {}, {}, {3, {m4minus_one, m4_literal2s_, T(5)}}},
+    {{"-3"}, {}, {}, {2, {m4_literal2s_, T(-3)}}},
     {{"if"}, {}, {2, {2, m4_if_}}, {2, {m4_if_, T(-1)}}},
     {{"if", "then"}, {}, {}, {3, {m4_if_, T(1), m4_then_}}},
     {{"if", "1", "then"}, {}, {}, {4, {m4_if_, T(2), m4one, m4_then_}}},

@@ -32,7 +32,7 @@ struct m4eval_arg_s {
     struct m4pair_s pair;
 };
 
-/* warning: str must end with '\0' */
+/** temporary C implementation of (number) */
 m4pair m4string_to_int(m4string str);
 
 /** temporary C implementation of (read) */

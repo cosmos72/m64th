@@ -66,18 +66,42 @@ enum {
 #endif
 };
 
-/* warning: str must end with '\0' */
+/** temporary C implementation of (number) */
 m4pair m4string_to_int(m4string str) {
     m4pair ret = {};
-    char *end = NULL;
-    if (str.data == NULL || str.n == 0) {
+    const m4char *s = str.data;
+    m4cell i = 0, n = str.n;
+    m4cell negative = 0;
+    if (s == NULL) {
         ret.err = teof;
         return ret;
     }
-    errno = 0;
-    ret.num = strtol((const char *)str.data, &end, 0 /*base*/);
-    if ((ret.err = errno) == 0 && end != (const char *)(str.data + str.n)) {
+    /* skip initial spaces */
+    while (i < n && s[i] <= ' ') {
+        i++;
+    }
+    if (i == n) {
+        ret.err = teof;
+        return ret;
+    }
+    if (s[i] == '-') {
+        negative = 1;
+        i++;
+    }
+    for (; i < n; i++) {
+        const m4char c = s[i];
+        if (c < '0' || c > '9') {
+            break;
+        }
+        ret.num = ret.num * 10 + (c - '0');
+        /* TODO check overflow */
+    }
+    if (i != n) {
         ret.err = tint_trailing_junk;
+    }
+    if (negative) {
+        ret.num = -ret.num;
+        /* TODO check overflow */
     }
     return ret;
 }
