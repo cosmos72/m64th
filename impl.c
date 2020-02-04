@@ -60,44 +60,59 @@ enum {
     tbad_addr = -3,
 #endif
 #ifdef EINVAL
-    tint_trailing_junk = EINVAL,
+    tint_invalid_digit = EINVAL,
 #else
-    tint_trailing_junk = -4,
+    tint_invalid_digit = -4,
 #endif
 };
+
+m4cell m4char_to_base(m4char ch) {
+    switch (ch) {
+    case '#':
+        return 10;
+    case '$':
+        return 16;
+    case '%':
+        return 2;
+    default:
+        return 0;
+    }
+}
 
 /** temporary C implementation of (number) */
 m4pair m4string_to_int(m4string str) {
     m4pair ret = {};
     const m4char *s = str.data;
-    m4cell i = 0, n = str.n;
-    m4cell negative = 0;
-    if (s == NULL) {
+    m4cell i = 0, n = str.n, base;
+    m4char negative = 0;
+    if (s == NULL || n == 0) {
         ret.err = teof;
         return ret;
     }
-    /* skip initial spaces */
-    while (i < n && s[i] <= ' ') {
+    base = m4char_to_base(s[i]);
+    if (base > 0) {
         i++;
-    }
-    if (i == n) {
-        ret.err = teof;
-        return ret;
+    } else {
+        base = 10;
+        if (n == 3 && s[0] == '\'' && s[2] == '\'') {
+            ret.num = s[1];
+            return ret;
+        }
     }
     if (s[i] == '-') {
         negative = 1;
         i++;
     }
     for (; i < n; i++) {
-        const m4char c = s[i];
-        if (c < '0' || c > '9') {
+        const m4char ch = s[i];
+        if (ch < '0' || ch > '9') {
             break;
         }
-        ret.num = ret.num * 10 + (c - '0');
+        ret.num = ret.num * base + (ch - '0');
         /* TODO check overflow */
     }
     if (i != n) {
-        ret.err = tint_trailing_junk;
+        ret.err = tint_invalid_digit;
     }
     if (negative) {
         ret.num = -ret.num;
