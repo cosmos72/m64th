@@ -79,6 +79,50 @@ m4cell m4char_to_base(m4char ch) {
     }
 }
 
+m4pair m4string_to_char(m4string str) {
+    m4pair ret = {};
+    if (str.n == 3 && str.data != NULL && str.data[0] == '\'' && str.data[2] == '\'') {
+        ret.num = str.data[1];
+    } else {
+        ret.err = tint_invalid_digit;
+    }
+    return ret;
+}
+
+m4cell m4digit_to_uint(m4char ch) {
+    if (ch >= '0' && ch <= '9') {
+        return ch - '0';
+    } else if (ch >= 'A' && ch <= 'Z') {
+        return ch - 'A' + 10;
+    } else if (ch >= 'a' && ch <= 'z') {
+        return ch - 'a' + 10;
+    }
+    return -1;
+}
+
+m4pair m4digits_to_uint(m4string str, m4cell base) {
+    m4pair ret = {};
+    const m4char *s = str.data;
+    m4cell i = 0, n = str.n;
+    assert(s != NULL);
+    if (n == 0) {
+        ret.err = teof;
+        return ret;
+    }
+    for (; i < n; i++) {
+        const m4cell digit = m4digit_to_uint(s[i]);
+        if (digit < 0 || digit >= base) {
+            break;
+        }
+        /* TODO check overflow */
+        ret.num = ret.num * base + digit;
+    }
+    if (i != n) {
+        ret.err = tint_invalid_digit;
+    }
+    return ret;
+}
+
 /** temporary C implementation of (number) */
 m4pair m4string_to_int(m4string str) {
     m4pair ret = {};
@@ -88,32 +132,20 @@ m4pair m4string_to_int(m4string str) {
     if (s == NULL || n == 0) {
         ret.err = teof;
         return ret;
-    }
-    base = m4char_to_base(s[i]);
-    if (base > 0) {
+    } else if ((ret = m4string_to_char(str)).err == 0) {
+        return ret;
+    } else if ((base = m4char_to_base(s[i])) != 0) {
         i++;
     } else {
         base = 10;
-        if (n == 3 && s[0] == '\'' && s[2] == '\'') {
-            ret.num = s[1];
-            return ret;
-        }
     }
-    if (s[i] == '-') {
+    if (i < n && s[i] == '-') {
         negative = 1;
         i++;
     }
-    for (; i < n; i++) {
-        const m4char ch = s[i];
-        if (ch < '0' || ch > '9') {
-            break;
-        }
-        ret.num = ret.num * base + (ch - '0');
-        /* TODO check overflow */
-    }
-    if (i != n) {
-        ret.err = tint_invalid_digit;
-    }
+    str.data += i;
+    str.n -= i;
+    ret = m4digits_to_uint(str, base);
     if (negative) {
         ret.num = -ret.num;
         /* TODO check overflow */
