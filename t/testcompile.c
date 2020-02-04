@@ -48,6 +48,7 @@ static const m4testcompile testcompile[] = {
      {},
      {},
      {7, {m4_if_, T(3), m4one, m4_else_, T(2), m4two, m4_then_}}},
+    {{"(?do)"}, {}, {2, {2, m4_question_do_}}, {2, {m4_question_do_, T(-1)}}},
     {{"literal"}, {1, {0}}, {}, {1, {m4zero}}},
     {{"literal"}, {1, {1}}, {}, {1, {m4one}}},
     {{"literal"}, {1, {-1}}, {}, {1, {m4minus_one}}},
@@ -78,6 +79,8 @@ static const m4testcompile testcompile[] = {
     {{"drop"}, {}, {}, {1, {m4drop}}},
     {{"false"}, {}, {}, {1, {m4false}}},
     {{"true"}, {}, {}, {1, {m4true}}},
+    {{"do"}, {}, {2, {1, m4_do_}}, {1, {m4_do_}}},
+    {{"[inline]"}, {}, {}, {callsz, {CALLXT(_inline_)}}},
 #endif
 };
 

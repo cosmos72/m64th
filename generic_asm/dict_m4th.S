@@ -147,13 +147,13 @@ DICTNAME(9, "m4th-impl", m4th_impl)
 DICT_WORDS_M4TH_IMPL(WORDNAME)
 
 WORD_START(_question_do_, _question_do_)
-    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_INLINE_ALWAYS | M4FLAG_MAY_JUMP)
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_MAY_JUMP | M4FLAG_IMMEDIATE)
     WORD_DSTACK(2,0) /* stack effect when not jumping */
     WORD_RSTACK(0,2)
     WORD_DSTACK(2,0) /* stack effect when jumping */
     WORD_RSTACK(0,0)
     WORD_NATIVE_NONE()
-    WORD_CODE(_question_do_, T(-1), exit)
+    WORD_CODE(_compile_unresolved_jump_, _question_do_, exit)
 WORD_END(_question_do_)
 WORD_START(_call_, _question_do_)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZ | M4FLAG_INLINE_ALWAYS | M4FLAG_MAY_JUMP)
