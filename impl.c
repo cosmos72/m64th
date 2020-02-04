@@ -104,8 +104,7 @@ m4pair m4digits_to_uint(m4string str, m4cell base) {
     m4pair ret = {};
     const m4char *s = str.data;
     m4cell i = 0, n = str.n;
-    assert(s != NULL);
-    if (n == 0) {
+    if (s == NULL || n == 0) {
         ret.err = teof;
         return ret;
     }

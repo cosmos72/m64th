@@ -46,7 +46,16 @@ WORD(ne,               less,       DSTACK(2,1), RSTACK(0,0), WORD_PURE) /* core 
 WORD(equal,            ne,         DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(more,             equal,      DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(to_r,             more,       DSTACK(1,0), RSTACK(0,1), WORD_R_PURE)
-WORD(question_dup,     to_r,       DSTACK(1,-1),RSTACK(0,0), WORD_PURE)
+WORD_START(question_do, to_r)
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_MAY_JUMP | M4FLAG_IMMEDIATE)
+    WORD_DSTACK(2,0) /* stack effect when not jumping */
+    WORD_RSTACK(0,2)
+    WORD_DSTACK(2,0) /* stack effect when jumping */
+    WORD_RSTACK(0,0)
+    WORD_NATIVE_NONE()
+    WORD_CODE(_compile_unresolved_jump_, _question_do_, exit)
+WORD_END(question_do)
+WORD(question_dup,   question_do,  DSTACK(1,-1),RSTACK(0,0), WORD_PURE)
 WORD(fetch,          question_dup, DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 WORD(abs,              fetch,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(and,              abs,        DSTACK(2,1), RSTACK(0,0), WORD_PURE)

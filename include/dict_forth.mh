@@ -76,7 +76,7 @@
 #define DICT_WORDS_FORTH_CORE(X)                                                                   \
     DICT_TOKENS_FORTH_CORE(X)                                                                      \
     /* the following words are implemented in forth, thus no dedicated m4token value */            \
-    X(3, "?do,", question_do)                                                                      \
+    X(3, "?do", question_do)                                                                       \
     X(8, "compile,", compile_comma)                                                                \
     X(2, "do,", do)                                                                                \
     X(4, "else,", else)                                                                            \
