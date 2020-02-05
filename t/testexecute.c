@@ -310,7 +310,6 @@ static m4testexecute testexecute_b[] = {
     {"-1 -2 u>=", {m4u_more_equal, m4bye}, {{2, {-1, -2}}, {}}, {{1, {ttrue}}, {}}, {}},
     {"-2 -1 u>=", {m4u_more_equal, m4bye}, {{2, {-2, -1}}, {}}, {{1, {tfalse}}, {}}, {}},
     {"-3 -3 u>=", {m4u_more_equal, m4bye}, {{2, {-3, -3}}, {}}, {{1, {ttrue}}, {}}, {}},
-    /* ----------------------------- within --------------------------------- */
     /* ----------------------------- return stack --------------------------- */
     {"i", {m4i, m4bye}, {{}, {1, {9}}}, {{1, {9}}, {1, {9}}}, {}},
     {"i*", {m4i_times, m4bye}, {{1, {2}}, {1, {9}}}, {{1, {18}}, {1, {9}}}, {}},
@@ -550,6 +549,34 @@ static m4testexecute testexecute_c[] = {
      {{3, {8, (m4cell)testdata_any, N_OF(testdata_any)}}, {}},
      {{2, {m4eight, ttrue}}, {}},
      {}},
+    /* ----------------------------- within --------------------------------- */
+    {"0 1 4 within", {CALLXT(within), m4bye}, {{3, {0, 1, 4}}, {}}, {{1, {tfalse}}, {}}, {}},
+    {"1 1 4 within", {CALLXT(within), m4bye}, {{3, {1, 1, 4}}, {}}, {{1, {ttrue}}, {}}, {}},
+    {"3 1 4 within", {CALLXT(within), m4bye}, {{3, {3, 1, 4}}, {}}, {{1, {ttrue}}, {}}, {}},
+    {"4 1 4 within", {CALLXT(within), m4bye}, {{3, {4, 1, 4}}, {}}, {{1, {tfalse}}, {}}, {}},
+    {"-6 -5 -1 within", {CALLXT(within), m4bye}, {{3, {-6, -5, -1}}, {}}, {{1, {tfalse}}, {}}, {}},
+    {"-5 -5 -1 within", {CALLXT(within), m4bye}, {{3, {-5, -5, -1}}, {}}, {{1, {ttrue}}, {}}, {}},
+    {"-2 -5 -1 within", {CALLXT(within), m4bye}, {{3, {-2, -5, -1}}, {}}, {{1, {ttrue}}, {}}, {}},
+    {"-1 -5 -1 within", {CALLXT(within), m4bye}, {{3, {-1, -5, -1}}, {}}, {{1, {tfalse}}, {}}, {}},
+    {"-9 -2 -8 within", {CALLXT(within), m4bye}, {{3, {-9, -2, -8}}, {}}, {{1, {ttrue}}, {}}, {}},
+    {"-8 -2 -8 within", {CALLXT(within), m4bye}, {{3, {-8, -2, -8}}, {}}, {{1, {tfalse}}, {}}, {}},
+    {"-7 -2 -8 within", {CALLXT(within), m4bye}, {{3, {-7, -2, -8}}, {}}, {{1, {tfalse}}, {}}, {}},
+    {"-3 -2 -8 within", {CALLXT(within), m4bye}, {{3, {-3, -2, -8}}, {}}, {{1, {tfalse}}, {}}, {}},
+    {"-2 -2 -8 within", {CALLXT(within), m4bye}, {{3, {-2, -2, -8}}, {}}, {{1, {ttrue}}, {}}, {}},
+    {"-1 -2 -8 within", {CALLXT(within), m4bye}, {{3, {-1, -2, -8}}, {}}, {{1, {ttrue}}, {}}, {}},
+    /* ----------------------------- digit>u -------------------------------- */
+    {"'/' digit>u", {CALLXT(digit_to_u), m4bye}, {{1, {'/'}}, {}}, {{1, {-1}}, {}}, {}},
+    {"'0' digit>u", {CALLXT(digit_to_u), m4bye}, {{1, {'0'}}, {}}, {{1, {0}}, {}}, {}},
+    {"'9' digit>u", {CALLXT(digit_to_u), m4bye}, {{1, {'9'}}, {}}, {{1, {9}}, {}}, {}},
+    {"':' digit>u", {CALLXT(digit_to_u), m4bye}, {{1, {':'}}, {}}, {{1, {-1}}, {}}, {}},
+    {"'@' digit>u", {CALLXT(digit_to_u), m4bye}, {{1, {'@'}}, {}}, {{1, {-1}}, {}}, {}},
+    {"'A' digit>u", {CALLXT(digit_to_u), m4bye}, {{1, {'A'}}, {}}, {{1, {10}}, {}}, {}},
+    {"'Z' digit>u", {CALLXT(digit_to_u), m4bye}, {{1, {'Z'}}, {}}, {{1, {35}}, {}}, {}},
+    {"'[' digit>u", {CALLXT(digit_to_u), m4bye}, {{1, {'['}}, {}}, {{1, {-1}}, {}}, {}},
+    {"'`' digit>u", {CALLXT(digit_to_u), m4bye}, {{1, {'`'}}, {}}, {{1, {-1}}, {}}, {}},
+    {"'a' digit>u", {CALLXT(digit_to_u), m4bye}, {{1, {'a'}}, {}}, {{1, {10}}, {}}, {}},
+    {"'z' digit>u", {CALLXT(digit_to_u), m4bye}, {{1, {'z'}}, {}}, {{1, {35}}, {}}, {}},
+    {"'{' digit>u", {CALLXT(digit_to_u), m4bye}, {{1, {'{'}}, {}}, {{1, {-1}}, {}}, {}},
 };
 
 static m4testexecute testexecute_d[] = {

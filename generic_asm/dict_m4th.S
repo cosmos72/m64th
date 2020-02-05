@@ -351,7 +351,7 @@ WORD_START(_inline_, _compile_unresolved_jump_)
     WORD_CODE(
         xt_to_code, one_minus, /* ( code n-1 )  skip 'exit' at the end of XT */
         dup, zero, _if_less_equal_, T(2),
-            exit,              /* inline length is zero */
+            exit,              /* inline length is <= 0 */
         _then_,                /* ( code n-1 )   */
         zero, _do_,
             dup, token_fetch,  /* ( code token ) */
@@ -481,7 +481,28 @@ WORD_START(digit_to_u, char_to_base)
     WORD_RSTACK(0,0)
     WORD_STACK_DUMMY()
     WORD_NATIVE_NONE()
-    WORD_CODE(exit
+    WORD_CODE(
+        /* dup '0' ':' within if        \ ':' == '9' + 1
+         *   '0' - exit
+         * then dup 'A' '[' within if   \ '[' == 'Z' + 1
+         *   55 - exit
+         * then dup 'a' '{' within if   \ '{' == 'z' + 1
+         *   87 - exit
+         * then -1
+         */
+        dup, _literal2s_, T('0'), _literal2s_, T('9'+1), /* ( ch ch '0' '9'+1 )         */
+        _call_, XT(within), _if_, T(5),                  /* ( ch )                      */
+            _literal2s_, T('0'), minus, exit,            /* ( ch-'0' )                  */
+        _then_,
+        dup, _literal2s_, T('A'), _literal2s_, T('Z'+1), /* ( ch ch 'A' 'Z'+1 )         */
+        _call_, XT(within), _if_, T(5),                  /* ( ch )                      */
+            _literal2s_, T('A'-10), minus, exit,         /* ( ch-'A'+10 )               */
+        _then_,
+        dup, _literal2s_, T('a'), _literal2s_, T('z'+1),  /* ( ch ch 'a' 'z'+1 )         */
+        _call_, XT(within), _if_, T(5),                   /* ( ch )                      */
+            _literal2s_, T('a'-10), minus, exit,          /* ( ch-'a'+10 )               */
+        _then_,
+        drop, minus_one, exit                             /* ( -1 )                      */
     )
 WORD_END(digit_to_u)
 /* ( caddr n -- ch )  convert three-character string "'x'" to char 'x' for any x, else -1 */
@@ -500,16 +521,16 @@ WORD_START(string_to_char, digit_to_u)
          *    then
          * then drop -1
          */
-        three, _if_equal_, T(20),              /* ( caddr )  if len == 3    */
-            dup, c_fetch, _literal2s_, T(39),  /* ( caddr c0 '\'' )         */
-            _if_equal_, T(12),                 /* if c0 == '\''             */
-                dup, char_plus, char_plus,     /* ( caddr caddr+2 )         */
-                c_fetch, _literal2s_, T(39),   /* ( caddr c2 '\'' )         */
-                _if_equal_, T(4),              /* if c2 == '\''             */
-                    char_plus, c_fetch, exit,  /* ( c1 )                    */
-                _then_,                        /* ( caddr )                 */
-            _then_,                            /* ( caddr )                 */
-        _then_,                                /* ( caddr )                 */
+        three, _if_equal_, T(20),              /* ( caddr )  if len == 3      */
+            dup, c_fetch, _literal2s_, T(39),  /* ( caddr c0 '\'' )           */
+            _if_equal_, T(12),                 /* if c0 == '\''               */
+                dup, char_plus, char_plus,     /* ( caddr caddr+2 )           */
+                c_fetch, _literal2s_, T(39),   /* ( caddr c2 '\'' )           */
+                _if_equal_, T(4),              /* if c2 == '\''               */
+                    char_plus, c_fetch, exit,  /* ( c1 )                      */
+                _then_,                        /* ( caddr )                   */
+            _then_,                            /* ( caddr )                   */
+        _then_,                                /* ( caddr )                   */
         drop, minus_one, exit
     )
 WORD_END(string_to_char)

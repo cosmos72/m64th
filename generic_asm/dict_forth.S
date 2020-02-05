@@ -236,13 +236,13 @@ WORD(true,             then,       DSTACK(0,1), RSTACK(0,0), WORD_PURE) /* core 
 WORD(u_less,           true,       DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(u_more,           u_less,     DSTACK(2,1), RSTACK(0,0), WORD_PURE) /* core ext */
 WORD(unloop,           u_more,     DSTACK(0,0), RSTACK(2,0), WORD_R_PURE)
-WORD_START(within, u_more) /* ( x lo hi -- flag ) */
-    WORD_FLAGS(WORD_PURE)
+WORD_START(within, u_more) /* ( x lo hi -- flag ) true if lo <= x < hi, either signed or unsigned */
+    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_PURE)
     WORD_DSTACK(3,1)
     WORD_RSTACK(0,0)
     WORD_STACK_DUMMY()
     WORD_NATIVE_NONE()
-    WORD_CODE(over, minus, minus_rot, minus, u_more)
+    WORD_CODE(over, minus, minus_rot, minus, u_more, exit)
 WORD_END(within)
 WORD(xor,              within,     DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 
