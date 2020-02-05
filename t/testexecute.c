@@ -347,6 +347,8 @@ static m4testexecute testexecute_b[] = {
      {}},
 };
 
+#define STRING(s) (m4cell) s, (sizeof(s) - 1)
+
 static m4testexecute testexecute_c[] = {
     /* ----------------------------- literal, compile, (call) --------------- */
     {"(lit-token) T(7)", {m4_lit_token_, T(7), m4bye}, {{}, {}}, {{1, {7}}, {}}, {}},
@@ -383,6 +385,31 @@ static m4testexecute testexecute_c[] = {
     {"'%' char>base", {CALLXT(char_to_base), m4bye}, {{1, {'%'}}, {}}, {{1, {2}}, {}}, {}},
     {"'&' char>base", {CALLXT(char_to_base), m4bye}, {{1, {'&'}}, {}}, {{1, {0}}, {}}, {}},
     {"'\"' char>base", {CALLXT(char_to_base), m4bye}, {{1, {'"'}}, {}}, {{1, {0}}, {}}, {}},
+    {"\"''\" string>char",
+     {CALLXT(string_to_char), m4bye},
+     {{2, {(m4cell) "''", 2}}, {}},
+     {{1, {-1}}, {}},
+     {}},
+    {"\"'x'\" string>char",
+     {CALLXT(string_to_char), m4bye},
+     {{2, {(m4cell) "'x'", 3}}, {}},
+     {{1, {'x'}}, {}},
+     {}},
+    {"\"(y'\" string>char",
+     {CALLXT(string_to_char), m4bye},
+     {{2, {(m4cell) "(y'", 3}}, {}},
+     {{1, {-1}}, {}},
+     {}},
+    {"\"'z)\" string>char",
+     {CALLXT(string_to_char), m4bye},
+     {{2, {(m4cell) "'z)", 3}}, {}},
+     {{1, {-1}}, {}},
+     {}},
+    {"\"'__'\" string>char",
+     {CALLXT(string_to_char), m4bye},
+     {{2, {(m4cell) "'__'", 4}}, {}},
+     {{1, {-1}}, {}},
+     {}},
     {"' one (exec-native)",
      {m4_exec_native_, m4bye},
      {{1, {(m4cell)m4fone}}, {}},

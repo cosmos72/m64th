@@ -162,7 +162,8 @@
     X(19, "[resolve-jump-here]", _resolve_jump_here_) /* common back-end of 'else' and 'then' */   \
     X(14, "[resolve-loop]", _resolve_loop_)                                                        \
     X(19, "[token-gives-cell?]", _token_gives_cell_q_)                                             \
-    X(9, "char>base", char_to_base) /* convert '#' to 10, '$' to 16, '%' to 2, else 0 */
+    X(9, "char>base", char_to_base)      /* convert '#' to 10, '$' to 16, '%' to 2, else 0 */      \
+    X(11, "string>char", string_to_char) /* convert "'x'" to 'x' for any char x, else -1 */
 
 /* ------- m4th-* ------------------------------------------------------------------------------- */
 #define DICT_WORDS_M4TH(X) /* contains all DICT_WORDS_M4TH_* */                                    \

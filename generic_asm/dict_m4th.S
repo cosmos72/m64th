@@ -448,7 +448,8 @@ WORD(two,              one,            DSTACK(0,1), RSTACK(0,0), WORD_PURE)
 WORD(three,            two,            DSTACK(0,1), RSTACK(0,0), WORD_PURE)
 WORD(four,             three,          DSTACK(0,1), RSTACK(0,0), WORD_PURE)
 WORD(eight,            four,           DSTACK(0,1), RSTACK(0,0), WORD_PURE)
-WORD_START(char_to_base, eight) /* char>base   convert '#' to 10, '$' to 16, '%' to 2, else 0 */
+/* ( ch -- n )  convert '#' to 10, '$' to 16, '%' to 2, else 0 */
+WORD_START(char_to_base, eight)
     WORD_FLAGS(M4FLAG_PURE) /* cannot be inlined, uses (ip) to access its body */
     WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)
@@ -457,6 +458,10 @@ WORD_START(char_to_base, eight) /* char>base   convert '#' to 10, '$' to 16, '%'
     WORD_CODE_AND_DATA(
       char_to_base,
       WORD_CODE_TOKENS(
+        /* (ip) >body swap to-char '#' - dup 2 <= if
+         *    chars + c@ exit
+         * then drop drop 0
+         */
         _ip_, xt_to_data_addr, swap, to_char,  /* ( body ch )               */
         _literal2s_, T(35), minus, dup, two,   /* ( body ch-'#' ch-'#' 2 )  */
         _if_less_equal_, T(5),                 /* ( body ch-'#' )           */
@@ -467,7 +472,36 @@ WORD_START(char_to_base, eight) /* char>base   convert '#' to 10, '$' to 16, '%'
       WORD_DATA_1(10, 16, 2)
     )
 WORD_END(char_to_base)
-WORD(i_prime,          char_to_base,   DSTACK(0,1), RSTACK(2,2), WORD_R_PURE)
+/* ( caddr n -- ch )  convert three-character string "'x'" to char 'x' for any x, else -1 */
+WORD_START(string_to_char, char_to_base)
+    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
+    WORD_DSTACK(2,1)
+    WORD_RSTACK(0,0)
+    WORD_STACK_DUMMY()
+    WORD_NATIVE_NONE()
+    WORD_CODE(
+        /* 3 = if
+         *    dup c@ ''' = if
+         *       dup char+ char+ c@ ''' = if
+         *          char+ c@ r> drop exit
+         *       then
+         *    then
+         * then drop -1
+         */
+        three, _if_equal_, T(20),              /* ( caddr )  if len == 3    */
+            dup, c_fetch, _literal2s_, T(39),  /* ( caddr c0 '\'' )         */
+            _if_equal_, T(12),                 /* if c0 == '\''             */
+                dup, char_plus, char_plus,     /* ( caddr caddr+2 )         */
+                c_fetch, _literal2s_, T(39),   /* ( caddr c2 '\'' )         */
+                _if_equal_, T(4),              /* if c2 == '\''             */
+                    char_plus, c_fetch, exit,  /* ( c1 )                    */
+                _then_,                        /* ( caddr )                 */
+            _then_,                            /* ( caddr )                 */
+        _then_,                                /* ( caddr )                 */
+        drop, minus_one, exit
+    )
+WORD_END(string_to_char)
+WORD(i_prime,          string_to_char, DSTACK(0,1), RSTACK(2,2), WORD_R_PURE)
 
 DICT_BODY(m4th_impl, i_prime)
 DICT_END(m4th_impl)
