@@ -45,7 +45,8 @@ WORD(eight_div,        eight_plus,     DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(i_times,          eight_div,      DSTACK(1,1), RSTACK(1,1), WORD_R_PURE)
 WORD(i_plus,           i_times,        DSTACK(1,1), RSTACK(1,1), WORD_R_PURE)
 WORD(i_minus,          i_plus,         DSTACK(1,1), RSTACK(1,1), WORD_R_PURE)
-WORD(noop,             i_minus,        DSTACK(0,0), RSTACK(0,0), WORD_PURE)
+WORD(i_prime,          i_minus,        DSTACK(0,1), RSTACK(2,2), WORD_R_PURE)
+WORD(noop,             i_prime,        DSTACK(0,0), RSTACK(0,0), WORD_PURE)
 WORD(dup_to_r,         noop,           DSTACK(1,1), RSTACK(0,1), WORD_R_PURE)
 WORD(r_from_drop,      dup_to_r,       DSTACK(0,0), RSTACK(1,0), WORD_R_PURE)
 WORD(r_plus,           r_from_drop,    DSTACK(1,0), RSTACK(1,1), WORD_R_PURE)
@@ -475,7 +476,7 @@ WORD_START(char_to_base, eight)
     )
 WORD_END(char_to_base)
 /* ( ch -- u )  convert one digit in base 2..36 from char to unsigned number, else -1 */
-WORD_START(digit_to_u, char_to_base)
+WORD_START(char_to_u, char_to_base)
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_PURE)
     WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)
@@ -491,22 +492,22 @@ WORD_START(digit_to_u, char_to_base)
          * then -1
          */
         dup, _literal2s_, T('0'), _literal2s_, T('9'+1), /* ( ch ch '0' '9'+1 )         */
-        _call_, XT(within), _if_, T(5),                  /* ( ch )                      */
+        within, _if_, T(5),                              /* ( ch )                      */
             _literal2s_, T('0'), minus, exit,            /* ( ch-'0' )                  */
         _then_,
         dup, _literal2s_, T('A'), _literal2s_, T('Z'+1), /* ( ch ch 'A' 'Z'+1 )         */
-        _call_, XT(within), _if_, T(5),                  /* ( ch )                      */
+        within, _if_, T(5),                              /* ( ch )                      */
             _literal2s_, T('A'-10), minus, exit,         /* ( ch-'A'+10 )               */
         _then_,
-        dup, _literal2s_, T('a'), _literal2s_, T('z'+1),  /* ( ch ch 'a' 'z'+1 )         */
-        _call_, XT(within), _if_, T(5),                   /* ( ch )                      */
-            _literal2s_, T('a'-10), minus, exit,          /* ( ch-'a'+10 )               */
+        dup, _literal2s_, T('a'), _literal2s_, T('z'+1), /* ( ch ch 'a' 'z'+1 )         */
+        within, _if_, T(5),                              /* ( ch )                      */
+            _literal2s_, T('a'-10), minus, exit,         /* ( ch-'a'+10 )               */
         _then_,
-        drop, minus_one, exit                             /* ( -1 )                      */
+        drop, minus_one, exit                            /* ( -1 )                      */
     )
-WORD_END(digit_to_u)
+WORD_END(char_to_u)
 /* ( caddr n -- ch )  convert three-character string "'x'" to char 'x' for any x, else -1 */
-WORD_START(string_to_char, digit_to_u)
+WORD_START(string_to_char, char_to_u)
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
     WORD_DSTACK(2,1)
     WORD_RSTACK(0,0)
@@ -534,8 +535,30 @@ WORD_START(string_to_char, digit_to_u)
         drop, minus_one, exit
     )
 WORD_END(string_to_char)
-WORD(i_prime,          string_to_char, DSTACK(0,1), RSTACK(2,2), WORD_R_PURE)
+/* ( caddr n base -- u flag )  convert string from base to unsigned number */
+WORD_START(string_to_u, string_to_char)
+    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
+    WORD_DSTACK(3,2)
+    WORD_RSTACK(0,0)
+    WORD_STACK_DUMMY()
+    WORD_NATIVE_NONE()
+    WORD_CODE(
+        exit /* TODO */
+    )
+WORD_END(string_to_u)
+WORD_START(valid_base_q, string_to_u)
+    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
+    WORD_DSTACK(1,1)
+    WORD_RSTACK(0,0)
+    WORD_STACK_DUMMY()
+    WORD_NATIVE_NONE()
+    WORD_CODE(
+        two, _literal2s_, T(37),               /* base 2 37                   */
+        within,                    /* caddr n base                */
+        exit
+    )
+WORD_END(valid_base_q)
 
-DICT_BODY(m4th_impl, i_prime)
+DICT_BODY(m4th_impl, valid_base_q)
 DICT_END(m4th_impl)
 

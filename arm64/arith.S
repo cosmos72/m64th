@@ -233,6 +233,17 @@ FUNC_START(u_more_equal)   /* u>=  m4th-user */
 FUNC_END(u_more_equal)
 
 
+/* ( x lo hi -- flag ) true if lo <= x < hi \ signed or unsigned */
+FUNC_START(within)         /* within   core ext */
+        DPOP(  REG2)                   /* REG2 = lo                 */
+        DPOP(  REG1)                   /* REG1 = x                  */
+        SUB2(  REG2,   DTOP)           /* DTOP = hi-lo              */
+        SUB2(  REG2,   REG1)           /* REG1 = x-lo               */
+        cmp    REG1,   DTOP;
+        csetm  DTOP,   lo;
+FUNC_END(within)
+
+
 FUNC_START(xor)
         DPOP(  REG1)
         eor    DTOP, DTOP, REG1;

@@ -333,6 +333,19 @@ FUNC_START(u_more_equal)   /* u>=  m4th-user */
 FUNC_END(u_more_equal)
 
 
+/* ( x lo hi -- flag ) true if lo <= x < hi \ signed or unsigned */
+FUNC_START(within)         /* within   core ext */
+        LOAD(  REG2,   AT(DSTK))       /* REG2 = lo                 */
+        LOAD(  REG1,   AT(DSTK, SZ))   /* REG1 = x                  */
+        SUB2(  REG2,   DTOP)           /* DTOP = hi-lo              */
+        SUB2(  REG2,   REG1)           /* REG1 = x-lo               */
+        ADD2(  IMM(SZ2), DSTK)         /* update dstack pointer     */
+        cmp    DTOP,   REG1;
+        mov    IMM(0), DTOPw;          /* xor would affect EFLAGS   */
+        cmovb  RFFF,   DTOP;
+FUNC_END(within)
+
+
 FUNC_START(xor)            /* xor  */
         DPOP(  REG1)
         xor    REG1,  DTOP;

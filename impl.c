@@ -81,7 +81,7 @@ m4cell m4string_to_char(m4string str) {
     return -1; /* m4char is unsigned => str.data[1] cannot be -1 */
 }
 
-m4cell m4digit_to_uint(m4char ch) {
+m4cell m4char_to_uint(m4char ch) {
     if (ch >= '0' && ch <= '9') {
         return ch - '0';
     } else if (ch >= 'A' && ch <= 'Z') {
@@ -101,7 +101,7 @@ m4pair m4digits_to_uint(m4string str, m4cell base) {
         return ret;
     }
     for (; i < n; i++) {
-        const m4cell digit = m4digit_to_uint(s[i]);
+        const m4cell digit = m4char_to_uint(s[i]);
         if (digit < 0 || digit >= base) {
             break;
         }

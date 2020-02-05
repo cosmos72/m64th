@@ -37,8 +37,8 @@
 #define M4i_times 527                /* i*                    */
 #define M4i_plus 528                 /* i+                    */
 #define M4i_minus 529                /* i-                    */
-#define M4noop 530                   /* noop                  */
-#undef M4____gap                     /*                       */
+#define M4i_prime 530                /* i'                    */
+#define M4noop 531                   /* noop                  */
 #undef M4____gap                     /*                       */
 #undef M4____gap                     /*                       */
 #define M4dup_to_r 534               /* dup>r     equivalent to: dup >r     */
@@ -151,7 +151,6 @@
 #undef M4____gap                        /*                                         */
 #undef M4____gap                        /*                                         */
 #undef M4____gap                        /*                                         */
-#define M4i_prime 654                   /* i'       */
-#define M4____end 655
+#define M4____end 654
 
 #endif /* M4TH_INCLUDE_TOKEN_M4TH_MH */

@@ -199,7 +199,7 @@
 #define M4u_more 179             /* u>       */
 #undef M4unused /*180*/          /* unused   */
 #undef M4value /*181*/           /* value    */
-#undef M4within /*182*/          /* within   implemented in forth, no dedicated m4token */
+#define M4within 182             /* within   */
 #undef M4bracket_compile /*183*/ /* [compile]    */
 #undef M4backslash /*184*/       /* \        */
 #undef M4num_t_i_b               /* #tib     (removed in Forth 2012) */
