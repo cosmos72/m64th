@@ -95,7 +95,9 @@
     X(4, "true", true)                                                                             \
     X(2, "u>", u_more)
 
-#define DICT_WORDS_FORTH_CORE_EXT(X) DICT_TOKENS_FORTH_CORE_EXT(X)
+#define DICT_WORDS_FORTH_CORE_EXT(X)                                                               \
+    DICT_TOKENS_FORTH_CORE_EXT(X)                                                                  \
+    X(6, "within", within)
 
 /* ------- forth 2012: tools ext ---------------------------------------------------------------- */
 #define DICT_TOKENS_FORTH_TOOLS_EXT(X) X(3, "bye", bye)
