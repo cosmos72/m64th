@@ -90,8 +90,10 @@ WORD(to_short,         to_char,        DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(to_ushort,        to_short,       DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(to_int,           to_ushort,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(to_uint,          to_int,         DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD(u_less_equal,     to_uint,        DSTACK(2,1), RSTACK(0,0), WORD_PURE)
+WORD(u_more_equal,     u_less_equal,   DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 
-DICT_BODY(m4th_user, to_uint)
+DICT_BODY(m4th_user, u_more_equal)
 DICT_END(m4th_user)
 
 /* ---------------------------------------------------------------------------------------------- */
@@ -472,8 +474,18 @@ WORD_START(char_to_base, eight)
       WORD_DATA_1(10, 16, 2)
     )
 WORD_END(char_to_base)
+/* ( ch -- u )  convert one digit in base 2..36 from char to unsigned number, else -1 */
+WORD_START(digit_to_u, char_to_base)
+    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_PURE)
+    WORD_DSTACK(1,1)
+    WORD_RSTACK(0,0)
+    WORD_STACK_DUMMY()
+    WORD_NATIVE_NONE()
+    WORD_CODE(exit
+    )
+WORD_END(digit_to_u)
 /* ( caddr n -- ch )  convert three-character string "'x'" to char 'x' for any x, else -1 */
-WORD_START(string_to_char, char_to_base)
+WORD_START(string_to_char, digit_to_u)
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
     WORD_DSTACK(2,1)
     WORD_RSTACK(0,0)

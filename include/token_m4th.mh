@@ -63,27 +63,27 @@
 #define M4int_store 553              /* int!      write  (int32_t)dtop at address d2         */
 #define M4uint_store M4int_store     /* uint!     write (uint32_t)dtop at address d2         */
 #undef M4____gap                     /*                       */
-#define M4to_byte 556   /* to-byte   truncate dtop to   int8_t, sign-extend high bits  */
-#define M4to_char 557   /* to-char   truncate dtop to  uint8_t, zero-extend high bits  */
-#define M4to_short 558  /* to-short  truncate dtop to  int16_t, sign-extend high bits  */
-#define M4to_ushort 559 /* to-ushort truncate dtop to uint16_t, zero-extend high bits  */
-#define M4to_int 560    /* to-int    truncate dtop to  int32_t, sign-extend high bits  */
-#define M4to_uint 561   /* to-uint   truncate dtop to uint32_t, zero-extend high bits  */
-#undef M4____gap        /*                       */
-#undef M4____gap        /*                       */
+#define M4to_byte 556      /* to-byte   truncate dtop to   int8_t, sign-extend high bits  */
+#define M4to_char 557      /* to-char   truncate dtop to  uint8_t, zero-extend high bits  */
+#define M4to_short 558     /* to-short  truncate dtop to  int16_t, sign-extend high bits  */
+#define M4to_ushort 559    /* to-ushort truncate dtop to uint16_t, zero-extend high bits  */
+#define M4to_int 560       /* to-int    truncate dtop to  int32_t, sign-extend high bits  */
+#define M4to_uint 561      /* to-uint   truncate dtop to uint32_t, zero-extend high bits  */
+#define M4u_less_equal 562 /* u<=                   */
+#define M4u_more_equal 563 /* u>=                   */
+#undef M4____gap           /*                       */
+#undef M4____gap           /*                       */
+#undef M4____gap           /*                       */
+#undef M4____gap           /*                       */
+#undef M4____gap           /*                       */
 
 /* 'm4th-core' wordlist */
-#define M4xt_to_code 576      /* xt>code    ( XT -- taddr n ) get code array   from XT */
-#define M4xt_to_code_n 577    /* xt>code>n  ( XT -- n )       get code size    from XT */
-#define M4xt_to_data 578      /* xt>data    ( XT -- caddr n ) get data array   from XT */
-#define M4xt_to_data_addr 579 /* xt>data>addr ( XT -- caddr ) get data address from XT */
-#define M4xt_to_data_n 580    /* xt>data>n  ( XT -- n )       get data size    from XT */
-#define M4xt_to_flags 581     /* xt>flags   ( XT -- m4flags ) get m4flags      from XT */
-#undef M4____gap              /*                       */
-#undef M4____gap              /*                       */
-#undef M4____gap              /*                       */
-#undef M4____gap              /*                       */
-#undef M4____gap              /*                       */
+#define M4xt_to_code 581      /* xt>code    ( XT -- taddr n ) get code array   from XT */
+#define M4xt_to_code_n 582    /* xt>code>n  ( XT -- n )       get code size    from XT */
+#define M4xt_to_data 583      /* xt>data    ( XT -- caddr n ) get data array   from XT */
+#define M4xt_to_data_addr 584 /* xt>data>addr ( XT -- caddr ) get data address from XT */
+#define M4xt_to_data_n 585    /* xt>data>n  ( XT -- n )       get data size    from XT */
+#define M4xt_to_flags 586     /* xt>flags   ( XT -- m4flags ) get m4flags      from XT */
 #undef M4____gap              /*                       */
 #undef M4____gap              /*                       */
 #undef M4____gap              /*                       */

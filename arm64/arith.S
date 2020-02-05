@@ -53,30 +53,30 @@ FUNC_START(zero_equal)        /* 0=   */
 FUNC_END(zero_equal)
 
 
-FUNC_START(zero_more)  /* 0>   */
+FUNC_START(zero_more)      /* 0>   */
         cmp    DTOP, IMM(0);
         csetm  DTOP, gt;
 FUNC_END(zero_more)
 
 
-FUNC_START(zero_more_equal)    /* 0>=  m4th-user  */
+FUNC_START(zero_more_equal)/* 0>=  m4th-user  */
         cmp    DTOP, IMM(0);
         csetm  DTOP, ge;
 FUNC_END(zero_more_equal)
 
 
-FUNC_START(two_div)    /* 2/   */
+FUNC_START(two_div)        /* 2/   */
         add    DTOP, DTOP, DTOP, lsr IMM(63);
         asr    DTOP, DTOP, IMM(1);
 FUNC_END(two_div)
 
 
-FUNC_START(two_times)  /* 2*   */
+FUNC_START(two_times)      /* 2*   */
         lsl    DTOP, DTOP, IMM(1);
 FUNC_END(two_times)
 
 
-FUNC_START(four_div)   /* 4/   m4th-user */
+FUNC_START(four_div)       /* 4/   m4th-user */
         cmp    DTOP,   IMM(0);
         add    REG1,   DTOP,   IMM(3);     /* add 3 if negative */
         csel   DTOP,   REG1,   DTOP,   lt;
@@ -85,7 +85,7 @@ FUNC_END(four_div)
 
 
 
-FUNC_START(eight_div)  /* 8/   m4th-user */
+FUNC_START(eight_div)      /* 8/   m4th-user */
         cmp    DTOP,   IMM(0);
         add    REG1,   DTOP,   IMM(7);     /* add 7 if negative */
         csel   DTOP,   REG1,   DTOP,   lt;
@@ -93,42 +93,42 @@ FUNC_START(eight_div)  /* 8/   m4th-user */
 FUNC_END(eight_div)
 
 
-FUNC_START(less)  /* <    */
+FUNC_START(less)           /* <    */
         DPOP(  REG2)
         cmp    REG2, DTOP;
         csetm  DTOP, lt;
 FUNC_END(less)
 
 
-FUNC_START(less_equal)   /* <= m4th-user */
+FUNC_START(less_equal)     /* <=   m4th-user */
         DPOP(  REG2)
         cmp    REG2, DTOP;
         csetm  DTOP, le;
 FUNC_END(less_equal)
 
 
-FUNC_START(ne)   /* <>   core ext */
+FUNC_START(ne)             /* <>   core ext */
         DPOP(  REG2)
         cmp    REG2, DTOP;
         csetm  DTOP, ne;
 FUNC_END(ne)
 
 
-FUNC_START(equal)   /* = */
+FUNC_START(equal)          /* = */
         DPOP(  REG2)
         cmp    REG2, DTOP;
         csetm  DTOP, eq;
 FUNC_END(equal)
 
 
-FUNC_START(more)   /* > */
+FUNC_START(more)           /* > */
         DPOP(  REG2)
         cmp    REG2, DTOP;
         csetm  DTOP, gt;
 FUNC_END(more)
 
 
-FUNC_START(more_equal)   /* >= m4th-user */
+FUNC_START(more_equal)     /* >=   m4th-user */
         DPOP(  REG2)
         cmp    REG2, DTOP;
         csetm  DTOP, ge;
@@ -203,6 +203,34 @@ FUNC_END(to_ushort)
 FUNC_START(to_uint)    /* to-uint */
         ubfx   DTOPw, DTOPw, 0, 32;
 FUNC_END(to_uint)
+
+
+FUNC_START(u_less)         /* u<   */
+        DPOP(  REG2)
+        cmp    REG2, DTOP;
+        csetm  DTOP, lo;
+FUNC_END(u_less)
+
+
+FUNC_START(u_less_equal)   /* u<=  m4th-user */
+        DPOP(  REG2)
+        cmp    REG2, DTOP;
+        csetm  DTOP, ls;
+FUNC_END(u_less_equal)
+
+
+FUNC_START(u_more)         /* u>   core ext */
+        DPOP(  REG2)
+        cmp    REG2, DTOP;
+        csetm  DTOP, hi;
+FUNC_END(u_more)
+
+
+FUNC_START(u_more_equal)   /* u>=  m4th-user */
+        DPOP(  REG2)
+        cmp    REG2, DTOP;
+        csetm  DTOP, hs;
+FUNC_END(u_more_equal)
 
 
 FUNC_START(xor)

@@ -196,7 +196,7 @@
 #define M4true 176               /* true     */
 #undef M4tuck /*177*/            /* tuck     */
 #undef M4u_dot_r /*178*/         /* u.r      */
-#undef M4u_more /*179*/          /* u>       */
+#define M4u_more 179             /* u>       */
 #undef M4unused /*180*/          /* unused   */
 #undef M4value /*181*/           /* value    */
 #undef M4within /*182*/          /* within   */

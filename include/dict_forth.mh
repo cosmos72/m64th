@@ -70,6 +70,7 @@
     X(3, "rot", rot)                                                                               \
     X(6, "rshift", rshift)                                                                         \
     X(4, "swap", swap)                                                                             \
+    X(2, "u<", u_less)                                                                             \
     X(6, "unloop", unloop)                                                                         \
     X(3, "xor", xor)
 
@@ -91,7 +92,8 @@
     X(3, "0<>", zero_ne)                                                                           \
     X(2, "<>", ne)                                                                                 \
     X(5, "false", false)                                                                           \
-    X(4, "true", true)
+    X(4, "true", true)                                                                             \
+    X(2, "u>", u_more)
 
 #define DICT_WORDS_FORTH_CORE_EXT(X) DICT_TOKENS_FORTH_CORE_EXT(X)
 

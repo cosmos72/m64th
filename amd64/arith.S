@@ -301,6 +301,38 @@ FUNC_START(to_uint)        /* to-uint */
 FUNC_END(to_uint)
 
 
+FUNC_START(u_less)         /* u<   */
+        DPOP(  REG2)
+        cmp    DTOP, REG2;
+        mov    IMM(0), DTOPw;      /* xor would affect EFLAGS */
+        cmovb  RFFF,   DTOP;
+FUNC_END(u_less)
+
+
+FUNC_START(u_less_equal)   /* u<=  m4th-user */
+        DPOP(  REG2)
+        cmp    DTOP, REG2;
+        mov    IMM(0), DTOPw;      /* xor would affect EFLAGS */
+        cmovbe RFFF,   DTOP;
+FUNC_END(u_less_equal)
+
+
+FUNC_START(u_more)         /* u>   core ext */
+        DPOP(  REG2)
+        cmp    DTOP, REG2;
+        mov    IMM(0), DTOPw;      /* xor would affect EFLAGS */
+        cmova  RFFF,   DTOP;
+FUNC_END(u_more)
+
+
+FUNC_START(u_more_equal)   /* u>=  m4th-user */
+        DPOP(  REG2)
+        cmp    DTOP, REG2;
+        mov    IMM(0), DTOPw;      /* xor would affect EFLAGS */
+        cmovae RFFF,   DTOP;
+FUNC_END(u_more_equal)
+
+
 FUNC_START(xor)            /* xor  */
         DPOP(  REG1)
         xor    REG1,  DTOP;
