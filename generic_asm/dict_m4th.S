@@ -543,7 +543,12 @@ WORD_START(string_to_u, string_to_char)
     WORD_STACK_DUMMY()
     WORD_NATIVE_NONE()
     WORD_CODE(
-        exit /* TODO */
+        dup, _call_, XT(valid_base_q),         /* ( caddr n base flag )       */
+        _if_zero_, T(5),                       /* ( caddr n base )            */
+            drop, drop, false, exit,           /* ( caddr false )             */
+        _then_,
+        /* TODO */
+        exit
     )
 WORD_END(string_to_u)
 WORD_START(valid_base_q, string_to_u)

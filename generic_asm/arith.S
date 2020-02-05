@@ -205,6 +205,12 @@ FUNC_START(drop)
 FUNC_END(drop)
 
 
+FUNC_START(two_drop)
+        LOAD(  DTOP,       AT(DSTK, SZ))
+        ADD2(  IMM(SZ2),   DSTK)
+FUNC_END(two_drop)
+
+
 FUNC_START(depth)
         DPUSH( DTOP)
         LOAD(  DTOP, AT(M4TH, M4TH_OFF_DEND))
