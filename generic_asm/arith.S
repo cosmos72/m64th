@@ -19,7 +19,7 @@
 
 
 #ifndef M4F_LITERAL2S_
-FUNC_START(_literal2s_) /* (literal-2s) push to dstack the int16 at following IP */
+FUNC_START(_literal2s_)    /* (literal-2s) push to dstack the int16 at following IP */
         DPUSH( DTOP)
         LD_sh( DTOP_sh, AT(IP))
         NEXT2() /* skip 2 bytes */
@@ -27,7 +27,7 @@ FUNC_RAWEND(_literal2s_)
 #endif
 
 #ifndef M4F_LITERAL4S_
-FUNC_START(_literal4s_) /* (literal-4s) push to dstack the int32 at following IP */
+FUNC_START(_literal4s_)    /* (literal-4s) push to dstack the int32 at following IP */
         DPUSH( DTOP)
         LD_sw( DTOP_sw, AT(IP))
         NEXT4() /* skip 4 bytes */
@@ -35,7 +35,7 @@ FUNC_RAWEND(_literal4s_)
 #endif
 
 #ifndef M4F_LITERAL8S_
-FUNC_START(_literal8s_) /* (literal-8s) push to dstack the int64 at following IP */
+FUNC_START(_literal8s_)    /* (literal-8s) push to dstack the int64 at following IP */
         DPUSH( DTOP)
         LOAD(  DTOP, AT(IP))
         NEXT8() /* skip 8 bytes */
@@ -43,27 +43,27 @@ FUNC_RAWEND(_literal8s_)
 #endif
 
 #ifndef M4F_MISSING_
-FUNC_START(_missing_) /* (missing) called instead of invalid/unimplemented function */
+FUNC_START(_missing_)      /* (missing) called instead of invalid/unimplemented m4func */
         ZERO(  REG1)
         LOAD(  REG1, AT(REG1)) /* should crash */
 FUNC_END(_missing_)
 #endif
 
 
-FUNC_START(times) /* * */
+FUNC_START(times)          /* *    */
         DPOP(  REG1)
         MUL2(  REG1, DTOP)
 FUNC_END(times)
 
 
-FUNC_START(plus) /* + */
+FUNC_START(plus)           /* +    */
         DPOP(  REG1)
         ADD2(  REG1, DTOP)
 FUNC_END(plus)
 
 
 #ifndef M4FPLUS_STORE
-FUNC_START(plus_store) /* +! */
+FUNC_START(plus_store)     /* +!   */
         DPOP(  REG1)
         LOAD(  REG2, AT(DTOP))
         ADD2(  REG1, REG2)
@@ -73,7 +73,7 @@ FUNC_END(plus_store)
 #endif
 
 
-FUNC_START(minus) /* - */
+FUNC_START(minus)          /* -    */
         DPOP(  REG1)
 #ifdef SUB3
         SUB3(  REG1, DTOP, DTOP)
@@ -86,7 +86,7 @@ FUNC_END(minus)
 
 
 #ifndef M4FMINUS_ONE
-FUNC_START(minus_one)  /* -1   m4th-impl */
+FUNC_START(minus_one)      /* -1   m4th-impl */
         DPUSH( DTOP)
         MOVE(  IMM(-1), DTOP)
 FUNC_END(minus_one)
@@ -94,56 +94,56 @@ FUNC_END(minus_one)
 
 
 #ifndef M4FZERO
-FUNC_START(zero)     /* 0   m4th-impl */
+FUNC_START(zero)           /* 0   m4th-impl */
         DPUSH( DTOP)
         ZERO(  DTOP)
 FUNC_END(zero)
 #endif
 
 
-FUNC_START(zero_less)   /* 0< */
+FUNC_START(zero_less)      /* 0< */
         SAR2(  IMM(63), DTOP)
 FUNC_END(zero_less)
 
 
 #ifndef M4FONE
-FUNC_START(one)        /* 1    m4th-impl */
+FUNC_START(one)            /* 1    m4th-impl */
         DPUSH( DTOP)
         MOVE(  IMM(1), DTOP)
 FUNC_END(one)
 #endif
 
 
-FUNC_START(one_plus)   /* 1+   */
+FUNC_START(one_plus)       /* 1+   */
         INC1(  DTOP)
 FUNC_END(one_plus)
 
 
-FUNC_START(one_minus)  /* 1-   */
+FUNC_START(one_minus)      /* 1-   */
         DEC1(  DTOP)
 FUNC_END(one_minus)
 
 
 #ifndef M4FTWO
-FUNC_START(two)        /* 2   m4th-impl */
+FUNC_START(two)            /* 2   m4th-impl */
         DPUSH( DTOP)
         MOVE(  IMM(2), DTOP)
 FUNC_END(two)
 #endif
 
 
-FUNC_START(two_plus)   /* 2+  m4th-impl */
+FUNC_START(two_plus)       /* 2+  m4th-user */
         ADD2(  IMM(2), DTOP)
 FUNC_END(two_plus)
 
 
-FUNC_START(two_minus)  /* 2-  m4th-impl */
+FUNC_START(two_minus)      /* 2-  m4th-user */
         SUB2(  IMM(2), DTOP)
 FUNC_END(two_minus)
 
 
 #ifndef M4FTHREE
-FUNC_START(three)      /* 3   m4th-impl */
+FUNC_START(three)          /* 3   m4th-impl */
         DPUSH( DTOP)
         MOVE(  IMM(3), DTOP)
 FUNC_END(three)
@@ -151,37 +151,37 @@ FUNC_END(three)
 
 
 #ifndef M4FFOUR
-FUNC_START(four)       /* 4   m4th-impl */
+FUNC_START(four)           /* 4   m4th-impl */
         DPUSH( DTOP)
         MOVE(  IMM(4), DTOP)
 FUNC_END(four)
 #endif
 
 
-FUNC_START(four_times)  /* 4*  m4th-impl */
+FUNC_START(four_times)     /* 4*  m4th-user */
         SHL2(  IMM(2), DTOP)
 FUNC_END(four_times)
 
 
-FUNC_START(four_plus)  /* 4+  m4th-impl */
+FUNC_START(four_plus)      /* 4+  m4th-user */
         ADD2(  IMM(4), DTOP)
 FUNC_END(four_plus)
 
 
 #ifndef M4FEIGHT
-FUNC_START(eight)      /* 8   m4th-impl */
+FUNC_START(eight)          /* 8   m4th-impl */
         DPUSH( DTOP)
         MOVE(  IMM(8), DTOP)
 FUNC_END(eight)
 #endif
 
 
-FUNC_START(eight_times) /* 8*  m4th-impl */
+FUNC_START(eight_times)    /* 8*  m4th-user */
         SHL2(  IMM(3), DTOP)
 FUNC_END(eight_times)
 
 
-FUNC_START(eight_plus) /* 8+  m4th-impl */
+FUNC_START(eight_plus)     /* 8+  m4th-user */
         ADD2(  IMM(8), DTOP)
 FUNC_END(eight_plus)
 

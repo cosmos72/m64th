@@ -34,6 +34,7 @@ static inline void dpush(m4th *m, m4cell val) {
     *--m->dstack.curr = val;
 }
 
+#if 0  /* unused */
 static inline m4token *vec_ipush_m4cell(m4token *code, m4cell val) {
     /* store an m4cell in consecutive m4token. layout depends on endianness */
     memcpy(code, &val, sizeof(m4cell));
@@ -49,21 +50,15 @@ static inline void ipush_m4cell(m4th *m, m4cell val) {
 static inline void ipush(m4th *m, m4token val) {
     m->w->code[m->w->code_n++] = val;
 }
+#endif /* 0 */
 
 enum {
+    tnum_is_xt = 1,
     tsuccess = 0,
     teof = -1,
     tsyntax_error = -2,
-#ifdef EFAULT
-    tbad_addr = EFAULT,
-#else
     tbad_addr = -3,
-#endif
-#ifdef EINVAL
-    tint_invalid_digit = EINVAL,
-#else
     tint_invalid_digit = -4,
-#endif
 };
 
 m4cell m4char_to_base(m4char ch) {
@@ -79,14 +74,11 @@ m4cell m4char_to_base(m4char ch) {
     }
 }
 
-m4pair m4string_to_char(m4string str) {
-    m4pair ret = {};
+m4cell m4string_to_char(m4string str) {
     if (str.n == 3 && str.data != NULL && str.data[0] == '\'' && str.data[2] == '\'') {
-        ret.num = str.data[1];
-    } else {
-        ret.err = tint_invalid_digit;
+        return str.data[1];
     }
-    return ret;
+    return -1; /* m4char is unsigned => str.data[1] cannot be -1 */
 }
 
 m4cell m4digit_to_uint(m4char ch) {
@@ -131,7 +123,7 @@ m4pair m4string_to_int(m4string str) {
     if (s == NULL || n == 0) {
         ret.err = teof;
         return ret;
-    } else if ((ret = m4string_to_char(str)).err == 0) {
+    } else if ((ret.num = m4string_to_char(str)) >= 0) {
         return ret;
     } else if ((base = m4char_to_base(s[i])) != 0) {
         i++;
@@ -146,8 +138,8 @@ m4pair m4string_to_int(m4string str) {
     str.n -= i;
     ret = m4digits_to_uint(str, base);
     if (negative) {
-        ret.num = -ret.num;
         /* TODO check overflow */
+        ret.num = -ret.num;
     }
     return ret;
 }
@@ -194,15 +186,18 @@ static const m4word *m4th_lookup_word(m4th *m, m4string key) {
 }
 
 /** temporary C implementation of (parse) */
-m4eval_arg m4th_parse(m4th *m, m4string key) {
-    m4eval_arg arg = {};
+m4pair m4th_parse(m4th *m, m4string key) {
+    m4pair ret = {};
+    const m4word *w;
     if (key.data == NULL) {
-        arg.pair.err = teof;
-    } else if ((arg.w = m4th_lookup_word(m, key)) != NULL) {
+        ret.err = teof;
+    } else if ((w = m4th_lookup_word(m, key)) != NULL) {
+        ret.num = (m4cell)w->code;
+        ret.err = tnum_is_xt;
     } else {
-        arg.pair = m4string_to_int(key);
+        ret = m4string_to_int(key);
     }
-    return arg;
+    return ret;
 }
 
 /** temporary C implementation of (compile-word) */
@@ -218,30 +213,31 @@ static m4cell m4th_compile_number(m4th *m, m4cell num) {
 }
 
 /** temporary C implementation of (eval) */
-m4cell m4th_eval(m4th *m, m4eval_arg arg) {
+m4cell m4th_eval(m4th *m, m4pair arg) {
     const m4char is_interpreting = (m->flags & m4th_flag_status_mask) == m4th_flag_interpret;
 
-    if (arg.pair.err != 0) {
-        return arg.pair.err;
-    } else if (arg.w != NULL) {
-        if (is_interpreting || (arg.w->flags & m4flag_immediate)) {
-            if (is_interpreting && (arg.w->flags & m4flag_compile_only)) {
+    if (arg.err == tnum_is_xt && arg.num != 0) {
+        const m4word *w = (const m4word *)(arg.num - WORD_OFF_XT);
+        if (is_interpreting || (w->flags & m4flag_immediate)) {
+            if (is_interpreting && (w->flags & m4flag_compile_only)) {
                 FILE *out = stderr;
                 fputs("cannot execute compile-only word while interpreting: ", out);
-                m4string_print(m4word_name(arg.w), out);
+                m4string_print(m4word_name(w), out);
                 fputc('\n', out);
                 return tsyntax_error;
             }
-            return m4th_execute_word(m, arg.w);
+            return m4th_execute_word(m, w);
         } else {
-            return m4th_compile_word(m, arg.w);
+            return m4th_compile_word(m, w);
         }
+    } else if (arg.err) {
+        return arg.err;
     } else {
         if (is_interpreting) {
-            dpush(m, arg.pair.num);
+            dpush(m, arg.num);
             return tsuccess;
         } else {
-            return m4th_compile_number(m, arg.pair.num);
+            return m4th_compile_number(m, arg.num);
         }
     }
 }
@@ -249,12 +245,12 @@ m4cell m4th_eval(m4th *m, m4eval_arg arg) {
 /** temporary C implementation of (repl) */
 m4cell m4th_repl(m4th *m) {
     m4string str;
-    m4eval_arg arg;
+    m4pair arg;
     m4cell ret;
 
-    while ((ret = m4th_eval(m, arg = m4th_parse(m, str = m4th_read(m)))) == 0) {
+    while ((ret = m4th_eval(m, arg = m4th_parse(m, str = m4th_read(m)))) == tsuccess) {
     }
-    if (ret != 0 && arg.pair.err == ret && arg.w == NULL && str.data != NULL) {
+    if (ret != tsuccess && arg.err == ret && str.data != NULL) {
         m4string_print(str, stderr);
         fputs(" ?", stderr);
     }

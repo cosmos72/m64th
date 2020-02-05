@@ -170,15 +170,17 @@
 #define STORw(reg,at)    str   reg, at;          /* *(uint32_t*)at  = reg */
 #define STORt(reg,at)    strh  reg, at;          /* *(m4token *)at  = reg */
 
+#define DPUSH(val)       str   val, [DSTK, -SZ]!; /* push val to second data stack element */
+#define DPOP(val)        ldr   val, [DSTK], SZ;   /* pop second data stack element into val */
+
+#define RPUSH(val)       str   val, [RSTK, -SZ]!; /* push val to second return stack element */
+#define RPOP(val)        ldr   val, [RSTK], SZ;   /* pop second return stack element into val */
+
+#define JUMP(label)      b     LABEL_SYM(label);  /* unconditional jump to label */
+
 #define FADDR(fun, dst) /* load function address */ \
     adrp  dst,  fun;             /* high 21 bits */ \
     add   dst,  dst,  :lo12:fun; /* low  12 bits */
-
-#define DPUSH(val)    str       val, [DSTK, -SZ]!; /* push val to second data stack element */
-#define DPOP(val)     ldr       val, [DSTK], SZ;   /* pop second data stack element into val */
-
-#define RPUSH(val)    str       val, [RSTK, -SZ]!; /* push val to second return stack element */
-#define RPOP(val)     ldr       val, [RSTK], SZ;   /* pop second return stack element into val */
 
 /* clang-format on */
 

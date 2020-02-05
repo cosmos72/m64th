@@ -20,16 +20,11 @@
 
 #include "m4th.h"
 
-typedef struct m4eval_arg_s m4eval_arg;
 typedef struct m4pair_s m4pair;
 
 struct m4pair_s {
-    m4cell num, err;
-};
-
-struct m4eval_arg_s {
-    const m4word *w; /* NULL if parsed word is a number */
-    struct m4pair_s pair;
+    m4cell num;
+    m4cell err;
 };
 
 /** temporary C implementation of (number) */
@@ -39,10 +34,10 @@ m4pair m4string_to_int(m4string str);
 m4string m4th_read(m4th *m);
 
 /** temporary C implementation of (parse) */
-m4eval_arg m4th_parse(m4th *m, m4string key);
+m4pair m4th_parse(m4th *m, m4string key);
 
 /** temporary C implementation of (eval) */
-m4cell m4th_eval(m4th *m, m4eval_arg arg);
+m4cell m4th_eval(m4th *m, m4pair arg);
 
 /** temporary C implementation of (repl) */
 m4cell m4th_repl(m4th *m);

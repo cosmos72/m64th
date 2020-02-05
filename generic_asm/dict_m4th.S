@@ -448,7 +448,26 @@ WORD(two,              one,            DSTACK(0,1), RSTACK(0,0), WORD_PURE)
 WORD(three,            two,            DSTACK(0,1), RSTACK(0,0), WORD_PURE)
 WORD(four,             three,          DSTACK(0,1), RSTACK(0,0), WORD_PURE)
 WORD(eight,            four,           DSTACK(0,1), RSTACK(0,0), WORD_PURE)
-WORD(i_prime,          eight,          DSTACK(0,1), RSTACK(2,2), WORD_R_PURE)
+WORD_START(char_to_base, eight) /* char>base   convert '#' to 10, '$' to 16, '%' to 2, else 0 */
+    WORD_FLAGS(M4FLAG_PURE) /* cannot be inlined, uses (ip) to access its body */
+    WORD_DSTACK(1,1)
+    WORD_RSTACK(0,0)
+    WORD_STACK_DUMMY()
+    WORD_NATIVE_NONE()
+    WORD_CODE_AND_DATA(
+      char_to_base,
+      WORD_CODE_TOKENS(
+        _ip_, xt_to_data_addr, swap, to_char,  /* ( body ch )               */
+        _literal2s_, T(35), minus, dup, two,   /* ( body ch-'#' ch-'#' 2 )  */
+        _if_less_equal_, T(5),                 /* ( body ch-'#' )           */
+            chars, plus, c_fetch, exit,
+        _then_,                                /* ( body ch-'#' )           */
+        drop, drop, zero, exit
+      ),
+      WORD_DATA_1(10, 16, 2)
+    )
+WORD_END(char_to_base)
+WORD(i_prime,          char_to_base,   DSTACK(0,1), RSTACK(2,2), WORD_R_PURE)
 
 DICT_BODY(m4th_impl, i_prime)
 DICT_END(m4th_impl)

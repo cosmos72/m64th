@@ -161,7 +161,8 @@ WORD_START(leave, j)
     )
 WORD_END(leave)
 WORD_START(literal, leave)
-    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE | M4FLAG_DATA_TOKENS)
+    /* cannot be inlined, uses (ip) to access its body */
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE | M4FLAG_DATA_TOKENS)
     WORD_DSTACK(1,0)
     WORD_RSTACK(0,0)
     WORD_STACK_DUMMY()
@@ -169,7 +170,7 @@ WORD_START(literal, leave)
     WORD_CODE_AND_DATA(
       literal,
       WORD_CODE_TOKENS(
-        _lit_xt_, XT(literal), xt_to_data, div_token,/* ( n taddr tn ) */
+        _ip_, xt_to_data, div_token,     /* ( n taddr tn )             */
         _call_, XT(_any_token_gives_cell_q_),
         _if_, T(3), _compile_token_,     /* if executing token gives n */
             exit,                        /* append token to XT, exit   */

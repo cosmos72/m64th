@@ -47,6 +47,10 @@
  */
 #define AT(...)                         AT_(__VA_ARGS__, xy, x, 0)
 
+
+#define LABEL_SYM(label) .L##label /* local label */
+#define LABEL(label) LABEL_SYM(label) :
+
 /* clang-format on */
 
 #endif /* M4TH_INCLUDE_ASM_MH */

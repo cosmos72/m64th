@@ -154,7 +154,9 @@
 
 /* clang-format on */
 
-#define FADDR(fun, dst) lea fun(RIP), dst; /* load function address */
+#define JUMP(label) /*     */ jmp LABEL_SYM(label); /* unconditional jump to label */
+
+#define FADDR(fun, dst) /* */ lea fun(RIP), dst; /* load function address */
 
 #define DPUSH(val) /* push val to second data stack element */                                     \
     STOR(val, AT(DSTK, -SZ))                                                                       \
