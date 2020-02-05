@@ -295,6 +295,10 @@
         x((eight_plus, uint_fetch), (uint_bracket1))        /* 8+   uint@      => uint[2]      */  \
         x((SZ_plus, fetch), (cell_bracket1))                /* SZ+  @          => cell[1]      */
 
+/* low-priority optimizations: they may prevent other optimizations */
+#define OPT2_LOWPRIO_BODY(x, _) /* note: '_' represents noop       */                              \
+    x((drop, drop), (two_drop)) /* drop drop       => 2drop        */
+
 #define OPT3_BODY(x, _)               /* note: '_' represents noop       */                        \
     x((r_from, plus, to_r), (r_plus)) /* r> +    >r      => r+           */
 
