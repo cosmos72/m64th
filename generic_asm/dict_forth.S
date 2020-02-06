@@ -295,7 +295,8 @@ WORD_START(then, swap)
     )
 WORD_END(then)
 WORD(true,             then,       DSTACK(0,1), RSTACK(0,0), WORD_PURE) /* core ext */
-WORD(u_less,           true,       DSTACK(2,1), RSTACK(0,0), WORD_PURE)
+WORD(tuck,             true,       DSTACK(2,3), RSTACK(0,0), WORD_PURE) /* core ext */
+WORD(u_less,           tuck,       DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(u_more,           u_less,     DSTACK(2,1), RSTACK(0,0), WORD_PURE) /* core ext */
 WORD(unloop,           u_more,     DSTACK(0,0), RSTACK(2,0), WORD_R_PURE)
 /*

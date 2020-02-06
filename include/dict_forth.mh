@@ -97,6 +97,7 @@
     X(2, "<>", ne)                                                                                 \
     X(5, "false", false)                                                                           \
     X(4, "true", true)                                                                             \
+    X(4, "tuck", tuck)                                                                             \
     X(2, "u>", u_more)                                                                             \
     X(6, "within", within) /* used often => implement as m4func instead of forth word */
 

@@ -297,3 +297,9 @@ FUNC_START(swap)
 FUNC_END(swap)
 #endif
 
+
+FUNC_START(tuck)
+        LOAD(  REG1, AT(DSTK))
+        STOR(  DTOP, AT(DSTK))
+        DPUSH( REG1)
+FUNC_END(tuck)
