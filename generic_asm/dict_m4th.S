@@ -535,7 +535,54 @@ WORD_START(string_to_char, char_to_u)
         drop, minus_one, exit
     )
 WORD_END(string_to_char)
-WORD_START(valid_base_q, string_to_char)
+/*
+ * string>u ( caddr n base -- u err )  \ convert string from base to unsigned number
+ * err = 0               success
+ * err = M4ERR_EOF       not enough digits
+ * err = M4ERR_BAD_DIGIT invalid digit found
+ */
+WORD_START(string_to_u, string_to_char)
+    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
+    WORD_DSTACK(3,2)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_CODE(
+        /* over 0 <=
+         * if
+         *    2drop ERR_EOF exit
+         * then
+         * >r 0 -rot 0
+         * do
+         *    dup c@ char>u dup 0 j within
+         *    if
+         *       unloop 2drop r> drop
+         *       ERR_BAD_DIGIT exit
+         *    then
+         *    rot j * + swap char+
+         * loop
+         * drop 0
+         */
+        over, zero, _if_less_equal_, T(5),     /* ( caddr n base  )                */
+            drop, nip, ERR_EOF, exit,          /* ( n err         )                */
+        _then_,
+        to_r, zero, minus_rot, zero,           /* ( u caddr n 0   ) (R: base     ) */
+        do,                                    /* ( u caddr       ) (R: base n 0 ) */
+            dup, c_fetch,                      /* ( u caddr ch    ) (R: base n i ) */
+            _call_, XT(char_to_u),             /* ( u caddr digit ) (R: base n i ) */
+            dup, zero, j/*NON-PORTABLE*/,
+            within, _if_zero_, T(6),           /* ( u caddr digit ) (R: base n i ) */
+                unloop, two_drop, r_from_drop, /* ( u             )                */
+                ERR_BAD_DIGIT, exit,           /* ( u err         )                */
+            _then_,                            /* ( u caddr digit ) (R: base n i ) */
+            rot,                               /* ( caddr digit u ) (R: base n i ) */
+            j/*NON-PORTABLE*/, times, plus,    /* ( caddr u'      ) (R: base n i ) */
+            swap, char_plus,                   /* ( u' caddr'     ) (R: base n i ) */
+        _loop_, T(-23-SZ/SZt),                 /* ( u caddr       ) (R: base     ) */
+        drop, r_from_drop, ERR_OK, exit        /* ( u err_ok      )                */
+    )
+WORD_END(string_to_u)
+WORD_START(valid_base_q, string_to_u)
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
     WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)
