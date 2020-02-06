@@ -179,6 +179,10 @@ static m4testexecute testexecute_a[] = {
     {"tuck", {m4tuck, m4bye}, {{2, {0, 1}}, {}}, {{3, {1, 0, 1}}, {}}, {}},
     {"unloop", {m4unloop, m4bye}, {{}, {3, {1, 2, 3}}}, {{}, {1, {1}}}, {}},
     {"-7 14 xor", {m4xor, m4bye}, {{2, {-7, 14}}, {}}, {{1, {-7 ^ 14}}, {}}, {}},
+#endif
+};
+
+static m4testexecute testexecute_b[] = {
     /*                                                                          */
     {"byte+", {m4byte_plus, m4bye}, {{1, {6}}, {}}, {{1, {7}}, {}}, {}},
     {"char+", {m4char_plus, m4bye}, {{1, {6}}, {}}, {{1, {7}}, {}}, {}},
@@ -263,10 +267,9 @@ static m4testexecute testexecute_a[] = {
      {{1, {9876543210l}}, {}},
      {{1, {(uint32_t)9876543210l}}, {}},
      {}},
-#endif
 };
 
-static m4testexecute testexecute_b[] = {
+static m4testexecute testexecute_c[] = {
     /* ----------------------------- 0<=> ----------------------------------- */
     {"-1 0<", {m4zero_less, m4bye}, {{1, {-1}}, {}}, {{1, {ttrue}}, {}}, {}},
     {"0 0<", {m4zero_less, m4bye}, {{1, {}}, {}}, {{1, {tfalse}}, {}}, {}},
@@ -392,7 +395,7 @@ static m4testexecute testexecute_b[] = {
      {}},
 };
 
-static m4testexecute testexecute_c[] = {
+static m4testexecute testexecute_d[] = {
     /* ----------------------------- literal, compile, (call) --------------- */
     {"(lit-token) T(7)", {m4_lit_, T(7), m4bye}, {{}, {}}, {{1, {7}}, {}}, {}},
     {"(lit-int) INT(0x10000)",
@@ -602,7 +605,7 @@ static const char teststr_18446744073709551615[] = "18446744073709551615";
 #define TESTSTR_(name, delta) (m4cell)(teststr##name + delta), (sizeof(teststr##name) - delta - 1)
 #define STRING(s) ((m4cell)(s)), (sizeof(s) - 1)
 
-static m4testexecute testexecute_d[] = {
+static m4testexecute testexecute_e[] = {
     /* ----------------------------- string>u ------------------------------- */
     {"\"\" 10 string>u",
      {CALLXT(string_base_to_u), m4bye},
@@ -701,7 +704,7 @@ static m4testexecute testexecute_d[] = {
 #endif
 };
 
-static m4testexecute testexecute_e[] = {
+static m4testexecute testexecute_f[] = {
     /* ----------------------------- compile, ------------------------------- */
     {"' noop xt>flags",
      {CALLXT(xt_to_flags), m4bye},
@@ -850,6 +853,7 @@ m4cell m4th_testexecute(m4th *m, FILE *out) {
     m4th_testexecute_bunch(m, testexecute_c, N_OF(testexecute_c), &count, out);
     m4th_testexecute_bunch(m, testexecute_d, N_OF(testexecute_d), &count, out);
     m4th_testexecute_bunch(m, testexecute_e, N_OF(testexecute_e), &count, out);
+    m4th_testexecute_bunch(m, testexecute_f, N_OF(testexecute_f), &count, out);
 
     if (out != NULL) {
         if (count.failed == 0) {
