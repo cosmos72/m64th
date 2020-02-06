@@ -51,17 +51,17 @@ FUNC_END(_compile2s_)
 #endif
 
 
-#ifndef M4F_COMPILE_LIT2S_
-/** ( -- ) must be followed by int16, append it to XT being compiled. */
-FUNC_START(_compile_lit2s_)    /* [compile-lit-2s] */
+#ifndef M4F_COMPILE_LIT_
+/** ( -- ) must be followed by m4token, append it to XT being compiled. */
+FUNC_START(_compile_lit_)    /* [compile-lit] */
         /* TODO check if enough space */
-        LD_sh( REG2_sh,    AT(IP))                     /* b = int16             */
+        LD_ut( REG2_ut,    AT(IP))                     /* b = m4token           */
         LD_uh( REG1_uh,    AT(RXT, XT_OFF_CODE_N))     /* xt.code_n             */
-        STORh( REG2h,      AT(RXT, REG1, SZt))         /* xt[xt.code_n] = b     */
-        ADD2(  IMM(2/SZt), REG1)
+        STORt( REG2t,      AT(RXT, REG1, SZt))         /* xt[xt.code_n] = b     */
+        INC1(  REG1)
         STORh( REG1h,      AT(RXT, XT_OFF_CODE_N))     /* xt.code_n ++          */
         NEXT2()                                        /* skip int16            */
-FUNC_RAWEND(_compile_lit2s_)
+FUNC_RAWEND(_compile_lit_)
 #endif
 
 

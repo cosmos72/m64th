@@ -18,6 +18,7 @@
 #include "impl.h"
 #include "dispatch/sz.mh" /* SZ SZt preprocessor macros */
 #include "include/asm.mh"
+#include "include/err.h"
 #include "include/token.h"
 #include "include/word_fwd.h"
 
@@ -25,10 +26,6 @@
 #include <errno.h>  /* errno                      */
 #include <stdlib.h> /* strtol()                   */
 #include <string.h> /* memcmp() memcpy() strlen() */
-
-enum {
-    m4token_per_m4cell = SZ / SZt, /* # of m4token needed to store an m4cell */
-};
 
 static inline void dpush(m4th *m, m4cell val) {
     *--m->dstack.curr = val;
@@ -38,28 +35,19 @@ static inline void dpush(m4th *m, m4cell val) {
 static inline m4token *vec_ipush_m4cell(m4token *code, m4cell val) {
     /* store an m4cell in consecutive m4token. layout depends on endianness */
     memcpy(code, &val, sizeof(m4cell));
-    return code + m4token_per_m4cell;
+    return code + SZ / SZt;
 }
 
 static inline void ipush_m4cell(m4th *m, m4cell val) {
     m4word *w = m->w;
     vec_ipush_m4cell(w->code + w->code_n, val);
-    w->code_n += m4token_per_m4cell;
+    w->code_n += SZ / SZt;
 }
 
 static inline void ipush(m4th *m, m4token val) {
     m->w->code[m->w->code_n++] = val;
 }
 #endif /* 0 */
-
-enum {
-    tnum_is_xt = 1,
-    tsuccess = 0,
-    teof = -1,
-    tsyntax_error = -2,
-    tbad_addr = -3,
-    tint_invalid_digit = -4,
-};
 
 m4cell m4char_to_base(m4char ch) {
     switch (ch) {
@@ -92,24 +80,22 @@ m4cell m4char_to_uint(m4char ch) {
     return -1;
 }
 
-m4pair m4digits_to_uint(m4string str, m4cell base) {
+m4pair m4string_to_uint(m4string str, m4cell base) {
     m4pair ret = {};
     const m4char *s = str.data;
     m4cell i = 0, n = str.n;
-    if (s == NULL || n == 0) {
-        ret.err = teof;
+    if (s == NULL || n <= 0) {
+        ret.err = m4err_eof;
         return ret;
     }
     for (; i < n; i++) {
         const m4cell digit = m4char_to_uint(s[i]);
         if (digit < 0 || digit >= base) {
+            ret.err = m4err_bad_digit;
             break;
         }
         /* TODO check overflow */
         ret.num = ret.num * base + digit;
-    }
-    if (i != n) {
-        ret.err = tint_invalid_digit;
     }
     return ret;
 }
@@ -121,7 +107,7 @@ m4pair m4string_to_int(m4string str) {
     m4cell i = 0, n = str.n, base;
     m4char negative = 0;
     if (s == NULL || n == 0) {
-        ret.err = teof;
+        ret.err = m4err_eof;
         return ret;
     } else if ((ret.num = m4string_to_char(str)) >= 0) {
         return ret;
@@ -136,7 +122,7 @@ m4pair m4string_to_int(m4string str) {
     }
     str.data += i;
     str.n -= i;
-    ret = m4digits_to_uint(str, base);
+    ret = m4string_to_uint(str, base);
     if (negative) {
         /* TODO check overflow */
         ret.num = -ret.num;
@@ -190,10 +176,10 @@ m4pair m4th_parse(m4th *m, m4string key) {
     m4pair ret = {};
     const m4word *w;
     if (key.data == NULL) {
-        ret.err = teof;
+        ret.err = m4err_eof;
     } else if ((w = m4th_lookup_word(m, key)) != NULL) {
         ret.num = (m4cell)w->code;
-        ret.err = tnum_is_xt;
+        ret.err = m4num_is_xt;
     } else {
         ret = m4string_to_int(key);
     }
@@ -216,7 +202,7 @@ static m4cell m4th_compile_number(m4th *m, m4cell num) {
 m4cell m4th_eval(m4th *m, m4pair arg) {
     const m4char is_interpreting = (m->flags & m4th_flag_status_mask) == m4th_flag_interpret;
 
-    if (arg.err == tnum_is_xt && arg.num != 0) {
+    if (arg.err == m4num_is_xt && arg.num != 0) {
         const m4word *w = (const m4word *)(arg.num - WORD_OFF_XT);
         if (is_interpreting || (w->flags & m4flag_immediate)) {
             if (is_interpreting && (w->flags & m4flag_compile_only)) {
@@ -224,18 +210,18 @@ m4cell m4th_eval(m4th *m, m4pair arg) {
                 fputs("cannot execute compile-only word while interpreting: ", out);
                 m4string_print(m4word_name(w), out);
                 fputc('\n', out);
-                return tsyntax_error;
+                return m4err_syntax;
             }
             return m4th_execute_word(m, w);
         } else {
             return m4th_compile_word(m, w);
         }
-    } else if (arg.err) {
+    } else if (arg.err != m4err_ok) {
         return arg.err;
     } else {
         if (is_interpreting) {
             dpush(m, arg.num);
-            return tsuccess;
+            return m4err_ok;
         } else {
             return m4th_compile_number(m, arg.num);
         }
@@ -248,9 +234,9 @@ m4cell m4th_repl(m4th *m) {
     m4pair arg;
     m4cell ret;
 
-    while ((ret = m4th_eval(m, arg = m4th_parse(m, str = m4th_read(m)))) == tsuccess) {
+    while ((ret = m4th_eval(m, arg = m4th_parse(m, str = m4th_read(m)))) == m4err_ok) {
     }
-    if (ret != tsuccess && arg.err == ret && str.data != NULL) {
+    if (ret != m4err_ok && arg.err == ret && str.data != NULL) {
         m4string_print(str, stderr);
         fputs(" ?", stderr);
     }

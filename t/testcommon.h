@@ -23,8 +23,7 @@
 enum {
     tfalse = (m4cell)0,
     ttrue = (m4cell)-1,
-    m4token_per_m4cell = SZ / SZt,   /* # of m4token needed to store an m4cell */
-    callsz = 1 + m4token_per_m4cell, /* # of m4token needed to store a (call) XT(...) */
+    callsz = 1 + SZ / SZt, /* # of m4token needed to store a (call) XT(...) */
 };
 
 /* store m4token numeric constant in a sequence of m4token */

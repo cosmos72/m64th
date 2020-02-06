@@ -18,7 +18,7 @@
 #include "asm.mh"
 
 /**
- * pop dstack top, enter a (do) ... (loop) if <> 0.
+ * pop dstack top, enter a do ... (loop) if <> 0.
  * must be followed by IP offset of first instruction after (loop)
  * IP offset = 0 means first instruction after (?do) itself
  */
@@ -27,7 +27,7 @@ FUNC_START(_question_do_)
         cmp    REG2, DTOP;
         b.eq   .L_question_do_.skip;
         ADD2(  IMM(SZt), IP)           /* skip jump offset      */
-        b      FUNC_SYM(_do_);
+        b      FUNC_SYM(do);
 .L_question_do_.skip:                  /* skip the loop:        */
         LOAD(  DTOP,   AT(DSTK, SZ))   /* reload dstack top     */
         ADD2(  IMM(SZ2), DSTK)         /* drop i' i from dstack */

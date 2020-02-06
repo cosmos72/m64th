@@ -19,6 +19,7 @@
 #define M4TH_T_TESTEXECUTE_C
 
 #include "../impl.h"
+#include "../include/err.h"
 #include "../include/func_fwd.h"
 #include "../include/token.h"
 #include "../include/word_fwd.h"
@@ -86,8 +87,8 @@ uint32_t crc1byte(uint32_t crc, unsigned char byte) {
  * ;
  */
 static const m4cell crc1byte_array[] = {
-    m4over, m4xor,   m4_lit_token_, T(0xff),       m4and, m4cells,  m4_lit_cell_, CELL(crctable),
-    m4plus, m4fetch, m4swap,        m4_lit_token_, T(8),  m4rshift, m4xor,        m4exit,
+    m4over, m4xor,   m4_lit_, T(0xff), m4and, m4cells,  m4_lit_cell_, CELL(crctable),
+    m4plus, m4fetch, m4swap,  m4_lit_, T(8),  m4rshift, m4xor,        m4exit,
 };
 /* initialized by m4th_testexecute() */
 static m4token crc1byte_tarray[N_OF(crc1byte_array)];
@@ -109,7 +110,7 @@ static m4testexecute testexecute_a[] = {
      {{3, {(m4cell)testbuf_in, (m4cell)testbuf_out, 6}}, {}},
      {{}, {}},
      {}},
-    {"1e9 0 (do) (loop)", {m4_do_, m4_loop_, T(-2), m4bye}, {{2, {1e9, 0}}, {}}, {{}, {}}, {}},
+    {"1e9 0 do loop", {m4do, m4_loop_, T(-2), m4bye}, {{2, {1e9, 0}}, {}}, {{}, {}}, {}},
 #else
     /* ----------------------------- arithmetic ----------------------------- */
     {"*", {m4times, m4bye}, {{2, {20, 7}}, {}}, {{1, {140}}, {}}, {}},
@@ -314,6 +315,21 @@ static m4testexecute testexecute_b[] = {
     {"-1 -2 u>=", {m4u_more_equal, m4bye}, {{2, {-1, -2}}, {}}, {{1, {ttrue}}, {}}, {}},
     {"-2 -1 u>=", {m4u_more_equal, m4bye}, {{2, {-2, -1}}, {}}, {{1, {tfalse}}, {}}, {}},
     {"-3 -3 u>=", {m4u_more_equal, m4bye}, {{2, {-3, -3}}, {}}, {{1, {ttrue}}, {}}, {}},
+    /* ----------------------------- within --------------------------------- */
+    {"0 1 4 within", {m4within, m4bye}, {{3, {0, 1, 4}}, {}}, {{1, {tfalse}}, {}}, {}},
+    {"1 1 4 within", {m4within, m4bye}, {{3, {1, 1, 4}}, {}}, {{1, {ttrue}}, {}}, {}},
+    {"3 1 4 within", {m4within, m4bye}, {{3, {3, 1, 4}}, {}}, {{1, {ttrue}}, {}}, {}},
+    {"4 1 4 within", {m4within, m4bye}, {{3, {4, 1, 4}}, {}}, {{1, {tfalse}}, {}}, {}},
+    {"-6 -5 -1 within", {m4within, m4bye}, {{3, {-6, -5, -1}}, {}}, {{1, {tfalse}}, {}}, {}},
+    {"-5 -5 -1 within", {m4within, m4bye}, {{3, {-5, -5, -1}}, {}}, {{1, {ttrue}}, {}}, {}},
+    {"-2 -5 -1 within", {m4within, m4bye}, {{3, {-2, -5, -1}}, {}}, {{1, {ttrue}}, {}}, {}},
+    {"-1 -5 -1 within", {m4within, m4bye}, {{3, {-1, -5, -1}}, {}}, {{1, {tfalse}}, {}}, {}},
+    {"-9 -2 -8 within", {m4within, m4bye}, {{3, {-9, -2, -8}}, {}}, {{1, {ttrue}}, {}}, {}},
+    {"-8 -2 -8 within", {m4within, m4bye}, {{3, {-8, -2, -8}}, {}}, {{1, {tfalse}}, {}}, {}},
+    {"-7 -2 -8 within", {m4within, m4bye}, {{3, {-7, -2, -8}}, {}}, {{1, {tfalse}}, {}}, {}},
+    {"-3 -2 -8 within", {m4within, m4bye}, {{3, {-3, -2, -8}}, {}}, {{1, {tfalse}}, {}}, {}},
+    {"-2 -2 -8 within", {m4within, m4bye}, {{3, {-2, -2, -8}}, {}}, {{1, {ttrue}}, {}}, {}},
+    {"-1 -2 -8 within", {m4within, m4bye}, {{3, {-1, -2, -8}}, {}}, {{1, {ttrue}}, {}}, {}},
     /* ----------------------------- return stack --------------------------- */
     {"i", {m4i, m4bye}, {{}, {1, {9}}}, {{1, {9}}, {1, {9}}}, {}},
     {"i*", {m4i_times, m4bye}, {{1, {2}}, {1, {9}}}, {{1, {18}}, {1, {9}}}, {}},
@@ -327,9 +343,9 @@ static m4testexecute testexecute_b[] = {
     {"r>", {m4r_from, m4bye}, {{}, {1, {99}}}, {{1, {99}}, {}}, {}},
     {"dup>r", {m4dup_to_r, m4bye}, {{1, {33}}, {}}, {{1, {33}}, {1, {33}}}, {}},
     {"r>drop", {m4r_from_drop, m4bye}, {{}, {1, {99}}}, {{}, {}}, {}},
-    /* ----------------------------- if, else, loop ------------------------- */
-    {"0 1 (do)", {m4_do_, m4bye}, {{2, {0, 1}}, {}}, {{}, {2, {0, 1}}}, {}},
-    {"1 0 (do)", {m4_do_, m4bye}, {{2, {1, 0}}, {}}, {{}, {2, {1, 0}}}, {}},
+    /* ----------------------------- if, else, do, loop --------------------- */
+    {"0 1 do", {m4do, m4bye}, {{2, {0, 1}}, {}}, {{}, {2, {0, 1}}}, {}},
+    {"1 0 do", {m4do, m4bye}, {{2, {1, 0}}, {}}, {{}, {2, {1, 0}}}, {}},
     {"0 0 (?do)", {m4_question_do_, T(0), m4bye}, {{2, {0, 0}}, {}}, {{}, {}}, {}},
     {"1 0 (?do)", {m4_question_do_, T(0), m4bye}, {{2, {1, 0}}, {}}, {{}, {2, {1, 0}}}, {}},
     {"0 (if)", {m4_if_, T(1), m4two, m4bye}, {{1, {}}, {}}, {{}, {}}, {}},
@@ -360,24 +376,31 @@ static m4testexecute testexecute_b[] = {
     {"0 0 (loop)", {m4_loop_, T(0), m4bye}, {{}, {2, {0, 0}}}, {{}, {2, {0, 1}}}, {}},
     {"0 1 (loop)", {m4_loop_, T(0), m4bye}, {{}, {2, {0, 1}}}, {{}, {2, {0, 2}}}, {}},
     {"1 0 (loop)", {m4_loop_, T(0), m4bye}, {{}, {2, {1, 0}}}, {{}, {}}, {}},
-    {"10 0 (do) (loop)", {m4_do_, m4_loop_, T(-2), m4bye}, {{2, {10, 0}}, {}}, {{}, {}}, {}},
-    {"5 0 (do) i (loop)",
-     {m4_do_, m4i, m4_loop_, T(-3), m4bye},
+    {"10 0 do loop", {m4do, m4_loop_, T(-2), m4bye}, {{2, {10, 0}}, {}}, {{}, {}}, {}},
+    {"5 0 do i loop",
+     {m4do, m4i, m4_loop_, T(-3), m4bye},
      {{2, {5, 0}}, {}},
      {{5, {0, 1, 2, 3, 4}}, {}},
      {}},
-    {"0 1M 0 (do) i + (loop)",
-     {m4_do_, m4i, m4plus, m4_loop_, T(-4), m4bye},
+    {"0 1M 0 do i+ loop",
+     {m4do, m4i_plus, m4_loop_, T(-3), m4bye},
      {{3, {0, (m4cell)1e6, 0}}, {}},
      {{1, {499999500000l}}, {}},
      {}},
 };
 
-#define STRING(s) (m4cell) s, (sizeof(s) - 1)
+static const char teststr_empty[] = "";
+static const char teststr_12345a[] = "12345a";
+static const char teststr_1234567890[] = "1234567890";
+static const char teststr_4294967295[] = "4294967295";
+static const char teststr_18446744073709551615[] = "18446744073709551615";
+
+#define TESTSTR(name) ((m4cell)teststr##name), (sizeof(teststr##name) - 1)
+#define TESTSTR_(name, delta) (m4cell)(teststr##name + delta), (sizeof(teststr##name) - delta - 1)
 
 static m4testexecute testexecute_c[] = {
     /* ----------------------------- literal, compile, (call) --------------- */
-    {"(lit-token) T(7)", {m4_lit_token_, T(7), m4bye}, {{}, {}}, {{1, {7}}, {}}, {}},
+    {"(lit-token) T(7)", {m4_lit_, T(7), m4bye}, {{}, {}}, {{1, {7}}, {}}, {}},
     {"(lit-int) INT(0x10000)",
      {m4_lit_int_, INT(0x10000), m4bye},
      {{}, {}},
@@ -393,11 +416,7 @@ static m4testexecute testexecute_c[] = {
      {{1, {0x123}}, {}},
      {{}, {}},
      {1, {0x123}}},
-    {"(compile-lit-token,) T(500)",
-     {m4_compile_lit_token_, T(500), m4bye},
-     {{}, {}},
-     {{}, {}},
-     {1, {500}}},
+    {"[compile-lit,] T(500)", {m4_compile_lit_, T(500), m4bye}, {{}, {}}, {{}, {}}, {1, {500}}},
     /* ----------------------------- execute, call -------------------------- */
     {"(call) XT(false)", {CALLXT(false), m4bye}, {{}, {}}, {{1, {tfalse}}, {}}, {}},
     {"(call) XT(noop)", {CALLXT(noop), m4bye}, {{}, {}}, {{}, {}}, {}},
@@ -553,21 +572,6 @@ static m4testexecute testexecute_c[] = {
      {{3, {8, (m4cell)testdata_any, N_OF(testdata_any)}}, {}},
      {{2, {m4eight, ttrue}}, {}},
      {}},
-    /* ----------------------------- within --------------------------------- */
-    {"0 1 4 within", {m4within, m4bye}, {{3, {0, 1, 4}}, {}}, {{1, {tfalse}}, {}}, {}},
-    {"1 1 4 within", {m4within, m4bye}, {{3, {1, 1, 4}}, {}}, {{1, {ttrue}}, {}}, {}},
-    {"3 1 4 within", {m4within, m4bye}, {{3, {3, 1, 4}}, {}}, {{1, {ttrue}}, {}}, {}},
-    {"4 1 4 within", {m4within, m4bye}, {{3, {4, 1, 4}}, {}}, {{1, {tfalse}}, {}}, {}},
-    {"-6 -5 -1 within", {m4within, m4bye}, {{3, {-6, -5, -1}}, {}}, {{1, {tfalse}}, {}}, {}},
-    {"-5 -5 -1 within", {m4within, m4bye}, {{3, {-5, -5, -1}}, {}}, {{1, {ttrue}}, {}}, {}},
-    {"-2 -5 -1 within", {m4within, m4bye}, {{3, {-2, -5, -1}}, {}}, {{1, {ttrue}}, {}}, {}},
-    {"-1 -5 -1 within", {m4within, m4bye}, {{3, {-1, -5, -1}}, {}}, {{1, {tfalse}}, {}}, {}},
-    {"-9 -2 -8 within", {m4within, m4bye}, {{3, {-9, -2, -8}}, {}}, {{1, {ttrue}}, {}}, {}},
-    {"-8 -2 -8 within", {m4within, m4bye}, {{3, {-8, -2, -8}}, {}}, {{1, {tfalse}}, {}}, {}},
-    {"-7 -2 -8 within", {m4within, m4bye}, {{3, {-7, -2, -8}}, {}}, {{1, {tfalse}}, {}}, {}},
-    {"-3 -2 -8 within", {m4within, m4bye}, {{3, {-3, -2, -8}}, {}}, {{1, {tfalse}}, {}}, {}},
-    {"-2 -2 -8 within", {m4within, m4bye}, {{3, {-2, -2, -8}}, {}}, {{1, {ttrue}}, {}}, {}},
-    {"-1 -2 -8 within", {m4within, m4bye}, {{3, {-1, -2, -8}}, {}}, {{1, {ttrue}}, {}}, {}},
     /* ----------------------------- valid-base? ---------------------------- */
     {"0 valid-base?", {CALLXT(valid_base_q), m4bye}, {{1, {0}}, {}}, {{1, {tfalse}}, {}}, {}},
     {"1 valid-base?", {CALLXT(valid_base_q), m4bye}, {{1, {1}}, {}}, {{1, {tfalse}}, {}}, {}},
@@ -592,6 +596,76 @@ static m4testexecute testexecute_c[] = {
     {"'a' char>u", {CALLXT(char_to_u), m4bye}, {{1, {'a'}}, {}}, {{1, {10}}, {}}, {}},
     {"'z' char>u", {CALLXT(char_to_u), m4bye}, {{1, {'z'}}, {}}, {{1, {35}}, {}}, {}},
     {"'{' char>u", {CALLXT(char_to_u), m4bye}, {{1, {'{'}}, {}}, {{1, {-1}}, {}}, {}},
+    /* ----------------------------- >number -------------------------------- */
+    {"\"\" >number",
+     {CALLXT(to_number), m4bye},
+     {{4, {0, 0, TESTSTR(_empty)}}, {}},
+     {{4, {0, 0, TESTSTR(_empty)}}, {}},
+     {}},
+    {"\"12345a\" >number",
+     {CALLXT(to_number), m4bye},
+     {{4, {0, 0, TESTSTR(_12345a)}}, {}},
+     {{4, {12345, 0, TESTSTR_(_12345a, 5)}}, {}},
+     {}},
+    {"\"1234567890\" >number",
+     {CALLXT(to_number), m4bye},
+     {{4, {0, 0, TESTSTR(_1234567890)}}, {}},
+     {{4, {1234567890, 0, TESTSTR_(_1234567890, 10)}}, {}},
+     {}},
+    {"\"4294967295\" >number",
+     {CALLXT(to_number), m4bye},
+     {{4, {0, 0, TESTSTR(_4294967295)}}, {}},
+     {{4, {(m4cell)4294967295ul, 0, TESTSTR_(_4294967295, 10)}}, {}},
+     {}},
+#if SZ >= 8
+    {"\"18446744073709551615\" >number",
+     {CALLXT(to_number), m4bye},
+     {{4, {0, 0, TESTSTR(_18446744073709551615)}}, {}},
+     {{4, {(m4cell)18446744073709551615ul, 0, TESTSTR_(_18446744073709551615, 20)}}, {}},
+     {}},
+#endif
+#if 0
+    {"\"1011\" 2 string>u",
+     {CALLXT(string_to_u), m4bye},
+     {{3, {STRING("1011"), 2}}, {}},
+     {{2, {0xb, m4err_ok}}, {}},
+     {}},
+    {"\"12\" 2 string>u",
+     {CALLXT(string_to_u), m4bye},
+     {{3, {STRING("12"), 2}}, {}},
+     {{2, {1, m4err_bad_digit}}, {}},
+     {}},
+    {"\"123def\" 16 string>u",
+     {CALLXT(string_to_u), m4bye},
+     {{3, {STRING("123def"), 16}}, {}},
+     {{2, {0x123def, m4err_ok}}, {}},
+     {}},
+    {"\"ffffffff\" 16 string>u",
+     {CALLXT(string_to_u), m4bye},
+     {{3, {STRING("ffffffff"), 16}}, {}},
+     {{2, {(m4cell)0xfffffffful, m4err_ok}}, {}},
+     {}},
+    {"\"9fg\" 16 string>u",
+     {CALLXT(string_to_u), m4bye},
+     {{3, {STRING("9fg"), 16}}, {}},
+     {{2, {0x9f, m4err_bad_digit}}, {}},
+     {}},
+    {"\"ffffffffffffffff\" 16 string>u",
+     {CALLXT(string_to_u), m4bye},
+     {{3, {STRING("ffffffffffffffff"), 16}}, {}},
+     {{2, {(m4cell)0xfffffffffffffffful, m4err_ok}}, {}},
+     {}},
+    {"\"0az\" 36 string>u",
+     {CALLXT(string_to_u), m4bye},
+     {{3, {STRING("az"), 36}}, {}},
+     {{2, {395, m4err_ok}}, {}},
+     {}},
+    {"\"z:\" 36 string>u",
+     {CALLXT(string_to_u), m4bye},
+     {{3, {STRING("z:"), 36}}, {}},
+     {{2, {35, m4err_bad_digit}}, {}},
+     {}},
+#endif
 };
 
 static m4testexecute testexecute_d[] = {

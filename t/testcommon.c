@@ -31,7 +31,7 @@ extern const m4word *wtable[]; /* from m4th.c */
 static void m4slice_print_as_code(m4slice src, FILE *out) {
     const m4cell *data = src.data;
     m4cell i, n = src.n;
-    if (data == NULL || n == 0 || out == NULL) {
+    if (data == NULL || n < 0 || out == NULL) {
         return;
     }
     fprintf(out, "<%ld> ", (long)n);

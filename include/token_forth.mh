@@ -56,7 +56,7 @@
 #define M4more 36              /* >        */
 #define M4to_body 37           /* >body    */
 #define M4to_in 38             /* >in      */
-#define M4to_number 39         /* >number  */
+#undef M4to_number /*39*/      /* >number  implemented in forth, no dedicated m4token */
 #define M4to_r 40              /* >r       */
 #define M4question_dup 41      /* ?dup     */
 #define M4fetch 42             /* @        */

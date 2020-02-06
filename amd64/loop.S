@@ -34,9 +34,9 @@ FUNC_START(_question_do_)
 /* FUNC_RAWEND(_question_do_) */
 
 
-#define M4F_DO_
-FUNC_DEF_SYM(_do_)
-/* FUNC_START(_do_) */
+#define M4FDO
+FUNC_DEF_SYM(do)
+/* FUNC_START(do) */
         SUB2(  IMM(SZ2),   RSTK)       /* update rstack pointer */
         LOAD(  REG1, AT(DSTK))         /* REG1 = i'             */
         STOR(  RTOP, AT(RSTK, SZ))     /* save RTOP             */
@@ -44,7 +44,7 @@ FUNC_DEF_SYM(_do_)
         STOR(  REG1, AT(RSTK))         /* save i' to rstack     */
         LOAD(  DTOP, AT(DSTK, SZ))     /* reload dstack top     */
         ADD2(  IMM(SZ2),   DSTK)       /* update dstack pointer */
-FUNC_END(_do_)
+FUNC_END(do)
 FUNC_SIZE(_question_do_)
 
 

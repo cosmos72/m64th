@@ -121,7 +121,6 @@
 #define DICT_TOKENS_M4TH_IMPL(X)                                                                   \
     X(5, "(?do)", _question_do_)                                                                   \
     X(6, "(call)", _call_)                                                                         \
-    X(4, "(do)", _do_)                                                                             \
     X(6, "(else)", _else_)                                                                         \
     X(13, "(exec-native)", _exec_native_)                                                          \
     X(12, "(exec-token)", _exec_token_)                                                            \
@@ -135,9 +134,9 @@
     X(6, "(if>=)", _if_more_equal_)                                                                \
     X(4, "(ip)", _ip_)                                                                             \
     X(7, "(leave)", _leave_)                                                                       \
-    X(12, "(literal-2s)", _literal2s_)                                                             \
-    X(12, "(literal-4s)", _literal4s_)                                                             \
-    X(12, "(literal-8s)", _literal8s_)                                                             \
+    X(8, "(lit-2s)", _lit2s_)                                                                      \
+    X(8, "(lit-4s)", _lit4s_)                                                                      \
+    X(8, "(lit-8s)", _lit8s_)                                                                      \
     X(6, "(loop)", _loop_)                                                                         \
     X(9, "(missing)", _missing_)                                                                   \
     X(6, "(then)", _then_)                                                                         \
@@ -145,7 +144,7 @@
     X(13, "[compile-2s,]", _compile2s_)                                                            \
     X(13, "[compile-4s,]", _compile4s_)                                                            \
     X(13, "[compile-8s,]", _compile8s_)                                                            \
-    X(16, "[compile-lit-2s]", _compile_lit2s_)                                                     \
+    X(14, "[compile-lit,]", _compile_lit_)                                                         \
     X(25, "[compile-unresolved-jump]", _compile_unresolved_jump_)                                  \
     X(4, "[xt]", _xt_)                                                                             \
     X(2, "-1", minus_one)                                                                          \
@@ -166,8 +165,6 @@
     X(19, "[token-gives-cell?]", _token_gives_cell_q_)                                             \
     X(9, "char>base", char_to_base) /* convert '#' to 10, '$' to 16, '%' to 2, else 0 */           \
     X(6, "char>u", char_to_u) /* convert numeric digit from char to unsigned number, else -1 */    \
-    /* string>u ( caddr n base -- u flag ) convert string from base to unsigned number */          \
-    X(8, "string>u", string_to_u)                                                                  \
     X(11, "string>char", string_to_char) /* convert "'x'" to 'x' for any char x, else -1 */        \
     X(11, "valid-base?", valid_base_q)   /* ( base -- flag ) true if 2 <= base <= 36     */
 

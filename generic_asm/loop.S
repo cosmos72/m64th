@@ -19,14 +19,14 @@
 
 
 /** implementation of 'do', enters a (do) ... (loop) */
-#ifndef M4F_DO_
-FUNC_START(_do_)
+#ifndef M4FDO
+FUNC_START(do)
         RPUSH( RTOP)                 /* save rstack top       */
         DPOP(  REG1)                 /* REG1 = i'             */
         MOVE(  DTOP, RTOP)           /* RTOP = i              */
         RPUSH( REG1)                 /* push i' on rstack     */
         DPOP(  DTOP)                 /* reload dstack top     */
-FUNC_END(_do_)
+FUNC_END(do)
 #endif
 
 /**

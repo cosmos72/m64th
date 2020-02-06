@@ -28,15 +28,14 @@
 #define m4_compile_short_ m4_compile2s_
 #define m4_compile_int_ m4_compile4s_
 #define m4_compile_token_ CAT3(m4_compile, SZt, s_)
-#define m4_compile_lit_token_ CAT3(m4_compile_lit, SZt, s_)
 #define m4_compile_cell_ CAT3(m4_compile, SZ, s_)
 #define m4_compile_xt_ CAT3(m4_compile, SZ, s_)
 
-#define m4_lit_short_ m4_literal2s_
-#define m4_lit_int_ m4_literal4s_
-#define m4_lit_token_ CAT3(m4_literal, SZt, s_)
-#define m4_lit_cell_ CAT3(m4_literal, SZ, s_)
-#define m4_lit_xt_ CAT3(m4_literal, SZ, s_)
+#define m4_lit_short_ m4_lit2s_
+#define m4_lit_int_ m4_lit4s_
+#define m4_lit_ CAT3(m4_lit, SZt, s_)
+#define m4_lit_cell_ CAT3(m4_lit, SZ, s_)
+#define m4_lit_xt_ CAT3(m4_lit, SZ, s_)
 
 #define m4xt_to_code_addr m4noop /* xt>code>addr is noop because XT == code>addr */
 
@@ -121,15 +120,14 @@
 #define M4_compile_short_ M4_compile2s_
 #define M4_compile_int_ M4_compile4s_
 #define M4_compile_token_ CAT3(M4_compile, SZt, s_)
-#define M4_compile_lit_token_ CAT3(M4_compile_lit, SZt, s_)
 #define M4_compile_cell_ CAT3(M4_compile, SZ, s_)
 #define M4_compile_xt_ CAT3(M4_compile, SZ, s_)
 
-#define M4_lit_short_ M4_literal2s_
-#define M4_lit_int_ M4_literal4s_
-#define M4_lit_token_ CAT3(M4_literal, SZt, s_)
-#define M4_lit_cell_ CAT3(M4_literal, SZ, s_)
-#define M4_lit_xt_ CAT3(M4_literal, SZ, s_)
+#define M4_lit_short_ M4_lit2s_
+#define M4_lit_int_ M4_lit4s_
+#define M4_lit_ CAT3(M4_lit, SZt, s_)
+#define M4_lit_cell_ CAT3(M4_lit, SZ, s_)
+#define M4_lit_xt_ CAT3(M4_lit, SZ, s_)
 
 #define M4xt_to_code_addr M4noop /* xt>code>addr is noop because XT == code>addr */
 
