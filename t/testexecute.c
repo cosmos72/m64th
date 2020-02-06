@@ -148,6 +148,7 @@ static m4testexecute testexecute_a[] = {
     {"u 2/", {m4two_div, m4bye}, {{1, {5}}, {}}, {{1, {2}}, {}}, {}},
     {"2drop", {m4two_drop, m4bye}, {{2, {0, 5}}, {}}, {{}, {}}, {}},
     {"_ 2drop", {m4two_drop, m4bye}, {{3, {-3, -2, -1}}, {}}, {{1, {-3}}, {}}, {}},
+    {"8 9 2dup", {m4two_dup, m4bye}, {{2, {8, 9}}, {}}, {{4, {8, 9, 8, 9}}, {}}, {}},
     {"3", {m4three, m4bye}, {{}, {}}, {{1, {3}}, {}}, {}},
     {"4", {m4four, m4bye}, {{}, {}}, {{1, {4}}, {}}, {}},
     {"4*", {m4four_times, m4bye}, {{1, {-7}}, {}}, {{1, {-28}}, {}}, {}},
@@ -389,16 +390,6 @@ static m4testexecute testexecute_b[] = {
      {}},
 };
 
-static const char teststr_empty[] = "";
-static const char teststr_12345a[] = "12345a";
-static const char teststr_1234567890[] = "1234567890";
-static const char teststr_4294967295[] = "4294967295";
-static const char teststr_18446744073709551615[] = "18446744073709551615";
-
-#define TESTSTR(name) ((m4cell)teststr##name), (sizeof(teststr##name) - 1)
-#define TESTSTR_(name, delta) (m4cell)(teststr##name + delta), (sizeof(teststr##name) - delta - 1)
-#define STRING(s) ((m4cell)(s)), (sizeof(s) - 1)
-
 static m4testexecute testexecute_c[] = {
     /* ----------------------------- literal, compile, (call) --------------- */
     {"(lit-token) T(7)", {m4_lit_, T(7), m4bye}, {{}, {}}, {{1, {7}}, {}}, {}},
@@ -597,71 +588,84 @@ static m4testexecute testexecute_c[] = {
     {"'a' char>u", {CALLXT(char_to_u), m4bye}, {{1, {'a'}}, {}}, {{1, {10}}, {}}, {}},
     {"'z' char>u", {CALLXT(char_to_u), m4bye}, {{1, {'z'}}, {}}, {{1, {35}}, {}}, {}},
     {"'{' char>u", {CALLXT(char_to_u), m4bye}, {{1, {'{'}}, {}}, {{1, {-1}}, {}}, {}},
+};
+
+static const char teststr_empty[] = "";
+static const char teststr_12345a[] = "12345a";
+static const char teststr_1234567890[] = "1234567890";
+static const char teststr_4294967295[] = "4294967295";
+static const char teststr_18446744073709551615[] = "18446744073709551615";
+
+#define TESTSTR(name) ((m4cell)teststr##name), (sizeof(teststr##name) - 1)
+#define TESTSTR_(name, delta) (m4cell)(teststr##name + delta), (sizeof(teststr##name) - delta - 1)
+#define STRING(s) ((m4cell)(s)), (sizeof(s) - 1)
+
+static m4testexecute testexecute_d[] = {
     /* ----------------------------- string>u ------------------------------- */
     {"\"\" 10 string>u",
-     {CALLXT(string_to_u), m4bye},
+     {CALLXT(string_base_to_u), m4bye},
      {{3, {STRING(""), 10}}, {}},
      {{2, {0, m4err_eof}}, {}},
      {}},
     {"\"1011\" 2 string>u",
-     {CALLXT(string_to_u), m4bye},
+     {CALLXT(string_base_to_u), m4bye},
      {{3, {STRING("1011"), 2}}, {}},
      {{2, {0xb, m4err_ok}}, {}},
      {}},
     {"\"12\" 2 string>u",
-     {CALLXT(string_to_u), m4bye},
+     {CALLXT(string_base_to_u), m4bye},
      {{3, {STRING("12"), 2}}, {}},
      {{2, {1, m4err_bad_digit}}, {}},
      {}},
     {"\"1234567890\" 10 string>u",
-     {CALLXT(string_to_u), m4bye},
+     {CALLXT(string_base_to_u), m4bye},
      {{3, {STRING("1234567890"), 10}}, {}},
      {{2, {1234567890, m4err_ok}}, {}},
      {}},
     {"\"4294967295\" 10 string>u",
-     {CALLXT(string_to_u), m4bye},
+     {CALLXT(string_base_to_u), m4bye},
      {{3, {STRING("4294967295"), 10}}, {}},
      {{2, {(m4cell)4294967295ul, m4err_ok}}, {}},
      {}},
     {"\"12345a\" 10 string>u",
-     {CALLXT(string_to_u), m4bye},
+     {CALLXT(string_base_to_u), m4bye},
      {{3, {STRING("12345a"), 10}}, {}},
      {{2, {12345, m4err_bad_digit}}, {}},
      {}},
     {"\"123def\" 16 string>u",
-     {CALLXT(string_to_u), m4bye},
+     {CALLXT(string_base_to_u), m4bye},
      {{3, {STRING("123def"), 16}}, {}},
      {{2, {0x123def, m4err_ok}}, {}},
      {}},
     {"\"ffffffff\" 16 string>u",
-     {CALLXT(string_to_u), m4bye},
+     {CALLXT(string_base_to_u), m4bye},
      {{3, {STRING("ffffffff"), 16}}, {}},
      {{2, {(m4cell)0xfffffffful, m4err_ok}}, {}},
      {}},
     {"\"9fg\" 16 string>u",
-     {CALLXT(string_to_u), m4bye},
+     {CALLXT(string_base_to_u), m4bye},
      {{3, {STRING("9fg"), 16}}, {}},
      {{2, {0x9f, m4err_bad_digit}}, {}},
      {}},
 #if SZ >= 8
     {"\"18446744073709551615\" 10 string>u",
-     {CALLXT(string_to_u), m4bye},
+     {CALLXT(string_base_to_u), m4bye},
      {{3, {STRING("18446744073709551615"), 10}}, {}},
      {{2, {(m4cell)18446744073709551615ul, m4err_ok}}, {}},
      {}},
     {"\"ffffffffffffffff\" 16 string>u",
-     {CALLXT(string_to_u), m4bye},
+     {CALLXT(string_base_to_u), m4bye},
      {{3, {STRING("ffffffffffffffff"), 16}}, {}},
      {{2, {(m4cell)0xfffffffffffffffful, m4err_ok}}, {}},
      {}},
 #endif
     {"\"0az\" 36 string>u",
-     {CALLXT(string_to_u), m4bye},
+     {CALLXT(string_base_to_u), m4bye},
      {{3, {STRING("az"), 36}}, {}},
      {{2, {395, m4err_ok}}, {}},
      {}},
     {"\"z:\" 36 string>u",
-     {CALLXT(string_to_u), m4bye},
+     {CALLXT(string_base_to_u), m4bye},
      {{3, {STRING("z:"), 36}}, {}},
      {{2, {35, m4err_bad_digit}}, {}},
      {}},
@@ -695,7 +699,7 @@ static m4testexecute testexecute_c[] = {
 #endif
 };
 
-static m4testexecute testexecute_d[] = {
+static m4testexecute testexecute_e[] = {
     /* ----------------------------- compile, ------------------------------- */
     {"' noop xt>flags",
      {CALLXT(xt_to_flags), m4bye},
@@ -843,6 +847,7 @@ m4cell m4th_testexecute(m4th *m, FILE *out) {
     m4th_testexecute_bunch(m, testexecute_b, N_OF(testexecute_b), &count, out);
     m4th_testexecute_bunch(m, testexecute_c, N_OF(testexecute_c), &count, out);
     m4th_testexecute_bunch(m, testexecute_d, N_OF(testexecute_d), &count, out);
+    m4th_testexecute_bunch(m, testexecute_e, N_OF(testexecute_e), &count, out);
 
     if (out != NULL) {
         if (count.failed == 0) {

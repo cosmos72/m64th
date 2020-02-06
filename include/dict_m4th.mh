@@ -165,8 +165,9 @@
     X(19, "[token-gives-cell?]", _token_gives_cell_q_)                                             \
     X(9, "char>base", char_to_base) /* convert '#' to 10, '$' to 16, '%' to 2, else 0 */           \
     X(6, "char>u", char_to_u) /* convert numeric digit from char to unsigned number, else -1 */    \
-    /* string>u ( caddr n base -- u flag ) convert string from base to unsigned number */          \
-    X(8, "string>u", string_to_u)                                                                  \
+    X(8, "string>n", string_to_n) /* ( caddr n -- u err ) convert string to number */              \
+    /* ( caddr n base -- u err ) convert string from base to unsigned number */                    \
+    X(13, "string&base>u", string_base_to_u)                                                       \
     X(11, "string>char", string_to_char) /* convert "'x'" to 'x' for any char x, else -1 */        \
     X(11, "valid-base?", valid_base_q)   /* ( base -- flag ) true if 2 <= base <= 36     */
 

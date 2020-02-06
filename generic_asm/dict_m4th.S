@@ -52,7 +52,7 @@ WORD(dup_to_r,         noop,           DSTACK(1,1), RSTACK(0,1), WORD_R_PURE)
 WORD(r_from_drop,      dup_to_r,       DSTACK(0,0), RSTACK(1,0), WORD_R_PURE)
 WORD(r_plus,           r_from_drop,    DSTACK(1,0), RSTACK(1,1), WORD_R_PURE)
 WORD(r_store,          r_plus,         DSTACK(1,0), RSTACK(1,1), WORD_R_PURE)
-WORD(minus_rot,        r_plus,         DSTACK(3,3), RSTACK(0,0), WORD_PURE)
+WORD(minus_rot,        r_store,        DSTACK(3,3), RSTACK(0,0), WORD_PURE)
 WORD(div_byte,         minus_rot,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(div_char,         div_byte,       DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(div_short,        div_char,       DSTACK(1,1), RSTACK(0,0), WORD_PURE)
@@ -475,7 +475,7 @@ WORD_START(char_to_base, eight)
       WORD_DATA_1(10, 16, 2)
     )
 WORD_END(char_to_base)
-/* ( ch -- u )  convert one digit in base 2..36 from char to unsigned number, else -1 */
+/* ( ch -- n )  convert one digit in base 2..36 from char to unsigned number, else -1 */
 WORD_START(char_to_u, char_to_base)
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_PURE)
     WORD_DSTACK(1,1)
@@ -523,10 +523,10 @@ WORD_START(string_to_char, char_to_u)
          * then drop -1
          */
         three, _if_equal_, T(20),              /* ( caddr )  if len == 3      */
-            dup, c_fetch, _lit2s_, T(39),  /* ( caddr c0 '\'' )           */
+            dup, c_fetch, _lit2s_, T(39),      /* ( caddr c0 '\'' )           */
             _if_equal_, T(12),                 /* if c0 == '\''               */
                 dup, char_plus, char_plus,     /* ( caddr caddr+2 )           */
-                c_fetch, _lit2s_, T(39),   /* ( caddr c2 '\'' )           */
+                c_fetch, _lit2s_, T(39),       /* ( caddr c2 '\'' )           */
                 _if_equal_, T(4),              /* if c2 == '\''               */
                     char_plus, c_fetch, exit,  /* ( c1 )                      */
                 _then_,                        /* ( caddr )                   */
@@ -535,13 +535,60 @@ WORD_START(string_to_char, char_to_u)
         drop, minus_one, exit
     )
 WORD_END(string_to_char)
-/*
- * string>u ( caddr n base -- u err )  \ convert string from base to unsigned number
+/**
+ * string>u ( caddr n -- n err )  \ convert string to number, recognizing # $ % prefixes
  * err = 0               success
  * err = M4ERR_EOF       not enough digits
  * err = M4ERR_BAD_DIGIT invalid digit found
  */
-WORD_START(string_to_u, string_to_char)
+WORD_START(string_to_n, string_to_char)
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_DSTACK(2,2)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_CODE(
+        /* TODO: implement & test */
+
+        /* dup 0 <=                        ( caddr n t|f   )
+         * if
+         *    2drop zero ERR_EOF exit      ( 0 ERR_EOF     )
+         * then
+         * 2dup string>char dup 0 >=       ( caddr n c t|f )
+         * if
+         *    nip nip ERR_OK exit          ( c ERR_OK      )
+         * then
+         * over c@ char>base dup 0 >=      ( caddr n base t|f )
+         * if
+         *    >r 1- dup                    ( caddr n' n'   ) (R: base )
+         *    if-zero                      ( caddr n'      ) (R: base )
+         *      r> drop 2drop              (               )
+         *      zero ERR_EOF exit          ( 0 ERR_EOF     )
+         *    then
+         *    swap char+                   ( n' caddr'     ) (R: base )
+         * else
+         *    base @ >r swap               ( n caddr       ) (R: base )
+         * then
+         * dup c@ '-' =                    ( n caddr t|f   )
+         * if
+         *    char+ swap 1-                ( caddr' n'     ) (R: base )
+         *    -1 -rot                      ( sign caddr n  ) (R: base )
+         * else
+         *    1 -rot swap                  ( sign caddr n  ) (R: base )
+         * then
+         * r> string&base>u                ( sign u err    )
+         * -rot * swap                     ( n err         )
+         */
+        exit
+    )
+WORD_END(string_to_n)
+/**
+ * string&base>u ( caddr n base -- u err )  \ convert string from base to unsigned number
+ * err = 0               success
+ * err = M4ERR_EOF       not enough digits
+ * err = M4ERR_BAD_DIGIT invalid digit found
+ */
+WORD_START(string_base_to_u, string_to_n)
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
     WORD_DSTACK(3,2)
     WORD_RSTACK(0,0)
@@ -581,8 +628,8 @@ WORD_START(string_to_u, string_to_char)
         _loop_, T(-23-SZ/SZt),                 /* ( u caddr       ) (R: base     ) */
         drop, r_from_drop, ERR_OK, exit        /* ( u err_ok      )                */
     )
-WORD_END(string_to_u)
-WORD_START(valid_base_q, string_to_u)
+WORD_END(string_base_to_u)
+WORD_START(valid_base_q, string_base_to_u)
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
     WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)

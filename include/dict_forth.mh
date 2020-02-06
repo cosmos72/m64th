@@ -35,6 +35,7 @@
     X(2, "2*", two_times)                                                                          \
     X(2, "2/", two_div)                                                                            \
     X(5, "2drop", two_drop)                                                                        \
+    X(4, "2dup", two_dup)                                                                          \
     X(1, "<", less)                                                                                \
     X(1, "=", equal)                                                                               \
     X(1, ">", more)                                                                                \
