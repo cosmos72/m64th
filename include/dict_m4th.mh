@@ -97,7 +97,7 @@
     X(7, "ushorts", ushorts)          /* alias of two_times                             */         \
     X(5, "uints", uints)              /* alias of four_times                            */         \
     /*                             */ /*                                                */         \
-    X(5, "?if", q_if)                 /* alias of dup if                                */         \
+    X(3, "?if", q_if)                 /* alias of dup if                                */         \
     X(4, "?if0", q_if_zero)           /* alias of dup 0= if                             */
 
 /* ------- m4th-core ---------------------------------------------------------------------------- */
