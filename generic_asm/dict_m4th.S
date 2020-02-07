@@ -478,7 +478,7 @@ WORD_START(_any_token_gives_cell_q_, _token_gives_cell_q_)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_CODE(
-        zero, _q_do_, T(14+SZ/SZt),   /* loop if tn != 0          */
+        zero, _q_do_, T(14+SZ/SZt),          /* loop if tn != 0          */
                                              /* ( x taddr )              */
             dup_to_r, token_fetch,           /* ( x token ) (R taddr )   */
             _call_, XT(_token_gives_cell_q_),/* ( token true | x false ) (R taddr ) */
@@ -523,7 +523,7 @@ WORD_START(char_to_base, eight)
       WORD_DATA_BYTES(10, 16, 2)
     )
 WORD_END(char_to_base)
-/* ( ch -- n )  convert one digit in base 2..36 from char to unsigned number, else 0 */
+/* ( ch -- n )  convert one digit in base 2..36 from char to unsigned number, else -1 */
 WORD_START(char_to_u, char_to_base)
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_PURE)
     WORD_DSTACK(1,1)
@@ -554,12 +554,12 @@ WORD_START(char_to_u, char_to_base)
         drop, minus_one, exit                    /* ( -1 )                      */
     )
 WORD_END(char_to_u)
-/* parse-base ( caddr n -- caddr' n' base )
- * if string starts with # $ or % consume it and return corresponding base, else return default base
+/* string>base ( caddr n -- caddr' n' base )
+ * if string starts with # $ or % consume it and return corresponding base, else return current base
  */
 WORD_START(string_to_base, char_to_u)
     WORD_FLAGS(M4FLAG_INLINE)
-    WORD_DSTACK(2,1)
+    WORD_DSTACK(2,3)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
@@ -617,45 +617,32 @@ WORD_START(string_to_char, string_to_base)
     )
 WORD_END(string_to_char)
 /**
- * string>n ( caddr n -- caddr' n' n )  \ convert string to number, recognizing # $ % prefixes
+ * string>n ( caddr n -- caddr' n' x )  \ convert string to number, recognizing # $ % prefixes
  */
 WORD_START(string_to_n, string_to_char)
     WORD_FLAGS(M4FLAG_INLINE)
-    WORD_DSTACK(2,2)
+    WORD_DSTACK(2,3)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_CODE(
-        /* TODO: implement & test */
-
-        /* dup 0 <=                        ( caddr n t|f   )
-         * if
-         *    2drop zero ERR_EOF exit      ( 0 ERR_EOF     )
+        /* ?if0
+         *    zero exit                    ( caddr n 0     )
          * then
-         * 2dup string>char dup 0 >=       ( caddr n c t|f )
+         * 2dup string>char dup invert     ( caddr n c flag )
          * if
-         *    nip nip ERR_OK exit          ( c ERR_OK      )
+         *    >r 3 - swap 3 chars +        ( n' caddr'     ) (R: c    )
+         *    swap r> exit                 ( caddr n c     )
          * then
-         * over c@ char>base dup 0 >=      ( caddr n base t|f )
-         * if
-         *    >r 1- dup                    ( caddr n' n'   ) (R: base )
-         *    if-zero                      ( caddr n'      ) (R: base )
-         *      r> drop 2drop              (               )
-         *      zero ERR_EOF exit          ( 0 ERR_EOF     )
-         *    then
-         *    swap char+                   ( n' caddr'     ) (R: base )
-         * else
-         *    base @ >r swap               ( n caddr       ) (R: base )
-         * then
-         * dup c@ '-' =                    ( n caddr t|f   )
-         * if
-         *    char+ swap 1-                ( caddr' n'     ) (R: base )
-         *    -1 -rot                      ( sign caddr n  ) (R: base )
-         * else
-         *    1 -rot swap                  ( sign caddr n  ) (R: base )
-         * then
-         * r> string&base>u                ( sign u err    )
-         * -rot * swap                     ( n err         )
+         * string>base                     ( caddr n base  )
+         * ?if0
+         *    drop zero exit               ( caddr n 0     )
+         * then                            ( caddr n base  )
+         * >r                              ( caddr n       ) (R: base )
+         * string>sign                     ( caddr n sign  ) (R: base )
+         * r@ swap r!                      ( caddr n base  ) (R: sign )
+         * string&base>u                   ( caddr n u     ) (R: sign )
+         * r> * ;                          ( caddr n x     )
          */
         exit
     )
@@ -665,7 +652,7 @@ WORD_END(string_to_n)
  */
 WORD_START(string_base_to_u, string_to_n)
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
-    WORD_DSTACK(3,2)
+    WORD_DSTACK(3,3)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
@@ -705,7 +692,38 @@ WORD_START(string_base_to_u, string_to_n)
         r_from_drop, exit
     )
 WORD_END(string_base_to_u)
-WORD_START(valid_base_q, string_base_to_u)
+/**
+ * string>sign ( caddr n -- caddr' n' sign ) parse '-' prefix and return -1, else return 1
+ */
+WORD_START(string_to_sign, string_base_to_u)
+    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
+    WORD_DSTACK(3,2)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_CODE(
+       /* ?if0                                ( caddr n           )
+        *    one exit                         ( caddr n 1         )
+        * then
+        * over c@ '-' <>                      ( caddr n t|f       )
+        * if                                  
+        *    one exit                         ( caddr n 1         )
+        * then
+        * 1- swap char+ swap                  ( caddr' n'         )
+        * -1 ;                                ( caddr n -1        )
+        */
+        _if_zero_, T(3), 
+            one, exit,
+        _then_,
+        over, c_fetch, _lit_, T('-'),
+        _if_ne_, T(3),
+            one, exit,
+        _then_,
+        one_minus, swap, char_plus, swap,
+        minus_one, exit
+    )
+WORD_END(string_to_sign)
+WORD_START(valid_base_q, string_to_sign)
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
     WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)
