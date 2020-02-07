@@ -336,6 +336,13 @@ static void m4cbuf_free(m4cbuf *arg) {
 }
 
 /* ----------------------- m4code ----------------------- */
+/* align address to next m4cell */
+const m4char *m4addr_align(const void *addr) {
+    m4cell n = (m4cell)addr;
+    return (const m4char *)((n + SZ - 1) & (m4cell)-SZ); /* -SZ == ~(SZ-1) */
+}
+
+/* ----------------------- m4code ----------------------- */
 
 m4cell m4code_equal(m4code src, m4code dst) {
     m4cell i, n = src.n;
@@ -508,7 +515,7 @@ m4code m4word_code(const m4word *w, m4cell code_start_n) {
 }
 
 m4string m4word_data(const m4word *w, m4cell data_start_n) {
-    m4string data = {(m4char *)(w->code + w->code_n) + data_start_n,
+    m4string data = {m4addr_align(w->code + w->code_n) + data_start_n,
                      (m4cell)(w->data_len - data_start_n)};
     return data;
 }

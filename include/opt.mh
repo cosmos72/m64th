@@ -54,7 +54,7 @@
         x((zero, equal), (zero_equal))                       /* 0  =          => 0=             */ \
         x((zero, more), (zero_more))                         /* 0  >          => 0>             */ \
         x((zero, more_equal), (zero_more_equal))             /* 0  >=         => 0>=            */ \
-        x((zero, _if_equal_), (_if_zero_))                   /* 0  (if=)      => (if-zero)      */ \
+        x((zero, _if_equal_), (_if_zero_))                   /* 0  (if=)      => (if0)      */ \
         x((zero, _if_ne_), (_if_))                           /* 0  (if<>)     => (if)           */ \
         x((zero, and), (drop, zero))                         /* 0  and        => drop 0         */ \
         x((zero, lshift), _)                                 /* 0  lshift     =>                */ \
@@ -162,10 +162,10 @@
         x((zero_more_equal, zero_more_equal), (zero_less))   /* 0>=   0>=     => 0<             */ \
         /*____ 0<=>  (if),(if-...) _______________________*/ /*                                 */ \
         x((zero_ne, _if_), (_if_))                           /* 0<>   (if)      => (if)         */ \
-        x((zero_equal, _if_), (_if_zero_))                   /* 0=    (if)      => (if-zero)    */ \
-        x((zero_equal, _if_zero_), (_if_))                   /* 0=    (if-zero) => (if)         */ \
-        x((zero_ne, _if_zero_), (_if_zero_))                 /* 0<>   (if-zero) => (if-zero)    */ \
-        x((zero_equal, _if_zero_), (_if_))                   /* 0=    (if-zero) => (if)         */ \
+        x((zero_equal, _if_), (_if_zero_))                   /* 0=    (if)      => (if0)    */ \
+        x((zero_equal, _if_zero_), (_if_))                   /* 0=    (if0) => (if)         */ \
+        x((zero_ne, _if_zero_), (_if_zero_))                 /* 0<>   (if0) => (if0)    */ \
+        x((zero_equal, _if_zero_), (_if_))                   /* 0=    (if0) => (if)         */ \
         /*____ 0<=>  invert ______________________________*/ /*                                 */ \
         x((zero_less, invert), (zero_more_equal))            /* 0<    invert    => 0>=          */ \
         x((zero_less_equal, invert), (zero_more))            /* 0<=   invert    => 0>           */ \
@@ -202,6 +202,7 @@
         x((abs, zero_equal), (zero_equal))                   /* abs  0=         => 0=           */ \
         x((abs, abs), (abs))                                 /* abs  abs        => abs          */ \
         x((abs, squared), (squared))                         /* abs  squared    => squared      */ \
+        x((dup, _if_), (_q_if_))                             /* dup  (if)       => (?if)        */ \
         x((dup, times), (squared))                           /* dup  *          => squared      */ \
         x((dup, plus), (two_times))                          /* dup  +          => 2*           */ \
         x((dup, minus), (drop, zero))                        /* dup  -          => drop 0       */ \
@@ -232,9 +233,9 @@
         x((invert, one_plus), (negate))           /* invert 1+       => negate       */            \
         x((invert, invert), _)                    /* invert invert   =>              */            \
         x((invert, negate), (one_plus))           /* invert negate   => 1+           */            \
-        x((invert, _if_zero_), (_if_))            /* invert (if-zero)=> (if)         */            \
-        x((invert, _if_), (_if_zero_))            /* invert (if)     => (if-zero)    */            \
-        x((negate, _if_zero_), (_if_zero_))       /* negate (if-zero)=> (if-zero)    */            \
+        x((invert, _if_zero_), (_if_))            /* invert (if0)=> (if)         */            \
+        x((invert, _if_), (_if_zero_))            /* invert (if)     => (if0)    */            \
+        x((negate, _if_zero_), (_if_zero_))       /* negate (if0)=> (if0)    */            \
         x((negate, _if_), (_if_))                 /* negate (if)     => (if)         */            \
         x((negate, plus), (minus))                /* negate +        => -            */            \
         x((negate, minus), (plus))                /* negate -        => +            */            \

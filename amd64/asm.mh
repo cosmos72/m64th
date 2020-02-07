@@ -124,6 +124,7 @@
 #define ATxy(reg1, reg2, rmul)    (reg1,reg2,rmul) /* mem[reg1+reg2*rmul] */
 #define DEC1(dst)             dec  dst;            /* dst--          */
 #define INC1(dst)             inc  dst;            /* dst++          */
+#define LEA( reg, at)         lea  at,      reg;   /* reg  =  at     x86/x86_64 only */
 #define LOAD(reg, at)         mov  at,      reg;   /* reg  = *at     */
 #define MOVE(src, dst)        mov  src,     dst;   /* dst  = src     */
 #define MUL2(src, dst)        imul src,     dst;   /* dst *= src     */

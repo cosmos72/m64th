@@ -114,13 +114,3 @@ FUNC_START(_exec_token_)
         DPOP(  DTOP)               /* reload dstack top             */
         jmp    *(FTBL, REG3, SZ);  /* tail-call optimization: jump to token */
 FUNC_RAWEND(_exec_token_)
-
-
-/**
-  * push to dstack vm's current instruction pointer,
-  * i.e. the address of the (ip) m4token itself inside the code being executed
-  */
-FUNC_START(_ip_)
-        DPUSH( DTOP)
-        lea    -SZt(IP),   DTOP;   /* IP actually points to next instruction: fix it */
-FUNC_END(_ip_)

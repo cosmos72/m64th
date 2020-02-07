@@ -352,12 +352,16 @@ static m4testexecute testexecute_c[] = {
     /* ----------------------------- if, else, do, loop --------------------- */
     {"0 1 do", {m4do, m4bye}, {{2, {0, 1}}, {}}, {{}, {2, {0, 1}}}, {}},
     {"1 0 do", {m4do, m4bye}, {{2, {1, 0}}, {}}, {{}, {2, {1, 0}}}, {}},
-    {"0 0 (?do)", {m4_question_do_, T(0), m4bye}, {{2, {0, 0}}, {}}, {{}, {}}, {}},
-    {"1 0 (?do)", {m4_question_do_, T(0), m4bye}, {{2, {1, 0}}, {}}, {{}, {2, {1, 0}}}, {}},
-    {"0 (if)", {m4_if_, T(1), m4two, m4bye}, {{1, {}}, {}}, {{}, {}}, {}},
+    {"0 0 (?do)", {m4_q_do_, T(0), m4bye}, {{2, {0, 0}}, {}}, {{}, {}}, {}},
+    {"1 0 (?do)", {m4_q_do_, T(0), m4bye}, {{2, {1, 0}}, {}}, {{}, {2, {1, 0}}}, {}},
+    {"0 (?if)", {m4_q_if_, T(1), m4one, m4bye}, {{1, {0}}, {}}, {{1, {0}}, {}}, {}},
+    {"1 (?if)", {m4_q_if_, T(1), m4two, m4bye}, {{1, {1}}, {}}, {{2, {1, 2}}, {}}, {}},
+    {"0 (?if0)", {m4_q_if_zero_, T(1), m4three, m4bye}, {{1, {0}}, {}}, {{2, {0, 3}}, {}}, {}},
+    {"1 (?if0)", {m4_q_if_zero_, T(1), m4four, m4bye}, {{1, {1}}, {}}, {{1, {1}}, {}}, {}},
+    {"0 (if)", {m4_if_, T(1), m4two, m4bye}, {{1, {0}}, {}}, {{}, {}}, {}},
     {"1 (if)", {m4_if_, T(1), m4four, m4bye}, {{1, {1}}, {}}, {{1, {4}}, {}}, {}},
-    {"0 (if-zero)", {m4_if_zero_, T(1), m4two, m4bye}, {{1, {0}}, {}}, {{1, {2}}, {}}, {}},
-    {"1 (if-zero)", {m4_if_zero_, T(1), m4three, m4bye}, {{1, {1}}, {}}, {{}, {}}, {}},
+    {"0 (if0)", {m4_if_zero_, T(1), m4two, m4bye}, {{1, {0}}, {}}, {{1, {2}}, {}}, {}},
+    {"1 (if0)", {m4_if_zero_, T(1), m4three, m4bye}, {{1, {1}}, {}}, {{}, {}}, {}},
     {"0 1 (if<)", {m4_if_less_, T(1), m4two, m4bye}, {{2, {0, 1}}, {}}, {{1, {2}}, {}}, {}},
     {"2 2 (if<)", {m4_if_less_, T(1), m4one, m4bye}, {{2, {2, 2}}, {}}, {{}, {}}, {}},
     {"4 3 (if<)", {m4_if_less_, T(1), m4zero, m4bye}, {{2, {4, 3}}, {}}, {{}, {}}, {}},
@@ -395,6 +399,16 @@ static m4testexecute testexecute_c[] = {
      {}},
 };
 
+static const char teststr_empty[] = "";
+static const char teststr_hash[] = "#";
+static const char teststr_dollar[] = "$";
+static const char teststr_percent[] = "%";
+static const char teststr_0[] = "0";
+
+#define TESTSTR(name) ((m4cell)teststr##name), (sizeof(teststr##name) - 1)
+#define TESTSTR_(name, delta) (m4cell)(teststr##name + delta), (sizeof(teststr##name) - delta - 1)
+#define STRING(s) ((m4cell)(s)), (sizeof(s) - 1)
+
 static m4testexecute testexecute_d[] = {
     /* ----------------------------- literal, compile, (call) --------------- */
     {"(lit-token) T(7)", {m4_lit_, T(7), m4bye}, {{}, {}}, {{1, {7}}, {}}, {}},
@@ -423,10 +437,36 @@ static m4testexecute testexecute_d[] = {
      {{2, {0xffffffff, 't'}}, {}},
      {{1, {2056627543 /* crc1byte(0xffffffff, 't')*/}}, {}},
      {}},
+    {"'#' char>base", {CALLXT(char_to_base), m4bye}, {{1, {'#'}}, {}}, {{1, {10}}, {}}, {}},
     {"'$' char>base", {CALLXT(char_to_base), m4bye}, {{1, {'$'}}, {}}, {{1, {16}}, {}}, {}},
     {"'%' char>base", {CALLXT(char_to_base), m4bye}, {{1, {'%'}}, {}}, {{1, {2}}, {}}, {}},
     {"'&' char>base", {CALLXT(char_to_base), m4bye}, {{1, {'&'}}, {}}, {{1, {0}}, {}}, {}},
     {"'\"' char>base", {CALLXT(char_to_base), m4bye}, {{1, {'"'}}, {}}, {{1, {0}}, {}}, {}},
+    {"\"\" string>base",
+     {CALLXT(string_to_base), m4bye},
+     {{2, {TESTSTR(_empty)}}, {}},
+     {{3, {TESTSTR(_empty), 10}}, {}},
+     {}},
+    {"\"#\" string>base",
+     {CALLXT(string_to_base), m4bye},
+     {{2, {TESTSTR(_hash)}}, {}},
+     {{3, {TESTSTR_(_hash, 1), 10}}, {}},
+     {}},
+    {"\"$\" string>base",
+     {CALLXT(string_to_base), m4bye},
+     {{2, {TESTSTR(_dollar)}}, {}},
+     {{3, {TESTSTR_(_dollar, 1), 16}}, {}},
+     {}},
+    {"\"%\" string>base",
+     {CALLXT(string_to_base), m4bye},
+     {{2, {TESTSTR(_percent)}}, {}},
+     {{3, {TESTSTR_(_percent, 1), 2}}, {}},
+     {}},
+    {"\"0\" string>base",
+     {CALLXT(string_to_base), m4bye},
+     {{2, {TESTSTR(_0)}}, {}},
+     {{3, {TESTSTR(_0), 10}}, {}},
+     {}},
     {"\"''\" string>char",
      {CALLXT(string_to_char), m4bye},
      {{2, {(m4cell) "''", 2}}, {}},
@@ -472,6 +512,11 @@ static m4testexecute testexecute_d[] = {
      {{1, {13}}, {}},
      {}},
     {"(ip)", {m4_ip_, m4bye}, {{}, {}}, {{1, {-1 /* fixed by m4testexecute_fix() */}}, {}}, {}},
+    {"(ip>body)",
+     {m4_ip_to_body_, m4bye},
+     {{}, {}},
+     {{1, {-1 /* fixed by m4testexecute_fix() */}}, {}},
+     {}},
     /* ----------------------------- [token-gives-cell?] -------------------- */
     {"0 'zero [token-gives-cell?]",
      {CALLXT(_token_gives_cell_q_), m4bye},
@@ -595,38 +640,35 @@ static m4testexecute testexecute_d[] = {
     {"'{' char>u", {CALLXT(char_to_u), m4bye}, {{1, {'{'}}, {}}, {{1, {-1}}, {}}, {}},
 };
 
-static const char teststr_empty[] = "";
+static const char teststr_1011[] = "1011";
 static const char teststr_12345a[] = "12345a";
 static const char teststr_1234567890[] = "1234567890";
 static const char teststr_4294967295[] = "4294967295";
 static const char teststr_18446744073709551615[] = "18446744073709551615";
 
-#define TESTSTR(name) ((m4cell)teststr##name), (sizeof(teststr##name) - 1)
-#define TESTSTR_(name, delta) (m4cell)(teststr##name + delta), (sizeof(teststr##name) - delta - 1)
-#define STRING(s) ((m4cell)(s)), (sizeof(s) - 1)
-
 static m4testexecute testexecute_e[] = {
     /* ----------------------------- string>u ------------------------------- */
     {"\"\" 10 string>u",
      {CALLXT(string_base_to_u), m4bye},
-     {{3, {STRING(""), 10}}, {}},
-     {{2, {0, m4err_eof}}, {}},
+     {{3, {TESTSTR(_empty), 10}}, {}},
+     {{3, {TESTSTR(_empty), 0}}, {}},
      {}},
     {"\"1011\" 2 string>u",
      {CALLXT(string_base_to_u), m4bye},
-     {{3, {STRING("1011"), 2}}, {}},
-     {{2, {0xb, m4err_ok}}, {}},
+     {{3, {TESTSTR(_1011), 2}}, {}},
+     {{3, {TESTSTR_(_1011, 4), 0xb}}, {}},
      {}},
-    {"\"12\" 2 string>u",
+    {"\"12345a\" 2 string>u",
      {CALLXT(string_base_to_u), m4bye},
-     {{3, {STRING("12"), 2}}, {}},
-     {{2, {1, m4err_bad_digit}}, {}},
+     {{3, {TESTSTR(_12345a), 2}}, {}},
+     {{3, {TESTSTR_(_12345a, 1), 0x1}}, {}},
      {}},
     {"\"1234567890\" 10 string>u",
      {CALLXT(string_base_to_u), m4bye},
-     {{3, {STRING("1234567890"), 10}}, {}},
-     {{2, {1234567890, m4err_ok}}, {}},
+     {{3, {TESTSTR(_1234567890), 10}}, {}},
+     {{3, {TESTSTR_(_1234567890, 10), 1234567890}}, {}},
      {}},
+#if 0
     {"\"4294967295\" 10 string>u",
      {CALLXT(string_base_to_u), m4bye},
      {{3, {STRING("4294967295"), 10}}, {}},
@@ -702,6 +744,7 @@ static m4testexecute testexecute_e[] = {
      {{4, {(m4cell)18446744073709551615ul, 0, TESTSTR_(_18446744073709551615, 20)}}, {}},
      {}},
 #endif
+#endif /* 0 */
 };
 
 static m4testexecute testexecute_f[] = {
@@ -772,6 +815,9 @@ static void m4testexecute_fix(m4testexecute *t, m4test_word *w) {
     switch (t->code[0]) {
     case m4_ip_:
         t->after.d.data[0] = (m4cell)w->code;
+        break;
+    case m4_ip_to_body_:
+        t->after.d.data[0] = (m4cell)m4word_data(&w->impl, 0).data;
         break;
     }
 }

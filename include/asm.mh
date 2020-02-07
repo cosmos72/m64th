@@ -31,7 +31,7 @@
 /* align functions at 8 bytes. */
 /* on amd64, aligning at 16 bytes should be faster, but wastes more memory */
 #define P_FUNC_ALIGN 3
-#define P_DATA_ALIGN 3
+#define P_DATA_ALIGN 3 /* align general data at 8 bytes: it may contain uint64_t or pointers */
 
 #define DATA_ALIGN()                                                                               \
     .p2align P_DATA_ALIGN, 0;
@@ -47,6 +47,10 @@
  */
 #define AT(...)                         AT_(__VA_ARGS__, xy, x, 0)
 
+/* align register at n = some power of two */
+#define ALIGN(n, reg)                                                                              \
+    ADD2(IMM(((n)-1)), reg)                                                                        \
+    AND2(IMM((-(n))),  reg)
 
 #define LABEL_SYM(label) .L##label /* local label */
 #define LABEL(label) LABEL_SYM(label) :

@@ -103,7 +103,7 @@ WORD_START(question_do, to_r)
     WORD_DSTACK(2,0) /* stack effect when jumping */
     WORD_RSTACK(0,0)
     WORD_NATIVE_NONE()
-    WORD_CODE(_compile_unresolved_jump_, _question_do_, exit)
+    WORD_CODE(_compile_unresolved_jump_, _q_do_, exit)
 WORD_END(question_do)
 WORD(question_dup,   question_do,  DSTACK(1,-1),RSTACK(0,0), WORD_PURE)
 WORD(fetch,          question_dup, DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
@@ -120,7 +120,7 @@ WORD_START(base, c_store)
     WORD_CODE_AND_DATA(
       base,
       WORD_CODE_TOKENS(
-        _ip_, xt_to_data_addr, noop/*padding to align at 8*/, exit
+        _ip_to_body_, exit
       ),
       WORD_DATA_CELLS(10)
     )

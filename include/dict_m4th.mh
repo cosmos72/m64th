@@ -95,7 +95,10 @@
     /* X(5, "chars", chars) */        /* already in forth 'core' word set               */         \
     X(6, "shorts", shorts)            /* alias of two_times                             */         \
     X(7, "ushorts", ushorts)          /* alias of two_times                             */         \
-    X(5, "uints", uints)              /* alias of four_times                            */
+    X(5, "uints", uints)              /* alias of four_times                            */         \
+    /*                             */ /*                                                */         \
+    X(5, "?if", q_if)                 /* alias of dup if                                */         \
+    X(4, "?if0", q_if_zero)           /* alias of dup 0= if                             */
 
 /* ------- m4th-core ---------------------------------------------------------------------------- */
 #define DICT_TOKENS_M4TH_CORE(X)                                                                   \
@@ -119,13 +122,15 @@
 
 /* ------- m4th-impl ---------------------------------------------------------------------------- */
 #define DICT_TOKENS_M4TH_IMPL(X)                                                                   \
-    X(5, "(?do)", _question_do_)                                                                   \
+    X(5, "(?do)", _q_do_)                                                                          \
+    X(5, "(?if)", _q_if_)                                                                          \
+    X(6, "(?if0)", _q_if_zero_)                                                                    \
     X(6, "(call)", _call_)                                                                         \
     X(6, "(else)", _else_)                                                                         \
     X(13, "(exec-native)", _exec_native_)                                                          \
     X(12, "(exec-token)", _exec_token_)                                                            \
     X(4, "(if)", _if_)                                                                             \
-    X(9, "(if-zero)", _if_zero_)                                                                   \
+    X(5, "(if0)", _if_zero_)                                                                       \
     X(5, "(if<)", _if_less_)                                                                       \
     X(6, "(if<=)", _if_less_equal_)                                                                \
     X(6, "(if<>)", _if_ne_)                                                                        \
@@ -133,6 +138,7 @@
     X(5, "(if>)", _if_more_)                                                                       \
     X(6, "(if>=)", _if_more_equal_)                                                                \
     X(4, "(ip)", _ip_)                                                                             \
+    X(9, "(ip>body)", _ip_to_body_)                                                                \
     X(7, "(leave)", _leave_)                                                                       \
     X(8, "(lit-2s)", _lit2s_)                                                                      \
     X(8, "(lit-4s)", _lit4s_)                                                                      \
@@ -165,6 +171,8 @@
     X(19, "[token-gives-cell?]", _token_gives_cell_q_)                                             \
     X(9, "char>base", char_to_base) /* convert '#' to 10, '$' to 16, '%' to 2, else 0 */           \
     X(6, "char>u", char_to_u) /* convert numeric digit from char to unsigned number, else -1 */    \
+    /* ( caddr n -- caddr' n' base ) convert prefix # $ % to base, else fetch current base */      \
+    X(6, "string>base", string_to_base)                                                            \
     X(8, "string>n", string_to_n) /* ( caddr n -- u err ) convert string to number */              \
     /* ( caddr n base -- u err ) convert string from base to unsigned number */                    \
     X(13, "string&base>u", string_base_to_u)                                                       \

@@ -29,13 +29,15 @@
 typedef struct m4arg_s m4arg; /**< intentionally incomplete type, cannot be instantiated */
 
 typedef unsigned char m4char;
-typedef size_t m4uint;
 typedef ssize_t m4cell; /* main forth type: number or pointer */
 /** forth instruction. uses forth calling convention, cannot be invoked from C */
 typedef void (*m4func)(m4arg);
 
 typedef char
-    m4th_assert_sizeof_m4instr_less_equal_sizeof_m4cell[sizeof(m4func) <= sizeof(m4cell) ? 1 : -1];
+    m4th_assert_sizeof_voidptr_less_equal_sizeof_m4cell[sizeof(void *) <= sizeof(m4cell) ? 1 : -1];
+
+typedef char
+    m4th_assert_sizeof_m4func_less_equal_sizeof_m4cell[sizeof(m4func) <= sizeof(m4cell) ? 1 : -1];
 
 typedef char
     m4th_assert_sizeof_m4token_divides_sizeof_m4cell[(sizeof(m4cell) % sizeof(m4token) == 0) ? 1
@@ -105,7 +107,7 @@ struct m4code_s { /**< array of m4token, with size */
 
 struct m4countedstring_s { /**< counted string                   */
     m4char n;              /**< # of characters                  */
-    m4char chars[1];       /**< characters. do NOT end with '\0' */
+    m4char chars[0];       /**< characters. do NOT end with '\0' */
 };
 
 struct m4dict_s {     /**< dictionary. used to implement wordlist                */
@@ -117,7 +119,7 @@ struct m4err_s {
     m4cell id; /**< error code */
     struct {
         m4countedstring impl;
-        m4char buf[30];
+        m4char buf[31];
     } msg; /**< error message */
 };
 
@@ -144,9 +146,9 @@ struct m4word_s {
     m4stackeffects eff;  /**< stack effects if not jumping                         */
     m4stackeffects jump; /**< stack effects if jumping                             */
     uint16_t native_len; /**< native code size, in bytes. 0xFFFF if not available  */
-    uint16_t code_n;     /**< forth code size, in m4token:s                         */
-    uint64_t data_len;   /**< data size, in bytes                                  */
-    m4token code[0];     /**< code i.e. XT starts at [0], data starts at [code_n]  */
+    uint16_t code_n;     /**< forth code size, in m4token:s                        */
+    uint32_t data_len;   /**< data size, in bytes                                  */
+    m4token code[0];     /**< code i.e. XT starts at [0], data starts at align(code + code_n) */
 };
 
 struct m4wordlist_s {   /**< wordlist                                             */

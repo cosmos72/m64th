@@ -24,7 +24,7 @@
 #include "include/marker.mh"
 
 SECTION_FUNC()
-/* MARKER(asm_func_start) */
+MARKER(asm_func_start)
 
 #if defined(__x86_64__)
 #include "amd64/arith.S"
@@ -47,18 +47,18 @@ SECTION_FUNC()
 #include "generic_asm/arith.S"
 #include "generic_asm/call.S"
 #include "generic_asm/compile.S"
+#include "generic_asm/core.S"
 #include "generic_asm/loop.S"
-#include "generic_asm/m4th_core.S"
 #include "generic_asm/mem.S"
 
-/* MARKER(asm_func_end) */
+MARKER(asm_func_end)
 SECTION_RODATA()
-/* MARKER(asm_data_start) */
+MARKER(asm_data_start)
 
 #include "generic_asm/dict_forth.S"
 #include "generic_asm/dict_m4th.S"
 
-/* MARKER(asm_data_end) */
+MARKER(asm_data_end)
 
         .ident "m4th 0.0.0"
         .section .note.GNU-stack,"",@progbits

@@ -16,8 +16,6 @@
  */
 
 #include "impl.h"
-#include "dispatch/sz.mh" /* SZ SZt preprocessor macros */
-#include "include/asm.mh"
 #include "include/err.h"
 #include "include/token.h"
 #include "include/word_fwd.h"

@@ -22,17 +22,47 @@
  * must be followed by IP offset of first instruction after (loop)
  * IP offset = 0 means first instruction after (?do) itself
  */
-FUNC_START(_question_do_)
+FUNC_START(_q_do_)
         LOAD(  REG2, AT(DSTK))
         cmp    REG2, DTOP;
-        b.eq   .L_question_do_.skip;
+        b.eq   .L_q_do_.skip;
         ADD2(  IMM(SZt), IP)           /* skip jump offset      */
         b      FUNC_SYM(do);
-.L_question_do_.skip:                  /* skip the loop:        */
+.L_q_do_.skip:                  /* skip the loop:        */
         LOAD(  DTOP,   AT(DSTK, SZ))   /* reload dstack top     */
         ADD2(  IMM(SZ2), DSTK)         /* drop i' i from dstack */
         RELJUMP()                      /* jump to TARGET_IP     */
-FUNC_RAWEND(_question_do_)
+FUNC_RAWEND(_q_do_)
+
+
+/**
+ * ( n -- n ) examine dstack top without removing it.
+ * if <> 0 continue to next instruction, otherwise jump.
+ * must be followed by IP offset to jump.
+ * IP offset = 0 means first instruction after (?if) itself
+ */
+FUNC_START(_q_if_)
+        cmp    DTOP, IMM(0);
+        b.ne   .L_q_if_.enter;
+        RELJUMP()
+.L_q_if_.enter:
+        NEXTT()                    /* skip IP offset          */
+FUNC_RAWEND(_q_if_)
+
+
+/**
+ * ( n -- n ) examine dstack top without removing it.
+ * if = 0 continue to next instruction, otherwise jump.
+ * must be followed by IP offset to jump.
+ * IP offset = 0 means first instruction after (?if0) itself
+ */
+FUNC_START(_q_if_zero_)
+        cmp    DTOP, IMM(0);
+        b.eq   .L_q_if_zero_.enter;
+        RELJUMP()
+.L_q_if_zero_.enter:
+        NEXTT()                    /* skip IP offset          */
+FUNC_RAWEND(_q_if_zero_)
 
 
 /**
@@ -54,7 +84,7 @@ FUNC_RAWEND(_if_)
  * pop dstack top.
  * if = 0 continue to next instruction, otherwise jump.
  * must be followed by IP offset to jump.
- * IP offset = 0 means first instruction after (if-zero) itself
+ * IP offset = 0 means first instruction after (if0) itself
  */
 FUNC_START(_if_zero_)
         cmp    DTOP, IMM(0);

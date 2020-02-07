@@ -35,12 +35,11 @@ typedef struct m4testcompile_s {
 /* -------------- m4testcompile -------------- */
 
 static const m4testcompile testcompile[] = {
-#if 0
-#else
     /* ------------------------------- numbers ------------------------------ */
     {{"0"}, {}, {}, {1, {m4zero}}},
     {{"1", "2"}, {}, {}, {2, {m4one, m4two}}},
     {{"3", "4", "8"}, {}, {}, {3, {m4three, m4four, m4eight}}},
+#if 0
     {{"-1", "5"}, {}, {}, {3, {m4minus_one, m4_lit2s_, T(5)}}},
     {{"-3"}, {}, {}, {2, {m4_lit2s_, T(-3)}}},
     {{"'!'"}, {}, {}, {2, {m4_lit2s_, T('!')}}},
@@ -63,7 +62,7 @@ static const m4testcompile testcompile[] = {
      {},
      {},
      {7, {m4_if_, T(3), m4one, m4_else_, T(2), m4two, m4_then_}}},
-    {{"(?do)"}, {}, {2, {2, m4_question_do_}}, {2, {m4_question_do_, T(-1)}}},
+    {{"(?do)"}, {}, {2, {2, m4_q_do_}}, {2, {m4_q_do_, T(-1)}}},
     /* ------------------------------- literal ------------------------------ */
     {{"literal"}, {1, {0}}, {}, {1, {m4zero}}},
     {{"literal"}, {1, {1}}, {}, {1, {m4one}}},

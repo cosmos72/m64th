@@ -21,17 +21,17 @@
  * must be followed by IP offset of first instruction after (loop)
  * IP offset = 0 means first instruction after (?do) itself
  */
-FUNC_START(_question_do_)
+FUNC_START(_q_do_)
         cmp    DTOP, AT(DSTK);
-        jne     .L_question_do_.enter;
+        jne     .L_q_do_.enter;
                                            /* skip the loop:        */
         LOAD(  DTOP,      AT(DSTK, SZ))    /* reload dstack top     */
         ADD2(  IMM(SZ2),  DSTK)            /* drop i' i from dstack */
         RELJUMP()
-.L_question_do_.enter:                     /* enter the loop:       */
+.L_q_do_.enter:                     /* enter the loop:       */
         ADD2(  IMM(SZt), IP)               /* skip jump offset      */
         /* FALLTHROUGH */
-/* FUNC_RAWEND(_question_do_) */
+/* FUNC_RAWEND(_q_do_) */
 
 
 #define M4FDO
@@ -45,8 +45,36 @@ FUNC_DEF_SYM(do)
         LOAD(  DTOP, AT(DSTK, SZ))     /* reload dstack top     */
         ADD2(  IMM(SZ2),   DSTK)       /* update dstack pointer */
 FUNC_END(do)
-FUNC_SIZE(_question_do_)
+FUNC_SIZE(_q_do_)
 
+
+/**
+ * ( n -- n ) examine dstack top without removing it.
+ * if <> 0 continue to next instruction, otherwise jump.
+ * must be followed by IP offset to jump.
+ * IP offset = 0 means first instruction after (?if) itself
+ */
+FUNC_START(_q_if_)
+        test   DTOP, DTOP;
+        jnz    .L_q_if_.enter;
+        RELJUMP()
+.L_q_if_.enter:
+        NEXTT()                    /* skip IP offset          */
+FUNC_RAWEND(_q_if_)
+
+/**
+ * ( n -- n ) examine dstack top without removing it.
+ * if = 0 continue to next instruction, otherwise jump.
+ * must be followed by IP offset to jump.
+ * IP offset = 0 means first instruction after (?if0) itself
+ */
+FUNC_START(_q_if_zero_)
+        test   DTOP, DTOP;
+        jz     .L_q_if_zero_.enter;
+        RELJUMP()
+.L_q_if_zero_.enter:
+        NEXTT()                    /* skip IP offset          */
+FUNC_RAWEND(_q_if_zero_)
 
 /**
  * pop dstack top.
@@ -68,7 +96,7 @@ FUNC_RAWEND(_if_)
  * pop dstack top.
  * if = 0 continue to next instruction, otherwise jump.
  * must be followed by IP offset to jump.
- * IP offset = 0 means first instruction after (if-zero) itself
+ * IP offset = 0 means first instruction after (if0) itself
  */
 FUNC_START(_if_zero_)
         test   DTOP, DTOP;
@@ -84,7 +112,7 @@ FUNC_RAWEND(_if_zero_)
  * pop dstack twice.
  * if d1 < dtop, continue to next instruction, otherwise jump.
  * must be followed by IP offset to jump.
- * IP offset = 0 means first instruction after (if-zero) itself
+ * IP offset = 0 means first instruction after (if0) itself
  */
 FUNC_START(_if_less_)
         cmp    DTOP, AT(DSTK);
@@ -101,7 +129,7 @@ FUNC_RAWEND(_if_less_)
  * pop dstack twice.
  * if d1 <= dtop, continue to next instruction, otherwise jump.
  * must be followed by IP offset to jump.
- * IP offset = 0 means first instruction after (if-zero) itself
+ * IP offset = 0 means first instruction after (if0) itself
  */
 FUNC_START(_if_less_equal_)
         cmp    DTOP, AT(DSTK);
@@ -118,7 +146,7 @@ FUNC_RAWEND(_if_less_equal_)
  * pop dstack twice.
  * if d1 <> dtop, continue to next instruction, otherwise jump.
  * must be followed by IP offset to jump.
- * IP offset = 0 means first instruction after (if-zero) itself
+ * IP offset = 0 means first instruction after (if0) itself
  */
 FUNC_START(_if_ne_)
         cmp    DTOP, AT(DSTK);
@@ -135,7 +163,7 @@ FUNC_RAWEND(_if_ne_)
  * pop dstack twice.
  * if d1 = dtop, continue to next instruction, otherwise jump.
  * must be followed by IP offset to jump.
- * IP offset = 0 means first instruction after (if-zero) itself
+ * IP offset = 0 means first instruction after (if0) itself
  */
 FUNC_START(_if_equal_)
         cmp    DTOP, AT(DSTK);
@@ -152,7 +180,7 @@ FUNC_RAWEND(_if_equal_)
  * pop dstack twice.
  * if d1 > dtop, continue to next instruction, otherwise jump.
  * must be followed by IP offset to jump.
- * IP offset = 0 means first instruction after (if-zero) itself
+ * IP offset = 0 means first instruction after (if0) itself
  */
 FUNC_START(_if_more_)
         cmp    DTOP, AT(DSTK);
@@ -169,7 +197,7 @@ FUNC_RAWEND(_if_more_)
  * pop dstack twice.
  * if d1 >= dtop, continue to next instruction, otherwise jump.
  * must be followed by IP offset to jump.
- * IP offset = 0 means first instruction after (if-zero) itself
+ * IP offset = 0 means first instruction after (if0) itself
  */
 FUNC_START(_if_more_equal_)
         cmp    DTOP, AT(DSTK);
