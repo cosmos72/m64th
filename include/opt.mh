@@ -54,8 +54,6 @@
         x((zero, equal), (zero_equal))                       /* 0  =          => 0=             */ \
         x((zero, more), (zero_more))                         /* 0  >          => 0>             */ \
         x((zero, more_equal), (zero_more_equal))             /* 0  >=         => 0>=            */ \
-        x((zero, _if_equal_), (_if_zero_))                   /* 0  (if=)      => (if0)      */     \
-        x((zero, _if_ne_), (_if_))                           /* 0  (if<>)     => (if)           */ \
         x((zero, and), (drop, zero))                         /* 0  and        => drop 0         */ \
         x((zero, lshift), _)                                 /* 0  lshift     =>                */ \
         x((zero, or), _)                                     /* 0  or         =>                */ \
@@ -188,13 +186,6 @@
         x((more, invert), (less_equal))                      /* >    invert     => <=           */ \
         x((more_equal, invert), (less))                      /* >=   invert     => <            */ \
         /*___TODO: <=> followed by 0< 0<= 0<> 0= 0> 0>= __*/ /*                                 */ \
-        /*____ <=>  (if) _________________________________*/ /*                                 */ \
-        x((less, _if_), (_if_less_))                         /* <    (if)       => (if<)        */ \
-        x((less_equal, _if_), (_if_less_equal_))             /* <=   (if)       => (if<=)       */ \
-        x((ne, _if_), (_if_ne_))                             /* <>   (if)       => (if<>)       */ \
-        x((equal, _if_), (_if_equal_))                       /* =    (if)       => (if=)        */ \
-        x((more, _if_), (_if_more_))                         /* >    (if)       => (if>)        */ \
-        x((more_equal, _if_), (_if_more_equal_))             /* >=   (if)       => (if>=)       */ \
         /*________________________________________________*/ /*                                 */ \
         x((to_r, from_r), _)                                 /* >r   r>         =>              */ \
         x((fetch, drop), (drop))                             /* @    drop       => drop         */ \

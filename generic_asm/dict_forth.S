@@ -73,7 +73,7 @@ WORD_START(to_number, more)
          * loop
          * r> drop r> swap 0
          */
-        dup, zero, _if_less_equal_, T(2),      /* ( ud caddr n     )                   */
+        dup, zero, less_equal, _if_, T(2),     /* ( ud caddr n     )                   */
             exit,                              /* ( ud caddr n     )                   */
         _then_,
         /* TODO: handle high cell */
@@ -241,12 +241,12 @@ WORD_START(literal, leave)
             exit,                        /* append token to XT, exit   */
         _then_, 
         dup, dup, to_short,
-        _if_equal_, T(5),                /* if n == to_short(n)        */
+        equal, _if_, T(5),                /* if n == to_short(n)        */
             _compile_lit_, _lit2s_,      /* append _lit2s_     to XT   */
             _compile2s_, exit,           /* append (int16)n    to XT   */
         _then_,
         dup, dup, to_int,
-        _if_equal_, T(5),                /* if n == to_int(n)          */
+        equal, _if_, T(5),                /* if n == to_int(n)          */
             _compile_lit_, _lit4s_,      /* append _lit4s_     to XT   */
             _compile4s_, exit,           /* append (int32)n    to XT   */
         _then_,

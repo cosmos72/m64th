@@ -132,12 +132,6 @@
     X(12, "(exec-token)", _exec_token_)                                                            \
     X(4, "(if)", _if_)                                                                             \
     X(5, "(if0)", _if_zero_)                                                                       \
-    X(5, "(if<)", _if_less_)                                                                       \
-    X(6, "(if<=)", _if_less_equal_)                                                                \
-    X(6, "(if<>)", _if_ne_)                                                                        \
-    X(5, "(if=)", _if_equal_)                                                                      \
-    X(5, "(if>)", _if_more_)                                                                       \
-    X(6, "(if>=)", _if_more_equal_)                                                                \
     X(4, "(ip)", _ip_)                                                                             \
     X(9, "(ip>body)", _ip_to_body_)                                                                \
     X(7, "(leave)", _leave_)                                                                       \

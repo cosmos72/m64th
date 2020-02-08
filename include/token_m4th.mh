@@ -115,19 +115,19 @@
 #define M4_exec_native_ 615 /* (exec-native) pop native code address, execute it */
 #define M4_exec_token_                                                                             \
     617 /* (exec-token) pop m4token, exec it. Only for 'inline' tokens that do not consume IP  */
-#undef M4____gap              /*                                         */
-#undef M4____gap              /*                                         */
-#undef M4____gap              /*                                         */
-#define M4_if_ 621            /* (if)      must be followed by IP offset */
-#define M4_if_zero_ 622       /* (if0) must be followed by IP offset */
-#define M4_if_less_ 623       /* (if<)     must be followed by IP offset */
-#define M4_if_less_equal_ 624 /* (if<=)    must be followed by IP offset */
-#define M4_if_ne_ 625         /* (if<>)    must be followed by IP offset */
-#define M4_if_equal_ 636      /* (if=)     must be followed by IP offset */
-#define M4_if_more_ 637       /* (if>)     must be followed by IP offset */
-#define M4_if_more_equal_ 628 /* (if>=)    must be followed by IP offset */
-#define M4_ip_ 629            /* (ip)      vm's current instruction pointer */
-#define M4_ip_to_body_ 630    /* (ip>body) must be 1st instr in a word. return word's data>addr */
+#undef M4____gap           /*                                         */
+#undef M4____gap           /*                                         */
+#undef M4____gap           /*                                         */
+#define M4_if_ 621         /* (if)      must be followed by IP offset */
+#define M4_if_zero_ 622    /* (if0) must be followed by IP offset */
+#undef M4____gap           /*                                         */
+#undef M4____gap           /*                                         */
+#undef M4____gap           /*                                         */
+#undef M4____gap           /*                                         */
+#undef M4____gap           /*                                         */
+#undef M4____gap           /*                                         */
+#define M4_ip_ 629         /* (ip)      vm's current instruction pointer */
+#define M4_ip_to_body_ 630 /* (ip>body) must be 1st instr in a word. return word's data>addr */
 #define M4_leave_ 631 /* (leave) must be followed by IP offset of 1st instruction after (loop) */
 #define M4_loop_ 632  /* (loop)  must be followed by IP offset of 1st instruction after (do)   */
 #define M4_missing_ 0 /* (missing) called instead of invalid/unimplemented function */
