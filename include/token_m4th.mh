@@ -33,7 +33,7 @@
 #define M4eight_div 523              /* 8/                    */
 #undef M4____gap                     /*                       */
 #undef M4____gap                     /*                       */
-#undef M4____gap                     /*                       */
+#define M4two_nip 526                /* 2nip    equivalent to: 2swap 2drop  */
 #define M4i_times 527                /* i*                    */
 #define M4i_plus 528                 /* i+                    */
 #define M4i_minus 529                /* i-                    */

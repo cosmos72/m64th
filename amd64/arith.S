@@ -129,6 +129,15 @@ FUNC_START(two_div)        /* 2/   */
 FUNC_END(two_div)
 
 
+#define M4FTWO_SWAP
+FUNC_START(two_swap)       /* 2swap */
+        LOAD(  REG1,   AT(DSTK))
+        xchg   DTOP,   AT(DSTK, SZ);
+        xchg   REG1,   AT(DSTK, SZ2);
+        STOR(  REG1,   AT(DSTK))
+FUNC_END(two_swap)
+
+
 #define M4FTHREE
 FUNC_START(three)          /* 3   m4th-impl */
         DPUSH( DTOP)
@@ -272,32 +281,32 @@ FUNC_END(rshift)
 
 #define M4FSWAP
 FUNC_START(swap)           /* swap */
-        xchg   (DSTK), DTOP;
+        xchg   DTOP, AT(DSTK);
 FUNC_END(swap)
 
 
 FUNC_START(to_byte)        /* to-byte */
-        movsbq   DTOPb, DTOP_sb;
+        movsbq DTOPb,  DTOP_sb;
 FUNC_END(to_byte)
 
 FUNC_START(to_short)       /* to-short */
-        movswq   DTOPh, DTOP_sh;
+        movswq DTOPh,  DTOP_sh;
 FUNC_END(to_short)
 
 FUNC_START(to_int)         /* to-int */
-        movslq   DTOPw, DTOP_sw;
+        movslq DTOPw,  DTOP_sw;
 FUNC_END(to_int)
 
 FUNC_START(to_char)        /* to-char */
-        movzbl   DTOPb, DTOP_ub;
+        movzbl DTOPb,  DTOP_ub;
 FUNC_END(to_char)
 
 FUNC_START(to_ushort)      /* to-ushort */
-        movzwl   DTOPh, DTOP_uh;
+        movzwl DTOPh,  DTOP_uh;
 FUNC_END(to_ushort)
 
 FUNC_START(to_uint)        /* to-uint */
-        movl     DTOPw, DTOP_uw;
+        movl   DTOPw,  DTOP_uw;
 FUNC_END(to_uint)
 
 

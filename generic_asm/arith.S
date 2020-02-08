@@ -50,6 +50,40 @@ FUNC_END(_missing_)
 #endif
 
 
+FUNC_START(two_drop)       /* 2drop    */
+        LOAD(  DTOP,       AT(DSTK, SZ))
+        ADD2(  IMM(SZ2),   DSTK)
+FUNC_END(two_drop)
+
+
+FUNC_START(two_dup)       /* 2dup      */
+        LOAD(  REG1,       AT(DSTK))
+        STOR(  DTOP,       AT(DSTK, -SZ))
+        STOR(  REG1,       AT(DSTK, -SZ2))
+        SUB2(  IMM(SZ2),   DSTK)
+FUNC_END(two_dup)
+
+
+FUNC_START(two_nip)       /* 2nip      m4th-user */
+        LOAD(  REG1,       AT(DSTK))
+        STOR(  REG1,       AT(DSTK, SZ2))
+        ADD2(  IMM(SZ2),   DSTK)
+FUNC_END(two_nip)
+
+
+#ifndef M4FTWO_SWAP
+FUNC_START(two_swap)       /* 2swap    */
+        LOAD(  REG1,       AT(DSTK))
+        LOAD(  REG2,       AT(DSTK, SZ))
+        LOAD(  REG3,       AT(DSTK, SZ2))
+        STOR(  DTOP,       AT(DSTK, SZ))
+        STOR(  REG1,       AT(DSTK, SZ2))
+        STOR(  REG3,       AT(DSTK))
+        MOVE(  REG2,       DTOP)
+FUNC_END(two_swap)
+#endif
+
+
 FUNC_START(times)          /* *    */
         DPOP(  REG1)
         MUL2(  REG1, DTOP)
@@ -205,12 +239,6 @@ FUNC_START(drop)
 FUNC_END(drop)
 
 
-FUNC_START(two_drop)
-        LOAD(  DTOP,       AT(DSTK, SZ))
-        ADD2(  IMM(SZ2),   DSTK)
-FUNC_END(two_drop)
-
-
 FUNC_START(depth)
         DPUSH( DTOP)
         LOAD(  DTOP, AT(M4TH, M4TH_OFF_DEND))
@@ -222,14 +250,6 @@ FUNC_END(depth)
 FUNC_START(dup)
         DPUSH( DTOP)
 FUNC_END(dup)
-
-
-FUNC_START(two_dup)
-        LOAD(  REG1,       AT(DSTK))
-        STOR(  DTOP,       AT(DSTK, -SZ))
-        STOR(  REG1,       AT(DSTK, -SZ2))
-        SUB2(  IMM(SZ2),   DSTK)
-FUNC_END(two_dup)
 
 
 FUNC_START(invert)

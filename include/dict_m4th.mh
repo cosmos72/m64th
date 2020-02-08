@@ -33,6 +33,7 @@
     X(2, "8+", eight_plus)                                                                         \
     X(2, "8/", eight_div)                                                                          \
     /*                             */ /*                                                */         \
+    X(4, "2nip", two_nip)                                                                          \
     X(2, "i*", i_times)                                                                            \
     X(2, "i+", i_plus)                                                                             \
     X(2, "i-", i_minus)                                                                            \
