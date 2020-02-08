@@ -84,14 +84,22 @@ FUNC_END(two_nip)
 
 #ifndef M4FTWO_R_FROM
 FUNC_START(two_r_from)     /* 2r>      */
-        /* TODO */
+        RPOP(  REG1)
+        DPUSH( DTOP)
+        MOVE(  RTOP,       DTOP)
+        DPUSH( REG1)
+        RPOP(  RTOP)
 FUNC_END(two_r_from)
 #endif
 
 
 #ifndef M4FTWO_R_FETCH
 FUNC_START(two_r_fetch)    /* 2r@      */
-        /* TODO */
+        STOR(  DTOP,       AT(DSTK, -SZ))
+        LOAD(  REG1,       AT(RSTK))
+        MOVE(  RTOP,       DTOP)
+        STOR(  REG1,       AT(DSTK, -SZ2))
+        SUB2(  IMM(SZ2),   DSTK)
 FUNC_END(two_r_fetch)
 #endif
 

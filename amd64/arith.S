@@ -129,6 +129,18 @@ FUNC_START(two_div)        /* 2/   */
 FUNC_END(two_div)
 
 
+#define M4FTWO_TO_R
+FUNC_START(two_to_r)       /* 2>r      */
+        LOAD(  REG1,   AT(DSTK))
+        STOR(  RTOP,   AT(RSTK, -SZ))
+        STOR(  REG1,   AT(RSTK, -SZ2))
+        MOVE(  DTOP,   RTOP)
+        LOAD(  DTOP,   AT(DSTK, SZ))
+        ADD2(  IMM(SZ2), DSTK)
+        SUB2(  IMM(SZ2), RSTK)
+FUNC_END(two_to_r)
+
+
 #define M4FTWO_SWAP
 FUNC_START(two_swap)       /* 2swap */
         LOAD(  REG1,   AT(DSTK))
@@ -136,6 +148,18 @@ FUNC_START(two_swap)       /* 2swap */
         xchg   REG1,   AT(DSTK, SZ2);
         STOR(  REG1,   AT(DSTK))
 FUNC_END(two_swap)
+
+
+#define M4FTWO_R_FROM
+FUNC_START(two_r_from)       /* 2r>      */
+        LOAD(  REG1,   AT(RSTK))
+        STOR(  DTOP,   AT(DSTK, -SZ))
+        STOR(  REG1,   AT(DSTK, -SZ2))
+        MOVE(  RTOP,   DTOP)
+        LOAD(  RTOP,   AT(RSTK, SZ))
+        ADD2(  IMM(SZ2), RSTK)
+        SUB2(  IMM(SZ2), DSTK)
+FUNC_END(two_r_from)
 
 
 #define M4FTHREE
