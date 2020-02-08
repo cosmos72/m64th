@@ -29,102 +29,25 @@ static inline void dpush(m4th *m, m4cell val) {
     *--m->dstack.curr = val;
 }
 
-#if 0  /* unused */
-static inline m4token *vec_ipush_m4cell(m4token *code, m4cell val) {
-    /* store an m4cell in consecutive m4token. layout depends on endianness */
-    memcpy(code, &val, sizeof(m4cell));
-    return code + SZ / SZt;
+static inline m4cell dpop(m4th *m) {
+    return *m->dstack.curr++;
 }
 
-static inline void ipush_m4cell(m4th *m, m4cell val) {
-    m4word *w = m->w;
-    vec_ipush_m4cell(w->code + w->code_n, val);
-    w->code_n += SZ / SZt;
-}
-
-static inline void ipush(m4th *m, m4token val) {
-    m->w->code[m->w->code_n++] = val;
-}
-#endif /* 0 */
-
-m4cell m4char_to_base(m4char ch) {
-    switch (ch) {
-    case '#':
-        return 10;
-    case '$':
-        return 16;
-    case '%':
-        return 2;
-    default:
-        return 0;
-    }
-}
-
-m4cell m4string_to_char(m4string str) {
-    if (str.n == 3 && str.data != NULL && str.data[0] == '\'' && str.data[2] == '\'') {
-        return str.data[1];
-    }
-    return -1; /* m4char is unsigned => str.data[1] cannot be -1 */
-}
-
-m4cell m4char_to_uint(m4char ch) {
-    if (ch >= '0' && ch <= '9') {
-        return ch - '0';
-    } else if (ch >= 'A' && ch <= 'Z') {
-        return ch - 'A' + 10;
-    } else if (ch >= 'a' && ch <= 'z') {
-        return ch - 'a' + 10;
-    }
-    return -1;
-}
-
-m4pair m4string_to_uint(m4string str, m4cell base) {
+/** wrapper around string>number */
+m4pair m4string_to_int(m4th *m, m4string str) {
     m4pair ret = {};
-    const m4char *s = str.data;
-    m4cell i = 0, n = str.n;
-    if (s == NULL || n <= 0) {
-        ret.err = m4err_eof;
-        return ret;
-    }
-    for (; i < n; i++) {
-        const m4cell digit = m4char_to_uint(s[i]);
-        if (digit < 0 || digit >= base) {
-            ret.err = m4err_bad_digit;
-            break;
-        }
-        /* TODO check overflow */
-        ret.num = ret.num * base + digit;
-    }
-    return ret;
-}
-
-/** temporary C implementation of (number) */
-m4pair m4string_to_int(m4string str) {
-    m4pair ret = {};
-    const m4char *s = str.data;
-    m4cell i = 0, n = str.n, base;
-    m4char negative = 0;
-    if (s == NULL || n == 0) {
-        ret.err = m4err_eof;
-        return ret;
-    } else if ((ret.num = m4string_to_char(str)) >= 0) {
-        return ret;
-    } else if ((base = m4char_to_base(s[i])) != 0) {
-        i++;
+    m4cell ok;
+    dpush(m, (m4cell)str.data);
+    dpush(m, (m4cell)str.n);
+    m4th_execute_word(m, &m4word_string_to_number);
+    ok = dpop(m);      /* t|f */
+    ret.num = dpop(m); /* number */
+    if (ok) {
+        dpop(m); /* # of unprocessed chars */
     } else {
-        base = 10;
+        ret.err = dpop(m) ? m4err_bad_digit : m4err_eof;
     }
-    if (i < n && s[i] == '-') {
-        negative = 1;
-        i++;
-    }
-    str.data += i;
-    str.n -= i;
-    ret = m4string_to_uint(str, base);
-    if (negative) {
-        /* TODO check overflow */
-        ret.num = -ret.num;
-    }
+    dpop(m); /* address of unprocessed chars */
     return ret;
 }
 
@@ -179,7 +102,7 @@ m4pair m4th_parse(m4th *m, m4string key) {
         ret.num = (m4cell)w->code;
         ret.err = m4num_is_xt;
     } else {
-        ret = m4string_to_int(key);
+        ret = m4string_to_int(m, key);
     }
     return ret;
 }

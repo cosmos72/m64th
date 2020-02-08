@@ -27,8 +27,8 @@ struct m4pair_s {
     m4cell err;
 };
 
-/** temporary C implementation of (number) */
-m4pair m4string_to_int(m4string str);
+/** wrapper around string>number */
+m4pair m4string_to_int(m4th *m, m4string str);
 
 /** temporary C implementation of (read) */
 m4string m4th_read(m4th *m);
