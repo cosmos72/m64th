@@ -77,27 +77,7 @@ WORD_START(to_number, more)
          * loop
          * r> drop r> swap 0
          */
-        dup, zero, less_equal, _if_, T(2),     /* ( ud caddr n     )                   */
-            exit,                              /* ( ud caddr n     )                   */
-        _then_,
-        /* TODO: handle high cell */
-        rot, to_r,                             /* ( ul caddr n 0   ) (R: uh          ) */
-        _call_, XT(base), fetch, to_r, zero,   /* ( ul caddr n 0   ) (R: uh base     ) */
-        do,                                    /* ( ul caddr       ) (R: uh base n 0 ) */
-            dup, c_fetch,                      /* ( ul caddr ch    ) (R: uh base n i ) */
-            _call_, XT(char_to_u),             /* ( ul caddr digit ) (R: uh base n i ) */
-            dup, zero, j/*NON-PORTABLE*/, within,
-            _if_zero_, T(10),                  /* ( ul caddr digit ) (R: uh base n i ) */
-                drop, i_prime, i, minus,       /* ( ul caddr n'    ) (R: uh base n i)  */
-                unloop, r_from_drop,           /* ( ul caddr n'    ) (R: uh            */
-                r_from, minus_rot, exit,       /* ( ud caddr n'    )                   */
-            _then_,                            /* ( ul caddr digit ) (R: uh base n i ) */
-            rot,                               /* ( caddr digit ul ) (R: uh base n i ) */
-            /* TODO: handle high cell */
-            j/*NON-PORTABLE*/, times, plus,    /* ( caddr ul'      ) (R: uh base n i ) */
-            swap, char_plus,                   /* ( ul caddr'      ) (R: uh base n i ) */
-        _loop_, T(-27-SZ/SZt),                 /* ( ul caddr       ) (R: uh base     ) */
-        r_from_drop, r_from, swap, zero, exit  /* ( ud caddr 0     )                   */
+        exit
     )
 WORD_END(to_number)
 WORD(to_r,             to_number,  DSTACK(1,0), RSTACK(0,1), WORD_R_PURE)
