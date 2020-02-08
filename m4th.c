@@ -622,10 +622,8 @@ static m4wordlist *m4wordlist_new(const m4dict *impl) {
 
 static void m4wordlist_new_vec(m4wordlist *l[m4th_wordlist_n]) {
     static const m4dict *dict[] = {
-        &m4dict_forth,
-        &m4dict_m4th_user,
-        &m4dict_m4th_core,
-        &m4dict_m4th_impl,
+        &m4dict_forth, &m4dict_m4th_user,
+        /* &m4dict_m4th_core, &m4dict_m4th_impl, */
     };
     enum { dict_n = sizeof(dict) / sizeof(dict[0]) };
     m4cell i;

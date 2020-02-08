@@ -71,7 +71,7 @@ static const m4testcompile testcompile[] = {
      {},
      {},
      {7, {m4_if_, T(3), m4one, m4_else_, T(2), m4two, m4_then_}}},
-    {{"(?do)"}, {}, {2, {2, m4_q_do_}}, {2, {m4_q_do_, T(-1)}}},
+    {{"?do"}, {}, {2, {2, m4_q_do_}}, {2, {m4_q_do_, T(-1)}}},
     /* ------------------------------- literal ------------------------------ */
     {{"literal"}, {1, {0}}, {}, {1, {m4zero}}},
     {{"literal"}, {1, {1}}, {}, {1, {m4one}}},
@@ -107,7 +107,7 @@ static const m4testcompile testcompile[] = {
 
     {{"do"}, {}, {2, {1, m4do}}, {1, {m4do}}},
     /* ------------------------------- words -------------------------------- */
-    {{"[inline]"}, {}, {}, {callsz, {CALLXT(_inline_)}}},
+    {{"base"}, {}, {}, {callsz, {CALLXT(base)}}},
 };
 
 enum { testcompile_n = sizeof(testcompile) / sizeof(testcompile[0]) };
