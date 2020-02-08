@@ -383,23 +383,7 @@ static m4testexecute testexecute_c[] = {
      {}},
 };
 
-static const char teststr_empty[] = "";
-static const char teststr_hash[] = "#";
-static const char teststr_dollar[] = "$";
-static const char teststr_percent[] = "%";
-static const char teststr_0[] = "0";
-static const char teststr_quoted[] = "''";
-static const char teststr_quoted_x[] = "'x'";
-static const char teststr_lparen_y_quote[] = "(y'";
-static const char teststr_quote_z_rparen[] = "'z)";
-static const char teststr_quoted_00[] = "'00'";
-
-#define TESTSTR(name) ((m4cell)teststr##name), (sizeof(teststr##name) - 1)
-#define TESTSTR_(name, delta) (m4cell)(teststr##name + delta), (sizeof(teststr##name) - delta - 1)
-#define STRING(s) ((m4cell)(s)), (sizeof(s) - 1)
-
 static m4testexecute testexecute_d[] = {
-#if 1
     /* ----------------------------- literal, compile, (call) --------------- */
     {"(lit-token) T(7)", {m4_lit_, T(7), m4bye}, {{}, {}}, {{1, {7}}, {}}, {}},
     {"(lit-int) INT(0x10000)",
@@ -549,12 +533,44 @@ static m4testexecute testexecute_d[] = {
      {{3, {8, (m4cell)testdata_any, N_OF(testdata_any)}}, {}},
      {{2, {m4eight, ttrue}}, {}},
      {}},
-    /* ----------------------------- char>... string>... -------------------- */
+};
+
+static const char teststr_empty[] = "";
+static const char teststr_hash[] = "#";
+static const char teststr_dollar[] = "$";
+static const char teststr_percent[] = "%";
+static const char teststr_0[] = "0";
+static const char teststr_quoted[] = "''";
+static const char teststr_quoted_x[] = "'x'";
+static const char teststr_lparen_y_quote[] = "(y'";
+static const char teststr_quote_z_rparen[] = "'z)";
+static const char teststr_quoted_00[] = "'00'";
+
+static const char teststr_minus_123[] = "-123";
+
+static const char teststr_z_[] = "z:";
+static const char teststr_0az[] = "0az";
+static const char teststr_1011[] = "1011";
+static const char teststr_dollar_12345a[] = "$12345a";
+static const char teststr_dollar_123defg[] = "$123defg";
+static const char teststr_ffffffff[] = "ffffffff";
+static const char teststr_1234567890[] = "1234567890";
+static const char teststr_4294967295[] = "4294967295";
+static const char teststr_ffffffffffffffff[] = "ffffffffffffffff";
+static const char teststr_18446744073709551615[] = "18446744073709551615";
+
+#define TESTSTR(name) ((m4cell)teststr##name), (sizeof(teststr##name) - 1)
+#define TESTSTR_(name, delta) (m4cell)(teststr##name + delta), (sizeof(teststr##name) - delta - 1)
+
+static m4testexecute testexecute_e[] = {
+#if 1
+    /* ----------------------------- char>base ------------------------------ */
     {"'#' char>base", {CALLXT(char_to_base), m4bye}, {{1, {'#'}}, {}}, {{1, {10}}, {}}, {}},
     {"'$' char>base", {CALLXT(char_to_base), m4bye}, {{1, {'$'}}, {}}, {{1, {16}}, {}}, {}},
     {"'%' char>base", {CALLXT(char_to_base), m4bye}, {{1, {'%'}}, {}}, {{1, {2}}, {}}, {}},
     {"'&' char>base", {CALLXT(char_to_base), m4bye}, {{1, {'&'}}, {}}, {{1, {0}}, {}}, {}},
     {"'\"' char>base", {CALLXT(char_to_base), m4bye}, {{1, {'"'}}, {}}, {{1, {0}}, {}}, {}},
+    /* ----------------------------- string>base ---------------------------- */
     {"\"\" string>base",
      {CALLXT(string_to_base), m4bye},
      {{2, {TESTSTR(_empty)}}, {}},
@@ -606,22 +622,22 @@ static m4testexecute testexecute_d[] = {
      {{3, {TESTSTR(_quoted_00), -1}}, {}},
      {}},
 #endif
+    /* ----------------------------- string>sign ---------------------------- */
     {"\"\" string>sign",
      {CALLXT(string_to_sign), m4bye},
      {{2, {TESTSTR(_empty)}}, {}},
      {{3, {TESTSTR(_empty), 1}}, {}},
      {}},
-    /* ----------------------------- valid-base? ---------------------------- */
-    {"0 valid-base?", {CALLXT(valid_base_q), m4bye}, {{1, {0}}, {}}, {{1, {tfalse}}, {}}, {}},
-    {"1 valid-base?", {CALLXT(valid_base_q), m4bye}, {{1, {1}}, {}}, {{1, {tfalse}}, {}}, {}},
-    {"2 valid-base?", {CALLXT(valid_base_q), m4bye}, {{1, {2}}, {}}, {{1, {ttrue}}, {}}, {}},
-    {"3 valid-base?", {CALLXT(valid_base_q), m4bye}, {{1, {3}}, {}}, {{1, {ttrue}}, {}}, {}},
-    {"10 valid-base?", {CALLXT(valid_base_q), m4bye}, {{1, {10}}, {}}, {{1, {ttrue}}, {}}, {}},
-    {"16 valid-base?", {CALLXT(valid_base_q), m4bye}, {{1, {16}}, {}}, {{1, {ttrue}}, {}}, {}},
-    {"35 valid-base?", {CALLXT(valid_base_q), m4bye}, {{1, {35}}, {}}, {{1, {ttrue}}, {}}, {}},
-    {"36 valid-base?", {CALLXT(valid_base_q), m4bye}, {{1, {36}}, {}}, {{1, {ttrue}}, {}}, {}},
-    {"37 valid-base?", {CALLXT(valid_base_q), m4bye}, {{1, {37}}, {}}, {{1, {tfalse}}, {}}, {}},
-    {"38 valid-base?", {CALLXT(valid_base_q), m4bye}, {{1, {38}}, {}}, {{1, {tfalse}}, {}}, {}},
+    {"\"0\" string>sign",
+     {CALLXT(string_to_sign), m4bye},
+     {{2, {TESTSTR(_0)}}, {}},
+     {{3, {TESTSTR(_0), 1}}, {}},
+     {}},
+    {"\"-123\" string>sign",
+     {CALLXT(string_to_sign), m4bye},
+     {{2, {TESTSTR(_minus_123)}}, {}},
+     {{3, {TESTSTR_(_minus_123, 1), -1}}, {}},
+     {}},
     /* ----------------------------- char>u --------------------------------- */
     {"'/' char>u", {CALLXT(char_to_u), m4bye}, {{1, {'/'}}, {}}, {{1, {-1}}, {}}, {}},
     {"'0' char>u", {CALLXT(char_to_u), m4bye}, {{1, {'0'}}, {}}, {{1, {0}}, {}}, {}},
@@ -635,20 +651,17 @@ static m4testexecute testexecute_d[] = {
     {"'a' char>u", {CALLXT(char_to_u), m4bye}, {{1, {'a'}}, {}}, {{1, {10}}, {}}, {}},
     {"'z' char>u", {CALLXT(char_to_u), m4bye}, {{1, {'z'}}, {}}, {{1, {35}}, {}}, {}},
     {"'{' char>u", {CALLXT(char_to_u), m4bye}, {{1, {'{'}}, {}}, {{1, {-1}}, {}}, {}},
-};
-
-static const char teststr_z_[] = "z:";
-static const char teststr_0az[] = "0az";
-static const char teststr_1011[] = "1011";
-static const char teststr_12345a[] = "12345a";
-static const char teststr_123defg[] = "123defg";
-static const char teststr_ffffffff[] = "ffffffff";
-static const char teststr_1234567890[] = "1234567890";
-static const char teststr_4294967295[] = "4294967295";
-static const char teststr_ffffffffffffffff[] = "ffffffffffffffff";
-static const char teststr_18446744073709551615[] = "18446744073709551615";
-
-static m4testexecute testexecute_e[] = {
+    /* ----------------------------- valid-base? ---------------------------- */
+    {"0 valid-base?", {CALLXT(valid_base_q), m4bye}, {{1, {0}}, {}}, {{1, {tfalse}}, {}}, {}},
+    {"1 valid-base?", {CALLXT(valid_base_q), m4bye}, {{1, {1}}, {}}, {{1, {tfalse}}, {}}, {}},
+    {"2 valid-base?", {CALLXT(valid_base_q), m4bye}, {{1, {2}}, {}}, {{1, {ttrue}}, {}}, {}},
+    {"3 valid-base?", {CALLXT(valid_base_q), m4bye}, {{1, {3}}, {}}, {{1, {ttrue}}, {}}, {}},
+    {"10 valid-base?", {CALLXT(valid_base_q), m4bye}, {{1, {10}}, {}}, {{1, {ttrue}}, {}}, {}},
+    {"16 valid-base?", {CALLXT(valid_base_q), m4bye}, {{1, {16}}, {}}, {{1, {ttrue}}, {}}, {}},
+    {"35 valid-base?", {CALLXT(valid_base_q), m4bye}, {{1, {35}}, {}}, {{1, {ttrue}}, {}}, {}},
+    {"36 valid-base?", {CALLXT(valid_base_q), m4bye}, {{1, {36}}, {}}, {{1, {ttrue}}, {}}, {}},
+    {"37 valid-base?", {CALLXT(valid_base_q), m4bye}, {{1, {37}}, {}}, {{1, {tfalse}}, {}}, {}},
+    {"38 valid-base?", {CALLXT(valid_base_q), m4bye}, {{1, {38}}, {}}, {{1, {tfalse}}, {}}, {}},
     /* ----------------------------- string&base>u -------------------------- */
     {"\"\" 10 string&base>u",
      {CALLXT(string_base_to_u), m4bye},
@@ -662,13 +675,13 @@ static m4testexecute testexecute_e[] = {
      {}},
     {"\"12345a\" 2 string&base>u",
      {CALLXT(string_base_to_u), m4bye},
-     {{3, {TESTSTR(_12345a), 2}}, {}},
-     {{3, {TESTSTR_(_12345a, 1), 0x1}}, {}},
+     {{3, {TESTSTR_(_dollar_12345a, 1), 2}}, {}},
+     {{3, {TESTSTR_(_dollar_12345a, 2), 0x1}}, {}},
      {}},
     {"\"12345a\" 10 string&base>u",
      {CALLXT(string_base_to_u), m4bye},
-     {{3, {TESTSTR(_12345a), 10}}, {}},
-     {{3, {TESTSTR_(_12345a, 5), 12345}}, {}},
+     {{3, {TESTSTR_(_dollar_12345a, 1), 10}}, {}},
+     {{3, {TESTSTR_(_dollar_12345a, 6), 12345}}, {}},
      {}},
     {"\"1234567890\" 10 string&base>u",
      {CALLXT(string_base_to_u), m4bye},
@@ -680,15 +693,15 @@ static m4testexecute testexecute_e[] = {
      {{3, {TESTSTR(_4294967295), 10}}, {}},
      {{3, {TESTSTR_(_4294967295, 10), (m4cell)4294967295ul}}, {}},
      {}},
-    {"\"12345a\" 10 string&base>u",
+    {"\"12345a\" 16 string&base>u",
      {CALLXT(string_base_to_u), m4bye},
-     {{3, {TESTSTR(_12345a), 16}}, {}},
-     {{3, {TESTSTR_(_12345a, 6), 0x12345a}}, {}},
+     {{3, {TESTSTR_(_dollar_12345a, 1), 16}}, {}},
+     {{3, {TESTSTR_(_dollar_12345a, 7), 0x12345a}}, {}},
      {}},
     {"\"123defg\" 16 string&base>u",
      {CALLXT(string_base_to_u), m4bye},
-     {{3, {TESTSTR(_123defg), 16}}, {}},
-     {{3, {TESTSTR_(_123defg, 6), 0x123def}}, {}},
+     {{3, {TESTSTR_(_dollar_123defg, 1), 16}}, {}},
+     {{3, {TESTSTR_(_dollar_123defg, 7), 0x123def}}, {}},
      {}},
     {"\"ffffffff\" 16 string&base>u",
      {CALLXT(string_base_to_u), m4bye},
@@ -717,33 +730,48 @@ static m4testexecute testexecute_e[] = {
      {{3, {TESTSTR(_z_), 36}}, {}},
      {{3, {TESTSTR_(_z_, 1), 35}}, {}},
      {}},
+    /* ----------------------------- string>number -------------------------------- */
+    {"\"\" string>number",
+     {CALLXT(string_to_number), m4bye},
+     {{2, {TESTSTR(_empty)}}, {}},
+     {{4, {TESTSTR(_empty), 0, tfalse}}, {}},
+     {}},
+    {"\"12345a\" string>number",
+     {CALLXT(string_to_number), m4bye},
+     {{2, {TESTSTR_(_dollar_12345a, 1)}}, {}},
+     {{4, {TESTSTR_(_dollar_12345a, 6), 12345, tfalse}}, {}},
+     {}},
+    {"\"1234567890\" string>number",
+     {CALLXT(string_to_number), m4bye},
+     {{2, {TESTSTR(_1234567890)}}, {}},
+     {{4, {TESTSTR_(_1234567890, 10), 1234567890, ttrue}}, {}},
+     {}},
+    {"\"4294967295\" string>number",
+     {CALLXT(string_to_number), m4bye},
+     {{2, {TESTSTR(_4294967295)}}, {}},
+     {{4, {TESTSTR_(_4294967295, 10), (m4cell)4294967295ul, ttrue}}, {}},
+     {}},
+    {"\"$12345a\" string>number",
+     {CALLXT(string_to_number), m4bye},
+     {{2, {TESTSTR(_dollar_12345a)}}, {}},
+     {{4, {TESTSTR_(_dollar_12345a, 7), 0x12345a, ttrue}}, {}},
+     {}},
+    {"\"$123defg\" string>number",
+     {CALLXT(string_to_number), m4bye},
+     {{2, {TESTSTR(_dollar_123defg)}}, {}},
+     {{4, {TESTSTR_(_dollar_123defg, 7), 0x123def, tfalse}}, {}},
+     {}},
 #if 0
-    /* ----------------------------- >number -------------------------------- */
-    {"\"\" >number",
-     {CALLXT(to_number), m4bye},
-     {{4, {0, 0, TESTSTR(_empty)}}, {}},
-     {{4, {0, 0, TESTSTR(_empty)}}, {}},
-     {}},
-    {"\"12345a\" >number",
-     {CALLXT(to_number), m4bye},
-     {{4, {0, 0, TESTSTR(_12345a)}}, {}},
-     {{4, {12345, 0, TESTSTR_(_12345a, 5)}}, {}},
-     {}},
-    {"\"1234567890\" >number",
-     {CALLXT(to_number), m4bye},
-     {{4, {0, 0, TESTSTR(_1234567890)}}, {}},
-     {{4, {1234567890, 0, TESTSTR_(_1234567890, 10)}}, {}},
-     {}},
-    {"\"4294967295\" >number",
-     {CALLXT(to_number), m4bye},
-     {{4, {0, 0, TESTSTR(_4294967295)}}, {}},
-     {{4, {(m4cell)4294967295ul, 0, TESTSTR_(_4294967295, 10)}}, {}},
+    {"\"$ffffffff\" 16 string>number",
+     {CALLXT(string_to_number), m4bye},
+     {{3, {TESTSTR(_ffffffff), 16}}, {}},
+     {{3, {TESTSTR_(_ffffffff, 8), (m4cell)0xfffffffful}}, {}},
      {}},
 #if SZ >= 8
-    {"\"18446744073709551615\" >number",
-     {CALLXT(to_number), m4bye},
-     {{4, {0, 0, TESTSTR(_18446744073709551615)}}, {}},
-     {{4, {(m4cell)18446744073709551615ul, 0, TESTSTR_(_18446744073709551615, 20)}}, {}},
+    {"\"18446744073709551615\" string>number",
+     {CALLXT(string_to_number), m4bye},
+     {{2, {TESTSTR(_18446744073709551615)}}, {}},
+     {{4, {TESTSTR_(_18446744073709551615, 20), (m4cell)18446744073709551615ul, ttrue}}, {}},
      {}},
 #endif
 #endif /* 0 */

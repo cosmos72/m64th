@@ -168,12 +168,14 @@
     X(6, "char>u", char_to_u) /* convert numeric digit from char to unsigned number, else -1 */    \
     /* ( caddr n -- caddr' n' base ) convert prefix # $ % to base, else fetch current base */      \
     X(11, "string>base", string_to_base)                                                           \
-    X(8, "string>n", string_to_n) /* ( caddr n -- caddr' n' x ) convert string to number */        \
-    /* ( caddr n base -- u err ) convert string from base to unsigned number */                    \
-    X(13, "string&base>u", string_base_to_u)                                                       \
-    X(11, "string>char", string_to_char) /* convert "'x'" to 'x' for any char x, else -1 */        \
+    /* ( caddr n -- caddr' n' x t|f ) convert string to number */                                  \
+    X(13, "string>number", string_to_number)                                                       \
+    /* ( caddr n -- caddr' n' ch ) convert "'x'" to 'x' for any char x, else -1 */                 \
+    X(11, "string>char", string_to_char)                                                           \
     X(11, "string>sign", string_to_sign) /* ( caddr n -- caddr' n' sign ) parse initial '-' */     \
-    X(11, "valid-base?", valid_base_q)   /* ( base -- flag ) true if 2 <= base <= 36     */
+    /* ( caddr n base -- caddr' n' u ) convert string from base to unsigned number */              \
+    X(13, "string&base>u", string_base_to_u)                                                       \
+    X(11, "valid-base?", valid_base_q) /* ( base -- flag ) true if 2 <= base <= 36     */
 
 /* ------- m4th-* ------------------------------------------------------------------------------- */
 #define DICT_WORDS_M4TH(X) /* contains all DICT_WORDS_M4TH_* */                                    \

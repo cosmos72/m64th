@@ -574,9 +574,10 @@ WORD_START(string_to_char, string_to_base)
     )
 WORD_END(string_to_char)
 /**
- * string>n ( caddr n -- caddr' n' x t|f )  \ convert string to number, recognizing # $ % prefixes
+ * string>number ( caddr n -- caddr' n' x t|f )
+ * convert string to number, recognizing base prefixes '#' '$' '%' and sign prefix '-'
  */
-WORD_START(string_to_n, string_to_char)
+WORD_START(string_to_number, string_to_char)
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_DSTACK(2,4)
     WORD_RSTACK(0,0)
@@ -584,29 +585,45 @@ WORD_START(string_to_n, string_to_char)
     WORD_NATIVE_NONE()
     WORD_CODE(
         /* ?if0
-         *    zero false exit              ( caddr n 0 f   )
+         *    0 false exit                 ( caddr n 0 false )
          * then
-         * string>char dup invert          ( caddr n c flag )
+         * string>char dup invert          ( caddr n c flag  )
          * if
-         *    true exit                    ( caddr n c t   )
-         * then                            ( caddr n c     )
-         * drop string>base                ( caddr n base  )
-         * ?if0
-         *    false exit                   ( caddr n 0 f   )
-         * then                            ( caddr n base  )
-         * >r                              ( caddr n       ) (R: base )
-         * string>sign                     ( caddr n sign  ) (R: base )
-         * r@ swap r!                      ( caddr n base  ) (R: sign )
-         * string&base>u                   ( caddr n u     ) (R: sign )
-         * r> * ;                          ( caddr n x     )
+         *    true exit                    ( caddr n c true  )
+         * then                            ( caddr n c       )
+         * drop string>base >r             ( caddr n         ) (R: base )
+         * string>sign over                ( caddr n sign n  ) (R: base )
+         * if0                             ( caddr n sign    ) (R: base )
+         *    drop 0 false r> drop exit    ( caddr n 0 false ) \ no digits
+         * then                            ( caddr n sign    ) (R: base )
+         * r@ swap r!                      ( caddr n base    ) (R: sign )
+         * string&base>u                   ( caddr n u       ) (R: sign )
+         * r> * over                       ( caddr n x n     )
+         * 0=                              ( caddr n x t|f   )
          */
-        exit
+        _q_if_zero_, T(4),
+            zero, false, exit,
+        _then_,
+        _call_, XT(string_to_char), dup, invert,
+        _if_, T(3),
+            true, exit,
+        _then_,
+        drop, _call_, XT(string_to_base), to_r,
+        _call_, XT(string_to_sign), over,
+        _if_zero_, T(6),
+            drop, zero, false, r_from_drop, exit,
+        _then_,
+        r_fetch, swap, r_store,
+        _call_, XT(string_base_to_u),
+        r_from, times, over,
+        zero_equal, exit
     )
-WORD_END(string_to_n)
+WORD_END(string_to_number)
 /**
- * string&base>u ( caddr n base -- caddr' n' u )  \ convert string from base to unsigned number
+ * string&base>u ( caddr n base -- caddr' n' u )
+ * convert string from base to unsigned number
  */
-WORD_START(string_base_to_u, string_to_n)
+WORD_START(string_base_to_u, string_to_number)
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
     WORD_DSTACK(3,3)
     WORD_RSTACK(0,0)
