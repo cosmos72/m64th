@@ -51,8 +51,16 @@ static const m4testcompile testcompile[] = {
     {{"$99"}, {}, {}, {2, {m4_lit2s_, SHORT(0x99)}}},
     {{"$-7def"}, {}, {}, {2, {m4_lit2s_, SHORT(-0x7def)}}},
     {{"%1011"}, {}, {}, {2, {m4_lit2s_, SHORT(0xb)}}},
+#if SZ >= 4
     {{"12345678"}, {}, {}, {3, {m4_lit4s_, INT(12345678)}}},
     {{"$12345678"}, {}, {}, {3, {m4_lit4s_, INT(0x12345678)}}},
+#endif
+#if SZ >= 8
+    {{"$7fffffffffffffff"}, {}, {}, {5, {m4_lit8s_, CELL(0x7fffffffffffffffl)}}},
+#endif
+#if SZ == 8
+    {{"$ffffffffffffffff"}, {}, {}, {1, {m4minus_one}}},
+#endif
     /* ------------------------------- if else then ------------------------- */
     {{"if"}, {}, {2, {2, m4_if_}}, {2, {m4_if_, T(-1)}}},
     {{"if", "then"}, {}, {}, {3, {m4_if_, T(1), m4_then_}}},
