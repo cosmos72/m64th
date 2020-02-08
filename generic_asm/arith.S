@@ -50,13 +50,24 @@ FUNC_END(_missing_)
 #endif
 
 
+#ifndef M4FTWO_TO_R
+FUNC_START(two_to_r)       /* 2>r      */
+        DPOP(  REG1)
+        RPUSH( RTOP)
+        MOVE(  DTOP,       RTOP)
+        RPUSH( REG1)
+        DPOP(  DTOP)
+FUNC_END(two_to_r)
+#endif
+
+
 FUNC_START(two_drop)       /* 2drop    */
         LOAD(  DTOP,       AT(DSTK, SZ))
         ADD2(  IMM(SZ2),   DSTK)
 FUNC_END(two_drop)
 
 
-FUNC_START(two_dup)       /* 2dup      */
+FUNC_START(two_dup)        /* 2dup      */
         LOAD(  REG1,       AT(DSTK))
         STOR(  DTOP,       AT(DSTK, -SZ))
         STOR(  REG1,       AT(DSTK, -SZ2))
@@ -64,11 +75,25 @@ FUNC_START(two_dup)       /* 2dup      */
 FUNC_END(two_dup)
 
 
-FUNC_START(two_nip)       /* 2nip      m4th-user */
+FUNC_START(two_nip)        /* 2nip      m4th-user */
         LOAD(  REG1,       AT(DSTK))
         STOR(  REG1,       AT(DSTK, SZ2))
         ADD2(  IMM(SZ2),   DSTK)
 FUNC_END(two_nip)
+
+
+#ifndef M4FTWO_R_FROM
+FUNC_START(two_r_from)     /* 2r>      */
+        /* TODO */
+FUNC_END(two_r_from)
+#endif
+
+
+#ifndef M4FTWO_R_FETCH
+FUNC_START(two_r_fetch)    /* 2r@      */
+        /* TODO */
+FUNC_END(two_r_fetch)
+#endif
 
 
 #ifndef M4FTWO_SWAP

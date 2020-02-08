@@ -42,14 +42,17 @@ WORD(one_minus,        one_plus,   DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(two_times,        one_minus,  DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(two_div,          two_times,  DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(two_drop,         two_div,    DSTACK(2,0), RSTACK(0,0), WORD_PURE)
-WORD(two_dup,          two_drop,   DSTACK(2,4), RSTACK(0,0), WORD_PURE)
+WORD(two_to_r,         two_drop,   DSTACK(2,0), RSTACK(0,2), WORD_R_PURE)
+WORD(two_dup,          two_to_r,   DSTACK(2,4), RSTACK(0,0), WORD_PURE)
+WORD(two_r_from,       two_dup,    DSTACK(0,2), RSTACK(2,0), WORD_R_PURE)
+WORD(two_r_fetch,      two_r_from, DSTACK(0,2), RSTACK(2,2), WORD_R_PURE)
 WORD(two_swap,         two_dup,    DSTACK(4,4), RSTACK(0,0), WORD_PURE)
 WORD(less,             two_swap,   DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(ne,               less,       DSTACK(2,1), RSTACK(0,0), WORD_PURE) /* core ext */
 WORD(equal,            ne,         DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(more,             equal,      DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 /*
- * >number ( ud caddr n -- ud caddr n )  \ convert string from base to unsigned number
+ * >number ( ud caddr n -- ud caddr n )  \ convert string from base to number
  */
 WORD_START(to_number, more)
     WORD_FLAGS(0)
@@ -58,9 +61,10 @@ WORD_START(to_number, more)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_CODE(
-        /* dup 0 <=
-         * if
-         *    exit
+        /* 2swap 2>r base @                    ( caddr n base ) (R: ud )
+         * string&base>u                       ( caddr' n' u  ) (R: ud )
+         * 
+         * 
          * then
          * rot >r base >r 0
          * do

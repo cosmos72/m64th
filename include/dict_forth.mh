@@ -34,8 +34,11 @@
     X(2, "1-", one_minus)                                                                          \
     X(2, "2*", two_times)                                                                          \
     X(2, "2/", two_div)                                                                            \
+    X(3, "2>r", two_to_r)                                                                          \
     X(5, "2drop", two_drop)                                                                        \
     X(4, "2dup", two_dup)                                                                          \
+    X(3, "2r>", two_r_from)                                                                        \
+    X(3, "2r@", two_r_fetch)                                                                       \
     X(5, "2swap", two_swap)                                                                        \
     X(1, "<", less)                                                                                \
     X(1, "=", equal)                                                                               \

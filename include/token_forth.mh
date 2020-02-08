@@ -82,11 +82,11 @@
 #define M4constant 62          /* constant */
 #define M4count 63             /* count    */
 #define M4cr 64                /* cr       */
-#define M4create 65            /* create   */
-#define M4decimal 66           /* decimal  */
+#undef M4create /*65*/         /* create   */
+#undef M4decimal /*66*/        /* decimal  */
 #define M4depth 67             /* depth    */
 #define M4do 68                /* do       */
-#define M4does 69              /* does     */
+#undef M4does /*69*/           /* does     */
 #define M4drop 70              /* drop     */
 #define M4dup 71               /* dup      */
 #undef M4else /*72*/           /* else     implemented in forth, no dedicated m4token */
@@ -157,9 +157,9 @@
 #undef M4dot_r /*137*/           /* .r       */
 #define M4zero_ne 138            /* 0<>      */
 #define M4zero_more 139          /* 0>       */
-#undef M4two_to_r /*140*/        /* 2>r      */
-#undef M4two_r_from /*141*/      /* 2r>      */
-#undef M4two_r_fetch /*142*/     /* 2r@      */
+#define M4two_to_r 140           /* 2>r      */
+#define M4two_r_from 141         /* 2r>      */
+#define M4two_r_fetch 142        /* 2r@      */
 #undef M4colon_noname /*143*/    /* :noname  */
 #define M4ne 144                 /* <>       */
 #undef M4question_do /*145*/     /* ?do      */
