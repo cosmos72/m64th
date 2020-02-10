@@ -47,9 +47,9 @@ FUNC_START(_ip_to_data_)
         DPUSH( DTOP)
         ADDI(  IP, -SZt,   DTOP)       /* IP actually points to next instruction: fix it */
         LD_uw( REG1_uw,    AT(DTOP, XT_OFF_DATA_OFF)) /* REG1 = data_off           */
-        SUB2(  REG1,       DTOP)                      /* DTOP = w.data.addr        */
+        SUB2(  REG1,       DTOP)                      /* DTOP = w.data             */
         DPUSH( DTOP)
-        LD_uw( DTOP_uw,    AT(DTOP, WORD_OFF_DATA_N - WORD_OFF_DATA_ADDR)) /* DTOP = w.data.n */
+        LD_uw( DTOP_uw,    AT(DTOP, WORD_OFF_DATA_N - WORD_OFF_DATA)) /* DTOP = w.data_n */
 FUNC_END(_ip_to_data_)
 
 
@@ -79,6 +79,6 @@ FUNC_END(word_to_flags)
 
 FUNC_START(xt_to_word) /* ( XT -- w ) */
         LD_uw( REG1_uw,    AT(DTOP, XT_OFF_DATA_OFF)) /* REG1 = data_off    */
-        SUB2(  REG1,       DTOP)                      /* DTOP = w.data.addr */
-        SUB2(  IMM(WORD_OFF_DATA_ADDR), DTOP)         /* DTOP = w           */
+        SUB2(  REG1,       DTOP)                      /* DTOP = w.data      */
+        SUB2(  IMM(WORD_OFF_DATA), DTOP)              /* DTOP = w           */
 FUNC_END(xt_to_word)

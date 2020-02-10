@@ -867,6 +867,7 @@ static m4cell m4testexecute_run(m4th *m, m4testexecute *t, m4test_word *w) {
 
     memset(w, '\0', sizeof(m4test_word));
     m4th_clear(m);
+    /* FIXME: store code to run somewhere else because w->code is GENERATED code */
     m4slice_copy_to_word_code(t_code, &w->impl);
     m4slice_copy_to_code(t_codegen_in, &t_codegen);
     m4test_stack_copy(&t->before.d, &m->dstack);

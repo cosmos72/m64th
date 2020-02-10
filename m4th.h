@@ -176,14 +176,14 @@ struct m4th_s {        /**< m4th forth interpreter and compiler */
     m4cell flags;          /**< m4th_flags                            */
     const void *c_regs[1]; /**< m4th_run() may save C registers here  */
 
-    m4wordlist *wordlist[m4th_wordlist_n]; /**< FIXME: visible wordlists     */
-    const char *const *in_cstr;            /**< DELETEME: pre-parsed input   */
-
     /* USER variables, i.e. thread-local */
     m4cbuf mem;  /**< start, HERE and end of data space     */
     m4word *w;   /**< forth word being compiled             */
     m4func quit; /**< forth function to execute on quit. usually m4fbye or m4fquit */
     m4err err;   /**< error set by ABORT                    */
+
+    const char *const *in_cstr;            /**< DELETEME: pre-parsed input   */
+    m4wordlist *wordlist[m4th_wordlist_n]; /**< FIXME: visible wordlists     */
 };
 
 #ifdef __cplusplus

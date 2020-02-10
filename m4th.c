@@ -558,7 +558,7 @@ m4code m4word_code(const m4word *w, m4cell code_start_n) {
 
 const m4word *m4code_addr_to_word(const m4token *xt) {
     const uint32_t data_off = *(const uint32_t *)((m4cell)xt - sizeof(uint32_t));
-    return (const m4word *)((m4cell)xt - data_off - WORD_OFF_DATA_ADDR);
+    return (const m4word *)((m4cell)xt - data_off - WORD_OFF_DATA);
 }
 
 m4string m4word_data(const m4word *w, m4cell data_start_n) {

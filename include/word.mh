@@ -21,12 +21,12 @@
 /** used to insert an execution token (XT) in a sequence of functions */
 #define m4XT(x) WORD_SYM(x) + WORD_OFF_XT
 
-#define WORD_OFF_FLAGS 6      /* offset of m4word->flags     */
-#define WORD_OFF_CODE_N 14    /* offset of m4word->code_n    */
-#define WORD_OFF_CODE_OFF 16  /* offset of m4word->code_off  */
-#define WORD_OFF_DATA_N 20    /* offset of m4word->data.n    */
-#define WORD_OFF_DATA_ADDR 24 /* offset of m4word->data.addr */
-#define WORD_OFF_XT 24        /* offset of m4word->code.addr valid only if m4word->data.n == 0 */
+#define WORD_OFF_FLAGS 6     /* offset of m4word->flags     */
+#define WORD_OFF_CODE_N 14   /* offset of m4word->code_n    */
+#define WORD_OFF_CODE_OFF 16 /* offset of m4word->code_off  */
+#define WORD_OFF_DATA_N 20   /* offset of m4word->data_n    */
+#define WORD_OFF_DATA 24     /* offset of m4word->data      */
+#define WORD_OFF_XT 24       /* offset of m4word->code.addr valid only if m4word->data_n == 0 */
 
 #define XT_OFF_DATA_OFF -4 /* offset of m4xt->data_off */
 
@@ -75,7 +75,7 @@
 
 #define WORD_CODE_START(name) /*    */                                                             \
     .p2align 2, 0;            /* align at 4 bytes: m4xt->data_off below is uint32_t */             \
-    .4byte 4 +.- WORD_SYM(name) - WORD_OFF_DATA_ADDR;                                              \
+    .4byte 4 +.- WORD_SYM(name) - WORD_OFF_DATA;                                                   \
     .L.WORD_SYM(name).code_start:
 #define WORD_CODE_END(name) /*      */ .L.WORD_SYM(name).code_end:
 #define WORD_CODE_RAW(...) /*       */ CAT3(., SZt, byte) __VA_ARGS__;
@@ -95,7 +95,7 @@
 
 #define WORD_CODE(...)                                                                             \
     WORD_CODE_N(M4SUM_SIZEOF(__VA_ARGS__) / SZt)                                                   \
-    WORD_CODE_OFF(WORD_OFF_DATA_ADDR) /* no data, word->data is code */                            \
+    WORD_CODE_OFF(WORD_OFF_DATA) /* no data, word->data is code */                                 \
     WORD_DATA_N_BYTES(0)                                                                           \
     WORD_CODE_TOKENS(__VA_ARGS__)
 

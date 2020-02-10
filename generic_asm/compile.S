@@ -35,11 +35,27 @@ FUNC_END(_num_compiled_)
 
 FUNC_START(_compile_common_)
         /* TODO check if enough space */
-        LOAD(  REG1,       AT(M4TH, M4TH_OFF_W))       /* word                 */
+        LOAD(  REG1,       AT(M4TH, M4TH_OFF_W))       /* a = word             */
         LD_uh( REG2_uh,    AT(REG1, WORD_OFF_CODE_N))  /* code_n = word.code_n */
-        JNZ(   REG2,       _compile2s_.work)
-        /* TODO word.code_n = 0, we must initialize header */
-LABEL(_compile2s_.work)
+        JNZ(   REG2,       _compile2s_.done)
+        LD_uh( REG2_uh,    AT(REG1, WORD_OFF_DATA_N))  /* b = data_n = word.data_n */
+        JZ(    REG2,       _compile2s_.done)
+        /* word.data_n != 0 && word.code_n = 0, we must initialize header      */
+        ADDI(  REG1,       WORD_OFF_DATA,  REG3)       /* c = word.data        */
+        ADD2(  REG2,       REG3)                       /* c = data + data_n    */
+        ALIGN( 4,          REG3)            /* c = align@uint32(data + data_n) */
+        ADDI(  REG3,       4,          HERE)           /* here = code          */
+#ifdef SUB3
+        SUB3(  HERE,       REG1,       REG3)           /* c = code_off         */
+#else
+        MOVE(  HERE,       REG3)
+        SUB2(  REG1,       REG3)                       /* c = code_off         */
+#endif
+        STORh( REG3h,      AT(REG1, WORD_OFF_CODE_OFF)) /* word.code_off = code_off */
+
+        ADDI(  REG3,       -WORD_OFF_DATA, REG2)  /* y = word.code_off - WORD_OFF_DATA */
+        STORw( REG2w,      AT(HERE, -4))          /* code[-1] = y */
+LABEL(_compile2s_.done)
 FUNC_RAWEND(_compile_common_)
 
 

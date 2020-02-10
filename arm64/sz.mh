@@ -33,8 +33,8 @@
 #define SZ13 104 /* SZ * 13 */
 #define SZ14 112 /* SZ * 14 */
 #define SZ15 120 /* SZ * 15 */
+#define SZ17 136 /* SZ * 17 */
 #define SZ19 152 /* SZ * 19 */
-#define SZ21 168 /* SZ * 21 */
 #define PSZ 3    /* (1 << PSZ) == SZ */
 
 #define SZt 2  /* sizeof(m4token) in bytes */
