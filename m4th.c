@@ -40,6 +40,7 @@ enum {
     code_n = 1024,
     inbuf_n = 1024,
     outbuf_n = 1024,
+    dataspace_n = 4096,
 };
 
 typedef char m4th_assert_sizeof_m4token_equal_SZt[(sizeof(m4token) == SZt) ? 1 : -1];
@@ -248,7 +249,7 @@ void m4token_print(m4token tok, FILE *out) {
     const m4word *w = m4token_to_word(tok);
     if (w != NULL) {
         const m4string name = m4word_name(w);
-        if (name.data != NULL && name.n != 0) {
+        if (name.addr != NULL && name.n != 0) {
             m4string_print(name, out);
             fputc(' ', out);
             return;
@@ -286,9 +287,9 @@ static m4cell m4token_print_xt(const m4token *code, FILE *out) {
     m4cell val;
     memcpy(&val, code, sizeof(val));
     if (val > 4096) {
-        const m4word *w = (const m4word *)(val - WORD_OFF_XT);
+        const m4word *w = m4code_addr_to_word((const m4token *)val);
         const m4string name = m4word_name(w);
-        if (name.data && name.n > 0) {
+        if (name.addr && name.n > 0) {
             fputs("XT(", out);
             m4string_print(name, out);
             fputs(") ", out);
@@ -335,11 +336,18 @@ static void m4cbuf_free(m4cbuf *arg) {
     }
 }
 
-/* ----------------------- m4code ----------------------- */
+/* ----------------------- m4addr ----------------------- */
+
 /* align address to next m4cell */
-const m4char *m4addr_align(const void *addr) {
-    m4cell n = (m4cell)addr;
-    return (const m4char *)((n + SZ - 1) & (m4cell)-SZ); /* -SZ == ~(SZ-1) */
+const m4char *m4addr_align_cell(const void *addr) {
+    m4cell x = (m4cell)addr;
+    return (const m4char *)((x + SZ - 1) & (m4cell)-SZ); /* -SZ == ~(SZ-1) */
+}
+
+/* align address to next uint32 */
+const m4char *m4addr_align_4(const void *addr) {
+    m4cell x = (m4cell)addr;
+    return (const m4char *)((x + 4 - 1) & (m4cell)-4);
 }
 
 /* ----------------------- m4code ----------------------- */
@@ -350,7 +358,7 @@ m4cell m4code_equal(m4code src, m4code dst) {
         return 0 /*false*/;
     }
     for (i = 0; i < n; i++) {
-        if (src.data[i] != dst.data[i]) {
+        if (src.addr[i] != dst.addr[i]) {
             return 0 /*false*/;
         }
     }
@@ -358,7 +366,7 @@ m4cell m4code_equal(m4code src, m4code dst) {
 }
 
 void m4code_print(m4code src, FILE *out) {
-    const m4token *const code = src.data;
+    const m4token *const code = src.addr;
     m4cell i, n = src.n;
     if (code == NULL || n < 0 || out == NULL) {
         return;
@@ -387,19 +395,19 @@ static m4cell m4_8bytes_copy_to_token(uint64_t src, m4token *dst) {
 }
 
 void m4slice_copy_to_code(const m4slice src, m4code *dst) {
-    if (src.data == NULL || src.n == 0) {
+    if (src.addr == NULL || src.n == 0) {
         if (dst != NULL) {
             dst->n = 0;
         }
         return;
     }
-    if (dst == NULL || dst->data == NULL || dst->n < src.n) {
+    if (dst == NULL || dst->addr == NULL || dst->n < src.n) {
         fputs(" m4slice_copy_to_code(): invalid args, dst is smaller than src", stderr);
         return;
     }
     m4cell i = 0, n = src.n;
-    const m4cell *sdata = src.data;
-    m4token *ddata = dst->data;
+    const m4cell *sdata = src.addr;
+    m4token *ddata = dst->addr;
     while (i < n) {
         m4cell x = sdata[i];
         const m4word *w;
@@ -477,15 +485,15 @@ void m4stackeffects_print(m4stackeffects effs, const char *suffix, FILE *out) {
 /* ----------------------- m4string ----------------------- */
 
 void m4string_print(m4string str, FILE *out) {
-    if (out == NULL || str.data == NULL || str.n <= 0) {
+    if (out == NULL || str.addr == NULL || str.n <= 0) {
         return;
     }
-    fwrite(str.data, 1, str.n, out);
+    fwrite(str.addr, 1, str.n, out);
 }
 
 void m4string_print_hex(m4string str, FILE *out) {
     static const char hexdigits[] = "0123456789abcdef";
-    const m4char *data = str.data;
+    const m4char *data = str.addr;
     m4cell i, n = str.n;
     if (out == NULL || data == NULL) {
         return;
@@ -498,26 +506,38 @@ void m4string_print_hex(m4string str, FILE *out) {
 }
 
 m4cell m4string_compare(m4string a, m4string b) {
-    if (a.data == NULL || b.data == NULL || a.n != b.n || a.n < 0) {
+    if (a.addr == NULL || b.addr == NULL || a.n != b.n || a.n < 0) {
         return 1;
     }
-    if (a.data == b.data || a.n == 0) {
+    if (a.addr == b.addr || a.n == 0) {
         return 0;
     }
-    return memcmp(a.data, b.data, (size_t)a.n);
+    return memcmp(a.addr, b.addr, (size_t)a.n);
 }
 
 /* ----------------------- m4word ----------------------- */
 
 m4code m4word_code(const m4word *w, m4cell code_start_n) {
-    m4code code = {(m4token *)w->code + code_start_n, w->code_n - code_start_n};
-    return code;
+    m4code ret = {};
+    if (w->code_n >= code_start_n) {
+        ret.addr = code_start_n + (m4token *)((m4cell)w + w->code_off);
+        ret.n = w->code_n - code_start_n;
+    }
+    return ret;
+}
+
+const m4word *m4code_addr_to_word(const m4token *xt) {
+    const uint32_t data_off = *(const uint32_t *)((m4cell)xt - sizeof(uint32_t));
+    return (const m4word *)((m4cell)xt - data_off - WORD_OFF_DATA_ADDR);
 }
 
 m4string m4word_data(const m4word *w, m4cell data_start_n) {
-    m4string data = {m4addr_align(w->code + w->code_n) + data_start_n,
-                     (m4cell)(w->data_len - data_start_n)};
-    return data;
+    m4string ret = {};
+    if (w->data_n != 0 && w->data_n >= data_start_n) {
+        ret.addr = w->data + data_start_n;
+        ret.n = (m4cell)w->data_n - data_start_n;
+    }
+    return ret;
 }
 
 void m4word_code_print(const m4word *w, m4cell code_start_n, FILE *out) {
@@ -525,7 +545,6 @@ void m4word_code_print(const m4word *w, m4cell code_start_n, FILE *out) {
         return;
     }
     m4code_print(m4word_code(w, code_start_n), out);
-    fputc('\n', out);
 }
 
 void m4word_data_print(const m4word *w, m4cell data_start_n, FILE *out) {
@@ -534,13 +553,12 @@ void m4word_data_print(const m4word *w, m4cell data_start_n, FILE *out) {
     }
     m4string data = m4word_data(w, data_start_n);
     if (w->flags & m4flag_data_tokens) {
-        m4code code = {(m4token *)data.data, data.n / sizeof(m4token)};
+        m4code code = {(m4token *)data.addr, data.n / sizeof(m4token)};
         m4code_print(code, out);
     } else {
         fprintf(out, "<%ld> ", (long)data.n);
         m4string_print_hex(data, out);
     }
-    fputc('\n', out);
 }
 
 void m4word_print(const m4word *w, FILE *out) {
@@ -557,13 +575,16 @@ void m4word_print(const m4word *w, FILE *out) {
     if (jump_flags == m4flag_jump || jump_flags == m4flag_may_jump) {
         m4stackeffects_print(w->jump, "_jump", out);
     }
-    fprintf(out, "\n\tnative_len:  \t%d\n\tcode:        \t",
-            w->native_len == (uint16_t)-1 ? (int)-1 : (int)w->native_len);
+    if (w->native_len != (uint16_t)-1) {
+        fprintf(out, "\n\tnative_len:  \t%d", (int)w->native_len);
+    }
+    if (w->data_n != 0) {
+        fputs((w->flags & m4flag_data_tokens) ? "\n\tdata_tokens: \t" : "\n\tdata:        \t", out);
+        m4word_data_print(w, 0, out);
+    }
+    fputs("\n\tcode:        \t", out);
     m4word_code_print(w, 0, out);
-
-    fputs((w->flags & m4flag_data_tokens) ? "\tdata_tokens: \t" : "\tdata:        \t", out);
-    m4word_data_print(w, 0, out);
-    fputs("}\n", out);
+    fputs("\n}\n", out);
 }
 
 void m4word_print_fwd_recursive(const m4word *w, FILE *out) {
@@ -580,7 +601,7 @@ m4string m4word_name(const m4word *w) {
         return ret;
     }
     const m4countedstring *name = (const m4countedstring *)((const m4char *)w - w->name_off);
-    ret.data = name->chars;
+    ret.addr = name->addr;
     ret.n = name->n;
     return ret;
 }
@@ -600,7 +621,7 @@ static m4string m4dict_name(const m4dict *d) {
         return ret;
     }
     const m4countedstring *name = (const m4countedstring *)((const m4char *)d - d->name_off);
-    ret.data = name->chars;
+    ret.addr = name->addr;
     ret.n = name->n;
     return ret;
 }
@@ -686,7 +707,6 @@ m4th *m4th_new() {
     m4th *m = (m4th *)m4mem_allocate(sizeof(m4th));
     m->dstack = m4stack_alloc(dstack_n);
     m->rstack = m4stack_alloc(rstack_n);
-    m->w = NULL;
     m->ip = NULL;
     m->ftable = ftable;
     m->in = m4cbuf_alloc(inbuf_n);
@@ -695,6 +715,8 @@ m4th *m4th_new() {
     memset(m->c_regs, '\0', sizeof(m->c_regs));
     m4wordlist_new_vec(m->wordlist);
     m->in_cstr = NULL;
+    m->mem = m4cbuf_alloc(dataspace_n);
+    m->w = NULL;
     m->quit = m4fbye;
     m->err.id = 0;
     m->err.msg.impl.n = 0;
@@ -703,6 +725,7 @@ m4th *m4th_new() {
 
 void m4th_del(m4th *m) {
     if (m) {
+        m4cbuf_free(&m->mem);
         m4wordlist_del_vec(m->wordlist);
         m4cbuf_free(&m->out);
         m4cbuf_free(&m->in);
@@ -729,7 +752,7 @@ m4cell m4th_execute_word(m4th *m, const m4word *w) {
     const m4token *save_ip = m->ip;
     m4cell ret;
     {
-        m4cell xt = (m4cell)w->code;
+        m4cell xt = (m4cell)m4word_code(w, 0).addr;
         code[0] = m4_call_;
         memcpy(code + 1, &xt, SZ);
         code[1 + SZ / SZt] = m4bye;

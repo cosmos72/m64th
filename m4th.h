@@ -75,6 +75,7 @@ typedef enum m4flags_e {
 typedef struct m4buf_s m4buf;
 typedef struct m4cbuf_s m4cbuf;
 typedef struct m4code_s m4code;
+typedef struct m4counteddata_s m4counteddata;
 typedef struct m4countedstring_s m4countedstring;
 typedef struct m4err_s m4err;
 typedef struct m4dict_s m4dict;
@@ -101,13 +102,18 @@ struct m4cbuf_s {
 };
 
 struct m4code_s { /**< array of m4token, with size */
-    m4token *data;
+    m4token *addr;
     m4cell n;
+};
+
+struct m4counteddata_s { /**< counted data                     */
+    uint32_t n;          /**< # of bytes                       */
+    m4char addr[0];      /**< bytes                            */
 };
 
 struct m4countedstring_s { /**< counted string                   */
     m4char n;              /**< # of characters                  */
-    m4char chars[0];       /**< characters. do NOT end with '\0' */
+    m4char addr[0];        /**< characters. do NOT end with '\0' */
 };
 
 struct m4dict_s {     /**< dictionary. used to implement wordlist                */
@@ -124,7 +130,7 @@ struct m4err_s {
 };
 
 struct m4string_s { /**< array of m4char, with size */
-    const m4char *data;
+    const m4char *addr;
     m4cell n;
 };
 
@@ -134,11 +140,11 @@ struct m4stackeffects_s {
 };
 
 struct m4slice_s { /**< array of m4cell, with size */
-    m4cell *data;
+    m4cell *addr;
     m4cell n;
 };
 
-/** compiled forth word. Execution token i.e. XT is the address of m4word.code[0] */
+/** compiled forth word. Execution token i.e. XT is at word + code_off */
 struct m4word_s {
     int32_t prev_off;    /**< offset of previous word,   in bytes. 0 = not present */
     int16_t name_off;    /**< offset of m4countedstring, in bytes. 0 = not present */
@@ -147,8 +153,9 @@ struct m4word_s {
     m4stackeffects jump; /**< stack effects if jumping                             */
     uint16_t native_len; /**< native code size, in bytes. 0xFFFF if not available  */
     uint16_t code_n;     /**< forth code size, in m4token:s                        */
-    uint32_t data_len;   /**< data size, in bytes                                  */
-    m4token code[0];     /**< code i.e. XT starts at [0], data starts at align(code + code_n) */
+    uint32_t code_off;   /**< offset of code, in bytes. 0 = not present            */
+    uint32_t data_n;     /**< data size, in bytes                                  */
+    m4char data[0];
 };
 
 struct m4wordlist_s {   /**< wordlist                                             */
@@ -161,20 +168,22 @@ enum { m4th_wordlist_n = 12 };
 struct m4th_s {        /**< m4th forth interpreter and compiler */
     m4stack dstack;    /**< data stack                          */
     m4stack rstack;    /**< return stack                        */
-    m4word *w;         /**< forth word being compiled           */
     const m4token *ip; /**< instruction pointer                 */
     m4func *ftable;    /**< table m4t -> asm function address   */
     m4cbuf in;         /**< input  buffer                       */
     m4cbuf out;        /**< output buffer                       */
 
-    m4cell flags;          /**< m4th_flags                               */
+    m4cell flags;          /**< m4th_flags                            */
     const void *c_regs[1]; /**< m4th_run() may save C registers here  */
 
     m4wordlist *wordlist[m4th_wordlist_n]; /**< FIXME: visible wordlists     */
     const char *const *in_cstr;            /**< DELETEME: pre-parsed input   */
 
+    /* USER variables, i.e. thread-local */
+    m4cbuf mem;  /**< start, HERE and end of data space     */
+    m4word *w;   /**< forth word being compiled             */
     m4func quit; /**< forth function to execute on quit. usually m4fbye or m4fquit */
-    m4err err;
+    m4err err;   /**< error set by ABORT                    */
 };
 
 #ifdef __cplusplus
@@ -225,6 +234,7 @@ void m4mem_unmap(void *ptr, size_t bytes);
 
 m4cell m4code_equal(m4code src, m4code dst);
 void m4code_print(m4code src, FILE *out);
+const m4word *m4code_addr_to_word(const m4token *xt);
 
 /** return how many bytes of code are consumed by token or word marked with given flags */
 m4cell m4flags_consume_ip(m4flags fl);

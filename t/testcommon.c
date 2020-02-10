@@ -29,14 +29,14 @@ extern const m4word *wtable[]; /* from m4th.c */
 /* -------------- m4slice -------------- */
 
 static void m4slice_print_as_code(m4slice src, FILE *out) {
-    const m4cell *data = src.data;
+    const m4cell *addr = src.addr;
     m4cell i, n = src.n;
-    if (data == NULL || n < 0 || out == NULL) {
+    if (addr == NULL || n < 0 || out == NULL) {
         return;
     }
     fprintf(out, "<%ld> ", (long)n);
     for (i = 0; i < n; i++) {
-        const m4cell val = data[i];
+        const m4cell val = addr[i];
         if (val >= 0 && val < M4____end) {
             m4token_print((m4token)val, out);
         } else {
@@ -74,7 +74,6 @@ void m4test_stack_print(const m4test_stack *src, FILE *out) {
     for (i = 0; i < src->len; i++) {
         fprintf(out, "%ld ", (long)src->data[i]);
     }
-    fputc('\n', out);
 }
 
 /* -------------- m4test_code -------------- */
@@ -83,20 +82,12 @@ void m4test_code_print(const m4test_code *src, FILE *out) {
     if (src != NULL && out != NULL) {
         m4slice code = {(m4cell *)src->data, src->n};
         m4slice_print_as_code(code, out);
-        fputc('\n', out);
     }
 }
 
 void m4slice_copy_to_word_code(m4slice src, m4word *w) {
-    m4code dst_code = {w->code + w->code_n, src.n};
+    m4code dst_code = {(m4token *)w->data + w->code_n, src.n};
     m4slice_copy_to_code(src, &dst_code);
-    w->code_n += dst_code.n;
-}
-
-void m4test_code_copy_to_word_code(const m4test_code *src, m4word *w) {
-    m4slice src_code = {(m4cell *)src->data, src->n};
-    m4code dst_code = {w->code + w->code_n, src->n};
-    m4slice_copy_to_code(src_code, &dst_code);
     w->code_n += dst_code.n;
 }
 

@@ -21,22 +21,23 @@
 /** used to insert an execution token (XT) in a sequence of functions */
 #define m4XT(x) WORD_SYM(x) + WORD_OFF_XT
 
-#define WORD_OFF_FLAGS 6   /* offset of m4word->flags        */
-#define WORD_OFF_CODE_N 14 /* offset of m4word->code_n       */
-#define WORD_OFF_DATA_N 16 /* offset of m4word->data_len     */
-#define WORD_OFF_XT 20     /* offset of m4word->code i.e. XT */
+#define WORD_OFF_FLAGS 6      /* offset of m4word->flags     */
+#define WORD_OFF_CODE_N 14    /* offset of m4word->code_n    */
+#define WORD_OFF_CODE_OFF 16  /* offset of m4word->code_off  */
+#define WORD_OFF_DATA_N 20    /* offset of m4word->data.n    */
+#define WORD_OFF_DATA_ADDR 24 /* offset of m4word->data.addr */
+#define WORD_OFF_XT 24        /* offset of m4word->code.addr valid only if m4word->data.n == 0 */
 
-#define XT_OFF_FLAGS -14 /* WORD_OFF_FLAGS  - WORD_OFF_XT  */
-#define XT_OFF_CODE_N -6 /* WORD_OFF_CODE_N - WORD_OFF_XT  */
-#define XT_OFF_DATA_N -4 /* WORD_OFF_DATA_N - WORD_OFF_XT  */
+#define XT_OFF_DATA_OFF -4 /* offset of m4xt->data_off */
 
-#define WORD_SYM(name) m4word_##name
+#define WORD_SYM(name) m4w_##name
 
 #define WORD_DECL_SYM(name)                                                                        \
     .globl WORD_SYM(name);                                                                         \
     .type WORD_SYM(name), @object;
 
-#define WORD_ALIGN() .p2align 2, 0; /* align words at 4 bytes: they do not contain any uint64_t */
+#define WORD_ALIGN() /* align words at SZ bytes: they may contain uint64_t data[] */               \
+    .p2align PSZ, 0;
 
 #define WORD_DEF_SYM(name)                                                                         \
     WORD_ALIGN()                                                                                   \
@@ -64,47 +65,52 @@
 #define WORD_CODE_N_AUTO(name) /*   */                                                             \
     .2byte /**/ (.L.WORD_SYM(name).code_end - /**/.L.WORD_SYM(name).code_start) / SZt;
 
+#define WORD_CODE_OFF(n_bytes) /*   */ .4byte n_bytes;
+#define WORD_CODE_OFF_AUTO(name) /* */ .4byte /**/.L.WORD_SYM(name).code_start - WORD_SYM(name);
+
 #define WORD_DATA_N_BYTES(n_bytes) /**/ .4byte n_bytes;
 #define WORD_DATA_N(n_tokens) /*     */ .4byte SZt *(n_tokens);
 #define WORD_DATA_N_AUTO(name) /*   */                                                             \
     .4byte /**/.L.WORD_SYM(name).data_end - /**/.L.WORD_SYM(name).data_start;
 
-#define WORD_CODE_START(name) /*    */ .L.WORD_SYM(name).code_start:
+#define WORD_CODE_START(name) /*    */                                                             \
+    .p2align 2, 0;            /* align at 4 bytes: m4xt->data_off below is uint32_t */             \
+    .4byte 4 +.- WORD_SYM(name) - WORD_OFF_DATA_ADDR;                                              \
+    .L.WORD_SYM(name).code_start:
 #define WORD_CODE_END(name) /*      */ .L.WORD_SYM(name).code_end:
 #define WORD_CODE_RAW(...) /*       */ CAT3(., SZt, byte) __VA_ARGS__;
 #define WORD_CODE_TOKEN(token) /*   */ CAT3(., M4SIZEOF(token), byte) M4TOKEN_VAL(token);
 #define WORD_CODE_TOKENS(...) /*    */ WRAP_ARGS(WORD_CODE_TOKEN, __VA_ARGS__)
 
-#define WORD_DATA_ALIGN() /*        */ .p2align PSZ, 0; /* align word data at SZ bytes */
-#define WORD_DATA_START(name) /*    */ WORD_DATA_ALIGN() /**/.L.WORD_SYM(name).data_start:
+#define WORD_DATA_START(name) /*    */ /**/ .L.WORD_SYM(name).data_start:
 #define WORD_DATA_END(name) /*      */ .L.WORD_SYM(name).data_end:
-#define WORD_DATA_BYTES(...) /*     */ WORD_DATA_ALIGN() /* */.byte __VA_ARGS__;
-#define WORD_DATA_SHORTS(...) /*    */ WORD_DATA_ALIGN() /**/ .2byte __VA_ARGS__;
-#define WORD_DATA_INTS(...) /*      */ WORD_DATA_ALIGN() /**/ .4byte __VA_ARGS__;
-#define WORD_DATA_CELLS(...) /*     */ WORD_DATA_ALIGN() /**/ CAT3(., SZ, byte) __VA_ARGS__;
+#define WORD_DATA_BYTES(...) /*     */ /* */ .byte __VA_ARGS__;
+#define WORD_DATA_SHORTS(...) /*    */ /**/ .2byte __VA_ARGS__;
+#define WORD_DATA_INTS(...) /*      */ /**/ .4byte __VA_ARGS__;
+#define WORD_DATA_CELLS(...) /*     */ /**/ CAT3(., SZ, byte) __VA_ARGS__;
 #define WORD_DATA_TOKEN(token) /*   */ CAT3(., M4SIZEOF(token), byte) M4TOKEN_VAL(token);
-#define WORD_DATA_TOKENS(...)                                                                      \
-    WORD_DATA_ALIGN()                                                                              \
-    WRAP_ARGS(WORD_DATA_TOKEN, __VA_ARGS__)
+#define WORD_DATA_TOKENS(...) /*    */ WRAP_ARGS(WORD_DATA_TOKEN, __VA_ARGS__)
 
 #define WORD_END(name) /*           */ .size WORD_SYM(name), .- WORD_SYM(name);
 
 #define WORD_CODE(...)                                                                             \
     WORD_CODE_N(M4SUM_SIZEOF(__VA_ARGS__) / SZt)                                                   \
+    WORD_CODE_OFF(WORD_OFF_DATA_ADDR) /* no data, word->data is code */                            \
     WORD_DATA_N_BYTES(0)                                                                           \
     WORD_CODE_TOKENS(__VA_ARGS__)
 
 /* clang-format off */
 
-#define WORD_CODE_AND_DATA(name, code_body, data_body)                                             \
+#define WORD_DATA_AND_CODE(name, data_body, code_body)                                             \
     WORD_CODE_N_AUTO(name)                                                                         \
+    WORD_CODE_OFF_AUTO(name)                                                                       \
     WORD_DATA_N_AUTO(name)                                                                         \
+    WORD_DATA_START(name)                                                                          \
+    data_body                                                                                      \
+    WORD_DATA_END(name)                                                                            \
     WORD_CODE_START(name)                                                                          \
     code_body                                                                                      \
     WORD_CODE_END(name)                                                                            \
-    WORD_DATA_START(name)                                                                          \
-    data_body                                                                                      \
-    WORD_DATA_END(name)
 
 #define WORD_BODY_SIMPLE(name, flags, dstack, rstack)                                              \
     WORD_FLAGS(flags)                                                                              \

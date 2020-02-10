@@ -102,12 +102,12 @@ WORD_START(base, c_store)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
-    WORD_CODE_AND_DATA(
+    WORD_DATA_AND_CODE(
       base,
+      WORD_DATA_CELLS(10),
       WORD_CODE_TOKENS(
-        _ip_to_body_, exit
-      ),
-      WORD_DATA_CELLS(10)
+        _ip_to_data_addr_, exit
+      )
     )
 WORD_END(base)
 WORD_START(bye, base) /* tools ext */
@@ -133,7 +133,8 @@ WORD_START(compile_comma, cmove)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_CODE(
-        dup, _call_, XT(xt_inline_query), _if_zero_, T(5),
+        xt_to_word, dup, _call_, XT(word_inline_query),
+        _if_zero_, T(5),
             _compile_lit_, _call_,     /* compile (call) */
             _compile_xt_, exit,        /* compile XT     */
         _then_,
@@ -216,10 +217,13 @@ WORD_START(literal, leave)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
-    WORD_CODE_AND_DATA(
+    WORD_DATA_AND_CODE(
       literal,
+      WORD_DATA_TOKENS(
+        zero, one, minus_one, two, three, four, eight
+      ),
       WORD_CODE_TOKENS(
-        _ip_, xt_to_data, div_token,     /* ( n taddr tn )             */
+        _ip_to_data_, div_token,         /* ( n taddr tn )             */
         _call_, XT(_any_token_gives_cell_q_),
         _if_, T(3), _compile_token_,     /* if executing token gives n */
             exit,                        /* append token to XT, exit   */
@@ -237,9 +241,6 @@ WORD_START(literal, leave)
         _compile_lit_, _lit_cell_,       /* append _lit_cell_  to XT   */
         _compile_cell_,                  /* append dtop        to XT   */
         exit
-      ),
-      WORD_DATA_TOKENS(
-        zero, one, minus_one, two, three, four, eight
       )
     )
 WORD_END(literal)

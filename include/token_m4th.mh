@@ -78,24 +78,24 @@
 #undef M4____gap           /*                       */
 
 /* 'm4th-core' wordlist */
-#define M4xt_to_code 581      /* xt>code    ( XT -- taddr n ) get code array   from XT */
-#define M4xt_to_code_n 582    /* xt>code>n  ( XT -- n )       get code size    from XT */
-#define M4xt_to_data 583      /* xt>data    ( XT -- caddr n ) get data array   from XT */
-#define M4xt_to_data_addr 584 /* xt>data>addr ( XT -- caddr ) get data address from XT */
-#define M4xt_to_data_n 585    /* xt>data>n  ( XT -- n )       get data size    from XT */
-#define M4xt_to_flags 586     /* xt>flags   ( XT -- m4flags ) get m4flags      from XT */
-#undef M4____gap              /*                       */
-#undef M4____gap              /*                       */
-#undef M4____gap              /*                       */
-#undef M4____gap              /*                       */
-#undef M4____gap              /*                       */
-#undef M4____gap              /*                       */
-#undef M4____gap              /*                       */
-#undef M4____gap              /*                       */
-#undef M4____gap              /*                       */
-#undef M4____gap              /*                       */
-#undef M4____gap              /*                       */
-#define M4_xt_ 598            /* [xt] ( -- xt ) XT of word being compiled */
+#define M4word_to_code 581      /* word>code      ( w -- addr n )  get code array   from word */
+#define M4word_to_code_addr 582 /* word>code>addr ( w -- addr  )   get code address from word */
+#define M4word_to_code_n 583    /* word>code>n    ( w -- n )       get code size    from word */
+#define M4word_to_flags 584     /* word>flags     ( w -- m4flags ) get m4flags      from word */
+#define M4xt_to_word 585        /* xt>word        ( XT -- w )      get word from XT           */
+#undef M4____gap                /*                       */
+#undef M4____gap                /*                       */
+#undef M4____gap                /*                       */
+#undef M4____gap                /*                       */
+#undef M4____gap                /*                       */
+#undef M4____gap                /*                       */
+#undef M4____gap                /*                       */
+#undef M4____gap                /*                       */
+#undef M4____gap                /*                       */
+#undef M4____gap                /*                       */
+#undef M4____gap                /*                       */
+#undef M4____gap                /*                       */
+#undef M4____gap                /*                       */
 
 /* 'm4th-impl' wordlist */
 #define M4minus_one 601     /* -1       */
@@ -115,19 +115,19 @@
 #define M4_exec_native_ 615 /* (exec-native) pop native code address, execute it */
 #define M4_exec_token_                                                                             \
     617 /* (exec-token) pop m4token, exec it. Only for 'inline' tokens that do not consume IP  */
-#undef M4____gap           /*                                         */
-#undef M4____gap           /*                                         */
-#undef M4____gap           /*                                         */
-#define M4_if_ 621         /* (if)      must be followed by IP offset */
-#define M4_if_zero_ 622    /* (if0) must be followed by IP offset */
-#undef M4____gap           /*                                         */
-#undef M4____gap           /*                                         */
-#undef M4____gap           /*                                         */
-#undef M4____gap           /*                                         */
-#undef M4____gap           /*                                         */
-#undef M4____gap           /*                                         */
-#define M4_ip_ 629         /* (ip)      vm's current instruction pointer */
-#define M4_ip_to_body_ 630 /* (ip>body) must be 1st instr in a word. return word's data>addr */
+#undef M4____gap                /*                                         */
+#undef M4____gap                /*                                         */
+#undef M4____gap                /*                                         */
+#define M4_if_ 621              /* (if)      must be followed by IP offset */
+#define M4_if_zero_ 622         /* (if0) must be followed by IP offset */
+#undef M4____gap                /*                                         */
+#undef M4____gap                /*                                         */
+#undef M4____gap                /*                                         */
+#undef M4____gap                /*                                         */
+#undef M4____gap                /*                                         */
+#define M4_ip_ 628              /* (ip)      vm's current instruction pointer */
+#define M4_ip_to_data_ 629      /* (ip>data) must be 1st instr in word. return word's data */
+#define M4_ip_to_data_addr_ 630 /* must be 1st instr in word. return word's data>addr      */
 #define M4_leave_ 631 /* (leave) must be followed by IP offset of 1st instruction after (loop) */
 #define M4_loop_ 632  /* (loop)  must be followed by IP offset of 1st instruction after (do)   */
 #define M4_missing_ 0 /* (missing) called instead of invalid/unimplemented function */
@@ -148,7 +148,7 @@
 #define M4_compile8s_ 648    /* [compile8s,] pop int64 from dstack, append it to compiled code  */
 #define M4_compile_lit_ 649  /* must be followed by m4token, append it to compiled code  */
 #define M4_compile_unresolved_jump_ 650 /* [compile-unresolved-jump] must be followed by token */
-#undef M4____gap                        /*                                         */
+#define M4_word_ 651                    /* [word] pust to dstack word being compiled */
 #undef M4____gap                        /*                                         */
 #undef M4____gap                        /*                                         */
 #define M4____end 654

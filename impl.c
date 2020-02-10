@@ -37,9 +37,9 @@ static inline m4cell dpop(m4th *m) {
 m4pair m4string_to_int(m4th *m, m4string str) {
     m4pair ret = {};
     m4cell ok;
-    dpush(m, (m4cell)str.data);
+    dpush(m, (m4cell)str.addr);
     dpush(m, (m4cell)str.n);
-    m4th_execute_word(m, &m4word_string_to_number);
+    m4th_execute_word(m, &WORD_SYM(string_to_number));
     ok = dpop(m);      /* t|f */
     ret.num = dpop(m); /* number */
     if (ok) {
@@ -58,7 +58,7 @@ m4string m4th_read(m4th *m) {
     assert(m);
     if (m->in_cstr != NULL && (cstr = *m->in_cstr) != NULL) {
         m->in_cstr++;
-        s.data = (const m4char *)cstr;
+        s.addr = (const m4char *)cstr;
         s.n = strlen(cstr);
     }
     return s;
@@ -68,7 +68,7 @@ m4string m4th_read(m4th *m) {
 static const m4word *m4wordlist_lookup_word(const m4wordlist *d, m4string key) {
     const m4word *w;
     assert(d);
-    assert(key.data);
+    assert(key.addr);
     for (w = m4wordlist_lastword(d); w != NULL; w = m4word_prev(w)) {
         if (m4string_compare(key, m4word_name(w)) == 0) {
             return w;
@@ -83,7 +83,7 @@ static const m4word *m4th_lookup_word(m4th *m, m4string key) {
     const m4word *w = NULL;
     m4cell i;
     assert(m);
-    assert(key.data);
+    assert(key.addr);
     for (i = 0; i < m4th_wordlist_n && w == NULL; i++) {
         if ((l = m->wordlist[i]) != NULL) {
             w = m4wordlist_lookup_word(l, key);
@@ -96,10 +96,10 @@ static const m4word *m4th_lookup_word(m4th *m, m4string key) {
 m4pair m4th_parse(m4th *m, m4string key) {
     m4pair ret = {};
     const m4word *w;
-    if (key.data == NULL) {
+    if (key.addr == NULL) {
         ret.err = m4err_eof;
     } else if ((w = m4th_lookup_word(m, key)) != NULL) {
-        ret.num = (m4cell)w->code;
+        ret.num = (m4cell)m4word_code(w, 0).addr;
         ret.err = m4num_is_xt;
     } else {
         ret = m4string_to_int(m, key);
@@ -109,14 +109,14 @@ m4pair m4th_parse(m4th *m, m4string key) {
 
 /** temporary C implementation of (compile-word) */
 static m4cell m4th_compile_word(m4th *m, const m4word *w) {
-    dpush(m, (m4cell)w->code);
-    return m4th_execute_word(m, &m4word_compile_comma);
+    dpush(m, (m4cell)m4word_code(w, 0).addr);
+    return m4th_execute_word(m, &WORD_SYM(compile_comma));
 }
 
 /** temporary C implementation of (compile-number) */
 static m4cell m4th_compile_number(m4th *m, m4cell num) {
     dpush(m, num);
-    return m4th_execute_word(m, &m4word_literal);
+    return m4th_execute_word(m, &WORD_SYM(literal));
 }
 
 /** temporary C implementation of (eval) */
@@ -157,7 +157,7 @@ m4cell m4th_repl(m4th *m) {
 
     while ((ret = m4th_eval(m, arg = m4th_parse(m, str = m4th_read(m)))) == m4err_ok) {
     }
-    if (ret != m4err_ok && arg.err == ret && str.data != NULL) {
+    if (ret != m4err_ok && arg.err == ret && str.addr != NULL) {
         m4string_print(str, stderr);
         fputs(" ?", stderr);
     }

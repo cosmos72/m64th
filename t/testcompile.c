@@ -35,6 +35,7 @@ typedef struct m4testcompile_s {
 /* -------------- m4testcompile -------------- */
 
 static const m4testcompile testcompile[] = {
+#if 0
     /* ------------------------------- numbers ------------------------------ */
     {{"0"}, {}, {}, {1, {m4zero}}},
     {{"1", "2"}, {}, {}, {2, {m4one, m4two}}},
@@ -107,6 +108,7 @@ static const m4testcompile testcompile[] = {
     {{"do"}, {}, {2, {1, m4do}}, {1, {m4do}}},
     /* ------------------------------- words -------------------------------- */
     {{"base"}, {}, {}, {callsz, {CALLXT(base)}}},
+#endif /* 0 */
 };
 
 enum { testcompile_n = sizeof(testcompile) / sizeof(testcompile[0]) };
@@ -155,6 +157,7 @@ static void m4testcompile_failed(m4th *m, const m4testcompile *t, m4code t_codeg
     m4code_print(t_codegen, out);
     fputs("\n      actual    codegen   ", out);
     m4word_code_print(m->w, 0, out);
+    fputc('\n', out);
 
     if (m->dstack.curr == m->dstack.end && m->rstack.curr == m->rstack.end) {
         return;

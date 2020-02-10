@@ -136,32 +136,30 @@ WORD(tokens,           token_plus,     DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(token_store,      tokens,         DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE)
 WORD(token_fetch,      token_store,    DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 WORD(to_token,         token_fetch,    DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD_START(xt_inline_query,  to_token)
+WORD_START(word_inline_query,  to_token)
     WORD_FLAGS(WORD_IMPURE | M4FLAG_MEM_FETCH)
     WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_CODE(
-        dup, xt_to_flags,
+        dup, word_to_flags,
         dup, _lit2s_, SHORT(M4FLAG_INLINE_ALWAYS), and, _if_, T(4),
             two_drop, true, exit,
         _then_,
         _lit2s_, SHORT(M4FLAG_INLINE), and, _if_zero_, T(4),
             drop, false, exit,
         _then_,
-        xt_to_code_n, eight, less, exit
+        word_to_code_n, eight, less, exit
     )
-WORD_END(xt_inline_query)    
-WORD(xt_to_code,       xt_inline_query,DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD(xt_to_code_addr,  xt_to_code,     DSTACK(1,1), RSTACK(0,0), WORD_PURE) /* currently a noop */
-WORD(xt_to_code_n,     xt_to_code_addr,DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD(xt_to_data,       xt_to_code_n,   DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD(xt_to_data_addr,  xt_to_data,     DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD(xt_to_data_n,     xt_to_data_addr,DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD(xt_to_flags,      xt_to_data_n,   DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD_END(word_inline_query)    
+WORD(word_to_code,  word_inline_query, DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(word_to_code_addr,  word_to_code, DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(word_to_code_n,word_to_code_addr, DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(word_to_flags,    word_to_code_n, DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(xt_to_word,       word_to_flags,  DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 
-DICT_BODY(m4th_core, xt_to_flags)
+DICT_BODY(m4th_core, word_to_flags)
 DICT_END(m4th_core)
 
 /* ---------------------------------------------------------------------------------------------- */
@@ -260,15 +258,23 @@ WORD_START(_ip_, _if_zero_)
     WORD_NATIVE_NONE()
     WORD_CODE(_ip_, exit)
 WORD_END(_ip_)
-WORD_START(_ip_to_body_, _ip_)
+WORD_START(_ip_to_data_, _ip_)
+    WORD_FLAGS(M4FLAG_INLINE_ALWAYS)
+    WORD_DSTACK(0,2)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_CODE(_ip_to_data_, exit)
+WORD_END(_ip_to_data_)
+WORD_START(_ip_to_data_addr_, _ip_to_data_)
     WORD_FLAGS(M4FLAG_INLINE_ALWAYS)
     WORD_DSTACK(0,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
-    WORD_CODE(_ip_to_body_, exit)
-WORD_END(_ip_to_body_)
-WORD_START(_leave_, _ip_to_body_)
+    WORD_CODE(_ip_to_data_addr_, exit)
+WORD_END(_ip_to_data_addr_)
+WORD_START(_leave_, _ip_to_data_addr_)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_JUMP | M4FLAG_IMMEDIATE)
     WORD_STACK_NONE() /* dummy, token always jumps */
     WORD_DSTACK(0,0)   /* stack effect when jumping */
@@ -345,7 +351,7 @@ WORD_START(_inline_, _compile_unresolved_jump_)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_CODE(
-        xt_to_code, one_minus, /* ( code n-1 )  skip 'exit' at the end of XT */
+        word_to_code, one_minus, /* ( code n-1 )  skip 'exit' at the end of XT */
         dup, zero, less_equal, _if_, T(2),
             exit,              /* inline length is <= 0 */
         _then_,                /* ( code n-1 )   */
@@ -378,7 +384,7 @@ WORD_START(_resolve_jump_here_, _optimize_)
     WORD_CODE(
         drop, dup, negate, _num_compiled_, plus, /* ( #tokens IP-offset )    */
         swap, one_minus, tokens,           /* ( IP-offset toffset ) toffset of token after (if) or (else) */
-        _xt_, xt_to_code_addr, plus,       /* ( IP-offset taddr   ) taddr   of token after (if) or (else) */
+        _word_, word_to_code_addr, plus,   /* ( IP-offset taddr   ) taddr   of token after (if) or (else) */
         token_store, exit
     )
 WORD_END(_resolve_jump_here_)
@@ -438,8 +444,8 @@ WORD_START(_any_token_gives_cell_q_, _token_gives_cell_q_)
         drop, false, exit                    /* ( x false )              */
     )
 WORD_END(_token_gives_cell_q_)
-WORD(_xt_,  _any_token_gives_cell_q_,  DSTACK(0,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
-WORD(minus_one,        _xt_,           DSTACK(0,1), RSTACK(0,0), WORD_PURE)
+WORD(_word_, _any_token_gives_cell_q_, DSTACK(0,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
+WORD(minus_one,        _word_,         DSTACK(0,1), RSTACK(0,0), WORD_PURE)
 WORD(zero,             minus_one,      DSTACK(0,1), RSTACK(0,0), WORD_PURE)
 WORD(one,              zero,           DSTACK(0,1), RSTACK(0,0), WORD_PURE)
 WORD(two,              one,            DSTACK(0,1), RSTACK(0,0), WORD_PURE)
@@ -453,21 +459,21 @@ WORD_START(char_to_base, eight)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
-    WORD_CODE_AND_DATA(
+    WORD_DATA_AND_CODE(
       char_to_base,
+      WORD_DATA_BYTES(10, 16, 2),
       WORD_CODE_TOKENS(
-        /* (ip) >body swap to-char '#' - dup 2 <= if
+        /* (ip>data>addr) swap to-char '#' - dup 2 <= if
          *    chars + c@ exit
          * then drop drop 0
          */
-        _ip_to_body_, swap, to_char,           /* ( body ch )               */
-        _lit2s_, T(35), minus, dup, two,       /* ( body ch-'#' ch-'#' 2 )  */
+        _ip_to_data_addr_, swap, to_char,      /* ( body ch )               */
+        _lit2s_, T('#'), minus, dup, two,      /* ( body ch-'#' ch-'#' 2 )  */
         less_equal, _if_, T(5),                /* ( body ch-'#' )           */
             chars, plus, c_fetch, exit,
         _then_,                                /* ( body ch-'#' )           */
         two_drop, zero, exit
-      ),
-      WORD_DATA_BYTES(10, 16, 2)
+      )
     )
 WORD_END(char_to_base)
 /* ( ch -- n )  convert one digit in base 2..36 from char to unsigned number, else -1 */

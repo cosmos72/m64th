@@ -36,7 +36,7 @@
 #define REG1  %rax  /* scratch register 1 */
 #define REG2  %rcx  /* scratch register 2 */
 #define REG3  %rdx  /* scratch register 3 */
-/* additional scratch registers: %r8 %r9 %r10 */
+/* additional scratch registers: %r8 */
 /* additional callee-saved registers: %rbp */
 
 #define REG1b   %al  /* low  8 bits of REG1 */
@@ -112,19 +112,19 @@
 #define DSTK  %rdi  /* pointer to second data stack element */
 #define RSTK  %rsi  /* pointer to second return stack element */
 #define M4TH  %r13  /* pointer to C struct m4th */
-#define RXT   %r14  /* pointer to word being compiled */
+#define HERE  %r14  /* pointer to first available code/data location */
 #define FTBL  %r9   /* pointer to table m4func[m4token] containing asm function addresses */
 #define IP    %r15  /* forth bytecode instruction pointer */
 #define RIP   %rip  /* x86-64 instruction pointer */
 
 #define AND2(src, dst)        and  src,     dst;   /* dst &= src     */
 #define ADD2(src, dst)        add  src,     dst;   /* dst += src     */
+#define ADDI(src, imm, dst)   lea  imm(src),dst;   /* dst  = src + imm */
 #define AT0( reg)                  (reg)           /* mem[reg]       */
 #define ATx( reg,  imm)            imm(reg)        /* mem[reg+imm]   */
 #define ATxy(reg1, reg2, rmul)    (reg1,reg2,rmul) /* mem[reg1+reg2*rmul] */
 #define DEC1(dst)             dec  dst;            /* dst--          */
 #define INC1(dst)             inc  dst;            /* dst++          */
-#define LEA( reg, at)         lea  at,      reg;   /* reg  =  at     x86/x86_64 only */
 #define LOAD(reg, at)         mov  at,      reg;   /* reg  = *at     */
 #define MOVE(src, dst)        mov  src,     dst;   /* dst  = src     */
 #define MUL2(src, dst)        imul src,     dst;   /* dst *= src     */
@@ -155,7 +155,19 @@
 
 /* clang-format on */
 
-#define JUMP(label) /*     */ jmp LABEL_SYM(label); /* unconditional jump to label */
+#define CALL(func) /*     call native code from m4func ______________________________________ */   \
+    call FUNC_SYM(func);
+
+#define JNZ(reg, label) /* if reg != 0 jump to label */                                            \
+    test reg, reg;                                                                                 \
+    jnz LABEL_SYM(label);
+
+#define JZ(reg, label) /*  if reg == 0 jump to label */                                            \
+    test reg, reg;                                                                                 \
+    jz LABEL_SYM(label);
+
+#define JUMP(label) /*     unconditional jump to label _______________________________________ */  \
+    jmp LABEL_SYM(label);
 
 #define FADDR(fun, dst) /* */ lea fun(RIP), dst; /* load function address */
 

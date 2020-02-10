@@ -103,23 +103,21 @@
 
 /* ------- m4th-core ---------------------------------------------------------------------------- */
 #define DICT_TOKENS_M4TH_CORE(X)                                                                   \
-    X(7, "xt>code", xt_to_code)            /* ( XT -- taddr n )   get code array    from XT */     \
-    X(9, "xt>code>n", xt_to_code_n)        /* ( XT -- n )         get code size     from XT */     \
-    X(7, "xt>data", xt_to_data)            /* ( XT -- caddr n )   get data array    from XT */     \
-    X(12, "xt>data>addr", xt_to_data_addr) /* ( XT -- caddr )     get data address  from XT */     \
-    X(9, "xt>data>n", xt_to_data_n)        /* ( XT -- n )         get data size     from XT */     \
-    X(8, "xt>flags", xt_to_flags)          /* ( XT -- m4flags )   get m4flags       from XT */
+    X(9, "word>code", word_to_code)            /* ( w -- taddr n ) get code array   from word */   \
+    X(14, "word>code>addr", word_to_code_addr) /* ( w -- addr )    get code address from word */   \
+    X(11, "word>code>n", word_to_code_n)       /* ( w -- n )       get code size    from word */   \
+    X(10, "word>flags", word_to_flags)         /* ( w -- m4flags ) get m4flags of word */          \
+    X(7, "xt>word", xt_to_word)                /* ( XT -- w )      convert XT to word */
 
 #define DICT_WORDS_M4TH_CORE(X)                                                                    \
     DICT_TOKENS_M4TH_CORE(X)                                                                       \
-    X(8, "to-token", to_token)             /* alias of to_SZtu,     no dedicated m4token */        \
-    X(6, "/token", div_token)              /* alias of _SZt_div,    no dedicated m4token */        \
-    X(6, "token!", token_store)            /* alias of _SZtu_store, no dedicated m4token */        \
-    X(6, "token@", token_fetch)            /* alias of _SZtu_fetch, no dedicated m4token */        \
-    X(6, "token+", token_plus)             /* alias of _SZt_plus,   no dedicated m4token */        \
-    X(6, "tokens", tokens)                 /* alias of _SZt_times,  no dedicated m4token */        \
-    X(10, "xt-inline?", xt_inline_query)   /* ( XT -- flag ) calls to XT should be inlined? */     \
-    X(12, "xt>code>addr", xt_to_code_addr) /* ( XT -- taddr )   get code address from XT */
+    X(8, "to-token", to_token)               /* alias of to_SZtu,     no dedicated m4token */      \
+    X(6, "/token", div_token)                /* alias of _SZt_div,    no dedicated m4token */      \
+    X(6, "token!", token_store)              /* alias of _SZtu_store, no dedicated m4token */      \
+    X(6, "token@", token_fetch)              /* alias of _SZtu_fetch, no dedicated m4token */      \
+    X(6, "token+", token_plus)               /* alias of _SZt_plus,   no dedicated m4token */      \
+    X(6, "tokens", tokens)                   /* alias of _SZt_times,  no dedicated m4token */      \
+    X(12, "word-inline?", word_inline_query) /* ( w -- flag ) calls to word should be inlined? */
 
 /* ------- m4th-impl ---------------------------------------------------------------------------- */
 #define DICT_TOKENS_M4TH_IMPL(X)                                                                   \
@@ -133,7 +131,8 @@
     X(4, "(if)", _if_)                                                                             \
     X(5, "(if0)", _if_zero_)                                                                       \
     X(4, "(ip)", _ip_)                                                                             \
-    X(9, "(ip>body)", _ip_to_body_)                                                                \
+    X(9, "(ip>data)", _ip_to_data_)                                                                \
+    X(14, "(ip>data>addr)", _ip_to_data_addr_)                                                     \
     X(7, "(leave)", _leave_)                                                                       \
     X(8, "(lit-2s)", _lit2s_)                                                                      \
     X(8, "(lit-4s)", _lit4s_)                                                                      \
@@ -147,7 +146,7 @@
     X(13, "[compile-8s,]", _compile8s_)                                                            \
     X(14, "[compile-lit,]", _compile_lit_)                                                         \
     X(25, "[compile-unresolved-jump]", _compile_unresolved_jump_)                                  \
-    X(4, "[xt]", _xt_)                                                                             \
+    X(6, "[word]", _word_)                                                                         \
     X(2, "-1", minus_one)                                                                          \
     X(1, "0", zero)                                                                                \
     X(1, "1", one)                                                                                 \
@@ -159,7 +158,7 @@
 #define DICT_WORDS_M4TH_IMPL(X)                                                                    \
     DICT_TOKENS_M4TH_IMPL(X)                                                                       \
     X(23, "[any-token-gives-cell?]", _any_token_gives_cell_q_)                                     \
-    X(8, "[inline]", _inline_)      /* ( XT -- ) inline a call to XT into word being compiled */   \
+    X(8, "[inline]", _inline_)      /* ( w -- ) inline a call to w into word being compiled */     \
     X(10, "[optimize]", _optimize_) /* optimize word being compiled  */                            \
     X(19, "[resolve-jump-here]", _resolve_jump_here_) /* common back-end of 'else' and 'then' */   \
     X(14, "[resolve-loop]", _resolve_loop_)                                                        \

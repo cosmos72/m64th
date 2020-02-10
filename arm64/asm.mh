@@ -122,7 +122,7 @@
 #define DSTK x21 /* pointer to second data stack element */
 #define RSTK x23 /* pointer to second return stack element */
 #define M4TH x24 /* pointer to C struct m4th */
-#define RXT x25  /* pointer to m4word.code being compiled */
+#define HERE x25 /* pointer to first available code/data location */
 #define FTBL x26 /* pointer to table m4func[m4token] containing asm function addresses */
 #define IP x27   /* instruction pointer */
 
@@ -130,6 +130,7 @@
 
 #define ADD2(src,dst)    add   dst, dst, src;    /* dst += src     */
 #define ADD3(a,b,dst)    add   dst, a, b;        /* dst  = a + b   */
+#define ADDI(a,b,dst)    add   dst, a, IMM(b);   /* dst  = a_reg + b_imm */
 #define AND2(src,dst)    and   dst, dst, src;    /* dst &= src     */
 #define AT0(reg)               [reg]             /* mem[reg]       */
 #define ATx(reg,imm)           [reg,imm]         /* mem[reg+imm]   */
@@ -170,17 +171,28 @@
 #define STORw(reg,at)    str   reg, at;          /* *(uint32_t*)at  = reg */
 #define STORt(reg,at)    strh  reg, at;          /* *(m4token *)at  = reg */
 
+#define CALL(func) /* call native code from m4func */ \
+        RPUSH(lr)                                     \
+        blr    FUNC_SYM(func);                        \
+        RPOP(lr)
+
+#define JNZ(reg, label)  cmp   reg, IMM(0);      /* if reg != 0 jump to label */ \
+                         b.ne  LABEL_SYM(label);
+
+#define JZ(reg, label)   cmp   reg, IMM(0);      /* if reg == 0 jump to label */ \
+                         b.eq  LABEL_SYM(label);
+
+#define JUMP(label)      b     LABEL_SYM(label); /* unconditional jump to label */
+
+#define FADDR(fun, dst) /* load function address */ \
+    adrp  dst,  fun;             /* high 21 bits */ \
+    add   dst,  dst,  :lo12:fun; /* low  12 bits */
+
 #define DPUSH(val)       str   val, [DSTK, -SZ]!; /* push val to second data stack element */
 #define DPOP(val)        ldr   val, [DSTK], SZ;   /* pop second data stack element into val */
 
 #define RPUSH(val)       str   val, [RSTK, -SZ]!; /* push val to second return stack element */
 #define RPOP(val)        ldr   val, [RSTK], SZ;   /* pop second return stack element into val */
-
-#define JUMP(label)      b     LABEL_SYM(label);  /* unconditional jump to label */
-
-#define FADDR(fun, dst) /* load function address */ \
-    adrp  dst,  fun;             /* high 21 bits */ \
-    add   dst,  dst,  :lo12:fun; /* low  12 bits */
 
 /* clang-format on */
 

@@ -24,66 +24,61 @@
   */
 FUNC_START(_ip_)
         DPUSH( DTOP)
-#ifdef LEA                            /* IP actually points to next instruction: fix it */
-        LEA(   DTOP,   AT(IP,-SZt))   
-#else
-        SUB3(  IP, IMM(SZt), DTOP)
-#endif
+        ADDI(  IP, -SZt,   DTOP)       /* IP actually points to next instruction: fix it */
 FUNC_END(_ip_)
 
 
 /**
-  * push to dstack the data address of word being executed.
+  * (ip>data>addr) ( -- addr ) push to dstack the data address of word being executed.
   * must be the first instruction in the word's code.
   */
-FUNC_START(_ip_to_body_)
+FUNC_START(_ip_to_data_addr_)
         DPUSH( DTOP)
-#ifdef LEA                            /* IP actually points to next instruction: fix it */
-        LEA(   DTOP,   AT(IP,-SZt))
-#else
-        SUB3(  IP, IMM(SZt), DTOP)
-#endif
-        LD_uh( REG1_uh,    AT(DTOP, XT_OFF_CODE_N)) /* REG1 = code_n    */
-        SHL2(  IMM(PSZt),  REG1)                    /* REG1 = data offset in bytes */
-        ADD2(  REG1,       DTOP)                    /* DTOP = unaligned(data_addr) */
-        ALIGN( SZ,         DTOP)                    /* DTOP = aligned(data_addr)   */
-FUNC_END(_ip_to_body_)
+        ADDI(  IP, -SZt,   DTOP)       /* IP actually points to next instruction: fix it */
+        LD_uw( REG1_uw,    AT(DTOP, XT_OFF_DATA_OFF)) /* REG1 = data_off           */
+        SUB2(  REG1,       DTOP)                      /* DTOP = w.data.addr        */
+FUNC_END(_ip_to_data_addr_)
+
+/**
+  * (ip>data) ( -- addr n ) push to dstack the data address and size of word being executed.
+  * must be the first instruction in the word's code.
+  */
+FUNC_START(_ip_to_data_)
+        DPUSH( DTOP)
+        ADDI(  IP, -SZt,   DTOP)       /* IP actually points to next instruction: fix it */
+        LD_uw( REG1_uw,    AT(DTOP, XT_OFF_DATA_OFF)) /* REG1 = data_off           */
+        SUB2(  REG1,       DTOP)                      /* DTOP = w.data.addr        */
+        DPUSH( DTOP)
+        LD_uw( DTOP_uw,    AT(DTOP, WORD_OFF_DATA_N - WORD_OFF_DATA_ADDR)) /* DTOP = w.data.n */
+FUNC_END(_ip_to_data_)
 
 
-FUNC_START(xt_to_code) /* ( xt -- taddr n ) */
-        DPUSH( DTOP)                                /*  d2 = taddr = xt */
-        LD_uh( DTOP_uh,    AT(DTOP, XT_OFF_CODE_N)) /* dtop = code_n    */
-FUNC_END(xt_to_code)
+FUNC_START(word_to_code) /* ( w -- taddr n ) */
+        LD_uw( REG1_uw,    AT(DTOP, WORD_OFF_CODE_OFF)) /* REG1 = code_off    */
+        ADD2(  DTOP,       REG1)                        /* REG1 = w.code      */
+        LD_uh( DTOP,       AT(DTOP, WORD_OFF_CODE_N))   /* DTOP = w.code_n    */
+        DPUSH( REG1)                                    /*  d2  = w.code      */
+FUNC_END(word_to_code)
 
 
-FUNC_START(xt_to_code_n) /* ( xt -- n ) */
-        LD_uh( DTOP_uh,    AT(DTOP, XT_OFF_CODE_N)) /* dtop = code_n    */
-FUNC_END(xt_to_code_n)
+FUNC_START(word_to_code_addr) /* ( w -- taddr ) */
+        LD_uw( REG1_uw,    AT(DTOP, WORD_OFF_CODE_OFF)) /* REG1 = code_off    */
+        ADD2(  REG1,       DTOP)                        /* DTOP = w.code      */
+FUNC_END(word_to_code_addr)
 
 
-FUNC_START(xt_to_data) /* ( xt -- caddr n ) */
-        LD_uh( REG1_uh,    AT(DTOP, XT_OFF_CODE_N)) /* REG1 = code_n    */
-        SHL2(  IMM(PSZt),  REG1)                    /* REG1 = data offset in bytes */
-        ADD2(  DTOP,       REG1)                    /* REG1 = unaligned(data_addr) */
-        ALIGN( SZ,         REG1)                    /* REG1 = aligned(data_addr)   */
-        LD_uw( DTOP_uw,    AT(DTOP, XT_OFF_DATA_N)) /* dtop = data_n    */
-        DPUSH( REG1)                                /*  d2 = data_addr  */
-FUNC_END(xt_to_data)
+FUNC_START(word_to_code_n) /* ( w -- n ) */
+        LD_uw( DTOP_uw,    AT(DTOP, WORD_OFF_CODE_N)) /* DTOP = code_n    */
+FUNC_END(word_to_code_n)
 
 
-FUNC_START(xt_to_data_addr) /* ( xt -- caddr ) */
-        LD_uh( REG1_uh,    AT(DTOP, XT_OFF_CODE_N)) /* REG1 = code_n    */
-        SHL2(  IMM(PSZt),  REG1)                    /* REG1 = data offset in bytes */
-        ADD2(  REG1,       DTOP)                    /* DTOP = unaligned(data_addr) */
-        ALIGN( SZ,         DTOP)                    /* DTOP = aligned(data_addr)   */
-FUNC_END(xt_to_data_addr)
+FUNC_START(word_to_flags) /* ( w -- m4flags ) */
+        LD_uh( DTOP_uh,    AT(DTOP, WORD_OFF_FLAGS)) /* dtop = m4flags    */
+FUNC_END(word_to_flags)
 
 
-FUNC_START(xt_to_data_n) /* ( xt -- n ) */
-        LD_uw( DTOP_uw,    AT(DTOP, XT_OFF_DATA_N)) /* dtop = data_n    */
-FUNC_END(xt_to_data_n)
-
-
-FUNC_START(xt_to_flags) /* ( xt -- m4flags ) */
-        LD_uh( DTOP_uh,    AT(DTOP, XT_OFF_FLAGS)) /* dtop = m4flags    */
-FUNC_END(xt_to_flags)
+FUNC_START(xt_to_word) /* ( XT -- w ) */
+        LD_uw( REG1_uw,    AT(DTOP, XT_OFF_DATA_OFF)) /* REG1 = data_off    */
+        SUB2(  REG1,       DTOP)                      /* DTOP = w.data.addr */
+        SUB2(  IMM(WORD_OFF_DATA_ADDR), DTOP)         /* DTOP = w           */
+FUNC_END(xt_to_word)

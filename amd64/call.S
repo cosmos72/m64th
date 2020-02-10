@@ -37,12 +37,11 @@ FUNC_START(th_run)
         STOR(  %rsp, AT(M4TH, M4TH_OFF_C_REG0)) /* save C stack pointer            */
         LOAD(  DSTK, AT(M4TH, M4TH_OFF_DSTK))   /* load data   stack pointer       */
         LOAD(  RSTK, AT(M4TH, M4TH_OFF_RSTK))   /* load return stack pointer       */
-        LOAD(  RXT,  AT(M4TH, M4TH_OFF_W))      /* load word being compiled        */
         LOAD(  IP,   AT(M4TH, M4TH_OFF_IP))     /* load instruction  pointer       */
-        LOAD(  FTBL, AT(M4TH, M4TH_OFF_FTABLE)) /* load table m4token -> m4func      */
+        LOAD(  FTBL, AT(M4TH, M4TH_OFF_FTABLE)) /* load table m4token -> m4func    */
+        LOAD(  HERE, AT(M4TH, M4TH_OFF_HERE))   /* load HERE pointer               */
         DPOP(  DTOP)                   /* load first data   stack element */
         RPOP(  RTOP)                   /* load first return stack element */
-        ADD2(  IMM(WORD_OFF_XT), RXT)  /* convert m4word* -> XT           */
         MOVE(  IMM(-1), RFFF)          /* set RFFF to -1                  */
         jmp    FUNC_SYM(_vm_)          /* enter vm loop                   */
 FUNC_RAWEND(th_run)
@@ -66,12 +65,11 @@ FUNC_RAWEND(_vm_)
  */
 FUNC_START(bye)
 	ADD2(  IMM(SZ), IP)               /* point IP to next instruction    */
-        SUB2(  IMM(WORD_OFF_XT), RXT)     /* convert RXT -> *m4word           */
         RPUSH( RTOP)                      /* save first return stack element */
         DPUSH( DTOP)                      /* save first data   stack element */
-        STOR(  FTBL, AT(M4TH, M4TH_OFF_FTABLE)) /* save table m4token -> m4func     */
+        STOR(  HERE, AT(M4TH, M4TH_OFF_HERE))   /* save HERE pointer               */
+        STOR(  FTBL, AT(M4TH, M4TH_OFF_FTABLE)) /* save table m4token -> m4func    */
         STOR(  IP,   AT(M4TH, M4TH_OFF_IP))     /* save instruction  pointer       */
-        STOR(  RXT,  AT(M4TH, M4TH_OFF_W))      /* save word being compiled        */
         STOR(  RSTK, AT(M4TH, M4TH_OFF_RSTK))   /* save return stack pointer       */
         STOR(  DSTK, AT(M4TH, M4TH_OFF_DSTK))   /* save data   stack pointer       */
         /*
