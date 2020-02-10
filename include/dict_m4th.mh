@@ -99,7 +99,9 @@
     X(5, "uints", uints)              /* alias of four_times                            */         \
     /*                             */ /*                                                */         \
     X(3, "?if", q_if)                 /* alias of dup if                                */         \
-    X(4, "?if0", q_if_zero)           /* alias of dup 0= if                             */
+    X(4, "?if0", q_if_zero)           /* alias of dup 0= if                             */         \
+    /* ( caddr n -- caddr' n' x t|f ) convert string to number */                                  \
+    X(13, "string>number", string_to_number)
 
 /* ------- m4th-core ---------------------------------------------------------------------------- */
 #define DICT_TOKENS_M4TH_CORE(X)                                                                   \
@@ -167,8 +169,6 @@
     X(6, "char>u", char_to_u) /* convert numeric digit from char to unsigned number, else -1 */    \
     /* ( caddr n -- caddr' n' base ) convert prefix # $ % to base, else fetch current base */      \
     X(11, "string>base", string_to_base)                                                           \
-    /* ( caddr n -- caddr' n' x t|f ) convert string to number */                                  \
-    X(13, "string>number", string_to_number)                                                       \
     /* ( caddr n -- caddr' n' ch ) convert "'x'" to 'x' for any char x, else -1 */                 \
     X(11, "string>char", string_to_char)                                                           \
     X(11, "string>sign", string_to_sign) /* ( caddr n -- caddr' n' sign ) parse initial '-' */     \

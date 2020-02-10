@@ -399,6 +399,7 @@ static m4testexecute testexecute_d[] = {
      {{}, {}},
      {{1, {0x100000000}}, {}},
      {}},
+#if 0
     {"0x123 (compile-token,)",
      {m4_compile_token_, m4bye},
      {{1, {0x123}}, {}},
@@ -528,6 +529,7 @@ static m4testexecute testexecute_d[] = {
      {{3, {8, (m4cell)testdata_any, N_OF(testdata_any)}}, {}},
      {{2, {m4eight, ttrue}}, {}},
      {}},
+#endif /* 0 */
 };
 
 static const char teststr_empty[] = "";
@@ -931,8 +933,8 @@ m4cell m4th_testexecute(m4th *m, FILE *out) {
     m4th_testexecute_bunch(m, testexecute_a, N_OF(testexecute_a), &count, out);
     m4th_testexecute_bunch(m, testexecute_b, N_OF(testexecute_b), &count, out);
     m4th_testexecute_bunch(m, testexecute_c, N_OF(testexecute_c), &count, out);
-#if 0
     m4th_testexecute_bunch(m, testexecute_d, N_OF(testexecute_d), &count, out);
+#if 0
     m4th_testexecute_bunch(m, testexecute_e, N_OF(testexecute_e), &count, out);
     m4th_testexecute_bunch(m, testexecute_f, N_OF(testexecute_f), &count, out);
 #endif

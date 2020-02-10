@@ -217,24 +217,19 @@ void m4th_clear(m4th *m);
  */
 m4cell m4th_test(m4th *m, FILE *out);
 
-/** malloc() wrapper, calls exit(1) on failure */
-void *m4mem_allocate(size_t bytes);
-
-/** free() wrapper */
-void m4mem_free(void *ptr);
-
-/** realloc() wrapper, calls exit(1) on failure */
-void *m4mem_resize(void *ptr, size_t bytes);
-
-/** mmap() wrapper, calls exit(1) on failure */
-void *m4mem_map(size_t bytes);
-
-/** munmap() wrapper */
-void m4mem_unmap(void *ptr, size_t bytes);
+void *m4mem_allocate(size_t bytes);          /** malloc() wrapper, calls exit(1) on failure */
+void m4mem_free(void *ptr);                  /** free() wrapper */
+void *m4mem_resize(void *ptr, size_t bytes); /** realloc() wrapper, calls exit(1) on failure */
+void *m4mem_map(size_t bytes);               /** mmap() wrapper, calls exit(1) on failure */
+void m4mem_unmap(void *ptr, size_t bytes);   /** munmap() wrapper */
 
 m4cell m4code_equal(m4code src, m4code dst);
 void m4code_print(m4code src, FILE *out);
 const m4word *m4code_addr_to_word(const m4token *xt);
+
+const m4word *m4dict_lastword(const m4dict *dict);
+m4string m4dict_name(const m4dict *dict);
+void m4dict_print(const m4dict *dict, FILE *out);
 
 /** return how many bytes of code are consumed by token or word marked with given flags */
 m4cell m4flags_consume_ip(m4flags fl);

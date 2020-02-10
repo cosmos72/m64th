@@ -379,6 +379,36 @@ void m4code_print(m4code src, FILE *out) {
     }
 }
 
+/* ----------------------- m4dict ----------------------- */
+
+const m4word *m4dict_lastword(const m4dict *d) {
+    if (d == NULL || d->word_off == 0) {
+        return NULL;
+    }
+    return (const m4word *)((const m4char *)d - d->word_off);
+}
+
+m4string m4dict_name(const m4dict *d) {
+    m4string ret = {};
+    if (d == NULL || d->name_off == 0) {
+        return ret;
+    }
+    const m4countedstring *name = (const m4countedstring *)((const m4char *)d - d->name_off);
+    ret.addr = name->addr;
+    ret.n = name->n;
+    return ret;
+}
+
+static void m4word_print_fwd_recursive(const m4word *w, FILE *out);
+
+void m4dict_print(const m4dict *dict, FILE *out) {
+    fputs("/* -------- ", out);
+    m4string_print(m4dict_name(dict), out);
+    fputs(" -------- */\n", out);
+
+    m4word_print_fwd_recursive(m4dict_lastword(dict), out);
+}
+
 /* ----------------------- m4slice ----------------------- */
 
 static m4cell m4_2bytes_copy_to_token(uint16_t src, m4token *dst) {
@@ -587,7 +617,7 @@ void m4word_print(const m4word *w, FILE *out) {
     fputs("\n}\n", out);
 }
 
-void m4word_print_fwd_recursive(const m4word *w, FILE *out) {
+static void m4word_print_fwd_recursive(const m4word *w, FILE *out) {
     if (w == NULL || out == NULL) {
         return;
     }
@@ -611,26 +641,6 @@ const m4word *m4word_prev(const m4word *w) {
         return NULL;
     }
     return (const m4word *)((const m4char *)w - w->prev_off);
-}
-
-/* ----------------------- m4dict ----------------------- */
-
-static m4string m4dict_name(const m4dict *d) {
-    m4string ret = {};
-    if (d == NULL || d->name_off == 0) {
-        return ret;
-    }
-    const m4countedstring *name = (const m4countedstring *)((const m4char *)d - d->name_off);
-    ret.addr = name->addr;
-    ret.n = name->n;
-    return ret;
-}
-
-static const m4word *m4dict_lastword(const m4dict *d) {
-    if (d == NULL || d->word_off == 0) {
-        return NULL;
-    }
-    return (const m4word *)((const m4char *)d - d->word_off);
 }
 
 /* ----------------------- m4wordlist ----------------------- */
@@ -694,11 +704,7 @@ void m4wordlist_print(const m4wordlist *l, FILE *out) {
     if (out == NULL || l == NULL) {
         return;
     }
-    fputs("/* -------- ", out);
-    m4string_print(m4wordlist_name(l), out);
-    fputs(" -------- */\n", out);
-
-    m4word_print_fwd_recursive(m4wordlist_lastword(l), out);
+    m4dict_print(l->impl, out);
 }
 
 /* ----------------------- m4th ----------------------- */

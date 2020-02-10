@@ -15,17 +15,25 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include "include/dict_fwd.h" /* m4dict_... */
 #include "m4th.h"
 
 #include <stdio.h>
 
+#define N_OF(array) (sizeof(array) / sizeof((array)[0]))
+
 int main(int argc, char *argv[]) {
     m4th *m = m4th_new();
-    m4wordlist **l = m->wordlist;
+    const m4dict *dict[] = {
+        &m4dict_forth,
+        &m4dict_m4th_user,
+        &m4dict_m4th_core,
+        &m4dict_m4th_impl,
+    };
     m4cell i;
 
-    for (i = 0; i < m4th_wordlist_n; i++) {
-        m4wordlist_print(l[i], stdout);
+    for (i = 0; i < (m4cell)N_OF(dict); i++) {
+        m4dict_print(dict[i], stdout);
     }
 
     m4th_del(m);
