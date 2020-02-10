@@ -15,13 +15,18 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <stdint.h>
+#include <stddef.h> /* size_t    */
 
-void cmove(char *restrict src, char *restrict dst, unsigned long n) {
-    while (n) {
-        *src++ = *dst++;
-        n--;
+size_t string_equal(char *restrict src, size_t sn, char *restrict dst, size_t dn) {
+    if (sn != dn) {
+        return 0;
     }
+    while (sn--) {
+        if (*src++ != *dst++) {
+            return 0;
+        }
+    }
+    return (size_t)-1;
 }
 
 int main(void) {
