@@ -283,6 +283,22 @@ static m4cell m4token_print_int64(const m4token *code, FILE *out) {
     return sizeof(val) / sizeof(m4token);
 }
 
+static m4cell m4token_print_word(const m4token *code, FILE *out) {
+    m4cell val;
+    memcpy(&val, code, sizeof(val));
+    if (val > 4096) {
+        const m4word *w = (const m4word *)val;
+        const m4string name = m4word_name(w);
+        if (name.addr && name.n > 0) {
+            fputs("WADDR(", out);
+            m4string_print(name, out);
+            fputs(") ", out);
+            return sizeof(val) / sizeof(m4token);
+        }
+    }
+    return m4token_print_int64(code, out);
+}
+
 static m4cell m4token_print_xt(const m4token *code, FILE *out) {
     m4cell val;
     memcpy(&val, code, sizeof(val));
@@ -308,6 +324,8 @@ m4cell m4token_print_consumed_ip(m4token tok, const m4token *code, m4cell maxn, 
         m4token_print(code[0], out);
         return 1;
     } else if (tok == m4_call_ && nbytes == SZ) {
+        return m4token_print_word(code, out);
+    } else if (tok == m4_call_xt_ && nbytes == SZ) {
         return m4token_print_xt(code, out);
     }
     switch (nbytes) {

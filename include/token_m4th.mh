@@ -110,12 +110,12 @@
 #define M4_q_do_ 610        /* (?do)  must be followed by IP offset to jump */
 #define M4_q_if_ 611        /* (?if)  must be followed by IP offset to jump if dtop == 0 */
 #define M4_q_if_zero_ 612   /* (?if0) must be followed by IP offset to jump if dtop <> 0 */
-#define M4_call_ 613        /* (call) must be followed by XT           */
-#define M4_else_ 614        /* (else) must be followed by IP offset to jump  */
-#define M4_exec_native_ 615 /* (exec-native) pop native code address, execute it */
+#define M4_call_ 613        /* (call) must be followed by word. calls it.    */
+#define M4_call_xt_ 614     /* (callxt) must be followed by XT. calls it.    */
+#define M4_else_ 615        /* (else) must be followed by IP offset to jump  */
+#define M4_exec_native_ 616 /* (exec-native) pop native code address, execute it */
 #define M4_exec_token_                                                                             \
     617 /* (exec-token) pop m4token, exec it. Only for 'inline' tokens that do not consume IP  */
-#undef M4____gap                /*                                         */
 #undef M4____gap                /*                                         */
 #undef M4____gap                /*                                         */
 #define M4_if_ 621              /* (if)      must be followed by IP offset */

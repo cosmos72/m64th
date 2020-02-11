@@ -127,6 +127,7 @@
     X(5, "(?if)", _q_if_)                                                                          \
     X(6, "(?if0)", _q_if_zero_)                                                                    \
     X(6, "(call)", _call_)                                                                         \
+    X(9, "(call-xt)", _call_xt_)                                                                   \
     X(6, "(else)", _else_)                                                                         \
     X(13, "(exec-native)", _exec_native_)                                                          \
     X(12, "(exec-token)", _exec_token_)                                                            \

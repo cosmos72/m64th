@@ -133,12 +133,12 @@ WORD_START(compile_comma, cmove)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_CODE(
-        xt_to_word, dup, _call_, WADDR(word_inline_query),
+        dup, xt_to_word, _call_, WADDR(word_inline_query),
         _if_zero_, T(5),
-            _compile_lit_, _call_,     /* compile (call) */
-            _compile_xt_, exit,        /* compile XT     */
+            _compile_lit_, _call_xt_,  /* compile (call-xt) */
+            _compile_xt_, exit,        /* compile XT        */
         _then_,
-        _call_, WADDR(_inline_), exit
+        xt_to_word, _call_, WADDR(_inline_), exit
    )
 WORD_END(compile_comma)
 WORD(depth,    compile_comma,      DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)

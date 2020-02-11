@@ -247,7 +247,7 @@ WORD_START(_q_if_zero_, _q_if_)
 WORD_END(_q_if_zero_)
 WORD_START(_call_, _q_if_zero_)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZ | M4FLAG_INLINE_ALWAYS | M4FLAG_MAY_JUMP)
-    WORD_DSTACK(-1,-1) /* stack effects of called XT */
+    WORD_DSTACK(-1,-1) /* stack effects of called word */
     WORD_RSTACK(0,0)
     WORD_DSTACK(0,0) /* stack effect when calling */
     WORD_RSTACK(0,1)
@@ -255,7 +255,17 @@ WORD_START(_call_, _q_if_zero_)
     /* make inliner happy: it skips the final 'exit' of a word's code when inlining */
     WORD_CODE(_call_, exit)
 WORD_END(_call_)
-WORD_START(_else_, _call_)
+WORD_START(_call_xt_, _call_)
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZ | M4FLAG_INLINE_ALWAYS | M4FLAG_MAY_JUMP)
+    WORD_DSTACK(-1,-1) /* stack effects of called XT */
+    WORD_RSTACK(0,0)
+    WORD_DSTACK(0,0) /* stack effect when calling */
+    WORD_RSTACK(0,1)
+    WORD_NATIVE_NONE()
+    /* make inliner happy: it skips the final 'exit' of a word's code when inlining */
+    WORD_CODE(_call_xt_, exit)
+WORD_END(_call_xt_)
+WORD_START(_else_, _call_xt_)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_JUMP | M4FLAG_IMMEDIATE)
     WORD_STACK_NONE()  /* dummy, token always jumps */
     WORD_DSTACK(0,0)   /* stack effect when jumping */
