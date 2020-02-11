@@ -48,7 +48,7 @@ WORD(two_to_r,         two_drop,   DSTACK(2,0), RSTACK(0,2), WORD_R_PURE)
 WORD(two_dup,          two_to_r,   DSTACK(2,4), RSTACK(0,0), WORD_PURE)
 WORD(two_r_from,       two_dup,    DSTACK(0,2), RSTACK(2,0), WORD_R_PURE)
 WORD(two_r_fetch,      two_r_from, DSTACK(0,2), RSTACK(2,2), WORD_R_PURE)
-WORD(two_swap,         two_dup,    DSTACK(4,4), RSTACK(0,0), WORD_PURE)
+WORD(two_swap,         two_r_fetch,DSTACK(4,4), RSTACK(0,0), WORD_PURE)
 WORD(less,             two_swap,   DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(ne,               less,       DSTACK(2,1), RSTACK(0,0), WORD_PURE) /* core ext */
 WORD(equal,            ne,         DSTACK(2,1), RSTACK(0,0), WORD_PURE)
