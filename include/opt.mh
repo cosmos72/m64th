@@ -213,8 +213,9 @@
         x((dup, nip), _)                                     /* dup  nip        =>              */ \
         x((dup, or), _)                                      /* dup  or         =>              */ \
         x((dup, xor), (drop, zero))                          /* dup  xor        => drop 0       */ \
-        x((dup, swap), _)                                    /* dup  swap       => dup          */ \
+        x((dup, swap), (dup))                                /* dup  swap       => dup          */ \
         x((two_dup, two_drop), _)                            /* 2dup 2drop      =>              */ \
+        x((two_dup, two_swap), (two_dup))                    /* 2dup 2swap      => 2swap       */  \
         x((two_dup, drop), (over))                           /* 2dup drop       => over         */ \
         x((two_dup, nip), (dup))                             /* 2dup nip        => dup          */ \
         x((c_fetch, drop), (drop))                           /* c@   drop       => drop         */ \
