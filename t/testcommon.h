@@ -35,10 +35,13 @@ enum {
 #define INT(n) (int32_t)(n), 0
 /** store m4cell numeric constant in a sequence of m4token */
 #define CELL(n) (m4cell)(n), 0, 0, 0
-/** store XT address in a sequence of m4cell. assumes word->data_len == 0 */
+/** store XT address in a sequence of m4cell. only works if word->data_len == 0 */
 #define DXT(name) ((m4cell)(WORD_SYM(name).data))
 
 /* store m4_call_ and word in a sequence of m4cell. */
 #define CALL(name) m4_call_, CELL(&WORD_SYM(name))
+
+/* store m4_call_xt_ and XT in a sequence of m4cell. only works if word->data_len == 0 */
+#define CALLXT(name) m4_call_xt_, CELL(WORD_SYM(name).data)
 
 #endif /* M4TH_T_TEST_IMPL_H */

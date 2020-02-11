@@ -63,8 +63,8 @@ WORD_START(to_number, more)
     WORD_CODE(
         /* 2swap 2>r base @                    ( caddr n base ) (R: ud )
          * string&base>u                       ( caddr' n' u  ) (R: ud )
-         * 
-         * 
+         *
+         *
          * then
          * rot >r base >r 0
          * do
@@ -227,7 +227,7 @@ WORD_START(literal, leave)
         _call_, WADDR(_any_token_gives_cell_q_),
         _if_, T(3), _compile_token_,     /* if executing token gives n */
             exit,                        /* append token to XT, exit   */
-        _then_, 
+        _then_,
         dup, dup, to_short,
         equal, _if_, T(5),                /* if n == to_short(n)        */
             _compile_lit_, _lit2s_,      /* append _lit2s_     to XT   */

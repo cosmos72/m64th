@@ -199,7 +199,7 @@ WORD_START(word_inline_query,  to_token)
         _then_,
         word_to_code_n, eight, less, exit
     )
-WORD_END(word_inline_query)    
+WORD_END(word_inline_query)
 WORD(word_to_code,  word_inline_query, DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 WORD(word_to_code_addr,  word_to_code, DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 WORD(word_to_code_n,word_to_code_addr, DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
@@ -661,11 +661,11 @@ WORD_START(string_base_to_u, string_to_char)
          *    then                             ( u caddr digit     ) (R: base n i )
          *    rot j * +                        ( caddr u'          ) (R: base n i )
          *    swap char+                       ( u caddr'          ) (R: base n i )
-         * loop                                
+         * loop
          * swap 0 swap                         ( caddr 0 u         ) (R: base     )
          * r> drop ;                           ( caddr 0 u         )
          */
-        over, _if_zero_, T(4), 
+        over, _if_zero_, T(4),
             drop, zero, exit,
         _then_,
         to_r, zero, minus_rot, zero,
@@ -697,13 +697,13 @@ WORD_START(string_to_sign, string_base_to_u)
         *    one exit                         ( caddr n 1         )
         * then
         * over c@ '-' <>                      ( caddr n t|f       )
-        * if                                  
+        * if
         *    one exit                         ( caddr n 1         )
         * then
         * 1- swap char+ swap                  ( caddr' n'         )
         * -1 ;                                ( caddr n -1        )
         */
-        _q_if_zero_, T(3), 
+        _q_if_zero_, T(3),
             one, exit,
         _then_,
         over, c_fetch, _lit_, T('-'), ne,

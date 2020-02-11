@@ -99,8 +99,8 @@ m4pair m4th_parse(m4th *m, m4string key) {
     if (key.addr == NULL) {
         ret.err = m4err_eof;
     } else if ((w = m4th_lookup_word(m, key)) != NULL) {
-        ret.num = (m4cell)m4word_code(w).addr;
-        ret.err = m4num_is_xt;
+        ret.w = w;
+        ret.err = m4num_is_word;
     } else {
         ret = m4string_to_int(m, key);
     }
@@ -123,8 +123,8 @@ static m4cell m4th_compile_number(m4th *m, m4cell num) {
 m4cell m4th_eval(m4th *m, m4pair arg) {
     const m4char is_interpreting = (m->flags & m4th_flag_status_mask) == m4th_flag_interpret;
 
-    if (arg.err == m4num_is_xt && arg.num != 0) {
-        const m4word *w = (const m4word *)(arg.num - WORD_OFF_XT);
+    if (arg.err == m4num_is_word && arg.num != 0) {
+        const m4word *w = arg.w;
         if (is_interpreting || (w->flags & m4flag_immediate)) {
             if (is_interpreting && (w->flags & m4flag_compile_only)) {
                 FILE *out = stderr;

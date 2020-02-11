@@ -35,7 +35,6 @@ typedef struct m4testcompile_s {
 /* -------------- m4testcompile -------------- */
 
 static const m4testcompile testcompile[] = {
-#if 0
     /* ------------------------------- numbers ------------------------------ */
     {{"0"}, {}, {}, {1, {m4zero}}},
     {{"1", "2"}, {}, {}, {2, {m4one, m4two}}},
@@ -107,28 +106,30 @@ static const m4testcompile testcompile[] = {
     /* ------------------------------- immediate words ---------------------- */
     {{"do"}, {}, {2, {1, m4do}}, {1, {m4do}}},
     /* ------------------------------- words -------------------------------- */
-    {{"base"}, {}, {}, {callsz, {CALL(base)}}},
-#endif /* 0 */
+    {{"compile,"}, {}, {}, {callsz, {CALLXT(compile_comma)}}},
 };
 
-enum { testcompile_n = sizeof(testcompile) / sizeof(testcompile[0]) };
-
-static void m4testcompile_fill_codegen(const m4testcompile *t, m4code *t_codegen) {
+static m4code m4testcompile_init(const m4testcompile *t, m4countedcode *codegen_buf) {
     m4slice t_codegen_in = {(m4cell *)t->codegen.data, t->codegen.n};
-    m4slice_copy_to_code(t_codegen_in, t_codegen);
+    m4code t_codegen = {codegen_buf->data, N_OF(codegen_buf->data)};
+
+    m4slice_copy_to_code(t_codegen_in, &t_codegen);
+    return t_codegen;
 }
 
-static m4cell m4testcompile_run(m4th *m, const m4testcompile *t, m4code t_codegen,
-                                m4test_word *out) {
+static m4cell m4testcompile_run(m4th *m, const m4testcompile *t, m4code t_codegen) {
+    m4word *w;
     const m4countedstack empty = {};
 
     m4th_clear(m);
-    memset(out, '\0', sizeof(m4test_word));
-    m4countedstack_copy(&t->dbefore, &m->dstack);
-    m->w = &out->impl;
+    w = m->w = (m4word *)m->mem.start;
+    memset(w, '\0', sizeof(m4word));
     m->flags &= ~m4th_flag_status_mask;
     m->flags |= m4th_flag_compile;
     m->in_cstr = t->input;
+    m->mem.curr = (m4char *)(w + 1);
+    m4countedstack_copy(&t->dbefore, &m->dstack);
+
     m4th_repl(m);
 
     return m4countedstack_equal(&t->dafter, &m->dstack) &&
@@ -142,7 +143,6 @@ static void m4testcompile_print(const m4testcompile *t, FILE *out) {
         fputs(*cstr, out);
         fputc(' ', out);
     }
-    fputc('\n', out);
 }
 
 static void m4testcompile_failed(m4th *m, const m4testcompile *t, m4code t_codegen, FILE *out) {
@@ -152,9 +152,9 @@ static void m4testcompile_failed(m4th *m, const m4testcompile *t, m4code t_codeg
     }
     fputs("\ncompile test  failed: ", out);
     m4testcompile_print(t, out);
-    fputs("    initial   data  stack ", out);
+    fputs("\n    initial   data  stack ", out);
     m4countedstack_print(&t->dbefore, out);
-    fputs("    expected    codegen   ", out);
+    fputs("\n    expected    codegen   ", out);
     m4code_print(t_codegen, out);
     fputs("\n      actual    codegen   ", out);
     m4word_code_print(m->w, out);
@@ -175,19 +175,14 @@ static void m4testcompile_failed(m4th *m, const m4testcompile *t, m4code t_codeg
 }
 
 m4cell m4th_testcompile(m4th *m, FILE *out) {
-    m4test_word w;
+    m4countedcode codegen_buf;
     m4cell i, fail = 0;
-    enum { n = testcompile_n };
 
-    m4token buf[m4test_code_n];
-
-    for (i = 0; i < n; i++) {
+    for (i = 0; i < (m4cell)N_OF(testcompile); i++) {
         const m4testcompile *t = &testcompile[i];
+        m4code t_codegen = m4testcompile_init(t, &codegen_buf);
 
-        m4code t_codegen = {buf, m4test_code_n};
-        m4testcompile_fill_codegen(t, &t_codegen);
-
-        if (!m4testcompile_run(m, t, t_codegen, &w)) {
+        if (!m4testcompile_run(m, t, t_codegen)) {
             fail++, m4testcompile_failed(m, t, t_codegen, out);
         }
     }

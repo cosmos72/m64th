@@ -23,6 +23,8 @@
 m4cell m4th_testcompile(m4th *m, FILE *out);
 m4cell m4th_testexecute(m4th *m, FILE *out);
 
+#define N_OF(array) (sizeof(array) / sizeof((array)[0]))
+
 /* -------------- m4countedstack  -------------- */
 
 enum { m4test_stack_n = 5 };
@@ -65,13 +67,5 @@ typedef struct m4countedwcode_s {
     m4cell n;
     m4cell data[m4test_code_n];
 } m4countedwcode;
-
-/* -------------- m4test_word  -------------- */
-
-typedef struct m4test_word_s {
-    m4word impl;
-    /* reserve space for test code + generated code */
-    m4token code[2 * m4test_code_n];
-} m4test_word;
 
 #endif /* M4TH_TEST_H */

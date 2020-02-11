@@ -23,7 +23,10 @@
 typedef struct m4pair_s m4pair;
 
 struct m4pair_s {
-    m4cell num;
+    union {
+        m4cell num;
+        const m4word *w;
+    };
     m4cell err;
 };
 

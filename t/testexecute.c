@@ -44,8 +44,6 @@ typedef struct m4testexecute_code_s {
 
 /* -------------- m4cell[] -> m4token[] conversion -------------- */
 
-#define N_OF(array) (sizeof(array) / sizeof((array)[0]))
-
 #define m4array_copy_to_tarray(array, tarray)                                                      \
     m4array_n_copy_to_tarray_n(array, N_OF(array), tarray, N_OF(tarray))
 

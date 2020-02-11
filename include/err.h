@@ -20,8 +20,8 @@
 
 /* the values below must match the #defines in file err.mh */
 typedef enum m4err_id_e {
-    m4num_is_xt = -1, /* special case rather than an error  */
-    m4err_ok = 0,     /* success */
+    m4num_is_word = -1, /* special case rather than an error  */
+    m4err_ok = 0,       /* success */
     m4err_eof = 1,
     m4err_syntax = 2,
     m4err_bad_addr = 3,

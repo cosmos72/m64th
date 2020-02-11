@@ -132,6 +132,7 @@ FUNC_START(_compile_unresolved_jump_)    /* [compile-unresolved-jump] */
         STORt( DTOPt,      AT(HERE, SZt))              /* here[1] = d                */
 #endif
         ADD2(  IMM(2),     REG2)                       /* code_n += 2                */
+        ADD2(  IMM(2*SZt), HERE)                       /* here += 2 * SZt            */
         STORh( REG2h,      AT(REG1, WORD_OFF_CODE_N))  /* w.code_n = code_n          */
         DPUSH( REG2)                                   /* d2 = jump_address = code_n */
         MOVE(  REG3,       DTOP)                       /* dtop = jump_token = c      */

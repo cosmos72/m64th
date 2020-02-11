@@ -61,7 +61,7 @@ FUNC_START(cmove)    /* cmove   'string' word set */
 
         cld;                           /* forward direction */
         rep    movsb (%rsi), (%rdi);   /* copy string       */
-        
+
         lea    AT(%rax,SZ3), DSTK;     /* load DSTK         */
         MOVE(  AT(%rax,SZ2), DTOP)     /* load dstack top   */
         MOVE(  %rdx,   %rsi)           /* load RSTK         */

@@ -774,9 +774,9 @@ m4cell m4th_execute_word(m4th *m, const m4word *w) {
     const m4token *save_ip = m->ip;
     m4cell ret;
     {
-        m4cell xt = (m4cell)m4word_code(w).addr;
+        m4cell cell = (m4cell)w;
         code[0] = m4_call_;
-        memcpy(code + 1, &xt, SZ);
+        memcpy(code + 1, &cell, SZ);
         code[1 + SZ / SZt] = m4bye;
     }
     m->ip = code;
