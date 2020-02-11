@@ -17,6 +17,16 @@
 
 #include "../dispatch/asm.mh"
 
+/** must be followed by a word address. calls it. */
+FUNC_START(_call_)
+        RPUSH( RTOP)                   /* save RTOP           */
+        ADDI(  IP,     SZ,     RTOP)   /* save return address = IP+SZ  */
+        LOAD(  IP,     AT(IP))         /* load XT from IP[0]  */
+        LD_uh( REG2_uh,AT(IP, WORD_OFF_CODE_OFF)) /* b = w.code_off */
+        ADD2(  REG2,   IP)             /* IP = XT             */
+        NEXT0()                        /* jump to XT          */
+FUNC_RAWEND(_call_)
+
 
 /** pop XT from dstack and call it. */
 FUNC_START(execute)

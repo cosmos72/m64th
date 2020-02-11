@@ -96,15 +96,6 @@ FUNC_START(bye)
         ret;                           /* return to C                     */
 FUNC_RAWEND(bye)
 
-/** must be followed by an XT. calls it. */
-FUNC_START(_call_)
-        RPUSH( RTOP)                   /* save RTOP           */
-        ADD3(  IP,   IMM(SZ), RTOP)    /* save return address = IP+SZ  */
-        LOAD(  IP,   AT(IP))           /* load XT from IP[0]  */
-        NEXT0()                        /* jump to XT          */
-FUNC_RAWEND(_call_)
-
-
 /** pop address of native code from dstack and call it. */
 FUNC_START(_exec_native_)
         MOVE(  DTOP, REG0)         /* REG1 = address                */

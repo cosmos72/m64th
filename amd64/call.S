@@ -88,17 +88,6 @@ FUNC_START(bye)
 FUNC_RAWEND(bye)
 
 
-/** must be followed by a word address. calls it. */
-FUNC_START(_call_)
-        RPUSH( RTOP)               /* save RTOP                     */
-        lea    AT(IP, SZ), RTOP    /* save return address = IP + SZ */
-        LOAD(  IP,     AT(IP))     /* IP = word at IP[0]            */
-        LD_uh( REG2,   AT(IP, WORD_OFF_CODE_OFF)) /* b = code_off   */
-        ADD2(  REG2,   IP)         /* IP = XT                       */
-        NEXT0()
-FUNC_RAWEND(_call_)
-
-
 /** pop address of native code from dstack and call it. */
 FUNC_START(_exec_native_)
         MOVE(  DTOP, REG1)         /* REG1 = address                */
