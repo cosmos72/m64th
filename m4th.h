@@ -177,8 +177,8 @@ struct m4th_s {        /**< m4th forth interpreter and compiler */
     const void *c_regs[1]; /**< m4th_run() may save C registers here  */
 
     /* USER variables, i.e. thread-local */
-    m4cbuf mem;  /**< start, HERE and end of data space     */
     m4word *w;   /**< forth word being compiled             */
+    m4cbuf mem;  /**< start, HERE and end of data space     */
     m4func quit; /**< forth function to execute on quit. usually m4fbye or m4fquit */
     m4err err;   /**< error set by ABORT                    */
 
@@ -250,12 +250,12 @@ void m4string_print_hex(m4string str, FILE *out);
 
 void m4stack_print(const m4stack *stack, FILE *out);
 
-m4code m4word_code(const m4word *w, m4cell code_start_n);
+m4code m4word_code(const m4word *w);
 m4string m4word_data(const m4word *w, m4cell code_start_n);
 m4string m4word_name(const m4word *w);
 const m4word *m4word_prev(const m4word *w);
 void m4word_print(const m4word *w, FILE *out);
-void m4word_code_print(const m4word *w, m4cell code_start_n, FILE *out);
+void m4word_code_print(const m4word *w, FILE *out);
 void m4word_data_print(const m4word *w, m4cell data_start_n, FILE *out);
 
 m4string m4wordlist_name(const m4wordlist *d);

@@ -28,7 +28,7 @@
 #define M4TH_OFF_OUT SZ12     /* offset of m4th->out.curr    */
 #define M4TH_OFF_OUT_END SZ13 /* offset of m4th->out.end     */
 #define M4TH_OFF_C_REG0 SZ15  /* offset of m4th->c_regs[0]   */
-#define M4TH_OFF_HERE SZ17    /* offset of m4th->here        */
-#define M4TH_OFF_W SZ19       /* offset of m4th->w           */
+#define M4TH_OFF_W SZ16       /* offset of m4th->w           */
+#define M4TH_OFF_HERE SZ18    /* offset of m4th->here        */
 
 #endif /* M4TH_INCLUDE_M4TH_ASM_MH */

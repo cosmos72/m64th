@@ -28,8 +28,8 @@
 
 typedef struct m4testcompile_s {
     const char *input[8];
-    m4test_stack dbefore, dafter;
-    m4test_code codegen;
+    m4countedstack dbefore, dafter;
+    m4countedwcode codegen;
 } m4testcompile;
 
 /* -------------- m4testcompile -------------- */
@@ -107,7 +107,7 @@ static const m4testcompile testcompile[] = {
     /* ------------------------------- immediate words ---------------------- */
     {{"do"}, {}, {2, {1, m4do}}, {1, {m4do}}},
     /* ------------------------------- words -------------------------------- */
-    {{"base"}, {}, {}, {callsz, {CALLXT(base)}}},
+    {{"base"}, {}, {}, {callsz, {CALL(base)}}},
 #endif /* 0 */
 };
 
@@ -120,19 +120,20 @@ static void m4testcompile_fill_codegen(const m4testcompile *t, m4code *t_codegen
 
 static m4cell m4testcompile_run(m4th *m, const m4testcompile *t, m4code t_codegen,
                                 m4test_word *out) {
-    const m4test_stack empty = {};
+    const m4countedstack empty = {};
 
     m4th_clear(m);
     memset(out, '\0', sizeof(m4test_word));
-    m4test_stack_copy(&t->dbefore, &m->dstack);
+    m4countedstack_copy(&t->dbefore, &m->dstack);
     m->w = &out->impl;
     m->flags &= ~m4th_flag_status_mask;
     m->flags |= m4th_flag_compile;
     m->in_cstr = t->input;
     m4th_repl(m);
 
-    return m4test_stack_equal(&t->dafter, &m->dstack) && m4test_stack_equal(&empty, &m->rstack) &&
-           m4code_equal(t_codegen, m4word_code(m->w, 0));
+    return m4countedstack_equal(&t->dafter, &m->dstack) &&
+           m4countedstack_equal(&empty, &m->rstack) /**/ &&
+           m4code_equal(t_codegen, m4word_code(m->w));
 }
 
 static void m4testcompile_print(const m4testcompile *t, FILE *out) {
@@ -145,30 +146,30 @@ static void m4testcompile_print(const m4testcompile *t, FILE *out) {
 }
 
 static void m4testcompile_failed(m4th *m, const m4testcompile *t, m4code t_codegen, FILE *out) {
-    const m4test_stack empty = {};
+    const m4countedstack empty = {};
     if (out == NULL) {
         return;
     }
     fputs("\ncompile test  failed: ", out);
     m4testcompile_print(t, out);
     fputs("    initial   data  stack ", out);
-    m4test_stack_print(&t->dbefore, out);
+    m4countedstack_print(&t->dbefore, out);
     fputs("    expected    codegen   ", out);
     m4code_print(t_codegen, out);
     fputs("\n      actual    codegen   ", out);
-    m4word_code_print(m->w, 0, out);
+    m4word_code_print(m->w, out);
     fputc('\n', out);
 
     if (m->dstack.curr == m->dstack.end && m->rstack.curr == m->rstack.end) {
         return;
     }
     fputs("... expected  data  stack ", out);
-    m4test_stack_print(&t->dafter, out);
+    m4countedstack_print(&t->dafter, out);
     fputs("      actual  data  stack ", out);
     m4stack_print(&m->dstack, out);
 
     fputs("... expected return stack ", out);
-    m4test_stack_print(&empty, out);
+    m4countedstack_print(&empty, out);
     fputs("      actual return stack ", out);
     m4stack_print(&m->rstack, out);
 }

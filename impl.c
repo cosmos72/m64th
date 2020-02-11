@@ -99,7 +99,7 @@ m4pair m4th_parse(m4th *m, m4string key) {
     if (key.addr == NULL) {
         ret.err = m4err_eof;
     } else if ((w = m4th_lookup_word(m, key)) != NULL) {
-        ret.num = (m4cell)m4word_code(w, 0).addr;
+        ret.num = (m4cell)m4word_code(w).addr;
         ret.err = m4num_is_xt;
     } else {
         ret = m4string_to_int(m, key);
@@ -109,7 +109,7 @@ m4pair m4th_parse(m4th *m, m4string key) {
 
 /** temporary C implementation of (compile-word) */
 static m4cell m4th_compile_word(m4th *m, const m4word *w) {
-    dpush(m, (m4cell)m4word_code(w, 0).addr);
+    dpush(m, (m4cell)m4word_code(w).addr);
     return m4th_execute_word(m, &WORD_SYM(compile_comma));
 }
 

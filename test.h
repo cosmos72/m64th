@@ -23,37 +23,48 @@
 m4cell m4th_testcompile(m4th *m, FILE *out);
 m4cell m4th_testexecute(m4th *m, FILE *out);
 
-/* -------------- m4slice  -------------- */
-
-void m4slice_copy_to_word_code(m4slice src, m4word *w);
-
-/* -------------- m4test_stack  -------------- */
+/* -------------- m4countedstack  -------------- */
 
 enum { m4test_stack_n = 5 };
 
-typedef struct m4test_stack_s {
+typedef struct m4countedstack_s {
     m4cell len;
     m4cell data[m4test_stack_n];
-} m4test_stack;
+} m4countedstack;
 
-typedef struct m4test_stacks_s {
-    m4test_stack d, r;
-} m4test_stacks;
+typedef struct m4countedstacks_s {
+    m4countedstack d, r;
+} m4countedstacks;
 
-void m4test_stack_copy(const m4test_stack *src, m4buf *dst);
-m4cell m4test_stack_equal(const m4test_stack *src, const m4buf *dst);
-void m4test_stack_print(const m4test_stack *src, FILE *out);
+void m4countedstack_copy(const m4countedstack *src, m4buf *dst);
+m4cell m4countedstack_equal(const m4countedstack *src, const m4buf *dst);
+void m4countedstack_print(const m4countedstack *src, FILE *out);
 
-/* -------------- m4test_code  -------------- */
+/* -------------- m4code_pair  -------------- */
+
+typedef struct m4code_pair_s {
+    m4code first, second;
+} m4code_pair;
+
+/* -------------- m4countedcode  -------------- */
 
 enum { m4test_code_n = 16 };
 
-typedef struct m4test_code_s {
+typedef struct m4countedcode_s {
+    m4cell n;
+    m4token data[m4test_code_n];
+} m4countedcode;
+
+typedef struct m4countedcode_pair_s {
+    m4countedcode first, second;
+} m4countedcode_pair;
+
+/* -------------- m4countedwcode  -------------- */
+
+typedef struct m4countedwcode_s {
     m4cell n;
     m4cell data[m4test_code_n];
-} m4test_code;
-
-void m4test_code_print(const m4test_code *src, FILE *out);
+} m4countedwcode;
 
 /* -------------- m4test_word  -------------- */
 

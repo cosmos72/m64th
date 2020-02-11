@@ -88,11 +88,13 @@ FUNC_START(bye)
 FUNC_RAWEND(bye)
 
 
-/** must be followed by an XT. calls it. */
+/** must be followed by a word address. calls it. */
 FUNC_START(_call_)
         RPUSH( RTOP)               /* save RTOP                     */
         lea    AT(IP, SZ), RTOP    /* save return address = IP + SZ */
-        LOAD(  IP,     AT(IP))     /* set IP = XT at IP[0]          */
+        LOAD(  IP,     AT(IP))     /* IP = word at IP[0]            */
+        LD_uh( REG2,   AT(IP, WORD_OFF_CODE_OFF)) /* b = code_off   */
+        ADD2(  REG2,   IP)         /* IP = XT                       */
         NEXT0()
 FUNC_RAWEND(_call_)
 

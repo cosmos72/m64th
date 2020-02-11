@@ -438,6 +438,7 @@ void m4slice_copy_to_code(const m4slice src, m4code *dst) {
     m4cell i = 0, n = src.n;
     const m4cell *sdata = src.addr;
     m4token *ddata = dst->addr;
+
     while (i < n) {
         m4cell x = sdata[i];
         const m4word *w;
@@ -547,12 +548,8 @@ m4cell m4string_compare(m4string a, m4string b) {
 
 /* ----------------------- m4word ----------------------- */
 
-m4code m4word_code(const m4word *w, m4cell code_start_n) {
-    m4code ret = {};
-    if (w->code_n >= code_start_n) {
-        ret.addr = code_start_n + (m4token *)((m4cell)w + w->code_off);
-        ret.n = w->code_n - code_start_n;
-    }
+m4code m4word_code(const m4word *w) {
+    m4code ret = {(m4token *)((m4cell)w + w->code_off), w->code_n};
     return ret;
 }
 
@@ -570,11 +567,11 @@ m4string m4word_data(const m4word *w, m4cell data_start_n) {
     return ret;
 }
 
-void m4word_code_print(const m4word *w, m4cell code_start_n, FILE *out) {
+void m4word_code_print(const m4word *w, FILE *out) {
     if (w == NULL || out == NULL) {
         return;
     }
-    m4code_print(m4word_code(w, code_start_n), out);
+    m4code_print(m4word_code(w), out);
 }
 
 void m4word_data_print(const m4word *w, m4cell data_start_n, FILE *out) {
@@ -613,7 +610,7 @@ void m4word_print(const m4word *w, FILE *out) {
         m4word_data_print(w, 0, out);
     }
     fputs("\n\tcode:        \t", out);
-    m4word_code_print(w, 0, out);
+    m4word_code_print(w, out);
     fputs("\n}\n", out);
 }
 
@@ -749,6 +746,7 @@ void m4th_clear(m4th *m) {
     memset(m->c_regs, '\0', sizeof(m->c_regs));
     m->in.curr = m->in.start;
     m->out.curr = m->out.start;
+    m->mem.curr = m->mem.start;
     m->err.id = 0;
     m->err.msg.impl.n = 0;
 }
@@ -758,7 +756,7 @@ m4cell m4th_execute_word(m4th *m, const m4word *w) {
     const m4token *save_ip = m->ip;
     m4cell ret;
     {
-        m4cell xt = (m4cell)m4word_code(w, 0).addr;
+        m4cell xt = (m4cell)m4word_code(w).addr;
         code[0] = m4_call_;
         memcpy(code + 1, &xt, SZ);
         code[1 + SZ / SZt] = m4bye;

@@ -147,17 +147,17 @@ WORD_START(string_to_number, to_uint)
         _q_if_zero_, T(4),
             zero, false, exit,
         _then_,
-        _call_, XT(string_to_char), dup, invert,
+        _call_, WADDR(string_to_char), dup, invert,
         _if_, T(3),
             true, exit,
         _then_,
-        drop, _call_, XT(string_to_base), to_r,
-        _call_, XT(string_to_sign), over,
+        drop, _call_, WADDR(string_to_base), to_r,
+        _call_, WADDR(string_to_sign), over,
         _if_zero_, T(6),
             drop, zero, false, r_from_drop, exit,
         _then_,
         r_fetch, swap, r_store,
-        _call_, XT(string_base_to_u),
+        _call_, WADDR(string_base_to_u),
         r_from, times, over,
         zero_equal, exit
     )
@@ -261,7 +261,7 @@ WORD_START(_else_, _call_)
     WORD_DSTACK(0,0)   /* stack effect when jumping */
     WORD_RSTACK(0,0)
     WORD_NATIVE_NONE()
-    WORD_CODE(_call_, XT(else), exit)
+    WORD_CODE(_call_, WADDR(else), exit)
 WORD_END(_else_)
 WORD_START(_exec_native_, _else_)
     WORD_FLAGS(M4FLAG_INLINE)
@@ -369,7 +369,7 @@ WORD_START(_then_, _missing_)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_LEN_0()
-    WORD_CODE(_call_, XT(then), exit)
+    WORD_CODE(_call_, WADDR(then), exit)
 WORD_END(_then_)
 WORD(_num_compiled_,   _then_,         DSTACK(0,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
 WORD(_compile2s_,      _num_compiled_, DSTACK(1,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
@@ -481,7 +481,7 @@ WORD_START(_any_token_gives_cell_q_, _token_gives_cell_q_)
         zero, _q_do_, T(14+SZ/SZt),          /* loop if tn != 0          */
                                              /* ( x taddr )              */
             dup_to_r, token_fetch,           /* ( x token ) (R taddr )   */
-            _call_, XT(_token_gives_cell_q_),/* ( token true | x false ) (R taddr ) */
+            _call_, WADDR(_token_gives_cell_q_),/* ( token true | x false ) (R taddr ) */
             _if_, T(5),
                 r_from_drop, true,           /* ( token true )           */
                 unloop, exit,                /* exit                     */
@@ -554,7 +554,8 @@ WORD_START(char_to_u, char_to_base)
         drop, minus_one, exit                    /* ( -1 )                      */
     )
 WORD_END(char_to_u)
-/* string>base ( caddr n -- caddr' n' base )
+/*
+ * string>base ( caddr n -- caddr' n' base )
  * if string starts with # $ or % consume it and return corresponding base, else return current base
  */
 WORD_START(string_to_base, char_to_u)
@@ -576,7 +577,7 @@ WORD_START(string_to_base, char_to_u)
          * base @ exit                     ( caddr n base  )
          */
         _q_if_, T(15+SZ/SZt),
-           over, c_fetch, _call_, XT(char_to_base),
+           over, c_fetch, _call_, WADDR(char_to_base),
            _q_if_, T(8),
               to_r,
               one_minus, swap, char_plus, swap,
@@ -584,7 +585,7 @@ WORD_START(string_to_base, char_to_u)
            _then_,
            drop,
         _then_,
-        _call_, XT(base), fetch, exit
+        _call_, WADDR(base), fetch, exit
     )
 WORD_END(string_to_base)
 /* ( caddr n -- caddr' n' ch )  convert three-character string "'x'" to char 'x' for any x, else -1 */
@@ -659,7 +660,7 @@ WORD_START(string_base_to_u, string_to_char)
         _then_,
         to_r, zero, minus_rot, zero,
         do,
-            dup, c_fetch, _call_, XT(char_to_u), dup, zero, j/*NON-PORTABLE*/, within,
+            dup, c_fetch, _call_, WADDR(char_to_u), dup, zero, j/*NON-PORTABLE*/, within,
             _if_zero_, T(10),
                 drop, swap,
                 i_prime, i, minus, unloop, r_from_drop,

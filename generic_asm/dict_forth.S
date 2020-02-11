@@ -133,12 +133,12 @@ WORD_START(compile_comma, cmove)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_CODE(
-        xt_to_word, dup, _call_, XT(word_inline_query),
+        xt_to_word, dup, _call_, WADDR(word_inline_query),
         _if_zero_, T(5),
             _compile_lit_, _call_,     /* compile (call) */
             _compile_xt_, exit,        /* compile XT     */
         _then_,
-        _call_, XT(_inline_), exit
+        _call_, WADDR(_inline_), exit
    )
 WORD_END(compile_comma)
 WORD(depth,    compile_comma,      DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
@@ -163,7 +163,7 @@ WORD_START(else, dup)
     WORD_CODE(
         _compile_lit_, _else_,           /* compile our unresolved jump */
         _compile_lit_, T(-1),
-        _call_, XT(_resolve_jump_here_), /* resolve jump offset of previous 'if' */
+        _call_, WADDR(_resolve_jump_here_), /* resolve jump offset of previous 'if' */
         _num_compiled_, _lit_, _else_,   /* ( code_n _else_ ) push our unresolved jump */
         exit
     )
@@ -224,7 +224,7 @@ WORD_START(literal, leave)
       ),
       WORD_CODE_TOKENS(
         _ip_to_data_, div_token,         /* ( n taddr tn )             */
-        _call_, XT(_any_token_gives_cell_q_),
+        _call_, WADDR(_any_token_gives_cell_q_),
         _if_, T(3), _compile_token_,     /* if executing token gives n */
             exit,                        /* append token to XT, exit   */
         _then_, 
@@ -253,7 +253,7 @@ WORD_START(loop, literal)
     WORD_NATIVE_NONE()
     WORD_CODE(
         _compile_unresolved_jump_, _loop_,
-        _call_, XT(_resolve_loop_), exit
+        _call_, WADDR(_resolve_loop_), exit
     )
 WORD_END(loop)
 WORD(lshift,           loop,       DSTACK(2,1), RSTACK(0,0), WORD_PURE)
@@ -277,7 +277,7 @@ WORD_START(then, swap)
     WORD_NATIVE_NONE()
     WORD_CODE(
         _compile_lit_, _then_,
-        _call_, XT(_resolve_jump_here_), exit
+        _call_, WADDR(_resolve_jump_here_), exit
     )
 WORD_END(then)
 WORD(true,             then,       DSTACK(0,1), RSTACK(0,0), WORD_PURE) /* core ext */

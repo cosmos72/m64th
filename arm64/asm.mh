@@ -173,7 +173,7 @@
 
 #define CALL(func) /* call native code from m4func */ \
         RPUSH(lr)                                     \
-        blr    FUNC_SYM(func);                        \
+        bl     FUNC_SYM(func);                        \
         RPOP(lr)
 
 #define JNZ(reg, label)  cmp   reg, IMM(0);      /* if reg != 0 jump to label */ \

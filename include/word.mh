@@ -18,8 +18,8 @@
 #ifndef M4TH_INCLUDE_WORD_MH
 #define M4TH_INCLUDE_WORD_MH
 
-/** used to insert an execution token (XT) in a sequence of functions */
-#define m4XT(x) WORD_SYM(x) + WORD_OFF_XT
+/** used to insert a word in a sequence of functions */
+#define m4WADDR(x) WORD_SYM(x)
 
 #define WORD_OFF_FLAGS 6     /* offset of m4word->flags     */
 #define WORD_OFF_CODE_N 14   /* offset of m4word->code_n    */
@@ -73,8 +73,10 @@
 #define WORD_DATA_N_AUTO(name) /*   */                                                             \
     .4byte /**/.L.WORD_SYM(name).data_end - /**/.L.WORD_SYM(name).data_start;
 
-#define WORD_CODE_START(name) /*    */                                                             \
-    .p2align 2, 0;            /* align at 4 bytes: m4xt->data_off below is uint32_t */             \
+#define WORD_CODE_ALIGN() /* align at 4 bytes: m4xt->data_off below is uint32_t                 */ \
+    .p2align 2, 0;
+#define WORD_CODE_START(name)                                                                      \
+    WORD_CODE_ALIGN()                                                                              \
     .4byte 4 +.- WORD_SYM(name) - WORD_OFF_DATA;                                                   \
     .L.WORD_SYM(name).code_start:
 #define WORD_CODE_END(name) /*      */ .L.WORD_SYM(name).code_end:
@@ -97,6 +99,7 @@
     WORD_CODE_N(M4SUM_SIZEOF(__VA_ARGS__) / SZt)                                                   \
     WORD_CODE_OFF(WORD_OFF_DATA) /* no data, word->data is code */                                 \
     WORD_DATA_N_BYTES(0)                                                                           \
+    WORD_CODE_ALIGN()                                                                              \
     WORD_CODE_TOKENS(__VA_ARGS__)
 
 /* clang-format off */
