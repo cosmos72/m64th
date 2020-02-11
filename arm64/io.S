@@ -16,3 +16,5 @@
  */
 
 #include "asm.mh"
+
+/* clang-format off */

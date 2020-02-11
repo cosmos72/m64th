@@ -17,6 +17,8 @@
 
 #include "../dispatch/asm.mh"
 
+/* clang-format off */
+
 
 /** implementation of 'do', enters a (do) ... (loop) */
 #ifndef M4FDO

@@ -19,6 +19,8 @@
 #include "../include/dict.mh"
 #include "../include/dict_forth.mh"
 
+/* clang-format off */
+
 /* ---------------------------------------------------------------------------------------------- */
 DICT_START(forth)
 

@@ -17,6 +17,7 @@
 
 #include "../dispatch/asm.mh"
 
+/* clang-format off */
 
 #ifndef M4F_LIT2S_
 FUNC_START(_lit2s_)        /* (lit-2s) push to dstack the int16 at following IP */

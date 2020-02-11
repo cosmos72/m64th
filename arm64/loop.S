@@ -17,6 +17,8 @@
 
 #include "asm.mh"
 
+/* clang-format off */
+
 /**
  * pop dstack top, enter a do ... (loop) if <> 0.
  * must be followed by IP offset of first instruction after (loop)

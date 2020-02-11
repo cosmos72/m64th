@@ -24,24 +24,24 @@
 enum {
     tfalse = (m4cell)0,
     ttrue = (m4cell)-1,
-    callsz = 1 + SZ / SZt, /* # of m4token needed to store a (call) XT(...) */
+    callsz = 1 + SZ / SZt, /* # of m4token needed to store a CALL(...) or CALLXT(...) */
 };
 
-/* store m4token numeric constant in a sequence of m4token */
+/* store m4token numeric constant in a m4countedwcode */
 #define T(n) (n)
-/** store int16_t numeric constant in a sequence of m4token */
+/** store int16_t numeric constant in a m4countedwcode */
 #define SHORT(n) (int16_t)(n)
-/** store int32_t numeric constant in a sequence of m4token */
+/** store int32_t numeric constant in a m4countedwcode */
 #define INT(n) (int32_t)(n), 0
-/** store m4cell numeric constant in a sequence of m4token */
+/** store m4cell numeric constant in a m4countedwcode */
 #define CELL(n) (m4cell)(n), 0, 0, 0
-/** store XT address in a sequence of m4cell. only works if word->data_len == 0 */
+/** store XT address in a sequence of m4cell. correct only if word->data_len == 0 */
 #define DXT(name) ((m4cell)(WORD_SYM(name).data))
 
-/* store m4_call_ and word in a sequence of m4cell. */
+/* store m4_call_ and word in a m4countedwcode. */
 #define CALL(name) m4_call_, CELL(&WORD_SYM(name))
 
-/* store m4_call_xt_ and XT in a sequence of m4cell. only works if word->data_len == 0 */
+/* store m4_call_xt_ and XT in a m4countedwcode. correct only if word->data_len == 0 */
 #define CALLXT(name) m4_call_xt_, CELL(WORD_SYM(name).data)
 
 #endif /* M4TH_T_TEST_IMPL_H */

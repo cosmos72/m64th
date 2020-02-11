@@ -17,6 +17,8 @@
 
 #include "asm.mh"
 
+/* clang-format off */
+
 #define M4FSTORE
 FUNC_START(store)    /* ! */
         LOAD(  REG1,  AT(DSTK))

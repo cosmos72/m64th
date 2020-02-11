@@ -17,6 +17,7 @@
 
 #include "../dispatch/asm.mh"
 
+/* clang-format off */
 
 /**
   * push to dstack vm's current instruction pointer,

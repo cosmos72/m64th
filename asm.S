@@ -18,6 +18,8 @@
 #ifndef M4TH_ASM_S
 #define M4TH_ASM_S
 
+/* clang-format off */
+
         .file "asm.S"
 
 #include "include/section.mh"

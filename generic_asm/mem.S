@@ -17,6 +17,8 @@
 
 #include "../dispatch/asm.mh"
 
+/* clang-format off */
+
 
 #ifndef M4FC_STORE
 FUNC_START(c_store)        /* c! */

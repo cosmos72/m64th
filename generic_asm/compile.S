@@ -17,6 +17,8 @@
 
 #include "../dispatch/asm.mh"
 
+/* clang-format off */
+
 
 /* [word] ( -- w ) push to dstack word being compiled */
 FUNC_START(_word_)

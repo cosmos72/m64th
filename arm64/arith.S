@@ -17,6 +17,7 @@
 
 #include "asm.mh"
 
+/* clang-format off */
 
 /* signed divide */
 FUNC_START(div)      /* / */

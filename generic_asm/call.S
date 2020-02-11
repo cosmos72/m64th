@@ -17,6 +17,8 @@
 
 #include "../dispatch/asm.mh"
 
+/* clang-format off */
+
 /** must be followed by a word address. calls it. */
 FUNC_START(_call_)
         RPUSH( RTOP)               /* save RTOP            */

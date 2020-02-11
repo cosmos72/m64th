@@ -17,6 +17,8 @@
 
 #include "asm.mh"
 
+/* clang-format off */
+
 /*
  * must be followed by IP offset of first instruction after (loop)
  * IP offset = 0 means first instruction after (?do) itself

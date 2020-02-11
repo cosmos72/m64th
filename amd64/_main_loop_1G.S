@@ -19,6 +19,8 @@
 
 #define m4main main
 
+/* clang-format off */
+
 FUNC_START(main)
         ZERO(  REG1)
         MOVE(  IMM(1000000000), REG2)

@@ -1,7 +1,9 @@
+/* clang-format off */
+
 	.text
 	
 #include "asm.mh"
-	
+
 FUNC_START(push_rbx_rdi)
 	SUB2(  IMM(SZ), %rdi)
 	STOR(  %rbx,    AT(%rdi))

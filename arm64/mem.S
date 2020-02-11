@@ -17,6 +17,7 @@
 
 #include "asm.mh"
 
+/* clang-format off */
 
 FUNC_START(cmove)    /* cmove   'string' word set */
         DPOP(  REG2)            /* REG2 = dst   */

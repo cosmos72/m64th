@@ -19,6 +19,8 @@
 
 #define m4fth_run m4th_run
 
+/* clang-format off */
+
 /**
  * m4th_run: enter m4th interpreter from C:
  * save C registers,

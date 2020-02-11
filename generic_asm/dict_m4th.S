@@ -17,10 +17,12 @@
 
 #include "../dispatch/sz.mh" /* SZ SZt */
 #include "../include/asm.mh"
-#include "../include/macro.mh"
 #include "../include/dict.mh"
 #include "../include/dict_m4th.mh"
 #include "../include/err.mh"
+#include "../include/macro.mh"
+
+/* clang-format off */
 
 /* ---------------------------------------------------------------------------------------------- */
 /* --- m4th-user -------------------------------------------------------------------------------- */

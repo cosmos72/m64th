@@ -17,6 +17,8 @@
 
 #include "asm.mh"
 
+/* clang-format off */
+
 FUNC_START(cr)
         LOAD(  REG1, AT(M4TH, M4TH_OFF_OUT))
         /* TODO check buffer full */
