@@ -92,18 +92,18 @@
 #define REG3_uw w3 /* zero-extend 32 bits into REG3 */
 #define REG3_ut w3 /* zero-extend m4token into REG3 */
 
-#define REG4b w3   /* low  8 bits of REG4 */
-#define REG4h w3   /* low 16 bits of REG4 */
-#define REG4w w3   /* low 32 bits of REG4 */
-#define REG4t w3   /* (m4token)REG4       */
-#define REG4_sb x3 /* sign-extend  8 bits into REG4 */
-#define REG4_sh x3 /* sign-extend 16 bits into REG4 */
-#define REG4_sw x3 /* sign-extend 32 bits into REG4 */
-#define REG4_st x3 /* sign-extend m4token into REG4 */
-#define REG4_ub w3 /* zero-extend  8 bits into REG4 */
-#define REG4_uh w3 /* zero-extend 16 bits into REG4 */
-#define REG4_uw w3 /* zero-extend 32 bits into REG4 */
-#define REG4_ut w3 /* zero-extend m4token into REG4 */
+#define REG4b w4   /* low  8 bits of REG4 */
+#define REG4h w4   /* low 16 bits of REG4 */
+#define REG4w w4   /* low 32 bits of REG4 */
+#define REG4t w4   /* (m4token)REG4       */
+#define REG4_sb x4 /* sign-extend  8 bits into REG4 */
+#define REG4_sh x4 /* sign-extend 16 bits into REG4 */
+#define REG4_sw x4 /* sign-extend 32 bits into REG4 */
+#define REG4_st x4 /* sign-extend m4token into REG4 */
+#define REG4_ub w4 /* zero-extend  8 bits into REG4 */
+#define REG4_uh w4 /* zero-extend 16 bits into REG4 */
+#define REG4_uw w4 /* zero-extend 32 bits into REG4 */
+#define REG4_ut w4 /* zero-extend m4token into REG4 */
 
 #define DTOP x20    /* value of first data stack element */
 #define DTOPb w20   /* low  8 bits of DTOP */
