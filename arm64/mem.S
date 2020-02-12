@@ -52,7 +52,7 @@ LABEL(string_equal.cell)
         b.ne   LABEL_SYM(string_equal.false);
         ADD2(  IMM(8), REG0)
         cmp    REG0,   DTOP;
-        b.ls   LABEL_SYM(string_equal.cell);
+        b.lo   LABEL_SYM(string_equal.cell);
         LOAD(  REG3,   AT(REG1, DTOP, 1)) /* compare last 8 bytes */
         LOAD(  REG4,   AT(REG2, DTOP, 1))
         cmp    REG3,   REG4;

@@ -778,14 +778,19 @@ static m4testexecute testexecute_e[] = {
      {}},
 #endif
     /* ----------------------------- string= -------------------------------------- */
-    {"\"abcdefoo\" \"abcdefoo\" string=",
+    {"\"abcdefg\" \"abcdefg\" string=",
      {CALL(string_equal), m4bye},
-     {{3, {(m4cell) "abcdefoobar", (m4cell) "abcdefoobaz", 10}}, {}},
+     {{3, {(m4cell) "abcdefgh0", (m4cell) "abcdefgh1", 7}}, {}},
      {{1, {ttrue}}, {}},
      {}},
-    {"\"abcdefoobar\" \"abcdefoobaz\" string=",
+    {"\"abcdefgh\" \"abcdefgh\" string=",
      {CALL(string_equal), m4bye},
-     {{3, {(m4cell) "abcdefoobar", (m4cell) "abcdefoobaz", 11}}, {}},
+     {{3, {(m4cell) "abcdefgh0", (m4cell) "abcdefgh1", 8}}, {}},
+     {{1, {ttrue}}, {}},
+     {}},
+    {"\"abcdefgh0\" \"abcdefgh1\" string=",
+     {CALL(string_equal), m4bye},
+     {{3, {(m4cell) "abcdefgh0", (m4cell) "abcdefgh1", 9}}, {}},
      {{1, {tfalse}}, {}},
      {}},
 };
