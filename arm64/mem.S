@@ -57,7 +57,7 @@ LABEL(string_equal.cell)
         LOAD(  REG4,   AT(REG2, DTOP, 1))
         cmp    REG3,   REG4;
         b.ne   LABEL_SYM(string_equal.false);
-        b      LABEL_SYM(string_equal.true);
+        JUMP(  string_equal.true)
 LABEL(string_equal.byte)
         LD_ub( REG3_ub,AT(REG1, REG0, 1))
         LD_ub( REG4_ub,AT(REG2, REG0, 1))

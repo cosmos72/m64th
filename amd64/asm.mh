@@ -182,6 +182,8 @@
 #define JUMP(label) /*     unconditional jump to label _______________________________________ */  \
     jmp LABEL_SYM(label);
 
+#define CMP(reg, val) cmp val, reg;
+
 #define FADDR(fun, dst) /* */ lea fun(RIP), dst; /* load function address */
 
 #define DPUSH(val) /* push val to second data stack element */                                     \

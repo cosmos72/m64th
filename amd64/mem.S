@@ -74,17 +74,33 @@ FUNC_START(string_equal)   /* string=  ( addr1 addr2 u -- t|f ) m4th-user */
         LOAD(  REG2,   AT(DSTK))       /* b = addr2 */
         LOAD(  REG1,   AT(DSTK, SZ))   /* a = addr1 */
         ADD2(  IMM(SZ2),DSTK)
-        cmp    REG1,   REG2;
+        CMP(   REG1,   REG2)
         je     LABEL_SYM(string_equal.true); /* addr1 == addr2 */
         JZ(    DTOP,   string_equal.true)    /* u == 0         */
         ZERO(  REG4w)
-LABEL(string_equal.iter)
+        CMP(   DTOP,   IMM(8))
+        jb     LABEL_SYM(string_equal.byte);
+        SUB2(  IMM(8), DTOP)
+LABEL(string_equal.cell)
+        LOAD(  REG3,   AT(REG1, REG4, 1))
+        LOAD(  REG4,   AT(REG2, REG4, 1))
+        CMP(   REG3,   REG4)
+        jne    LABEL_SYM(string_equal.false);
+        ADD2(  IMM(8), REG4)
+        CMP(   REG4,   DTOP)
+        jbe    LABEL_SYM(string_equal.cell);
+        LOAD(  REG3,   AT(REG1, DTOP, 1)) /* compare last 8 bytes */
+        LOAD(  REG4,   AT(REG2, DTOP, 1))
+        CMP(   REG3,   REG4)
+        jne    LABEL_SYM(string_equal.false);
+        JUMP(  string_equal.true)
+LABEL(string_equal.byte)
         LD_ub( REG3_ub,AT(REG1, REG4, 1))
         cmpb   REG3b,  AT(REG2, REG4, 1);
         jne    LABEL_SYM(string_equal.false);
         INC1(  REG4)
-        cmp    REG4,   DTOP;
-        jne    LABEL_SYM(string_equal.iter);
+        CMP(   REG4,   DTOP)
+        jb     LABEL_SYM(string_equal.byte);
 LABEL(string_equal.true)
         MOVE(  RFFF,   DTOP)
         NEXT()
