@@ -33,10 +33,10 @@
  * caller-saved registers: %r10 %r11 and argument/return registers
  * callee-saved registers: %rbx %rbp %rsp %r12 %r13 %r14 %r15
  */
-#define REG0  %r8   /* scratch register 0 */
 #define REG1  %rax  /* scratch register 1 */
 #define REG2  %rcx  /* scratch register 2 */
 #define REG3  %rdx  /* scratch register 3 */
+#define REG4  %r8   /* scratch register 4 */
 /* additional callee-saved registers: %rbp */
 
 #define REG1b   %al  /* low  8 bits of REG1 */
@@ -77,6 +77,19 @@
 #define REG3_uh %edx /* zero-extend 16 bits into REG3 */
 #define REG3_uw %edx /* zero-extend 32 bits into REG3 */
 #define REG3_ut %edx /* zero-extend m4token into REG3 */
+
+#define REG4b   %r8b /* low  8 bits of REG4 */
+#define REG4h   %r8w /* low 16 bits of REG4 */
+#define REG4w   %r8d /* low 32 bits of REG4 */
+#define REG4t   %r8w /* (m4token)REG4        */
+#define REG4_sb %r8  /* sign-extend  8 bits into REG4 */
+#define REG4_sh %r8  /* sign-extend 16 bits into REG4 */
+#define REG4_sw %r8  /* sign-extend 32 bits into REG4 */
+#define REG4_st %r8  /* sign-extend m4token into REG4 */
+#define REG4_ub %r8d /* zero-extend  8 bits into REG4 */
+#define REG4_uh %r8d /* zero-extend 16 bits into REG4 */
+#define REG4_uw %r8d /* zero-extend 32 bits into REG4 */
+#define REG4_ut %r8d /* zero-extend m4token into REG4 */
 
 #define DTOP    %rbx  /* value of first data stack element */
 #define DTOPb   %bl   /* low  8 bits of DTOP */

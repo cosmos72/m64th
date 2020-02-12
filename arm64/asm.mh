@@ -36,7 +36,8 @@
 #define REG1 x1 /* scratch register 1 */
 #define REG2 x2 /* scratch register 2 */
 #define REG3 x3 /* scratch register 3 */
-/* additional scratch registers:      x4 .. x17        */
+#define REG4 x4 /* scratch register 4 */
+/* additional scratch registers:      x5 .. x17           */
 /* additional callee-saved registers: x18 x19 x28 x29 x30 */
 
 #define REG0b w0   /* low  8 bits of REG0 */
@@ -90,6 +91,19 @@
 #define REG3_uh w3 /* zero-extend 16 bits into REG3 */
 #define REG3_uw w3 /* zero-extend 32 bits into REG3 */
 #define REG3_ut w3 /* zero-extend m4token into REG3 */
+
+#define REG4b w3   /* low  8 bits of REG4 */
+#define REG4h w3   /* low 16 bits of REG4 */
+#define REG4w w3   /* low 32 bits of REG4 */
+#define REG4t w3   /* (m4token)REG4       */
+#define REG4_sb x3 /* sign-extend  8 bits into REG4 */
+#define REG4_sh x3 /* sign-extend 16 bits into REG4 */
+#define REG4_sw x3 /* sign-extend 32 bits into REG4 */
+#define REG4_st x3 /* sign-extend m4token into REG4 */
+#define REG4_ub w3 /* zero-extend  8 bits into REG4 */
+#define REG4_uh w3 /* zero-extend 16 bits into REG4 */
+#define REG4_uw w3 /* zero-extend 32 bits into REG4 */
+#define REG4_ut w3 /* zero-extend m4token into REG4 */
 
 #define DTOP x20    /* value of first data stack element */
 #define DTOPb w20   /* low  8 bits of DTOP */

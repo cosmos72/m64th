@@ -77,13 +77,13 @@ FUNC_START(string_equal)   /* string=  ( addr1 addr2 u -- t|f ) m4th-user */
         cmp    REG1,   REG2;
         je     LABEL_SYM(string_equal.true); /* addr1 == addr2 */
         JZ(    DTOP,   string_equal.true)    /* u == 0         */
-        ZERO(  REG0)
+        ZERO(  REG4w)
 LABEL(string_equal.iter)
-        LD_ub( REG3_ub,AT(REG1, REG0, 1))
-        cmpb   REG3b,  AT(REG2, REG0, 1);
+        LD_ub( REG3_ub,AT(REG1, REG4, 1))
+        cmpb   REG3b,  AT(REG2, REG4, 1);
         jne    LABEL_SYM(string_equal.false);
-        INC1(  REG0)
-        cmp    REG0,   DTOP;
+        INC1(  REG4)
+        cmp    REG4,   DTOP;
         jne    LABEL_SYM(string_equal.iter);
 LABEL(string_equal.true)
         MOVE(  RFFF,   DTOP)
