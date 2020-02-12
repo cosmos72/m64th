@@ -43,66 +43,115 @@ FUNC_END(_else_)
 #endif
 
 
-FUNC_START(to_r)       /* >r */
+#ifndef M4FTWO_DUP_TWO_TO_R
+FUNC_START(two_dup_two_to_r)   /* 2dup 2>r  m4th-user */
+        RPUSH( RTOP)
+        LOAD(  REG1,       AT(DSTK))
+        MOVE(  DTOP,       RTOP)
+        RPUSH( REG1)
+FUNC_END(two_dup_two_to_r)
+#endif
+
+
+#ifndef M4FTWO_TO_R
+FUNC_START(two_to_r)           /* 2>r      */
+        DPOP(  REG1)
+        RPUSH( RTOP)
+        MOVE(  DTOP,       RTOP)
+        RPUSH( REG1)
+        DPOP(  DTOP)
+FUNC_END(two_to_r)
+#endif
+
+
+#ifndef M4FTWO_R_FROM
+FUNC_START(two_r_from)         /* 2r>      */
+        RPOP(  REG1)
+        DPUSH( DTOP)
+        MOVE(  RTOP,       DTOP)
+        DPUSH( REG1)
+        RPOP(  RTOP)
+FUNC_END(two_r_from)
+#endif
+
+
+FUNC_START(two_r_from_two_drop)/* 2r>2drop  m4th-user */
+        LOAD(  RTOP,       AT(RSTK, SZ))
+        ADD2(  IMM(SZ2),   RSTK)
+FUNC_END(two_r_from_two_drop)
+
+
+#ifndef M4FTWO_R_FETCH
+FUNC_START(two_r_fetch)        /* 2r@      */
+        STOR(  DTOP,       AT(DSTK, -SZ))
+        LOAD(  REG1,       AT(RSTK))
+        MOVE(  RTOP,       DTOP)
+        STOR(  REG1,       AT(DSTK, -SZ2))
+        SUB2(  IMM(SZ2),   DSTK)
+FUNC_END(two_r_fetch)
+#endif
+
+
+FUNC_START(to_r)               /* >r */
         RPUSH( RTOP)
         MOVE(  DTOP, RTOP)
         DPOP(  DTOP)
 FUNC_END(to_r)
 
 
-FUNC_START(dup_to_r)   /* dup>r    m4th-user */
+FUNC_START(dup_to_r)           /* dup>r    m4th-user */
         RPUSH( RTOP)
         MOVE(  DTOP, RTOP)
 FUNC_END(dup_to_r)
 
 
-FUNC_START(i)          /* i and r@ */
+FUNC_START(i)                  /* i and r@ */
         DPUSH( DTOP)
         MOVE(  RTOP, DTOP)
 FUNC_END(i)
 
 
-FUNC_START(i_times)    /* i*  m4th-user */
+FUNC_START(i_times)            /* i*  m4th-user */
         MUL2(  RTOP, DTOP)
 FUNC_END(i_times)
 
 
-FUNC_START(i_plus)     /* i+  m4th-user */
+FUNC_START(i_plus)             /* i+  m4th-user */
         ADD2(  RTOP, DTOP)
 FUNC_END(i_plus)
 
 
-FUNC_START(i_minus)    /* i-  m4th-user */
+FUNC_START(i_minus)            /* i-  m4th-user */
         SUB2(  RTOP, DTOP)
 FUNC_END(i_minus)
 
 
-FUNC_START(i_prime)    /* i' m4th-user */
+FUNC_START(i_prime)            /* i' m4th-user */
         DPUSH( DTOP)
         LOAD(  DTOP, AT(RSTK))
 FUNC_END(i_prime)
 
 
-FUNC_START(r_store)    /* r!   m4th-user */
+FUNC_START(r_store)            /* r!   m4th-user */
         MOVE(  DTOP, RTOP)
         DPOP(  DTOP)
 FUNC_END(r_store)
 
 
-FUNC_START(r_plus)     /* r+   m4th-user */
+FUNC_START(r_plus)             /* r+   m4th-user */
         ADD2(  DTOP, RTOP)
         DPOP(  DTOP)
 FUNC_END(r_plus)
 
 
-FUNC_START(r_from)     /* r> */
+FUNC_START(r_from)             /* r> */
         DPUSH( DTOP)
         MOVE(  RTOP, DTOP)
         RPOP(  RTOP)
 FUNC_END(r_from)
 
 
-FUNC_START(r_from_drop)    /* r>drop   m4th-user */
+FUNC_START(r_from_drop)        /* r>drop   m4th-user */
         RPOP(  RTOP)
 FUNC_END(r_from_drop)
 

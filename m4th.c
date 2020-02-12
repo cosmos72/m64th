@@ -232,7 +232,7 @@ enum { wtable_n = sizeof(wtable) / sizeof(wtable[0]) };
 m4cell m4token_consumes_ip(m4token tok) {
     const m4word *w = m4token_to_word(tok);
     if (w != NULL) {
-        return m4flags_consume_ip(w->flags);
+        return m4flags_consume_ip((m4flags)w->flags);
     }
     return 0;
 }
@@ -500,7 +500,6 @@ void m4stack_print(const m4stack *stack, FILE *out) {
     while (hi > lo) {
         fprintf(out, "%ld ", (long)*--hi);
     }
-    fputc('\n', out);
 }
 
 /* ----------------------- m4stackeffect ----------------------- */
@@ -598,7 +597,7 @@ void m4word_data_print(const m4word *w, m4cell data_start_n, FILE *out) {
     }
     m4string data = m4word_data(w, data_start_n);
     if (w->flags & m4flag_data_tokens) {
-        m4code code = {(m4token *)data.addr, data.n / sizeof(m4token)};
+        m4code code = {(m4token *)data.addr, data.n / (m4cell)sizeof(m4token)};
         m4code_print(code, out);
     } else {
         fprintf(out, "<%ld> ", (long)data.n);

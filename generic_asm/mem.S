@@ -28,6 +28,14 @@ FUNC_START(c_store)        /* c! */
 FUNC_END(c_store)
 #endif
 
+
+FUNC_START(count)          /* count */
+        LD_ub( REG1_ub,AT(DTOP))
+        INC1(  DTOP)
+        DPUSH( DTOP)
+        MOVE(  REG1,   DTOP)
+FUNC_END(count)
+
 #ifndef M4FSHORT_STORE
 FUNC_START(short_store)    /* short! */
         DPOP(  REG1)
@@ -51,6 +59,7 @@ FUNC_START(store)          /* ! */
         DPOP(  DTOP)
 FUNC_END(store)
 #endif
+
 
 FUNC_START(byte_fetch)     /* byte@ */
         LD_sb(DTOP_sb, AT(DTOP))

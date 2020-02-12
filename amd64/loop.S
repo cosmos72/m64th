@@ -134,3 +134,13 @@ FUNC_START(_loop_)
         ADD2(  IMM(SZ2),   RSTK)   /* drop i' i from return stack */
         NEXTT()                    /* skip IP offset              */
 FUNC_RAWEND(_loop_)
+
+
+#define M4FTWO_DUP_TWO_TO_R
+FUNC_START(two_dup_two_to_r)   /* 2dup 2>r  m4th-user */
+        STOR(  RTOP,       AT(RSTK, -SZ))
+        LOAD(  REG1,       AT(DSTK))
+        MOVE(  DTOP,       RTOP)
+        STOR(  REG1,       AT(RSTK, -SZ2))
+        SUB2(  IMM(SZ2),   RSTK)
+FUNC_END(two_dup_two_to_r)

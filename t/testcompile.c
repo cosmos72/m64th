@@ -88,14 +88,20 @@ static const m4testcompile testcompile[] = {
 #if SZ >= 4
     {{"literal"}, {1, {0x8000}}, {}, {3, {m4_lit4s_, INT(0x8000)}}},
     {{"literal"}, {1, {-0x8001}}, {}, {3, {m4_lit4s_, INT(-0x8001)}}},
-    {{"literal"}, {1, {0x7fffffffl}}, {}, {3, {m4_lit4s_, INT(0x7fffffffl)}}},
-    {{"literal"}, {1, {-0x80000000l}}, {}, {3, {m4_lit4s_, INT(-0x80000000l)}}},
+    {{"literal"}, {1, {(m4cell)0x7fffffffl}}, {}, {3, {m4_lit4s_, INT(0x7fffffffl)}}},
+    {{"literal"}, {1, {(m4cell)-0x80000000l}}, {}, {3, {m4_lit4s_, INT(-0x80000000l)}}},
 #endif
 #if SZ >= 8
     {{"literal"}, {1, {0x80000000l}}, {}, {5, {m4_lit8s_, CELL(0x80000000l)}}},
     {{"literal"}, {1, {-0x80000001l}}, {}, {5, {m4_lit8s_, CELL(-0x80000001l)}}},
-    {{"literal"}, {1, {0x7fffffffffffffffl}}, {}, {5, {m4_lit8s_, CELL(0x7fffffffffffffffl)}}},
-    {{"literal"}, {1, {-0x8000000000000000l}}, {}, {5, {m4_lit8s_, CELL(-0x8000000000000000l)}}},
+    {{"literal"},
+     {1, {(m4cell)0x7fffffffffffffffl}},
+     {},
+     {5, {m4_lit8s_, CELL(0x7fffffffffffffffl)}}},
+    {{"literal"},
+     {1, {(m4cell)-0x8000000000000000l}},
+     {},
+     {5, {m4_lit8s_, CELL(-0x8000000000000000l)}}},
 #endif
     /* ------------------------------- tokens ------------------------------- */
     {{"*", "+", "-", "/"}, {}, {}, {4, {m4times, m4plus, m4minus, m4div}}},
@@ -158,19 +164,18 @@ static void m4testcompile_failed(m4th *m, const m4testcompile *t, m4code t_codeg
     m4code_print(t_codegen, out);
     fputs("\n      actual    codegen   ", out);
     m4word_code_print(m->w, out);
-    fputc('\n', out);
-
     if (m->dstack.curr == m->dstack.end && m->rstack.curr == m->rstack.end) {
+        fputc('\n', out);
         return;
     }
-    fputs("... expected  data  stack ", out);
+    fputs("\n... expected  data  stack ", out);
     m4countedstack_print(&t->dafter, out);
-    fputs("      actual  data  stack ", out);
+    fputs("\n      actual  data  stack ", out);
     m4stack_print(&m->dstack, out);
 
-    fputs("... expected return stack ", out);
+    fputs("\n... expected return stack ", out);
     m4countedstack_print(&empty, out);
-    fputs("      actual return stack ", out);
+    fputs("\n      actual return stack ", out);
     m4stack_print(&m->rstack, out);
 }
 

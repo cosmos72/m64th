@@ -35,3 +35,26 @@ FUNC_START(cmove)    /* cmove   'string' word set */
 FUNC_END(cmove)
 
 
+FUNC_START(string_equal)   /* string=  ( addr1 addr2 u -- t|f ) m4th-user */
+        DPOP(  REG2)       /* b = addr2 */
+        DPOP(  REG1)       /* a = addr1 */
+#if 0
+        cmp    REG1,   REG2;
+        je     LABEL_SYM(string_equal.true); /* addr1 == addr2 */
+        JZ(    DTOP,   string_equal.true)    /* u == 0         */
+        ZERO(  REG0)
+LABEL(string_equal.iter)
+        LD_ub( REG3_ub,AT(REG1, REG0, 1))
+        cmpb   REG3b,  AT(REG2, REG0, 1);
+        jne    LABEL_SYM(string_equal.false);
+        INC1(  REG0)
+        cmp    REG0,   DTOP;
+        jne    LABEL_SYM(string_equal.iter);
+LABEL(string_equal.true)
+        MOVE(  RFFF,   DTOP)
+        NEXT()
+LABEL(string_equal.false)
+#endif
+        ZERO(  DTOP)
+FUNC_END(string_equal)
+

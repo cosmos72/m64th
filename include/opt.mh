@@ -20,7 +20,7 @@
 
 /**
  * left and right side do not correspond to the same m4token numeric values,
- * to avoid using internal numeric values from m4th-impl
+ * to avoid using internal numeric values from m4th-user or m4th-impl
  * for standard forth tokens (cell+ char+ ...)
  */
 #define OPT1_BODY(x, _)            /* note: '_' represents noop */                                 \
@@ -35,7 +35,9 @@
         x((true), (minus_one))     /* true     => -1            */
 
 #define OPT2_BODY(x, _)                                      /* note: '_' represents noop       */ \
-    x((_ip_, drop), _)                                       /* (ip) drop     =>                */ \
+    x((_ip_, drop), _)                                       /* (ip)           drop  =>         */ \
+        x((_ip_data_, two_drop), _)                          /* (ip>data)     2drop  =>         */ \
+        x((_ip_data_addr_, drop), _)                         /* (ip>data>addr) drop  =>         */ \
         x((minus_one, times), (negate))                      /* -1 *          => negate         */ \
         x((minus_one, plus), (one_minus))                    /* -1 +          => 1-             */ \
         x((minus_one, minus), (one_plus))                    /* -1 -          => 1+             */ \
@@ -59,6 +61,10 @@
         x((zero, or), _)                                     /* 0  or         =>                */ \
         x((zero, pick), dup)                                 /* 0  pick       => dup            */ \
         x((zero, rshift), _)                                 /* 0  rshift     =>                */ \
+        x((zero, u_less), (drop, false))                     /* 0  u<         => drop false     */ \
+        x((zero, u_less_equal), (zero_equal))                /* 0  u<=        => 0=             */ \
+        x((zero, u_more), (zero_ne))                         /* 0  u>         => 0<>            */ \
+        x((zero, u_more_equal), (drop, true))                /* 0  u>=        => drop true      */ \
         x((zero, xor), _)                                    /* 0  xor        =>                */ \
         x((one, times), _)                                   /* 1  *          =>                */ \
         x((one, plus), (one_plus))                           /* 1  +          => 1+             */ \
@@ -159,142 +165,208 @@
         x((zero_more, zero_more_equal), (zero_less_equal))   /* 0>    0>=     => 0<=            */ \
         x((zero_more_equal, zero_more_equal), (zero_less))   /* 0>=   0>=     => 0<             */ \
         /*____ 0<=>  (if),(if-...) _______________________*/ /*                                 */ \
-        x((zero_ne, _if_), (_if_))                           /* 0<>   (if)      => (if)         */ \
-        x((zero_equal, _if_), (_if_zero_))                   /* 0=    (if)      => (if0)    */     \
-        x((zero_equal, _if_zero_), (_if_))                   /* 0=    (if0) => (if)         */     \
-        x((zero_ne, _if_zero_), (_if_zero_))                 /* 0<>   (if0) => (if0)    */         \
-        x((zero_equal, _if_zero_), (_if_))                   /* 0=    (if0) => (if)         */     \
+        x((zero_ne, _if_), (_if_))                           /* 0<>   (if)    => (if)           */ \
+        x((zero_equal, _if_), (_if_zero_))                   /* 0=    (if)    => (if0)          */ \
+        x((zero_equal, _if_zero_), (_if_))                   /* 0=    (if0)   => (if)           */ \
+        x((zero_ne, _if_zero_), (_if_zero_))                 /* 0<>   (if0)   => (if0)          */ \
+        x((zero_equal, _if_zero_), (_if_))                   /* 0=    (if0)   => (if)           */ \
         /*____ 0<=>  invert ______________________________*/ /*                                 */ \
-        x((zero_less, invert), (zero_more_equal))            /* 0<    invert    => 0>=          */ \
-        x((zero_less_equal, invert), (zero_more))            /* 0<=   invert    => 0>           */ \
-        x((zero_ne, invert), (zero_equal))                   /* 0<>   invert    => 0=           */ \
-        x((zero_equal, invert), (zero_ne))                   /* 0=    invert    => 0<>          */ \
-        x((zero_more, invert), (zero_less_equal))            /* 0>    invert    => 0<=          */ \
-        x((zero_more_equal, invert), (zero_less))            /* 0>=   invert    => 0<           */ \
+        x((zero_less, invert), (zero_more_equal))            /* 0<    invert  => 0>=            */ \
+        x((zero_less_equal, invert), (zero_more))            /* 0<=   invert  => 0>             */ \
+        x((zero_ne, invert), (zero_equal))                   /* 0<>   invert  => 0=             */ \
+        x((zero_equal, invert), (zero_ne))                   /* 0=    invert  => 0<>            */ \
+        x((zero_more, invert), (zero_less_equal))            /* 0>    invert  => 0<=            */ \
+        x((zero_more_equal, invert), (zero_less))            /* 0>=   invert  => 0<             */ \
         /*________________________________________________*/ /*                                 */ \
-        x((times, negate), (negate, times))                  /* *    negate     => negate *     */ \
-        x((minus_rot, minus_rot), (rot))                     /* -rot -rot       => rot          */ \
-        x((minus_rot, rot), _)                               /* -rot rot        =>              */ \
-        x((times, negate), (negate, times))                  /* /    negate     => negate /     */ \
-        x((div_mod, drop), (div))                            /* /mod drop       => /            */ \
-        x((div_mod, nip), (mod))                             /* /mod nip        => mod          */ \
-        /*____ <=>  invert ___ inverts first word ________*/ /*                                 */ \
-        x((less, invert), (more_equal))                      /* <    invert     => >=           */ \
-        x((less_equal, invert), (more))                      /* <=   invert     => >            */ \
-        x((ne, invert), (equal))                             /* <>   invert     => =            */ \
-        x((equal, invert), (ne))                             /* =    invert     => <>           */ \
-        x((more, invert), (less_equal))                      /* >    invert     => <=           */ \
-        x((more_equal, invert), (less))                      /* >=   invert     => <            */ \
-        /*___TODO: <=> followed by 0< 0<= 0<> 0= 0> 0>= __*/ /*                                 */ \
+        x((times, negate), (negate, times))                  /* *    negate   => negate *       */ \
+        x((times, negate), (negate, times))                  /* /    negate   => negate /       */ \
+        x((div_mod, drop), (div))                            /* /mod drop     => /              */ \
+        x((div_mod, nip), (mod))                             /* /mod nip      => mod            */ \
+        /*____ <=>  invert _______________________________*/ /*                                 */ \
+        x((less, invert), (more_equal))                      /* <    invert   => >=             */ \
+        x((less_equal, invert), (more))                      /* <=   invert   => >              */ \
+        x((ne, invert), (equal))                             /* <>   invert   => =              */ \
+        x((equal, invert), (ne))                             /* =    invert   => <>             */ \
+        x((more, invert), (less_equal))                      /* >    invert   => <=             */ \
+        x((more_equal, invert), (less))                      /* >=   invert   => <              */ \
+        /*____ <=>  0< ___________________________________*/ /*                                 */ \
+        x((less, zero_less), (less))                         /* <    0<       => <              */ \
+        x((less_equal, zero_less), (less_equal))             /* <=   0<       => <=             */ \
+        x((ne, zero_less), (ne))                             /* <>   0<       => <>             */ \
+        x((equal, zero_less), (equal))                       /* =    0<       => =              */ \
+        x((more, zero_less), (more))                         /* >    0<       => >              */ \
+        x((more_equal, zero_less), (more_equal))             /* >=   0<       => >=             */ \
+        /*____ <=>  0<= __________________________________*/ /*                                 */ \
+        x((less, zero_less_equal), (drop, drop, true))       /* <    0<=      => drop drop true */ \
+        x((less_equal, zero_less_equal), (drop, drop, true)) /* <=   0<=      => drop drop true */ \
+        x((ne, zero_less_equal), (drop, drop, true))         /* <>   0<=      => drop drop true */ \
+        x((equal, zero_less_equal), (drop, drop, true))      /* =    0<=      => drop drop true */ \
+        x((more, zero_less_equal), (drop, drop, true))       /* >    0<=      => drop drop true */ \
+        x((more_equal, zero_less_equal), (drop, drop, true)) /* >=   0<=      => drop drop true */ \
+        /*____ <=>  0<> __________________________________*/ /*                                 */ \
+        x((less, zero_ne), (less))                           /* <    0<>      => <              */ \
+        x((less_equal, zero_ne), (less_equal))               /* <=   0<>      => <=             */ \
+        x((ne, zero_ne), (ne))                               /* <>   0<>      => <>             */ \
+        x((equal, zero_ne), (equal))                         /* =    0<>      => =              */ \
+        x((more, zero_ne), (more))                           /* >    0<>      => >              */ \
+        x((more_equal, zero_ne), (more_equal))               /* >=   0<>      => >=             */ \
+        /*____ <=>  0= ___________________________________*/ /*                                 */ \
+        x((less, zero_equal), (more_equal))                  /* <    0=       => >=             */ \
+        x((less_equal, zero_equal), (more))                  /* <=   0=       => >              */ \
+        x((ne, zero_equal), (equal))                         /* <>   0=       => =              */ \
+        x((equal, zero_equal), (ne))                         /* =    0=       => <>             */ \
+        x((more, zero_equal), (less_equal))                  /* >    0=       => <=             */ \
+        x((more_equal, zero_equal), (less))                  /* >=   0=       => <              */ \
+        /*____ <=>  0> ___________________________________*/ /*                                 */ \
+        x((less, zero_more), (drop, drop, false))            /* <    0>       => drop drop false*/ \
+        x((less_equal, zero_more), (drop, drop, false))      /* <=   0>       => drop drop false*/ \
+        x((ne, zero_more), (drop, drop, false))              /* <>   0>       => drop drop false*/ \
+        x((equal, zero_more), (drop, drop, false))           /* =    0>       => drop drop false*/ \
+        x((more, zero_more), (drop, drop, false))            /* >    0>       => drop drop false*/ \
+        x((more_equal, zero_more), (drop, drop, false))      /* >=   0>       => drop drop false*/ \
+        /*____ <=>  0>= __________________________________*/ /*                                 */ \
+        x((ne, zero_more_equal), (equal))                    /* <>   0>=      => =              */ \
+        x((less, zero_more_equal), (more_equal))             /* <    0>=      => >=             */ \
+        x((less_equal, zero_more_equal), (more))             /* <=   0>=      => >              */ \
+        x((equal, zero_more_equal), (ne))                    /* =    0>=      => <>             */ \
+        x((more, zero_more_equal), (less_equal))             /* >    0>=      => <=             */ \
+        x((more_equal, zero_more_equal), (less))             /* >=   0>=      => <              */ \
+        /*____ u<=>  invert ______________________________*/ /*                                 */ \
+        x((u_less, invert), (u_more_equal))                  /* u<   invert   => u>=            */ \
+        x((u_less_equal, invert), (u_more))                  /* u<=  invert   => u>             */ \
+        x((u_more, invert), (u_less_equal))                  /* u>   invert   => u<=            */ \
+        x((u_more_equal, invert), (u_less))                  /* u>=  invert   => u<             */ \
+        /*_____2... ______________________________________*/ /*                                 */ \
+        x((two_to_r, two_from_r), _)                         /* 2>r   2r>     =>                */ \
+        x((two_dup, two_to_r), (two_dup_two_to_r))           /* 2dup  2>r     => 2dup2>r        */ \
+        x((two_dup, two_drop), _)                            /* 2dup  2drop   =>                */ \
+        x((two_dup, two_nip), _)                             /* 2dup  2nip    =>                */ \
+        x((two_dup, two_over), (two_dup, two_dup))           /* 2dup  2over   => 2dup 2dup      */ \
+        x((two_dup, two_swap), (two_dup))                    /* 2dup  2swap   => 2dup           */ \
+        x((two_dup, drop), (over))                           /* 2dup  drop    => over           */ \
+        x((two_dup, nip), (dup))                             /* 2dup  nip     => dup            */ \
+        x((two_over, two_drop), _)                           /* 2over 2drop   =>                */ \
+        x((two_over, two_nip), (two_drop, two_dup))          /* 2over 2nip    => 2drop 2dup     */ \
+        x((two_from_r, two_to_r), _)                         /* 2r>   2>r     =>                */ \
+        x((two_r_from, two_drop), (two_r_from_two_drop))     /* 2r>   2drop   => 2r>2drop       */ \
+        x((two_swap, two_drop), (two_nip))                   /* 2swap 2drop   => 2nip           */ \
+        x((two_swap, two_nip), (two_drop))                   /* 2swap 2nip    => 2drop          */ \
+        x((two_swap, two_swap), _)                           /* 2swap 2swap   =>                */ \
         /*________________________________________________*/ /*                                 */ \
-        x((to_r, from_r), _)                                 /* >r   r>         =>              */ \
-        x((fetch, drop), (drop))                             /* @    drop       => drop         */ \
-        x((abs, zero_neq), (zero_ne))                        /* abs  0<>        => 0<>          */ \
-        x((abs, zero_equal), (zero_equal))                   /* abs  0=         => 0=           */ \
-        x((abs, abs), (abs))                                 /* abs  abs        => abs          */ \
-        x((abs, squared), (squared))                         /* abs  squared    => squared      */ \
-        x((dup, _if_), (_q_if_))                             /* dup  (if)       => (?if)        */ \
-        x((dup, _if_zero_), (_q_if_zero_))                   /* dup  (if0)      => (?if0)       */ \
-        x((dup, times), (squared))                           /* dup  *          => squared      */ \
-        x((dup, plus), (two_times))                          /* dup  +          => 2*           */ \
-        x((dup, minus), (drop, zero))                        /* dup  -          => drop 0       */ \
-        x((dup, div), (drop, one))                           /* dup  /          => drop 1   0/0!*/ \
-        x((dup, less), (drop, false))                        /* dup  <          => drop false   */ \
-        x((dup, less_equal), (drop, true))                   /* dup  <=         => drop true    */ \
-        x((dup, ne), (drop, false))                          /* dup  <>         => drop false   */ \
-        x((dup, equal), (drop, true))                        /* dup  =          => drop true    */ \
-        x((dup, more), (drop, false))                        /* dup  >          => drop false   */ \
-        x((dup, more_equal), (drop, true))                   /* dup  >=         => drop true    */ \
-        x((dup, and), _)                                     /* dup  and        =>              */ \
-        x((dup, drop), _)                                    /* dup  drop       =>              */ \
-        x((dup, max), _)                                     /* dup  max        =>              */ \
-        x((dup, min), _)                                     /* dup  min        =>              */ \
-        x((dup, mod), (drop, zero))                          /* dup  mod        => drop 0       */ \
-        x((dup, nip), _)                                     /* dup  nip        =>              */ \
-        x((dup, or), _)                                      /* dup  or         =>              */ \
-        x((dup, xor), (drop, zero))                          /* dup  xor        => drop 0       */ \
-        x((dup, swap), (dup))                                /* dup  swap       => dup          */ \
-        x((two_dup, two_drop), _)                            /* 2dup 2drop      =>              */ \
-        x((two_dup, two_swap), (two_dup))                    /* 2dup 2swap      => 2swap       */  \
-        x((two_dup, drop), (over))                           /* 2dup drop       => over         */ \
-        x((two_dup, nip), (dup))                             /* 2dup nip        => dup          */ \
-        x((c_fetch, drop), (drop))                           /* c@   drop       => drop         */ \
-        x((i, drop), _)                                      /* i    drop       =>              */ \
-        x((i, times), (i_times))                             /* i  *            => i*           */ \
-        x((i, plus), (i_plus))                               /* i  +            => i+           */ \
-        x((i, minus), (i_minus))                             /* i  -            => i-           */ \
-        x((i_plus, r_store), (r_plus))                       /* i+     r!       => r+           */ \
-        x((invert, zero_less), (zero_more_equal))            /* invert 0<       => 0>=          */ \
-        x((invert, zero_more_equal), (zero_less))            /* invert 0>=      => 0<           */ \
-        x((invert, one_plus), (negate))                      /* invert 1+       => negate       */ \
-        x((invert, invert), _)                               /* invert invert   =>              */ \
-        x((invert, negate), (one_plus))                      /* invert negate   => 1+           */ \
-        x((invert, _if_zero_), (_if_))                       /* invert (if0)=> (if)         */     \
-        x((invert, _if_), (_if_zero_))                       /* invert (if)     => (if0)    */     \
-        x((negate, _if_zero_), (_if_zero_))                  /* negate (if0)=> (if0)    */         \
-        x((negate, _if_), (_if_))                            /* negate (if)     => (if)         */ \
-        x((negate, plus), (minus))                           /* negate +        => -            */ \
-        x((negate, minus), (plus))                           /* negate -        => +            */ \
-        x((negate, one_minus), (invert))                     /* negate 1-       => invert       */ \
-        /*x((negate, zero_less), (zero_more))*/ /*           negate 0<    => 0>    OVERFLOW! */    \
-        /*x((negate, zero_less_equal), (zero_more_equal))*/ /* negate 0<=   => 0>=   OVERFLOW! */  \
-        x((negate, zero_ne), (zero_ne))                     /* negate 0<>   => 0<>             */  \
-        x((negate, zero_equal), (zero_equal))               /* negate 0=    => 0=              */  \
-        /*x((negate, zero_more), (zero_less))*/             /* negate 0>    => 0<    OVERFLOW! */  \
-        /*x((negate, zero_more_equal), (zero_less_equal))*/ /* negate 0>=   => 0<=   OVERFLOW! */  \
-        x((negate, abs), (abs))                             /* negate abs      => abs          */  \
-        x((negate, negate), _)                              /* negate negate   =>              */  \
-        x((negate, invert), (one_minus))                    /* negate invert   => 1-           */  \
-        x((negate, squared), (squared))                     /* negate squared  => squared      */  \
-        x((over, drop), _)                                  /* over   drop     =>              */  \
-        x((over, nip), (drop, dup))                         /* over   nip      => drop dup     */  \
-        x((two_over, two_drop), _)                          /* 2over  2drop    =>              */  \
-        x((two_over, two_nip), (two_drop, two_dup))         /* 2over  2nip     => 2drop 2dup   */  \
-        x((from_r, to_r), _)                                /* r>     >r       =>              */  \
-        x((r_from, drop), (r_from_drop))                    /* r>     drop     => r>drop       */  \
-        x((r_from_drop, to_r), (r_store))                   /* r>drop r>       => r!           */  \
-        x((rot, minus_rot), _)                              /* rot    rot      => -rot         */  \
-        x((rot, rot), (minus_rot))                          /* rot    -rot     =>              */  \
-        x((swap, times), (times))                           /* swap  *         => *            */  \
-        x((swap, plus), (plus))                             /* swap  +         => +            */  \
-        x((swap, minus), (minus, negate))                   /* swap  -         => - negate     */  \
-        x((swap, less), (more))                             /* swap  <         => >            */  \
-        x((swap, less_equal), (more_equal))                 /* swap  <=        => >=           */  \
-        x((swap, ne), (ne))                                 /* swap  <>        => <>           */  \
-        x((swap, equal), (equal))                           /* swap  =         => =            */  \
-        x((swap, more), (less_equal))                       /* swap  >         => <            */  \
-        x((swap, more_equal), (less_equal))                 /* swap  >=        => <=           */  \
-        x((swap, and), (and))                               /* swap  and       => and          */  \
-        x((swap, drop), (nip))                              /* swap  drop      => nip          */  \
-        x((swap, max), (max))                               /* swap  max       => max          */  \
-        x((swap, min), (min))                               /* swap  min       => min          */  \
-        x((swap, nip), (drop))                              /* swap  nip       => drop         */  \
-        x((swap, or), (or))                                 /* swap  or        => or           */  \
-        x((swap, swap), _)                                  /* swap  swap      =>              */  \
-        x((swap, xor), (xor))                               /* swap  xor       => xor          */  \
-        x((two_swap, two_drop), (two_nip))                  /* 2swap 2drop     => 2nip         */  \
-        x((two_swap, two_nip), (two_drop))                  /* 2swap 2nip      => 2drop        */  \
-        x((two_swap, two_swap), _)                          /* 2swap 2swap     =>              */  \
-        x((xor, invert), (invert, xor))                     /* xor   invert    => invert xor   */  \
-        x((one_plus, byte_fetch), (byte_bracket1))          /* 1+    byte@     => byte[1]      */  \
-        x((one_plus, c_fetch), (char_bracket1))             /* 1+    c@        => char[1]      */  \
-        x((two_plus, byte_fetch), (byte_bracket2))          /* 2+    byte@     => byte[2]      */  \
-        x((two_plus, c_fetch), (char_bracket2))             /* 2+    c@        => char[2]      */  \
-        x((two_plus, short_fetch), (short_bracket1))        /* 2+    short@    => short[1]     */  \
-        x((two_plus, ushort_fetch), (short_bracket1))       /* 2+    ushort@   => ushort[1]    */  \
-        x((four_plus, byte_fetch), (byte_bracket4))         /* 4+    byte@     => byte[4]      */  \
-        x((four_plus, c_fetch), (char_bracket4))            /* 4+    c@        => char[4]      */  \
-        x((four_plus, short_fetch), (short_bracket2))       /* 4+    short@    => short[2]     */  \
-        x((four_plus, ushort_fetch), (short_bracket2))      /* 4+    ushort@   => ushort[2]    */  \
-        x((four_plus, int_fetch), (int_bracket1))           /* 4+    int@      => int[1]       */  \
-        x((four_plus, uint_fetch), (uint_bracket1))         /* 4+    uint@     => uint[1]      */  \
-        x((eight_plus, byte_fetch), (byte_bracket4))        /* 8+    byte@     => byte[8]      */  \
-        x((eight_plus, c_fetch), (char_bracket4))           /* 8+    c@        => char[8]      */  \
-        x((eight_plus, short_fetch), (short_bracket2))      /* 8+    short@    => short[4]     */  \
-        x((eight_plus, ushort_fetch), (short_bracket2))     /* 8+    ushort@   => ushort[4]    */  \
-        x((eight_plus, int_fetch), (int_bracket1))          /* 8+    int@      => int[2]       */  \
-        x((eight_plus, uint_fetch), (uint_bracket1))        /* 8+    uint@     => uint[2]      */  \
-        x((SZ_plus, fetch), (cell_bracket1))                /* SZ+   @         => cell[1]      */
+        x((to_r, from_r), _)                                 /* >r   r>       =>                */ \
+        x((fetch, drop), (drop))                             /* @    drop     => drop           */ \
+        x((abs, zero_neq), (zero_ne))                        /* abs  0<>      => 0<>            */ \
+        x((abs, zero_equal), (zero_equal))                   /* abs  0=       => 0=             */ \
+        x((abs, abs), (abs))                                 /* abs  abs      => abs            */ \
+        x((abs, squared), (squared))                         /* abs  squared  => squared        */ \
+        x((c_fetch, drop), (drop))                           /* c@   drop     => drop           */ \
+        x((dup, _if_), (_q_if_))                             /* dup  (if)     => (?if)          */ \
+        x((dup, _if_zero_), (_q_if_zero_))                   /* dup  (if0)    => (?if0)         */ \
+        x((dup, times), (squared))                           /* dup  *        => squared        */ \
+        x((dup, plus), (two_times))                          /* dup  +        => 2*             */ \
+        x((dup, minus), (drop, zero))                        /* dup  -        => drop 0         */ \
+        x((dup, div), (drop, one))                           /* dup  /        => drop 1   0/0!  */ \
+        x((dup, less), (drop, false))                        /* dup  <        => drop false     */ \
+        x((dup, less_equal), (drop, true))                   /* dup  <=       => drop true      */ \
+        x((dup, ne), (drop, false))                          /* dup  <>       => drop false     */ \
+        x((dup, equal), (drop, true))                        /* dup  =        => drop true      */ \
+        x((dup, more), (drop, false))                        /* dup  >        => drop false     */ \
+        x((dup, more_equal), (drop, true))                   /* dup  >=       => drop true      */ \
+        x((dup, and), _)                                     /* dup  and      =>                */ \
+        x((dup, drop), _)                                    /* dup  drop     =>                */ \
+        x((dup, max), _)                                     /* dup  max      =>                */ \
+        x((dup, min), _)                                     /* dup  min      =>                */ \
+        x((dup, mod), (drop, zero))                          /* dup  mod      => drop 0         */ \
+        x((dup, nip), _)                                     /* dup  nip      =>                */ \
+        x((dup, or), _)                                      /* dup  or       =>                */ \
+        x((dup, over), (dup, dup))                           /* dup  over     => dup dup        */ \
+        x((dup, u_less), (drop, false))                      /* dup  u<       => drop false     */ \
+        x((dup, u_less_equal), (drop, true))                 /* dup  u<=      => drop true      */ \
+        x((dup, u_more), (drop, false))                      /* dup  u>       => drop false     */ \
+        x((dup, u_more_equal), (drop, true))                 /* dup  u>=      => drop true      */ \
+        x((dup, xor), (drop, zero))                          /* dup  xor      => drop 0         */ \
+        x((dup, swap), (dup))                                /* dup  swap     => dup            */ \
+        x((i, drop), _)                                      /* i    drop     =>                */ \
+        x((i, times), (i_times))                             /* i    *        => i*             */ \
+        x((i, plus), (i_plus))                               /* i    +        => i+             */ \
+        x((i, minus), (i_minus))                             /* i    -        => i-             */ \
+        x((i_plus, r_store), (r_plus))                       /* i+   r!       => r+             */ \
+        x((invert, zero_less), (zero_more_equal))            /* invert 0<     => 0>=            */ \
+        x((invert, zero_more_equal), (zero_less))            /* invert 0>=    => 0<             */ \
+        x((invert, one_plus), (negate))                      /* invert 1+     => negate         */ \
+        x((invert, invert), _)                               /* invert invert =>                */ \
+        x((invert, negate), (one_plus))                      /* invert negate => 1+             */ \
+        x((invert, _if_zero_), (_if_))                       /* invert (if0)  => (if)           */ \
+        x((invert, _if_), (_if_zero_))                       /* invert (if)   => (if0)          */ \
+        x((negate, _if_zero_), (_if_zero_))                  /* negate (if0)  => (if0)          */ \
+        x((negate, _if_), (_if_))                            /* negate (if)   => (if)           */ \
+        x((negate, plus), (minus))                           /* negate +      => -              */ \
+        x((negate, minus), (plus))                           /* negate -      => +              */ \
+        x((negate, one_minus), (invert))                     /* negate 1-     => invert         */ \
+        /*x((negate, zero_less), (zero_more))*/              /* negate 0<     => 0>  OVERFLOW!  */ \
+        /*x((negate, zero_less_equal), (zero_more_equal))*/  /* negate 0<=    => 0>= OVERFLOW!  */ \
+        x((negate, zero_ne), (zero_ne))                      /* negate 0<>    => 0<>            */ \
+        x((negate, zero_equal), (zero_equal))                /* negate 0=     => 0=             */ \
+        /*x((negate, zero_more), (zero_less))*/              /* negate 0>     => 0<  OVERFLOW!  */ \
+        /*x((negate, zero_more_equal), (zero_less_equal))*/  /* negate 0>=    => 0<= OVERFLOW!  */ \
+        x((negate, abs), (abs))                              /* negate abs    => abs            */ \
+        x((negate, negate), _)                               /* negate negate =>                */ \
+        x((negate, invert), (one_minus))                     /* negate invert => 1-             */ \
+        x((negate, squared), (squared))                      /* negate squared => squared       */ \
+        x((over, drop), _)                                   /* over   drop   =>                */ \
+        x((over, nip), (drop, dup))                          /* over   nip    => drop dup       */ \
+        x((from_r, to_r), _)                                 /* r>     >r     =>                */ \
+        x((r_from, drop), (r_from_drop))                     /* r>     drop   => r>drop         */ \
+        x((r_from_drop, to_r), (r_store))                    /* r>drop >r     => r!             */ \
+        x((rot, rot), (minus_rot))                           /* rot    rot    => -rot           */ \
+        x((rot, minus_rot), _)                               /* rot    -rot   =>                */ \
+        x((minus_rot, rot), _)                               /* -rot   rot    =>                */ \
+        x((minus_rot, minus_rot), (rot))                     /* -rot   -rot   => rot            */ \
+        x((swap, times), (times))                            /* swap   *      => *              */ \
+        x((swap, plus), (plus))                              /* swap   +      => +              */ \
+        x((swap, minus), (minus, negate))                    /* swap   -      => - negate       */ \
+        x((swap, less), (more))                              /* swap   <      => >              */ \
+        x((swap, less_equal), (more_equal))                  /* swap   <=     => >=             */ \
+        x((swap, ne), (ne))                                  /* swap   <>     => <>             */ \
+        x((swap, equal), (equal))                            /* swap   =      => =              */ \
+        x((swap, more), (less_equal))                        /* swap   >      => <              */ \
+        x((swap, more_equal), (less_equal))                  /* swap   >=     => <=             */ \
+        x((swap, and), (and))                                /* swap   and    => and            */ \
+        x((swap, drop), (nip))                               /* swap   drop   => nip            */ \
+        x((swap, max), (max))                                /* swap   max    => max            */ \
+        x((swap, min), (min))                                /* swap   min    => min            */ \
+        x((swap, nip), (drop))                               /* swap   nip    => drop           */ \
+        x((swap, or), (or))                                  /* swap   or     => or             */ \
+        x((swap, over), (tuck))                              /* swap   over   => tuck           */ \
+        x((swap, swap), _)                                   /* swap   swap   =>                */ \
+        x((swap, u_less), (u_more))                          /* swap   u<     => u>             */ \
+        x((swap, u_less_equal), (u_more_equal))              /* swap   u<=    => u>=            */ \
+        x((swap, u_more), (u_less))                          /* swap   u>     => u<             */ \
+        x((swap, u_more_equal), (u_less_equal))              /* swap   u>=    => u<=            */ \
+        x((swap, xor), (xor))                                /* swap   xor    => xor            */ \
+        x((tuck, drop), (swap))                              /* tuck   drop   => swap           */ \
+        x((xor, invert), (invert, xor))                      /* xor    invert => invert xor     */
+#if 0
+        x((one_plus, byte_fetch), (byte_bracket1))           /* 1+    byte@   => byte[1]      */ \
+        x((one_plus, c_fetch), (char_bracket1))              /* 1+    c@      => char[1]      */ \
+        x((two_plus, byte_fetch), (byte_bracket2))           /* 2+    byte@   => byte[2]      */ \
+        x((two_plus, c_fetch), (char_bracket2))              /* 2+    c@      => char[2]      */ \
+        x((two_plus, short_fetch), (short_bracket1))         /* 2+    short@  => short[1]     */ \
+        x((two_plus, ushort_fetch), (short_bracket1))        /* 2+    ushort@ => ushort[1]    */ \
+        x((four_plus, byte_fetch), (byte_bracket4))          /* 4+    byte@   => byte[4]      */ \
+        x((four_plus, c_fetch), (char_bracket4))             /* 4+    c@      => char[4]      */ \
+        x((four_plus, short_fetch), (short_bracket2))        /* 4+    short@  => short[2]     */ \
+        x((four_plus, ushort_fetch), (short_bracket2))       /* 4+    ushort@ => ushort[2]    */ \
+        x((four_plus, int_fetch), (int_bracket1))            /* 4+    int@    => int[1]       */ \
+        x((four_plus, uint_fetch), (uint_bracket1))          /* 4+    uint@   => uint[1]      */ \
+        x((eight_plus, byte_fetch), (byte_bracket4))         /* 8+    byte@   => byte[8]      */ \
+        x((eight_plus, c_fetch), (char_bracket4))            /* 8+    c@      => char[8]      */ \
+        x((eight_plus, short_fetch), (short_bracket2))       /* 8+    short@  => short[4]     */ \
+        x((eight_plus, ushort_fetch), (short_bracket2))      /* 8+    ushort@ => ushort[4]    */ \
+        x((eight_plus, int_fetch), (int_bracket1))           /* 8+    int@    => int[2]       */ \
+        x((eight_plus, uint_fetch), (uint_bracket1))         /* 8+    uint@   => uint[2]      */ \
+        x((SZ_plus, fetch), (cell_bracket1))                 /* SZ+   @       => cell[1]      */
+#endif /* 0 */
 
 /* low-priority optimizations: they may prevent other optimizations   */
 #define OPT2_LOWPRIO_BODY(x, _)    /* note: '_' represents noop       */                           \

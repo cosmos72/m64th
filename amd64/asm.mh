@@ -33,10 +33,10 @@
  * caller-saved registers: %r10 %r11 and argument/return registers
  * callee-saved registers: %rbx %rbp %rsp %r12 %r13 %r14 %r15
  */
+#define REG0  %r8   /* scratch register 0 */
 #define REG1  %rax  /* scratch register 1 */
 #define REG2  %rcx  /* scratch register 2 */
 #define REG3  %rdx  /* scratch register 3 */
-/* additional scratch registers: %r8 */
 /* additional callee-saved registers: %rbp */
 
 #define REG1b   %al  /* low  8 bits of REG1 */

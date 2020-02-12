@@ -33,17 +33,21 @@
     X(2, "8+", eight_plus)                                                                         \
     X(2, "8/", eight_div)                                                                          \
     /*                             */ /*                                                */         \
+    X(7, "2dup2>r", two_dup_two_to_r)                                                              \
     X(4, "2nip", two_nip)                                                                          \
+    X(8, "2r>2drop", two_r_from_two_drop)                                                          \
+    X(5, "dup>r", dup_to_r)                                                                        \
     X(2, "i*", i_times)                                                                            \
     X(2, "i+", i_plus)                                                                             \
     X(2, "i-", i_minus)                                                                            \
     X(2, "i'", i_prime)                                                                            \
     X(4, "noop", noop)                                                                             \
-    X(5, "dup>r", dup_to_r)                                                                        \
     X(6, "r>drop", r_from_drop)                                                                    \
     X(2, "r!", r_store)                                                                            \
     X(2, "r+", r_plus)                                                                             \
     X(4, "-rot", minus_rot)                                                                        \
+    X(7, "squared", squared)                                                                       \
+    X(7, "string=", string_equal)                                                                  \
     /*                             */ /*                                                */         \
     X(5, "byte@", byte_fetch)                                                                      \
     /* X(5, "char@", char_fetch)   */ /* alias of c@                                    */         \
@@ -113,12 +117,14 @@
 
 #define DICT_WORDS_M4TH_CORE(X)                                                                    \
     DICT_TOKENS_M4TH_CORE(X)                                                                       \
-    X(8, "to-token", to_token)               /* alias of to_SZtu,     no dedicated m4token */      \
-    X(6, "/token", div_token)                /* alias of _SZt_div,    no dedicated m4token */      \
-    X(6, "token!", token_store)              /* alias of _SZtu_store, no dedicated m4token */      \
-    X(6, "token@", token_fetch)              /* alias of _SZtu_fetch, no dedicated m4token */      \
-    X(6, "token+", token_plus)               /* alias of _SZt_plus,   no dedicated m4token */      \
-    X(6, "tokens", tokens)                   /* alias of _SZt_times,  no dedicated m4token */      \
+    X(16, "dict-lookup-word", dict_lookup_word) /* ( addr n dict -- addr n word|0 ) */             \
+    X(11, "lookup-word", lookup_word) /* ( addr n -- word|0 0|1|-1 ) 1 if word is immediate */     \
+    X(6, "/token", div_token)         /* alias of _SZt_div,    no dedicated m4token */             \
+    X(8, "to-token", to_token)        /* alias of to_SZtu,     no dedicated m4token */             \
+    X(6, "token!", token_store)       /* alias of _SZtu_store, no dedicated m4token */             \
+    X(6, "token@", token_fetch)       /* alias of _SZtu_fetch, no dedicated m4token */             \
+    X(6, "token+", token_plus)        /* alias of _SZt_plus,   no dedicated m4token */             \
+    X(6, "tokens", tokens)            /* alias of _SZt_times,  no dedicated m4token */             \
     X(12, "word-inline?", word_inline_query) /* ( w -- flag ) calls to word should be inlined? */
 
 /* ------- m4th-impl ---------------------------------------------------------------------------- */
@@ -144,6 +150,7 @@
     X(9, "(missing)", _missing_)                                                                   \
     X(6, "(then)", _then_)                                                                         \
     X(11, "[#compiled]", _num_compiled_)                                                           \
+    X(14, "[compile-init]", _compile_init_)                                                        \
     X(13, "[compile-2s,]", _compile2s_)                                                            \
     X(13, "[compile-4s,]", _compile4s_)                                                            \
     X(13, "[compile-8s,]", _compile8s_)                                                            \

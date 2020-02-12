@@ -35,7 +35,10 @@ FUNC_START(_num_compiled_)
 FUNC_END(_num_compiled_)
 
 
-/* initialize [word].code_off, update HERE, set REG1 = [word], REG2 = [word].code_n */
+/**
+ * Initialize [word].code_off, update HERE.
+ * Must be called (at least) once per word, before calling any other m4func [compile*]
+ */
 FUNC_START(_compile_init_)
         /* TODO check if enough space */
         LOAD(  REG1,       AT(M4TH, M4TH_OFF_W))       /* a = [word]            */
@@ -65,13 +68,13 @@ LABEL(_compile_init_.full)
         ADDI(  REG3,   -WORD_OFF_DATA, REG2) /* b = w.code_off - WORD_OFF_DATA  */
         STORw( REG2w,      AT(HERE, -4))               /* w.code[-1] = b        */
 LABEL(_compile_init_.done)
-        LD_uh( REG2_uh,    AT(REG1, WORD_OFF_CODE_N))  /* b = w.code_n          */
 FUNC_END(_compile_init_)
 
 
 /** ( -- ) must be followed by m4token, append it to XT being compiled. */
 FUNC_START(_compile_lit_)    /* [compile-lit] */
-        CALL(  _compile_init_) /* updates HERE; sets REG1 = [word], REG2 = code_n */
+        LOAD(  REG1,       AT(M4TH, M4TH_OFF_W))       /* a = [word]              */
+        LD_uh( REG2_uh,    AT(REG1, WORD_OFF_CODE_N))  /* b = w.code_n            */
         LD_ut( REG3_ut,    AT(IP))                     /* c = m4token             */
         INC1(  REG2)                                   /* code_n ++               */
         STORt( REG3t,      AT(HERE))                   /* *here = c               */
@@ -83,7 +86,8 @@ FUNC_RAWEND(_compile_lit_)
 
 /** (int16 -- ) pop int16 from dstack and append it to XT being compiled. */
 FUNC_START(_compile2s_)    /* [compile-2s,] */
-        CALL(  _compile_init_) /* updates HERE; sets REG1 = [word], REG2 = code_n */
+        LOAD(  REG1,       AT(M4TH, M4TH_OFF_W))       /* a = [word]              */
+        LD_uh( REG2_uh,    AT(REG1, WORD_OFF_CODE_N))  /* b = w.code_n            */
         STORh( DTOPh,      AT(HERE))                   /* *here = (int16)DTOP     */
 #if SZt == 2
         INC1(  REG2)                                   /* code_n ++               */
@@ -98,7 +102,8 @@ FUNC_END(_compile2s_)
 
 /** (int32 -- ) pop int32 from dstack and append it to XT being compiled. */
 FUNC_START(_compile4s_)    /* (compile-4s,) */
-        CALL(  _compile_init_) /* updates HERE; sets REG1 = w, REG2 = w.code_n  */
+        LOAD(  REG1,       AT(M4TH, M4TH_OFF_W))       /* a = [word]              */
+        LD_uh( REG2_uh,    AT(REG1, WORD_OFF_CODE_N))  /* b = w.code_n            */
         STORw( DTOPw,      AT(HERE))                   /* *here = (int32)DTOP     */
         ADD2(  IMM(4/SZt), REG2)                       /* code_n += 4/SZt         */
         ADD2(  IMM(4),     HERE)                       /* here += 4               */
@@ -109,7 +114,8 @@ FUNC_END(_compile4s_)
 
 /** (int64 -- ) pop int64 from dstack and append it to XT being compiled. */
 FUNC_START(_compile8s_)    /* (compile-8s,) */
-        CALL(  _compile_init_) /* updates HERE; sets REG1 = w, REG2 = w.code_n  */
+        LOAD(  REG1,       AT(M4TH, M4TH_OFF_W))       /* a = [word]              */
+        LD_uh( REG2_uh,    AT(REG1, WORD_OFF_CODE_N))  /* b = w.code_n            */
         STOR(  DTOP,       AT(HERE))                   /* *here = (int64)DTOP     */
         ADD2(  IMM(8/SZt), REG2)                       /* code_n += 8/SZt         */
         ADD2(  IMM(8),     HERE)                       /* here += 8               */
@@ -123,7 +129,8 @@ FUNC_END(_compile8s_)
  * then push to dstack jump_address (= # of tokens of XT being compiled) and m4token.
  */
 FUNC_START(_compile_unresolved_jump_)    /* [compile-unresolved-jump] */
-        CALL(  _compile_init_)   /* updates HERE; sets REG1 = word, REG2 = code_n    */
+        LOAD(  REG1,       AT(M4TH, M4TH_OFF_W))       /* a = [word]                 */
+        LD_uh( REG2_uh,    AT(REG1, WORD_OFF_CODE_N))  /* b = w.code_n            */
         LD_ut( REG3_ut,    AT(IP))                     /* c = jump_token             */
         DPUSH( DTOP)
         STORt( REG3t,      AT(HERE))                   /* here[0] = c                */

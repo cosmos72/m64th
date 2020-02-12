@@ -55,6 +55,7 @@
     X(5, "cells", cells)                                                                           \
     X(5, "char+", char_plus)                                                                       \
     X(5, "chars", chars)                                                                           \
+    X(5, "count", count)                                                                           \
     X(5, "depth", depth)                                                                           \
     X(2, "do,", do)                                                                                \
     X(4, "drop", drop)                                                                             \
@@ -89,6 +90,7 @@
     X(4, "base", base)                                                                             \
     X(8, "compile,", compile_comma)                                                                \
     X(4, "else,", else)                                                                            \
+    X(4, "find", find)                                                                             \
     X(2, "if,", if)                                                                                \
     X(5, "leave", leave)                                                                           \
     X(7, "literal", literal)                                                                       \

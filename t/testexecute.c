@@ -103,7 +103,7 @@ static const m4token testdata_any[] = {
 
 /* -------------- m4test -------------- */
 
-/* static m4char testbuf_in[16] = "foobar", testbuf_out[16] = "###############"; */
+/* static m4char testbuf1[16] = "foobar", testbuf2[16] = "###############"; */
 
 static m4testexecute testexecute_a[] = {
 #if 0
@@ -137,9 +137,11 @@ static m4testexecute testexecute_a[] = {
     {"2drop", {m4two_drop, m4bye}, {{2, {0, 5}}, {}}, {{}, {}}, {}},
     {"_ 2drop", {m4two_drop, m4bye}, {{3, {-3, -2, -1}}, {}}, {{1, {-3}}, {}}, {}},
     {"2dup", {m4two_dup, m4bye}, {{2, {8, 9}}, {}}, {{4, {8, 9, 8, 9}}, {}}, {}},
+    {"2dup2>r", {m4two_dup_two_to_r, m4bye}, {{2, {8, 9}}, {}}, {{2, {8, 9}}, {2, {8, 9}}}, {}},
     {"2nip", {m4two_nip, m4bye}, {{4, {1, 2, 3, 4}}, {}}, {{2, {3, 4}}, {}}, {}},
     {"2r>", {m4two_r_from, m4bye}, {{1, {0}}, {2, {5, 6}}}, {{3, {0, 5, 6}}, {}}, {}},
-    {"2r@", {m4two_r_fetch, m4bye}, {{1, {0}}, {2, {7, 8}}}, {{3, {0, 7, 8}}, {2, {7, 8}}}, {}},
+    {"2r>2drop", {m4two_r_from_two_drop, m4bye}, {{1, {0}}, {2, {7, 8}}}, {{1, {0}}, {}}, {}},
+    {"2r@", {m4two_r_fetch, m4bye}, {{1, {0}}, {2, {9, 10}}}, {{3, {0, 9, 10}}, {2, {9, 10}}}, {}},
     {"2swap", {m4two_swap, m4bye}, {{4, {1, 2, 3, 4}}, {}}, {{4, {3, 4, 1, 2}}, {}}, {}},
     {"3", {m4three, m4bye}, {{}, {}}, {{1, {3}}, {}}, {}},
     {"4", {m4four, m4bye}, {{}, {}}, {{1, {4}}, {}}, {}},
@@ -158,7 +160,7 @@ static m4testexecute testexecute_a[] = {
     {"0 abs", {m4abs, m4bye}, {{1, {}}, {}}, {{1, {}}, {}}, {}},
     {"11 abs", {m4abs, m4bye}, {{1, {11}}, {}}, {{1, {11}}, {}}, {}},
     {"-3 abs", {m4abs, m4bye}, {{1, {-3}}, {}}, {{1, {3}}, {}}, {}},
-    {"-7 14 and", {m4and, m4bye}, {{2, {-7, 14}}, {}}, {{1, {-7 & 14}}, {}}, {}},
+    {"and", {m4and, m4bye}, {{2, {-7, 14}}, {}}, {{1, {-7 & 14}}, {}}, {}},
     {"bl", {m4bl, m4bye}, {{}, {}}, {{1, {' '}}, {}}, {}},
     /*                                                                          */
     {"depth", {m4depth, m4bye}, {{}, {}}, {{1, {}}, {}}, {}},
@@ -171,7 +173,7 @@ static m4testexecute testexecute_a[] = {
     {"lshift", {m4lshift, m4bye}, {{2, {99, 3}}, {}}, {{1, {99 << 3}}, {}}, {}},
     {"max", {m4max, m4bye}, {{2, {1, 2}}, {}}, {{1, {2}}, {}}, {}},
     {"min", {m4min, m4bye}, {{2, {3, 4}}, {}}, {{1, {3}}, {}}, {}},
-    {"20 7 mod", {m4mod, m4bye}, {{2, {20, 7}}, {}}, {{1, {6}}, {}}, {}},
+    {"mod", {m4mod, m4bye}, {{2, {20, 7}}, {}}, {{1, {6}}, {}}, {}},
     {"-20 7 mod", {m4mod, m4bye}, {{2, {-20, 7}}, {}}, {{1, {-6}}, {}}, {}},
     {"negate", {m4negate, m4bye}, {{1, {-12}}, {}}, {{1, {12}}, {}}, {}},
     {"nip", {m4nip, m4bye}, {{2, {3, 4}}, {}}, {{1, {4}}, {}}, {}},
@@ -181,11 +183,12 @@ static m4testexecute testexecute_a[] = {
     {"rot", {m4rot, m4bye}, {{3, {1, 2, 3}}, {}}, {{3, {2, 3, 1}}, {}}, {}},
     {"-rot", {m4minus_rot, m4bye}, {{3, {1, 2, 3}}, {}}, {{3, {3, 1, 2}}, {}}, {}},
     {"rshift", {m4rshift, m4bye}, {{2, {99, 3}}, {}}, {{1, {99 >> 3}}, {}}, {}},
+    {"squared", {m4squared, m4bye}, {{1, {-3}}, {}}, {{1, {9}}, {}}, {}},
     {"swap", {m4swap, m4bye}, {{2, {4, 5}}, {}}, {{2, {5, 4}}, {}}, {}},
     {"true", {m4true, m4bye}, {{}, {}}, {{1, {ttrue}}, {}}, {}},
     {"tuck", {m4tuck, m4bye}, {{2, {0, 1}}, {}}, {{3, {1, 0, 1}}, {}}, {}},
     {"unloop", {m4unloop, m4bye}, {{}, {3, {1, 2, 3}}}, {{}, {1, {1}}}, {}},
-    {"-7 14 xor", {m4xor, m4bye}, {{2, {-7, 14}}, {}}, {{1, {-7 ^ 14}}, {}}, {}},
+    {"xor", {m4xor, m4bye}, {{2, {-7, 14}}, {}}, {{1, {-7 ^ 14}}, {}}, {}},
 #endif
 };
 
@@ -774,17 +777,32 @@ static m4testexecute testexecute_e[] = {
      {{4, {TESTSTR(_dollar_ffffffffffffffff, 17), (m4cell)0xfffffffffffffffful, ttrue}}, {}},
      {}},
 #endif
+    /* ----------------------------- string= -------------------------------------- */
+    {"\"foo\" \"foo\" string=",
+     {CALL(string_equal), m4bye},
+     {{3, {(m4cell) "foobar", (m4cell) "foobaz", 5}}, {}},
+     {{1, {ttrue}}, {}},
+     {}},
+    {"\"foobar\" \"foobaz\" string=",
+     {CALL(string_equal), m4bye},
+     {{3, {(m4cell) "foobar", (m4cell) "foobaz", 6}}, {}},
+     {{1, {tfalse}}, {}},
+     {}},
 };
 
 static m4testexecute testexecute_f[] = {
 #if 1
     /* ----------------------------- compile, ------------------------------- */
     {"0x123 (compile-token,)",
-     {m4_compile_token_, m4bye},
+     {m4_compile_init_, m4_compile_token_, m4bye},
      {{1, {0x123}}, {}},
      {{}, {}},
      {1, {0x123}}},
-    {"[compile-lit,] T(500)", {m4_compile_lit_, T(500), m4bye}, {{}, {}}, {{}, {}}, {1, {500}}},
+    {"[compile-lit,] T(500)",
+     {m4_compile_init_, m4_compile_lit_, T(500), m4bye},
+     {{}, {}},
+     {{}, {}},
+     {1, {500}}},
     /* ----------------------------- compile, ------------------------------- */
     {"' noop word>flags",
      {CALL(word_to_flags), m4bye},
