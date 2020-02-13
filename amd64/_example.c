@@ -1,4 +1,6 @@
 /**
+ * Copyright (C) 2020 Massimiliano Ghilardi
+ *
  * This file is part of m4th.
  *
  * m4th is free software: you can redistribute it and/or modify
@@ -22,7 +24,7 @@ void *word_to_xt(m4word *w) {
     return w->data + w->code_off;
 }
 
-void foo(const size_t* data);
+void foo(const size_t *data);
 
 void bar() {
     size_t data[1];

@@ -1,3 +1,6 @@
+#
+# Copyright (C) 2020 Massimiliano Ghilardi
+#
 # This file is part of m4th.
 #
 # m4th is free software: you can redistribute it and/or modify
@@ -14,7 +17,7 @@
 # along with m4th.  If not, see <https://www.gnu.org/licenses/>.
 
 #
-# this file adds command z to gdb, printing the status of forth virtual machine.
+# this file adds command z to gdb, for printing the status of m4th forth virtual machine.
 #
 # installation: add the line
 #   source /FULL/PATH/TO/gdb_helper.py

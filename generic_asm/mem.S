@@ -1,4 +1,6 @@
 /**
+ * Copyright (C) 2020 Massimiliano Ghilardi
+ *
  * This file is part of m4th.
  *
  * m4th is free software: you can redistribute it and/or modify
