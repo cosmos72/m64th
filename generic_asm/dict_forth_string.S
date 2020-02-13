@@ -17,27 +17,11 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "../include/asm.mh"
-#include "../include/dict.mh"
-#include "../include/dict_forth.mh"
-
 /* clang-format off */
 
-/* ---------------------------------------------------------------------------------------------- */
-DICT_START(forth)
+DICT_WORDS_FORTH_STRING(WORDNAME)
 
-DICTNAME(5, "forth", forth)
+WORD(cmove,            LASTWORD,   DSTACK(3,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH | M4FLAG_MEM_STORE)
 
-#include "dict_forth_core.S"
-
-#include "dict_forth_core_ext.S"
-
-#include "dict_forth_tools_ext.S"
-
-#include "dict_forth_search_order.S"
-
-#include "dict_forth_string.S"
-
-
-DICT_BODY(forth, LASTWORD)
-DICT_END(forth)
+#undef LASTWORD
+#define LASTWORD cmove

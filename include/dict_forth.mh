@@ -125,6 +125,7 @@
 
 #define DICT_WORDS_FORTH_SEARCH_ORDER(X)                                                           \
     DICT_TOKENS_FORTH_SEARCH_ORDER(X)                                                              \
+    X(9, "get-order", get_order)                                                                   \
     X(15, "search-wordlist", search_wordlist)
 
 /* ------- forth 2012: string ------------------------------------------------------------------- */

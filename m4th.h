@@ -165,7 +165,7 @@ struct m4wordlist_s {   /**< wordlist                                           
     /* TODO hash table of contained words */
 };
 
-enum { m4th_wordlist_n = 12 };
+enum { m4th_wordlist_n = M4TH_WORDLIST_N };
 
 struct m4th_s {        /**< m4th forth interpreter and compiler */
     m4stack dstack;    /**< data stack                          */
@@ -184,8 +184,8 @@ struct m4th_s {        /**< m4th forth interpreter and compiler */
     m4func quit; /**< forth function to execute on quit. usually m4fbye or m4fquit */
     m4err err;   /**< error set by ABORT                    */
 
-    const char *const *in_cstr;            /**< DELETEME: pre-parsed input   */
     m4wordlist *wordlist[m4th_wordlist_n]; /**< FIXME: visible wordlists     */
+    const char *const *in_cstr;            /**< DELETEME: pre-parsed input   */
 };
 
 #ifdef __cplusplus
@@ -212,9 +212,6 @@ m4cell m4th_execute_word(m4th *m, const m4word *w);
  * set ->ip to ->code.start
  */
 void m4th_clear(m4th *m);
-
-/* clear existing search order, replace it with m4dict */
-void m4th_only_dict(m4th *m, const m4dict *dict);
 
 /* add m4dict to the top of search order */
 void m4th_also_dict(m4th *m, const m4dict *dict);

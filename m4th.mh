@@ -22,6 +22,9 @@
 
 /* macros that are part of m4th public API */
 
+/* m4th wordlist */
+#define M4TH_WORDLIST_N 16 /**< maximum # of wordlists in search order */
+
 /* m4th flags */
 #define M4TH_FLAG_STATUS_MASK 1 /**< mask to extract interpret/compile flag */
 #define M4TH_FLAG_INTERPRET 0   /**< m4th is currently interpreting         */

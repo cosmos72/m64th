@@ -850,7 +850,7 @@ static m4testexecute testexecute_f[] = {
     {"wordlist>last",
      {m4wordlist_to_last, m4bye},
      {{1, {(m4cell)&m4testwordlist_forth}}, {}},
-     {{1, {(m4cell)&WORD_SYM(xor)}}, {}},
+     {{1, {(m4cell)&WORD_SYM(cmove)}}, {}},
      {}},
     {"wordlist-find",
      {CALL(wordlist_find), m4bye},

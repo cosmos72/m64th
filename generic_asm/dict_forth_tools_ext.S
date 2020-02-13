@@ -17,27 +17,19 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "../include/asm.mh"
-#include "../include/dict.mh"
-#include "../include/dict_forth.mh"
-
 /* clang-format off */
 
-/* ---------------------------------------------------------------------------------------------- */
-DICT_START(forth)
+DICT_WORDS_FORTH_TOOLS_EXT(WORDNAME)
 
-DICTNAME(5, "forth", forth)
+WORD_START(bye, LASTWORD)
+    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MAY_JUMP)
+    WORD_DSTACK(0,-1)  /* data   stack may be altered from outside */
+    WORD_RSTACK(0,-1)  /* return stack may be altered from outside */
+    WORD_DSTACK(0,-1)
+    WORD_RSTACK(0,-1)
+    WORD_NATIVE_NONE()
+    WORD_CODE(bye, exit) /* exit is reachable by subsequent m4th_run() */
+WORD_END(bye)
 
-#include "dict_forth_core.S"
-
-#include "dict_forth_core_ext.S"
-
-#include "dict_forth_tools_ext.S"
-
-#include "dict_forth_search_order.S"
-
-#include "dict_forth_string.S"
-
-
-DICT_BODY(forth, LASTWORD)
-DICT_END(forth)
+#undef LASTWORD
+#define LASTWORD bye

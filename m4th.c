@@ -789,18 +789,6 @@ m4cell m4th_knows_dict(const m4th *m, const m4dict *dict) {
     return tfalse;
 }
 
-void m4th_only_dict(m4th *m, const m4dict *dict) {
-    m4cell i;
-    m4wordlist **l = m->wordlist;
-    for (i = 0; i < m4th_wordlist_n; i++) {
-        if (l[i] != NULL) {
-            m4wordlist_del(l[i]);
-            l[i] = NULL;
-        }
-    }
-    m4th_also_dict(m, dict);
-}
-
 m4cell m4th_execute_word(m4th *m, const m4word *w) {
     m4token code[2 + SZ / SZt];
     const m4token *save_ip = m->ip;
