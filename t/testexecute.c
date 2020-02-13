@@ -103,16 +103,28 @@ static const m4token testdata_any[] = {
 
 /* -------------- m4test -------------- */
 
-/* static m4char testbuf1[16] = "foobar", testbuf2[16] = "###############"; */
-
-static m4testexecute testexecute_a[] = {
 #if 0
+static m4char testbuf1[16] = "foobar", testbuf2[16] = "###############";
+static m4testexecute testexecute_cmove[] = {
     {"cmove",
      {m4cmove, m4bye},
      {{3, {(m4cell)testbuf_in, (m4cell)testbuf_out, 6}}, {}},
      {{}, {}},
      {}},
+};
+#endif /* 0 */
+
+static const m4wordlist m4testwordlist_forth = {&m4dict_forth};
+
+static m4testexecute testexecute_a[] = {
+#if 0
     {"1e9 0 do loop", {m4do, m4_loop_, T(-2), m4bye}, {{2, {1e9, 0}}, {}}, {{}, {}}, {}},
+#elif 0
+    {"1e6 0 do wordlist-find loop",
+     {m4do, m4j, CALL(wordlist_find), m4_loop_, T(-3 - callsz), m4bye},
+     {{4, {(m4cell) "foo", 3, 1e6, 0}}, {1, {(m4cell)&m4testwordlist_forth}}},
+     {{2, {(m4cell) "foo", 3}}, {1, {(m4cell)&m4testwordlist_forth}}},
+     {}},
 #else
     /* ----------------------------- arithmetic ----------------------------- */
     {"*", {m4times, m4bye}, {{2, {20, 7}}, {}}, {{1, {140}}, {}}, {}},
@@ -794,8 +806,6 @@ static m4testexecute testexecute_e[] = {
      {{4, {(m4cell) "abcdefgh0", (m4cell) "abcdefgh1", 9, tfalse}}, {}},
      {}},
 };
-
-static const m4wordlist m4testwordlist_forth = {&m4dict_forth};
 
 static m4testexecute testexecute_f[] = {
     /* ----------------------------- compile-token, ------------------------- */
