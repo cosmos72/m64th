@@ -72,7 +72,7 @@ WORD(word_to_name,     word_to_flags,  DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M
 WORD(word_to_prev,     word_to_name,   DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 WORD(word_to_xt,       word_to_prev,   DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 WORD(wordlist_to_last, word_to_xt,     DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-/* wordlist-find ( addr n l -- addr n | w -1 ) search name in wordlist */
+/* wordlist-find ( caddr n wid -- caddr n | w -1 ) search name in wordlist */
 WORD_START(wordlist_find, wordlist_to_last)
     WORD_FLAGS(M4FLAG_MEM_FETCH) /* multiple exits => cannot inline */
     WORD_DSTACK(3,2)

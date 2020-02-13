@@ -120,6 +120,13 @@
 
 #define DICT_WORDS_FORTH_TOOLS_EXT(X) DICT_TOKENS_FORTH_TOOLS_EXT(X)
 
+/* ------- forth 2012: search order ------------------------------------------------------------- */
+#define DICT_TOKENS_FORTH_SEARCH_ORDER(X)
+
+#define DICT_WORDS_FORTH_SEARCH_ORDER(X)                                                           \
+    DICT_TOKENS_FORTH_SEARCH_ORDER(X)                                                              \
+    X(15, "search-wordlist", search_wordlist)
+
 /* ------- forth 2012: string ------------------------------------------------------------------- */
 #define DICT_TOKENS_FORTH_STRING(X)                                                                \
     X(5, "cmove", cmove)                                                                           \
@@ -132,12 +139,14 @@
     DICT_TOKENS_FORTH_CORE(X)                                                                      \
     DICT_TOKENS_FORTH_CORE_EXT(X)                                                                  \
     DICT_TOKENS_FORTH_TOOLS_EXT(X)                                                                 \
+    DICT_TOKENS_FORTH_SEARCH_ORDER(X)                                                              \
     DICT_TOKENS_FORTH_STRING(X)
 
 #define DICT_WORDS_FORTH(X)                                                                        \
     DICT_WORDS_FORTH_CORE(X)                                                                       \
     DICT_WORDS_FORTH_CORE_EXT(X)                                                                   \
     DICT_WORDS_FORTH_TOOLS_EXT(X)                                                                  \
+    DICT_WORDS_FORTH_SEARCH_ORDER(X)                                                               \
     DICT_WORDS_FORTH_STRING(X)
 
 #endif /* M4TH_INCLUDE_DICT_FORTH_MH */

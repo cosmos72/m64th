@@ -312,7 +312,27 @@ WORD(r_from,           over,       DSTACK(0,1), RSTACK(1,0), WORD_R_PURE)
 WORD(r_fetch,          r_from,     DSTACK(0,1), RSTACK(1,1), WORD_R_PURE)
 WORD(rot,              r_fetch,    DSTACK(3,3), RSTACK(0,0), WORD_PURE)
 WORD(rshift,           rot,        DSTACK(2,1), RSTACK(0,0), WORD_PURE)
-WORD(swap,             rshift,     DSTACK(2,2), RSTACK(0,0), WORD_PURE)
+/* ( c-addr u wid -- 0 | xt 1 | xt -1 ) */
+WORD_START(search_wordlist, rshift)
+    WORD_FLAGS(M4FLAG_MEM_FETCH)
+    WORD_DSTACK(3,-1)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_CODE(
+        _call_, WADDR(wordlist_find), invert,          /* ( c-addr ~u | w 0 ) */
+        _if_zero_, T(15),                              /* ( c-addr | w      ) */
+            dup, word_to_xt, swap, word_to_flags,      /* ( xt m4flags      ) */
+            _lit_, T(M4FLAG_IMMEDIATE), and,           /* ( xt t|f          ) */
+            _if_, T(3),
+                one, exit,                             /* ( xt 1            ) */
+            then,
+            minus_one, exit,                           /* ( xt -1           ) */
+        then,                                          /* ( c-addr          ) */
+        drop, zero, exit                               /* ( 0               ) */
+    )
+WORD_END(search_wordlist)
+WORD(swap,        search_wordlist, DSTACK(2,2), RSTACK(0,0), WORD_PURE)
 WORD_START(then, swap)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_DSTACK(1,0)
