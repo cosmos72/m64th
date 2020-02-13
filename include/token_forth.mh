@@ -69,7 +69,7 @@
 #undef M4allot /*49*/             /* allot    */
 #define M4and 50                  /* and      */
 #define M4base 51                 /* base     */
-#undef M4begin /*52*/             /* begin    */
+#define M4begin 52                /* begin    */
 #define M4bl 53                   /* bl       */
 #define M4c_store 54              /* c!       */
 #undef M4c_comma /*55*/           /* c,       */
@@ -123,7 +123,7 @@
 #define M4r_from 103              /* r>       */
 #define M4r_fetch 104             /* r@       */
 #undef M4recurse /*105*/          /* recurse  */
-#undef M4repeat /*106*/           /* repeat   */
+#define M4repeat 106              /* repeat   */
 #define M4rot 107                 /* rot      ( a b c -- b c a ) */
 #define M4rshift 108              /* rshift   */
 #undef M4s_quote /*109*/          /* s"       */
@@ -164,7 +164,7 @@
 #define M4ne 144                 /* <>       */
 #undef M4question_do /*145*/     /* ?do      */
 #undef M4action_of /*146*/       /* action_of    */
-#undef M4again /*147*/           /* again    */
+#undef M4again /*147*/           /* again    implemented in forth, no dedicated m4token */
 #undef M4buffer_colon /*148*/    /* buffer:  */
 #undef M4c_quote /*149*/         /* c"       */
 #undef M4case /*150*/            /* case     */

@@ -113,7 +113,7 @@ FUNC_RAWEND(_leave_)
  * IP offset = 0 means first instruction after (loop) itself
  */
 FUNC_START(_loop_)
-        ADD2(  IMM(1), RTOP)        /* increment i                 */
+        INC1(  RTOP)                /* increment i                 */
         LOAD(  REG1, AT(RSTK))      /* REG1 = i'                   */
         cmp    REG1, RTOP;
         b.eq   .L_loop_.break;        /* break if i == i'            */

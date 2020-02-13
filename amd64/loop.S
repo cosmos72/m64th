@@ -125,8 +125,8 @@ FUNC_RAWEND(_leave_)
  * IP offset = 0 means first instruction after (loop) itself
  */
 FUNC_START(_loop_)
-        inc    RTOP;               /* increment i                 */
-        cmpq   (RSTK), RTOP;
+        INC1(  RTOP)               /* increment i                 */
+        CMP(   RTOP,   (RSTK))
         je     .L_loop_.leave;     /* leave if i == i'            */
         RELJUMP()
 .L_loop_.leave:

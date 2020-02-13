@@ -88,44 +88,44 @@
 #undef M4____gap           /*                       */
 
 /* 'm4th-core' wordlist */
-#define M4word_to_code 581   /* word>code   ( w  -- addr n  ) get code array from word */
-#define M4word_to_code_n 582 /* word>code>n ( w  -- n       ) get code size from word  */
-#define M4word_to_flags 583  /* word>flags  ( w  -- m4flags ) get m4flags from word    */
-#define M4word_to_name 584   /* word>name   ( w  -- addr n  ) get word name            */
-#define M4word_to_prev 585   /* word>prev   ( w  -- w'|0    ) get previous word        */
-#define M4word_to_xt 586     /* word>xt     ( w  -- XT      ) get XT == code address from word */
+#define M4word_to_code 581     /* word>code   ( w  -- addr n  ) get code array from word */
+#define M4word_to_code_n 582   /* word>code>n ( w  -- n       ) get code size from word  */
+#define M4word_to_flags 583    /* word>flags  ( w  -- m4flags ) get m4flags from word    */
+#define M4word_to_name 584     /* word>name   ( w  -- addr n  ) get word name            */
+#define M4word_to_prev 585     /* word>prev   ( w  -- w'|0    ) get previous word        */
+#define M4word_to_xt 586       /* word>xt     ( w  -- XT      ) get XT == code address from word */
 #define M4wordlist_to_last 587 /*wordlist>last ( l -- w ) get last word in a wordlist */
-#undef M4____gap                    /*                       */
-#undef M4____gap                    /*                       */
-#define M4xt_to_word 590            /* xt>word  ( XT -- w ) get word from XT */
-#undef M4____gap                    /*                       */
-#undef M4____gap                    /*                       */
-#undef M4____gap                    /*                       */
-#undef M4____gap                    /*                       */
-#undef M4____gap                    /*                       */
-#undef M4____gap                    /*                       */
-#undef M4____gap                    /*                       */
-#undef M4____gap                    /*                       */
+#undef M4____gap               /*                       */
+#undef M4____gap               /*                       */
+#define M4xt_to_word 590       /* xt>word  ( XT -- w ) get word from XT */
+#undef M4____gap               /*                       */
+#undef M4____gap               /*                       */
+#undef M4____gap               /*                       */
+#undef M4____gap               /*                       */
+#undef M4____gap               /*                       */
+#undef M4____gap               /*                       */
+#undef M4____gap               /*                       */
+#undef M4____gap               /*                       */
 
 /* 'm4th-impl' wordlist */
-#define M4minus_one 601     /* -1       */
-#define M4zero 602          /* 0        */
-#define M4one 603           /* 1        */
-#define M4two 604           /* 2        */
-#define M4three 605         /* 3        */
-#define M4four 606          /* 4        */
-#define M4eight 507         /* 8        */
-#undef M4____gap            /*                                         */
-#undef M4____gap            /*                                         */
-#define M4_q_do_ 610        /* (?do)  must be followed by IP offset to jump */
-#define M4_q_if_ 611        /* (?if)  must be followed by IP offset to jump if dtop == 0 */
-#define M4_q_if_zero_ 612   /* (?if0) must be followed by IP offset to jump if dtop <> 0 */
-#define M4_call_ 613        /* (call) must be followed by word. calls it.    */
-#define M4_call_xt_ 614     /* (call-xt) must be followed by XT. calls it.   */
-#define M4_else_ 615        /* (else) must be followed by IP offset to jump  */
-#define M4_exec_native_ 616 /* (exec-native) pop native code address, execute it */
-#define M4_exec_token_                                                                             \
-    617 /* (exec-token) pop m4token, exec it. Only for 'inline' tokens that do not consume IP  */
+#define M4minus_one 601   /* -1       */
+#define M4zero 602        /* 0        */
+#define M4one 603         /* 1        */
+#define M4two 604         /* 2        */
+#define M4three 605       /* 3        */
+#define M4four 606        /* 4        */
+#define M4eight 607       /* 8        */
+#undef M4____gap          /*                                         */
+#undef M4____gap          /*                                         */
+#define M4_q_do_ 610      /* (?do)   must be followed by IP offset to jump */
+#define M4_q_if_ 611      /* (?if)   must be followed by IP offset to jump if dtop == 0 */
+#define M4_q_if_zero_ 612 /* (?if0)  must be followed by IP offset to jump if dtop <> 0 */
+#define M4_again_ 613     /* (again) must be followed by IP offset of 1st instruction after begin */
+#define M4_call_ 614      /* (call)  must be followed by word. calls it.    */
+#define M4_call_xt_ 615   /* (call-xt) must be followed by XT. calls it.   */
+#define M4_else_ 616      /* (else) must be followed by IP offset to jump  */
+#define M4_exec_native_ 617     /* (exec-native) pop native code address, execute it */
+#define M4_exec_token_ 618      /* pop token, exec it. It must be 'inline' with consume_IP = 0  */
 #undef M4____gap                /*                                         */
 #undef M4____gap                /*                                         */
 #define M4_if_ 621              /* (if)      must be followed by IP offset */

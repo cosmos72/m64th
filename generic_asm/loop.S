@@ -20,6 +20,16 @@
 /* clang-format off */
 
 
+/**
+ * implementation of '(jump)', used by all unconditional jumps: (again) (else)
+ * must be followed by IP offset to skip.
+ * IP offset = 0 means first instruction after (jump) itself
+ */
+FUNC_START(_jump_)
+        RELJUMP()
+FUNC_END(_jump_)
+
+
 /** implementation of 'do', enters a (do) ... (loop) */
 #ifndef M4FDO
 FUNC_START(do)
@@ -29,17 +39,6 @@ FUNC_START(do)
         RPUSH( REG1)                 /* push i' on rstack     */
         DPOP(  DTOP)                 /* reload dstack top     */
 FUNC_END(do)
-#endif
-
-/**
- * implementation of 'else'.
- * must be followed by IP offset to skip.
- * IP offset = 0 means first instruction after (else) itself
- */
-#ifndef M4F_ELSE_
-FUNC_START(_else_)
-        RELJUMP()
-FUNC_END(_else_)
 #endif
 
 
