@@ -21,6 +21,8 @@
 /** used to insert a word in a sequence of functions */
 #define m4WADDR(x) WORD_SYM(x)
 
+#define WORD_OFF_PREV_OFF 0  /* offset of m4word->prev_off  */
+#define WORD_OFF_NAME_OFF 4  /* offset of m4word->name_off  */
 #define WORD_OFF_FLAGS 6     /* offset of m4word->flags     */
 #define WORD_OFF_CODE_N 14   /* offset of m4word->code_n    */
 #define WORD_OFF_CODE_OFF 16 /* offset of m4word->code_off  */

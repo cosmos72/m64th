@@ -125,8 +125,9 @@ FUNC_END(_compile8s_)
 
 
 /**
- * ( -- jump_address jump_token ) must be followed by m4token, append it and T(-1) to XT being compiled,
- * then push to dstack jump_address (= # of tokens of XT being compiled) and m4token.
+ * ( -- jump_address jump_token ) must be followed by m4token and it category.
+ * append m4token and T(-1) to XT being compiled,
+ * then push to dstack jump_address (= # of tokens of XT being compiled) and category.
  */
 FUNC_START(_compile_unresolved_jump_)    /* [compile-unresolved-jump] */
         LOAD(  REG1,       AT(M4TH, M4TH_OFF_W))       /* a = [word]                 */
@@ -144,6 +145,6 @@ FUNC_START(_compile_unresolved_jump_)    /* [compile-unresolved-jump] */
         ADD2(  IMM(2*SZt), HERE)                       /* here += 2 * SZt            */
         STORh( REG2h,      AT(REG1, WORD_OFF_CODE_N))  /* w.code_n = code_n          */
         DPUSH( REG2)                                   /* d2 = jump_address = code_n */
-        MOVE(  REG3,       DTOP)                       /* dtop = jump_token = c      */
-        NEXTT()                                        /* skip m4token               */
+        LD_ut( DTOP_ut,    AT(IP, SZt))                /* dtop = category            */
+        NEXTT2()                                       /* skip two m4token           */
 FUNC_RAWEND(_compile_unresolved_jump_)

@@ -70,7 +70,7 @@ static const m4word *m4wordlist_lookup_word(const m4wordlist *d, m4string key) {
     assert(d);
     assert(key.addr);
     for (w = m4wordlist_lastword(d); w != NULL; w = m4word_prev(w)) {
-        if (m4string_compare(key, m4word_name(w)) == 0) {
+        if (m4string_equals(key, m4word_name(w))) {
             return w;
         }
     }

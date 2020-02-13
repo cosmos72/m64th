@@ -104,16 +104,18 @@
     /*                             */ /*                                                */         \
     X(3, "?if", q_if)                 /* alias of dup if                                */         \
     X(4, "?if0", q_if_zero)           /* alias of dup 0= if                             */         \
-    /* ( caddr n -- caddr' n' x t|f ) convert string to number */                                  \
-    X(13, "string>number", string_to_number)
+    X(3, "if0", if_zero)              /* alias of 0= if                                 */         \
+    /* ( caddr n -- caddr' n' x t|f ) convert string to number, recognizing base, sign prefix */   \
+    X(13, "string>number", string_to_number)                                                       \
+    X(11, "valid-base?", valid_base_q) /* ( base -- t|f ) true if 2 <= base <= 36   */
 
 /* ------- m4th-core ---------------------------------------------------------------------------- */
 #define DICT_TOKENS_M4TH_CORE(X)                                                                   \
-    X(9, "word>code", word_to_code)            /* ( w -- taddr n ) get code array   from word */   \
-    X(14, "word>code>addr", word_to_code_addr) /* ( w -- addr )    get code address from word */   \
-    X(11, "word>code>n", word_to_code_n)       /* ( w -- n )       get code size    from word */   \
-    X(10, "word>flags", word_to_flags)         /* ( w -- m4flags ) get m4flags of word */          \
-    X(7, "xt>word", xt_to_word)                /* ( XT -- w )      convert XT to word */
+    X(9, "word>code", word_to_code)      /* ( w  -- taddr n ) get code array from word */          \
+    X(7, "word>xt", word_to_xt)          /* ( w  -- XT )      get XT == code address from word */  \
+    X(11, "word>code>n", word_to_code_n) /* ( w  -- n  )      get code size from word  */          \
+    X(10, "word>flags", word_to_flags)   /* ( w  -- m4flags ) get m4flags of word      */          \
+    X(7, "xt>word", xt_to_word)          /* ( XT -- w )       convert XT to word       */
 
 #define DICT_WORDS_M4TH_CORE(X)                                                                    \
     DICT_TOKENS_M4TH_CORE(X)                                                                       \
@@ -181,8 +183,7 @@
     X(11, "string>char", string_to_char)                                                           \
     X(11, "string>sign", string_to_sign) /* ( caddr n -- caddr' n' sign ) parse initial '-' */     \
     /* ( caddr n base -- caddr' n' u ) convert string from base to unsigned number */              \
-    X(13, "string&base>u", string_base_to_u)                                                       \
-    X(11, "valid-base?", valid_base_q) /* ( base -- flag ) true if 2 <= base <= 36     */
+    X(13, "string&base>u", string_base_to_u)
 
 /* ------- m4th-* ------------------------------------------------------------------------------- */
 #define DICT_WORDS_M4TH(X) /* contains all DICT_WORDS_M4TH_* */                                    \

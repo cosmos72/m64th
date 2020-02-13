@@ -63,12 +63,6 @@ FUNC_START(word_to_code) /* ( w -- taddr n ) */
 FUNC_END(word_to_code)
 
 
-FUNC_START(word_to_code_addr) /* ( w -- taddr ) */
-        LD_uw( REG1_uw,    AT(DTOP, WORD_OFF_CODE_OFF)) /* REG1 = w.code_off  */
-        ADD2(  REG1,       DTOP)                        /* DTOP = w.code      */
-FUNC_END(word_to_code_addr)
-
-
 FUNC_START(word_to_code_n) /* ( w -- n ) */
         LD_uh( DTOP_uh,    AT(DTOP, WORD_OFF_CODE_N)) /* DTOP = w.code_n    */
 FUNC_END(word_to_code_n)
@@ -77,6 +71,12 @@ FUNC_END(word_to_code_n)
 FUNC_START(word_to_flags) /* ( w -- m4flags ) */
         LD_uh( DTOP_uh,    AT(DTOP, WORD_OFF_FLAGS)) /* dtop = m4flags    */
 FUNC_END(word_to_flags)
+
+
+FUNC_START(word_to_xt) /* ( w -- xt ) */
+        LD_uw( REG1_uw,    AT(DTOP, WORD_OFF_CODE_OFF)) /* REG1 = w.code_off  */
+        ADD2(  REG1,       DTOP)                        /* DTOP = w.code      */
+FUNC_END(word_to_xt)
 
 
 FUNC_START(xt_to_word) /* ( XT -- w ) */

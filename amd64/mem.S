@@ -75,11 +75,11 @@ FUNC_START(string_equal)   /* string=  ( addr1 addr2 u -- t|f ) m4th-user */
         LOAD(  REG1,   AT(DSTK, SZ))   /* a = addr1 */
         ADD2(  IMM(SZ2),DSTK)
         CMP(   REG1,   REG2)
-        je     LABEL_SYM(string_equal.true); /* addr1 == addr2 */
-        JZ(    DTOP,   string_equal.true)    /* u == 0         */
+        je     LABEL_SYM(string_equal.true);   /* addr1 == addr2 */
+        JZ(    DTOP,   string_equal.true)      /* u == 0         */
         ZERO(  REG4w)
         CMP(   DTOP,   IMM(8))
-        jb     LABEL_SYM(string_equal.byte);
+        jb     LABEL_SYM(string_equal.byte);   /* < 8 bytes */
         SUB2(  IMM(8), DTOP)
 LABEL(string_equal.cell)
         LOAD(  REG3,   AT(REG1, REG4, 1))
@@ -88,8 +88,8 @@ LABEL(string_equal.cell)
         jne    LABEL_SYM(string_equal.false);
         ADD2(  IMM(8), REG4)
         CMP(   REG4,   DTOP)
-        jbe    LABEL_SYM(string_equal.cell);
-        LOAD(  REG3,   AT(REG1, DTOP, 1)) /* compare last 8 bytes */
+        jb     LABEL_SYM(string_equal.cell);   /* > 8 bytes left ? */
+        LOAD(  REG3,   AT(REG1, DTOP, 1))      /* compare last 8 bytes */
         LOAD(  REG4,   AT(REG2, DTOP, 1))
         CMP(   REG3,   REG4)
         jne    LABEL_SYM(string_equal.false);

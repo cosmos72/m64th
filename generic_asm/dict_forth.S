@@ -90,7 +90,7 @@ WORD_START(question_do, to_r)
     WORD_DSTACK(2,0) /* stack effect when jumping */
     WORD_RSTACK(0,0)
     WORD_NATIVE_NONE()
-    WORD_CODE(_compile_init_, _compile_unresolved_jump_, _q_do_, exit)
+    WORD_CODE(_compile_init_, _compile_unresolved_jump_, _q_do_, _q_do_, exit)
 WORD_END(question_do)
 WORD(question_dup,   question_do,  DSTACK(1,-1),RSTACK(0,0), WORD_PURE)
 WORD(fetch,          question_dup, DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
@@ -167,7 +167,7 @@ WORD_START(find, dup)
         dup, count, _call_, WADDR(lookup_word),      /* ( c-addr word|0 -1|0|1 ) */
         _q_if_zero_, T(5), nip, exit,                /* ( c-addr 0             ) */
         _then_,                                      /* ( c-addr word -1|1     ) */
-        to_r, nip, word_to_code_addr, r_from,        /* ( xt     -1|1          ) */
+        to_r, nip, word_to_xt, r_from,               /* ( xt     -1|1          ) */
         exit
     )
 WORD_END(find)
@@ -213,7 +213,7 @@ WORD_START(if, i)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_CODE(
-        _compile_init_, _compile_unresolved_jump_, _if_, exit
+        _compile_init_, _compile_unresolved_jump_, _if_, _if_, exit
     )
 WORD_END(if)
 WORD(invert,           if,         DSTACK(1,1), RSTACK(0,0), WORD_PURE)
@@ -225,7 +225,7 @@ WORD_START(leave, j)
     WORD_RSTACK(2,0)
     WORD_NATIVE_NONE()
     WORD_CODE(
-        _compile_init_, _compile_unresolved_jump_, _leave_, exit
+        _compile_init_, _compile_unresolved_jump_, _leave_, _leave_, exit
     )
 WORD_END(leave)
 WORD_START(literal, leave)
@@ -271,7 +271,7 @@ WORD_START(loop, literal)
     WORD_RSTACK(2,0)
     WORD_NATIVE_NONE()
     WORD_CODE(
-        _compile_init_, _compile_unresolved_jump_, _loop_,
+        _compile_init_, _compile_unresolved_jump_, _loop_, _loop_,
         _call_, WADDR(_resolve_loop_), exit
     )
 WORD_END(loop)

@@ -39,11 +39,11 @@ FUNC_START(string_equal)   /* string=  ( addr1 addr2 u -- t|f ) m4th-user */
         DPOP(  REG2)       /* b = addr2 */
         DPOP(  REG1)       /* a = addr1 */
         cmp    REG1,   REG2;
-        b.eq   LABEL_SYM(string_equal.true); /* addr1 == addr2 */
-        JZ(    DTOP,     string_equal.true)  /* u == 0         */
+        b.eq   LABEL_SYM(string_equal.true);   /* addr1 == addr2 */
+        JZ(    DTOP,     string_equal.true)    /* u == 0         */
         ZERO(  REG0)
         cmp    DTOP,   IMM(8);
-        b.lo   LABEL_SYM(string_equal.byte);
+        b.lo   LABEL_SYM(string_equal.byte);   /* < 8 bytes */
         SUB2(  IMM(8), DTOP)
 LABEL(string_equal.cell)
         LOAD(  REG3,   AT(REG1, REG0, 1))
@@ -52,8 +52,8 @@ LABEL(string_equal.cell)
         b.ne   LABEL_SYM(string_equal.false);
         ADD2(  IMM(8), REG0)
         cmp    REG0,   DTOP;
-        b.lo   LABEL_SYM(string_equal.cell);
-        LOAD(  REG3,   AT(REG1, DTOP, 1)) /* compare last 8 bytes */
+        b.lo   LABEL_SYM(string_equal.cell);   /* > 8 bytes left ? */
+        LOAD(  REG3,   AT(REG1, DTOP, 1))      /* compare last 8 bytes */
         LOAD(  REG4,   AT(REG2, DTOP, 1))
         cmp    REG3,   REG4;
         b.ne   LABEL_SYM(string_equal.false);

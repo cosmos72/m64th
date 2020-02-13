@@ -220,8 +220,9 @@
     ADD2(IMM(8), IP)                                                                               \
     ret;
 
-#define NEXTT() CAT2(NEXT, SZt)()   /* skip SZt bytes, jump to following instruction */
-#define NEXTCELL() CAT2(NEXT, SZ)() /* skip SZ bytes,  jump to following instruction */
+#define NEXTT() CAT2(NEXT, SZt)()   /* skip SZt bytes,   jump to following instruction */
+#define NEXTT2() CAT2(NEXT, SZt2)() /* skip SZt*2 bytes, jump to following instruction */
+#define NEXTCELL() CAT2(NEXT, SZ)() /* skip SZ bytes,    jump to following instruction */
 
 #define RELJUMP()               /* relative jump by number of instructions stored at next IP */    \
     LD_st(REG3_st, AT(IP));     /* REG3 = IP jump offset */                                        \

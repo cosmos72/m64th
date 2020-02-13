@@ -19,6 +19,7 @@
 #define M4TH_T_TESTCOMPILE_C
 
 #include "../impl.h"
+#include "../include/dict_fwd.h"
 #include "../include/word_fwd.h"
 #include "../m4th.h"
 #include "testcommon.h"
@@ -62,7 +63,10 @@ static const m4testcompile testcompile[] = {
     {{"$ffffffffffffffff"}, {}, {}, {1, {m4minus_one}}},
 #endif
     /* ------------------------------- if else then ------------------------- */
+    {{"?if"}, {}, {2, {2, m4_if_}}, {2, {m4_q_if_, T(-1)}}},
+    {{"?if0"}, {}, {2, {2, m4_if_}}, {2, {m4_q_if_zero_, T(-1)}}},
     {{"if"}, {}, {2, {2, m4_if_}}, {2, {m4_if_, T(-1)}}},
+    {{"if0"}, {}, {2, {2, m4_if_}}, {2, {m4_if_zero_, T(-1)}}},
     {{"if", "then"}, {}, {}, {3, {m4_if_, T(1), m4_then_}}},
     {{"if", "1", "then"}, {}, {}, {4, {m4_if_, T(2), m4one, m4_then_}}},
     {{"if", "else"}, {}, {2, {4, m4_else_}}, {4, {m4_if_, T(2), m4_else_, T(-1)}}},
@@ -71,7 +75,6 @@ static const m4testcompile testcompile[] = {
      {},
      {},
      {7, {m4_if_, T(3), m4one, m4_else_, T(2), m4two, m4_then_}}},
-    {{"?do"}, {}, {2, {2, m4_q_do_}}, {2, {m4_q_do_, T(-1)}}},
     /* ------------------------------- literal ------------------------------ */
     {{"literal"}, {1, {0}}, {}, {1, {m4zero}}},
     {{"literal"}, {1, {1}}, {}, {1, {m4one}}},
@@ -105,14 +108,23 @@ static const m4testcompile testcompile[] = {
 #endif
     /* ------------------------------- tokens ------------------------------- */
     {{"*", "+", "-", "/"}, {}, {}, {4, {m4times, m4plus, m4minus, m4div}}},
-    {{"/mod"}, {}, {}, {1, {m4div_mod}}},
-    {{"drop"}, {}, {}, {1, {m4drop}}},
-    {{"false"}, {}, {}, {1, {m4false}}},
-    {{"true"}, {}, {}, {1, {m4true}}},
+    {{"<>", "=", "0<>", "0="}, {}, {}, {4, {m4ne, m4equal, m4zero_ne, m4zero_equal}}},
+    {{"<", "<=", ">", ">="}, {}, {}, {4, {m4less, m4less_equal, m4more, m4more_equal}}},
+    {{"u<", "u<=", "u>", "u>="}, {}, {}, {4, {m4u_less, m4u_less_equal, m4u_more, m4u_more_equal}}},
+    {{"0<", "0<=", "0>", "0>="},
+     {},
+     {},
+     {4, {m4zero_less, m4zero_less_equal, m4zero_more, m4zero_more_equal}}},
+    {{"/mod", "drop", "false", "true"}, {}, {}, {4, {m4div_mod, m4drop, m4false, m4true}}},
+    {{"?dup", "dup", "exit"}, {}, {}, {3, {m4question_dup, m4dup, m4exit}}},
+    {{"string="}, {}, {}, {1, {m4string_equal}}},
     /* ------------------------------- immediate words ---------------------- */
+    {{"?do"}, {}, {2, {2, m4_q_do_}}, {2, {m4_q_do_, T(-1)}}},
     {{"do"}, {}, {2, {1, m4do}}, {1, {m4do}}},
+    {{"leave"}, {}, {2, {2, m4_leave_}}, {2, {m4_leave_, T(-1)}}},
     /* ------------------------------- words -------------------------------- */
     {{"compile,"}, {}, {}, {callsz, {CALLXT(compile_comma)}}},
+    {{"valid-base?"}, {}, {}, {4, {/*inlined*/ m4two, m4_lit2s_, T(37), m4within}}},
 };
 
 static m4code m4testcompile_init(const m4testcompile *t, m4countedcode *codegen_buf) {
@@ -182,6 +194,10 @@ static void m4testcompile_failed(m4th *m, const m4testcompile *t, m4code t_codeg
 m4cell m4th_testcompile(m4th *m, FILE *out) {
     m4countedcode codegen_buf;
     m4cell i, fail = 0;
+
+    if (!m4th_knows_dict(m, &m4dict_m4th_core)) {
+        m4th_also_dict(m, &m4dict_m4th_core);
+    }
 
     for (i = 0; i < (m4cell)N_OF(testcompile); i++) {
         const m4testcompile *t = &testcompile[i];

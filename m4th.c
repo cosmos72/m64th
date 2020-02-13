@@ -41,6 +41,8 @@ enum {
     inbuf_n = 1024,
     outbuf_n = 1024,
     dataspace_n = 4096,
+    tfalse = 0,
+    ttrue = (m4cell)-1,
 };
 
 typedef char m4th_assert_sizeof_m4token_equal_SZt[(sizeof(m4token) == SZt) ? 1 : -1];
@@ -319,10 +321,16 @@ m4cell m4token_print_consumed_ip(m4token tok, const m4token *code, m4cell maxn, 
     const m4cell nbytes = m4token_consumes_ip(tok);
     if (nbytes == 0 || nbytes / SZt > maxn) {
         return 0;
-    } else if (nbytes == sizeof(m4token)) {
+    } else if (nbytes == SZt) {
         fputc('\'', out);
         m4token_print(code[0], out);
         return 1;
+    } else if (tok == m4_compile_unresolved_jump_ && nbytes == 2 * SZt) {
+        fputc('\'', out);
+        m4token_print(code[0], out);
+        fputc('\'', out);
+        m4token_print(code[1], out);
+        return 2;
     } else if (tok == m4_call_ && nbytes == SZ) {
         return m4token_print_word(code, out);
     } else if (tok == m4_call_xt_ && nbytes == SZ) {
@@ -373,14 +381,14 @@ const m4char *m4addr_align_4(const void *addr) {
 m4cell m4code_equal(m4code src, m4code dst) {
     m4cell i, n = src.n;
     if (dst.n != n) {
-        return 0 /*false*/;
+        return tfalse;
     }
     for (i = 0; i < n; i++) {
         if (src.addr[i] != dst.addr[i]) {
-            return 0 /*false*/;
+            return tfalse;
         }
     }
-    return -1 /*true*/;
+    return ttrue;
 }
 
 void m4code_print(m4code src, FILE *out) {
@@ -400,10 +408,10 @@ void m4code_print(m4code src, FILE *out) {
 /* ----------------------- m4dict ----------------------- */
 
 const m4word *m4dict_lastword(const m4dict *d) {
-    if (d == NULL || d->word_off == 0) {
+    if (d == NULL || d->lastword_off == 0) {
         return NULL;
     }
-    return (const m4word *)((const m4char *)d - d->word_off);
+    return (const m4word *)((const m4char *)d - d->lastword_off);
 }
 
 m4string m4dict_name(const m4dict *d) {
@@ -553,14 +561,14 @@ void m4string_print_hex(m4string str, FILE *out) {
     }
 }
 
-m4cell m4string_compare(m4string a, m4string b) {
+m4cell m4string_equals(m4string a, m4string b) {
     if (a.addr == NULL || b.addr == NULL || a.n != b.n || a.n < 0) {
-        return 1;
+        return tfalse;
     }
     if (a.addr == b.addr || a.n == 0) {
-        return 0;
+        return ttrue;
     }
-    return memcmp(a.addr, b.addr, (size_t)a.n);
+    return memcmp(a.addr, b.addr, (size_t)a.n) ? tfalse : ttrue;
 }
 
 /* ----------------------- m4word ----------------------- */
@@ -665,25 +673,6 @@ static m4wordlist *m4wordlist_new(const m4dict *impl) {
     return l;
 }
 
-static void m4wordlist_new_vec(m4wordlist *l[m4th_wordlist_n]) {
-    static const m4dict *dict[] = {
-        &m4dict_forth, &m4dict_m4th_user,
-        /* &m4dict_m4th_core, &m4dict_m4th_impl, */
-    };
-    enum { dict_n = sizeof(dict) / sizeof(dict[0]) };
-    m4cell i;
-    if (l == NULL) {
-        return;
-    }
-    for (i = 0; i < m4th_wordlist_n; i++) {
-        if (i < dict_n) {
-            l[i] = m4wordlist_new(dict[i]);
-        } else {
-            l[i] = NULL;
-        }
-    }
-}
-
 static void m4wordlist_del(m4wordlist *l) {
     m4mem_free(l);
 }
@@ -733,7 +722,9 @@ m4th *m4th_new() {
     m->out = m4cbuf_alloc(outbuf_n);
     m->flags = m4th_flag_interpret;
     memset(m->c_regs, '\0', sizeof(m->c_regs));
-    m4wordlist_new_vec(m->wordlist);
+    memset(m->wordlist, '\0', sizeof(m->wordlist));
+    m4th_also_dict(m, &m4dict_forth);
+    m4th_also_dict(m, &m4dict_m4th_user);
     m->in_cstr = NULL;
     m->mem = m4cbuf_alloc(dataspace_n);
     m->w = NULL;
@@ -766,6 +757,46 @@ void m4th_clear(m4th *m) {
     m->mem.curr = m->mem.start;
     m->err.id = 0;
     m->err.msg.impl.n = 0;
+}
+
+void m4th_also_dict(m4th *m, const m4dict *dict) {
+    m4cell i;
+    m4wordlist **l = m->wordlist;
+    if (dict == NULL) {
+        return;
+    }
+    for (i = 0; i < m4th_wordlist_n; i++) {
+        if (l[i] == NULL) {
+            l[i] = m4wordlist_new(dict);
+            break;
+        }
+    }
+}
+
+m4cell m4th_knows_dict(const m4th *m, const m4dict *dict) {
+    m4cell i;
+    m4wordlist *const *l = m->wordlist;
+    if (dict == NULL) {
+        return tfalse;
+    }
+    for (i = 0; i < m4th_wordlist_n; i++) {
+        if (l[i] != NULL && l[i]->impl == dict) {
+            return ttrue;
+        }
+    }
+    return tfalse;
+}
+
+void m4th_only_dict(m4th *m, const m4dict *dict) {
+    m4cell i;
+    m4wordlist **l = m->wordlist;
+    for (i = 0; i < m4th_wordlist_n; i++) {
+        if (l[i] != NULL) {
+            m4wordlist_del(l[i]);
+            l[i] = NULL;
+        }
+    }
+    m4th_also_dict(m, dict);
 }
 
 m4cell m4th_execute_word(m4th *m, const m4word *w) {

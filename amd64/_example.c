@@ -15,16 +15,45 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include "../m4th.h"
 #include <stddef.h> /* size_t    */
 
-size_t string_equal(char *restrict src, size_t sn, char *restrict dst, size_t dn) {
-    if (sn != dn) {
-        return 0;
+void *word_to_xt(m4word *w) {
+    return w->data + w->code_off;
+}
+
+void foo(const size_t* data);
+
+void bar() {
+    size_t data[1];
+    foo(data);
+}
+
+size_t string_equal(const char *a, const char *b, size_t n) {
+    size_t i = 0;
+    if (n == 0 || a == b) {
+        return (size_t)-1;
     }
-    while (sn--) {
-        if (*src++ != *dst++) {
+    if (n >= 8) {
+        n -= 8;
+        do {
+            const size_t *sa = (const size_t *)(a + i);
+            const size_t *sb = (const size_t *)(b + i);
+            if (sa[0] != sb[0]) {
+                return 0;
+            }
+        } while ((i += 8) < n);
+        const size_t *sa = (const size_t *)(a + n);
+        const size_t *sb = (const size_t *)(b + n);
+        if (sa[0] != sb[0]) {
             return 0;
         }
+    } else {
+        do {
+            if (a[i] != b[i]) {
+                return 0;
+            }
+        } while (++i < n);
     }
     return (size_t)-1;
 }

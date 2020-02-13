@@ -88,24 +88,24 @@
 #undef M4____gap           /*                       */
 
 /* 'm4th-core' wordlist */
-#define M4word_to_code 581      /* word>code      ( w -- addr n )  get code array   from word */
-#define M4word_to_code_addr 582 /* word>code>addr ( w -- addr  )   get code address from word */
-#define M4word_to_code_n 583    /* word>code>n    ( w -- n )       get code size    from word */
-#define M4word_to_flags 584     /* word>flags     ( w -- m4flags ) get m4flags      from word */
-#define M4xt_to_word 585        /* xt>word        ( XT -- w )      get word from XT           */
-#undef M4____gap                /*                       */
-#undef M4____gap                /*                       */
-#undef M4____gap                /*                       */
-#undef M4____gap                /*                       */
-#undef M4____gap                /*                       */
-#undef M4____gap                /*                       */
-#undef M4____gap                /*                       */
-#undef M4____gap                /*                       */
-#undef M4____gap                /*                       */
-#undef M4____gap                /*                       */
-#undef M4____gap                /*                       */
-#undef M4____gap                /*                       */
-#undef M4____gap                /*                       */
+#define M4word_to_code 581   /* word>code   ( w  -- addr n )  get code array from word */
+#define M4word_to_code_n 582 /* word>code>n ( w  -- n      )  get code size from word  */
+#define M4word_to_flags 583  /* word>flags  ( w  -- m4flags ) get m4flags from word    */
+#define M4word_to_xt 584     /* word>xt     ( w  -- XT     )  get XT == code address from word */
+#define M4xt_to_word 585     /* xt>word     ( XT -- w      )  get word from XT         */
+#undef M4____gap             /*                       */
+#undef M4____gap             /*                       */
+#undef M4____gap             /*                       */
+#undef M4____gap             /*                       */
+#undef M4____gap             /*                       */
+#undef M4____gap             /*                       */
+#undef M4____gap             /*                       */
+#undef M4____gap             /*                       */
+#undef M4____gap             /*                       */
+#undef M4____gap             /*                       */
+#undef M4____gap             /*                       */
+#undef M4____gap             /*                       */
+#undef M4____gap             /*                       */
 
 /* 'm4th-impl' wordlist */
 #define M4minus_one 601     /* -1       */
@@ -157,7 +157,7 @@
 #define M4_compile4s_ 647    /* [compile4s,] pop int32 from dstack, append it to compiled code  */
 #define M4_compile8s_ 648    /* [compile8s,] pop int64 from dstack, append it to compiled code  */
 #define M4_compile_lit_ 649  /* must be followed by m4token, append it to compiled code  */
-#define M4_compile_unresolved_jump_ 650 /* [compile-unresolved-jump] must be followed by token */
+#define M4_compile_unresolved_jump_ 650 /* must be followed by m4token and its category */
 #define M4_word_ 651                    /* [word] pust to dstack word being compiled */
 #undef M4____gap                        /*                                         */
 #undef M4____gap                        /*                                         */

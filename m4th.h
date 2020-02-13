@@ -116,9 +116,9 @@ struct m4countedstring_s { /**< counted string                   */
     m4char addr[0];        /**< characters. do NOT end with '\0' */
 };
 
-struct m4dict_s {     /**< dictionary. used to implement wordlist                */
-    int32_t word_off; /**< offset of last m4word*,     in bytes. 0 = not present */
-    int16_t name_off; /**< offset of m4countedstring*, in bytes. 0 = not present */
+struct m4dict_s {         /**< dictionary. used to implement wordlist                */
+    int32_t lastword_off; /**< offset of last m4word*,     in bytes. 0 = not present */
+    int16_t name_off;     /**< offset of m4countedstring*, in bytes. 0 = not present */
 };
 
 struct m4err_s {
@@ -211,6 +211,15 @@ m4cell m4th_execute_word(m4th *m, const m4word *w);
  */
 void m4th_clear(m4th *m);
 
+/* clear existing search order, replace it with m4dict */
+void m4th_only_dict(m4th *m, const m4dict *dict);
+
+/* add m4dict to the top of search order */
+void m4th_also_dict(m4th *m, const m4dict *dict);
+
+/* return <> 0 if search order contains m4dict */
+m4cell m4th_knows_dict(const m4th *m, const m4dict *dict);
+
 /**
  * perform self-test, return != 0 if failed.
  * if out != NULL, also print failed tests to out.
@@ -244,7 +253,7 @@ const m4word *m4token_to_word(m4token tok);
 void m4slice_copy_to_code(m4slice src, m4code *dst);
 void m4slice_to_word_code(const m4slice *src, m4word *dst);
 
-m4cell m4string_compare(m4string a, m4string b);
+m4cell m4string_equals(m4string a, m4string b);
 void m4string_print(m4string str, FILE *out);
 void m4string_print_hex(m4string str, FILE *out);
 
