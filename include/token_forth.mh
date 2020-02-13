@@ -135,7 +135,7 @@
 #undef M4spaces /*115*/           /* space    */
 #undef M4state /*116*/            /* state    */
 #define M4swap 117                /* swap     */
-#undef M4then /*118*/             /* then     implemented in forth, no dedicated m4token */
+#define M4then 118                /* then     */
 #undef M4type /*119*/             /* type     */
 #undef M4u_dot /*120*/            /* u.       */
 #define M4u_less 121              /* u<       */

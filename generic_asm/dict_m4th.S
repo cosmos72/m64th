@@ -162,23 +162,24 @@ WORD_START(string_to_number, to_uint)
          */
         _q_if_zero_, T(4),
             zero, false, exit,
-        _then_,
+        then,
         _call_, WADDR(string_to_char), dup, invert,
         _if_, T(3),
             true, exit,
-        _then_,
+        then,
         drop, _call_, WADDR(string_to_base), to_r,
         _call_, WADDR(string_to_sign), over,
         _if_zero_, T(6),
             drop, zero, false, r_from_drop, exit,
-        _then_,
+        then,
         r_fetch, swap, r_store,
         _call_, WADDR(string_base_to_u),
         r_from, times, over,
         zero_equal, exit
     )
 WORD_END(string_to_number)
-WORD(string_equal,   string_to_number, DSTACK(3,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+/* string= ( addr1 addr2 u -- addr1 addr2 u t|f )   \ t if the two strings have the same content */
+WORD(string_equal,   string_to_number, DSTACK(3,4), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 WORD(u_less_equal,     string_equal,   DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(u_more_equal,     u_less_equal,   DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD_START(valid_base_q, u_more_equal)
@@ -232,10 +233,10 @@ WORD_START(word_inline_query,  token_fetch)
         dup, word_to_flags,
         dup, _lit2s_, SHORT(M4FLAG_INLINE_ALWAYS), and, _if_, T(4),
             two_drop, true, exit,
-        _then_,
+        then,
         _lit2s_, SHORT(M4FLAG_INLINE), and, _if_zero_, T(4),
             drop, false, exit,
-        _then_,
+        then,
         word_to_code_n, eight, less, exit
     )
 WORD_END(word_inline_query)
@@ -254,7 +255,28 @@ WORD_START(wordlist_find, wordlist_to_last)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_CODE(
-        drop, zero, exit /* TODO */
+        /* wordlist>last                                       ( addr n w          )
+         * begin
+         *    ?if0 drop exit then                              ( addr n            )
+         *    dup >r word>name                                 ( addr n addr' n'   ) (R: w  )
+         *    rot tuck                                         ( addr addr' n n' n ) (R: w  )
+         *    = if                                             ( addr addr' n      ) (R: w  )
+         *       string= if                                    ( addr addr' n      ) (R: w  )
+         *          2drop drop r> zero exit                    ( w 0               )
+         *       then                                          ( addr addr' n      ) (R: w  )
+         *    then                                             ( addr addr' n      ) (R: w  )
+         *    nip r> word>prev                                 ( addr n     w'     )
+         * again
+         */
+        wordlist_to_last,
+        begin,
+            _q_if_zero_, T(4), drop, exit, then,
+            dup, to_r, word_to_name,
+            rot, tuck,
+            equal, _if_, T(-1),
+                string_equal, _if_, T(-1),
+                    two_drop, drop, r_from, zero, exit,
+                then
     )
 WORD_END(wordlist_find)
 WORD(xt_to_word,     wordlist_find,    DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
@@ -434,15 +456,7 @@ WORD_START(_loop_, _lit8s_)
     WORD_CODE(_loop_, T(-1), exit)
 WORD_END(_loop_)
 WORD(_missing_,        _loop_,         DSTACK(0,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_JUMP)
-WORD_START(_then_, _missing_)
-    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS | M4FLAG_IMMEDIATE)
-    WORD_DSTACK(0,0)
-    WORD_RSTACK(0,0)
-    WORD_STACK_NONE()
-    WORD_NATIVE_LEN_0()
-    WORD_CODE(_call_, WADDR(then), exit)
-WORD_END(_then_)
-WORD(_num_compiled_,   _then_,         DSTACK(0,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
+WORD(_num_compiled_,   _missing_,      DSTACK(0,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
 WORD(_compile_init_,   _num_compiled_, DSTACK(0,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
 WORD(_compile2s_,      _compile_init_, DSTACK(1,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
 WORD(_compile4s_,      _compile2s_,    DSTACK(1,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
@@ -473,7 +487,7 @@ WORD_START(_inline_, _compile_unresolved_jump_)
         word_to_code, one_minus, /* ( code n-1 )  skip 'exit' at the end of XT */
         dup, zero, less_equal, _if_, T(2),
             exit,              /* inline length is <= 0 */
-        _then_,                /* ( code n-1 )   */
+        then,                /* ( code n-1 )   */
         _compile_init_,
         zero, do,
             dup, token_fetch,  /* ( code token ) */
@@ -550,7 +564,7 @@ WORD_START(_token_gives_cell_q_, _resolve_loop_)
         two_dup,                           /* ( x token x token ) */
         _exec_token_, equal, _if_, T(4),   /* ( x token )         */
             nip, true, exit,               /* ( token true )      */
-        _then_,
+        then,
         drop, false, exit                  /* ( x false )         */
     )
 WORD_END(_token_gives_cell_q_)
@@ -572,7 +586,7 @@ WORD_START(_any_token_gives_cell_q_, _token_gives_cell_q_)
             _if_, T(5),
                 r_from_drop, true,           /* ( token true )           */
                 unloop, exit,                /* exit                     */
-            _then_,
+            then,
             r_from, token_plus,              /* ( x taddr )              */
         _loop_, T(-14-SZ/SZt),
         drop, false, exit                    /* ( x false )              */
@@ -605,7 +619,7 @@ WORD_START(char_to_base, eight)
         _lit2s_, T('#'), minus, dup, two,      /* ( body ch-'#' ch-'#' 2 )  */
         less_equal, _if_, T(5),                /* ( body ch-'#' )           */
             chars, plus, c_fetch, exit,
-        _then_,                                /* ( body ch-'#' )           */
+        then,                                /* ( body ch-'#' )           */
         two_drop, zero, exit
       )
     )
@@ -629,15 +643,15 @@ WORD_START(char_to_u, char_to_base)
         dup, _lit2s_, T('0'), _lit2s_, T('9'+1), /* ( ch ch '0' '9'+1 )         */
         within, _if_, T(5),                      /* ( ch )                      */
             _lit2s_, T('0'), minus, exit,        /* ( ch-'0' )                  */
-        _then_,
+        then,
         dup, _lit2s_, T('A'), _lit2s_, T('Z'+1), /* ( ch ch 'A' 'Z'+1 )         */
         within, _if_, T(5),                      /* ( ch )                      */
             _lit2s_, T('A'-10), minus, exit,     /* ( ch-'A'+10 )               */
-        _then_,
+        then,
         dup, _lit2s_, T('a'), _lit2s_, T('z'+1), /* ( ch ch 'a' 'z'+1 )         */
         within, _if_, T(5),                      /* ( ch )                      */
             _lit2s_, T('a'-10), minus, exit,     /* ( ch-'a'+10 )               */
-        _then_,
+        then,
         drop, minus_one, exit                    /* ( -1 )                      */
     )
 WORD_END(char_to_u)
@@ -669,9 +683,9 @@ WORD_START(string_to_base, char_to_u)
               to_r,
               one_minus, swap, char_plus, swap,
               r_from, exit,
-           _then_,
+           then,
            drop,
-        _then_,
+        then,
         _call_, WADDR(base), fetch, exit
     )
 WORD_END(string_to_base)
@@ -706,11 +720,11 @@ WORD_START(string_to_char, string_to_base)
                 _if_, T(8),
                     one_plus, dup, two_minus, c_fetch,
                     zero, swap, exit,
-                _then_,
+                then,
                 two_minus,
-            _then_,
+            then,
             three,
-        _then_,
+        then,
         minus_one, exit
     )
 WORD_END(string_to_char)
@@ -744,7 +758,7 @@ WORD_START(string_base_to_u, string_to_char)
          */
         over, _if_zero_, T(4),
             drop, zero, exit,
-        _then_,
+        then,
         to_r, zero, minus_rot, zero,
         do,
             dup, c_fetch, _call_, WADDR(char_to_u), dup, zero, j/*NON-PORTABLE*/, within,
@@ -752,7 +766,7 @@ WORD_START(string_base_to_u, string_to_char)
                 drop, swap,
                 i_prime, i, minus, unloop, r_from_drop,
                 swap, exit,
-            _then_,
+            then,
             rot, j/*NON-PORTABLE*/, times, plus,
             swap, char_plus,
         _loop_, T(-27-SZ/SZt),
@@ -782,11 +796,11 @@ WORD_START(string_to_sign, string_base_to_u)
         */
         _q_if_zero_, T(3),
             one, exit,
-        _then_,
+        then,
         over, c_fetch, _lit_, T('-'), ne,
         _if_, T(3),
             one, exit,
-        _then_,
+        then,
         one_minus, swap, char_plus, swap,
         minus_one, exit
     )

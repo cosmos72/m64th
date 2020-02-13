@@ -47,7 +47,7 @@
     X(2, "r+", r_plus)                                                                             \
     X(4, "-rot", minus_rot)                                                                        \
     X(7, "squared", squared)                                                                       \
-    X(7, "string=", string_equal)                                                                  \
+    X(7, "string=", string_equal)     /* ( addr1 addr2 u -- addr1 addr2 u t|f )         */         \
     /*                             */ /*                                                */         \
     X(5, "byte@", byte_fetch)                                                                      \
     /* X(5, "char@", char_fetch)   */ /* alias of c@                                    */         \
@@ -154,7 +154,6 @@
     X(8, "(lit-8s)", _lit8s_)                                                                      \
     X(6, "(loop)", _loop_)                                                                         \
     X(9, "(missing)", _missing_)                                                                   \
-    X(6, "(then)", _then_)                                                                         \
     X(11, "[#compiled]", _num_compiled_)                                                           \
     X(14, "[compile-init]", _compile_init_)                                                        \
     X(13, "[compile-2s,]", _compile2s_)                                                            \

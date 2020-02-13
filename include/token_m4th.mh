@@ -141,7 +141,7 @@
 #define M4_leave_ 631 /* (leave) must be followed by IP offset of 1st instruction after (loop) */
 #define M4_loop_ 632  /* (loop)  must be followed by IP offset of 1st instruction after (do)   */
 #define M4_missing_ 0 /* (missing) called instead of invalid/unimplemented function */
-#define M4_then_ 634  /* (then) currently a noop, used as marker for compilation    */
+#undef M4____gap      /*                                         */
 #undef M4____gap      /*                                         */
 #undef M4____gap      /*                                         */
 #undef M4____gap      /*                                         */

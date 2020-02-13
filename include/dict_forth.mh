@@ -79,6 +79,7 @@
     X(3, "rot", rot)                                                                               \
     X(6, "rshift", rshift)                                                                         \
     X(4, "swap", swap)                                                                             \
+    X(4, "then", then)                                                                             \
     X(2, "u<", u_less)                                                                             \
     X(6, "unloop", unloop)                                                                         \
     X(3, "xor", xor)
@@ -95,8 +96,7 @@
     X(2, "if,", if)                                                                                \
     X(5, "leave", leave)                                                                           \
     X(7, "literal", literal)                                                                       \
-    X(4, "loop", loop)                                                                             \
-    X(4, "then", then)
+    X(4, "loop", loop)
 
 /* ------- forth 2012: core ext ----------------------------------------------------------------- */
 #define DICT_TOKENS_FORTH_CORE_EXT(X)                                                              \

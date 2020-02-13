@@ -162,7 +162,7 @@ WORD_START(compile_comma, cmove)
         _if_zero_, T(5),
             _compile_lit_, _call_xt_,  /* compile (call-xt) */
             _compile_xt_, exit,        /* compile XT        */
-        _then_,
+        then,
         xt_to_word, _call_, WADDR(_inline_), exit
    )
 WORD_END(compile_comma)
@@ -189,7 +189,7 @@ WORD_START(find, dup)
     WORD_CODE(
         dup, count, _call_, WADDR(find_word),      /* ( c-addr word|0 -1|0|1 ) */
         _q_if_zero_, T(5), nip, exit,                /* ( c-addr 0             ) */
-        _then_,                                      /* ( c-addr word -1|1     ) */
+        then,                                      /* ( c-addr word -1|1     ) */
         to_r, nip, word_to_xt, r_from,               /* ( xt     -1|1          ) */
         exit
     )
@@ -269,17 +269,17 @@ WORD_START(literal, leave)
         _call_, WADDR(_any_token_gives_cell_q_),
         _if_, T(3), _compile_token_,     /* if executing token gives n */
             exit,                        /* append token to XT, exit   */
-        _then_,
+        then,
         dup, dup, to_short,
         equal, _if_, T(5),               /* if n == to_short(n)        */
             _compile_lit_, _lit2s_,      /* append _lit2s_     to XT   */
             _compile2s_, exit,           /* append (int16)n    to XT   */
-        _then_,
+        then,
         dup, dup, to_int,
         equal, _if_, T(5),               /* if n == to_int(n)          */
             _compile_lit_, _lit4s_,      /* append _lit4s_     to XT   */
             _compile4s_, exit,           /* append (int32)n    to XT   */
-        _then_,
+        then,
         _compile_lit_, _lit_cell_,       /* append _lit_cell_  to XT   */
         _compile_cell_,                  /* append dtop        to XT   */
         exit
@@ -318,7 +318,7 @@ WORD_START(then, swap)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_CODE(
-        _compile_init_, _compile_lit_, _then_,
+        _compile_init_, _compile_lit_, then,
         _call_, WADDR(_resolve_jump_here_), exit
     )
 WORD_END(then)

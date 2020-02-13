@@ -35,9 +35,10 @@ FUNC_START(cmove)    /* cmove   'string' word set */
 FUNC_END(cmove)
 
 
-FUNC_START(string_equal)   /* string=  ( addr1 addr2 u -- t|f ) m4th-user */
-        DPOP(  REG2)       /* b = addr2 */
-        DPOP(  REG1)       /* a = addr1 */
+FUNC_START(string_equal)   /* string=  ( addr1 addr2 u -- addr1 addr2 u t|f ) m4th-user */
+        LOAD(  REG2,   AT(DSTK))       /* b = addr2 */
+        LOAD(  REG1,   AT(DSTK, SZ))   /* a = addr1 */
+        DPUSH( DTOP)
         cmp    REG1,   REG2;
         b.eq   LABEL_SYM(string_equal.true);   /* addr1 == addr2 */
         JZ(    DTOP,     string_equal.true)    /* u == 0         */
