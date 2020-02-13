@@ -19,270 +19,8 @@
 #include "../include/asm.mh"
 #include "../include/dict.mh"
 #include "../include/dict_m4th.mh"
-#include "../include/err.mh"
-#include "../include/macro.mh"
 
 /* clang-format off */
-
-/* ---------------------------------------------------------------------------------------------- */
-/* --- m4th-user -------------------------------------------------------------------------------- */
-/* ---------------------------------------------------------------------------------------------- */
-DICT_START(m4th_user)
-
-DICTNAME(9, "m4th-user", m4th_user)
-
-DICT_WORDS_M4TH_USER(WORDNAME)
-
-WORD(less_equal,       less_equal,     DSTACK(2,1), RSTACK(0,0), WORD_PURE)
-WORD(more_equal,       less_equal,     DSTACK(2,1), RSTACK(0,0), WORD_PURE)
-WORD(zero_less_equal,  more_equal,     DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(zero_more_equal, zero_less_equal, DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(two_plus,        zero_more_equal, DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(two_minus,        two_plus,       DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(two_dup_two_to_r, two_minus,      DSTACK(2,2), RSTACK(0,2), WORD_R_PURE)
-WORD(two_nip,         two_dup_two_to_r,DSTACK(4,2), RSTACK(0,0), WORD_PURE)
-WORD(two_r_from_two_drop, two_nip,     DSTACK(0,0), RSTACK(2,0), WORD_R_PURE)
-WORD(four_times,   two_r_from_two_drop,DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(four_plus,        four_times,     DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(four_div,         four_plus,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(eight_times,      four_div,       DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(eight_plus,       eight_times,    DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(eight_div,        eight_plus,     DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(i_times,          eight_div,      DSTACK(1,1), RSTACK(1,1), WORD_R_PURE)
-WORD(i_plus,           i_times,        DSTACK(1,1), RSTACK(1,1), WORD_R_PURE)
-WORD(i_minus,          i_plus,         DSTACK(1,1), RSTACK(1,1), WORD_R_PURE)
-WORD(i_prime,          i_minus,        DSTACK(0,1), RSTACK(2,2), WORD_R_PURE)
-WORD_START(q_if, i_prime)
-    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
-    WORD_DSTACK(1,1)
-    WORD_RSTACK(0,0)
-    WORD_DSTACK(1,1)
-    WORD_RSTACK(0,0)
-    WORD_NATIVE_NONE()
-    WORD_CODE(
-        _compile_init_, _compile_unresolved_jump_, _q_if_, _if_, exit
-    )
-WORD_END(q_if)
-WORD_START(q_if_zero, q_if)
-    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
-    WORD_DSTACK(1,1)
-    WORD_RSTACK(0,0)
-    WORD_DSTACK(1,1)
-    WORD_RSTACK(0,0)
-    WORD_NATIVE_NONE()
-    WORD_CODE(
-        _compile_init_, _compile_unresolved_jump_, _q_if_zero_, _if_, exit
-    )
-WORD_END(q_if_zero)
-WORD(noop,             q_if_zero,      DSTACK(0,0), RSTACK(0,0), WORD_PURE)
-WORD(dup_to_r,         noop,           DSTACK(1,1), RSTACK(0,1), WORD_R_PURE)
-WORD_START(if_zero, dup_to_r)
-    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
-    WORD_DSTACK(1,0)
-    WORD_RSTACK(0,0)
-    WORD_DSTACK(1,0)
-    WORD_RSTACK(0,0)
-    WORD_NATIVE_NONE()
-    WORD_CODE(
-        _compile_init_, _compile_unresolved_jump_, _if_zero_, _if_, exit
-    )
-WORD_END(if_zero)
-WORD(r_from_drop,      if_zero,        DSTACK(0,0), RSTACK(1,0), WORD_R_PURE)
-WORD(r_plus,           r_from_drop,    DSTACK(1,0), RSTACK(1,1), WORD_R_PURE)
-WORD(r_store,          r_plus,         DSTACK(1,0), RSTACK(1,1), WORD_R_PURE)
-WORD(squared,          r_store,        DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(minus_rot,        squared,        DSTACK(3,3), RSTACK(0,0), WORD_PURE)
-WORD(div_byte,         minus_rot,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(div_char,         div_byte,       DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(div_short,        div_char,       DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(div_ushort,       div_short,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(div_int,          div_ushort,     DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(div_uint,         div_int,        DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(div_cell,         div_uint,       DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(byte_plus,        div_cell,       DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-/* WORD(char_plus,     ,               DSTACK(1,1), RSTACK(0,0), WORD_PURE) */ /* already in forth 'core' word set */
-WORD(short_plus,       byte_plus,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(ushort_plus,      short_plus,     DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(int_plus,         ushort_plus,    DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(uint_plus,        int_plus,       DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-/* WORD(cell_plus,     ,               DSTACK(1,1), RSTACK(0,0), WORD_PURE) */ /* already in forth 'core' word set */
-WORD(bytes,            uint_plus,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-/* WORD(chars,         ,               DSTACK(1,1), RSTACK(0,0), WORD_PURE) */ /* already in forth 'core' word set */
-WORD(shorts,           bytes,          DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(ushorts,          shorts,         DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(ints,             ushorts,        DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(uints,            ints,           DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-/* WORD(cells    ,     ,               DSTACK(1,1), RSTACK(0,0), WORD_PURE) */ /* already in forth 'core' word set */
-WORD(byte_store,       uints,          DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE) /* alias of c! */
-WORD(char_store,       byte_store,     DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE) /* alias of c! */
-WORD(short_store,      char_store,     DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE)
-WORD(ushort_store,     short_store,    DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE) /* alias of short! */
-WORD(int_store,        ushort_store,   DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE)
-WORD(uint_store,       int_store,      DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE) /* alias of int! */
-WORD(byte_fetch,       uint_store,     DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD(char_fetch,       byte_fetch,     DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH) /* alias of c@ */
-WORD(short_fetch,      char_fetch,     DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD(ushort_fetch,     short_fetch,    DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD(int_fetch,        ushort_fetch,   DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD(uint_fetch,       int_fetch,      DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD(to_byte,          uint_fetch,     DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(to_char,          to_byte,        DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(to_short,         to_char,        DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(to_ushort,        to_short,       DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(to_int,           to_ushort,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(to_uint,          to_int,         DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-/**
- * string>number ( caddr n -- caddr' n' x t|f )
- * convert string to number, recognizing base prefixes # $ % and sign prefix '-'
- * Also convert any single-quoted char 'x' to ASCII code of x
- */
-WORD_START(string_to_number, to_uint)
-    WORD_FLAGS(M4FLAG_INLINE)
-    WORD_DSTACK(2,4)
-    WORD_RSTACK(0,0)
-    WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
-    WORD_CODE(
-        /* ?if0
-         *    0 false exit                 ( caddr n 0 false )
-         * then
-         * string>char dup invert          ( caddr n c flag  )
-         * if
-         *    true exit                    ( caddr n c true  )
-         * then                            ( caddr n c       )
-         * drop string>base >r             ( caddr n         ) (R: base )
-         * string>sign over                ( caddr n sign n  ) (R: base )
-         * if0                             ( caddr n sign    ) (R: base )
-         *    drop 0 false r> drop exit    ( caddr n 0 false ) \ no digits
-         * then                            ( caddr n sign    ) (R: base )
-         * r@ swap r!                      ( caddr n base    ) (R: sign )
-         * string&base>u                   ( caddr n u       ) (R: sign )
-         * r> * over                       ( caddr n x n     )
-         * 0=                              ( caddr n x t|f   )
-         */
-        _q_if_zero_, T(4),
-            zero, false, exit,
-        then,
-        _call_, WADDR(string_to_char), dup, invert,
-        _if_, T(3),
-            true, exit,
-        then,
-        drop, _call_, WADDR(string_to_base), to_r,
-        _call_, WADDR(string_to_sign), over,
-        _if_zero_, T(6),
-            drop, zero, false, r_from_drop, exit,
-        then,
-        r_fetch, swap, r_store,
-        _call_, WADDR(string_base_to_u),
-        r_from, times, over,
-        zero_equal, exit
-    )
-WORD_END(string_to_number)
-/* string= ( addr1 addr2 u -- addr1 addr2 u t|f )   \ t if the two strings have the same content */
-WORD(string_equal,   string_to_number, DSTACK(3,4), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD(u_less_equal,     string_equal,   DSTACK(2,1), RSTACK(0,0), WORD_PURE)
-WORD(u_more_equal,     u_less_equal,   DSTACK(2,1), RSTACK(0,0), WORD_PURE)
-WORD_START(valid_base_q, u_more_equal)
-    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
-    WORD_DSTACK(1,1)
-    WORD_RSTACK(0,0)
-    WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
-    WORD_CODE(
-        two, _lit2s_, T(37),       /* base 2 37                   */
-        within,                    /* caddr n base                */
-        exit
-    )
-WORD_END(valid_base_q)
-
-DICT_BODY(m4th_user, valid_base_q)
-DICT_END(m4th_user)
-
-/* ---------------------------------------------------------------------------------------------- */
-/* --- m4th-core -------------------------------------------------------------------------------- */
-/* ---------------------------------------------------------------------------------------------- */
-DICT_START(m4th_core)
-
-DICTNAME(9, "m4th-core", m4th_core)
-
-DICT_WORDS_M4TH_CORE(WORDNAME)
-
-WORD(div_token,        div_token,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD_START(find_word, div_token)
-    WORD_FLAGS(WORD_IMPURE)
-    WORD_DSTACK(2,2)
-    WORD_RSTACK(0,0)
-    WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
-    WORD_CODE(
-        two_drop, zero, zero, exit /* TODO */
-    )
-WORD_END(find_word)
-WORD(to_token,         find_word,    DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(token_plus,       to_token,       DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(tokens,           token_plus,     DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(token_store,      tokens,         DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE)
-WORD(token_fetch,      token_store,    DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD_START(word_inline_query,  token_fetch)
-    WORD_FLAGS(WORD_IMPURE | M4FLAG_MEM_FETCH)
-    WORD_DSTACK(1,1)
-    WORD_RSTACK(0,0)
-    WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
-    WORD_CODE(
-        dup, word_to_flags,
-        dup, _lit2s_, SHORT(M4FLAG_INLINE_ALWAYS), and, _if_, T(4),
-            two_drop, true, exit,
-        then,
-        _lit2s_, SHORT(M4FLAG_INLINE), and, _if_zero_, T(4),
-            drop, false, exit,
-        then,
-        word_to_code_n, eight, less, exit
-    )
-WORD_END(word_inline_query)
-WORD(word_to_code,  word_inline_query, DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD(word_to_code_n,   word_to_code,   DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD(word_to_flags,    word_to_code_n, DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD(word_to_name,     word_to_flags,  DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD(word_to_prev,     word_to_name,   DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD(word_to_xt,       word_to_prev,   DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD(wordlist_to_last, word_to_xt,     DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-/* wordlist-find ( addr n l -- addr n | w 0 ) search name in wordlist */
-WORD_START(wordlist_find, wordlist_to_last)
-    WORD_FLAGS(WORD_IMPURE | M4FLAG_MEM_FETCH)
-    WORD_DSTACK(3,2)
-    WORD_RSTACK(0,0)
-    WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
-    WORD_CODE(
-        /* wordlist>last                                       ( addr n w          )
-         * begin
-         *    ?if0 drop exit then                              ( addr n            )
-         *    dup >r word>name                                 ( addr n addr' n'   ) (R: w  )
-         *    rot tuck                                         ( addr addr' n n' n ) (R: w  )
-         *    = if                                             ( addr addr' n      ) (R: w  )
-         *       string= if                                    ( addr addr' n      ) (R: w  )
-         *          2drop drop r> zero exit                    ( w 0               )
-         *       then                                          ( addr addr' n      ) (R: w  )
-         *    then                                             ( addr addr' n      ) (R: w  )
-         *    nip r> word>prev                                 ( addr n     w'     )
-         * again
-         */
-        wordlist_to_last,
-        begin,
-            _q_if_zero_, T(4), drop, exit, then,
-            dup, to_r, word_to_name,
-            rot, tuck,
-            equal, _if_, T(-1),
-                string_equal, _if_, T(-1),
-                    two_drop, drop, r_from, zero, exit,
-                then
-    )
-WORD_END(wordlist_find)
-WORD(xt_to_word,     wordlist_find,    DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-
-DICT_BODY(m4th_core, xt_to_word)
-DICT_END(m4th_core)
 
 /* ---------------------------------------------------------------------------------------------- */
 /* --- m4th-impl -------------------------------------------------------------------------------- */
@@ -478,7 +216,7 @@ WORD_START(_compile_unresolved_jump_, _compile_lit_)
     WORD_CODE(_compile_init_, _compile_unresolved_jump_, T(-1), T(-1), exit)
 WORD_END(_compile_unresolved_jump_)
 WORD_START(_inline_, _compile_unresolved_jump_)
-    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE)
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY) /* multiple exits => cannot inline */
     WORD_DSTACK(1,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -487,7 +225,7 @@ WORD_START(_inline_, _compile_unresolved_jump_)
         word_to_code, one_minus, /* ( code n-1 )  skip 'exit' at the end of XT */
         dup, zero, less_equal, _if_, T(2),
             exit,              /* inline length is <= 0 */
-        then,                /* ( code n-1 )   */
+        then,                  /* ( code n-1 )   */
         _compile_init_,
         zero, do,
             dup, token_fetch,  /* ( code token ) */
@@ -555,7 +293,7 @@ WORD_END(_resolve_loop_)
  * ( x token -- token true | x false )
  */
 WORD_START(_token_gives_cell_q_, _resolve_loop_)
-    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_FLAGS(0) /* multiple exits => cannot inline */
     WORD_DSTACK(2,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -573,7 +311,7 @@ WORD_END(_token_gives_cell_q_)
  * ( x taddr tn -- token true | x false )
  */
 WORD_START(_any_token_gives_cell_q_, _token_gives_cell_q_)
-    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_FLAGS(0) /* multiple exits => cannot inline */
     WORD_DSTACK(3,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -602,7 +340,7 @@ WORD(four,             three,          DSTACK(0,1), RSTACK(0,0), WORD_PURE)
 WORD(eight,            four,           DSTACK(0,1), RSTACK(0,0), WORD_PURE)
 /* ( ch -- n )  convert '#' to 10, '$' to 16, '%' to 2, else 0 */
 WORD_START(char_to_base, eight)
-    WORD_FLAGS(M4FLAG_PURE) /* cannot be inlined, uses (ip) to access its body */
+    WORD_FLAGS(M4FLAG_PURE) /* multiple exits & uses (ip) to access its body => cannot inline */
     WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -619,14 +357,14 @@ WORD_START(char_to_base, eight)
         _lit2s_, T('#'), minus, dup, two,      /* ( body ch-'#' ch-'#' 2 )  */
         less_equal, _if_, T(5),                /* ( body ch-'#' )           */
             chars, plus, c_fetch, exit,
-        then,                                /* ( body ch-'#' )           */
+        then,                                  /* ( body ch-'#' )           */
         two_drop, zero, exit
       )
     )
 WORD_END(char_to_base)
 /* ( ch -- n )  convert one digit in base 2..36 from char to unsigned number, else -1 */
 WORD_START(char_to_u, char_to_base)
-    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_PURE)
+    WORD_FLAGS(M4FLAG_PURE) /* multiple exits => cannot inline */
     WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -660,7 +398,7 @@ WORD_END(char_to_u)
  * if string starts with # $ or % consume it and return corresponding base, else return current base
  */
 WORD_START(string_to_base, char_to_u)
-    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_FLAGS(0) /* multiple exits => cannot inline */
     WORD_DSTACK(2,3)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -691,7 +429,7 @@ WORD_START(string_to_base, char_to_u)
 WORD_END(string_to_base)
 /* ( caddr n -- caddr' n' ch )  convert three-character string "'x'" to char 'x' for any x, else -1 */
 WORD_START(string_to_char, string_to_base)
-    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
+    WORD_FLAGS(M4FLAG_MEM_FETCH) /* multiple exits => cannot inline */
     WORD_DSTACK(2,3)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -733,7 +471,7 @@ WORD_END(string_to_char)
  * convert string from base to unsigned number
  */
 WORD_START(string_base_to_u, string_to_char)
-    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
+    WORD_FLAGS(M4FLAG_MEM_FETCH) /* multiple exits => cannot inline */
     WORD_DSTACK(3,3)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -778,7 +516,7 @@ WORD_END(string_base_to_u)
  * string>sign ( caddr n -- caddr' n' sign ) parse '-' prefix and return -1, else return 1
  */
 WORD_START(string_to_sign, string_base_to_u)
-    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
+    WORD_FLAGS(M4FLAG_MEM_FETCH) /* multiple exits => cannot inline */
     WORD_DSTACK(2,3)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
