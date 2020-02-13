@@ -15,18 +15,23 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <stddef.h>
+
 typedef struct pair_s {
     long first, second;
 } pair;
 
-void m4question_dup(long dtop, long *dstk) {
-    if (dtop != 0) {
-        *--dstk = dtop;
-    }
+const size_t *m4word_prev(const size_t *w) {
+    size_t delta = w[0];
+    return delta ? (const size_t *)((size_t)w - delta) : NULL;
 }
 
 long m4max(long a, long b) {
     return a > b ? a : b;
+}
+
+long m4min(long a, long b) {
+    return a < b ? a : b;
 }
 
 long div(long a, long b) {

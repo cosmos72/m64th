@@ -88,24 +88,24 @@
 #undef M4____gap           /*                       */
 
 /* 'm4th-core' wordlist */
-#define M4word_to_code 581   /* word>code   ( w  -- addr n )  get code array from word */
-#define M4word_to_code_n 582 /* word>code>n ( w  -- n      )  get code size from word  */
+#define M4word_to_code 581   /* word>code   ( w  -- addr n  ) get code array from word */
+#define M4word_to_code_n 582 /* word>code>n ( w  -- n       ) get code size from word  */
 #define M4word_to_flags 583  /* word>flags  ( w  -- m4flags ) get m4flags from word    */
-#define M4word_to_xt 584     /* word>xt     ( w  -- XT     )  get XT == code address from word */
-#define M4xt_to_word 585     /* xt>word     ( XT -- w      )  get word from XT         */
-#undef M4____gap             /*                       */
-#undef M4____gap             /*                       */
-#undef M4____gap             /*                       */
-#undef M4____gap             /*                       */
-#undef M4____gap             /*                       */
-#undef M4____gap             /*                       */
-#undef M4____gap             /*                       */
-#undef M4____gap             /*                       */
-#undef M4____gap             /*                       */
-#undef M4____gap             /*                       */
-#undef M4____gap             /*                       */
-#undef M4____gap             /*                       */
-#undef M4____gap             /*                       */
+#define M4word_to_name 584   /* word>name   ( w  -- addr n  ) get word name            */
+#define M4word_to_prev 585   /* word>prev   ( w  -- w'|0    ) get previous word        */
+#define M4word_to_xt 586     /* word>xt     ( w  -- XT      ) get XT == code address from word */
+#define M4wordlist_to_last 587 /*wordlist>last ( l -- w ) get last word in a wordlist */
+#undef M4____gap                    /*                       */
+#undef M4____gap                    /*                       */
+#define M4xt_to_word 590            /* xt>word  ( XT -- w ) get word from XT */
+#undef M4____gap                    /*                       */
+#undef M4____gap                    /*                       */
+#undef M4____gap                    /*                       */
+#undef M4____gap                    /*                       */
+#undef M4____gap                    /*                       */
+#undef M4____gap                    /*                       */
+#undef M4____gap                    /*                       */
+#undef M4____gap                    /*                       */
 
 /* 'm4th-impl' wordlist */
 #define M4minus_one 601     /* -1       */

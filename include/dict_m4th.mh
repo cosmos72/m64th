@@ -111,11 +111,14 @@
 
 /* ------- m4th-core ---------------------------------------------------------------------------- */
 #define DICT_TOKENS_M4TH_CORE(X)                                                                   \
-    X(9, "word>code", word_to_code)      /* ( w  -- taddr n ) get code array from word */          \
+    X(9, "word>code", word_to_code)      /* ( w  -- taddr n ) get code array from word         */  \
+    X(11, "word>code>n", word_to_code_n) /* ( w  -- n  )      get code size from word          */  \
+    X(10, "word>flags", word_to_flags)   /* ( w  -- m4flags ) get m4flags of word              */  \
+    X(9, "word>name", word_to_name)      /* ( w  -- addr n  ) get name of word                 */  \
+    X(9, "word>prev", word_to_prev)      /* ( w  -- w'|0 )    get previous word in wordlist    */  \
     X(7, "word>xt", word_to_xt)          /* ( w  -- XT )      get XT == code address from word */  \
-    X(11, "word>code>n", word_to_code_n) /* ( w  -- n  )      get code size from word  */          \
-    X(10, "word>flags", word_to_flags)   /* ( w  -- m4flags ) get m4flags of word      */          \
-    X(7, "xt>word", xt_to_word)          /* ( XT -- w )       convert XT to word       */
+    X(13, "wordlist>last", wordlist_to_last) /* ( l -- w )    get last word in wordlist        */  \
+    X(7, "xt>word", xt_to_word) /*          ( XT -- w )       convert XT to word               */
 
 #define DICT_WORDS_M4TH_CORE(X)                                                                    \
     DICT_TOKENS_M4TH_CORE(X)                                                                       \

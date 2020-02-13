@@ -795,9 +795,10 @@ static m4testexecute testexecute_e[] = {
      {}},
 };
 
+static const m4wordlist m4testwordlist_forth = {&m4dict_forth};
+
 static m4testexecute testexecute_f[] = {
-#if 1
-    /* ----------------------------- compile, ------------------------------- */
+    /* ----------------------------- compile-token, ------------------------- */
     {"0x123 (compile-token,)",
      {m4_compile_init_, m4_compile_token_, m4bye},
      {{1, {0x123}}, {}},
@@ -808,23 +809,42 @@ static m4testexecute testexecute_f[] = {
      {{}, {}},
      {{}, {}},
      {1, {500}}},
-    /* ----------------------------- compile, ------------------------------- */
-    {"' noop word>flags",
+    /* ----------------------------- word.... ------------------------------- */
+    {"word>flags",
      {CALL(word_to_flags), m4bye},
      {{1, {(m4cell)&WORD_SYM(noop)}}, {}},
      {{1, {WORD_PURE}}, {}},
      {}},
-    {"' noop word>code",
+    {"word>code",
      {m4word_to_code, m4bye},
      {{1, {(m4cell)&WORD_SYM(noop)}}, {}},
      {{2, {DXT(noop), 2}}, {}},
+     {}},
+    {"word>name",
+     {m4word_to_name, m4bye},
+     {{1, {(m4cell)&WORD_SYM(mod)}}, {}},
+     {{2, {(m4cell)NULL /* fixed by m4testexecute_fix() */, 3}}, {}},
+     {}},
+    {"word>prev",
+     {m4word_to_prev, m4bye},
+     {{1, {(m4cell)&WORD_SYM(times)}}, {}},
+     {{1, {(m4cell)&WORD_SYM(store)}}, {}},
+     {}},
+    {"word>xt",
+     {m4word_to_xt, m4bye},
+     {{1, {(m4cell)&WORD_SYM(dup)}}, {}},
+     {{1, {DXT(dup)}}, {}},
+     {}},
+    {"wordlist>last",
+     {m4wordlist_to_last, m4bye},
+     {{1, {(m4cell)&m4testwordlist_forth}}, {}},
+     {{1, {(m4cell)&WORD_SYM(xor)}}, {}},
      {}},
     {"' (if) word-inline?",
      {CALL(word_inline_query), m4bye},
      {{1, {(m4cell)&WORD_SYM(_if_)}}, {}},
      {{1, {ttrue}}, {}},
      {}},
-#endif
     {"' + word-inline?",
      {CALL(word_inline_query), m4bye},
      {{1, {(m4cell)&WORD_SYM(plus)}}, {}},
@@ -860,6 +880,7 @@ static m4testexecute testexecute_f[] = {
      {{3, {(m4cell)&WORD_SYM(plus), (m4cell)&WORD_SYM(three), (m4cell)&WORD_SYM(one)}}, {}},
      {{}, {}},
      {3, {m4one, m4three, m4plus}}},
+    /* ----------------------------- compile, ------------------------------- */
     {"' noop compile,",
      {CALL(compile_comma), m4bye},
      {{1, {DXT(noop)}}, {}},
@@ -879,6 +900,9 @@ static void m4testexecute_fix(m4testexecute *t, const m4code_pair *pair) {
         break;
     case m4_ip_to_data_addr_:
         // TODO t->after.d.data[0] = (m4cell)w->data;
+        break;
+    case m4word_to_name:
+        t->after.d.data[0] = (m4cell)m4word_name((const m4word *)t->before.d.data[0]).addr;
         break;
     }
 }

@@ -73,9 +73,23 @@ FUNC_START(word_to_flags) /* ( w -- m4flags ) */
 FUNC_END(word_to_flags)
 
 
+FUNC_START(word_to_name) /* ( w -- addr n ) */
+        LD_uh( REG1_uh,    AT(DTOP, WORD_OFF_NAME_OFF)) /* a = w.name_off  */
+        JNZ(   REG1,       word_to_name.body)
+        ZERO(  DTOPw)                  /* dtop = 0               */
+        JUMP(  word_to_name.push_reg1)
+LABEL(word_to_name.body)
+        SUB2(  REG1,       DTOP)       /* dtop = m4countedstring* */
+        ADDI(  DTOP,       1,  REG1)   /* a = addr                */
+        LD_ub( DTOP_ub,    AT(DTOP))   /* dtop = len              */
+LABEL(word_to_name.push_reg1)
+        DPUSH( REG1)                   /* d1 = a = addr           */
+FUNC_END(word_to_name)
+
+
 FUNC_START(word_to_xt) /* ( w -- xt ) */
-        LD_uw( REG1_uw,    AT(DTOP, WORD_OFF_CODE_OFF)) /* REG1 = w.code_off  */
-        ADD2(  REG1,       DTOP)                        /* DTOP = w.code      */
+        LD_uw( REG1_uw,    AT(DTOP, WORD_OFF_CODE_OFF)) /* a = w.code_off     */
+        ADD2(  REG1,       DTOP)                        /* dtop = w.code      */
 FUNC_END(word_to_xt)
 
 
