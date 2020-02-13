@@ -207,17 +207,7 @@ DICTNAME(9, "m4th-core", m4th_core)
 DICT_WORDS_M4TH_CORE(WORDNAME)
 
 WORD(div_token,        div_token,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD_START(dict_lookup_word, div_token)
-    WORD_FLAGS(WORD_IMPURE)
-    WORD_DSTACK(3,3)
-    WORD_RSTACK(0,0)
-    WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
-    WORD_CODE(
-        drop, zero, exit /* TODO */
-    )
-WORD_END(lookup_word)
-WORD_START(lookup_word, dict_lookup_word)
+WORD_START(find_word, div_token)
     WORD_FLAGS(WORD_IMPURE)
     WORD_DSTACK(2,2)
     WORD_RSTACK(0,0)
@@ -226,8 +216,8 @@ WORD_START(lookup_word, dict_lookup_word)
     WORD_CODE(
         two_drop, zero, zero, exit /* TODO */
     )
-WORD_END(lookup_word)
-WORD(to_token,         lookup_word,    DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD_END(find_word)
+WORD(to_token,         find_word,    DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(token_plus,       to_token,       DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(tokens,           token_plus,     DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(token_store,      tokens,         DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE)
@@ -256,7 +246,18 @@ WORD(word_to_name,     word_to_flags,  DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M
 WORD(word_to_prev,     word_to_name,   DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 WORD(word_to_xt,       word_to_prev,   DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 WORD(wordlist_to_last, word_to_xt,     DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD(xt_to_word,     wordlist_to_last, DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+/* wordlist-find ( addr n l -- addr n | w 0 ) search name in wordlist */
+WORD_START(wordlist_find, wordlist_to_last)
+    WORD_FLAGS(WORD_IMPURE | M4FLAG_MEM_FETCH)
+    WORD_DSTACK(3,2)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_CODE(
+        drop, zero, exit /* TODO */
+    )
+WORD_END(wordlist_find)
+WORD(xt_to_word,     wordlist_find,    DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 
 DICT_BODY(m4th_core, xt_to_word)
 DICT_END(m4th_core)

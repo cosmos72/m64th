@@ -65,7 +65,7 @@ m4string m4th_read(m4th *m) {
 }
 
 /** temporary C implementation of (wordlist-lookup-word) */
-static const m4word *m4wordlist_lookup_word(const m4wordlist *d, m4string key) {
+static const m4word *m4wordlist_find_word(const m4wordlist *d, m4string key) {
     const m4word *w;
     assert(d);
     assert(key.addr);
@@ -78,7 +78,7 @@ static const m4word *m4wordlist_lookup_word(const m4wordlist *d, m4string key) {
 }
 
 /** temporary C implementation of (lookup-word) */
-static const m4word *m4th_lookup_word(m4th *m, m4string key) {
+static const m4word *m4th_find_word(m4th *m, m4string key) {
     m4wordlist *l;
     const m4word *w = NULL;
     m4cell i;
@@ -86,7 +86,7 @@ static const m4word *m4th_lookup_word(m4th *m, m4string key) {
     assert(key.addr);
     for (i = 0; i < m4th_wordlist_n && w == NULL; i++) {
         if ((l = m->wordlist[i]) != NULL) {
-            w = m4wordlist_lookup_word(l, key);
+            w = m4wordlist_find_word(l, key);
         }
     }
     return w;
@@ -98,7 +98,7 @@ m4pair m4th_parse(m4th *m, m4string key) {
     const m4word *w;
     if (key.addr == NULL) {
         ret.err = m4err_eof;
-    } else if ((w = m4th_lookup_word(m, key)) != NULL) {
+    } else if ((w = m4th_find_word(m, key)) != NULL) {
         ret.w = w;
         ret.err = m4num_is_word;
     } else {
