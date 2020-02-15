@@ -64,7 +64,7 @@ FUNC_START(m4th)
 FUNC_END(m4th)
 
 
-/* searchorder-i ( u -- addr ) get address of searchorder i-th element */
+/* searchorder-i ( u -- addr ) get address of i-th wordlist in search order */
 FUNC_START(searchorder_i)
         ADDI(  M4TH, M4TH_OFF_SEARCHORDER, REG1) /* a = &m->searchorder */
         LOAD(  REG2,   AT(REG1))                 /* b = m->searchorder.n */

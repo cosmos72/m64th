@@ -102,30 +102,12 @@ m4string m4th_read(m4th *m) {
     return s;
 }
 
-/** temporary C implementation of (wordlist-find) */
-static const m4word *m4wordlist_find(const m4wordlist *wid, m4string key) {
-    const m4word *w;
-    assert(wid);
-    assert(key.addr);
-    for (w = m4wordlist_lastword(wid); w != NULL; w = m4word_prev(w)) {
-        if (m4string_equals(key, m4word_name(w))) {
-            return w;
-        }
-    }
-    return NULL;
-}
-
-/** temporary C implementation of (string>word) */
-static const m4word *m4th_string_to_word(const m4th *m, m4string key) {
-    const m4searchorder *s = &m->searchorder;
-    const m4word *w = NULL;
-    m4cell i, n = s->n;
-    assert(m);
-    assert(key.addr);
-    for (i = 0; w == NULL && i < n; i++) {
-        w = m4wordlist_find(s->addr[i], key);
-    }
-    return w;
+/** wrapper around (string>word) */
+static const m4word *m4th_string_to_word(m4th *m, m4string key) {
+    dpush(m, (m4cell)key.addr);
+    dpush(m, key.n);
+    m4th_execute_word(m, &m4w_string_to_word);
+    return (m4word *)dpop(m);
 }
 
 /** temporary C implementation of (parse) */

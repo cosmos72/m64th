@@ -67,35 +67,6 @@ WORD_START(string_to_word, searchorder_n)
             drop,
         _loop_, T(-15-SZ/SZt),
         two_drop, zero, exit
-#if 0        
-        /* m4th M4TH_OFF_SEARCHORDER +             ( c-addr u ord              )
-         * dup @ 0                                 ( c-addr u ord n 0          )
-         * ?do                                     ( c-addr u ord              ) (R: n i )
-         *    dup i' i -                           ( c-addr u ord ord n-i      ) (R: n i )
-         *    cells + @                            ( c-addr u ord wid          ) (R: n i )
-         *    2over rot                            ( c-addr u ord c-addr u wid ) (R: n i )
-         *    wordlist-find                        ( c-addr u ord w|0          ) (R: n i )
-         *    ?if
-         *       nip nip nip unloop exit           ( w                         )
-         *    then                                 ( c-addr u ord 0            ) (R: n i )
-         *    drop                                 ( c-addr u ord              ) (R: n i )
-         * loop                                    ( c-addr u ord              )
-         * 2drop drop 0                            ( 0                         )
-         */
-        m4th, _lit_, T(M4TH_OFF_SEARCHORDER), plus, 
-        dup, fetch, zero,
-        _q_do_, T(21+SZ/SZt),
-            dup, i_prime, i, minus,
-            cells, plus, fetch,
-            two_over, rot,
-            _call_, WADDR(wordlist_find),
-            _q_if_, T(6),
-                nip, nip, nip, unloop, exit,
-            then,
-            drop,
-        _loop_, T(-21-SZ/SZt),
-        two_drop, drop, zero, exit
-#endif /* 0 */
     )
 WORD_END(string_to_word)
 WORD(to_token,         string_to_word, DSTACK(1,1), RSTACK(0,0), WORD_PURE)
