@@ -30,7 +30,7 @@
 #include <string.h> /* memcpy()          */
 
 typedef struct m4testcompile_s {
-    const char *input[8];
+    const char *input;
     m4countedstack dbefore, dafter;
     m4countedwcode codegen;
 } m4testcompile;
@@ -39,94 +39,91 @@ typedef struct m4testcompile_s {
 
 static const m4testcompile testcompile[] = {
     /* ------------------------------- numbers ------------------------------ */
-    {{"0"}, {}, {}, {1, {m4zero}}},
-    {{"1", "2"}, {}, {}, {2, {m4one, m4two}}},
-    {{"3", "4", "8"}, {}, {}, {3, {m4three, m4four, m4eight}}},
-    {{"-1", "5"}, {}, {}, {3, {m4minus_one, m4_lit2s_, T(5)}}},
-    {{"-3"}, {}, {}, {2, {m4_lit2s_, T(-3)}}},
-    {{"'!'"}, {}, {}, {2, {m4_lit2s_, T('!')}}},
-    {{"'4'"}, {}, {}, {2, {m4_lit2s_, T('4')}}},
-    {{"'@'"}, {}, {}, {2, {m4_lit2s_, T('@')}}},
-    {{"'k'"}, {}, {}, {2, {m4_lit2s_, T('k')}}},
-    {{"'~'"}, {}, {}, {2, {m4_lit2s_, T('~')}}},
-    {{"#1234"}, {}, {}, {2, {m4_lit2s_, SHORT(1234)}}},
-    {{"#-4321"}, {}, {}, {2, {m4_lit2s_, SHORT(-4321)}}},
-    {{"$99"}, {}, {}, {2, {m4_lit2s_, SHORT(0x99)}}},
-    {{"$-7def"}, {}, {}, {2, {m4_lit2s_, SHORT(-0x7def)}}},
-    {{"%1011"}, {}, {}, {2, {m4_lit2s_, SHORT(0xb)}}},
+    {"0", {}, {}, {1, {m4zero}}},
+    {"1 2", {}, {}, {2, {m4one, m4two}}},
+    {"3 4 8", {}, {}, {3, {m4three, m4four, m4eight}}},
+    {"-1 5", {}, {}, {3, {m4minus_one, m4_lit2s_, T(5)}}},
+    {"-3", {}, {}, {2, {m4_lit2s_, T(-3)}}},
+    {"'!'", {}, {}, {2, {m4_lit2s_, T('!')}}},
+    {"'4'", {}, {}, {2, {m4_lit2s_, T('4')}}},
+    {"'@'", {}, {}, {2, {m4_lit2s_, T('@')}}},
+    {"'k'", {}, {}, {2, {m4_lit2s_, T('k')}}},
+    {"'~'", {}, {}, {2, {m4_lit2s_, T('~')}}},
+    {"#1234", {}, {}, {2, {m4_lit2s_, SHORT(1234)}}},
+    {"#-4321", {}, {}, {2, {m4_lit2s_, SHORT(-4321)}}},
+    {"$99", {}, {}, {2, {m4_lit2s_, SHORT(0x99)}}},
+    {"$-7def", {}, {}, {2, {m4_lit2s_, SHORT(-0x7def)}}},
+    {"%1011", {}, {}, {2, {m4_lit2s_, SHORT(0xb)}}},
 #if SZ >= 4
-    {{"12345678"}, {}, {}, {3, {m4_lit4s_, INT(12345678)}}},
-    {{"$12345678"}, {}, {}, {3, {m4_lit4s_, INT(0x12345678)}}},
+    {"12345678", {}, {}, {3, {m4_lit4s_, INT(12345678)}}},
+    {"$12345678", {}, {}, {3, {m4_lit4s_, INT(0x12345678)}}},
 #endif
 #if SZ >= 8
-    {{"$7fffffffffffffff"}, {}, {}, {5, {m4_lit8s_, CELL(0x7fffffffffffffffl)}}},
+    {"$7fffffffffffffff", {}, {}, {5, {m4_lit8s_, CELL(0x7fffffffffffffffl)}}},
 #endif
 #if SZ == 8
-    {{"$ffffffffffffffff"}, {}, {}, {1, {m4minus_one}}},
+    {"$ffffffffffffffff", {}, {}, {1, {m4minus_one}}},
 #endif
     /* ------------------------------- if else then ------------------------- */
-    {{"?if"}, {}, {2, {2, m4_if_}}, {2, {m4_q_if_, T(-1)}}},
-    {{"?if0"}, {}, {2, {2, m4_if_}}, {2, {m4_q_if_zero_, T(-1)}}},
-    {{"if"}, {}, {2, {2, m4_if_}}, {2, {m4_if_, T(-1)}}},
-    {{"if0"}, {}, {2, {2, m4_if_}}, {2, {m4_if_zero_, T(-1)}}},
-    {{"if", "then"}, {}, {}, {3, {m4_if_, T(1), m4then}}},
-    {{"if", "1", "then"}, {}, {}, {4, {m4_if_, T(2), m4one, m4then}}},
-    {{"if", "else"}, {}, {2, {4, m4_else_}}, {4, {m4_if_, T(2), m4_else_, T(-1)}}},
-    {{"if", "else", "then"}, {}, {}, {5, {m4_if_, T(2), m4_else_, T(1), m4then}}},
-    {{"if", "1", "else", "2", "then"},
-     {},
-     {},
-     {7, {m4_if_, T(3), m4one, m4_else_, T(2), m4two, m4then}}},
+    {"?if", {}, {2, {2, m4_if_}}, {2, {m4_q_if_, T(-1)}}},
+    {"?if0", {}, {2, {2, m4_if_}}, {2, {m4_q_if_zero_, T(-1)}}},
+    {"if", {}, {2, {2, m4_if_}}, {2, {m4_if_, T(-1)}}},
+    {"if0", {}, {2, {2, m4_if_}}, {2, {m4_if_zero_, T(-1)}}},
+    {"if then", {}, {}, {3, {m4_if_, T(1), m4then}}},
+    {"if 1 then", {}, {}, {4, {m4_if_, T(2), m4one, m4then}}},
+    {"if else", {}, {2, {4, m4_else_}}, {4, {m4_if_, T(2), m4_else_, T(-1)}}},
+    {"if else then", {}, {}, {5, {m4_if_, T(2), m4_else_, T(1), m4then}}},
+    {"if 1 else 2 then", {}, {}, {7, {m4_if_, T(3), m4one, m4_else_, T(2), m4two, m4then}}},
     /* ------------------------------- literal ------------------------------ */
-    {{"literal"}, {1, {0}}, {}, {1, {m4zero}}},
-    {{"literal"}, {1, {1}}, {}, {1, {m4one}}},
-    {{"literal"}, {1, {-1}}, {}, {1, {m4minus_one}}},
-    {{"literal"}, {1, {2}}, {}, {1, {m4two}}},
-    {{"literal"}, {1, {3}}, {}, {1, {m4three}}},
-    {{"literal"}, {1, {4}}, {}, {1, {m4four}}},
-    {{"literal"}, {1, {5}}, {}, {2, {m4_lit2s_, 5}}},
-    {{"literal"}, {1, {8}}, {}, {1, {m4eight}}},
-    {{"literal"}, {1, {11}}, {}, {2, {m4_lit2s_, 11}}},
-    {{"literal"}, {1, {-2}}, {}, {2, {m4_lit2s_, -2}}},
-    {{"literal"}, {1, {0x7fff}}, {}, {2, {m4_lit2s_, 0x7fff}}},
-    {{"literal"}, {1, {-0x8000}}, {}, {2, {m4_lit2s_, -0x8000}}},
+    {"literal", {1, {0}}, {}, {1, {m4zero}}},
+    {"literal", {1, {1}}, {}, {1, {m4one}}},
+    {"literal", {1, {-1}}, {}, {1, {m4minus_one}}},
+    {"literal", {1, {2}}, {}, {1, {m4two}}},
+    {"literal", {1, {3}}, {}, {1, {m4three}}},
+    {"literal", {1, {4}}, {}, {1, {m4four}}},
+    {"literal", {1, {5}}, {}, {2, {m4_lit2s_, 5}}},
+    {"literal", {1, {8}}, {}, {1, {m4eight}}},
+    {"literal", {1, {11}}, {}, {2, {m4_lit2s_, 11}}},
+    {"literal", {1, {-2}}, {}, {2, {m4_lit2s_, -2}}},
+    {"literal", {1, {0x7fff}}, {}, {2, {m4_lit2s_, 0x7fff}}},
+    {"literal", {1, {-0x8000}}, {}, {2, {m4_lit2s_, -0x8000}}},
 #if SZ >= 4
-    {{"literal"}, {1, {0x8000}}, {}, {3, {m4_lit4s_, INT(0x8000)}}},
-    {{"literal"}, {1, {-0x8001}}, {}, {3, {m4_lit4s_, INT(-0x8001)}}},
-    {{"literal"}, {1, {(m4cell)0x7fffffffl}}, {}, {3, {m4_lit4s_, INT(0x7fffffffl)}}},
-    {{"literal"}, {1, {(m4cell)-0x80000000l}}, {}, {3, {m4_lit4s_, INT(-0x80000000l)}}},
+    {"literal", {1, {0x8000}}, {}, {3, {m4_lit4s_, INT(0x8000)}}},
+    {"literal", {1, {-0x8001}}, {}, {3, {m4_lit4s_, INT(-0x8001)}}},
+    {"literal", {1, {(m4cell)0x7fffffffl}}, {}, {3, {m4_lit4s_, INT(0x7fffffffl)}}},
+    {"literal", {1, {(m4cell)-0x80000000l}}, {}, {3, {m4_lit4s_, INT(-0x80000000l)}}},
 #endif
 #if SZ >= 8
-    {{"literal"}, {1, {0x80000000l}}, {}, {5, {m4_lit8s_, CELL(0x80000000l)}}},
-    {{"literal"}, {1, {-0x80000001l}}, {}, {5, {m4_lit8s_, CELL(-0x80000001l)}}},
-    {{"literal"},
+    {"literal", {1, {0x80000000l}}, {}, {5, {m4_lit8s_, CELL(0x80000000l)}}},
+    {"literal", {1, {-0x80000001l}}, {}, {5, {m4_lit8s_, CELL(-0x80000001l)}}},
+    {"literal",
      {1, {(m4cell)0x7fffffffffffffffl}},
      {},
      {5, {m4_lit8s_, CELL(0x7fffffffffffffffl)}}},
-    {{"literal"},
+    {"literal",
      {1, {(m4cell)-0x8000000000000000l}},
      {},
      {5, {m4_lit8s_, CELL(-0x8000000000000000l)}}},
 #endif
     /* ------------------------------- tokens ------------------------------- */
-    {{"*", "+", "-", "/"}, {}, {}, {4, {m4times, m4plus, m4minus, m4div}}},
-    {{"<>", "=", "0<>", "0="}, {}, {}, {4, {m4ne, m4equal, m4zero_ne, m4zero_equal}}},
-    {{"<", "<=", ">", ">="}, {}, {}, {4, {m4less, m4less_equal, m4more, m4more_equal}}},
-    {{"u<", "u<=", "u>", "u>="}, {}, {}, {4, {m4u_less, m4u_less_equal, m4u_more, m4u_more_equal}}},
-    {{"0<", "0<=", "0>", "0>="},
+    {"! * + - /", {}, {}, {5, {m4store, m4times, m4plus, m4minus, m4div}}},
+    {"<> = 0<> 0=", {}, {}, {4, {m4ne, m4equal, m4zero_ne, m4zero_equal}}},
+    {"< <= > >=", {}, {}, {4, {m4less, m4less_equal, m4more, m4more_equal}}},
+    {"u< u<= u> u>=", {}, {}, {4, {m4u_less, m4u_less_equal, m4u_more, m4u_more_equal}}},
+    {"0< 0<= 0> 0>=",
      {},
      {},
      {4, {m4zero_less, m4zero_less_equal, m4zero_more, m4zero_more_equal}}},
-    {{"/mod", "drop", "false", "true"}, {}, {}, {4, {m4div_mod, m4drop, m4false, m4true}}},
-    {{"?dup", "dup", "exit"}, {}, {}, {3, {m4question_dup, m4dup, m4exit}}},
-    {{"string="}, {}, {}, {1, {m4string_equal}}},
+    {"/mod drop false true", {}, {}, {4, {m4div_mod, m4drop, m4false, m4true}}},
+    {"?dup dup exit", {}, {}, {3, {m4question_dup, m4dup, m4exit}}},
+    {"string=", {}, {}, {1, {m4string_equal}}},
     /* ------------------------------- immediate words ---------------------- */
-    {{"?do"}, {}, {2, {2, m4_q_do_}}, {2, {m4_q_do_, T(-1)}}},
-    {{"do"}, {}, {2, {1, m4do}}, {1, {m4do}}},
-    {{"leave"}, {}, {2, {2, m4_leave_}}, {2, {m4_leave_, T(-1)}}},
+    {"?do", {}, {2, {2, m4_q_do_}}, {2, {m4_q_do_, T(-1)}}},
+    {"do", {}, {2, {1, m4do}}, {1, {m4do}}},
+    {"leave", {}, {2, {2, m4_leave_}}, {2, {m4_leave_, T(-1)}}},
     /* ------------------------------- words -------------------------------- */
-    {{"compile,"}, {}, {}, {callsz, {CALLXT(compile_comma)}}},
-    {{"valid-base?"}, {}, {}, {4, {/*inlined*/ m4two, m4_lit2s_, T(37), m4within}}},
+    {"compile,", {}, {}, {callsz, {CALLXT(compile_comma)}}},
+    {"valid-base?", {}, {}, {4, {/*inlined*/ m4two, m4_lit2s_, T(37), m4within}}},
 };
 
 static m4code m4testcompile_init(const m4testcompile *t, m4countedcode *codegen_buf) {
@@ -139,14 +136,19 @@ static m4code m4testcompile_init(const m4testcompile *t, m4countedcode *codegen_
 
 static m4cell m4testcompile_run(m4th *m, const m4testcompile *t, m4code t_codegen) {
     m4word *w;
+    m4cell_u input_n = strlen(t->input);
     const m4countedstack empty = {};
 
     m4th_clear(m);
-    w = m->w = (m4word *)m->mem.start;
-    memset(w, '\0', sizeof(m4word));
     m->flags &= ~m4th_flag_status_mask;
     m->flags |= m4th_flag_compile;
-    m->in_cstr = t->input;
+
+    w = m->w = (m4word *)m->mem.start;
+    memset(w, '\0', sizeof(m4word));
+
+    m->in.curr = m->in.end - input_n;
+    memcpy(m->in.curr, t->input, input_n);
+
     m->mem.curr = (m4char *)(w + 1);
     m4countedstack_copy(&t->dbefore, &m->dstack);
 
@@ -158,11 +160,8 @@ static m4cell m4testcompile_run(m4th *m, const m4testcompile *t, m4code t_codege
 }
 
 static void m4testcompile_print(const m4testcompile *t, FILE *out) {
-    const char *const *cstr = t->input;
-    for (; *cstr != NULL; cstr++) {
-        fputs(*cstr, out);
-        fputc(' ', out);
-    }
+    fputs(t->input, out);
+    fputc(' ', out);
 }
 
 static void m4testcompile_failed(m4th *m, const m4testcompile *t, m4code t_codegen, FILE *out) {

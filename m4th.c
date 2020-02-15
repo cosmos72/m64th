@@ -711,6 +711,7 @@ m4th *m4th_new() {
     m->ip = NULL;
     m->ftable = ftable;
     m->in = m4cbuf_alloc(inbuf_n);
+    m->in.curr = m->in.end;
     m->out = m4cbuf_alloc(outbuf_n);
     m->flags = m4th_flag_interpret;
     memset(m->c_regs, '\0', sizeof(m->c_regs));
@@ -722,7 +723,6 @@ m4th *m4th_new() {
     m4th_also(m, &m4wordlist_m4th_user);
     m->quit = m4fbye;
     m->err = 0;
-    m->in_cstr = NULL;
     return m;
 }
 
@@ -744,7 +744,7 @@ void m4th_clear(m4th *m) {
     m->w = NULL;
     m->ip = NULL;
     memset(m->c_regs, '\0', sizeof(m->c_regs));
-    m->in.curr = m->in.start;
+    m->in.curr = m->in.end;
     m->out.curr = m->out.start;
     m->mem.curr = m->mem.start;
     m->err = 0;

@@ -36,10 +36,10 @@ struct m4pair_s {
 m4pair m4string_to_int(m4th *m, m4string str);
 
 /** temporary C implementation of (read) */
-m4string m4th_read(m4th *m);
+m4string m4th_parse_name(m4th *m);
 
 /** temporary C implementation of (parse) */
-m4pair m4th_parse(m4th *m, m4string key);
+m4pair m4th_resolve(m4th *m, m4string key);
 
 /** temporary C implementation of (eval) */
 m4cell m4th_eval(m4th *m, m4pair arg);

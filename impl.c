@@ -84,17 +84,23 @@ m4pair m4string_to_int(m4th *m, m4string str) {
     return ret;
 }
 
-/** temporary C implementation of (read) */
-m4string m4th_read(m4th *m) {
-    m4string s = {};
-    const char *cstr = NULL;
+/** temporary C implementation of parse-name */
+m4string m4th_parse_name(m4th *m) {
+    m4string ret = {};
+    m4char *s, *end;
     assert(m);
-    if (m->in_cstr != NULL && (cstr = *m->in_cstr) != NULL) {
-        m->in_cstr++;
-        s.addr = (const m4char *)cstr;
-        s.n = strlen(cstr);
+    s = m->in.curr;
+    end = m->in.end;
+    while (s < end && *s <= ' ') {
+        s++;
     }
-    return s;
+    ret.addr = s;
+    while (s < end && (*s) > ' ') {
+        s++;
+    }
+    ret.n = s - ret.addr;
+    m->in.curr = s;
+    return ret;
 }
 
 /** wrapper around (string>word) */
@@ -105,11 +111,11 @@ static const m4word *m4th_string_to_word(m4th *m, m4string key) {
     return (m4word *)dpop(m);
 }
 
-/** temporary C implementation of (parse) */
-m4pair m4th_parse(m4th *m, m4string key) {
+/** temporary C implementation of (resolve) */
+m4pair m4th_resolve(m4th *m, m4string key) {
     m4pair ret = {};
     const m4word *w;
-    if (key.addr == NULL) {
+    if (key.addr == NULL || key.n == 0) {
         ret.err = m4err_eof;
     } else if ((w = m4th_string_to_word(m, key)) != NULL) {
         ret.w = w;
@@ -168,9 +174,9 @@ m4cell m4th_repl(m4th *m) {
     m4pair arg;
     m4cell ret;
 
-    while ((ret = m4th_eval(m, arg = m4th_parse(m, str = m4th_read(m)))) == m4err_ok) {
+    while ((ret = m4th_eval(m, arg = m4th_resolve(m, str = m4th_parse_name(m)))) == m4err_ok) {
     }
-    if (ret != m4err_ok && arg.err == ret && str.addr != NULL) {
+    if (ret != m4err_ok && arg.err == ret && str.n != 0) {
         m4string_print(str, stderr);
         fputs(" ?", stderr);
     }

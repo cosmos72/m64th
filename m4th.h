@@ -190,13 +190,12 @@ struct m4th_s {        /**< m4th forth interpreter and compiler */
     const void *c_regs[1]; /**< m4th_run() may save C registers here  */
 
     /* USER variables, i.e. thread-local */
-    m4word *w;                  /**< forth word being compiled          */
-    m4cbuf mem;                 /**< start, HERE and end of data space  */
-    m4cell base;                /**< current BASE                       */
-    m4searchorder searchorder;  /**< wordlist search order              */
-    m4func quit;                /**< forth function to execute on quit. usually m4fbye or m4fquit */
-    m4err err;                  /**< error set by ABORT                 */
-    const char *const *in_cstr; /**< DELETEME: pre-parsed input         */
+    m4word *w;                 /**< forth word being compiled          */
+    m4cbuf mem;                /**< start, HERE and end of data space  */
+    m4cell base;               /**< current BASE                       */
+    m4searchorder searchorder; /**< wordlist search order              */
+    m4func quit;               /**< forth function to execute on quit. usually m4fbye or m4fquit */
+    m4err err;                 /**< error set by ABORT                 */
 };
 
 #ifdef __cplusplus
