@@ -353,7 +353,7 @@ m4cell m4token_print_consumed_ip(m4token tok, const m4token *code, m4cell maxn, 
 
 /* ----------------------- m4cbuf ----------------------- */
 
-static m4cbuf m4cbuf_alloc(m4cell size) {
+static m4cbuf m4cbuf_alloc(m4cell_u size) {
     m4char *p = (m4char *)m4mem_allocate(size * sizeof(m4char));
     m4cbuf ret = {p, p, p + size};
     return ret;
@@ -488,6 +488,20 @@ void m4slice_copy_to_code(const m4slice src, m4code *dst) {
         }
     }
     dst->n = n;
+}
+
+/* ----------------------- m4iobuf ----------------------- */
+
+static m4iobuf m4iobuf_alloc(m4cell_u size) {
+    m4char *p = (m4char *)m4mem_allocate(size * sizeof(m4char));
+    m4iobuf ret = {p, size, 0};
+    return ret;
+}
+
+static void m4iobuf_free(m4iobuf *arg) {
+    if (arg) {
+        m4mem_free(arg->addr);
+    }
 }
 
 /* ----------------------- m4stack ----------------------- */
@@ -710,9 +724,9 @@ m4th *m4th_new() {
     m->rstack = m4stack_alloc(rstack_n);
     m->ip = NULL;
     m->ftable = ftable;
-    m->in = m4cbuf_alloc(inbuf_n);
-    m->in.curr = m->in.end;
-    m->out = m4cbuf_alloc(outbuf_n);
+    m->in = m4iobuf_alloc(inbuf_n);
+    m->in.curr = m->in.size;
+    m->out = m4iobuf_alloc(outbuf_n);
     m->flags = m4th_flag_interpret;
     memset(m->c_regs, '\0', sizeof(m->c_regs));
     m->w = NULL;
@@ -729,8 +743,8 @@ m4th *m4th_new() {
 void m4th_del(m4th *m) {
     if (m) {
         m4cbuf_free(&m->mem);
-        m4cbuf_free(&m->out);
-        m4cbuf_free(&m->in);
+        m4iobuf_free(&m->out);
+        m4iobuf_free(&m->in);
         m4stack_free(&m->rstack);
         m4stack_free(&m->dstack);
         m4mem_free(m);
@@ -744,8 +758,8 @@ void m4th_clear(m4th *m) {
     m->w = NULL;
     m->ip = NULL;
     memset(m->c_regs, '\0', sizeof(m->c_regs));
-    m->in.curr = m->in.end;
-    m->out.curr = m->out.start;
+    m->in.curr = m->in.size;
+    m->out.curr = 0;
     m->mem.curr = m->mem.start;
     m->err = 0;
 }

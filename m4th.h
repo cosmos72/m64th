@@ -83,6 +83,7 @@ typedef struct m4code_s m4code;
 typedef struct m4counteddata_s m4counteddata;
 typedef struct m4countedstring_s m4countedstring;
 typedef struct m4dict_s m4dict;
+typedef struct m4iobuf_s m4iobuf;
 typedef struct m4slice_s m4slice;
 typedef struct m4buf_s m4stack;
 typedef struct m4searchorder_s m4searchorder;
@@ -137,6 +138,13 @@ struct m4err_s {
 };
 #endif
 
+/** I/O buffer */
+struct m4iobuf_s {
+    m4char *addr;
+    m4cell_u size;
+    m4cell_u curr; /**< current char is addr[curr] */
+};
+
 struct m4string_s { /**< array of m4char, with size */
     const m4char *addr;
     m4cell_u n;
@@ -183,8 +191,8 @@ struct m4th_s {        /**< m4th forth interpreter and compiler */
     m4stack rstack;    /**< return stack                        */
     const m4token *ip; /**< instruction pointer                 */
     m4func *ftable;    /**< table m4t -> asm function address   */
-    m4cbuf in;         /**< input  buffer                       */
-    m4cbuf out;        /**< output buffer                       */
+    m4iobuf in;        /**< input  buffer                       */
+    m4iobuf out;       /**< output buffer                       */
 
     m4cell flags;          /**< m4th_flags                            */
     const void *c_regs[1]; /**< m4th_run() may save C registers here  */
