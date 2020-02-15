@@ -91,8 +91,6 @@ static m4testexecute testexecute_cmove[] = {
 };
 #endif /* 0 */
 
-static const m4wordlist m4testwordlist_forth = {&m4dict_forth};
-
 void m4fcrc_plus_native_forth(m4arg _); /* implemented in generic_asm/testcrc.S */
 
 static m4testexecute testexecute_a[] = {
@@ -101,8 +99,8 @@ static m4testexecute testexecute_a[] = {
 #elif 0
     {"1e6 0 do wordlist-find loop",
      {m4do, m4j, CALL(wordlist_find), m4_loop_, T(-3 - callsz), m4bye},
-     {{4, {(m4cell) "foo", 3, 1e6, 0}}, {1, {(m4cell)&m4testwordlist_forth}}},
-     {{2, {(m4cell) "foo", 3}}, {1, {(m4cell)&m4testwordlist_forth}}},
+     {{4, {(m4cell) "foo", 3, 1e6, 0}}, {1, {(m4cell)&m4wordlist_forth}}},
+     {{2, {(m4cell) "foo", 3}}, {1, {(m4cell)&m4wordlist_forth}}},
      {}},
 #elif 0
     {"1e8 0 do crc+ loop",
@@ -845,32 +843,32 @@ static m4testexecute testexecute_f[] = {
      {}},
     {"wordlist>last",
      {m4wordlist_to_last, m4bye},
-     {{1, {(m4cell)&m4testwordlist_forth}}, {}},
+     {{1, {(m4cell)&m4wordlist_forth}}, {}},
      {{1, {(m4cell)&WORD_SYM(cmove)}}, {}},
      {}},
     {"wordlist-find",
      {CALL(wordlist_find), m4bye},
-     {{3, {(m4cell) "dup", 3, (m4cell)&m4testwordlist_forth}}, {}},
+     {{3, {(m4cell) "dup", 3, (m4cell)&m4wordlist_forth}}, {}},
      {{2, {(m4cell)&WORD_SYM(dup), ttrue}}, {}},
      {}},
     {"wordlist-find",
      {CALL(wordlist_find), m4bye},
-     {{3, {TESTSTR(_0az), (m4cell)&m4testwordlist_forth}}, {}},
+     {{3, {TESTSTR(_0az), (m4cell)&m4wordlist_forth}}, {}},
      {{2, {TESTSTR(_0az)}}, {}},
      {}},
     {"search-wordlist",
      {CALL(search_wordlist), m4bye},
-     {{3, {(m4cell) "dup", 3, (m4cell)&m4testwordlist_forth}}, {}},
+     {{3, {(m4cell) "dup", 3, (m4cell)&m4wordlist_forth}}, {}},
      {{2, {DXT(dup), ttrue}}, {}},
      {}},
     {"search-wordlist",
      {CALL(search_wordlist), m4bye},
-     {{3, {(m4cell) "if", 2, (m4cell)&m4testwordlist_forth}}, {}},
+     {{3, {(m4cell) "if", 2, (m4cell)&m4wordlist_forth}}, {}},
      {{2, {DXT(if), 1}}, {}},
      {}},
     {"search-wordlist",
      {CALL(search_wordlist), m4bye},
-     {{3, {TESTSTR(_0az), (m4cell)&m4testwordlist_forth}}, {}},
+     {{3, {TESTSTR(_0az), (m4cell)&m4wordlist_forth}}, {}},
      {{1, {tfalse}}, {}},
      {}},
     {"' (if) word-inline?",
@@ -1016,9 +1014,9 @@ static void m4th_testexecute_bunch(m4th *m, m4testexecute bunch[], m4cell n, m4t
     count->total += n;
 }
 
-void m4th_testprint_dict_crc(const m4dict *dict, FILE *out) {
-    const m4word *w = m4dict_lastword(dict);
-    m4string name = m4dict_name(dict);
+void m4th_testprint_wordlist_crc(const m4wordlist *wid, FILE *out) {
+    const m4word *w = m4wordlist_lastword(wid);
+    m4string name = m4wordlist_name(wid);
 
     fputs("\n---------------- ", out);
     m4string_print(name, out);
@@ -1033,11 +1031,12 @@ void m4th_testprint_dict_crc(const m4dict *dict, FILE *out) {
     fputc('\n', out);
 }
 
-void m4th_testprint_dicts_crc(FILE *out) {
-    const m4dict *dict[] = {&m4dict_forth, &m4dict_m4th_user, &m4dict_m4th_core, &m4dict_m4th_impl};
+void m4th_testprint_wordlists_crc(FILE *out) {
+    const m4wordlist *wid[] = {&m4wordlist_forth, &m4wordlist_m4th_user, &m4wordlist_m4th_core,
+                               &m4wordlist_m4th_impl};
     m4cell_u i;
-    for (i = 0; i < N_OF(dict); i++) {
-        m4th_testprint_dict_crc(dict[i], out);
+    for (i = 0; i < N_OF(wid); i++) {
+        m4th_testprint_wordlist_crc(wid[i], out);
     }
 }
 

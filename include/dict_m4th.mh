@@ -113,6 +113,7 @@
 
 /* ------- m4th-core ---------------------------------------------------------------------------- */
 #define DICT_TOKENS_M4TH_CORE(X)                                                                   \
+    X(4, "m4th", m4th)                   /* (    -- m  )      get m4th struct address          */  \
     X(9, "word>code", word_to_code)      /* ( w  -- taddr n ) get code array from word         */  \
     X(11, "word>code>n", word_to_code_n) /* ( w  -- n  )      get code size from word          */  \
     X(10, "word>flags", word_to_flags)   /* ( w  -- m4flags ) get m4flags of word              */  \

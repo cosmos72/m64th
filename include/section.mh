@@ -17,8 +17,8 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_INCLUDE_SECTION_ASM_MH
-#define M4TH_INCLUDE_SECTION_ASM_MH
+#ifndef M4TH_INCLUDE_SECTION_MH
+#define M4TH_INCLUDE_SECTION_MH
 
 #define SECTION_DATA() .data
 
@@ -36,4 +36,4 @@
 #define SECTION_RODATA() .data
 #endif
 
-#endif /* M4TH_INCLUDE_SECTION_ASM_MH */
+#endif /* M4TH_INCLUDE_SECTION_MH */

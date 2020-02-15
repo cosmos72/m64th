@@ -57,6 +57,13 @@ FUNC_START(_ip_to_data_addr_)
 FUNC_END(_ip_to_data_addr_)
 
 
+/* m4th ( -- m ) get m4th struct address  */
+FUNC_START(m4th)
+        DPUSH( DTOP)
+        MOVE(  M4TH,       DTOP)
+FUNC_END(m4th)
+
+
 FUNC_START(word_to_code) /* ( w -- taddr n ) */
         LD_uw( REG1_uw,    AT(DTOP, WORD_OFF_CODE_OFF)) /* REG1 = w.code_off  */
         ADD2(  DTOP,       REG1)                        /* REG1 = w.code      */

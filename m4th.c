@@ -24,6 +24,7 @@
 #include "include/func_fwd.h"
 #include "include/macro.mh"
 #include "include/word_fwd.h"
+#include "include/wordlist_fwd.h"
 
 #include <assert.h> /* assert()  */
 #include <errno.h>  /* errno     */
@@ -674,47 +675,31 @@ const m4word *m4word_prev(const m4word *w) {
 
 /* ----------------------- m4wordlist ----------------------- */
 
-static m4wordlist *m4wordlist_new(const m4dict *impl) {
-    m4wordlist *l = (m4wordlist *)m4mem_allocate(sizeof(m4wordlist));
-    l->impl = impl;
-    return l;
-}
+m4wordlist m4wordlist_forth = {&m4dict_forth};
+m4wordlist m4wordlist_m4th_user = {&m4dict_m4th_user};
+m4wordlist m4wordlist_m4th_core = {&m4dict_m4th_core};
+m4wordlist m4wordlist_m4th_impl = {&m4dict_m4th_impl};
 
-static void m4wordlist_del(m4wordlist *l) {
-    m4mem_free(l);
-}
-
-static void m4wordlist_del_vec(m4wordlist *l[m4th_wordlist_n]) {
-    m4cell i;
-    if (l == NULL) {
-        return;
-    }
-    for (i = 0; i < m4th_wordlist_n; i++) {
-        m4wordlist_del(l[i]);
-        l[i] = NULL;
-    }
-}
-
-const m4word *m4wordlist_lastword(const m4wordlist *d) {
-    if (d == NULL) {
+const m4word *m4wordlist_lastword(const m4wordlist *wid) {
+    if (wid == NULL) {
         return NULL;
     }
-    return m4dict_lastword(d->impl);
+    return m4dict_lastword(wid->dict);
 }
 
-m4string m4wordlist_name(const m4wordlist *d) {
-    if (d == NULL) {
+m4string m4wordlist_name(const m4wordlist *wid) {
+    if (wid == NULL) {
         m4string ret = {};
         return ret;
     }
-    return m4dict_name(d->impl);
+    return m4dict_name(wid->dict);
 }
 
-void m4wordlist_print(const m4wordlist *l, FILE *out) {
-    if (out == NULL || l == NULL) {
+void m4wordlist_print(const m4wordlist *wid, FILE *out) {
+    if (out == NULL || wid == NULL) {
         return;
     }
-    m4dict_print(l->impl, out);
+    m4dict_print(wid->dict, out);
 }
 
 /* ----------------------- m4th ----------------------- */
@@ -729,22 +714,21 @@ m4th *m4th_new() {
     m->out = m4cbuf_alloc(outbuf_n);
     m->flags = m4th_flag_interpret;
     memset(m->c_regs, '\0', sizeof(m->c_regs));
-    memset(m->wordlist, '\0', sizeof(m->wordlist));
-    m4th_also_dict(m, &m4dict_forth);
-    m4th_also_dict(m, &m4dict_m4th_user);
-    m->in_cstr = NULL;
-    m->mem = m4cbuf_alloc(dataspace_n);
     m->w = NULL;
+    m->mem = m4cbuf_alloc(dataspace_n);
+    m->base = 10;
+    memset(&m->searchorder, '\0', sizeof(m->searchorder));
+    m4th_also(m, &m4wordlist_forth);
+    m4th_also(m, &m4wordlist_m4th_user);
     m->quit = m4fbye;
-    m->err.id = 0;
-    m->err.msg.impl.n = 0;
+    m->err = 0;
+    m->in_cstr = NULL;
     return m;
 }
 
 void m4th_del(m4th *m) {
     if (m) {
         m4cbuf_free(&m->mem);
-        m4wordlist_del_vec(m->wordlist);
         m4cbuf_free(&m->out);
         m4cbuf_free(&m->in);
         m4stack_free(&m->rstack);
@@ -753,6 +737,7 @@ void m4th_del(m4th *m) {
     }
 }
 
+/* does NOT modify user variables as m->base, m->searchorder... */
 void m4th_clear(m4th *m) {
     m->dstack.curr = m->dstack.end;
     m->rstack.curr = m->rstack.end;
@@ -762,32 +747,24 @@ void m4th_clear(m4th *m) {
     m->in.curr = m->in.start;
     m->out.curr = m->out.start;
     m->mem.curr = m->mem.start;
-    m->err.id = 0;
-    m->err.msg.impl.n = 0;
+    m->err = 0;
 }
 
-void m4th_also_dict(m4th *m, const m4dict *dict) {
-    m4cell i;
-    m4wordlist **l = m->wordlist;
-    if (dict == NULL) {
-        return;
-    }
-    for (i = 0; i < m4th_wordlist_n; i++) {
-        if (l[i] == NULL) {
-            l[i] = m4wordlist_new(dict);
-            break;
-        }
+void m4th_also(m4th *m, m4wordlist *wid) {
+    m4searchorder *s = &m->searchorder;
+    if (wid != NULL && s->n < m4searchorder_max) {
+        s->addr[s->n++] = wid;
     }
 }
 
-m4cell m4th_knows_dict(const m4th *m, const m4dict *dict) {
-    m4cell i;
-    m4wordlist *const *l = m->wordlist;
-    if (dict == NULL) {
+m4cell m4th_knows(const m4th *m, const m4wordlist *wid) {
+    const m4searchorder *s = &m->searchorder;
+    m4cell_u i, n = s->n;
+    if (wid == NULL) {
         return tfalse;
     }
-    for (i = 0; i < m4th_wordlist_n; i++) {
-        if (l[i] != NULL && l[i]->impl == dict) {
+    for (i = 0; i < n; i++) {
+        if (s->addr[i] == wid) {
             return ttrue;
         }
     }

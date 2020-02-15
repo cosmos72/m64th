@@ -31,11 +31,14 @@
 typedef struct m4arg_s m4arg; /**< intentionally incomplete type, cannot be instantiated */
 
 typedef unsigned char m4char;
-typedef ssize_t m4cell;  /* main forth type: number or pointer */
-typedef size_t m4cell_u; /* unsigned variant of m4cell */
+typedef ssize_t m4cell;  /**< main forth type: number or pointer */
+typedef size_t m4cell_u; /**< unsigned variant of m4cell         */
+typedef m4cell m4err;    /**< error code, set by ABORT or THROW  */
 
 /** forth instruction. uses forth calling convention, cannot be invoked from C */
 typedef void (*m4func)(m4arg);
+
+typedef uint8_t m4stackeffect; /**< stack # in and # out. 0xF if unknown or variable   */
 
 typedef char
     m4th_assert_sizeof_voidptr_less_equal_sizeof_m4cell[sizeof(void *) <= sizeof(m4cell) ? 1 : -1];
@@ -46,15 +49,6 @@ typedef char
 typedef char
     m4th_assert_sizeof_m4token_divides_sizeof_m4cell[(sizeof(m4cell) % sizeof(m4token) == 0) ? 1
                                                                                              : -1];
-
-/** m4th flags */
-typedef enum m4th_flags_e {
-    m4th_flag_status_mask = M4TH_FLAG_STATUS_MASK,
-    m4th_flag_interpret = M4TH_FLAG_INTERPRET,
-    m4th_flag_compile = M4TH_FLAG_COMPILE,
-} m4th_flags;
-
-typedef uint8_t m4stackeffect; /**< stack # in and # out. 0xFF if unknown or variable   */
 
 /** m4word flags */
 typedef enum m4flags_e {
@@ -76,15 +70,22 @@ typedef enum m4flags_e {
     m4flag_data_tokens = M4FLAG_DATA_TOKENS,
 } m4flags;
 
+/** m4th flags */
+typedef enum m4th_flags_e {
+    m4th_flag_status_mask = M4TH_FLAG_STATUS_MASK,
+    m4th_flag_interpret = M4TH_FLAG_INTERPRET,
+    m4th_flag_compile = M4TH_FLAG_COMPILE,
+} m4th_flags;
+
 typedef struct m4buf_s m4buf;
 typedef struct m4cbuf_s m4cbuf;
 typedef struct m4code_s m4code;
 typedef struct m4counteddata_s m4counteddata;
 typedef struct m4countedstring_s m4countedstring;
-typedef struct m4err_s m4err;
 typedef struct m4dict_s m4dict;
 typedef struct m4slice_s m4slice;
 typedef struct m4buf_s m4stack;
+typedef struct m4searchorder_s m4searchorder;
 typedef struct m4stackeffects_s m4stackeffects;
 typedef struct m4string_s m4string;
 typedef struct m4th_s m4th;
@@ -125,6 +126,8 @@ struct m4dict_s {         /**< dictionary. used to implement wordlist           
     int16_t name_off;     /**< offset of m4countedstring*, in bytes. 0 = not present */
 };
 
+#if 0 /* unused */
+typedef struct m4err_s m4err;
 struct m4err_s {
     m4cell id; /**< error code */
     struct {
@@ -132,6 +135,7 @@ struct m4err_s {
         m4char buf[31];
     } msg; /**< error message */
 };
+#endif
 
 struct m4string_s { /**< array of m4char, with size */
     const m4char *addr;
@@ -163,11 +167,16 @@ struct m4word_s {
 };
 
 struct m4wordlist_s {   /**< wordlist                                             */
-    const m4dict *impl; /**< pointer to implementation dictionary                 */
+    const m4dict *dict; /**< pointer to implementation dictionary                 */
     /* TODO hash table of contained words */
 };
 
-enum { m4th_wordlist_n = M4TH_WORDLIST_N };
+enum { m4searchorder_max = M4TH_SEARCHORDER_MAX };
+
+struct m4searchorder_s {                 /**< counted array of wordlists */
+    m4cell n;                            /**< # of wordlists             */
+    m4wordlist *addr[m4searchorder_max]; /* array of wordlists           */
+};
 
 struct m4th_s {        /**< m4th forth interpreter and compiler */
     m4stack dstack;    /**< data stack                          */
@@ -181,13 +190,13 @@ struct m4th_s {        /**< m4th forth interpreter and compiler */
     const void *c_regs[1]; /**< m4th_run() may save C registers here  */
 
     /* USER variables, i.e. thread-local */
-    m4word *w;   /**< forth word being compiled             */
-    m4cbuf mem;  /**< start, HERE and end of data space     */
-    m4func quit; /**< forth function to execute on quit. usually m4fbye or m4fquit */
-    m4err err;   /**< error set by ABORT                    */
-
-    m4wordlist *wordlist[m4th_wordlist_n]; /**< FIXME: visible wordlists     */
-    const char *const *in_cstr;            /**< DELETEME: pre-parsed input   */
+    m4word *w;                  /**< forth word being compiled          */
+    m4cbuf mem;                 /**< start, HERE and end of data space  */
+    m4cell base;                /**< current BASE                       */
+    m4searchorder searchorder;  /**< wordlist search order              */
+    m4func quit;                /**< forth function to execute on quit. usually m4fbye or m4fquit */
+    m4err err;                  /**< error set by ABORT                 */
+    const char *const *in_cstr; /**< DELETEME: pre-parsed input         */
 };
 
 #ifdef __cplusplus
@@ -215,11 +224,11 @@ m4cell m4th_execute_word(m4th *m, const m4word *w);
  */
 void m4th_clear(m4th *m);
 
-/* add m4dict to the top of search order */
-void m4th_also_dict(m4th *m, const m4dict *dict);
+/* add wid to the top of search order */
+void m4th_also(m4th *m, m4wordlist *wid);
 
-/* return <> 0 if search order contains m4dict */
-m4cell m4th_knows_dict(const m4th *m, const m4dict *dict);
+/* return <> 0 if search order contains wid */
+m4cell m4th_knows(const m4th *m, const m4wordlist *wid);
 
 /**
  * perform self-test, return != 0 if failed.

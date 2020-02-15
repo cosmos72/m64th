@@ -77,17 +77,13 @@ WORD(fetch,          question_dup, DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLA
 WORD(abs,              fetch,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(and,              abs,        DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD_START(base, and)
-    WORD_FLAGS(0)
+    WORD_FLAGS(M4FLAG_INLINE)
     WORD_DSTACK(0,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
-    WORD_DATA_AND_CODE(
-      base,
-      WORD_DATA_CELLS(10),
-      WORD_CODE_TOKENS(
-        _ip_to_data_addr_, exit
-      )
+    WORD_CODE(
+        m4th, _lit_, T(M4TH_OFF_BASE), plus, exit
     )
 WORD_END(base)
 WORD_START(begin, base)

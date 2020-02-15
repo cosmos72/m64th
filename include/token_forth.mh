@@ -19,6 +19,14 @@
 #ifndef M4TH_INCLUDE_TOKEN_FORTH_MH
 #define M4TH_INCLUDE_TOKEN_FORTH_MH
 
+/*
+ *
+ *
+ * skip some lines to align #define numbers with line number
+ *
+ *
+ */
+
 /* 'forth' wordlist: 'core' word set */
 #define M4store 1                 /* !        */
 #undef M4number_sign /*2*/        /* #        */

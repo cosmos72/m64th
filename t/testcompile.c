@@ -21,8 +21,8 @@
 #define M4TH_T_TESTCOMPILE_C
 
 #include "../impl.h"
-#include "../include/dict_fwd.h"
 #include "../include/word_fwd.h"
+#include "../include/wordlist_fwd.h"
 #include "../m4th.h"
 #include "testcommon.h"
 
@@ -197,8 +197,8 @@ m4cell m4th_testcompile(m4th *m, FILE *out) {
     m4countedcode codegen_buf;
     m4cell i, fail = 0;
 
-    if (!m4th_knows_dict(m, &m4dict_m4th_core)) {
-        m4th_also_dict(m, &m4dict_m4th_core);
+    if (!m4th_knows(m, &m4wordlist_m4th_core)) {
+        m4th_also(m, &m4wordlist_m4th_core);
     }
 
     for (i = 0; i < (m4cell)N_OF(testcompile); i++) {

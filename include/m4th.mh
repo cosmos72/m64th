@@ -17,21 +17,22 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_INCLUDE_M4TH_ASM_MH
-#define M4TH_INCLUDE_M4TH_ASM_MH
+#ifndef M4TH_INCLUDE_M4TH_MH
+#define M4TH_INCLUDE_M4TH_MH
 
-#define M4TH_OFF_DSTK SZ       /* offset of m4th->dstack.curr */
-#define M4TH_OFF_DEND SZ2      /* offset of m4th->dstack.end  */
-#define M4TH_OFF_RSTK SZ4      /* offset of m4th->rstack.curr */
-#define M4TH_OFF_IP SZ6        /* offset of m4th->ip          */
-#define M4TH_OFF_FTABLE SZ7    /* offset of m4th->ftable      */
-#define M4TH_OFF_IN SZ9        /* offset of m4th->in.curr     */
-#define M4TH_OFF_IN_END SZ10   /* offset of m4th->in.end      */
-#define M4TH_OFF_OUT SZ12      /* offset of m4th->out.curr    */
-#define M4TH_OFF_OUT_END SZ13  /* offset of m4th->out.end     */
-#define M4TH_OFF_C_REG0 SZ15   /* offset of m4th->c_regs[0]   */
-#define M4TH_OFF_W SZ16        /* offset of m4th->w           */
-#define M4TH_OFF_HERE SZ18     /* offset of m4th->here        */
-#define M4TH_OFF_WORDLIST SZ22 /* offset of m4th->wordlist[0] */
+#define M4TH_OFF_DSTK SZ          /* offset of m4th->dstack.curr */
+#define M4TH_OFF_DEND SZ2         /* offset of m4th->dstack.end  */
+#define M4TH_OFF_RSTK SZ4         /* offset of m4th->rstack.curr */
+#define M4TH_OFF_IP SZ6           /* offset of m4th->ip          */
+#define M4TH_OFF_FTABLE SZ7       /* offset of m4th->ftable      */
+#define M4TH_OFF_IN SZ9           /* offset of m4th->in.curr     */
+#define M4TH_OFF_IN_END SZ10      /* offset of m4th->in.end      */
+#define M4TH_OFF_OUT SZ12         /* offset of m4th->out.curr    */
+#define M4TH_OFF_OUT_END SZ13     /* offset of m4th->out.end     */
+#define M4TH_OFF_C_REG0 SZ15      /* offset of m4th->c_regs[0]   */
+#define M4TH_OFF_W SZ16           /* offset of m4th->w           */
+#define M4TH_OFF_HERE SZ18        /* offset of m4th->here        */
+#define M4TH_OFF_BASE SZ20        /* offset of m4th->base        */
+#define M4TH_OFF_SEARCHORDER SZ21 /* offset of m4th->searchorder */
 
-#endif /* M4TH_INCLUDE_M4TH_ASM_MH */
+#endif /* M4TH_INCLUDE_M4TH_MH */
