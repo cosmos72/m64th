@@ -381,7 +381,7 @@ const m4char *m4addr_align_4(const void *addr) {
 /* ----------------------- m4code ----------------------- */
 
 m4cell m4code_equal(m4code src, m4code dst) {
-    m4cell i, n = src.n;
+    m4cell_u i, n = src.n;
     if (dst.n != n) {
         return tfalse;
     }
@@ -395,8 +395,8 @@ m4cell m4code_equal(m4code src, m4code dst) {
 
 void m4code_print(m4code src, FILE *out) {
     const m4token *const code = src.addr;
-    m4cell i, n = src.n;
-    if (code == NULL || n < 0 || out == NULL) {
+    m4cell_u i, n = src.n;
+    if (code == NULL || out == NULL) {
         return;
     }
     fprintf(out, "<%ld> ", (long)n);
@@ -508,7 +508,12 @@ void m4stack_print(const m4stack *stack, FILE *out) {
     const m4cell *hi = stack->end;
     fprintf(out, "<%ld> ", (long)(hi - lo));
     while (hi > lo) {
-        fprintf(out, "%ld ", (long)*--hi);
+        long x = (long)*--hi;
+        if (x > -1000 && x < 1000) {
+            fprintf(out, "%ld ", x);
+        } else {
+            fprintf(out, "0x%lx ", x);
+        }
     }
 }
 
@@ -543,7 +548,7 @@ void m4stackeffects_print(m4stackeffects effs, const char *suffix, FILE *out) {
 /* ----------------------- m4string ----------------------- */
 
 void m4string_print(m4string str, FILE *out) {
-    if (out == NULL || str.addr == NULL || str.n <= 0) {
+    if (out == NULL || str.addr == NULL || str.n == 0) {
         return;
     }
     fwrite(str.addr, 1, str.n, out);
@@ -564,13 +569,13 @@ void m4string_print_hex(m4string str, FILE *out) {
 }
 
 m4cell m4string_equals(m4string a, m4string b) {
-    if (a.addr == NULL || b.addr == NULL || a.n != b.n || a.n < 0) {
+    if (a.addr == NULL || b.addr == NULL || a.n != b.n) {
         return tfalse;
     }
     if (a.addr == b.addr || a.n == 0) {
         return ttrue;
     }
-    return memcmp(a.addr, b.addr, (size_t)a.n) ? tfalse : ttrue;
+    return memcmp(a.addr, b.addr, a.n) ? tfalse : ttrue;
 }
 
 /* ----------------------- m4word ----------------------- */

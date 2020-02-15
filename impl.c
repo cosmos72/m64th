@@ -27,6 +27,42 @@
 #include <stdlib.h> /* strtol()                   */
 #include <string.h> /* memcmp() memcpy() strlen() */
 
+m4cell m4th_crctable[256];
+
+void m4th_crcinit(m4cell table[256]) {
+    int i, j;
+
+    if (table[255] != 0) {
+        return;
+    }
+    for (i = 0; i < 256; i++) {
+        uint32_t val = i;
+        for (j = 0; j < 8; j++) {
+            if (val & 1) {
+                val >>= 1;
+                // 0x82f63b78 is crc-32c. Use 0xedb88320 for vanilla crc-32.
+                val ^= 0x82f63b78;
+            } else {
+                val >>= 1;
+            }
+        }
+        table[i] = val;
+    }
+}
+
+uint32_t m4th_crc1byte(uint32_t crc, unsigned char byte) {
+    return (crc >> 8) ^ m4th_crctable[(crc & 0xff) ^ byte];
+}
+
+uint32_t m4th_crcstring(m4string str) {
+    assert(m4th_crctable[0xff]);
+    uint32_t crc = ~(uint32_t)0;
+    for (size_t i = 0; i < str.n; i++) {
+        crc = m4th_crc1byte(crc, str.addr[i]);
+    }
+    return ~crc;
+}
+
 static inline void dpush(m4th *m, m4cell val) {
     *--m->dstack.curr = val;
 }

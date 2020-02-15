@@ -55,7 +55,12 @@ void m4countedstack_print(const m4countedstack *src, FILE *out) {
     m4cell i;
     fprintf(out, "<%ld> ", (long)src->len);
     for (i = 0; i < src->len; i++) {
-        fprintf(out, "%ld ", (long)src->data[i]);
+        long x = (long)src->data[i];
+        if (x > -1000 && x < 1000) {
+            fprintf(out, "%ld ", x);
+        } else {
+            fprintf(out, "0x%lx ", x);
+        }
     }
 }
 

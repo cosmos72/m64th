@@ -74,7 +74,7 @@ FUNC_END(two_nip)
 
 
 #ifndef M4FTWO_SWAP
-FUNC_START(two_swap)       /* 2swap    */
+FUNC_START(two_swap)       /* 2swap     remember: x86 instruction 'xchg' is SLOW */
         LOAD(  REG1,   AT(DSTK))
         LOAD(  REG2,   AT(DSTK, SZ))
         LOAD(  REG3,   AT(DSTK, SZ2))
@@ -289,10 +289,12 @@ FUNC_START(or)
 FUNC_END(or)
 
 
+#ifndef M4FOVER
 FUNC_START(over)
         DPUSH( DTOP)
         LOAD(  DTOP,   AT(DSTK, SZ))
 FUNC_END(over)
+#endif
 
 
 FUNC_START(rot)            /* rot   ( a b c -- b c a ) */
@@ -317,7 +319,7 @@ FUNC_END(squared)
 
 
 #ifndef M4FSWAP
-FUNC_START(swap)
+FUNC_START(swap)           /* remember: x86 instruction 'xchg' is SLOW */
         LOAD(  REG1, AT(DSTK))
         STOR(  DTOP, AT(DSTK))
         MOVE(  REG1, DTOP)

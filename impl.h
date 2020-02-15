@@ -47,4 +47,10 @@ m4cell m4th_eval(m4th *m, m4pair arg);
 /** temporary C implementation of (repl) */
 m4cell m4th_repl(m4th *m);
 
+/** used for testing and benchmark */
+extern m4cell m4th_crctable[256];
+void m4th_crcinit(m4cell table[256]);
+uint32_t m4th_crc1byte(uint32_t crc, unsigned char byte);
+uint32_t m4th_crcstring(m4string str);
+
 #endif /* M4TH_IMPL_H */

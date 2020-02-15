@@ -56,46 +56,21 @@ void m4array_n_copy_to_tarray_n(const m4cell array[], const m4cell array_n /*   
     m4slice_copy_to_code(src, &dst);
 }
 
-/* -------------- crc -------------- */
-
-static m4cell crctable[256];
-
-static void crcfill(m4cell table[256]) {
-    int i, j;
-
-    for (i = 0; i < 256; i++) {
-        uint32_t val = i;
-        for (j = 0; j < 8; j++) {
-            if (val & 1) {
-                val >>= 1;
-                val ^= 0xedb88320;
-            } else {
-                val >>= 1;
-            }
-        }
-        table[i] = val;
-    }
-}
-
 /* -------------- crc1byte -------------- */
 
-uint32_t crc1byte(uint32_t crc, unsigned char byte) {
-    assert(crctable[0xff]);
-    return (crc >> 8) ^ crctable[(crc & 0xff) ^ byte];
-}
-
 /**
- * compiled forth version of crc1byte above. forth source would be
+ * compiled forth version of m4th_crc1byte (see ../impl.c). forth source would be
+ *
  * : crc+ ( crc char -- crc' )
- *   over xor 0xff and  cells crctable + @  swap 8 rshift xor
+ *   over xor to-char cells m4th_crctable + @ swap 8 rshift xor
  * ;
  */
 static const m4cell crc1byte_array[] = {
-    m4over, m4xor,   m4_lit_, T(0xff), m4and, m4cells,  m4_lit_cell_, CELL(crctable),
-    m4plus, m4fetch, m4swap,  m4_lit_, T(8),  m4rshift, m4xor,        m4exit,
+    m4over, m4xor,   m4to_char, m4cells, m4_lit_cell_, CELL(m4th_crctable), m4plus, m4fetch,
+    m4swap, m4eight, m4rshift,  m4xor,   m4exit,
 };
 /* initialized by m4th_testexecute() */
-static m4token crc1byte_tarray[N_OF(crc1byte_array)];
+static m4token crc1byte_code[N_OF(crc1byte_array)];
 
 /* -------------- [any-token-gives-cell?] -------------- */
 
@@ -118,6 +93,8 @@ static m4testexecute testexecute_cmove[] = {
 
 static const m4wordlist m4testwordlist_forth = {&m4dict_forth};
 
+void m4fcrc_plus_native_forth(m4arg _); /* implemented in generic_asm/testcrc.S */
+
 static m4testexecute testexecute_a[] = {
 #if 0
     {"1e9 0 do loop", {m4do, m4_loop_, T(-2), m4bye}, {{2, {1e9, 0}}, {}}, {{}, {}}, {}},
@@ -126,6 +103,18 @@ static m4testexecute testexecute_a[] = {
      {m4do, m4j, CALL(wordlist_find), m4_loop_, T(-3 - callsz), m4bye},
      {{4, {(m4cell) "foo", 3, 1e6, 0}}, {1, {(m4cell)&m4testwordlist_forth}}},
      {{2, {(m4cell) "foo", 3}}, {1, {(m4cell)&m4testwordlist_forth}}},
+     {}},
+#elif 0
+    {"1e8 0 do crc+ loop",
+     {m4do, m4over, m4_call_xt_, CELL(crc1byte_code), m4_loop_, T(-3 - callsz), m4nip, m4bye},
+     {{4, {'t', 0xffffffff, 1e8, 0}}, {}},
+     {{1, {0x773edc4e}}, {}},
+     {}},
+#elif 0
+    {"1e8 0 do crc+-native-forth loop",
+     {m4do, m4over, m4j, m4_exec_native_, m4_loop_, T(-5), m4nip, m4r_from_drop, m4bye},
+     {{4, {'t', 0xffffffff, 1e8, 0}}, {1, {(m4cell)m4fcrc_plus_native_forth}}},
+     {{1, {0x773edc4e}}, {}},
      {}},
 #else
     /* ----------------------------- arithmetic ----------------------------- */
@@ -422,17 +411,24 @@ static m4testexecute testexecute_d[] = {
     {"(call) 'false", {CALL(false), m4bye}, {{}, {}}, {{1, {tfalse}}, {}}, {}},
     {"(call) 'noop", {CALL(noop), m4bye}, {{}, {}}, {{}, {}}, {}},
     {"(call) 'true", {CALL(true), m4bye}, {{}, {}}, {{1, {ttrue}}, {}}, {}},
-    {"'crc+ execute",
-     {m4execute, m4bye},
-     {{3, {0xffffffff, 't', (m4cell)crc1byte_tarray}}, {}},
-     {{1, {2056627543 /* crc1byte(0xffffffff, 't')*/}}, {}},
-     {}},
-    {"' one (exec-native)",
-     {m4_exec_native_, m4bye},
-     {{1, {(m4cell)m4fone}}, {}},
-     {{1, {1}}, {}},
+    {"crc+",
+     {m4_call_xt_, CELL(crc1byte_code), m4bye},
+     {{2, {0xffffffff, 't'}}, {}},
+     {{1, {0x1b806fbc /* m4th_crc1byte(0xffffffff, 't')*/}}, {}},
      {}},
     {"' noop (exec-native)", {m4_exec_native_, m4bye}, {{1, {(m4cell)m4fnoop}}, {}}, {{}, {}}, {}},
+    {"' two (exec-native)",
+     {m4_exec_native_, m4bye},
+     {{1, {(m4cell)m4ftwo}}, {}},
+     {{1, {2}}, {}},
+     {}},
+#ifdef __x86_64__
+    {"' crc+-native-forth (exec-native)",
+     {m4_exec_native_, m4bye},
+     {{3, {0xffffffff, 't', (m4cell)m4fcrc_plus_native_forth}}, {}},
+     {{1, {0x1b806fbc}}, {}},
+     {}},
+#endif /* __x86_64__ */
     {"' one (exec-token)", {m4_exec_token_, m4bye}, {{1, {m4one}}, {}}, {{1, {1}}, {}}, {}},
     {"' noop (exec-token)", {m4_exec_token_, m4bye}, {{1, {m4noop}}, {}}, {{}, {}}, {}},
     {"' noop execute", {m4execute, m4bye}, {{1, {DXT(noop)}}, {}}, {{}, {}}, {}},
@@ -1006,8 +1002,8 @@ typedef struct m4testcount_s {
     m4cell total;
 } m4testcount;
 
-void m4th_testexecute_bunch(m4th *m, m4testexecute bunch[], m4cell n, m4testcount *count,
-                            FILE *out) {
+static void m4th_testexecute_bunch(m4th *m, m4testexecute bunch[], m4cell n, m4testcount *count,
+                                   FILE *out) {
     m4countedcode_pair countedcode_pair = {{m4test_code_n, {}}, {m4test_code_n, {}}};
     m4cell i, fail = 0;
     for (i = 0; i < n; i++) {
@@ -1020,11 +1016,48 @@ void m4th_testexecute_bunch(m4th *m, m4testexecute bunch[], m4cell n, m4testcoun
     count->total += n;
 }
 
+void m4th_testprint_dict_crc(const m4dict *dict, FILE *out) {
+    const m4word *w = m4dict_lastword(dict);
+    m4string name = m4dict_name(dict);
+
+    fputs("\n---------------- ", out);
+    m4string_print(name, out);
+    fputs(" ----------------", out);
+
+    while (w) {
+        name = m4word_name(w);
+        fprintf(out, "\n0x%08x    ", m4th_crcstring(name));
+        m4string_print(name, out);
+        w = m4word_prev(w);
+    }
+    fputc('\n', out);
+}
+
+void m4th_testprint_dicts_crc(FILE *out) {
+    const m4dict *dict[] = {&m4dict_forth, &m4dict_m4th_user, &m4dict_m4th_core, &m4dict_m4th_impl};
+    m4cell_u i;
+    for (i = 0; i < N_OF(dict); i++) {
+        m4th_testprint_dict_crc(dict[i], out);
+    }
+}
+
+void m4th_testbench_crc_c(FILE *out) {
+    m4cell_u i, n = 1e8;
+    uint32_t crc = ~(uint32_t)0;
+    const uint32_t expected = 0x773edc4e;
+    for (i = 0; i < n; i++) {
+        crc = m4th_crc1byte(crc, 't');
+    }
+    if (crc != expected) {
+        fprintf(out, "m4th_testbench_crc_c mismatch: expected 0x%lx, got 0x%lx\n", (long)expected,
+                (long)crc);
+    }
+}
+
 m4cell m4th_testexecute(m4th *m, FILE *out) {
     m4testcount count = {};
-    crcfill(crctable);
-    m4array_copy_to_tarray(crc1byte_array, crc1byte_tarray);
-    /* printf("crc('t') = %u\n", (unsigned)crc1byte(0xffffffff, 't')); */
+    m4array_copy_to_tarray(crc1byte_array, crc1byte_code);
+    /* printf("crc('t') = %u\n", (unsigned)m4th_crc1byte(0xffffffff, 't')); */
 
     m4th_testexecute_bunch(m, testexecute_a, N_OF(testexecute_a), &count, out);
     m4th_testexecute_bunch(m, testexecute_b, N_OF(testexecute_b), &count, out);

@@ -17,6 +17,7 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include "impl.h"
 #include "include/dict_fwd.h" /* m4dict_... */
 #include "m4th.h"
 
@@ -50,6 +51,8 @@ const char license[] = "/**\n\
 
 int main(int argc, char *argv[]) {
     fputs(license, stdout);
+
+    m4th_crcinit(m4th_crctable);
 
     m4th *m = m4th_new();
     const m4dict *dict[] = {

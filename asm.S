@@ -55,6 +55,8 @@ MARKER(asm_func_start)
 #include "generic_asm/loop.S"
 #include "generic_asm/mem.S"
 
+#include "generic_asm/testcrc.S" /* only used for test & benchmark */
+
 MARKER(asm_func_end)
 SECTION_RODATA()
 MARKER(asm_data_start)

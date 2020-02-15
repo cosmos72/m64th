@@ -145,15 +145,6 @@ FUNC_START(two_to_r)       /* 2>r      */
 FUNC_END(two_to_r)
 
 
-#define M4FTWO_SWAP
-FUNC_START(two_swap)       /* 2swap */
-        LOAD(  REG1,   AT(DSTK))
-        xchg   DTOP,   AT(DSTK, SZ);
-        xchg   REG1,   AT(DSTK, SZ2);
-        STOR(  REG1,   AT(DSTK))
-FUNC_END(two_swap)
-
-
 #define M4FTWO_R_FROM
 FUNC_START(two_r_from)       /* 2r>      */
         LOAD(  REG1,   AT(RSTK))
@@ -300,17 +291,19 @@ FUNC_START(mod)            /* mod  signed remainder */
 FUNC_END(mod)
 
 
+#define M4FOVER
+FUNC_START(over)
+        STOR(  DTOP,   AT(DSTK, -SZ))
+        LOAD(  DTOP,   AT(DSTK))
+        SUB2(  IMM(8), DSTK)
+FUNC_END(over)
+
+
 FUNC_START(rshift)         /* rshift */
         MOVE(  DTOP, %rcx)
         DPOP(  DTOP)
         shr    %cl,  DTOP;
 FUNC_END(rshift)
-
-
-#define M4FSWAP
-FUNC_START(swap)           /* swap */
-        xchg   DTOP, AT(DSTK);
-FUNC_END(swap)
 
 
 FUNC_START(to_byte)        /* to-byte */
@@ -384,6 +377,6 @@ FUNC_END(within)
 
 
 FUNC_START(xor)            /* xor  */
-        DPOP(  REG1)
-        xor    REG1,  DTOP;
+        xor    AT(DSTK),   DTOP;
+        ADD2(  IMM(8),     DSTK)
 FUNC_END(xor)

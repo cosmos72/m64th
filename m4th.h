@@ -31,7 +31,9 @@
 typedef struct m4arg_s m4arg; /**< intentionally incomplete type, cannot be instantiated */
 
 typedef unsigned char m4char;
-typedef ssize_t m4cell; /* main forth type: number or pointer */
+typedef ssize_t m4cell;  /* main forth type: number or pointer */
+typedef size_t m4cell_u; /* unsigned variant of m4cell */
+
 /** forth instruction. uses forth calling convention, cannot be invoked from C */
 typedef void (*m4func)(m4arg);
 
@@ -105,7 +107,7 @@ struct m4cbuf_s {
 
 struct m4code_s { /**< array of m4token, with size */
     m4token *addr;
-    m4cell n;
+    m4cell_u n;
 };
 
 struct m4counteddata_s { /**< counted data                     */
@@ -133,7 +135,7 @@ struct m4err_s {
 
 struct m4string_s { /**< array of m4char, with size */
     const m4char *addr;
-    m4cell n;
+    m4cell_u n;
 };
 
 struct m4stackeffects_s {
@@ -143,7 +145,7 @@ struct m4stackeffects_s {
 
 struct m4slice_s { /**< array of m4cell, with size */
     m4cell *addr;
-    m4cell n;
+    m4cell_u n;
 };
 
 /** compiled forth word. Execution token i.e. XT is at word + code_off */
