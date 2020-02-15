@@ -128,11 +128,10 @@ FUNC_RAWEND(_leave_)
  */
 FUNC_START(_loop_)
         INC1(  RTOP)               /* increment i                 */
-        CMP(   RTOP,   (RSTK))
-        je     .L_loop_.leave;     /* leave if i == i'            */
+        JEQ(   RTOP,   (RSTK), LABEL_SYM(_loop_.leave))     /* leave if i == i'            */
         RELJUMP()
-.L_loop_.leave:
-        LOAD(  RTOP, AT(RSTK, SZ)) /* load new top of rstack      */
+LABEL(_loop_.leave)
+        LOAD(  RTOP,   AT(RSTK, SZ)) /* load new top of rstack      */
         ADD2(  IMM(SZ2),   RSTK)   /* drop i' i from return stack */
         NEXTT()                    /* skip IP offset              */
 FUNC_RAWEND(_loop_)

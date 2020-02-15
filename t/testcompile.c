@@ -140,8 +140,7 @@ static m4cell m4testcompile_run(m4th *m, const m4testcompile *t, m4code t_codege
     const m4countedstack empty = {};
 
     m4th_clear(m);
-    m->flags &= ~m4th_flag_status_mask;
-    m->flags |= m4th_flag_compile;
+    m->state = m4th_state_compile;
 
     w = m->w = (m4word *)m->mem.start;
     memset(w, '\0', sizeof(m4word));

@@ -174,18 +174,32 @@
 #define CALL(func) /*     call native code from m4func ______________________________________ */   \
     call FUNC_SYM(func);
 
+#define JA(reg, val, label) /*  if reg u> val jump to label */                                     \
+    cmp val, reg;                                                                                  \
+    ja label;
+#define JAE(reg, val, label) /* if reg u>= val jump to label */                                    \
+    cmp val, reg;                                                                                  \
+    jae label;
+#define JB(reg, val, label) /*  if reg u<  val jump to label */                                    \
+    cmp val, reg;                                                                                  \
+    jb label;
+#define JBE(reg, val, label) /* if reg u<= val jump to label */                                    \
+    cmp val, reg;                                                                                  \
+    jbe label;
+#define JEQ(reg, val, label) /* if reg  =  val jump to label */                                    \
+    cmp val, reg;                                                                                  \
+    je label;
+#define JNE(reg, val, label) /* if reg <>  val jump to label */                                    \
+    cmp val, reg;                                                                                  \
+    jne label;
 #define JNZ(reg, label) /* if reg != 0 jump to label */                                            \
     test reg, reg;                                                                                 \
-    jnz LABEL_SYM(label);
-
+    jnz label;
 #define JZ(reg, label) /*  if reg == 0 jump to label */                                            \
     test reg, reg;                                                                                 \
-    jz LABEL_SYM(label);
-
+    jz label;
 #define JUMP(label) /*     unconditional jump to label _______________________________________ */  \
-    jmp LABEL_SYM(label);
-
-#define CMP(reg, val) cmp val, reg;
+    jmp label;
 
 #define FADDR(fun, dst) /* */ lea fun(RIP), dst; /* load function address */
 

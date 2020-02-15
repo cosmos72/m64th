@@ -171,34 +171,57 @@
 #define STOR(reg,at)      str   reg, at;            /* *at  = reg     */
 #define ZERO(dst)         mov   dst, 0;             /* dst  = 0       */
 
-#define LD_sb(reg,at)  ldrsb reg, at;          /* reg = *(int8_t *)at   */
-#define LD_sh(reg,at)  ldrsh reg, at;          /* reg = *(int16_t*)at   */
-#define LD_sw(reg,at)  ldrsw reg, at;          /* reg = *(int32_t*)at   */
-#define LD_st(reg,at)  ldrsh reg, at;          /* reg = *(signed m4token*)at */
+/* clang-format on */
 
-#define LD_ub(reg,at)  ldrb  reg, at;          /* reg = *(uint8_t *)at  */
-#define LD_uh(reg,at)  ldrh  reg, at;          /* reg = *(uint16_t*)at  */
-#define LD_uw(reg,at)  ldr   reg, at;          /* reg = *(uint32_t*)at  */
-#define LD_ut(reg,at)  ldrh  reg, at;          /* reg = *(unsigned m4token*)at */
+#define LD_sb(reg, at) ldrsb reg, at; /* reg = *(int8_t *)at   */
+#define LD_sh(reg, at) ldrsh reg, at; /* reg = *(int16_t*)at   */
+#define LD_sw(reg, at) ldrsw reg, at; /* reg = *(int32_t*)at   */
+#define LD_st(reg, at) ldrsh reg, at; /* reg = *(signed m4token*)at */
+
+#define LD_ub(reg, at) ldrb reg, at; /* reg = *(uint8_t *)at  */
+#define LD_uh(reg, at) ldrh reg, at; /* reg = *(uint16_t*)at  */
+#define LD_uw(reg, at) ldr reg, at;  /* reg = *(uint32_t*)at  */
+#define LD_ut(reg, at) ldrh reg, at; /* reg = *(unsigned m4token*)at */
 
 /* no difference between signed and unsigned STOR* */
-#define STORb(reg,at)    strb  reg, at;          /* *(uint8_t *)at  = reg */
-#define STORh(reg,at)    strh  reg, at;          /* *(uint16_t*)at  = reg */
-#define STORw(reg,at)    str   reg, at;          /* *(uint32_t*)at  = reg */
-#define STORt(reg,at)    strh  reg, at;          /* *(m4token *)at  = reg */
+#define STORb(reg, at) strb reg, at; /* *(uint8_t *)at  = reg */
+#define STORh(reg, at) strh reg, at; /* *(uint16_t*)at  = reg */
+#define STORw(reg, at) str reg, at;  /* *(uint32_t*)at  = reg */
+#define STORt(reg, at) strh reg, at; /* *(m4token *)at  = reg */
 
-#define CALL(func) /* call native code from m4func */ \
-        RPUSH(lr)                                     \
-        bl     FUNC_SYM(func);                        \
-        RPOP(lr)
+#define CALL(func) /* call native code from m4func */                                              \
+    RPUSH(lr)                                                                                      \
+    bl FUNC_SYM(func);                                                                             \
+    RPOP(lr)
 
-#define JNZ(reg, label)  cmp   reg, IMM(0);      /* if reg != 0 jump to label */ \
-                         b.ne  LABEL_SYM(label);
+#define JA(reg, val, label) /* if reg u>  val jump to label */                                     \
+    cmp reg, val;                                                                                  \
+    b.hi label;
+#define JAE(reg, val, label) /* if reg u>= val jump to label */                                    \
+    cmp reg, val;                                                                                  \
+    b.hs label;
+#define JB(reg, val, label) /*  if reg u<  val jump to label */                                    \
+    cmp reg, val;                                                                                  \
+    b.lo label;
+#define JBE(reg, val, label) /* if reg u<= val jump to label */                                    \
+    cmp reg, val;                                                                                  \
+    b.ls label;
+#define JEQ(reg, val, label) /* if reg =  val jump to label */                                     \
+    cmp reg, val;                                                                                  \
+    b.eq label;
+#define JNE(reg, val, label) /* if reg <> val jump to label */                                     \
+    cmp reg, val;                                                                                  \
+    b.ne label;
+#define JNZ(reg, label) /* if reg != 0 jump to label    */                                         \
+    cmp reg, IMM(0);                                                                               \
+    b.ne label;
+#define JZ(reg, label) /* if reg == 0 jump to label    */                                          \
+    cmp reg, IMM(0);                                                                               \
+    b.eq label;
+#define JUMP(label) /* unconditional jump to label ____________________________________________ */ \
+    b label;
 
-#define JZ(reg, label)   cmp   reg, IMM(0);      /* if reg == 0 jump to label */ \
-                         b.eq  LABEL_SYM(label);
-
-#define JUMP(label)      b     LABEL_SYM(label); /* unconditional jump to label */
+/* clang-format off */
 
 #define FADDR(fun, dst) /* load function address */ \
     adrp  dst,  fun;             /* high 21 bits */ \

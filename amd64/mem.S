@@ -76,33 +76,25 @@ FUNC_START(string_equal)   /* string=  ( addr1 addr2 u -- addr1 addr2 u t|f ) m4
         LOAD(  REG2,   AT(DSTK))       /* b = addr2 */
         LOAD(  REG1,   AT(DSTK, SZ))   /* a = addr1 */
         DPUSH( DTOP)
-        CMP(   REG1,   REG2)
-        je     LABEL_SYM(string_equal.true);   /* addr1 == addr2 */
-        JZ(    DTOP,   string_equal.true)      /* u == 0         */
+        JEQ(   REG1,   REG2,    LABEL_SYM(string_equal.true))   /* addr1 == addr2 */
+        JZ(    DTOP,            LABEL_SYM(string_equal.true))   /* u == 0         */
         ZERO(  REG4w)
-        CMP(   DTOP,   IMM(8))
-        jb     LABEL_SYM(string_equal.byte);   /* < 8 bytes */
+        JB(    DTOP,   IMM(8),  LABEL_SYM(string_equal.byte))   /* < 8 bytes */
         SUB2(  IMM(8), DTOP)
 LABEL(string_equal.cell)
         LOAD(  REG3,   AT(REG1, REG4, 1))
-        LOAD(  REG4,   AT(REG2, REG4, 1))
-        CMP(   REG3,   REG4)
-        jne    LABEL_SYM(string_equal.false);
+        JNE(   REG3,   AT(REG2, REG4, 1),  LABEL_SYM(string_equal.false)) /* x86 specific */
         ADD2(  IMM(8), REG4)
-        CMP(   REG4,   DTOP)
-        jb     LABEL_SYM(string_equal.cell);   /* > 8 bytes left ? */
-        LOAD(  REG3,   AT(REG1, DTOP, 1))      /* compare last 8 bytes */
+        JB(    REG4,   DTOP,    LABEL_SYM(string_equal.cell))   /* > 8 bytes left ? */
+        LOAD(  REG3,   AT(REG1, DTOP, 1))                   /* compare last 8 bytes */
         LOAD(  REG4,   AT(REG2, DTOP, 1))
-        CMP(   REG3,   REG4)
-        jne    LABEL_SYM(string_equal.false);
-        JUMP(  string_equal.true)
+        JNE(   REG3,   REG4,    LABEL_SYM(string_equal.false))
+        JUMP(                   LABEL_SYM(string_equal.true))
 LABEL(string_equal.byte)
         LD_ub( REG3_ub,AT(REG1, REG4, 1))
-        cmpb   REG3b,  AT(REG2, REG4, 1);
-        jne    LABEL_SYM(string_equal.false);
+        JNE(   REG3b,  AT(REG2, REG4, 1),  LABEL_SYM(string_equal.false)) /* x86 specific */
         INC1(  REG4)
-        CMP(   REG4,   DTOP)
-        jb     LABEL_SYM(string_equal.byte);
+        JB(    REG4,   DTOP,    LABEL_SYM(string_equal.byte))
 LABEL(string_equal.true)
         MOVE(  RFFF,   DTOP)
         NEXT()

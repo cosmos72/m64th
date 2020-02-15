@@ -65,7 +65,7 @@
 #define M4equal 35                /* =        */
 #define M4more 36                 /* >        */
 #undef M4to_body /*37*/           /* >body    */
-#undef M4to_in /*38*/             /* >in      */
+#define M4to_in 38                /* >in      */
 #undef M4to_number /*39*/         /* >number  implemented in forth, no dedicated m4token */
 #define M4to_r 40                 /* >r       */
 #define M4question_dup 41         /* ?dup     */
@@ -91,7 +91,7 @@
 #define M4chars 61                /* chars    */
 #undef M4constant /*62*/          /* constant */
 #define M4count 63                /* count    */
-#define M4cr 64                   /* cr       */
+#undef M4cr /*64*/                /* cr       implemented in forth, no dedicated m4token */
 #undef M4create /*65*/            /* create   */
 #undef M4decimal /*66*/           /* decimal  */
 #define M4depth 67                /* depth    */

@@ -70,12 +70,11 @@ typedef enum m4flags_e {
     m4flag_data_tokens = M4FLAG_DATA_TOKENS,
 } m4flags;
 
-/** m4th flags */
-typedef enum m4th_flags_e {
-    m4th_flag_status_mask = M4TH_FLAG_STATUS_MASK,
-    m4th_flag_interpret = M4TH_FLAG_INTERPRET,
-    m4th_flag_compile = M4TH_FLAG_COMPILE,
-} m4th_flags;
+/** m4th state */
+typedef enum m4th_state_e {
+    m4th_state_interpret = M4TH_STATE_INTERPRET,
+    m4th_state_compile = M4TH_STATE_COMPILE,
+} m4th_state;
 
 typedef struct m4buf_s m4buf;
 typedef struct m4cbuf_s m4cbuf;
@@ -194,7 +193,7 @@ struct m4th_s {        /**< m4th forth interpreter and compiler */
     m4iobuf in;        /**< input  buffer                       */
     m4iobuf out;       /**< output buffer                       */
 
-    m4cell flags;          /**< m4th_flags                            */
+    m4cell state;          /**< m4th_state: interpret = 0, compile <> 0 */
     const void *c_regs[1]; /**< m4th_run() may save C registers here  */
 
     /* USER variables, i.e. thread-local */

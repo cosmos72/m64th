@@ -25,10 +25,9 @@
 /* m4th searchorder */
 #define M4TH_SEARCHORDER_MAX 15 /**< maximum # of wordlists in search order */
 
-/* m4th flags */
-#define M4TH_FLAG_STATUS_MASK 1 /**< mask to extract interpret/compile flag */
-#define M4TH_FLAG_INTERPRET 0   /**< m4th is currently interpreting         */
-#define M4TH_FLAG_COMPILE 1     /**< m4th is currently compiling            */
+/* m4th state */
+#define M4TH_STATE_INTERPRET 0 /**< m4th is interpreting. By forth 2012, must be = 0  */
+#define M4TH_STATE_COMPILE 1   /**< m4th is compiling.    By forth 2012, must be <> 0 */
 
 /* m4word flags */
 #define M4FLAG_COMPILE_ONLY (1 << 0)  /**< word cannot interpreted - only compiled     */

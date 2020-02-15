@@ -727,7 +727,7 @@ m4th *m4th_new() {
     m->in = m4iobuf_alloc(inbuf_n);
     m->in.curr = m->in.size;
     m->out = m4iobuf_alloc(outbuf_n);
-    m->flags = m4th_flag_interpret;
+    m->state = m4th_state_interpret;
     memset(m->c_regs, '\0', sizeof(m->c_regs));
     m->w = NULL;
     m->mem = m4cbuf_alloc(dataspace_n);
@@ -751,7 +751,7 @@ void m4th_del(m4th *m) {
     }
 }
 
-/* does NOT modify user variables as m->base, m->searchorder... */
+/* does NOT modify m->state and user variables as m->base, m->searchorder... */
 void m4th_clear(m4th *m) {
     m->dstack.curr = m->dstack.end;
     m->rstack.curr = m->rstack.end;

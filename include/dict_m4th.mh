@@ -113,8 +113,11 @@
 
 /* ------- m4th-core ---------------------------------------------------------------------------- */
 #define DICT_TOKENS_M4TH_CORE(X)                                                                   \
-    X(4, "m4th", m4th) /* (    -- m   ) get m4th struct address                 */                 \
-                       /* ( u -- addr ) get address of searchorder i-th element */                 \
+    X(4, "m4th", m4th)          /* (   -- m    ) get m4th struct address                 */        \
+    X(7, "in>addr", in_to_addr) /* (   -- addr ) get start of input buffer               */        \
+    X(7, "in>curr", in_to_curr) /* (   -- addr ) alias of >in                            */        \
+    X(7, "in>size", in_to_size) /* (   -- u    ) get size of input buffer                */        \
+    /*               searchorder-i ( u -- addr ) get address of searchorder i-th element */        \
     X(13, "searchorder-i", searchorder_i)                                                          \
     X(13, "searchorder-n", searchorder_n) /* (    -- addr    ) get address of searchorder count */ \
     X(9, "word>code", word_to_code)       /* ( w  -- taddr n ) get code array from word         */ \

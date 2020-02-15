@@ -26,9 +26,10 @@
  * for standard forth tokens (cell+ char+ ...)
  */
 #define OPT1_BODY(x, _)            /* note: '_' represents noop */                                 \
-    \ x((cell_plus), (SZ_plus))    /* cell+    => SZ+           */                                 \
-        x((cells), (SZ_times))     /* cells    => SZ*           */                                 \
+    x((to_in), (in_to_curr))       /* >in      => in>curr       */                                 \
         x((div_cell), (SZ_div))    /* /cell    => SZ/           */                                 \
+        x((cell_plus), (SZ_plus))  /* cell+    => SZ+           */                                 \
+        x((cells), (SZ_times))     /* cells    => SZ*           */                                 \
         x((char_plus), (one_plus)) /* char+    => 1+            */                                 \
         x((chars), _)              /* chars    =>               */                                 \
         x((false), (zero))         /* false    => 0             */                                 \
@@ -375,8 +376,8 @@
     x((drop, drop), (two_drop))    /* drop drop       => 2drop        */                           \
         x((over, over), (two_dup)) /* over over       => 2dup         */
 
-#define OPT3_BODY(x, _)               /* note: '_' represents noop       */                        \
-    x((r_from, plus, to_r), (r_plus)) /* r>   +   >r    => r+            */                        \
-    x((lit, T(0xff), and), (to_char)) /* 0xff and       => to-char       */
+#define OPT3_BODY(x, _)                   /* note: '_' represents noop       */                    \
+    x((r_from, plus, to_r), (r_plus))     /* r>   +   >r    => r+            */                    \
+        x((lit, T(0xff), and), (to_char)) /* 0xff and       => to-char       */
 
 #endif /* M4TH_INCLUDE_OPT_MH */

@@ -46,6 +46,7 @@
     X(1, "<", less)                                                                                \
     X(1, "=", equal)                                                                               \
     X(1, ">", more)                                                                                \
+    X(3, ">in", to_in)                                                                             \
     X(2, ">r", to_r)                                                                               \
     X(4, "?dup", question_dup)                                                                     \
     X(1, "@", fetch)                                                                               \
@@ -94,6 +95,7 @@
     X(3, "?do", question_do)                                                                       \
     X(4, "base", base)                                                                             \
     X(8, "compile,", compile_comma)                                                                \
+    X(2, "cr,", cr)                                                                                \
     X(4, "else,", else)                                                                            \
     X(4, "find", find)                                                                             \
     X(2, "if,", if)                                                                                \

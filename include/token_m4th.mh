@@ -97,9 +97,10 @@
 
 /* 'm4th-core' wordlist */
 #undef M4____gap             /*                       */
-#undef M4____gap             /*                       */
-#undef M4____gap             /*                       */
-#define M4m4th 582           /* m4th ( -- m ) get m4th struct address  */
+#define M4m4th 580           /* m4th    ( -- m    ) get m4th struct address            */
+#define M4in_to_addr 581     /* in>addr ( -- addr ) get start of input buffer          */
+#define M4in_to_curr 582     /* in>curr ( -- addr ) alias of >in                       */
+#define M4in_to_size 583     /* in>size ( -- u    ) get size of input buffer           */
 #undef M4____gap             /*                       */
 #undef M4____gap             /*                       */
 #define M4searchorder_i 585  /* ( u -- addr ) get address of searchorder i-th element  */
