@@ -131,7 +131,7 @@ WORD(to_ushort,        to_short,       DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(to_int,           to_ushort,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(to_uint,          to_int,         DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 /**
- * string>number ( caddr n -- caddr' n' x t|f )
+ * string>number ( caddr n -- x t|f )
  * convert string to number, recognizing base prefixes # $ % and sign prefix '-'
  * Also convert any single-quoted char 'x' to ASCII code of x
  */
@@ -143,37 +143,38 @@ WORD_START(string_to_number, to_uint)
     WORD_NATIVE_NONE()
     WORD_CODE(
         /* ?if0
-         *    0 false exit                 ( caddr n 0 false )
+         *    nip false exit               ( 0 false             )
          * then
-         * string>char dup invert          ( caddr n c flag  )
+         * string>char dup invert          ( caddr n c flag      )
          * if
-         *    true exit                    ( caddr n c true  )
-         * then                            ( caddr n c       )
-         * drop string>base >r             ( caddr n         ) (R: base )
-         * string>sign over                ( caddr n sign n  ) (R: base )
-         * if0                             ( caddr n sign    ) (R: base )
-         *    drop 0 false r> drop exit    ( caddr n 0 false ) \ no digits
-         * then                            ( caddr n sign    ) (R: base )
-         * r@ swap r!                      ( caddr n base    ) (R: sign )
-         * string&base>u                   ( caddr n u       ) (R: sign )
-         * r> * over                       ( caddr n x n     )
-         * 0=                              ( caddr n x t|f   )
+         *    nip nip true exit            ( c true              )
+         * then                            ( caddr n -1          )
+         * drop string>base -rot           ( base caddr n        )
+         * string>sign over                ( base caddr n sign n )
+         * if0                             ( base caddr n sign   )
+         *    2drop drop false exit        ( 0 false             ) \ no digits
+         * then                            ( base caddr n sign   )
+         * >r rot                          ( caddr n base        ) (R: sign )
+         * string&base>u                   ( caddr n u           ) (R: sign )
+         * rot drop                        ( n u                 ) (R: sign )
+         * r> * swap                       ( x n                 )
+         * 0=                              ( x t|f               )
          */
         _q_if_zero_, T(4),
-            zero, false, exit,
+            nip, false, exit,
         then,
         _call_, WADDR(string_to_char), dup, invert,
-        _if_, T(3),
-            true, exit,
+        _if_, T(5),
+            nip, nip, true, exit,
         then,
-        drop, _call_, WADDR(string_to_base), to_r,
+        drop, _call_, WADDR(string_to_base), minus_rot,
         _call_, WADDR(string_to_sign), over,
-        _if_zero_, T(6),
-            drop, zero, false, r_from_drop, exit,
+        _if_zero_, T(5),
+            two_drop, drop, false, exit,
         then,
-        r_fetch, swap, r_store,
+        to_r, rot,
         _call_, WADDR(string_base_to_u),
-        r_from, times, over,
+        rot, drop, r_from, times, swap,
         zero_equal, exit
     )
 WORD_END(string_to_number)

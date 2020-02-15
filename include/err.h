@@ -27,7 +27,7 @@ typedef enum m4err_id_e {
     m4err_eof = 1,
     m4err_syntax = 2,
     m4err_bad_addr = 3,
-    m4err_bad_digit = 4,
+    m4err_bad_number = 4,
 } m4err_id;
 
 #endif /* M4TH_INCLUDE_ERR_MH */

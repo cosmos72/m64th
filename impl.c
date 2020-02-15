@@ -74,18 +74,13 @@ static inline m4cell dpop(m4th *m) {
 /** wrapper around string>number */
 m4pair m4string_to_int(m4th *m, m4string str) {
     m4pair ret = {};
-    m4cell ok;
     dpush(m, (m4cell)str.addr);
     dpush(m, (m4cell)str.n);
     m4th_execute_word(m, &WORD_SYM(string_to_number));
-    ok = dpop(m);      /* t|f */
-    ret.num = dpop(m); /* number */
-    if (ok) {
-        dpop(m); /* # of unprocessed chars */
-    } else {
-        ret.err = dpop(m) ? m4err_bad_digit : m4err_eof;
+    if (!dpop(m)) { /* t|f */
+        ret.err = m4err_bad_number;
     }
-    dpop(m); /* address of unprocessed chars */
+    ret.num = dpop(m); /* number */
     return ret;
 }
 
