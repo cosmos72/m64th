@@ -125,15 +125,15 @@
 
 #define DICT_WORDS_M4TH_CORE(X)                                                                    \
     DICT_TOKENS_M4TH_CORE(X)                                                                       \
-    X(9, "find-word", find_word) /* ( addr n -- w|0 )     search in current search order */        \
-    X(6, "/token", div_token)    /* alias of _SZt_div,    no dedicated m4token */                  \
-    X(8, "to-token", to_token)   /* alias of to_SZtu,     no dedicated m4token */                  \
-    X(6, "token!", token_store)  /* alias of _SZtu_store, no dedicated m4token */                  \
-    X(6, "token@", token_fetch)  /* alias of _SZtu_fetch, no dedicated m4token */                  \
-    X(6, "token+", token_plus)   /* alias of _SZt_plus,   no dedicated m4token */                  \
-    X(6, "tokens", tokens)       /* alias of _SZt_times,  no dedicated m4token */                  \
+    X(9, "string>word", string_to_word) /* ( c-addr u -- w|0 ) find word name in search order */   \
+    X(6, "/token", div_token)           /* alias of _SZt_div,    no dedicated m4token */           \
+    X(8, "to-token", to_token)          /* alias of to_SZtu,     no dedicated m4token */           \
+    X(6, "token!", token_store)         /* alias of _SZtu_store, no dedicated m4token */           \
+    X(6, "token@", token_fetch)         /* alias of _SZtu_fetch, no dedicated m4token */           \
+    X(6, "token+", token_plus)          /* alias of _SZt_plus,   no dedicated m4token */           \
+    X(6, "tokens", tokens)              /* alias of _SZt_times,  no dedicated m4token */           \
     X(12, "word-inline?", word_inline_query) /* ( w -- flag ) calls to word should be inlined? */  \
-    X(13, "wordlist-find", wordlist_find)    /* ( addr n l -- addr n | w -1 ) search in wordlist */
+    X(13, "wordlist-find", wordlist_find)    /* ( c-addr u wid -- w|0 ) search name in wordlist */
 
 /* ------- m4th-impl ---------------------------------------------------------------------------- */
 #define DICT_TOKENS_M4TH_IMPL(X)                                                                   \

@@ -29,16 +29,15 @@ WORD_START(search_wordlist, LASTWORD)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_CODE(
-        _call_, WADDR(wordlist_find), invert,          /* ( c-addr ~u | w 0 ) */
-        _if_zero_, T(15),                              /* ( c-addr | w      ) */
+        _call_, WADDR(wordlist_find),                  /* ( w | 0           ) */
+        _q_if_, T(15),                                 /* ( w               ) */
             dup, word_to_xt, swap, word_to_flags,      /* ( xt m4flags      ) */
             _lit_, T(M4FLAG_IMMEDIATE), and,           /* ( xt t|f          ) */
             _if_, T(3),
                 one, exit,                             /* ( xt 1            ) */
             then,
             minus_one, exit,                           /* ( xt -1           ) */
-        then,                                          /* ( c-addr          ) */
-        drop, zero, exit                               /* ( 0               ) */
+        then, exit                                     /* ( 0               ) */
     )
 WORD_END(search_wordlist)
 

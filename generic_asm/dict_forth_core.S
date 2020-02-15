@@ -124,10 +124,12 @@ WORD_START(find, dup)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_CODE(
-        dup, count, _call_, WADDR(find_word),        /* ( c-addr word|0 -1|0|1 ) */
+#if 0 /* TODO */
+        dup, count, _call_, WADDR(string_to_word),   /* ( c-addr word|0 -1|0|1 ) */
         _q_if_zero_, T(5), nip, exit,                /* ( c-addr 0             ) */
         then,                                        /* ( c-addr word -1|1     ) */
         to_r, nip, word_to_xt, r_from,               /* ( xt     -1|1          ) */
+#endif /* 0 */
         exit
     )
 WORD_END(find)

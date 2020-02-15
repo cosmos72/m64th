@@ -33,7 +33,8 @@ DICTNAME(9, "m4th-core", m4th_core)
 DICT_WORDS_M4TH_CORE(WORDNAME)
 
 WORD(div_token,        div_token,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD_START(find_word, div_token)
+WORD(m4th,             div_token,      DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
+WORD_START(string_to_word, m4th)
     WORD_FLAGS(WORD_IMPURE)
     WORD_DSTACK(2,2)
     WORD_RSTACK(0,0)
@@ -42,9 +43,8 @@ WORD_START(find_word, div_token)
     WORD_CODE(
         two_drop, zero, zero, exit /* TODO */
     )
-WORD_END(find_word)
-WORD(m4th,             find_word,      DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
-WORD(to_token,         m4th,           DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD_END(string_to_word)
+WORD(to_token,         string_to_word, DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(token_plus,       to_token,       DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(tokens,           token_plus,     DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(token_store,      tokens,         DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE)
@@ -73,7 +73,7 @@ WORD(word_to_name,     word_to_flags,  DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M
 WORD(word_to_prev,     word_to_name,   DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 WORD(word_to_xt,       word_to_prev,   DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 WORD(wordlist_to_last, word_to_xt,     DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-/* wordlist-find ( caddr n wid -- caddr n | w -1 ) search name in wordlist */
+/* wordlist-find ( c-addr u wid -- w|0 ) search word name in wordlist */
 WORD_START(wordlist_find, wordlist_to_last)
     WORD_FLAGS(M4FLAG_MEM_FETCH) /* multiple exits => cannot inline */
     WORD_DSTACK(3,2)
@@ -83,12 +83,13 @@ WORD_START(wordlist_find, wordlist_to_last)
     WORD_CODE(
         /* wordlist>last                                       ( addr n w          )
          * begin
-         *    ?if0 drop exit then                              ( addr n            )
+         *    ?if0 nip nip exit                                ( 0                 )
+         *    then                                             ( addr n w          )
          *    dup >r word>name                                 ( addr n addr' n'   ) (R: w  )
          *    rot tuck                                         ( addr addr' n n' n ) (R: w  )
          *    = if                                             ( addr addr' n      ) (R: w  )
          *       string= if                                    ( addr addr' n      ) (R: w  )
-         *          2drop drop r> true exit                    ( w -1              )
+         *          2drop drop r> exit                         ( w                 )
          *       then                                          ( addr addr' n      ) (R: w  )
          *    then                                             ( addr addr' n      ) (R: w  )
          *    nip r> word>prev                                 ( addr n     w'     )
@@ -96,12 +97,13 @@ WORD_START(wordlist_find, wordlist_to_last)
          */
         wordlist_to_last,
         begin,
-            _q_if_zero_, T(3), drop, exit, then,
+            _q_if_zero_, T(4), nip, nip, exit,
+            then,
             dup, to_r, word_to_name,
             rot, tuck,
-            equal, _if_, T(10),
-                string_equal, _if_, T(6),
-                    two_drop, drop, r_from, true, exit,
+            equal, _if_, T(9),
+                string_equal, _if_, T(5),
+                    two_drop, drop, r_from, exit,
                 then,
             then,
             nip, r_from, word_to_prev,

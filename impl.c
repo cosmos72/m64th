@@ -102,8 +102,8 @@ m4string m4th_read(m4th *m) {
     return s;
 }
 
-/** temporary C implementation of (wordlist-lookup-word) */
-static const m4word *m4wordlist_find_word(const m4wordlist *wid, m4string key) {
+/** temporary C implementation of (wordlist-find) */
+static const m4word *m4wordlist_find(const m4wordlist *wid, m4string key) {
     const m4word *w;
     assert(wid);
     assert(key.addr);
@@ -115,15 +115,15 @@ static const m4word *m4wordlist_find_word(const m4wordlist *wid, m4string key) {
     return NULL;
 }
 
-/** temporary C implementation of (lookup-word) */
-static const m4word *m4th_find_word(const m4th *m, m4string key) {
+/** temporary C implementation of (string>word) */
+static const m4word *m4th_string_to_word(const m4th *m, m4string key) {
     const m4searchorder *s = &m->searchorder;
     const m4word *w = NULL;
     m4cell i, n = s->n;
     assert(m);
     assert(key.addr);
     for (i = 0; w == NULL && i < n; i++) {
-        w = m4wordlist_find_word(s->addr[i], key);
+        w = m4wordlist_find(s->addr[i], key);
     }
     return w;
 }
@@ -134,7 +134,7 @@ m4pair m4th_parse(m4th *m, m4string key) {
     const m4word *w;
     if (key.addr == NULL) {
         ret.err = m4err_eof;
-    } else if ((w = m4th_find_word(m, key)) != NULL) {
+    } else if ((w = m4th_string_to_word(m, key)) != NULL) {
         ret.w = w;
         ret.err = m4num_is_word;
     } else {
