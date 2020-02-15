@@ -34,14 +34,30 @@ DICT_WORDS_M4TH_CORE(WORDNAME)
 
 WORD(div_token,        div_token,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(m4th,             div_token,      DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
+/* string>word ( c-addr u -- w|0 ) find word name in search order */
 WORD_START(string_to_word, m4th)
     WORD_FLAGS(WORD_IMPURE)
-    WORD_DSTACK(2,2)
+    WORD_DSTACK(2,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_CODE(
-        two_drop, zero, zero, exit /* TODO */
+        /* m4th M4TH_OFF_SEARCHORDER +             ( c-addr u ord              )
+         * dup @ 0                                 ( c-addr u ord n 0          )
+         * ?do                                     ( c-addr u ord              ) (R: n i )
+         *    dup i' i -                           ( c-addr u ord ord n-i      ) (R: n i )
+         *    cells + @                            ( c-addr u ord wid          ) (R: n i )
+         *    2over rot                            ( c-addr u ord c-addr u wid ) (R: n i )
+         *    wordlist-find                        ( c-addr u ord w|0          ) (R: n i )
+         *    ?if
+         *       nip nip nip unloop exit           ( w                         )
+         *    then                                 ( c-addr u ord 0            ) (R: n i )
+         *    drop                                 ( c-addr u ord              ) (R: n i )
+         * loop                                    ( c-addr u ord              )
+         * 2drop drop 0                            ( 0                         )
+         */
+        m4th, _lit_, T(M4TH_OFF_SEARCHORDER), plus, 
+        zero, zero, exit /* TODO */
     )
 WORD_END(string_to_word)
 WORD(to_token,         string_to_word, DSTACK(1,1), RSTACK(0,0), WORD_PURE)
@@ -81,18 +97,18 @@ WORD_START(wordlist_find, wordlist_to_last)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_CODE(
-        /* wordlist>last                                       ( addr n w          )
+        /* wordlist>last                                       ( addr u w          )
          * begin
          *    ?if0 nip nip exit                                ( 0                 )
-         *    then                                             ( addr n w          )
-         *    dup >r word>name                                 ( addr n addr' n'   ) (R: w  )
-         *    rot tuck                                         ( addr addr' n n' n ) (R: w  )
-         *    = if                                             ( addr addr' n      ) (R: w  )
-         *       string= if                                    ( addr addr' n      ) (R: w  )
+         *    then                                             ( addr u w          )
+         *    dup >r word>name                                 ( addr u addr' u'   ) (R: w  )
+         *    rot tuck                                         ( addr addr' u u' u ) (R: w  )
+         *    = if                                             ( addr addr' u      ) (R: w  )
+         *       string= if                                    ( addr addr' u      ) (R: w  )
          *          2drop drop r> exit                         ( w                 )
-         *       then                                          ( addr addr' n      ) (R: w  )
-         *    then                                             ( addr addr' n      ) (R: w  )
-         *    nip r> word>prev                                 ( addr n     w'     )
+         *       then                                          ( addr addr' u      ) (R: w  )
+         *    then                                             ( addr addr' u      ) (R: w  )
+         *    nip r> word>prev                                 ( addr u     w'     )
          * again
          */
         wordlist_to_last,

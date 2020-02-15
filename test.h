@@ -29,7 +29,7 @@ m4cell m4th_testexecute(m4th *m, FILE *out);
 
 /* -------------- m4countedstack  -------------- */
 
-enum { m4test_stack_n = 5 };
+enum { m4test_stack_n = 6 };
 
 typedef struct m4countedstack_s {
     m4cell len;

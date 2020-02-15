@@ -58,7 +58,7 @@ FUNC_START(two_drop)       /* 2drop    */
 FUNC_END(two_drop)
 
 
-FUNC_START(two_dup)        /* 2dup      */
+FUNC_START(two_dup)        /* 2dup     */
         LOAD(  REG1,   AT(DSTK))
         STOR(  DTOP,   AT(DSTK, -SZ))
         STOR(  REG1,   AT(DSTK, -SZ2))
@@ -66,11 +66,20 @@ FUNC_START(two_dup)        /* 2dup      */
 FUNC_END(two_dup)
 
 
-FUNC_START(two_nip)        /* 2nip      m4th-user */
+FUNC_START(two_nip)        /* 2nip     m4th-user */
         LOAD(  REG1,   AT(DSTK))
         STOR(  REG1,   AT(DSTK, SZ2))
         ADD2(  IMM(SZ2),   DSTK)
 FUNC_END(two_nip)
+
+
+FUNC_START(two_over)       /* 2over    ( a b c d -- a b c d a b ) */
+        STOR(  DTOP,   AT(DSTK, -SZ))  /* save d   */
+        LOAD(  REG1,   AT(DSTK, SZ2))  /* a        */
+        LOAD(  DTOP,   AT(DSTK, SZ))   /* dtop = b */
+        STOR(  REG1,   AT(DSTK, -SZ2)) /* save a   */
+        SUB2(  IMM(SZ2), DSTK)         /* update dstk */
+FUNC_END(two_over)
 
 
 #ifndef M4FTWO_SWAP
