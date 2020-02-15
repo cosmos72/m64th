@@ -64,6 +64,22 @@ FUNC_START(m4th)
 FUNC_END(m4th)
 
 
+/* searchorder-i ( u -- addr ) get address of searchorder i-th element */
+FUNC_START(searchorder_i)
+        ADDI(  M4TH, M4TH_OFF_SEARCHORDER, REG1) /* a = &m->searchorder */
+        LOAD(  REG2,   AT(REG1))                 /* b = m->searchorder.n */
+        SUB2(  DTOP,   REG2)                     /* b = n - i */
+        ADD4(  REG1,   REG2, PSZ, DTOP) /* dtop = &a[n-i] = &m->searchorder.addr[n-i-1] */
+FUNC_END(searchorder_i)
+
+
+/* searchorder-n ( -- addr ) get address of searchorder count */
+FUNC_START(searchorder_n)
+        DPUSH( DTOP)
+        ADDI(  M4TH,       M4TH_OFF_SEARCHORDER, DTOP)
+FUNC_END(searchorder_n)
+
+
 FUNC_START(word_to_code) /* ( w -- taddr n ) */
         LD_uw( REG1_uw,    AT(DTOP, WORD_OFF_CODE_OFF)) /* REG1 = w.code_off  */
         ADD2(  DTOP,       REG1)                        /* REG1 = w.code      */

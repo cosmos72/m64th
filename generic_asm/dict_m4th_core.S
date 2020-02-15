@@ -34,14 +34,40 @@ DICT_WORDS_M4TH_CORE(WORDNAME)
 
 WORD(div_token,        div_token,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(m4th,             div_token,      DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
+/* ( u -- addr ) get address of searchorder i-th element */
+WORD(searchorder_i,    m4th,           DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
+/* ( -- addr ) get address of searchorder count */
+WORD(searchorder_n,    searchorder_i,  DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 /* string>word ( c-addr u -- w|0 ) find word name in search order */
-WORD_START(string_to_word, m4th)
-    WORD_FLAGS(WORD_IMPURE)
+WORD_START(string_to_word, searchorder_n)
+    WORD_FLAGS(0)
     WORD_DSTACK(2,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_CODE(
+        /* searchorder-n @ 0                       ( c-addr u n 0              )
+         * ?do                                     ( c-addr u                  ) (R: n i )
+         *    2dup i searchorder-i @               ( c-addr u c-addr u wid     ) (R: n i )
+         *    wordlist-find                        ( c-addr u w|0              ) (R: n i )
+         *    ?if
+         *       nip nip unloop exit               ( w                         )
+         *    then                                 ( c-addr u 0                ) (R: n i )
+         *    drop                                 ( c-addr u                  ) (R: n i )
+         * loop                                    ( c-addr u                  )
+         * 2drop 0                                 ( 0                         )
+         */
+        searchorder_n, fetch, zero,
+        _q_do_, T(15+SZ/SZt),
+            two_dup, i, searchorder_i, fetch,
+            _call_, WADDR(wordlist_find),
+            _q_if_, T(5),
+                nip, nip, unloop, exit,
+            then,
+            drop,
+        _loop_, T(-15-SZ/SZt),
+        two_drop, zero, exit
+#if 0        
         /* m4th M4TH_OFF_SEARCHORDER +             ( c-addr u ord              )
          * dup @ 0                                 ( c-addr u ord n 0          )
          * ?do                                     ( c-addr u ord              ) (R: n i )
@@ -57,7 +83,19 @@ WORD_START(string_to_word, m4th)
          * 2drop drop 0                            ( 0                         )
          */
         m4th, _lit_, T(M4TH_OFF_SEARCHORDER), plus, 
-        zero, zero, exit /* TODO */
+        dup, fetch, zero,
+        _q_do_, T(21+SZ/SZt),
+            dup, i_prime, i, minus,
+            cells, plus, fetch,
+            two_over, rot,
+            _call_, WADDR(wordlist_find),
+            _q_if_, T(6),
+                nip, nip, nip, unloop, exit,
+            then,
+            drop,
+        _loop_, T(-21-SZ/SZt),
+        two_drop, drop, zero, exit
+#endif /* 0 */
     )
 WORD_END(string_to_word)
 WORD(to_token,         string_to_word, DSTACK(1,1), RSTACK(0,0), WORD_PURE)
@@ -88,16 +126,15 @@ WORD(word_to_flags,    word_to_code_n, DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M
 WORD(word_to_name,     word_to_flags,  DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 WORD(word_to_prev,     word_to_name,   DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 WORD(word_to_xt,       word_to_prev,   DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD(wordlist_to_last, word_to_xt,     DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 /* wordlist-find ( c-addr u wid -- w|0 ) search word name in wordlist */
-WORD_START(wordlist_find, wordlist_to_last)
+WORD_START(wordlist_find, word_to_xt)
     WORD_FLAGS(M4FLAG_MEM_FETCH) /* multiple exits => cannot inline */
     WORD_DSTACK(3,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_CODE(
-        /* wordlist>last                                       ( addr u w          )
+        /* wordlist-last                                       ( addr u w          )
          * begin
          *    ?if0 nip nip exit                                ( 0                 )
          *    then                                             ( addr u w          )
@@ -111,7 +148,7 @@ WORD_START(wordlist_find, wordlist_to_last)
          *    nip r> word>prev                                 ( addr u     w'     )
          * again
          */
-        wordlist_to_last,
+        wordlist_last,
         begin,
             _q_if_zero_, T(4), nip, nip, exit,
             then,
@@ -126,7 +163,8 @@ WORD_START(wordlist_find, wordlist_to_last)
         _again_, T(-28)
     )
 WORD_END(wordlist_find)
-WORD(xt_to_word,     wordlist_find,    DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(wordlist_last,  wordlist_find,    DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(xt_to_word,     wordlist_last,    DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 
 DICT_BODY(m4th_core, xt_to_word)
 DICT_END(m4th_core)

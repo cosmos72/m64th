@@ -134,6 +134,7 @@
 
 #define AND2(src, dst)        and  src,     dst;   /* dst &= src     */
 #define ADD2(src, dst)        add  src,     dst;   /* dst += src     */
+#define ADD4(a, b,shl, dst)   lea  (a, b, 1<<(shl)), dst; /* dst  = a_reg + (b_reg << shl) */
 #define ADDI(src, imm, dst)   lea  imm(src),dst;   /* dst  = src + imm */
 #define AT0( reg)                  (reg)           /* mem[reg]       */
 #define ATx( reg,  imm)            imm(reg)        /* mem[reg+imm]   */

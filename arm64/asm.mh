@@ -144,32 +144,32 @@
 
 /* clang-format off */
 
-#define ADD2(src,dst)    add   dst, dst, src;    /* dst += src     */
-#define ADD3(a,b,dst)    add   dst, a, b;        /* dst  = a + b   */
-#define ADDI(a,b,dst)    add   dst, a, IMM(b);   /* dst  = a_reg + b_imm */
-#define AND2(src,dst)    and   dst, dst, src;    /* dst &= src     */
-#define AT0(reg)               [reg]             /* mem[reg]       */
-#define ATx(reg,imm)           [reg,imm]         /* mem[reg+imm]   */
-#define ATxy(reg1,reg2,rmul)   CAT2(ATxy_,rmul)(reg1,reg2) /* mem[reg1+reg2*rmul] */
-#define ATxy_1(reg1,reg2)      [reg1,reg2]       /* mem[reg1+reg2]   */
-#define ATxy_2(reg1,reg2)      [reg1,reg2,lsl 1] /* mem[reg1+reg2*2] */
-#define ATxy_4(reg1,reg2)      [reg1,reg2,lsl 2] /* mem[reg1+reg2*4] */
-#define ATxy_8(reg1,reg2)      [reg1,reg2,lsl 3] /* mem[reg1+reg2*8] */
-#define DEC1(dst)        sub   dst, dst, 1;      /* dst--          */
-#define DIV3(a,b,dst)    sdiv  dst, a, b;        /* dst  = a / b   */
-#define INC1(dst)        add   dst, dst, 1;      /* dst++          */
-#define LOAD(reg,mem)    ldr   reg, mem;         /* reg  = *mem    */
-#define MOVE(src,dst)    mov   dst, src;         /* dst  = src     */
-#define MUL2(src,dst)    mul   dst, dst, src;    /* dst *= src     */
-#define NEG1(dst)        neg   dst, dst;         /* dst  = -dst    */
-#define NOT1(dst)        mvn   dst, dst;         /* dst  = ~dst    */
-#define ORR2(src,dst)    orr   dst, dst, src;    /* dst |= src     */
-#define SAR2(src,dst)    asr   dst, dst, src;    /* dst >>= src    signed   */
-#define SHL2(src,dst)    lsl   dst, dst, src;    /* dst <<= src    */
-#define SUB2(src,dst)    sub   dst, dst, src;    /* dst -= src     */
-#define SUB3(a,b,dst)    sub   dst, a, b;        /* dst  = a - b   */
-#define STOR(reg,at)     str   reg, at;          /* *at  = reg     */
-#define ZERO(dst)        mov   dst, 0;           /* dst  = 0       */
+#define ADD2(src,dst)     add   dst, dst, src;      /* dst += src     */
+#define ADD4(a,b,shl,dst) add   dst, a, b, lsl shl; /* dst  = a_reg + (b_reg << shl) */
+#define ADDI(a,b,dst)     add   dst, a, IMM(b);     /* dst  = a_reg + b_imm */
+#define AND2(src,dst)     and   dst, dst, src;      /* dst &= src     */
+#define AT0(reg)                [reg]               /* mem[reg]       */
+#define ATx(reg,imm)            [reg,imm]           /* mem[reg+imm]   */
+#define ATxy(reg1,reg2,rmul) CAT2(ATxy_,rmul)(reg1,reg2) /* mem[reg1+reg2*rmul] */
+#define ATxy_1(reg1,reg2)       [reg1,reg2]         /* mem[reg1+reg2]   */
+#define ATxy_2(reg1,reg2)       [reg1,reg2,lsl 1]   /* mem[reg1+reg2*2] */
+#define ATxy_4(reg1,reg2)       [reg1,reg2,lsl 2]   /* mem[reg1+reg2*4] */
+#define ATxy_8(reg1,reg2)       [reg1,reg2,lsl 3]   /* mem[reg1+reg2*8] */
+#define DEC1(dst)         sub   dst, dst, 1;        /* dst--          */
+#define DIV3(a,b,dst)     sdiv  dst, a, b;          /* dst  = a / b   */
+#define INC1(dst)         add   dst, dst, 1;        /* dst++          */
+#define LOAD(reg,mem)     ldr   reg, mem;           /* reg  = *mem    */
+#define MOVE(src,dst)     mov   dst, src;           /* dst  = src     */
+#define MUL2(src,dst)     mul   dst, dst, src;      /* dst *= src     */
+#define NEG1(dst)         neg   dst, dst;           /* dst  = -dst    */
+#define NOT1(dst)         mvn   dst, dst;           /* dst  = ~dst    */
+#define ORR2(src,dst)     orr   dst, dst, src;      /* dst |= src     */
+#define SAR2(src,dst)     asr   dst, dst, src;      /* dst >>= src    signed   */
+#define SHL2(src,dst)     lsl   dst, dst, src;      /* dst <<= src    */
+#define SUB2(src,dst)     sub   dst, dst, src;      /* dst -= src     */
+#define SUB3(a,b,dst)     sub   dst, a, b;          /* dst  = a - b   */
+#define STOR(reg,at)      str   reg, at;            /* *at  = reg     */
+#define ZERO(dst)         mov   dst, 0;             /* dst  = 0       */
 
 #define LD_sb(reg,at)  ldrsb reg, at;          /* reg = *(int8_t *)at   */
 #define LD_sh(reg,at)  ldrsh reg, at;          /* reg = *(int16_t*)at   */

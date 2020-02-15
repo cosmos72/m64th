@@ -32,12 +32,12 @@ FUNC_START(word_to_prev) /* ( w -- w'|0 ) */
 FUNC_END(word_to_prev)
 
 
-FUNC_START(wordlist_to_last) /* ( l -- w ) */
+FUNC_START(wordlist_last) /* ( l -- w ) */
         LOAD(  DTOP,       AT(DTOP, WORDLIST_OFF_DICT))     /* dtop = l.dict          */
         LOAD(  REG1_uw,    AT(DTOP, DICT_OFF_LASTWORD_OFF)) /* a = dict.last_word_off */
         SUB2(  REG1,       DTOP)       /* dtop = w                */
         test   REG1,       REG1;
         cmovz  REG1,       DTOP;       /* dtop = w|0              */
-FUNC_END(wordlist_to_last)
+FUNC_END(wordlist_last)
 
 
