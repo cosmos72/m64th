@@ -26,7 +26,7 @@
  * for standard forth tokens (cell+ char+ ...)
  */
 #define OPT1_BODY(x, _)            /* note: '_' represents noop */                                 \
-    x((to_in), (in_to_curr))       /* >in      => in>curr       */                                 \
+    x((to_in), (in_to_next))       /* >in      => in>next       */                                 \
         x((div_cell), (SZ_div))    /* /cell    => SZ/           */                                 \
         x((cell_plus), (SZ_plus))  /* cell+    => SZ+           */                                 \
         x((cells), (SZ_times))     /* cells    => SZ*           */                                 \

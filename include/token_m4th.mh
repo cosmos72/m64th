@@ -99,7 +99,7 @@
 #undef M4____gap             /*                       */
 #undef M4____gap             /*                       */
 #define M4in_to_addr 581     /* in>addr ( -- addr ) get start of input buffer          */
-#define M4in_to_curr 582     /* in>curr ( -- addr ) alias of >in                       */
+#define M4in_to_next 582     /* in>next ( -- addr ) alias of >in                       */
 #define M4in_to_size 583     /* in>size ( -- u    ) get size of input buffer           */
 #undef M4____gap             /*                       */
 #undef M4____gap             /*                       */

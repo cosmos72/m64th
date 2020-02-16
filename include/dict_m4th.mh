@@ -114,7 +114,7 @@
 /* ------- m4th-core ---------------------------------------------------------------------------- */
 #define DICT_TOKENS_M4TH_CORE(X)                                                                   \
     X(7, "in>addr", in_to_addr) /* (   -- addr ) get start of input buffer               */        \
-    X(7, "in>curr", in_to_curr) /* (   -- addr ) alias of >in                            */        \
+    X(7, "in>next", in_to_next) /* (   -- addr ) alias of >in                            */        \
     X(7, "in>size", in_to_size) /* (   -- u    ) get size of input buffer                */        \
     /*               searchorder-i ( u -- addr ) get address of searchorder i-th element */        \
     X(13, "searchorder-i", searchorder_i)                                                          \

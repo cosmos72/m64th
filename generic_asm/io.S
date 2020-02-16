@@ -41,11 +41,11 @@ FUNC_START(in_to_addr)
 FUNC_END(in_to_addr)
 
 
-/* in>curr ( -- addr ) alias of >in */
-FUNC_START(in_to_curr)
+/* in>next ( -- addr ) alias of >in */
+FUNC_START(in_to_next)
         DPUSH( DTOP)
         ADDI(  M4TH,   M4TH_OFF_OUT_ADDR, DTOP)
-FUNC_END(in_to_curr)
+FUNC_END(in_to_next)
 
 
 /* in>size ( -- u ) get size of input buffer */
