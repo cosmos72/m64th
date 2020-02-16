@@ -23,14 +23,14 @@
 
 
 FUNC_START(emit)
-        LOAD(  REG1,   AT(M4TH, M4TH_OFF_OUT_CURR))
+        LOAD(  REG1,   AT(M4TH, M4TH_OFF_OUT_NEXT))
         LOAD(  REG2,   AT(M4TH, M4TH_OFF_OUT_SIZE))
         /* TODO flush output buffer */
         JAE(   REG1,   REG2,  FUNC_SYM_NEXT(emit))
         LOAD(  REG2,   AT(M4TH, M4TH_OFF_OUT_ADDR))
         STORb( DTOPb,  AT(REG1, REG2, 1))
         INC1(  REG1)
-        STOR(  REG1,   AT(M4TH, M4TH_OFF_OUT_CURR))
+        STOR(  REG1,   AT(M4TH, M4TH_OFF_OUT_NEXT))
 FUNC_END(emit)
 
 
@@ -58,7 +58,7 @@ FUNC_END(in_to_size)
 /* ( -- char ) receive one character */ 
 FUNC_START(key)
         DPUSH( DTOP)
-        LOAD(  REG1,   AT(M4TH, M4TH_OFF_IN_CURR))
+        LOAD(  REG1,   AT(M4TH, M4TH_OFF_IN_NEXT))
         LOAD(  REG2,   AT(M4TH, M4TH_OFF_IN_SIZE))
 #ifdef RFFF
         MOVE(  RFFF,   DTOP)
@@ -70,5 +70,5 @@ FUNC_START(key)
         LOAD(  REG2,   AT(M4TH, M4TH_OFF_IN_ADDR))
         LD_ub( DTOP_ub,AT(REG1, REG2, 1))
         INC1(  REG1)
-        STOR(  REG1,   AT(M4TH, M4TH_OFF_IN_CURR))
+        STOR(  REG1,   AT(M4TH, M4TH_OFF_IN_NEXT))
 FUNC_END(key)

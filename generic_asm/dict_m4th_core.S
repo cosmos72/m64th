@@ -33,9 +33,8 @@ DICTNAME(9, "m4th-core", m4th_core)
 DICT_WORDS_M4TH_CORE(WORDNAME)
 
 WORD(div_token,        div_token,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(m4th,             div_token,      DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 /* in>addr ( -- addr ) get start of input buffer */
-WORD(in_to_addr,       m4th,           DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
+WORD(in_to_addr,       div_token,      DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 /* in>curr ( -- addr ) alias of >in */
 WORD(in_to_curr,       in_to_addr,     DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 /* in>size ( -- u    ) get size of input buffer */
@@ -80,7 +79,15 @@ WORD(token_plus,       to_token,       DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(tokens,           token_plus,     DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(token_store,      tokens,         DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE)
 WORD(token_fetch,      token_store,    DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD_START(word_inline_query,  token_fetch)
+WORD_START(user_var,   token_fetch)
+    WORD_FLAGS(M4FLAG_INLINE_ALWAYS | M4FLAG_CONSUMES_IP_2)
+    WORD_DSTACK(0,1)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_CODE(user_var, T(-1), exit)
+WORD_END(user_var)
+WORD_START(word_inline_query,  user_var)
     WORD_FLAGS(M4FLAG_MEM_FETCH) /* multiple exits => cannot inline */
     WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)

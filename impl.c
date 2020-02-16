@@ -89,7 +89,7 @@ m4string m4th_parse_name(m4th *m) {
     m4string ret = {};
     m4char *s, *end;
     assert(m);
-    s = &m->in.addr[m->in.curr];
+    s = &m->in.addr[m->in.next];
     end = &m->in.addr[m->in.size];
     while (s < end && *s <= ' ') {
         s++;
@@ -99,7 +99,7 @@ m4string m4th_parse_name(m4th *m) {
         s++;
     }
     ret.n = s - ret.addr;
-    m->in.curr = s - m->in.addr;
+    m->in.next = s - m->in.addr;
     return ret;
 }
 

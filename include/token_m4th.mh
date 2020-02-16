@@ -97,7 +97,7 @@
 
 /* 'm4th-core' wordlist */
 #undef M4____gap             /*                       */
-#define M4m4th 580           /* m4th    ( -- m    ) get m4th struct address            */
+#undef M4____gap             /*                       */
 #define M4in_to_addr 581     /* in>addr ( -- addr ) get start of input buffer          */
 #define M4in_to_curr 582     /* in>curr ( -- addr ) alias of >in                       */
 #define M4in_to_size 583     /* in>size ( -- u    ) get size of input buffer           */
@@ -105,7 +105,7 @@
 #undef M4____gap             /*                       */
 #define M4searchorder_i 585  /* ( u -- addr ) get address of searchorder i-th element  */
 #define M4searchorder_n 586  /* (   -- addr ) get address of searchorder count         */
-#undef M4____gap             /*                       */
+#define M4user_var 587       /* user-var ( -- addr ) must be followed by index of user var */
 #define M4word_to_code 588   /* word>code   ( w  -- addr n  ) get code array from word */
 #define M4word_to_code_n 589 /* word>code>n ( w  -- n       ) get code size from word  */
 #define M4word_to_flags 590  /* word>flags  ( w  -- m4flags ) get m4flags from word    */

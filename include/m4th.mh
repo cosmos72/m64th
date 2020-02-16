@@ -27,14 +27,19 @@
 #define M4TH_OFF_FTABLE SZ7       /* offset of m4th->ftable      */
 #define M4TH_OFF_IN_ADDR SZ8      /* offset of m4th->in.addr     */
 #define M4TH_OFF_IN_SIZE SZ9      /* offset of m4th->in.size     */
-#define M4TH_OFF_IN_CURR SZ10     /* offset of m4th->in.curr     */
+#define M4TH_OFF_IN_NEXT SZ10     /* offset of m4th->in.next     */
 #define M4TH_OFF_OUT_ADDR SZ11    /* offset of m4th->out.addr    */
 #define M4TH_OFF_OUT_SIZE SZ12    /* offset of m4th->out.size    */
-#define M4TH_OFF_OUT_CURR SZ13    /* offset of m4th->out.curr    */
-#define M4TH_OFF_C_REG0 SZ15      /* offset of m4th->c_regs[0]   */
-#define M4TH_OFF_W SZ16           /* offset of m4th->w           */
-#define M4TH_OFF_HERE SZ18        /* offset of m4th->here        */
-#define M4TH_OFF_BASE SZ20        /* offset of m4th->base        */
-#define M4TH_OFF_SEARCHORDER SZ21 /* offset of m4th->searchorder */
+#define M4TH_OFF_OUT_NEXT SZ13    /* offset of m4th->out.next    */
+#define M4TH_OFF_C_REG0 SZ14      /* offset of m4th->c_regs[0]   */
+#define M4TH_OFF_USER SZ15        /* offset of m4th->user*       */
+#define M4TH_OFF_STATE SZ16       /* offset of m4th->state       */
+#define M4TH_OFF_W SZ17           /* offset of m4th->w           */
+#define M4TH_OFF_HERE SZ19        /* offset of m4th->mem.curr = HERE */
+#define M4TH_OFF_BASE SZ21        /* offset of m4th->base        */
+#define M4TH_OFF_SEARCHORDER SZ22 /* offset of m4th->searchorder */
+
+#define USERVAR_IDX_STATE 1 /* index of m4th->state */
+#define USERVAR_IDX_BASE 6  /* index of m4th->base */
 
 #endif /* M4TH_INCLUDE_M4TH_MH */

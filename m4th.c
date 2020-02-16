@@ -725,10 +725,12 @@ m4th *m4th_new() {
     m->ip = NULL;
     m->ftable = ftable;
     m->in = m4iobuf_alloc(inbuf_n);
-    m->in.curr = m->in.size;
+    m->in.next = m->in.size;
     m->out = m4iobuf_alloc(outbuf_n);
     m->state = m4th_state_interpret;
     memset(m->c_regs, '\0', sizeof(m->c_regs));
+    m->user_size = ((m4cell)&m->user_var[0] - (m4cell)&m->user_size) / SZ;
+    m->user_next = m->user_size;
     m->w = NULL;
     m->mem = m4cbuf_alloc(dataspace_n);
     m->base = 10;
@@ -758,8 +760,8 @@ void m4th_clear(m4th *m) {
     m->w = NULL;
     m->ip = NULL;
     memset(m->c_regs, '\0', sizeof(m->c_regs));
-    m->in.curr = m->in.size;
-    m->out.curr = 0;
+    m->in.next = m->in.size;
+    m->out.next = 0;
     m->mem.curr = m->mem.start;
     m->err = 0;
 }

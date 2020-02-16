@@ -101,7 +101,8 @@
     X(2, "if,", if)                                                                                \
     X(5, "leave", leave)                                                                           \
     X(7, "literal", literal)                                                                       \
-    X(4, "loop", loop)
+    X(4, "loop", loop)                                                                             \
+    X(5, "state", state)
 
 /* ------- forth 2012: core ext ----------------------------------------------------------------- */
 #define DICT_TOKENS_FORTH_CORE_EXT(X)                                                              \

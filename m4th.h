@@ -141,7 +141,7 @@ struct m4err_s {
 struct m4iobuf_s {
     m4char *addr;
     m4cell_u size;
-    m4cell_u curr; /**< current char is addr[curr] */
+    m4cell_u next; /**< next char to read (or write) is addr[next] */
 };
 
 struct m4string_s { /**< array of m4char, with size */
@@ -193,16 +193,19 @@ struct m4th_s {        /**< m4th forth interpreter and compiler */
     m4iobuf in;        /**< input  buffer                       */
     m4iobuf out;       /**< output buffer                       */
 
-    m4cell state;          /**< m4th_state: interpret = 0, compile <> 0 */
     const void *c_regs[1]; /**< m4th_run() may save C registers here  */
 
     /* USER variables, i.e. thread-local */
-    m4word *w;                 /**< forth word being compiled          */
-    m4cbuf mem;                /**< start, HERE and end of data space  */
-    m4cell base;               /**< current BASE                       */
-    m4searchorder searchorder; /**< wordlist search order              */
+    uint32_t user_size;        /**< # available cells in user variables     */
+    uint32_t user_next;        /**< next available cell in user variables   */
+    m4cell state;              /**< m4th_state: interpret = 0, compile <> 0 */
+    m4word *w;                 /**< forth word being compiled               */
+    m4cbuf mem;                /**< start, HERE and end of data space       */
+    m4cell base;               /**< current BASE                            */
+    m4searchorder searchorder; /**< wordlist search order                   */
     m4func quit;               /**< forth function to execute on quit. usually m4fbye or m4fquit */
-    m4err err;                 /**< error set by ABORT                 */
+    m4err err;                 /**< error set by ABORT                      */
+    m4cell user_var[0];        /**< further user variables                  */
 };
 
 #ifdef __cplusplus

@@ -57,11 +57,19 @@ FUNC_START(_ip_to_data_addr_)
 FUNC_END(_ip_to_data_addr_)
 
 
-/* m4th ( -- m ) get m4th struct address  */
-FUNC_START(m4th)
+/* user-var ( -- addr ) must be followed by index. get address of i-th user variable  */
+FUNC_START(user_var)
         DPUSH( DTOP)
-        MOVE(  M4TH,       DTOP)
-FUNC_END(m4th)
+        LD_ut( REG1_ut,    AT(IP)) /* a = index */
+#ifdef __x86_64__
+        lea    M4TH_OFF_USER(M4TH, REG1, SZ), DTOP;
+#else
+        ADD2(  IMM(M4TH_OFF_USER/SZ), REG1)
+        ADD4(  M4TH,       REG1, PSZ, DTOP)
+#endif
+        NEXTT()
+FUNC_RAWEND(user_var)
+
 
 /* searchorder-i ( u -- addr ) get address of i-th wordlist in search order */
 FUNC_START(searchorder_i)
