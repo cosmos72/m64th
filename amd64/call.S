@@ -95,78 +95,78 @@ FUNC_RAWEND(bye)
 
 /* pop 0 args, prepare for C function call */
 FUNC_START(c_arg_0)
-        STOR(  DTOP,   AT(DSTK, -SZ))             /* will be reloaded by c_call */
-        STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))   /* save dstk = %rdi (clobbered) */
-        STOR(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))   /* save rstk = %rsi (clobbered) */
+        SUB2(  IMM(SZ),DSTK)
+        STOR(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))   /* save rstk = %rsi (clobbered)  */
+        STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))   /* save dstk = %rdi (clobbered)  */
+        STOR(  DTOP,   AT(DSTK))                  /* will be reloaded by c-ret-[N] */
 FUNC_END(c_arg_0)
 
 
 /* pop 1 arg, prepare it for C function call */
 FUNC_START(c_arg_1)
-        ADD2(  IMM(SZ), DSTK)
-        STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))   /* save dstk = %rdi = C arg1 */
         STOR(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))   /* save rstk = %rsi (clobbered) */
+        STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))   /* save dstk = %rdi = C arg1 */
         MOVE(  DTOP, %rdi)                        /* %rdi = C arg 1 */
 FUNC_END(c_arg_1)
 
 
 /* pop 2 args, prepare them for C function call */
 FUNC_START(c_arg_2)
-        ADD2(  IMM(SZ2), DSTK)
-        STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))   /* save dstk = %rdi = C arg1 */
+        ADD2(  IMM(SZ), DSTK)
         STOR(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))   /* save rstk = %rsi = C arg2 */
+        STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))   /* save dstk = %rdi = C arg1 */
         MOVE(  DTOP, %rsi)                        /* %rsi = C arg 2 */
-        LOAD(  %rdi,   AT(DSTK, -SZ2))            /* %rdi = C arg 1 */
+        LOAD(  %rdi,   AT(DSTK, -SZ))             /* %rdi = C arg 1 */
 FUNC_END(c_arg_2)
 
 
 /* pop 3 args, prepare them for C function call */
 FUNC_START(c_arg_3)
-        ADD2(  IMM(SZ3), DSTK)
-        STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))   /* save dstk = %rdi = C arg1 */
+        ADD2(  IMM(SZ2), DSTK)
         STOR(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))   /* save rstk = %rsi = C arg2 */
+        STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))   /* save dstk = %rdi = C arg1 */
         MOVE(  DTOP, %rdx)                        /* %rdx = C arg 3 */
-        LOAD(  %rsi,   AT(DSTK, -SZ3))            /* %rsi = C arg 2 */
-        LOAD(  %rdi,   AT(DSTK, -SZ2))            /* %rdi = C arg 1 */
+        LOAD(  %rsi,   AT(DSTK, -SZ2))            /* %rsi = C arg 2 */
+        LOAD(  %rdi,   AT(DSTK, -SZ))             /* %rdi = C arg 1 */
 FUNC_END(c_arg_3)
 
 
 /* pop 4 args, prepare them for C function call */
 FUNC_START(c_arg_4)
-        ADD2(  IMM(SZ4), DSTK)
-        STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))   /* save dstk = %rdi = C arg1 */
+        ADD2(  IMM(SZ3), DSTK)
         STOR(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))   /* save rstk = %rsi = C arg2 */
+        STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))   /* save dstk = %rdi = C arg1 */
         MOVE(  DTOP, %rcx)                        /* %rcx = C arg 4 */
-        LOAD(  %rdx,   AT(DSTK, -SZ4))            /* %rdx = C arg 3 */
-        LOAD(  %rsi,   AT(DSTK, -SZ3))            /* %rsi = C arg 2 */
-        LOAD(  %rdi,   AT(DSTK, -SZ2))            /* %rdi = C arg 1 */
+        LOAD(  %rdx,   AT(DSTK, -SZ3))            /* %rdx = C arg 3 */
+        LOAD(  %rsi,   AT(DSTK, -SZ2))            /* %rsi = C arg 2 */
+        LOAD(  %rdi,   AT(DSTK, -SZ))             /* %rdi = C arg 1 */
 FUNC_END(c_arg_4)
 
 
 /* pop 5 args, prepare them for C function call */
 FUNC_START(c_arg_5)
-        ADD2(  IMM(SZ5), DSTK)
-        STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))    /* save dstk = %rdi = C arg1 */
+        ADD2(  IMM(SZ4), DSTK)
         STOR(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))    /* save rstk = %rsi = C arg2 */
+        STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))    /* save dstk = %rdi = C arg1 */
         MOVE(  DTOP, %r8)                          /* %r8  = C arg 5 */
-        LOAD(  %rcx,   AT(DSTK, -SZ5))             /* %rcx = C arg 4 */
-        LOAD(  %rdx,   AT(DSTK, -SZ4))             /* %rdx = C arg 3 */
-        LOAD(  %rsi,   AT(DSTK, -SZ3))             /* %rsi = C arg 2 */
-        LOAD(  %rdi,   AT(DSTK, -SZ2))             /* %rdi = C arg 1 */
+        LOAD(  %rcx,   AT(DSTK, -SZ4))             /* %rcx = C arg 4 */
+        LOAD(  %rdx,   AT(DSTK, -SZ3))             /* %rdx = C arg 3 */
+        LOAD(  %rsi,   AT(DSTK, -SZ2))             /* %rsi = C arg 2 */
+        LOAD(  %rdi,   AT(DSTK, -SZ))              /* %rdi = C arg 1 */
 FUNC_END(c_arg_5)
 
 
 /* pop 6 args, prepare them for C function call */
 FUNC_START(c_arg_6)
-        ADD2(  IMM(SZ6), DSTK)
-        STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))    /* save dstk = %rdi = C arg1 */
+        ADD2(  IMM(SZ5), DSTK)
         STOR(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))    /* save rstk = %rsi = C arg2 */
+        STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))    /* save dstk = %rdi = C arg1 */
         /* cannot set FTBL = %r9 = C arg 6 now, it is needed by m4f_vm_ */
-        LOAD(  %r8,    AT(DSTK, -SZ6))             /* %r8  = C arg 5 */
-        LOAD(  %rcx,   AT(DSTK, -SZ5))             /* %rcx = C arg 4 */
-        LOAD(  %rdx,   AT(DSTK, -SZ4))             /* %rdx = C arg 3 */
-        LOAD(  %rsi,   AT(DSTK, -SZ3))             /* %rsi = C arg 2 */
-        LOAD(  %rdi,   AT(DSTK, -SZ2))             /* %rdi = C arg 1 */
+        LOAD(  %r8,    AT(DSTK, -SZ5))             /* %r8  = C arg 5 */
+        LOAD(  %rcx,   AT(DSTK, -SZ4))             /* %rcx = C arg 4 */
+        LOAD(  %rdx,   AT(DSTK, -SZ3))             /* %rdx = C arg 3 */
+        LOAD(  %rsi,   AT(DSTK, -SZ2))             /* %rsi = C arg 2 */
+        LOAD(  %rdi,   AT(DSTK, -SZ))              /* %rdi = C arg 1 */
 FUNC_END(c_arg_6)
 
 
@@ -189,21 +189,19 @@ FUNC_END(c_call)
 /* push 0 values returned by C function call */
 FUNC_START(c_ret_0)
         /* reload DTOP because c_arg_* above moved DSTK */
-        LOAD(  DTOP,   AT(DSTK, -SZ))
+        DPOP(  DTOP)
 FUNC_END(c_ret_0)
 
 
 /* push 1 value  returned by C function call */
 FUNC_START(c_ret_1)
-        SUB2(  IMM(SZ),DSTK)
         MOVE(  %rax,   DTOP)
 FUNC_END(c_ret_1)
 
 
 /* push 2 values returned by C function call */
 FUNC_START(c_ret_2)
-        SUB2(  IMM(SZ2),DSTK)
-        STOR(  %rax,   AT(DSTK))
+        DPUSH( %rax)
         MOVE(  %rdx,   DTOP)
 FUNC_END(c_ret_2)
 

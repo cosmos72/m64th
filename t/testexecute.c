@@ -805,11 +805,19 @@ static m4testexecute testexecute_e[] = {
      {}},
 };
 
+static void test_noop(void) {
+}
+
+static m4cell test_negate(m4cell a) {
+    return -a;
+}
+
 typedef struct {
     m4cell a, b;
 } sum_triplets_ret;
 
-static sum_triplets_ret sum_triplets(m4cell a, m4cell b, m4cell c, m4cell d, m4cell e, m4cell f) {
+static sum_triplets_ret test_sum_triplets(m4cell a, m4cell b, m4cell c, m4cell d, m4cell e,
+                                          m4cell f) {
     sum_triplets_ret ret = {a + b + c, d + e + f};
     return ret;
 }
@@ -940,8 +948,18 @@ static m4testexecute testexecute_f[] = {
      {{}, {}},
      {2, {m4one_plus, m4and}}},
     /* ----------------------------- c-call --------------------------------- */
-    {"c-call",
-     {m4c_arg_6, m4c_call, CELL(sum_triplets), m4c_ret_2, m4bye},
+    {"c-call test_noop",
+     {m4c_arg_0, m4c_call, CELL(test_noop), m4c_ret_0, m4bye},
+     {{}, {}},
+     {{}, {}},
+     {}},
+    {"c-call test_negate",
+     {m4c_arg_1, m4c_call, CELL(test_negate), m4c_ret_1, m4bye},
+     {{1, {9}}, {}},
+     {{1, {-9}}, {}},
+     {}},
+    {"c-call test_sum_triplets",
+     {m4c_arg_6, m4c_call, CELL(test_sum_triplets), m4c_ret_2, m4bye},
      {{6, {1, 2, 3, 4, 5, 6}}, {}},
      {{2, {6, 15}}, {}},
      {}},
