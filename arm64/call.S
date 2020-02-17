@@ -32,15 +32,12 @@
  */
 FUNC_START(th_run)
         SUB2(  IMM(SZ10), sp)          /* save C registers                */
+                                    /* not clobbered: x18 x19 x28 x29 x30 */
+        stp    x20,  x21,  AT(sp);
+        stp    x22,  x23,  AT(sp, SZ2);
+        stp    x24,  x25,  AT(sp, SZ4);
+        stp    x26,  x27,  AT(sp, SZ6);
         STOR(  lr,   AT(sp, SZ9))      /* save LR register (return addr)  */
-        STOR(  x27,  AT(sp, SZ7))
-        STOR(  x26,  AT(sp, SZ6))
-        STOR(  x25,  AT(sp, SZ5))
-        STOR(  x24,  AT(sp, SZ4))
-        STOR(  x23,  AT(sp, SZ3))
-        STOR(  x22,  AT(sp, SZ2))
-        STOR(  x21,  AT(sp, SZ))
-        STOR(  x20,  AT(sp))
         MOVE(  x0,   M4TH)             /* load m4th*                      */
         MOVE(  sp,   REG1)
         STOR(  REG1, AT(M4TH, M4TH_OFF_C_REG0)) /* save C stack pointer            */
@@ -87,14 +84,10 @@ FUNC_START(bye)
          */
         LOAD(  REG1, AT(M4TH, M4TH_OFF_C_REG0)) /* load C stack pointer            */
         MOVE(  REG1, sp)
-        LOAD(  x20,  AT(sp))                    /* load C registers                */
-        LOAD(  x21,  AT(sp, SZ))
-        LOAD(  x22,  AT(sp, SZ2))
-        LOAD(  x23,  AT(sp, SZ3))
-        LOAD(  x24,  AT(sp, SZ4))
-        LOAD(  x25,  AT(sp, SZ5))
-        LOAD(  x26,  AT(sp, SZ6))
-        LOAD(  x27,  AT(sp, SZ7))
+        ldp    x20,  x21,  AT(sp);              /* load C registers                */
+        ldp    x22,  x23,  AT(sp, SZ2);
+        ldp    x24,  x25,  AT(sp, SZ4);
+        ldp    x26,  x27,  AT(sp, SZ6);
         LOAD(  lr,   AT(sp, SZ9))               /* load LR register (return addr)  */
         ADD2(  IMM(SZ10), sp)
         ZERO(  x0)                     /* return value = 0                */
