@@ -29,149 +29,186 @@
  */
 
 /* 'm4th-user' wordlist */
-#define M4less_equal 512             /* <=                    */
-#define M4more_equal 513             /* >=                    */
-#define M4zero_less_equal 514        /* 0<=                   */
-#define M4zero_more_equal 515        /* 0>=                   */
-#define M4two_plus 516               /* 2+                    */
-#define M4two_minus 517              /* 2-                    */
-#define M4four_times 518             /* 4*                    */
-#define M4four_plus 519              /* 4+                    */
-#define M4four_div 520               /* 4/                    */
-#define M4eight_times 521            /* 8*                    */
-#define M4eight_plus 522             /* 8+                    */
-#define M4eight_div 523              /* 8/                    */
-#undef M4____gap                     /*                       */
-#define M4two_dup_two_to_r 525       /* 2dup2>r   equivalent to: 2dup 2>r     */
-#define M4two_nip 526                /* 2nip      equivalent to: 2swap 2drop  */
-#define M4two_r_from_two_drop 527    /* 2r>2drop  equivalent to: 2r>  2drop   */
-#undef M4____gap                     /*                       */
-#undef M4____gap                     /*                       */
-#undef M4____gap                     /*                       */
-#define M4dup_to_r 531               /* dup>r     equivalent to: dup  >r      */
-#undef M4____gap                     /*                       */
-#undef M4____gap                     /*                       */
-#define M4i_times 534                /* i*                    */
-#define M4i_plus 535                 /* i+                    */
-#define M4i_minus 536                /* i-                    */
-#define M4i_prime 537                /* i'                    */
-#define M4noop 538                   /* noop                  */
-#undef M4____gap                     /*                       */
-#undef M4____gap                     /*                       */
-#define M4r_store 541                /* r!        equivalent to: r>   drop >r */
-#define M4r_plus 542                 /* r+        equivalent to: r>   +    >r */
-#define M4r_from_drop 543            /* r>drop    equivalent to: r>   drop    */
-#define M4minus_rot 544              /* -rot      equivalent to: rot  rot     */
-#undef M4____gap                     /*                       */
-#define M4squared 546                /* squared   equivalent to: dup  *       */
-#define M4string_equal 547           /* string=   ( addr1 addr2 n -- t|f )    */
-#define M4sub 548                    /* sub       equivalent to: swap -       */
-#undef M4____gap                     /*                       */
-#define M4byte_fetch 550             /* byte@     read   int8_t at address dtop, sign-extend */
-#define M4char_fetch M4c_fetch       /* char@     read  uint8_t at address dtop, sign-extend */
-#define M4short_fetch 552            /* short@    read  int16_t at address dtop, sign-extend */
-#define M4ushort_fetch 553           /* ushort@   read uint16_t at address dtop, sign-extend */
-#define M4int_fetch 554              /* int@      read  int32_t at address dtop, sign-extend */
-#define M4uint_fetch 555             /* uint@     read uint32_t at address dtop, sign-extend */
-#undef M4____gap                     /*                       */
-#define M4byte_store M4c_store       /* byte!     write   (int8_t)dtop at address d2         */
-#define M4char_store M4c_store       /* char!     write  (uint8_t)dtop at address d2         */
-#define M4short_store 559            /* short!    write  (int16_t)dtop at address d2         */
+#define M4less_equal 512          /* <=                    */
+#define M4more_equal 513          /* >=                    */
+#define M4zero_less_equal 514     /* 0<=                   */
+#define M4zero_more_equal 515     /* 0>=                   */
+#define M4two_plus 516            /* 2+                    */
+#define M4two_minus 517           /* 2-                    */
+#define M4four_times 518          /* 4*                    */
+#define M4four_plus 519           /* 4+                    */
+#define M4four_div 520            /* 4/                    */
+#define M4eight_times 521         /* 8*                    */
+#define M4eight_plus 522          /* 8+                    */
+#define M4eight_div 523           /* 8/                    */
+#undef M4____gap                  /*                       */
+#define M4two_dup_two_to_r 525    /* 2dup2>r   equivalent to: 2dup 2>r     */
+#define M4two_nip 526             /* 2nip      equivalent to: 2swap 2drop  */
+#define M4two_r_from_two_drop 527 /* 2r>2drop  equivalent to: 2r>  2drop   */
+#undef M4____gap                  /*                       */
+#undef M4____gap                  /*                       */
+#undef M4____gap                  /*                       */
+#define M4c_arg_1 531             /* prepare 1 arg  for C function call    */
+#define M4c_arg_2 532             /* prepare 2 args for C function call    */
+#define M4c_arg_3 533             /* prepare 3 args for C function call    */
+#define M4c_arg_4 534             /* prepare 4 args for C function call    */
+#define M4c_arg_5 535             /* prepare 5 args for C function call    */
+#define M4c_arg_6 536             /* prepare 6 args for C function call    */
+#undef M4c_arg_7                  /*                       */
+#undef M4c_arg_8                  /*                       */
+#define M4c_call 539              /* call C function       */
+#define M4c_call_sync 540         /* save regs to m4th, call C function, load regs from m4th */
+#define M4c_exec 541              /* pop C function pointer, call it */
+#define M4c_exec_sync 542      /* save regs to m4th, call C function pointer, load regs from m4th */
+#undef M4c_farg_1              /* pop 1 floating point arg  for C function call */
+#undef M4c_farg_2              /* pop 2 floating point args for C function call */
+#undef M4c_farg_3              /* pop 3 floating point args for C function call */
+#undef M4c_fret_1              /*                       */
+#undef M4c_fret_2              /*                       */
+#define M4c_ret_1 548          /* push 1 value  returned by C function call */
+#define M4c_ret_2 549          /* push 2 values returned by C function call */
+#undef M4____gap               /*                       */
+#undef M4____gap               /*                       */
+#undef M4____gap               /*                       */
+#undef M4____gap               /*                       */
+#define M4dup_to_r 554         /* dup>r     equivalent to: dup  >r      */
+#undef M4____gap               /*                       */
+#undef M4____gap               /*                       */
+#undef M4____gap               /*                       */
+#define M4i_times 558          /* i*                    */
+#define M4i_plus 559           /* i+                    */
+#define M4i_minus 560          /* i-                    */
+#define M4i_prime 561          /* i'                    */
+#define M4noop 562             /* noop                  */
+#undef M4____gap               /*                       */
+#undef M4____gap               /*                       */
+#undef M4____gap               /*                       */
+#define M4r_store 566          /* r!        equivalent to: r>   drop >r */
+#define M4r_plus 567           /* r+        equivalent to: r>   +    >r */
+#define M4r_from_drop 568      /* r>drop    equivalent to: r>   drop    */
+#define M4minus_rot 569        /* -rot      equivalent to: rot  rot     */
+#undef M4____gap               /*                       */
+#define M4squared 571          /* squared   equivalent to: dup  *       */
+#define M4string_equal 572     /* string=   ( addr1 addr2 n -- t|f )    */
+#define M4sub 573              /* sub       equivalent to: swap -       */
+#undef M4____gap               /*                       */
+#undef M4____gap               /*                       */
+#undef M4____gap               /*                       */
+#define M4byte_fetch 577       /* byte@     read   int8_t at address dtop, sign-extend */
+#define M4char_fetch M4c_fetch /* char@     read  uint8_t at address dtop, sign-extend */
+#define M4short_fetch 579      /* short@    read  int16_t at address dtop, sign-extend */
+#define M4ushort_fetch 580     /* ushort@   read uint16_t at address dtop, sign-extend */
+#define M4int_fetch 581        /* int@      read  int32_t at address dtop, sign-extend */
+#define M4uint_fetch 582       /* uint@     read uint32_t at address dtop, sign-extend */
+#define M4byte_store M4c_store /* byte!     write   (int8_t)dtop at address d2         */
+#define M4char_store M4c_store /* char!     write  (uint8_t)dtop at address d2         */
+#define M4short_store 585      /* short!    write  (int16_t)dtop at address d2         */
 #define M4ushort_store M4short_store /* ushort!   write (uint16_t)dtop at address d2         */
-#define M4int_store 561              /* int!      write  (int32_t)dtop at address d2         */
+#define M4int_store 587              /* int!      write  (int32_t)dtop at address d2         */
 #define M4uint_store M4int_store     /* uint!     write (uint32_t)dtop at address d2         */
-#undef M4____gap                     /*                       */
-#define M4to_byte 564      /* to-byte   truncate dtop to   int8_t, sign-extend high bits  */
-#define M4to_char 565      /* to-char   truncate dtop to  uint8_t, zero-extend high bits  */
-#define M4to_short 566     /* to-short  truncate dtop to  int16_t, sign-extend high bits  */
-#define M4to_ushort 567    /* to-ushort truncate dtop to uint16_t, zero-extend high bits  */
-#define M4to_int 568       /* to-int    truncate dtop to  int32_t, sign-extend high bits  */
-#define M4to_uint 569      /* to-uint   truncate dtop to uint32_t, zero-extend high bits  */
+#define M4to_byte 589      /* to-byte   truncate dtop to   int8_t, sign-extend high bits  */
+#define M4to_char 590      /* to-char   truncate dtop to  uint8_t, zero-extend high bits  */
+#define M4to_short 591     /* to-short  truncate dtop to  int16_t, sign-extend high bits  */
+#define M4to_ushort 592    /* to-ushort truncate dtop to uint16_t, zero-extend high bits  */
+#define M4to_int 593       /* to-int    truncate dtop to  int32_t, sign-extend high bits  */
+#define M4to_uint 594      /* to-uint   truncate dtop to uint32_t, zero-extend high bits  */
 #undef M4____gap           /*                       */
 #undef M4____gap           /*                       */
 #undef M4____gap           /*                       */
-#define M4u_less_equal 573 /* u<=                   */
-#define M4u_more_equal 574 /* u>=                   */
+#define M4u_less_equal 598 /* u<=                   */
+#define M4u_more_equal 599 /* u>=                   */
+#undef M4____gap           /*                       */
+#undef M4____gap           /*                       */
 #undef M4____gap           /*                       */
 #undef M4____gap           /*                       */
 
 /* 'm4th-core' wordlist */
 #undef M4____gap             /*                       */
 #undef M4____gap             /*                       */
-#define M4in_addr 581        /* in>addr ( -- addr ) get start of input buffer          */
-#define M4in_pos 582         /* in>pos  ( -- addr ) same as >in                       */
-#define M4in_size 583        /* in>size ( -- u    ) get size of input buffer           */
 #undef M4____gap             /*                       */
 #undef M4____gap             /*                       */
-#define M4searchorder_i 585  /* ( u -- addr ) get address of searchorder i-th element  */
-#define M4searchorder_n 586  /* (   -- addr ) get address of searchorder count         */
-#define M4user_var 587       /* user-var ( -- addr ) must be followed by index of user var */
-#define M4word_to_code 588   /* word>code   ( w  -- addr n  ) get code array from word */
-#define M4word_to_code_n 589 /* word>code>n ( w  -- n       ) get code size from word  */
-#define M4word_to_flags 590  /* word>flags  ( w  -- m4flags ) get m4flags from word    */
-#define M4word_to_name 591   /* word>name   ( w  -- addr n  ) get word name            */
-#define M4word_to_prev 592   /* word>prev   ( w  -- w'|0    ) get previous word        */
-#define M4word_to_xt 593     /* word>xt     ( w  -- XT      ) get XT == code address from word */
 #undef M4____gap             /*                       */
-#define M4wordlist_last 595  /* wordlist-last ( wid -- w ) get last word in a wordlist */
+#define M4in_addr 611        /* in>addr ( -- addr ) get start of input buffer          */
+#define M4in_pos 612         /* in>pos  ( -- addr ) same as >in                       */
+#define M4in_size 613        /* in>size ( -- u    ) get size of input buffer           */
 #undef M4____gap             /*                       */
-#define M4xt_to_word 597     /* xt>word  ( XT -- w ) get word from XT */
+#undef M4____gap             /*                       */
+#define M4searchorder_i 616  /* ( u -- addr ) get address of searchorder i-th element  */
+#define M4searchorder_n 617  /* (   -- addr ) get address of searchorder count         */
+#undef M4____gap             /*                       */
+#undef M4____gap             /*                       */
+#define M4user_var 618       /* user-var ( -- addr ) must be followed by index of user var */
+#undef M4____gap             /*                       */
+#undef M4____gap             /*                       */
+#define M4word_to_code 623   /* word>code   ( w  -- addr n  ) get code array from word */
+#define M4word_to_code_n 624 /* word>code>n ( w  -- n       ) get code size from word  */
+#define M4word_to_flags 625  /* word>flags  ( w  -- m4flags ) get m4flags from word    */
+#define M4word_to_name 626   /* word>name   ( w  -- addr n  ) get word name            */
+#define M4word_to_prev 627   /* word>prev   ( w  -- w'|0    ) get previous word        */
+#define M4word_to_xt 628     /* word>xt     ( w  -- XT      ) get XT == code address from word */
+#undef M4____gap             /*                       */
+#define M4wordlist_last 630  /* wordlist-last ( wid -- w ) get last word in a wordlist */
+#undef M4____gap             /*                       */
+#define M4xt_to_word 632     /* xt>word  ( XT -- w ) get word from XT */
+#undef M4____gap             /*                       */
+#undef M4____gap             /*                       */
 #undef M4____gap             /*                       */
 
 /* 'm4th-impl' wordlist */
-#define M4minus_one 601   /* -1       */
-#define M4zero 602        /* 0        */
-#define M4one 603         /* 1        */
-#define M4two 604         /* 2        */
-#define M4three 605       /* 3        */
-#define M4four 606        /* 4        */
-#define M4eight 607       /* 8        */
+#undef M4____gap          /*                       */
+#undef M4____gap          /*                       */
+#undef M4____gap          /*                       */
+#define M4minus_one 641   /* -1       */
+#define M4zero 642        /* 0        */
+#define M4one 643         /* 1        */
+#define M4two 644         /* 2        */
+#define M4three 645       /* 3        */
+#define M4four 646        /* 4        */
+#define M4eight 647       /* 8        */
 #undef M4____gap          /*                                         */
 #undef M4____gap          /*                                         */
-#define M4_q_do_ 610      /* (?do)   must be followed by IP offset to jump */
-#define M4_q_if_ 611      /* (?if)   must be followed by IP offset to jump if dtop == 0 */
-#define M4_q_if_zero_ 612 /* (?if0)  must be followed by IP offset to jump if dtop <> 0 */
-#define M4_again_ 613     /* (again) must be followed by IP offset of 1st instruction after begin */
-#define M4_call_ 614      /* (call)  must be followed by word. calls it.    */
-#define M4_call_xt_ 615   /* (call-xt) must be followed by XT. calls it.   */
-#define M4_else_ 616      /* (else) must be followed by IP offset to jump  */
-#define M4_exec_native_ 617     /* (exec-native) pop native code address, execute it */
-#define M4_exec_token_ 618      /* pop token, exec it. It must be 'inline' with consume_IP = 0  */
+#define M4_q_do_ 650      /* (?do)   must be followed by IP offset to jump */
+#define M4_q_if_ 651      /* (?if)   must be followed by IP offset to jump if dtop == 0 */
+#define M4_q_if_zero_ 652 /* (?if0)  must be followed by IP offset to jump if dtop <> 0 */
+#define M4_again_ 653     /* (again) must be followed by IP offset of 1st instruction after begin */
+#define M4_call_ 654      /* (call)  must be followed by word. calls it.    */
+#define M4_call_xt_ 655   /* (call-xt) must be followed by XT. calls it.   */
+#define M4_else_ 656      /* (else) must be followed by IP offset to jump  */
+#define M4_exec_native_ 657     /* (exec-native) pop native code address, execute it */
+#define M4_exec_token_ 658      /* pop token, exec it. It must be 'inline' with consume_IP = 0  */
 #undef M4____gap                /*                                         */
 #undef M4____gap                /*                                         */
-#define M4_if_ 621              /* (if)      must be followed by IP offset */
-#define M4_if_zero_ 622         /* (if0) must be followed by IP offset */
+#define M4_if_ 661              /* (if)      must be followed by IP offset */
+#define M4_if_zero_ 662         /* (if0) must be followed by IP offset */
 #undef M4____gap                /*                                         */
 #undef M4____gap                /*                                         */
 #undef M4____gap                /*                                         */
 #undef M4____gap                /*                                         */
 #undef M4____gap                /*                                         */
-#define M4_ip_ 628              /* (ip)      vm's current instruction pointer */
-#define M4_ip_to_data_ 629      /* (ip>data) must be 1st instr in word. return word's data */
-#define M4_ip_to_data_addr_ 630 /* must be 1st instr in word. return word's data>addr      */
-#define M4_leave_ 631 /* (leave) must be followed by IP offset of 1st instruction after (loop) */
-#define M4_loop_ 632  /* (loop)  must be followed by IP offset of 1st instruction after (do)   */
+#define M4_ip_ 668              /* (ip)      vm's current instruction pointer */
+#define M4_ip_to_data_ 669      /* (ip>data) must be 1st instr in word. return word's data */
+#define M4_ip_to_data_addr_ 670 /* must be 1st instr in word. return word's data>addr      */
+#define M4_leave_ 671 /* (leave) must be followed by IP offset of 1st instruction after (loop) */
+#define M4_loop_ 672  /* (loop)  must be followed by IP offset of 1st instruction after (do)   */
 #define M4_missing_ 0 /* (missing) called instead of invalid/unimplemented function */
 #undef M4____gap      /*                                         */
 #undef M4____gap      /*                                         */
 #undef M4____gap      /*                                         */
 #undef M4____gap      /*                                         */
-#define M4_lit2s_ 638 /* (lit-2s) must be followed by int16, push it to dstack */
-#define M4_lit4s_ 639 /* (lit-4s) must be followed by int32, push it to dstack */
-#define M4_lit8s_ 640 /* (lit-8s) must be followed by int64, push it to dstack */
+#define M4_lit2s_ 678 /* (lit-2s) must be followed by int16, push it to dstack */
+#define M4_lit4s_ 679 /* (lit-4s) must be followed by int32, push it to dstack */
+#define M4_lit8s_ 680 /* (lit-8s) must be followed by int64, push it to dstack */
 #undef M4____gap      /*                                         */
 #undef M4____gap      /*                                         */
 #undef M4____gap      /*                                         */
-#define M4_num_compiled_ 644 /* [#compiled]  code size i.e. # of tokens in word being compiled  */
-#define M4_compile_init_ 645 /* [compile-init] must be called once x word before any [compile*] */
-#define M4_compile2s_ 646    /* [compile2s,] pop int16 from dstack, append it to compiled code  */
-#define M4_compile4s_ 647    /* [compile4s,] pop int32 from dstack, append it to compiled code  */
-#define M4_compile8s_ 648    /* [compile8s,] pop int64 from dstack, append it to compiled code  */
-#define M4_compile_lit_ 649  /* must be followed by m4token, append it to compiled code  */
-#define M4_compile_unresolved_jump_ 650 /* must be followed by m4token and its category */
-#define M4_word_ 651                    /* [word] pust to dstack word being compiled */
-#undef M4____gap                        /*                                         */
-#undef M4____gap                        /*                                         */
-#define M4____end 654
+#define M4_num_compiled_ 684 /* [#compiled]  code size i.e. # of tokens in word being compiled  */
+#define M4_compile_init_ 685 /* [compile-init] must be called once x word before any [compile*] */
+#define M4_compile2s_ 686    /* [compile2s,] pop int16 from dstack, append it to compiled code  */
+#define M4_compile4s_ 687    /* [compile4s,] pop int32 from dstack, append it to compiled code  */
+#define M4_compile8s_ 688    /* [compile8s,] pop int64 from dstack, append it to compiled code  */
+#define M4_compile_lit_ 689  /* must be followed by m4token, append it to compiled code  */
+#define M4_compile_unresolved_jump_ 690 /* must be followed by m4token and its category */
+#define M4_word_ 691                    /* [word] pust to dstack word being compiled */
+#define M4____end 692
 
 #endif /* M4TH_INCLUDE_TOKEN_M4TH_MH */
