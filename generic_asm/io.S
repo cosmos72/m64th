@@ -23,42 +23,42 @@
 
 
 FUNC_START(emit)
-        LOAD(  REG1,   AT(M4TH, M4TH_OFF_OUT_NEXT))
+        LOAD(  REG1,   AT(M4TH, M4TH_OFF_OUT_POS))
         LOAD(  REG2,   AT(M4TH, M4TH_OFF_OUT_SIZE))
         /* TODO flush output buffer */
         JAE(   REG1,   REG2,  FUNC_SYM_NEXT(emit))
         LOAD(  REG2,   AT(M4TH, M4TH_OFF_OUT_ADDR))
         STORb( DTOPb,  AT(REG1, REG2, 1))
         INC1(  REG1)
-        STOR(  REG1,   AT(M4TH, M4TH_OFF_OUT_NEXT))
+        STOR(  REG1,   AT(M4TH, M4TH_OFF_OUT_POS))
 FUNC_END(emit)
 
 
 /* in>addr ( -- addr ) get start of input buffer */
-FUNC_START(in_to_addr)
+FUNC_START(in_addr)
         DPUSH( DTOP)
-        LOAD(  DTOP,   AT(M4TH, M4TH_OFF_OUT_ADDR))
-FUNC_END(in_to_addr)
+        LOAD(  DTOP,   AT(M4TH, M4TH_OFF_IN_ADDR))
+FUNC_END(in_addr)
 
 
-/* in>next ( -- addr ) alias of >in */
-FUNC_START(in_to_next)
+/* in>pos ( -- addr ) same as >in */
+FUNC_START(in_pos)
         DPUSH( DTOP)
-        ADDI(  M4TH,   M4TH_OFF_OUT_ADDR, DTOP)
-FUNC_END(in_to_next)
+        ADDI(  M4TH,   M4TH_OFF_IN_POS, DTOP)
+FUNC_END(in_pos)
 
 
 /* in>size ( -- u ) get size of input buffer */
-FUNC_START(in_to_size)
+FUNC_START(in_size)
         DPUSH( DTOP)
-        LOAD(  DTOP,   AT(M4TH, M4TH_OFF_OUT_SIZE))
-FUNC_END(in_to_size)
+        LOAD(  DTOP,   AT(M4TH, M4TH_OFF_IN_SIZE))
+FUNC_END(in_size)
 
 
-/* ( -- char ) receive one character */ 
+/* ( -- char ) receive one character */
 FUNC_START(key)
         DPUSH( DTOP)
-        LOAD(  REG1,   AT(M4TH, M4TH_OFF_IN_NEXT))
+        LOAD(  REG1,   AT(M4TH, M4TH_OFF_IN_POS))
         LOAD(  REG2,   AT(M4TH, M4TH_OFF_IN_SIZE))
 #ifdef RFFF
         MOVE(  RFFF,   DTOP)
@@ -70,5 +70,17 @@ FUNC_START(key)
         LOAD(  REG2,   AT(M4TH, M4TH_OFF_IN_ADDR))
         LD_ub( DTOP_ub,AT(REG1, REG2, 1))
         INC1(  REG1)
-        STOR(  REG1,   AT(M4TH, M4TH_OFF_IN_NEXT))
+        STOR(  REG1,   AT(M4TH, M4TH_OFF_IN_POS))
 FUNC_END(key)
+
+
+/* source ( -- c-addr u ) get current content of input buffer */
+FUNC_START(source)
+        DPUSH( DTOP)
+        LOAD(  REG1,   AT(M4TH, M4TH_OFF_IN_ADDR))
+        LOAD(  REG2,   AT(M4TH, M4TH_OFF_IN_POS))
+        LOAD(  DTOP,   AT(M4TH, M4TH_OFF_IN_SIZE))
+        ADD2(  REG2,   REG1)         /* a = c-addr */
+        SUB2(  REG2,   DTOP)         /* dtop = size - pos */
+        DPUSH( REG1)
+FUNC_END(source)

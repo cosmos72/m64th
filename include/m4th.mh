@@ -27,10 +27,10 @@
 #define M4TH_OFF_FTABLE SZ7       /* offset of m4th->ftable      */
 #define M4TH_OFF_IN_ADDR SZ8      /* offset of m4th->in.addr     */
 #define M4TH_OFF_IN_SIZE SZ9      /* offset of m4th->in.size     */
-#define M4TH_OFF_IN_NEXT SZ10     /* offset of m4th->in.next     */
+#define M4TH_OFF_IN_POS SZ10      /* offset of m4th->in.next     */
 #define M4TH_OFF_OUT_ADDR SZ11    /* offset of m4th->out.addr    */
 #define M4TH_OFF_OUT_SIZE SZ12    /* offset of m4th->out.size    */
-#define M4TH_OFF_OUT_NEXT SZ13    /* offset of m4th->out.next    */
+#define M4TH_OFF_OUT_POS SZ13     /* offset of m4th->out.next    */
 #define M4TH_OFF_C_REG0 SZ14      /* offset of m4th->c_regs[0]   */
 #define M4TH_OFF_USER SZ15        /* offset of m4th->user*       */
 #define M4TH_OFF_STATE SZ16       /* offset of m4th->state       */

@@ -34,13 +34,13 @@ DICT_WORDS_M4TH_CORE(WORDNAME)
 
 WORD(div_token,        div_token,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 /* in>addr ( -- addr ) get start of input buffer */
-WORD(in_to_addr,       div_token,      DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
-/* in>next ( -- addr ) alias of >in */
-WORD(in_to_next,       in_to_addr,     DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
+WORD(in_addr,       div_token,      DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
+/* in>pos ( -- addr ) same as >in */
+WORD(in_pos,       in_addr,     DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 /* in>size ( -- u    ) get size of input buffer */
-WORD(in_to_size,       in_to_next,     DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
+WORD(in_size,       in_pos,     DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 /* searchorder-i ( u -- addr ) get address of searchorder i-th element */
-WORD(searchorder_i,    in_to_size,     DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
+WORD(searchorder_i,    in_size,     DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
 /* searchorder-n ( -- addr ) get address of searchorder count */
 WORD(searchorder_n,    searchorder_i,  DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 /* string>word ( c-addr u -- w|0 ) find word name in search order */

@@ -141,7 +141,7 @@ struct m4err_s {
 struct m4iobuf_s {
     m4char *addr;
     m4cell_u size;
-    m4cell_u next; /**< next char to read (or write) is addr[next] */
+    m4cell_u pos; /**< next char to read (or write) is addr[pos] */
 };
 
 struct m4string_s { /**< array of m4char, with size */

@@ -84,22 +84,12 @@ m4pair m4string_to_int(m4th *m, m4string str) {
     return ret;
 }
 
-/** temporary C implementation of parse-name */
+/** wrapper around parse-name */
 m4string m4th_parse_name(m4th *m) {
     m4string ret = {};
-    m4char *s, *end;
-    assert(m);
-    s = &m->in.addr[m->in.next];
-    end = &m->in.addr[m->in.size];
-    while (s < end && *s <= ' ') {
-        s++;
-    }
-    ret.addr = s;
-    while (s < end && (*s) > ' ') {
-        s++;
-    }
-    ret.n = s - ret.addr;
-    m->in.next = s - m->in.addr;
+    m4th_execute_word(m, &m4w_parse_name);
+    ret.n = dpop(m);
+    ret.addr = (const m4char *)dpop(m);
     return ret;
 }
 

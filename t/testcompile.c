@@ -26,6 +26,7 @@
 #include "../m4th.h"
 #include "testcommon.h"
 
+#include <assert.h> /* assert() */
 #include <stdio.h>  /* fprintf() fputs() */
 #include <string.h> /* memcpy()          */
 
@@ -39,6 +40,7 @@ typedef struct m4testcompile_s {
 
 static const m4testcompile testcompile[] = {
     /* ------------------------------- numbers ------------------------------ */
+    {"", {}, {}, {}},
     {"0", {}, {}, {1, {m4zero}}},
     {"1 2", {}, {}, {2, {m4one, m4two}}},
     {"3 4 8", {}, {}, {3, {m4three, m4four, m4eight}}},
@@ -145,8 +147,9 @@ static m4cell m4testcompile_run(m4th *m, const m4testcompile *t, m4code t_codege
     w = m->w = (m4word *)m->mem.start;
     memset(w, '\0', sizeof(m4word));
 
-    m->in.next = m->in.size - input_n;
-    memcpy(&m->in.addr[m->in.next], t->input, input_n);
+    assert(input_n <= m->in.size);
+    m->in.pos = m->in.size - input_n;
+    memcpy(&m->in.addr[m->in.pos], t->input, input_n);
 
     m->mem.curr = (m4char *)(w + 1);
     m4countedstack_copy(&t->dbefore, &m->dstack);

@@ -58,14 +58,14 @@
 #define M4noop 538                   /* noop                  */
 #undef M4____gap                     /*                       */
 #undef M4____gap                     /*                       */
+#define M4r_store 541                /* r!        equivalent to: r>   drop >r */
+#define M4r_plus 542                 /* r+        equivalent to: r>   +    >r */
+#define M4r_from_drop 543            /* r>drop    equivalent to: r>   drop    */
+#define M4minus_rot 544              /* -rot      equivalent to: rot  rot     */
 #undef M4____gap                     /*                       */
-#define M4r_store 542                /* r!        equivalent to: r>   drop >r */
-#define M4r_plus 543                 /* r+        equivalent to: r>   +    >r */
-#define M4r_from_drop 544            /* r>drop    equivalent to: r>   drop    */
-#define M4minus_rot 545              /* -rot      equivalent to: rot  rot     */
-#undef M4____gap                     /*                       */
-#define M4squared 547                /* squared   equivalent to: dup  *       */
-#define M4string_equal 548           /* string=   ( addr1 addr2 n -- t|f )    */
+#define M4squared 546                /* squared   equivalent to: dup  *       */
+#define M4string_equal 547           /* string=   ( addr1 addr2 n -- t|f )    */
+#define M4sub 548                    /* sub       equivalent to: swap -       */
 #undef M4____gap                     /*                       */
 #define M4byte_fetch 550             /* byte@     read   int8_t at address dtop, sign-extend */
 #define M4char_fetch M4c_fetch       /* char@     read  uint8_t at address dtop, sign-extend */
@@ -98,9 +98,9 @@
 /* 'm4th-core' wordlist */
 #undef M4____gap             /*                       */
 #undef M4____gap             /*                       */
-#define M4in_to_addr 581     /* in>addr ( -- addr ) get start of input buffer          */
-#define M4in_to_next 582     /* in>next ( -- addr ) alias of >in                       */
-#define M4in_to_size 583     /* in>size ( -- u    ) get size of input buffer           */
+#define M4in_addr 581        /* in>addr ( -- addr ) get start of input buffer          */
+#define M4in_pos 582         /* in>pos  ( -- addr ) same as >in                       */
+#define M4in_size 583        /* in>size ( -- u    ) get size of input buffer           */
 #undef M4____gap             /*                       */
 #undef M4____gap             /*                       */
 #define M4searchorder_i 585  /* ( u -- addr ) get address of searchorder i-th element  */

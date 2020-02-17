@@ -83,6 +83,7 @@
     X(3, "rot", rot)                                                                               \
     X(6, "rshift", rshift)                                                                         \
     X(4, "swap", swap)                                                                             \
+    X(6, "source", source)                                                                         \
     X(4, "then", then)                                                                             \
     X(2, "u<", u_less)                                                                             \
     X(6, "unloop", unloop)                                                                         \
@@ -117,7 +118,8 @@
 #define DICT_WORDS_FORTH_CORE_EXT(X)                                                               \
     DICT_TOKENS_FORTH_CORE_EXT(X)                                                                  \
     /* the following words are implemented in forth, thus no dedicated m4token value */            \
-    X(5, "again", again)
+    X(5, "again", again)                                                                           \
+    X(9, "parse-name", parse_name)
 
 /* ------- forth 2012: tools ext ---------------------------------------------------------------- */
 #define DICT_TOKENS_FORTH_TOOLS_EXT(X) X(3, "bye", bye)

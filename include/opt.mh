@@ -26,7 +26,7 @@
  * for standard forth tokens (cell+ char+ ...)
  */
 #define OPT1_BODY(x, _)            /* note: '_' represents noop */                                 \
-    x((to_in), (in_to_next))       /* >in      => in>next       */                                 \
+    x((to_in), (in_pos))           /* >in      => in>pos        */                                 \
         x((div_cell), (SZ_div))    /* /cell    => SZ/           */                                 \
         x((cell_plus), (SZ_plus))  /* cell+    => SZ+           */                                 \
         x((cells), (SZ_times))     /* cells    => SZ*           */                                 \
@@ -257,6 +257,9 @@
         x((two_swap, two_swap), _)                           /* 2swap 2swap   =>                */ \
         /*________________________________________________*/ /*                                 */ \
         x((to_r, from_r), _)                                 /* >r   r>       =>                */ \
+        x((plus, negate), (negate, sub))                     /* +    negate   => negate sub     */ \
+        x((minus, negate), (sub))                            /* -    negate   => sub            */ \
+        x((sub, negate), (negate))                           /* sub  negate   => -              */ \
         x((fetch, drop), (drop))                             /* @    drop     => drop           */ \
         x((abs, zero_neq), (zero_ne))                        /* abs  0<>      => 0<>            */ \
         x((abs, zero_equal), (zero_equal))                   /* abs  0=       => 0=             */ \
@@ -288,6 +291,7 @@
         x((dup, u_more), (drop, false))                      /* dup  u>       => drop false     */ \
         x((dup, u_more_equal), (drop, true))                 /* dup  u>=      => drop true      */ \
         x((dup, xor), (drop, zero))                          /* dup  xor      => drop 0         */ \
+        x((dup, sub), (drop, zero))                          /* dup  sub      => drop 0         */ \
         x((dup, swap), (dup))                                /* dup  swap     => dup            */ \
         x((i, drop), _)                                      /* i    drop     =>                */ \
         x((i, times), (i_times))                             /* i    *        => i*             */ \
@@ -327,7 +331,7 @@
         x((minus_rot, minus_rot), (rot))                     /* -rot   -rot   => rot            */ \
         x((swap, times), (times))                            /* swap   *      => *              */ \
         x((swap, plus), (plus))                              /* swap   +      => +              */ \
-        x((swap, minus), (minus, negate))                    /* swap   -      => - negate       */ \
+        x((swap, minus), (sub))                              /* swap   -      => sub            */ \
         x((swap, less), (more))                              /* swap   <      => >              */ \
         x((swap, less_equal), (more_equal))                  /* swap   <=     => >=             */ \
         x((swap, ne), (ne))                                  /* swap   <>     => <>             */ \
@@ -341,7 +345,9 @@
         x((swap, nip), (drop))                               /* swap   nip    => drop           */ \
         x((swap, or), (or))                                  /* swap   or     => or             */ \
         x((swap, over), (tuck))                              /* swap   over   => tuck           */ \
+        x((swap, sub), (minus))                              /* swap   sub    => -              */ \
         x((swap, swap), _)                                   /* swap   swap   =>                */ \
+        x((swap, tuck), (over))                              /* swap   tuck   => over           */ \
         x((swap, u_less), (u_more))                          /* swap   u<     => u>             */ \
         x((swap, u_less_equal), (u_more_equal))              /* swap   u<=    => u>=            */ \
         x((swap, u_more), (u_less))                          /* swap   u>     => u<             */ \

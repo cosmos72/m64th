@@ -116,7 +116,7 @@
 #define M4invert 86               /* invert   */
 #define M4j 87                    /* j        */
 #undef M4key /*88*/               /* key      */
-#define M4leave 89                /* leave    */
+#undef M4leave /*89*/             /* leave    implemented in forth, no dedicated m4token */
 #undef M4literal /*90*/           /* literal  implemented in forth, no dedicated m4token */
 #define M4loop 91                 /* loop     */
 #define M4lshift 92               /* lshift   */
@@ -140,7 +140,7 @@
 #undef M4s_to_d /*110*/           /* s>d      */
 #undef M4sign /*111*/             /* sign     */
 #undef M4s_m_div_rem /*112*/      /* sm/rem   */
-#undef M4source /*113*/           /* source   */
+#define M4source 113              /* source   */
 #undef M4space /*114*/            /* space    */
 #undef M4spaces /*115*/           /* space    */
 #undef M4state /*116*/            /* state    */

@@ -22,7 +22,7 @@
 /* clang-format off */
 
 #define M4F_MISSING_
-FUNC_START(_missing_) /* (missing) called instead of invalid/unimplemented function */
+FUNC_START(_missing_)      /* (missing) called instead of invalid/unimplemented function */
         ud2;                   /* should crash with SIGILL */
         ZERO(  REG1)
         LOAD(  REG1, AT(REG1)) /* should crash with SIGSEGV */
@@ -30,7 +30,7 @@ FUNC_END(_missing_)
 
 
 #define M4FPLUS_STORE
-FUNC_START(plus_store) /* +!   */
+FUNC_START(plus_store)     /* +!   */
         LOAD(  REG1,   AT(DSTK))
         ADD2(  REG1,   AT(DTOP))
         LOAD(  DTOP,   AT(DSTK, SZ))
@@ -40,14 +40,14 @@ FUNC_END(plus_store)
 
 
 #define M4FMINUS_ONE
-FUNC_START(minus_one)  /* -1   m4th-impl */
+FUNC_START(minus_one)      /* -1   m4th-impl */
         DPUSH( DTOP)
         MOVE(  RFFF, DTOP)
 FUNC_END(minus_one)
 
 
 /* signed divide */
-FUNC_START(div)              /* / */
+FUNC_START(div)            /* / */
         DPOP(  %rax)
         cqto;  /* sign-extend %rax into %rdx */
         idiv   DTOP;
@@ -146,7 +146,7 @@ FUNC_END(two_to_r)
 
 
 #define M4FTWO_R_FROM
-FUNC_START(two_r_from)       /* 2r>      */
+FUNC_START(two_r_from)     /* 2r>      */
         LOAD(  REG1,   AT(RSTK))
         STOR(  DTOP,   AT(DSTK, -SZ))
         STOR(  REG1,   AT(DSTK, -SZ2))
@@ -283,7 +283,7 @@ FUNC_START(min)            /* min */
         cmovl  REG1, DTOP;
 FUNC_END(min)
 
-FUNC_START(mod)            /* mod  signed remainder */
+FUNC_START(mod)            /* mod  i.e. signed remainder */
         DPOP(  %rax)
         cqto;  /* sign-extend %rax into %rdx */
         idiv   DTOP;
@@ -295,38 +295,38 @@ FUNC_END(mod)
 FUNC_START(over)
         STOR(  DTOP,   AT(DSTK, -SZ))
         LOAD(  DTOP,   AT(DSTK))
-        SUB2(  IMM(8), DSTK)
+        SUB2(  IMM(SZ),DSTK)
 FUNC_END(over)
 
 
 FUNC_START(rshift)         /* rshift */
-        MOVE(  DTOP, %rcx)
+        MOVE(  DTOP,   %rcx)
         DPOP(  DTOP)
-        shr    %cl,  DTOP;
+        shr    %cl,    DTOP;
 FUNC_END(rshift)
 
 
-FUNC_START(to_byte)        /* to-byte */
+FUNC_START(to_byte)        /* to-byte  m4th-user */
         movsbq DTOPb,  DTOP_sb;
 FUNC_END(to_byte)
 
-FUNC_START(to_short)       /* to-short */
+FUNC_START(to_short)       /* to-short m4th-user */
         movswq DTOPh,  DTOP_sh;
 FUNC_END(to_short)
 
-FUNC_START(to_int)         /* to-int */
+FUNC_START(to_int)         /* to-int   m4th-user */
         movslq DTOPw,  DTOP_sw;
 FUNC_END(to_int)
 
-FUNC_START(to_char)        /* to-char */
+FUNC_START(to_char)        /* to-char  m4th-user */
         movzbl DTOPb,  DTOP_ub;
 FUNC_END(to_char)
 
-FUNC_START(to_ushort)      /* to-ushort */
+FUNC_START(to_ushort)      /* to-ushort m4th-user */
         movzwl DTOPh,  DTOP_uh;
 FUNC_END(to_ushort)
 
-FUNC_START(to_uint)        /* to-uint */
+FUNC_START(to_uint)        /* to-uint m4th-user */
         movl   DTOPw,  DTOP_uw;
 FUNC_END(to_uint)
 
@@ -378,5 +378,5 @@ FUNC_END(within)
 
 FUNC_START(xor)            /* xor  */
         xor    AT(DSTK),   DTOP;
-        ADD2(  IMM(8),     DSTK)
+        ADD2(  IMM(SZ),    DSTK)
 FUNC_END(xor)

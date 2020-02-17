@@ -50,6 +50,7 @@
     X(4, "-rot", minus_rot)                                                                        \
     X(7, "squared", squared)                                                                       \
     X(7, "string=", string_equal)     /* ( addr1 addr2 u -- addr1 addr2 u t|f )         */         \
+    X(3, "sub", sub)                  /* equivalent to: swap -                          */         \
     /*                             */ /*                                                */         \
     X(5, "byte@", byte_fetch)                                                                      \
     /* X(5, "char@", char_fetch)   */ /* alias of c@                                    */         \
@@ -107,15 +108,18 @@
     X(3, "?if", q_if)                 /* alias of dup if                                */         \
     X(4, "?if0", q_if_zero)           /* alias of dup 0= if                             */         \
     X(3, "if0", if_zero)              /* alias of 0= if                                 */         \
+    /*                             ( -- c-addr u ) read blank-delimited string from IN  */         \
+    X(18, "in-parse-nonblanks", in_parse_nonblanks)                                                \
+    X(14, "in-skip-blanks", in_skip_blanks) /* skip chars <= space from 'in' I/O buffer       */   \
     /* ( caddr n -- caddr' n' x t|f ) convert string to number, recognizing base, sign prefix */   \
     X(13, "string>number", string_to_number)                                                       \
     X(11, "valid-base?", valid_base_q) /* ( base -- t|f ) true if 2 <= base <= 36   */
 
 /* ------- m4th-core ---------------------------------------------------------------------------- */
 #define DICT_TOKENS_M4TH_CORE(X)                                                                   \
-    X(7, "in>addr", in_to_addr) /* (   -- addr ) get start of input buffer               */        \
-    X(7, "in>next", in_to_next) /* (   -- addr ) alias of >in                            */        \
-    X(7, "in>size", in_to_size) /* (   -- u    ) get size of input buffer                */        \
+    X(7, "in>addr", in_addr) /* (   -- addr ) get start of input buffer               */           \
+    X(6, "in>pos", in_pos)   /* (   -- addr ) same as >in                             */           \
+    X(7, "in>size", in_size) /* (   -- u    ) get size of input buffer                */           \
     /*               searchorder-i ( u -- addr ) get address of searchorder i-th element */        \
     X(13, "searchorder-i", searchorder_i)                                                          \
     X(13, "searchorder-n", searchorder_n) /* (    -- addr    ) get address of searchorder count */ \

@@ -68,7 +68,7 @@ class PrintDataStack(gdb.Command):
     def number_print(self, val):
         gdb.write("%s " % self.number_to_str(val))
     def number_to_str(self, val):
-        if val < -1000 or val > 1000:
+        if val < -1024 or val > 1024:
             return hex(val)
         else:
             return str(val)

@@ -56,7 +56,7 @@ void m4countedstack_print(const m4countedstack *src, FILE *out) {
     fprintf(out, "<%ld> ", (long)src->len);
     for (i = 0; i < src->len; i++) {
         long x = (long)src->data[i];
-        if (x > -1000 && x < 1000) {
+        if (x > -1024 && x < 1024) {
             fprintf(out, "%ld ", x);
         } else {
             fprintf(out, "0x%lx ", x);

@@ -73,8 +73,7 @@ WORD_START(q_if_zero, q_if)
         _compile_init_, _compile_unresolved_jump_, _q_if_zero_, _if_, exit
     )
 WORD_END(q_if_zero)
-WORD(noop,             q_if_zero,      DSTACK(0,0), RSTACK(0,0), WORD_PURE)
-WORD(dup_to_r,         noop,           DSTACK(1,1), RSTACK(0,1), WORD_R_PURE)
+WORD(dup_to_r,         q_if_zero,      DSTACK(1,1), RSTACK(0,1), WORD_R_PURE)
 WORD_START(if_zero, dup_to_r)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_DSTACK(1,0)
@@ -86,11 +85,78 @@ WORD_START(if_zero, dup_to_r)
         _compile_init_, _compile_unresolved_jump_, _if_zero_, _if_, exit
     )
 WORD_END(if_zero)
-WORD(r_from_drop,      if_zero,        DSTACK(0,0), RSTACK(1,0), WORD_R_PURE)
+/* ( -- c-addr u ) read blank-delimited string from IN. TODO: refill */
+WORD_START(in_parse_nonblanks, if_zero)
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_DSTACK(0,2)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_CODE(
+        /*
+         * in-skip-blanks
+         * source chars over                         ( addr maxn addr   ) 
+         * + over                                    ( addr end addr    )
+         * 0 -rot                                    ( addr 0 end addr  )
+         * ?do                                       ( addr u           ) (R: end addr-i )
+         *   i c@ bl <=                              ( addr u t|f       ) (R: end addr-i )
+         *   if                                      ( addr u           ) (R: end addr-i )
+         *     leave                                 ( addr u           )
+         *   then                                    ( addr u           ) (R: end addr-i )
+         *   1+                                      ( addr u'          ) (R: end addr-i )
+         * loop            ( better: 1 chars +loop ) ( addr u'          )
+         * dup in>pos +!                             ( addr u'          )
+         */
+        _call_, WADDR(in_skip_blanks),
+        source, chars, over, plus, over,
+        zero, minus_rot,
+        _q_do_, T(12),
+            i, c_fetch, bl, less_equal,
+            _if_, T(3),
+                _leave_, T(4),
+            then,
+            one_plus,
+        _loop_, T(-12),
+        dup, in_pos, plus_store,
+        exit
+    )
+WORD_END(in_parse_nonblanks)
+/* ( -- ) skip blanks from IN. TODO: refill */
+WORD_START(in_skip_blanks, in_parse_nonblanks)
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_DSTACK(0,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_CODE(
+        /* 0 source chars over + swap                  ( 0 end addr      )
+         * ?do                                         ( u               ) (R: end addr-i )
+         *    i c@ bl >                                ( u t|f           ) (R: end addr-i )
+         *    if                                       ( u               ) (R: end addr-i )
+         *       leave                                 ( u               )
+         *    then                                     ( u               ) (R: end addr-i )
+         *    one_plus,                                ( u'              ) (R: end addr-i )
+         * loop              ( better: 1 chars +loop ) ( u               )
+         * in>pos +!                                   (                 )
+         */
+        zero, source, chars, over, plus, swap,
+        _q_do_, T(12),
+            i, c_fetch, bl, more,
+            _if_, T(2),
+                _leave_, T(4),
+            then,
+            one_plus,
+        _loop_, T(-12),
+        in_pos, plus_store, exit
+    )
+WORD_END(in_skip_blanks)
+WORD(noop,             in_skip_blanks, DSTACK(0,0), RSTACK(0,0), WORD_PURE)
+WORD(r_from_drop,      noop,           DSTACK(0,0), RSTACK(1,0), WORD_R_PURE)
 WORD(r_plus,           r_from_drop,    DSTACK(1,0), RSTACK(1,1), WORD_R_PURE)
 WORD(r_store,          r_plus,         DSTACK(1,0), RSTACK(1,1), WORD_R_PURE)
 WORD(squared,          r_store,        DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(minus_rot,        squared,        DSTACK(3,3), RSTACK(0,0), WORD_PURE)
+WORD(sub,              squared,        DSTACK(2,1), RSTACK(0,0), WORD_PURE)
+WORD(minus_rot,        sub,            DSTACK(3,3), RSTACK(0,0), WORD_PURE)
 WORD(div_byte,         minus_rot,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(div_char,         div_byte,       DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(div_short,        div_char,       DSTACK(1,1), RSTACK(0,0), WORD_PURE)

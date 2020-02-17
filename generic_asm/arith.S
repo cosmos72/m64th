@@ -121,7 +121,7 @@ FUNC_END(plus_store)
 FUNC_START(minus)          /* -    */
         DPOP(  REG1)
 #ifdef SUB3
-        SUB3(  REG1,   DTOP, DTOP)
+        SUB3(  REG1,   DTOP,   DTOP)
 #else
         NEG1(  DTOP)
         ADD2(  REG1,   DTOP)
@@ -288,7 +288,7 @@ FUNC_START(nip)
 FUNC_END(nip)
 
 
-FUNC_START(noop)           /* no-op m4th-user */
+FUNC_START(noop)           /* no-op    m4th-user */
 FUNC_END(noop)
 
 
@@ -322,22 +322,26 @@ FUNC_START(minus_rot)      /* -rot  ( a b c -- c a b ) m4th-user */
 FUNC_END(minus_rot)
 
 
-FUNC_START(squared)        /* squared  m4th-user alias of: dup * */
+FUNC_START(squared)        /* squared  m4th-user equivalent to: dup * */
         MUL2(  DTOP,   DTOP)
 FUNC_END(squared)
 
 
-#ifndef M4FSWAP
+FUNC_START(sub)            /* sub      m4th-user equivalent to: swap - */
+        DPOP(  REG1)
+        SUB2(  REG1,   DTOP)
+FUNC_END(sub)
+
+
 FUNC_START(swap)           /* remember: x86 instruction 'xchg' is SLOW */
-        LOAD(  REG1, AT(DSTK))
-        STOR(  DTOP, AT(DSTK))
-        MOVE(  REG1, DTOP)
+        LOAD(  REG1,   AT(DSTK))
+        STOR(  DTOP,   AT(DSTK))
+        MOVE(  REG1,   DTOP)
 FUNC_END(swap)
-#endif
 
 
 FUNC_START(tuck)
-        LOAD(  REG1, AT(DSTK))
-        STOR(  DTOP, AT(DSTK))
+        LOAD(  REG1,   AT(DSTK))
+        STOR(  DTOP,   AT(DSTK))
         DPUSH( REG1)
 FUNC_END(tuck)

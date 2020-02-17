@@ -280,7 +280,7 @@ static m4cell m4token_print_int32(const m4token *code, FILE *out) {
 static m4cell m4token_print_int64(const m4token *code, FILE *out) {
     int64_t val;
     memcpy(&val, code, sizeof(val));
-    if (val >= -1000 && val <= 1000) {
+    if (val >= -1024 && val <= 1024) {
         fprintf(out, "CELL(%ld) ", (long)val);
     } else {
         fprintf(out, "CELL(0x%lx) ", (unsigned long)val);
@@ -524,7 +524,7 @@ void m4stack_print(const m4stack *stack, FILE *out) {
     fprintf(out, "<%ld> ", (long)(hi - lo));
     while (hi > lo) {
         long x = (long)*--hi;
-        if (x > -1000 && x < 1000) {
+        if (x > -1024 && x < 1024) {
             fprintf(out, "%ld ", x);
         } else {
             fprintf(out, "0x%lx ", x);
@@ -725,7 +725,7 @@ m4th *m4th_new() {
     m->ip = NULL;
     m->ftable = ftable;
     m->in = m4iobuf_alloc(inbuf_n);
-    m->in.next = m->in.size;
+    m->in.pos = m->in.size;
     m->out = m4iobuf_alloc(outbuf_n);
     m->state = m4th_state_interpret;
     memset(m->c_regs, '\0', sizeof(m->c_regs));
@@ -760,8 +760,8 @@ void m4th_clear(m4th *m) {
     m->w = NULL;
     m->ip = NULL;
     memset(m->c_regs, '\0', sizeof(m->c_regs));
-    m->in.next = m->in.size;
-    m->out.next = 0;
+    m->in.pos = m->in.size;
+    m->out.pos = 0;
     m->mem.curr = m->mem.start;
     m->err = 0;
 }
