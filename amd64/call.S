@@ -55,7 +55,7 @@ FUNC_RAWEND(th_run)
  * forth vm main loop: fetch m4token instructions and execute them
  */
 FUNC_START(_vm_)
-        /* cannot use REG1..REG4: they are used by C function calls */
+        /* cannot use REG1..REG4: they are used by c-arg-[N] */
         LD_ut(%r11,    AT(IP))         /* load m4token of current vm instruction */
         ADD2(IMM(SZt), IP)             /* increment vm IP                       */
         call *(FTBL, %r11, SZ);        /* execute vm instruction                */

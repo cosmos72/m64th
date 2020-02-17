@@ -943,11 +943,7 @@ static m4testexecute testexecute_f[] = {
     {"c-call",
      {m4c_arg_6, m4c_call, CELL(sum_triplets), m4c_ret_2, m4bye},
      {{6, {1, 2, 3, 4, 5, 6}}, {}},
-#ifdef __x86_64__
      {{2, {6, 15}}, {}},
-#else  /* not yet implemented on __aarch64__ */
-     {{6, {1, 2, 3, 4, 5, 6}}, {}},
-#endif /* __x86_64__ */
      {}},
 };
 

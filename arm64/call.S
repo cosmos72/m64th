@@ -58,10 +58,11 @@ FUNC_RAWEND(th_run)
  * forth vm main loop: fetch m4token instructions and execute them
  */
 FUNC_START(_vm_)
-        LD_ut( REG3_ut, AT(IP))            /* load m4token of current vm instruction */
+        /* cannot use x0..x8 here: they are used by c-arg-[N] and c-ret-[N] */
+        LD_ut( w9,     AT(IP))             /* load m4token of current vm instruction */
         ADD2(  IMM(SZt), IP)               /* pre-increment vm IP                    */
-        LOAD(  REG0, AT(FTBL, REG3, SZ))   /* load m4func of current vm instruction  */
-        blr    REG0;                       /* execute vm instruction                 */
+        LOAD(  x9,     AT(FTBL, x9, SZ))   /* load m4func of current vm instruction  */
+        blr    x9;                         /* execute vm instruction                 */
         b      FUNC_SYM(_vm_);             /* loop                                   */
 FUNC_RAWEND(_vm_)
 
@@ -103,74 +104,96 @@ FUNC_RAWEND(bye)
 
 /* pop 0 args, prepare for C function call */
 FUNC_START(c_arg_0)
-        /* TODO */
+        DPUSH( DTOP) /* c-call will reload DTOP */
 FUNC_END(c_arg_0)
 
 
 /* pop 1 arg, prepare it for C function call */
 FUNC_START(c_arg_1)
-        /* TODO */
+        MOVE(  DTOP,   x0)
 FUNC_END(c_arg_1)
 
 
 /* pop 2 args, prepare them for C function call */
 FUNC_START(c_arg_2)
-        /* TODO */
+        MOVE(  DTOP,   x1)
+        DPOP(  x0)
 FUNC_END(c_arg_2)
 
 
 /* pop 3 args, prepare them for C function call */
 FUNC_START(c_arg_3)
-        /* TODO */
+        MOVE(  DTOP,   x2)
+        DPOP(  x1)
+        DPOP(  x0)
 FUNC_END(c_arg_3)
 
 
 /* pop 4 args, prepare them for C function call */
 FUNC_START(c_arg_4)
-        /* TODO */
+        MOVE(  DTOP,   x3)
+        DPOP(  x2)
+        DPOP(  x1)
+        DPOP(  x0)
 FUNC_END(c_arg_4)
 
 
 /* pop 5 args, prepare them for C function call */
 FUNC_START(c_arg_5)
-        /* TODO */
+        MOVE(  DTOP,   x4)
+        DPOP(  x3)
+        DPOP(  x2)
+        DPOP(  x1)
+        DPOP(  x0)
 FUNC_END(c_arg_5)
 
 
 /* pop 6 args, prepare them for C function call */
 FUNC_START(c_arg_6)
-        /* TODO */
+        MOVE(  DTOP,   x5)
+        DPOP(  x4)
+        DPOP(  x3)
+        DPOP(  x2)
+        DPOP(  x1)
+        DPOP(  x0)
 FUNC_END(c_arg_6)
 
 
 /* must be followed by C function address. call it. */
 FUNC_START(c_call)
-        /* TODO */
-        ADD2(  IMM(SZ),IP) /* skip C function address */
+        /* cannot use x0..x8 here, they are used by c-args-[N] and c-ret-[N] */
+        LOAD(  x9,     AT(IP))
+        RPUSH( lr)         /* save lr = return address */
+        blr    x9;
+        RPOP(  lr)         /* load lr = return address */
+        ADD2(  IMM(SZ),IP) /* skip C function address  */
 FUNC_END(c_call)
 
 
 /* push 0 values returned by C function call */
 FUNC_START(c_ret_0)
-        /* TODO */
+        /* reload DTOP because c_arg_* above moved DSTK */
+        DPOP(  DTOP)
 FUNC_END(c_ret_0)
 
 
 /* push 1 value  returned by C function call */
 FUNC_START(c_ret_1)
-        /* TODO */
+        MOVE(  x0,     DTOP)
 FUNC_END(c_ret_1)
 
 
 /* push 2 values returned by C function call */
 FUNC_START(c_ret_2)
+        DPUSH( x0)
+        MOVE(  x1,     DTOP)
         /* TODO */
 FUNC_END(c_ret_2)
 
 
 /** pop address of native code from dstack and call it. */
 FUNC_START(_exec_native_)
-        MOVE(  DTOP, REG0)         /* REG1 = address                */
+        MOVE(  DTOP,   REG0)       /* REG1 = address                */
         DPOP(  DTOP)               /* reload dstack top             */
         br     REG0;               /* tail-call optimization: jump to native code */
 FUNC_RAWEND(_exec_native_)
