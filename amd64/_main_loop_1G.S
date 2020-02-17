@@ -26,11 +26,11 @@
 FUNC_START(main)
         ZERO(  REG1)
         MOVE(  IMM(1000000000), REG2)
-.Lmain.again:	
+.Lmain.again:
         inc    REG1;
         cmpq   REG2, REG1;
         jne    .Lmain.again;
         ZERO(  REG1)
-	ret;
+        ret;
 FUNC_RAWEND(main)
 

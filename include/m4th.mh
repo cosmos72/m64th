@@ -38,6 +38,7 @@
 #define M4TH_OFF_HERE SZ19        /* offset of m4th->mem.curr = HERE */
 #define M4TH_OFF_BASE SZ21        /* offset of m4th->base        */
 #define M4TH_OFF_SEARCHORDER SZ22 /* offset of m4th->searchorder */
+#define M4TH_OFF_ERR SZ26         /* offset of m4th->err         */
 
 #define USERVAR_IDX_STATE 1 /* index of m4th->state */
 #define USERVAR_IDX_BASE 6  /* index of m4th->base */

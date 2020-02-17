@@ -34,7 +34,7 @@
     MARKER_SYM(name):
 
 #define MARKER(name)                                                                               \
-    MARKER_DEF_SYM(name)							                   \
+    MARKER_DEF_SYM(name)                                                                           \
     .size MARKER_SYM(name), . - MARKER_SYM(name);
 
 /* clang-format on */

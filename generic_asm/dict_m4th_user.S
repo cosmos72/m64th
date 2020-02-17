@@ -113,7 +113,7 @@ WORD_START(in_parse_nonblanks, if_zero)
     WORD_CODE(
         /*
          * in-skip-blanks
-         * source chars over                         ( addr maxn addr   ) 
+         * source chars over                         ( addr maxn addr   )
          * + over                                    ( addr end addr    )
          * 0 -rot                                    ( addr 0 end addr  )
          * ?do                                       ( addr u           ) (R: end addr-i )

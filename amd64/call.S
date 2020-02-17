@@ -69,9 +69,9 @@ FUNC_RAWEND(_vm_)
  * return to C
  */
 FUNC_START(bye)
-	ADD2(  IMM(SZ), IP)               /* point IP to next instruction    */
-        RPUSH( RTOP)                      /* save first return stack element */
-        DPUSH( DTOP)                      /* save first data   stack element */
+        ADD2(  IMM(SZ), IP)                       /* point IP to next instruction    */
+        RPUSH( RTOP)                              /* save first return stack element */
+        DPUSH( DTOP)                              /* save first data   stack element */
         STOR(  HERE,   AT(M4TH, M4TH_OFF_HERE))   /* save HERE pointer               */
         STOR(  FTBL,   AT(M4TH, M4TH_OFF_FTABLE)) /* save table m4token -> m4func    */
         STOR(  IP,     AT(M4TH, M4TH_OFF_IP))     /* save instruction  pointer       */
@@ -82,13 +82,13 @@ FUNC_START(bye)
          *       executed since m4th_run(). how to preserve it?
          */
         LOAD(  %rsp,   AT(M4TH, M4TH_OFF_C_REG0))  /* load C stack pointer            */
+        LOAD(  %rax,   AT(M4TH, M4TH_OFF_ERR))     /* load return value = m4th.err    */
         pop    %r15;                               /* load C registers                */
         pop    %r14;
         pop    %r13;
         pop    %r12;
         pop    %rbx;
         pop    %rbp;
-        ZERO(  %rax)               /* return value = 0                */
         ret;                       /* return to C                     */
 FUNC_RAWEND(bye)
 

@@ -70,9 +70,9 @@ FUNC_RAWEND(_vm_)
  * return to C
  */
 FUNC_START(bye)
-	ADD2(  IMM(SZ), IP)            /* point IP to next instruction    */
-        RPUSH( RTOP)                   /* save first return stack element */
-        DPUSH( DTOP)                   /* save first data   stack element */
+        ADD2(  IMM(SZ), IP)                     /* point IP to next instruction    */
+        RPUSH( RTOP)                            /* save first return stack element */
+        DPUSH( DTOP)                            /* save first data   stack element */
         STOR(  HERE, AT(M4TH, M4TH_OFF_HERE))   /* save HERE pointer               */
         STOR(  FTBL, AT(M4TH, M4TH_OFF_FTABLE)) /* save table m4token -> m4func    */
         STOR(  IP,   AT(M4TH, M4TH_OFF_IP))     /* save instruction  pointer       */
@@ -83,6 +83,7 @@ FUNC_START(bye)
          *       executed since m4th_run(). how to preserve it?
          */
         LOAD(  REG1, AT(M4TH, M4TH_OFF_C_REG0)) /* load C stack pointer            */
+        LOAD(  x0,   AT(M4TH, M4TH_OFF_ERR))    /* load return value = m4th.err    */
         MOVE(  REG1, sp)
         ldp    x20,  x21,  AT(sp);              /* load C registers                */
         ldp    x22,  x23,  AT(sp, SZ2);
@@ -90,8 +91,7 @@ FUNC_START(bye)
         ldp    x26,  x27,  AT(sp, SZ6);
         LOAD(  lr,   AT(sp, SZ9))               /* load LR register (return addr)  */
         ADD2(  IMM(SZ10), sp)
-        ZERO(  x0)                     /* return value = 0                */
-        ret;                           /* return to C                     */
+        ret;                                    /* return to C                     */
 FUNC_RAWEND(bye)
 
 
@@ -117,47 +117,42 @@ FUNC_END(c_arg_2)
 /* pop 3 args, prepare them for C function call */
 FUNC_START(c_arg_3)
         MOVE(  DTOP,   x2)
-        ldp    x1, x0, AT(DSTK);
-        ADD2(IMM(SZ2), DSTK)
+        ldp    x1, x0, AT(DSTK), IMM(SZ2); /* post-increment */
 FUNC_END(c_arg_3)
 
 
 /* pop 4 args, prepare them for C function call */
 FUNC_START(c_arg_4)
         MOVE(  DTOP,   x3)
-        LOAD(  x2,     AT(DSTK))
-        ldp    x1, x0, AT(DSTK, SZ);
-        ADD2(IMM(SZ3), DSTK)
+        DPOP(  x2)
+        DPOP2( x1, x0)
 FUNC_END(c_arg_4)
 
 
 /* pop 5 args, prepare them for C function call */
 FUNC_START(c_arg_5)
         MOVE(  DTOP,   x4)
-        ldp    x3, x2, AT(DSTK);
-        ldp    x1, x0, AT(DSTK, SZ2);
-        ADD2(IMM(SZ4), DSTK)
+        DPOP2( x3, x2)
+        DPOP2( x1, x0)
 FUNC_END(c_arg_5)
 
 
 /* pop 6 args, prepare them for C function call */
 FUNC_START(c_arg_6)
         MOVE(  DTOP,   x5)
-        LOAD(  x4,     AT(DSTK))
-        ldp    x3, x2, AT(DSTK, SZ);
-        ldp    x1, x0, AT(DSTK, SZ3);
-        ADD2(IMM(SZ5), DSTK)
+        DPOP(  x4)
+        DPOP2( x3, x2)
+        DPOP2( x1, x0)
 FUNC_END(c_arg_6)
 
 
 /* must be followed by C function address. call it. */
 FUNC_START(c_call)
         /* cannot use x0..x8 here, they are used by c-args-[N] and c-ret-[N] */
-        LOAD(  x9,     AT(IP))
+        ldr    x9,     AT(IP),   IMM(SZ); /* post-increment */
         RPUSH( lr)         /* save lr = return address */
         blr    x9;
         RPOP(  lr)         /* load lr = return address */
-        ADD2(  IMM(SZ),IP) /* skip C function address  */
 FUNC_END(c_call)
 
 

@@ -66,7 +66,7 @@ FUNC_START(key)
         MOVE(  IMM(-1),DTOP)
 #endif
         /* TODO refill input buffer */
-	JAE(   REG1,   REG2,  FUNC_SYM_NEXT(key))
+        JAE(   REG1,   REG2,  FUNC_SYM_NEXT(key))
         LOAD(  REG2,   AT(M4TH, M4TH_OFF_IN_ADDR))
         LD_ub( DTOP_ub,AT(REG1, REG2, 1))
         INC1(  REG1)

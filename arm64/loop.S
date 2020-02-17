@@ -119,7 +119,7 @@ FUNC_START(_loop_)
         LOAD(  REG1, AT(RSTK))      /* REG1 = i'                   */
         cmp    REG1, RTOP;
         b.eq   .L_loop_.break;        /* break if i == i'            */
-	RELJUMP()
+        RELJUMP()
 .L_loop_.break:
         LOAD(  RTOP, AT(RSTK, SZ)) /* load new top of rstack      */
         ADD2(  IMM(SZ2), RSTK)     /* drop i' i from return stack */

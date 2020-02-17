@@ -39,7 +39,7 @@
  */
 FUNC_START(crc_plus_native_forth)
 #ifdef __x86_64__
-	/* over */
+        /* over */
         DPUSH( DTOP)
         LOAD(  DTOP,   AT(DSTK, SZ))
         /* xor */
@@ -47,7 +47,7 @@ FUNC_START(crc_plus_native_forth)
         ADD2(  IMM(8), DSTK)
         /* to_char */
         movzbl DTOPb,  DTOP_ub;
-	/* cells */
+        /* cells */
         SHL2(  IMM(3), DTOP)
         /* _lit_cell_, CELL(m4th_crctable) */
         DPUSH( DTOP)
