@@ -805,6 +805,15 @@ static m4testexecute testexecute_e[] = {
      {}},
 };
 
+typedef struct {
+    m4cell a, b;
+} sum_triplets_ret;
+
+static sum_triplets_ret sum_triplets(m4cell a, m4cell b, m4cell c, m4cell d, m4cell e, m4cell f) {
+    sum_triplets_ret ret = {a + b + c, d + e + f};
+    return ret;
+}
+
 static m4testexecute testexecute_f[] = {
     /* ----------------------------- compile-token, ------------------------- */
     {"0x123 (compile-token,)",
@@ -930,6 +939,16 @@ static m4testexecute testexecute_f[] = {
      {{2, {DXT(and), DXT(one_plus)}}, {}},
      {{}, {}},
      {2, {m4one_plus, m4and}}},
+    /* ----------------------------- c-call --------------------------------- */
+    {"c-call",
+     {m4c_arg_6, m4c_call, CELL(sum_triplets), m4c_ret_2, m4bye},
+     {{6, {1, 2, 3, 4, 5, 6}}, {}},
+#ifdef __x86_64__
+     {{2, {6, 15}}, {}},
+#else  /* not yet implemented on __aarch64__ */
+     {{6, {1, 2, 3, 4, 5, 6}}, {}},
+#endif /* __x86_64__ */
+     {}},
 };
 
 static void m4testexecute_fix(m4testexecute *t, const m4code_pair *pair) {

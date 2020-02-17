@@ -69,7 +69,6 @@ WORD_START(q_if_zero, q_if)
         _compile_init_, _compile_unresolved_jump_, _q_if_zero_, _if_, exit
     )
 WORD_END(q_if_zero)
-/* prepare 0 args for C function call    */
 WORD(c_arg_0,          q_if_zero,      DSTACK(0,0), RSTACK(0,0), M4FLAG_INLINE_ALWAYS)
 WORD(c_arg_1,          c_arg_0,        DSTACK(1,0), RSTACK(0,0), M4FLAG_INLINE_ALWAYS)
 WORD(c_arg_2,          c_arg_1,        DSTACK(2,0), RSTACK(0,0), M4FLAG_INLINE_ALWAYS)
