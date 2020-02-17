@@ -124,38 +124,36 @@ FUNC_END(c_arg_2)
 /* pop 3 args, prepare them for C function call */
 FUNC_START(c_arg_3)
         MOVE(  DTOP,   x2)
-        DPOP(  x1)
-        DPOP(  x0)
+        ldp    x1, x0, AT(DSTK);
+        ADD2(IMM(SZ2), DSTK)
 FUNC_END(c_arg_3)
 
 
 /* pop 4 args, prepare them for C function call */
 FUNC_START(c_arg_4)
         MOVE(  DTOP,   x3)
-        DPOP(  x2)
-        DPOP(  x1)
-        DPOP(  x0)
+        LOAD(  x2,     AT(DSTK))
+        ldp    x1, x0, AT(DSTK, SZ);
+        ADD2(IMM(SZ3), DSTK)
 FUNC_END(c_arg_4)
 
 
 /* pop 5 args, prepare them for C function call */
 FUNC_START(c_arg_5)
         MOVE(  DTOP,   x4)
-        DPOP(  x3)
-        DPOP(  x2)
-        DPOP(  x1)
-        DPOP(  x0)
+        ldp    x3, x2, AT(DSTK);
+        ldp    x1, x0, AT(DSTK, SZ2);
+        ADD2(IMM(SZ4), DSTK)
 FUNC_END(c_arg_5)
 
 
 /* pop 6 args, prepare them for C function call */
 FUNC_START(c_arg_6)
         MOVE(  DTOP,   x5)
-        DPOP(  x4)
-        DPOP(  x3)
-        DPOP(  x2)
-        DPOP(  x1)
-        DPOP(  x0)
+        LOAD(  x4,     AT(DSTK))
+        ldp    x3, x2, AT(DSTK, SZ);
+        ldp    x1, x0, AT(DSTK, SZ3);
+        ADD2(IMM(SZ5), DSTK)
 FUNC_END(c_arg_6)
 
 
