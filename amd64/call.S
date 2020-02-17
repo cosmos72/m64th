@@ -37,16 +37,16 @@ FUNC_START(th_run)
         push   %r13;
         push   %r14;
         push   %r15;
-        MOVE(  %rdi, M4TH)                      /* m                               */
-        STOR(  %rsp, AT(M4TH, M4TH_OFF_C_REG0)) /* save C stack pointer            */
-        LOAD(  DSTK, AT(M4TH, M4TH_OFF_DSTK))   /* load data   stack pointer       */
-        LOAD(  RSTK, AT(M4TH, M4TH_OFF_RSTK))   /* load return stack pointer       */
-        LOAD(  IP,   AT(M4TH, M4TH_OFF_IP))     /* load instruction  pointer       */
-        LOAD(  FTBL, AT(M4TH, M4TH_OFF_FTABLE)) /* load table m4token -> m4func    */
-        LOAD(  HERE, AT(M4TH, M4TH_OFF_HERE))   /* load HERE pointer               */
+        MOVE(  %rdi,   M4TH)                      /* m                               */
+        STOR(  %rsp,   AT(M4TH, M4TH_OFF_C_REG0)) /* save C stack pointer            */
+        LOAD(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))   /* load data   stack pointer       */
+        LOAD(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))   /* load return stack pointer       */
+        LOAD(  IP,     AT(M4TH, M4TH_OFF_IP))     /* load instruction  pointer       */
+        LOAD(  FTBL,   AT(M4TH, M4TH_OFF_FTABLE)) /* load table m4token -> m4func    */
+        LOAD(  HERE,   AT(M4TH, M4TH_OFF_HERE))   /* load HERE pointer               */
         DPOP(  DTOP)                   /* load first data   stack element */
         RPOP(  RTOP)                   /* load first return stack element */
-        MOVE(  IMM(-1), RFFF)          /* set RFFF to -1                  */
+        MOVE(  IMM(-1),RFFF)           /* set RFFF to -1                  */
         jmp    FUNC_SYM(_vm_)          /* enter vm loop                   */
 FUNC_RAWEND(th_run)
 
@@ -71,16 +71,16 @@ FUNC_START(bye)
 	ADD2(  IMM(SZ), IP)               /* point IP to next instruction    */
         RPUSH( RTOP)                      /* save first return stack element */
         DPUSH( DTOP)                      /* save first data   stack element */
-        STOR(  HERE, AT(M4TH, M4TH_OFF_HERE))   /* save HERE pointer               */
-        STOR(  FTBL, AT(M4TH, M4TH_OFF_FTABLE)) /* save table m4token -> m4func    */
-        STOR(  IP,   AT(M4TH, M4TH_OFF_IP))     /* save instruction  pointer       */
-        STOR(  RSTK, AT(M4TH, M4TH_OFF_RSTK))   /* save return stack pointer       */
-        STOR(  DSTK, AT(M4TH, M4TH_OFF_DSTK))   /* save data   stack pointer       */
+        STOR(  HERE,   AT(M4TH, M4TH_OFF_HERE))   /* save HERE pointer               */
+        STOR(  FTBL,   AT(M4TH, M4TH_OFF_FTABLE)) /* save table m4token -> m4func    */
+        STOR(  IP,     AT(M4TH, M4TH_OFF_IP))     /* save instruction  pointer       */
+        STOR(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))   /* save return stack pointer       */
+        STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))   /* save data   stack pointer       */
         /*
          * TODO: this discards the call stack of compiled forth code
          *       executed since m4th_run(). how to preserve it?
          */
-        LOAD(  %rsp, AT(M4TH, M4TH_OFF_C_REG0))    /* load C stack pointer            */
+        LOAD(  %rsp,   AT(M4TH, M4TH_OFF_C_REG0))  /* load C stack pointer            */
         pop    %r15;                               /* load C registers                */
         pop    %r14;
         pop    %r13;
@@ -90,6 +90,119 @@ FUNC_START(bye)
         ZERO(  %rax)               /* return value = 0                */
         ret;                       /* return to C                     */
 FUNC_RAWEND(bye)
+
+
+/* pop 0 args, prepare for C function call */
+FUNC_START(c_arg_0)
+        STOR(  DTOP,   AT(DSTK, -SZ))            /* will be reloaded by c_call */
+        STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))  /* save dstk = %rdi (clobbered) */
+        STOR(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))  /* save rstk = %rsi (clobbered) */
+FUNC_END(c_arg_0)
+
+
+/* pop 1 arg, prepare it for C function call */
+FUNC_START(c_arg_1)
+        ADD2(  IMM(SZ), DSTK)
+        STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))  /* save dstk = %rdi = C arg1 */
+        STOR(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))  /* save rstk = %rsi (clobbered) */
+        MOVE(  DTOP, %rdi)                       /* %rdi = C arg 1 */
+FUNC_END(c_arg_1)
+
+
+/* pop 2 args, prepare them for C function call */
+FUNC_START(c_arg_2)
+        ADD2(  IMM(SZ2), DSTK)
+        STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))  /* save dstk = %rdi = C arg1 */
+        STOR(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))  /* save rstk = %rsi = C arg2 */
+        MOVE(  DTOP, %rsi)                       /* %rsi = C arg 2 */
+        LOAD(  %rdi,   AT(DSTK, -SZ2))           /* %rdi = C arg 1 */
+FUNC_END(c_arg_2)
+
+
+/* pop 3 args, prepare them for C function call */
+FUNC_START(c_arg_3)
+        ADD2(  IMM(SZ3), DSTK)
+        STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))  /* save dstk = %rdi = C arg1 */
+        STOR(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))  /* save rstk = %rsi = C arg2 */
+        MOVE(  DTOP, %rdx)                       /* %rdx = C arg 3 */
+        LOAD(  %rsi,   AT(DSTK, -SZ3))           /* %rsi = C arg 2 */
+        LOAD(  %rdi,   AT(DSTK, -SZ2))           /* %rdi = C arg 1 */
+FUNC_END(c_arg_3)
+
+
+/* pop 4 args, prepare them for C function call */
+FUNC_START(c_arg_4)
+        ADD2(  IMM(SZ4), DSTK)
+        STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))  /* save dstk = %rdi = C arg1 */
+        STOR(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))  /* save rstk = %rsi = C arg2 */
+        MOVE(  DTOP, %rcx)                       /* %rcx = C arg 4 */
+        LOAD(  %rdx,   AT(DSTK, -SZ4))           /* %rdx = C arg 3 */
+        LOAD(  %rsi,   AT(DSTK, -SZ3))           /* %rsi = C arg 2 */
+        LOAD(  %rdi,   AT(DSTK, -SZ2))           /* %rdi = C arg 1 */
+FUNC_END(c_arg_4)
+
+
+/* pop 5 args, prepare them for C function call */
+FUNC_START(c_arg_5)
+        ADD2(  IMM(SZ5), DSTK)
+        STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))  /* save dstk = %rdi = C arg1 */
+        STOR(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))  /* save rstk = %rsi = C arg2 */
+        MOVE(  DTOP, %r8)                        /* %r8  = C arg 5 */
+        LOAD(  %rcx,   AT(DSTK, -SZ5))           /* %rcx = C arg 4 */
+        LOAD(  %rdx,   AT(DSTK, -SZ4))           /* %rdx = C arg 3 */
+        LOAD(  %rsi,   AT(DSTK, -SZ3))           /* %rsi = C arg 2 */
+        LOAD(  %rdi,   AT(DSTK, -SZ2))           /* %rdi = C arg 1 */
+FUNC_END(c_arg_5)
+
+
+/* pop 6 args, prepare them for C function call */
+FUNC_START(c_arg_6)
+        ADD2(  IMM(SZ6), DSTK)
+        STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))  /* save dstk = %rdi = C arg1 */
+        STOR(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))  /* save rstk = %rsi = C arg2 */
+        MOVE(  DTOP,   %r9)                      /* %r9  = C arg 6 = FTBL */
+        LOAD(  %r8,    AT(DSTK, -SZ6))           /* %r8  = C arg 5 */
+        LOAD(  %rcx,   AT(DSTK, -SZ5))           /* %rcx = C arg 4 */
+        LOAD(  %rdx,   AT(DSTK, -SZ4))           /* %rdx = C arg 3 */
+        LOAD(  %rsi,   AT(DSTK, -SZ3))           /* %rsi = C arg 2 */
+        LOAD(  %rdi,   AT(DSTK, -SZ2))           /* %rdi = C arg 1 */
+FUNC_END(c_arg_6)
+
+
+/* must be followed by C function address. call it. */
+FUNC_START(c_call)
+        /* do not restore %rsp, it would clobber our call stack */
+        call   *AT(IP);
+        ADD2(  IMM(SZ),IP) /* skip C function address */
+        /* C functions clobber %rdi %rsi %rdx %rcx %r8 %r9 %r10 %r11 */
+        /* we must restore only the following ones: */
+        LOAD(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))    /* %rdi = DSTK */
+        LOAD(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))    /* %rsi = RSTK */
+        LOAD(  FTBL,   AT(M4TH, M4TH_OFF_FTABLE))  /* %r9  = FTBL */
+        MOVE(  IMM(-1),RFFF)                       /* %r10 = RFFF */
+FUNC_END(c_call)
+
+
+/* push 0 values returned by C function call */
+FUNC_START(c_ret_0)
+        /* reload DTOP because c_arg_* above moved DSTK */
+        LOAD(  DTOP,   AT(DSTK, -SZ))
+FUNC_END(c_ret_0)
+
+
+/* push 1 value  returned by C function call */
+FUNC_START(c_ret_1)
+        SUB2(  IMM(SZ),DSTK)
+        MOVE(  %rax,   DTOP)
+FUNC_END(c_ret_1)
+
+
+/* push 2 values returned by C function call */
+FUNC_START(c_ret_2)
+        SUB2(  IMM(SZ2),DSTK)
+        STOR(  %rax,   AT(DSTK))
+        MOVE(  %rdx,   DTOP)
+FUNC_END(c_ret_2)
 
 
 /** pop address of native code from dstack and call it. */

@@ -47,7 +47,7 @@
 #define M4two_r_from_two_drop 527 /* 2r>2drop  equivalent to: 2r>  2drop   */
 #undef M4____gap                  /*                       */
 #undef M4____gap                  /*                       */
-#undef M4____gap                  /*                       */
+#define M4c_arg_0 530             /* prepare 0 args for C function call    */
 #define M4c_arg_1 531             /* prepare 1 arg  for C function call    */
 #define M4c_arg_2 532             /* prepare 2 args for C function call    */
 #define M4c_arg_3 533             /* prepare 3 args for C function call    */
@@ -65,8 +65,9 @@
 #undef M4c_farg_3              /* pop 3 floating point args for C function call */
 #undef M4c_fret_1              /*                       */
 #undef M4c_fret_2              /*                       */
-#define M4c_ret_1 548          /* push 1 value  returned by C function call */
-#define M4c_ret_2 549          /* push 2 values returned by C function call */
+#define M4c_ret_0 548          /* push 0 values returned by C function call */
+#define M4c_ret_1 549          /* push 1 value  returned by C function call */
+#define M4c_ret_2 550          /* push 2 values returned by C function call */
 #undef M4____gap               /*                       */
 #undef M4____gap               /*                       */
 #undef M4____gap               /*                       */

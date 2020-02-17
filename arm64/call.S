@@ -100,6 +100,74 @@ FUNC_START(bye)
         ret;                           /* return to C                     */
 FUNC_RAWEND(bye)
 
+
+/* pop 0 args, prepare for C function call */
+FUNC_START(c_arg_0)
+        /* TODO */
+FUNC_END(c_arg_0)
+
+
+/* pop 1 arg, prepare it for C function call */
+FUNC_START(c_arg_1)
+        /* TODO */
+FUNC_END(c_arg_1)
+
+
+/* pop 2 args, prepare them for C function call */
+FUNC_START(c_arg_2)
+        /* TODO */
+FUNC_END(c_arg_2)
+
+
+/* pop 3 args, prepare them for C function call */
+FUNC_START(c_arg_3)
+        /* TODO */
+FUNC_END(c_arg_3)
+
+
+/* pop 4 args, prepare them for C function call */
+FUNC_START(c_arg_4)
+        /* TODO */
+FUNC_END(c_arg_4)
+
+
+/* pop 5 args, prepare them for C function call */
+FUNC_START(c_arg_5)
+        /* TODO */
+FUNC_END(c_arg_5)
+
+
+/* pop 6 args, prepare them for C function call */
+FUNC_START(c_arg_6)
+        /* TODO */
+FUNC_END(c_arg_6)
+
+
+/* must be followed by C function address. call it. */
+FUNC_START(c_call)
+        /* TODO */
+        ADD2(  IMM(SZ),IP) /* skip C function address */
+FUNC_END(c_call)
+
+
+/* push 0 values returned by C function call */
+FUNC_START(c_ret_0)
+        /* TODO */
+FUNC_END(c_ret_0)
+
+
+/* push 1 value  returned by C function call */
+FUNC_START(c_ret_1)
+        /* TODO */
+FUNC_END(c_ret_1)
+
+
+/* push 2 values returned by C function call */
+FUNC_START(c_ret_2)
+        /* TODO */
+FUNC_END(c_ret_2)
+
+
 /** pop address of native code from dstack and call it. */
 FUNC_START(_exec_native_)
         MOVE(  DTOP, REG0)         /* REG1 = address                */
