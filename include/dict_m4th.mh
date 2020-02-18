@@ -38,6 +38,7 @@
     X(7, "2dup2>r", two_dup_two_to_r)                                                              \
     X(4, "2nip", two_nip)                                                                          \
     X(7, "2r>2drop", two_r_from_two_drop)                                                          \
+    X(6, "bounds", bounds) /* ( c-addr u -- c-addr+u c-addr ) get string bounds */                 \
     X(7, "c-arg-0", c_arg_0) /* prepare 0 args for C function call    */                           \
     X(7, "c-arg-1", c_arg_1) /* prepare 1 arg  for C function call    */                           \
     X(7, "c-arg-2", c_arg_2) /* prepare 2 args for C function call    */                           \
@@ -62,6 +63,7 @@
     X(7, "squared", squared)                                                                       \
     X(7, "string=", string_equal)     /* ( addr1 addr2 u -- addr1 addr2 u t|f )         */         \
     X(3, "sub", sub)                  /* equivalent to: swap -                          */         \
+    X(5, "trail", trail)              /* equivalent to: over swap                       */         \
     /*                             */ /*                                                */         \
     X(5, "byte@", byte_fetch)                                                                      \
     /* X(5, "char@", char_fetch)   */ /* alias of c@                                    */         \
@@ -119,19 +121,22 @@
     X(3, "?if", q_if)                 /* alias of dup if                                */         \
     X(4, "?if0", q_if_zero)           /* alias of dup 0= if                             */         \
     X(3, "if0", if_zero)              /* alias of 0= if                                 */         \
-    /*                             ( -- c-addr u ) read blank-delimited string from IN  */         \
-    X(18, "in-parse-nonblanks", in_parse_nonblanks)                                                \
-    X(14, "in-skip-blanks", in_skip_blanks) /* skip chars <= space from 'in' I/O buffer       */   \
+    /*                           ( -- c-addr u ) read blank-delimited string from iobuf */         \
+    X(20, "iobuf-read-nonblanks", iobuf_read_nonblanks)                                            \
+    X(17, "iobuf-skip-blanks", iobuf_skip_blanks) /* skip chars <= space from iobuf     */         \
     /* ( caddr n -- caddr' n' x t|f ) convert string to number, recognizing base, sign prefix */   \
     X(13, "string>number", string_to_number)                                                       \
-    X(11, "valid-base?", valid_base_q) /* ( base -- t|f ) true if 2 <= base <= 36   */
+    X(11, "valid-base?", valid_base_q) /* ( base -- t|f ) true if 2 <= base <= 36       */
 
 /* ------- m4th-core ---------------------------------------------------------------------------- */
 #define DICT_TOKENS_M4TH_CORE(X)                                                                   \
-    X(7, "in>addr", in_addr) /* (   -- addr ) get start of input buffer               */           \
-    X(6, "in>pos", in_pos)   /* (   -- addr ) same as >in                             */           \
-    X(7, "in>size", in_size) /* (   -- u    ) get size of input buffer                */           \
-    /*               searchorder-i ( u -- addr ) get address of searchorder i-th element */        \
+    X(8, "in>iobuf", in_to_iobuf)   /* (    -- io   ) get current input as iobuf         */        \
+    X(10, "iobuf>addr", iobuf_addr) /* ( io -- c-addr   ) get start of iobuf data buffer */        \
+    X(10, "iobuf>data", iobuf_data) /* ( io -- c-addr u ) get iobuf current content      */        \
+    X(9, "iobuf>max", iobuf_max)    /* ( io -- u    ) get iobuf.max i.e. capacity        */        \
+    X(9, "iobuf>pos", iobuf_pos)    /* ( io -- addr ) get address of iobuf position      */        \
+    X(10, "iobuf>size", iobuf_size) /* ( io -- addr ) get address of iobuf size          */        \
+    /*              searchorder-i ( u -- addr ) get address of searchorder i-th element  */        \
     X(13, "searchorder-i", searchorder_i)                                                          \
     X(13, "searchorder-n", searchorder_n) /* (    -- addr    ) get address of searchorder count */ \
     X(8, "user-var", user_var)      /* ( -- addr ) must be followed by index of user variable */   \

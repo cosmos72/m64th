@@ -34,11 +34,10 @@ typedef unsigned char m4char;
 typedef ssize_t m4cell;  /**< main forth type: number or pointer */
 typedef size_t m4cell_u; /**< unsigned variant of m4cell         */
 typedef m4cell m4err;    /**< error code, set by ABORT or THROW  */
-
 /** forth instruction. uses forth calling convention, cannot be invoked from C */
 typedef void (*m4func)(m4arg);
-
 typedef uint8_t m4stackeffect; /**< stack # in and # out. 0xF if unknown or variable   */
+typedef const m4token *m4xt;   /**< XT i.e. execution token            */
 
 typedef char
     m4th_assert_sizeof_voidptr_less_equal_sizeof_m4cell[sizeof(void *) <= sizeof(m4cell) ? 1 : -1];
@@ -139,9 +138,12 @@ struct m4err_s {
 
 /** I/O buffer */
 struct m4iobuf_s {
-    m4char *addr;
-    m4cell_u size;
-    m4cell_u pos; /**< next char to read (or write) is addr[pos] */
+    m4xt func;     /* ( handle c-addr u -- u'|-1 ) read or write data */
+    m4cell handle; /**< FILE*, fd or whatever is needed by func       */
+    m4cell_u pos;  /**< next char to read (or write) is addr[pos]     */
+    m4cell_u size; /**< last char to read (or write) is addr[size-1]  */
+    m4cell_u max;  /**< capacity. I/O buffer is addr[0..max-1]        */
+    m4char addr[0];
 };
 
 struct m4string_s { /**< array of m4char, with size */
@@ -190,8 +192,8 @@ struct m4th_s {        /**< m4th forth interpreter and compiler */
     m4stack rstack;    /**< return stack                        */
     const m4token *ip; /**< instruction pointer                 */
     m4func *ftable;    /**< table m4t -> asm function address   */
-    m4iobuf in;        /**< input  buffer                       */
-    m4iobuf out;       /**< output buffer                       */
+    m4iobuf *in;       /**< input  buffer                       */
+    m4iobuf *out;      /**< output buffer                       */
 
     const void *c_regs[1]; /**< m4th_run() may save C registers here  */
 

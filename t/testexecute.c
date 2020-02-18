@@ -25,6 +25,7 @@
 #include "../include/func_fwd.h"
 #include "../include/token.h"
 #include "../include/word_fwd.h"
+#include "../include/iobuf.mh"
 #include "../m4th.h"
 #include "testcommon.h"
 
@@ -164,6 +165,7 @@ static m4testexecute testexecute_a[] = {
     {"-3 abs", {m4abs, m4bye}, {{1, {-3}}, {}}, {{1, {3}}, {}}, {}},
     {"and", {m4and, m4bye}, {{2, {-7, 14}}, {}}, {{1, {-7 & 14}}, {}}, {}},
     {"bl", {m4bl, m4bye}, {{}, {}}, {{1, {' '}}, {}}, {}},
+    {"bounds", {m4bounds, m4bye}, {{2, {5, 6}}, {}}, {{2, {11, 5}}, {}}, {}},
     /*                                                                          */
     {"depth", {m4depth, m4bye}, {{}, {}}, {{1, {}}, {}}, {}},
     {"_ depth", {m4depth, m4bye}, {{1, {3}}, {}}, {{2, {3, 1}}, {}}, {}},
@@ -188,6 +190,7 @@ static m4testexecute testexecute_a[] = {
     {"squared", {m4squared, m4bye}, {{1, {-3}}, {}}, {{1, {9}}, {}}, {}},
     {"sub", {m4sub, m4bye}, {{2, {3, 5}}, {}}, {{1, {2}}, {}}, {}},
     {"swap", {m4swap, m4bye}, {{2, {4, 5}}, {}}, {{2, {5, 4}}, {}}, {}},
+    {"trail", {m4trail, m4bye}, {{2, {4, 5}}, {}}, {{3, {4, 4, 5}}, {}}, {}},
     {"true", {m4true, m4bye}, {{}, {}}, {{1, {ttrue}}, {}}, {}},
     {"tuck", {m4tuck, m4bye}, {{2, {0, 1}}, {}}, {{3, {1, 0, 1}}, {}}, {}},
     {"unloop", {m4unloop, m4bye}, {{}, {3, {1, 2, 3}}}, {{}, {1, {1}}}, {}},
@@ -391,6 +394,22 @@ static m4testexecute testexecute_c[] = {
      {m4do, m4i_plus, m4_loop_, T(-3), m4bye},
      {{3, {0, (m4cell)1e6, 0}}, {}},
      {{1, {499999500000l}}, {}},
+     {}},
+    /* ----------------------------- iobuf ---------------------------------- */
+    {"iobuf>addr",
+     {m4iobuf_addr, m4bye},
+     {{1, {0x1000}}, {}},
+     {{1, {0x1000 + IOBUF_OFF_ADDR}}, {}},
+     {}},
+    {"iobuf>pos",
+     {m4iobuf_pos, m4bye},
+     {{1, {0x2000}}, {}},
+     {{1, {0x2000 + IOBUF_OFF_POS}}, {}},
+     {}},
+    {"iobuf>size",
+     {m4iobuf_size, m4bye},
+     {{1, {0x3000}}, {}},
+     {{1, {0x3000 + IOBUF_OFF_SIZE}}, {}},
      {}},
 };
 

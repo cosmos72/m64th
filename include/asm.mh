@@ -23,6 +23,7 @@
 #include "../m4th.mh" /* also define public macros */
 #include "countedstring.mh"
 #include "func.mh"
+#include "iobuf.mh"
 #include "m4th.mh"
 #include "macro.mh"
 #include "token.mh"

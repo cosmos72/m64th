@@ -46,7 +46,7 @@
 #define M4two_nip 526             /* 2nip      equivalent to: 2swap 2drop  */
 #define M4two_r_from_two_drop 527 /* 2r>2drop  equivalent to: 2r>  2drop   */
 #undef M4____gap                  /*                       */
-#undef M4____gap                  /*                       */
+#define M4bounds 529              /* ( c-addr u -- c-addr+u c-addr ) get string bounds */
 #define M4c_arg_0 530             /* prepare 0 args for C function call    */
 #define M4c_arg_1 531             /* prepare 1 arg  for C function call    */
 #define M4c_arg_2 532             /* prepare 2 args for C function call    */
@@ -71,7 +71,6 @@
 #undef M4____gap               /*                       */
 #undef M4____gap               /*                       */
 #undef M4____gap               /*                       */
-#undef M4____gap               /*                       */
 #define M4dup_to_r 554         /* dup>r     equivalent to: dup  >r      */
 #undef M4____gap               /*                       */
 #undef M4____gap               /*                       */
@@ -92,7 +91,7 @@
 #define M4squared 571          /* squared   equivalent to: dup  *       */
 #define M4string_equal 572     /* string=   ( addr1 addr2 n -- t|f )    */
 #define M4sub 573              /* sub       equivalent to: swap -       */
-#undef M4____gap               /*                       */
+#define M4trail 574            /* trail     equivalent to: over swap    */
 #undef M4____gap               /*                       */
 #undef M4____gap               /*                       */
 #define M4byte_fetch 577       /* byte@     read   int8_t at address dtop, sign-extend */
@@ -126,12 +125,12 @@
 /* 'm4th-core' wordlist */
 #undef M4____gap             /*                       */
 #undef M4____gap             /*                       */
-#undef M4____gap             /*                       */
-#undef M4____gap             /*                       */
-#undef M4____gap             /*                       */
-#define M4in_addr 611        /* in>addr ( -- addr ) get start of input buffer          */
-#define M4in_pos 612         /* in>pos  ( -- addr ) same as >in                       */
-#define M4in_size 613        /* in>size ( -- u    ) get size of input buffer           */
+#define M4in_to_iobuf 608    /* in>iobuf   (    -- io     ) get current input as iobuf     */
+#define M4iobuf_addr 609     /* iobuf>addr ( io -- c-addr ) get start of iobuf data buffer */
+#define M4iobuf_data 610     /* iobuf>data ( io -- c-addr u ) get iobuf current content    */
+#define M4iobuf_max 611      /* iobuf>max  ( io -- u )    get iobuf.max i.e. capacity      */
+#define M4iobuf_pos 612      /* iobuf>pos  ( io -- addr ) get address of iobuf position    */
+#define M4iobuf_size 613     /* iobuf>size ( io -- u    ) get address of iobuf size        */
 #undef M4____gap             /*                       */
 #undef M4____gap             /*                       */
 #define M4searchorder_i 616  /* ( u -- addr ) get address of searchorder i-th element  */

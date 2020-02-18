@@ -245,6 +245,15 @@ FUNC_END(bl)
 #endif
 
 
+FUNC_START(bounds) /* bounds m4th-user ( c-addr u -- c-addr+u c-addr ) get string bounds */
+        LOAD(  REG1,   AT(DSTK))
+        MOVE(  REG1,   REG2)
+        ADD2(  DTOP,   REG1)
+        MOVE(  REG2,   DTOP)
+        STOR(  REG1,   AT(DSTK))
+FUNC_END(bounds)
+
+
 FUNC_START(drop)
         DPOP(  DTOP)
 FUNC_END(drop)
@@ -338,6 +347,12 @@ FUNC_START(swap)           /* remember: x86 instruction 'xchg' is SLOW */
         STOR(  DTOP,   AT(DSTK))
         MOVE(  REG1,   DTOP)
 FUNC_END(swap)
+
+
+FUNC_START(trail)          /* trail    m4th-user ( a b -- a a b ) equivalent to: over swap */
+        LOAD(  REG1,   AT(DSTK))
+        DPUSH( REG1)
+FUNC_END(trail)
 
 
 FUNC_START(tuck)

@@ -23,7 +23,6 @@
 #include "../dispatch/sz.mh" /* SZ */
 #include "macro.mh"          /* CAT3() */
 
-#define m4fto_in m4fin_pos   /* >in     is an alias for in>pos */
 #define m4fbegin m4fnoop     /* begin   is a noop at runtime, used as marker for compilation */
 #define m4f_again_ m4f_jump_ /* (again) is unconditional jump */
 #define m4f_else_ m4f_jump_  /* (else)  is unconditional jump */

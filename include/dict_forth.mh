@@ -46,7 +46,6 @@
     X(1, "<", less)                                                                                \
     X(1, "=", equal)                                                                               \
     X(1, ">", more)                                                                                \
-    X(3, ">in", to_in)                                                                             \
     X(2, ">r", to_r)                                                                               \
     X(4, "?dup", question_dup)                                                                     \
     X(1, "@", fetch)                                                                               \
@@ -83,7 +82,6 @@
     X(3, "rot", rot)                                                                               \
     X(6, "rshift", rshift)                                                                         \
     X(4, "swap", swap)                                                                             \
-    X(6, "source", source)                                                                         \
     X(4, "then", then)                                                                             \
     X(2, "u<", u_less)                                                                             \
     X(6, "unloop", unloop)                                                                         \
@@ -92,8 +90,8 @@
 #define DICT_WORDS_FORTH_CORE(X)                                                                   \
     DICT_TOKENS_FORTH_CORE(X)                                                                      \
     /* the following words are implemented in forth, thus no dedicated m4token value */            \
+    X(3, ">in", to_in)                                                                             \
     X(7, ">number", to_number)                                                                     \
-    X(3, "?do", question_do)                                                                       \
     X(4, "base", base)                                                                             \
     X(8, "compile,", compile_comma)                                                                \
     X(2, "cr,", cr)                                                                                \
@@ -103,6 +101,7 @@
     X(5, "leave", leave)                                                                           \
     X(7, "literal", literal)                                                                       \
     X(4, "loop", loop)                                                                             \
+    X(6, "source", source)                                                                         \
     X(5, "state", state)
 
 /* ------- forth 2012: core ext ----------------------------------------------------------------- */
@@ -118,8 +117,9 @@
 #define DICT_WORDS_FORTH_CORE_EXT(X)                                                               \
     DICT_TOKENS_FORTH_CORE_EXT(X)                                                                  \
     /* the following words are implemented in forth, thus no dedicated m4token value */            \
+    X(3, "?do", question_do)                                                                       \
     X(5, "again", again)                                                                           \
-    X(9, "parse-name", parse_name)
+    X(10, "parse-name", parse_name)
 
 /* ------- forth 2012: tools ext ---------------------------------------------------------------- */
 #define DICT_TOKENS_FORTH_TOOLS_EXT(X) X(3, "bye", bye)

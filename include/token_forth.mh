@@ -65,7 +65,7 @@
 #define M4equal 35                /* =        */
 #define M4more 36                 /* >        */
 #undef M4to_body /*37*/           /* >body    */
-#define M4to_in 38                /* >in      */
+#undef M4to_in /*38*/             /* >in      implemented in forth, no dedicated m4token */
 #undef M4to_number /*39*/         /* >number  implemented in forth, no dedicated m4token */
 #define M4to_r 40                 /* >r       */
 #define M4question_dup 41         /* ?dup     */
@@ -117,8 +117,8 @@
 #define M4j 87                    /* j        */
 #undef M4key /*88*/               /* key      */
 #undef M4leave /*89*/             /* leave    implemented in forth, no dedicated m4token */
-#undef M4literal /*90*/           /* literal  implemented in forth, no dedicated m4token */
-#define M4loop 91                 /* loop     */
+#undef M4literal /*90*/           /* literal  defineimplemented in forth, no dedicated m4token */
+#undef M4loop /*91*/              /* loop     defineimplemented in forth, no dedicated m4token */
 #define M4lshift 92               /* lshift   */
 #undef M4m_times /*93*/           /* m*       */
 #define M4max 94                  /* max      */
@@ -140,9 +140,9 @@
 #undef M4s_to_d /*110*/           /* s>d      */
 #undef M4sign /*111*/             /* sign     */
 #undef M4s_m_div_rem /*112*/      /* sm/rem   */
-#define M4source 113              /* source   */
+#undef M4source /*113*/           /* source   implemented in forth, no dedicated m4token */
 #undef M4space /*114*/            /* space    */
-#undef M4spaces /*115*/           /* space    */
+#undef M4spaces /*115*/           /* spaces   */
 #undef M4state /*116*/            /* state    */
 #define M4swap 117                /* swap     */
 #define M4then 118                /* then     */
@@ -153,7 +153,7 @@
 #undef M4u_m_div_mod /*123*/      /* um/mod   */
 #define M4unloop 124              /* unloop   */
 #undef M4until /*125*/            /* until    */
-#undef M4variable /*126*/         /* while    */
+#undef M4variable /*126*/         /* variable */
 #undef M4while /*127*/            /* while    */
 #undef M4word /*128*/             /* word     */
 #define M4xor 129                 /* xor      */
@@ -172,7 +172,7 @@
 #define M4two_r_fetch 142        /* 2r@      */
 #undef M4colon_noname /*143*/    /* :noname  */
 #define M4ne 144                 /* <>       */
-#undef M4question_do /*145*/     /* ?do      */
+#undef M4question_do /*145*/     /* ?do      implemented in forth, no dedicated m4token */
 #undef M4action_of /*146*/       /* action_of    */
 #undef M4again /*147*/           /* again    implemented in forth, no dedicated m4token */
 #undef M4buffer_colon /*148*/    /* buffer:  */

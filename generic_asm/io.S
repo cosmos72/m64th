@@ -23,64 +23,75 @@
 
 
 FUNC_START(emit)
-        LOAD(  REG1,   AT(M4TH, M4TH_OFF_OUT_POS))
-        LOAD(  REG2,   AT(M4TH, M4TH_OFF_OUT_SIZE))
+        LOAD(  REG1,   AT(M4TH, M4TH_OFF_OUT))
+        LOAD(  REG2,   AT(REG1, IOBUF_OFF_POS))
+        LOAD(  REG3,   AT(REG1, IOBUF_OFF_SIZE))
         /* TODO flush output buffer */
-        JAE(   REG1,   REG2,  FUNC_SYM_NEXT(emit))
-        LOAD(  REG2,   AT(M4TH, M4TH_OFF_OUT_ADDR))
-        STORb( DTOPb,  AT(REG1, REG2, 1))
-        INC1(  REG1)
-        STOR(  REG1,   AT(M4TH, M4TH_OFF_OUT_POS))
+        JAE(   REG2,   REG3,  FUNC_SYM_NEXT(emit))
+        ADDI(  REG1,   IOBUF_OFF_ADDR, REG3)
+        STORb( DTOPb,  AT(REG3, REG2, 1))
+        INC1(  REG2)
+        STOR(  REG2,   AT(REG1, IOBUF_OFF_POS))
 FUNC_END(emit)
 
 
-/* in>addr ( -- addr ) get start of input buffer */
-FUNC_START(in_addr)
+/* in>iobuf ( -- io ) get current input as iobuf */
+FUNC_START(in_to_iobuf)
         DPUSH( DTOP)
-        LOAD(  DTOP,   AT(M4TH, M4TH_OFF_IN_ADDR))
-FUNC_END(in_addr)
+        LOAD(  DTOP,   AT(M4TH, M4TH_OFF_IN))
+FUNC_END(in_to_iobuf)
 
 
-/* in>pos ( -- addr ) same as >in */
-FUNC_START(in_pos)
-        DPUSH( DTOP)
-        ADDI(  M4TH,   M4TH_OFF_IN_POS, DTOP)
-FUNC_END(in_pos)
+/* iobuf>addr ( io -- c-addr ) get start of iobuf data */
+FUNC_START(iobuf_addr)
+        ADD2(  IMM(IOBUF_OFF_ADDR), DTOP)
+FUNC_END(iobuf_addr)
 
 
-/* in>size ( -- u ) get size of input buffer */
-FUNC_START(in_size)
-        DPUSH( DTOP)
-        LOAD(  DTOP,   AT(M4TH, M4TH_OFF_IN_SIZE))
-FUNC_END(in_size)
+/* iobuf>data ( io -- c-addr u ) get current content of iobuf */
+FUNC_START(iobuf_data)
+        ADDI(  DTOP,   IOBUF_OFF_ADDR, REG1)       /* a = iobuf.addr    */
+        LOAD(  REG2,   AT(DTOP, IOBUF_OFF_POS))    /* b = iobuf.pos     */
+        LOAD(  DTOP,   AT(DTOP, IOBUF_OFF_SIZE))   /* dtop = iobuf.size */
+        ADD2(  REG2,   REG1)     /* a = c-addr = iobuf.addr + iobuf.pos */
+        SUB2(  REG2,   DTOP)     /* dtop =  u  = iobuf.size - iobuf.pos */
+        DPUSH( REG1)
+FUNC_END(iobuf_data)
+
+
+/* iobuf>max ( io -- u ) get iobuf.max i.e. capacity */
+FUNC_START(iobuf_max)
+        LOAD(  DTOP,   AT(DTOP, IOBUF_OFF_MAX))
+FUNC_END(iobuf_max)
+
+
+/* iobuf>pos ( io -- addr ) get address of iobuf.pos */
+FUNC_START(iobuf_pos)
+        ADD2(  IMM(IOBUF_OFF_POS), DTOP)
+FUNC_END(iobuf_pos)
+
+
+/* iobuf>size ( io -- addr ) get address of iobuf.size */
+FUNC_START(iobuf_size)
+        ADD2(  IMM(IOBUF_OFF_SIZE), DTOP)
+FUNC_END(iobuf_size)
 
 
 /* ( -- char ) receive one character */
 FUNC_START(key)
         DPUSH( DTOP)
-        LOAD(  REG1,   AT(M4TH, M4TH_OFF_IN_POS))
-        LOAD(  REG2,   AT(M4TH, M4TH_OFF_IN_SIZE))
+        LOAD(  REG1,   AT(M4TH, M4TH_OFF_IN))
+        LOAD(  REG2,   AT(REG1, IOBUF_OFF_POS))
+        LOAD(  REG3,   AT(REG1, IOBUF_OFF_SIZE))
 #ifdef RFFF
         MOVE(  RFFF,   DTOP)
 #else
         MOVE(  IMM(-1),DTOP)
 #endif
         /* TODO refill input buffer */
-        JAE(   REG1,   REG2,  FUNC_SYM_NEXT(key))
-        LOAD(  REG2,   AT(M4TH, M4TH_OFF_IN_ADDR))
-        LD_ub( DTOP_ub,AT(REG1, REG2, 1))
-        INC1(  REG1)
-        STOR(  REG1,   AT(M4TH, M4TH_OFF_IN_POS))
+        JAE(   REG2,   REG3,  FUNC_SYM_NEXT(key))
+        ADDI(  REG1,   IOBUF_OFF_ADDR, REG4)
+        LD_ub( DTOP_ub,AT(REG4, REG2, 1))
+        INC1(  REG2)
+        STOR(  REG2,   AT(REG1, IOBUF_OFF_POS))
 FUNC_END(key)
-
-
-/* source ( -- c-addr u ) get current content of input buffer */
-FUNC_START(source)
-        DPUSH( DTOP)
-        LOAD(  REG1,   AT(M4TH, M4TH_OFF_IN_ADDR))
-        LOAD(  REG2,   AT(M4TH, M4TH_OFF_IN_POS))
-        LOAD(  DTOP,   AT(M4TH, M4TH_OFF_IN_SIZE))
-        ADD2(  REG2,   REG1)         /* a = c-addr */
-        SUB2(  REG2,   DTOP)         /* dtop = size - pos */
-        DPUSH( REG1)
-FUNC_END(source)

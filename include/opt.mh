@@ -26,8 +26,7 @@
  * for standard forth tokens (cell+ char+ ...)
  */
 #define OPT1_BODY(x, _)            /* note: '_' represents noop */                                 \
-    x((to_in), (in_pos))           /* >in      => in>pos        */                                 \
-        x((div_cell), (SZ_div))    /* /cell    => SZ/           */                                 \
+     x((div_cell), (SZ_div))    /* /cell    => SZ/           */                                 \
         x((cell_plus), (SZ_plus))  /* cell+    => SZ+           */                                 \
         x((cells), (SZ_times))     /* cells    => SZ*           */                                 \
         x((char_plus), (one_plus)) /* char+    => 1+            */                                 \
@@ -248,6 +247,7 @@
         x((two_dup, two_swap), (two_dup))                    /* 2dup  2swap   => 2dup           */ \
         x((two_dup, drop), (over))                           /* 2dup  drop    => over           */ \
         x((two_dup, nip), (dup))                             /* 2dup  nip     => dup            */ \
+        x((two_dup, swap), (over, trail))                    /* 2dup  swap    => over trail     */ \
         x((two_over, two_drop), _)                           /* 2over 2drop   =>                */ \
         x((two_over, two_nip), (two_drop, two_dup))          /* 2over 2nip    => 2drop 2dup     */ \
         x((two_from_r, two_to_r), _)                         /* 2r>   2>r     =>                */ \
@@ -293,6 +293,8 @@
         x((dup, xor), (drop, zero))                          /* dup  xor      => drop 0         */ \
         x((dup, sub), (drop, zero))                          /* dup  sub      => drop 0         */ \
         x((dup, swap), (dup))                                /* dup  swap     => dup            */ \
+        x((dup, trail), (dup, dup))                          /* dup  trail    => dup dup        */ \
+        x((dup, tuck), (dup, dup))                           /* dup  tuck     => dup dup        */ \
         x((i, drop), _)                                      /* i    drop     =>                */ \
         x((i, times), (i_times))                             /* i    *        => i*             */ \
         x((i, plus), (i_plus))                               /* i    +        => i+             */ \
@@ -322,6 +324,8 @@
         x((negate, squared), (squared))                      /* negate squared => squared       */ \
         x((over, drop), _)                                   /* over   drop   =>                */ \
         x((over, nip), (drop, dup))                          /* over   nip    => drop dup       */ \
+        x((over, minus_rot), (trail))                        /* over   -rot   => trail          */ \
+        x((over, swap), (trail))                             /* over   swap   => trail          */ \
         x((from_r, to_r), _)                                 /* r>     >r     =>                */ \
         x((r_from, drop), (r_from_drop))                     /* r>     drop   => r>drop         */ \
         x((r_from_drop, to_r), (r_store))                    /* r>drop >r     => r!             */ \
@@ -332,6 +336,7 @@
         x((swap, times), (times))                            /* swap   *      => *              */ \
         x((swap, plus), (plus))                              /* swap   +      => +              */ \
         x((swap, minus), (sub))                              /* swap   -      => sub            */ \
+        x((swap, two_dup), (tuck, over))                     /* swap   2dup   => tuck over      */ \
         x((swap, less), (more))                              /* swap   <      => >              */ \
         x((swap, less_equal), (more_equal))                  /* swap   <=     => >=             */ \
         x((swap, ne), (ne))                                  /* swap   <>     => <>             */ \
@@ -353,7 +358,15 @@
         x((swap, u_more), (u_less))                          /* swap   u>     => u<             */ \
         x((swap, u_more_equal), (u_less_equal))              /* swap   u>=    => u<=            */ \
         x((swap, xor), (xor))                                /* swap   xor    => xor            */ \
+        x((trail, drop), (drop, dup))                        /* trail  drop   => drop dup       */ \
+        x((trail, nip), _)                                   /* trail  nip    =>                */ \
+        x((trail, rot), (over))                              /* trail  rot    => over           */ \
+        x((trail, swap), (over))                             /* trail  swap   => over           */ \
+        x((trail, tuck), (two_dup))                          /* trail  tuck   => 2dup           */ \
         x((tuck, drop), (swap))                              /* tuck   drop   => swap           */ \
+        x((tuck, nip), (nip, dup))                           /* tuck   nip    => nip dup        */ \
+        x((tuck, rot), (dup))                                /* tuck   rot    => dup            */ \
+        x((tuck, minus_rot), (dup))                          /* tuck   -rot   => dup            */ \
         x((xor, invert), (invert, xor))                      /* xor    invert => invert xor     */
 #if 0
         x((one_plus, byte_fetch), (byte_bracket1))           /* 1+    byte@   => byte[1]      */ \
@@ -382,8 +395,14 @@
     x((drop, drop), (two_drop))    /* drop drop       => 2drop        */                           \
         x((over, over), (two_dup)) /* over over       => 2dup         */
 
-#define OPT3_BODY(x, _)                   /* note: '_' represents noop       */                    \
-    x((r_from, plus, to_r), (r_plus))     /* r>   +   >r    => r+            */                    \
-        x((lit, T(0xff), and), (to_char)) /* 0xff and       => to-char       */
+#define OPT3_BODY(x, _)                           /* note: '_' represents noop       */            \
+    x((r_from, plus, to_r), (r_plus))             /* r>    +   >r      => r+          */           \
+        x((lit, T(0xff), and), (to_char))         /* 0xff  and         => to-char     */           \
+        x((over, plus, swap), (bounds))           /* over  +     swap  => bounds      */           \
+        x((over, trail, two_nip), (swap))         /* over  trail 2nip  => swap        */           \
+        x((over, trail, two_swap), (tuck, trail)) /* over  trail 2swap => tuck trail  */           \
+        x((over, trail, swap), (two_dup))         /* over  trail swap  => 2dup        */           \
+        x((swap, over, plus), (bounds))           /* swap  over  +     => bounds      */           \
+        x((trail, plus, swap), (bounds))          /* trail +     swap  => bounds      */
 
 #endif /* M4TH_INCLUDE_OPT_MH */

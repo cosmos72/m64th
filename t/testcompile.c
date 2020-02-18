@@ -147,9 +147,10 @@ static m4cell m4testcompile_run(m4th *m, const m4testcompile *t, m4code t_codege
     w = m->w = (m4word *)m->mem.start;
     memset(w, '\0', sizeof(m4word));
 
-    assert(input_n <= m->in.size);
-    m->in.pos = m->in.size - input_n;
-    memcpy(&m->in.addr[m->in.pos], t->input, input_n);
+    assert(input_n <= m->in->max);
+    m->in->pos = 0;
+    m->in->size = input_n;
+    memcpy(m->in->addr, t->input, input_n);
 
     m->mem.curr = (m4char *)(w + 1);
     m4countedstack_copy(&t->dbefore, &m->dstack);

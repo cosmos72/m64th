@@ -492,16 +492,16 @@ void m4slice_copy_to_code(const m4slice src, m4code *dst) {
 
 /* ----------------------- m4iobuf ----------------------- */
 
-static m4iobuf m4iobuf_alloc(m4cell_u size) {
-    m4char *p = (m4char *)m4mem_allocate(size * sizeof(m4char));
-    m4iobuf ret = {p, size, 0};
-    return ret;
+static m4iobuf *m4iobuf_new(m4cell_u capacity) {
+    m4iobuf *p = (m4iobuf *)m4mem_allocate(sizeof(m4iobuf) + capacity * sizeof(m4char));
+    p->func = (m4xt)WORD_SYM(two_drop).data;
+    p->handle = p->pos = p->size = 0;
+    p->max = capacity;
+    return p;
 }
 
-static void m4iobuf_free(m4iobuf *arg) {
-    if (arg) {
-        m4mem_free(arg->addr);
-    }
+static void m4iobuf_del(m4iobuf *arg) {
+    m4mem_free(arg);
 }
 
 /* ----------------------- m4stack ----------------------- */
@@ -724,9 +724,8 @@ m4th *m4th_new() {
     m->rstack = m4stack_alloc(rstack_n);
     m->ip = NULL;
     m->ftable = ftable;
-    m->in = m4iobuf_alloc(inbuf_n);
-    m->in.pos = m->in.size;
-    m->out = m4iobuf_alloc(outbuf_n);
+    m->in = m4iobuf_new(inbuf_n);
+    m->out = m4iobuf_new(outbuf_n);
     m->state = m4th_state_interpret;
     memset(m->c_regs, '\0', sizeof(m->c_regs));
     m->user_size = ((m4cell)&m->user_var[0] - (m4cell)&m->user_size) / SZ;
@@ -745,8 +744,8 @@ m4th *m4th_new() {
 void m4th_del(m4th *m) {
     if (m) {
         m4cbuf_free(&m->mem);
-        m4iobuf_free(&m->out);
-        m4iobuf_free(&m->in);
+        m4iobuf_del(m->out);
+        m4iobuf_del(m->in);
         m4stack_free(&m->rstack);
         m4stack_free(&m->dstack);
         m4mem_free(m);
@@ -760,8 +759,8 @@ void m4th_clear(m4th *m) {
     m->w = NULL;
     m->ip = NULL;
     memset(m->c_regs, '\0', sizeof(m->c_regs));
-    m->in.pos = m->in.size;
-    m->out.pos = 0;
+    m->in->pos = m->in->size;
+    m->out->pos = 0;
     m->mem.curr = m->mem.start;
     m->err = 0;
 }

@@ -69,7 +69,8 @@ WORD_START(q_if_zero, q_if)
         _compile_init_, _compile_unresolved_jump_, _q_if_zero_, _if_, exit
     )
 WORD_END(q_if_zero)
-WORD(c_arg_0,          q_if_zero,      DSTACK(0,0), RSTACK(0,0), M4FLAG_INLINE_ALWAYS)
+WORD(bounds,           q_if_zero,      DSTACK(2,2), RSTACK(0,0), M4FLAG_PURE)
+WORD(c_arg_0,          bounds,         DSTACK(0,0), RSTACK(0,0), M4FLAG_INLINE_ALWAYS)
 WORD(c_arg_1,          c_arg_0,        DSTACK(1,0), RSTACK(0,0), M4FLAG_INLINE_ALWAYS)
 WORD(c_arg_2,          c_arg_1,        DSTACK(2,0), RSTACK(0,0), M4FLAG_INLINE_ALWAYS)
 WORD(c_arg_3,          c_arg_2,        DSTACK(3,0), RSTACK(0,0), M4FLAG_INLINE_ALWAYS)
@@ -103,8 +104,8 @@ WORD_START(if_zero, i_prime)
         _compile_init_, _compile_unresolved_jump_, _if_zero_, _if_, exit
     )
 WORD_END(if_zero)
-/* ( -- c-addr u ) read blank-delimited string from IN. TODO: refill */
-WORD_START(in_parse_nonblanks, if_zero)
+/* ( io -- c-addr u ) read blank-delimited string from iobuf. TODO: refill */
+WORD_START(iobuf_read_nonblanks, if_zero)
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_DSTACK(0,2)
     WORD_RSTACK(0,0)
@@ -112,21 +113,23 @@ WORD_START(in_parse_nonblanks, if_zero)
     WORD_NATIVE_NONE()
     WORD_CODE(
         /*
-         * in-skip-blanks
-         * source chars over                         ( addr maxn addr   )
-         * + over                                    ( addr end addr    )
-         * 0 -rot                                    ( addr 0 end addr  )
-         * ?do                                       ( addr u           ) (R: end addr-i )
-         *   i c@ bl <=                              ( addr u t|f       ) (R: end addr-i )
-         *   if                                      ( addr u           ) (R: end addr-i )
-         *     leave                                 ( addr u           )
-         *   then                                    ( addr u           ) (R: end addr-i )
-         *   1+                                      ( addr u'          ) (R: end addr-i )
-         * loop            ( better: 1 chars +loop ) ( addr u'          )
-         * dup in>pos +!                             ( addr u'          )
+         * dup iobuf-skip-blanks                     ( io                  )
+         * dup iobuf>data bounds                     ( io end addr         )
+         * tuck                                      ( io addr end addr    )
+         * 0 -rot                                    ( io addr 0 end addr  )
+         * ?do                                       ( io addr u           ) (R: end addr-i )
+         *   i c@ bl <=                              ( io addr u t|f       ) (R: end addr-i )
+         *   if                                      ( io addr u           ) (R: end addr-i )
+         *     leave                                 ( io addr u           )
+         *   then                                    ( io addr u           ) (R: end addr-i )
+         *   1+                                      ( io addr u'          ) (R: end addr-i )
+         * loop            ( better: 1 chars +loop ) ( io addr u           )
+         * rot trail iobuf>pos                       ( addr u u pos        )
+         * +!                                        ( addr u              )
          */
-        _call_, WADDR(in_skip_blanks),
-        source, chars, over, plus, over,
+        dup, _call_, WADDR(iobuf_skip_blanks),
+        dup, iobuf_data, bounds,
+        tuck,
         zero, minus_rot,
         _q_do_, T(12),
             i, c_fetch, bl, less_equal,
@@ -135,29 +138,30 @@ WORD_START(in_parse_nonblanks, if_zero)
             then,
             one_plus,
         _loop_, T(-12),
-        dup, in_pos, plus_store,
-        exit
+        rot, trail, iobuf_pos,
+        plus_store, exit
     )
-WORD_END(in_parse_nonblanks)
-/* ( -- ) skip blanks from IN. TODO: refill */
-WORD_START(in_skip_blanks, in_parse_nonblanks)
+WORD_END(iobuf_read_nonblanks)
+/* ( io -- ) skip blanks from iobuf. TODO: refill */
+WORD_START(iobuf_skip_blanks, iobuf_read_nonblanks)
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_CODE(
-        /* 0 source chars over + swap                  ( 0 end addr      )
-         * ?do                                         ( u               ) (R: end addr-i )
-         *    i c@ bl >                                ( u t|f           ) (R: end addr-i )
-         *    if                                       ( u               ) (R: end addr-i )
-         *       leave                                 ( u               )
-         *    then                                     ( u               ) (R: end addr-i )
-         *    one_plus,                                ( u'              ) (R: end addr-i )
-         * loop              ( better: 1 chars +loop ) ( u               )
-         * in>pos +!                                   (                 )
+        /* 0 over iobuf>data bounds                    ( io 0 end addr   )
+         * ?do                                         ( io u            ) (R: end addr-i )
+         *    i c@ bl >                                ( io u t|f        ) (R: end addr-i )
+         *    if                                       ( io u            ) (R: end addr-i )
+         *       leave                                 ( io u            )
+         *    then                                     ( io u            ) (R: end addr-i )
+         *    one_plus,                                ( io u'           ) (R: end addr-i )
+         * loop              ( better: 1 chars +loop ) ( io u            )
+         * swap iobuf>pos                              ( u pos           )
+         * +!                                          
          */
-        zero, source, chars, over, plus, swap,
+        zero, over, iobuf_data, bounds,
         _q_do_, T(12),
             i, c_fetch, bl, more,
             _if_, T(2),
@@ -165,10 +169,11 @@ WORD_START(in_skip_blanks, in_parse_nonblanks)
             then,
             one_plus,
         _loop_, T(-12),
-        in_pos, plus_store, exit
+        swap, iobuf_pos,
+        plus_store, exit
     )
-WORD_END(in_skip_blanks)
-WORD(noop,             in_skip_blanks, DSTACK(0,0), RSTACK(0,0), WORD_PURE)
+WORD_END(iobuf_skip_blanks)
+WORD(noop,             iobuf_skip_blanks, DSTACK(0,0), RSTACK(0,0), WORD_PURE)
 WORD(r_from_drop,      noop,           DSTACK(0,0), RSTACK(1,0), WORD_R_PURE)
 WORD(r_plus,           r_from_drop,    DSTACK(1,0), RSTACK(1,1), WORD_R_PURE)
 WORD(r_store,          r_plus,         DSTACK(1,0), RSTACK(1,1), WORD_R_PURE)
@@ -264,7 +269,8 @@ WORD_START(string_to_number, to_uint)
 WORD_END(string_to_number)
 /* string= ( addr1 addr2 u -- addr1 addr2 u t|f )   \ t if the two strings have the same content */
 WORD(string_equal,   string_to_number, DSTACK(3,4), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD(u_less_equal,     string_equal,   DSTACK(2,1), RSTACK(0,0), WORD_PURE)
+WORD(trail,            string_equal,   DSTACK(2,3), RSTACK(0,0), WORD_PURE)
+WORD(u_less_equal,     trail,          DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(u_more_equal,     u_less_equal,   DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD_START(valid_base_q, u_more_equal)
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
