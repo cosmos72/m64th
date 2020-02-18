@@ -143,7 +143,7 @@
 #undef M4source /*113*/           /* source   implemented in forth, no dedicated m4token */
 #undef M4space /*114*/            /* space    */
 #undef M4spaces /*115*/           /* spaces   */
-#undef M4state /*116*/            /* state    */
+#define M4state 116               /* state    */
 #define M4swap 117                /* swap     */
 #define M4then 118                /* then     */
 #undef M4type /*119*/             /* type     */

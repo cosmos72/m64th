@@ -104,8 +104,43 @@ WORD_START(if_zero, i_prime)
         _compile_init_, _compile_unresolved_jump_, _if_zero_, _if_, exit
     )
 WORD_END(if_zero)
+/* 
+ * classic forth interpreter/compiler iteration:
+ *    read a name i.e. a non-blank string from IN,
+ *    execute STRING>WORD which searches the current search order for name,
+ *    and, if a word is found:
+ *       if interpreting, perform the interpretation semantics of the word
+ *       otherwise, perform the compilation semantics of the word
+ *    otherwise, execute STRING>NUMBER which attempts to convert name to a number and,
+ *    if successful:
+ *       place the number on the data stack
+ *       if compiling, execute the word LITERAL, which pops the number and compiles code
+ *         that when executed will place the number on the data stack
+ *    otherwise, set an error condition
+ */
+WORD_START(interpret,  if_zero)
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_DSTACK(0,1)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_CODE(
+        /* parse-name 2dup                              ( c-addr u c-addr u        )
+         * string>word                                  ( c-addr u w|0             )
+         * ?if                      ( is a word )       ( c-addr u w|0             )
+         *    nip nip (repl-word) exit                  (                          )
+         * then                                         ( c-addr u 0               )
+         * drop 2dup string>number                      ( c-addr u x t|f           )
+         * if                       ( is a number )     ( c-addr u x               )
+         *    nip nip (repl-number) exit                (                          )
+         * then                     ( neither )         ( c-addr u x               )
+         * drop (repl-err-notfound)                     (                          )
+         */
+        exit
+    )
+WORD_END(interpret)
 /* ( io -- c-addr u ) read blank-delimited string from iobuf. TODO: refill */
-WORD_START(iobuf_read_nonblanks, if_zero)
+WORD_START(iobuf_read_nonblanks, interpret)
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_DSTACK(0,2)
     WORD_RSTACK(0,0)

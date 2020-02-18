@@ -33,7 +33,7 @@ struct m4pair_s {
 };
 
 /** wrapper around string>number */
-m4pair m4string_to_int(m4th *m, m4string str);
+m4pair m4string_to_number(m4th *m, m4string str);
 
 /** temporary C implementation of (read) */
 m4string m4th_parse_name(m4th *m);

@@ -97,7 +97,7 @@ FUNC_RAWEND(bye)
 
 /* pop 0 args, prepare for C function call */
 FUNC_START(c_arg_0)
-        DPUSH( DTOP) /* c-call will reload DTOP */
+        DPUSH( DTOP) /* c-ret-[N] will reload DTOP */
 FUNC_END(c_arg_0)
 
 
@@ -117,7 +117,7 @@ FUNC_END(c_arg_2)
 /* pop 3 args, prepare them for C function call */
 FUNC_START(c_arg_3)
         MOVE(  DTOP,   x2)
-        ldp    x1, x0, AT(DSTK), IMM(SZ2); /* post-increment */
+        DPOP2( x1, x0)
 FUNC_END(c_arg_3)
 
 

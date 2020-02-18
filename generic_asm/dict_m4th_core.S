@@ -33,7 +33,9 @@ DICTNAME(9, "m4th-core", m4th_core)
 DICT_WORDS_M4TH_CORE(WORDNAME)
 
 WORD(div_token,        div_token,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(in_to_iobuf,      div_token,      DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
+/* ( -- addr) get address of m4th.err. pure: m4th is a per-thread constant */
+WORD(m4th_err,         div_token,      DSTACK(0,1), RSTACK(0,0), WORD_PURE)
+WORD(in_to_iobuf,      m4th_err,       DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 WORD(iobuf_addr,       in_to_iobuf,    DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(iobuf_data,       iobuf_addr,     DSTACK(1,2), RSTACK(0,0), WORD_IMPURE)
 WORD(iobuf_max,        iobuf_data,     DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
@@ -42,7 +44,7 @@ WORD(iobuf_size,       iobuf_pos,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(searchorder_i,    iobuf_size,     DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
 /* searchorder-n ( -- addr ) get address of searchorder count */
 WORD(searchorder_n,    searchorder_i,  DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
-/* string>word ( c-addr u -- w|0 ) find word name in search order */
+/* string>word ( c-addr u -- w|0 ) find word name in current search order */
 WORD_START(string_to_word, searchorder_n)
     WORD_FLAGS(0)
     WORD_DSTACK(2,1)

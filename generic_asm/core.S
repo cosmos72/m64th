@@ -57,18 +57,11 @@ FUNC_START(_ip_to_data_addr_)
 FUNC_END(_ip_to_data_addr_)
 
 
-/* user-var ( -- addr ) must be followed by index. get address of i-th user variable  */
-FUNC_START(user_var)
+/* ( -- addr ) get address of m4th.err */
+FUNC_START(m4th_err)
         DPUSH( DTOP)
-        LD_ut( REG1_ut,    AT(IP)) /* a = index */
-#ifdef __x86_64__
-        lea    M4TH_OFF_USER(M4TH, REG1, SZ), DTOP;
-#else
-        ADD2(  IMM(M4TH_OFF_USER/SZ), REG1)
-        ADD4(  M4TH,       REG1, PSZ, DTOP)
-#endif
-        NEXTT()
-FUNC_RAWEND(user_var)
+        ADDI(  M4TH,   M4TH_OFF_ERR,   DTOP)
+FUNC_END(m4th_err)
 
 
 /* searchorder-i ( u -- addr ) get address of i-th wordlist in search order */
@@ -93,6 +86,20 @@ FUNC_START(word_to_code) /* ( w -- taddr n ) */
         LD_uh( DTOP_uh,    AT(DTOP, WORD_OFF_CODE_N))   /* DTOP = w.code_n    */
         DPUSH( REG1)                                    /*  d2  = w.code      */
 FUNC_END(word_to_code)
+
+
+/* user-var ( -- addr ) must be followed by index. get address of i-th user variable  */
+FUNC_START(user_var)
+        DPUSH( DTOP)
+        LD_ut( REG1_ut,    AT(IP)) /* a = index */
+#ifdef __x86_64__
+        lea    M4TH_OFF_USER(M4TH, REG1, SZ), DTOP;
+#else
+        ADD2(  IMM(M4TH_OFF_USER/SZ), REG1)
+        ADD4(  M4TH,       REG1, PSZ, DTOP)
+#endif
+        NEXTT()
+FUNC_RAWEND(user_var)
 
 
 FUNC_START(word_to_code_n) /* ( w -- n ) */

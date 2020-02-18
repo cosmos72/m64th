@@ -150,3 +150,9 @@ FUNC_START(_compile_unresolved_jump_)    /* [compile-unresolved-jump] */
         LD_ut( DTOP_ut,    AT(IP, SZt))                /* dtop = category            */
         NEXTT2()                                       /* skip two m4token           */
 FUNC_RAWEND(_compile_unresolved_jump_)
+
+
+FUNC_START(state)
+        DPUSH( DTOP)
+        ADDI(  M4TH, M4TH_OFF_STATE, DTOP)
+FUNC_END(state)

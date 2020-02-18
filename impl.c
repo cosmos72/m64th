@@ -72,7 +72,7 @@ static inline m4cell dpop(m4th *m) {
 }
 
 /** wrapper around string>number */
-m4pair m4string_to_int(m4th *m, m4string str) {
+m4pair m4string_to_number(m4th *m, m4string str) {
     m4pair ret = {};
     dpush(m, (m4cell)str.addr);
     dpush(m, (m4cell)str.n);
@@ -111,7 +111,7 @@ m4pair m4th_resolve(m4th *m, m4string key) {
         ret.w = w;
         ret.err = m4num_is_word;
     } else {
-        ret = m4string_to_int(m, key);
+        ret = m4string_to_number(m, key);
     }
     return ret;
 }

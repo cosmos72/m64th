@@ -38,7 +38,7 @@
     X(7, "2dup2>r", two_dup_two_to_r)                                                              \
     X(4, "2nip", two_nip)                                                                          \
     X(7, "2r>2drop", two_r_from_two_drop)                                                          \
-    X(6, "bounds", bounds) /* ( c-addr u -- c-addr+u c-addr ) get string bounds */                 \
+    X(6, "bounds", bounds)   /* ( c-addr u -- c-addr+u c-addr ) get string bounds */               \
     X(7, "c-arg-0", c_arg_0) /* prepare 0 args for C function call    */                           \
     X(7, "c-arg-1", c_arg_1) /* prepare 1 arg  for C function call    */                           \
     X(7, "c-arg-2", c_arg_2) /* prepare 2 args for C function call    */                           \
@@ -122,6 +122,7 @@
     X(4, "?if0", q_if_zero)           /* alias of dup 0= if                             */         \
     X(3, "if0", if_zero)              /* alias of 0= if                                 */         \
     /*                           ( -- c-addr u ) read blank-delimited string from iobuf */         \
+    X(9, "interpret", interpret) /* one iteration of forth interpret/compile loop */               \
     X(20, "iobuf-read-nonblanks", iobuf_read_nonblanks)                                            \
     X(17, "iobuf-skip-blanks", iobuf_skip_blanks) /* skip chars <= space from iobuf     */         \
     /* ( caddr n -- caddr' n' x t|f ) convert string to number, recognizing base, sign prefix */   \
@@ -130,6 +131,7 @@
 
 /* ------- m4th-core ---------------------------------------------------------------------------- */
 #define DICT_TOKENS_M4TH_CORE(X)                                                                   \
+    X(8, "m4th>err", m4th_err)      /* (    -- addr ) get address of m4th.err            */        \
     X(8, "in>iobuf", in_to_iobuf)   /* (    -- io   ) get current input as iobuf         */        \
     X(10, "iobuf>addr", iobuf_addr) /* ( io -- c-addr   ) get start of iobuf data buffer */        \
     X(10, "iobuf>data", iobuf_data) /* ( io -- c-addr u ) get iobuf current content      */        \
@@ -201,6 +203,9 @@
 
 #define DICT_WORDS_M4TH_IMPL(X)                                                                    \
     DICT_TOKENS_M4TH_IMPL(X)                                                                       \
+    X(19, "(repl-err-notfound)", _repl_err_notfound_)                                              \
+    X(13, "(repl-number)", _repl_number_)                                                          \
+    X(11, "(repl-word)", _repl_word_)                                                              \
     X(23, "[any-token-gives-cell?]", _any_token_gives_cell_q_)                                     \
     X(8, "[inline]", _inline_)      /* ( w -- ) inline a call to w into word being compiled */     \
     X(10, "[optimize]", _optimize_) /* optimize word being compiled  */                            \

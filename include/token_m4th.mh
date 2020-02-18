@@ -132,12 +132,12 @@
 #define M4iobuf_pos 612      /* iobuf>pos  ( io -- addr ) get address of iobuf position    */
 #define M4iobuf_size 613     /* iobuf>size ( io -- u    ) get address of iobuf size        */
 #undef M4____gap             /*                       */
+#define M4m4th_err 615       /* (   -- addr ) get address of m4th.err */
 #undef M4____gap             /*                       */
-#define M4searchorder_i 616  /* ( u -- addr ) get address of searchorder i-th element  */
-#define M4searchorder_n 617  /* (   -- addr ) get address of searchorder count         */
+#define M4searchorder_i 617  /* ( u -- addr ) get address of searchorder i-th element  */
+#define M4searchorder_n 618  /* (   -- addr ) get address of searchorder count         */
 #undef M4____gap             /*                       */
-#undef M4____gap             /*                       */
-#define M4user_var 618       /* user-var ( -- addr ) must be followed by index of user var */
+#define M4user_var 620       /* user-var ( -- addr ) must be followed by index of user var */
 #undef M4____gap             /*                       */
 #undef M4____gap             /*                       */
 #define M4word_to_code 623   /* word>code   ( w  -- addr n  ) get code array from word */
