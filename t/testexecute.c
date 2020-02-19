@@ -454,7 +454,7 @@ static m4testexecute testexecute_d[] = {
     {"' eight execute", {m4execute, m4bye}, {{1, {DXT(eight)}}, {}}, {{1, {8}}, {}}, {}},
     {"6 7 ' plus execute", {m4execute, m4bye}, {{3, {6, 7, DXT(plus)}}, {}}, {{1, {13}}, {}}, {}},
     {"(ip)", {m4_ip_, m4bye}, {{}, {}}, {{1, {-1 /* fixed by m4testexecute_fix() */}}, {}}, {}},
-#if 0 // currently broken
+#if 0 /* currently broken */
     {"(ip>data>addr)",
      {m4_ip_to_data_addr_, m4bye},
      {{}, {}},
@@ -887,12 +887,12 @@ static m4testexecute testexecute_f[] = {
     {"wordlist-find",
      {CALL(wordlist_find), m4bye},
      {{3, {(m4cell) "dup", 3, (m4cell)&m4wordlist_forth}}, {}},
-     {{1, {(m4cell)&WORD_SYM(dup)}}, {}},
+     {{2, {(m4cell)&WORD_SYM(dup), ttrue}}, {}},
      {}},
     {"wordlist-find",
      {CALL(wordlist_find), m4bye},
      {{3, {TESTSTR(_0az), (m4cell)&m4wordlist_forth}}, {}},
-     {{1, {0}}, {}},
+     {{2, {0, 0}}, {}},
      {}},
     {"search-wordlist",
      {CALL(search_wordlist), m4bye},
@@ -912,9 +912,13 @@ static m4testexecute testexecute_f[] = {
     {"string>word",
      {CALL(string_to_word), m4bye},
      {{2, {(m4cell) "?do", 3}}, {}},
-     {{1, {(m4cell)&WORD_SYM(question_do)}}, {}},
+     {{2, {(m4cell)&WORD_SYM(question_do), 1}}, {}},
      {}},
-    {"string>word", {CALL(string_to_word), m4bye}, {{2, {TESTSTR(_0az)}}, {}}, {{1, {0}}, {}}, {}},
+    {"string>word",
+     {CALL(string_to_word), m4bye},
+     {{2, {TESTSTR(_0az)}}, {}},
+     {{2, {0, 0}}, {}},
+     {}},
     {"' (if) word-inline?",
      {CALL(word_inline_query), m4bye},
      {{1, {(m4cell)&WORD_SYM(_if_)}}, {}},
@@ -990,7 +994,7 @@ static void m4testexecute_fix(m4testexecute *t, const m4code_pair *pair) {
         t->after.d.data[0] = (m4cell)pair->first.addr;
         break;
     case m4_ip_to_data_addr_:
-        // TODO t->after.d.data[0] = (m4cell)w->data;
+        /* TODO t->after.d.data[0] = (m4cell)w->data; */
         break;
     case m4word_to_name:
         t->after.d.data[0] = (m4cell)m4word_name((const m4word *)t->before.d.data[0]).addr;

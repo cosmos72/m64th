@@ -127,7 +127,7 @@ FUNC_END(_compile8s_)
 
 
 /**
- * ( -- jump_address jump_token ) must be followed by m4token and it category.
+ * ( -- jump_address jump_token ) must be followed by m4token and its category.
  * append m4token and T(-1) to XT being compiled,
  * then push to dstack jump_address (= # of tokens of XT being compiled) and category.
  */

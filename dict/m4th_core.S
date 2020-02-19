@@ -44,10 +44,13 @@ WORD(iobuf_size,       iobuf_pos,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(searchorder_i,    iobuf_size,     DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
 /* searchorder-n ( -- addr ) get address of searchorder count */
 WORD(searchorder_n,    searchorder_i,  DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
-/* string>word ( c-addr u -- w|0 ) find word name in current search order */
+/*
+ * string>word ( c-addr u -- w|0 -1|0|1 ) find word name in current search order.
+ * return 1 if word is immediate, else -1
+ */
 WORD_START(string_to_word, searchorder_n)
     WORD_FLAGS(0)
-    WORD_DSTACK(2,1)
+    WORD_DSTACK(2,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
@@ -55,24 +58,24 @@ WORD_START(string_to_word, searchorder_n)
         /* searchorder-n @ 0                       ( c-addr u n 0              )
          * ?do                                     ( c-addr u                  ) (R: n i )
          *    2dup i searchorder-i @               ( c-addr u c-addr u wid     ) (R: n i )
-         *    wordlist-find                        ( c-addr u w|0              ) (R: n i )
+         *    wordlist-find                        ( c-addr u w|0 -1|0|1       ) (R: n i )
          *    ?if
-         *       nip nip unloop exit               ( w                         )
-         *    then                                 ( c-addr u 0                ) (R: n i )
-         *    drop                                 ( c-addr u                  ) (R: n i )
+         *       2nip unloop exit                  ( w -1|1                    )
+         *    then                                 ( c-addr u 0 0              ) (R: n i )
+         *    2drop                                ( c-addr u                  ) (R: n i )
          * loop                                    ( c-addr u                  )
-         * 2drop 0                                 ( 0                         )
+         * 2drop 0 0                               ( 0 0                       )
          */
         searchorder_n, fetch, zero,
-        _q_do_, T(15+SZ/SZt),
+        _q_do_, T(14+SZ/SZt),
             two_dup, i, searchorder_i, fetch,
             _call_, WADDR(wordlist_find),
-            _q_if_, T(5),
-                nip, nip, unloop, exit,
+            _q_if_, T(4),
+                two_nip, unloop, exit,
             then,
-            drop,
-        _loop_, T(-15-SZ/SZt),
-        two_drop, zero, exit
+            two_drop,
+        _loop_, T(-14-SZ/SZt),
+        two_drop, zero, zero, exit
     )
 WORD_END(string_to_word)
 WORD(to_token,         string_to_word, DSTACK(1,1), RSTACK(0,0), WORD_PURE)
@@ -111,7 +114,7 @@ WORD(word_to_flags,    word_to_code_n, DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M
 WORD(word_to_name,     word_to_flags,  DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 WORD(word_to_prev,     word_to_name,   DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 WORD(word_to_xt,       word_to_prev,   DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-/* wordlist-find ( c-addr u wid -- w|0 ) search word name in wordlist */
+/* wordlist-find ( c-addr u wid -- w|0 -1|0|1 ) search word name in wordlist */
 WORD_START(wordlist_find, word_to_xt)
     WORD_FLAGS(M4FLAG_MEM_FETCH) /* multiple exits => cannot inline */
     WORD_DSTACK(3,2)
@@ -121,31 +124,35 @@ WORD_START(wordlist_find, word_to_xt)
     WORD_CODE(
         /* wordlist-last                                       ( addr u w          )
          * begin
-         *    ?if0 nip nip exit                                ( 0                 )
+         *    ?if0                                             ( addr u 0          )
+         *       nip nip 0 exit                                ( 0 0               )
          *    then                                             ( addr u w          )
          *    dup >r word>name                                 ( addr u addr' u'   ) (R: w  )
          *    rot tuck                                         ( addr addr' u u' u ) (R: w  )
          *    = if                                             ( addr addr' u      ) (R: w  )
-         *       string= if                                    ( addr addr' u      ) (R: w  )
-         *          2drop drop r> exit                         ( w                 )
-         *       then                                          ( addr addr' u      ) (R: w  )
+         *       string<> while                                ( addr addr' u      ) (R: w  )
          *    then                                             ( addr addr' u      ) (R: w  )
          *    nip r> word>prev                                 ( addr u     w'     )
-         * again
+         * repeat
+         * 2drop drop r> dup                                   ( w w               )
+         * word>flags M4FLAG_IMMEDIATE and 0=                  ( w t|f             )
+         * 2* 1+ exit                                          ( w -1|1            )
          */
         wordlist_last,
         begin,
-            _q_if_zero_, T(4), nip, nip, exit,
+            _q_if_zero_, T(5),
+                nip, nip, zero, exit,
             then,
             dup, to_r, word_to_name,
             rot, tuck,
-            equal, _if_, T(9),
-                string_equal, _if_, T(5),
-                    two_drop, drop, r_from, exit,
-                then,
+            equal, _if_, T(4),
+                string_equal, _while_zero_, T(6),
             then,
             nip, r_from, word_to_prev,
-        _again_, T(-28)
+        _repeat_, T(-24),
+        two_drop, drop, r_from, dup,
+        word_to_flags, _lit_, T(M4FLAG_IMMEDIATE), and, zero_equal,
+        two_times, one_plus, exit
     )
 WORD_END(wordlist_find)
 WORD(wordlist_last,  wordlist_find,    DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)

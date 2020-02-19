@@ -40,7 +40,7 @@ void m4th_crcinit(m4cell table[256]) {
         for (j = 0; j < 8; j++) {
             if (val & 1) {
                 val >>= 1;
-                // 0x82f63b78 is crc-32c. Use 0xedb88320 for vanilla crc-32.
+                /* 0x82f63b78 is crc-32c. Use 0xedb88320 for vanilla crc-32. */
                 val ^= 0x82f63b78;
             } else {
                 val >>= 1;
@@ -98,6 +98,7 @@ static const m4word *m4th_string_to_word(m4th *m, m4string key) {
     dpush(m, (m4cell)key.addr);
     dpush(m, key.n);
     m4th_execute_word(m, &m4w_string_to_word);
+    dpop(m); /* drop immediate flag */
     return (m4word *)dpop(m);
 }
 
@@ -132,7 +133,7 @@ static m4cell m4th_compile_number(m4th *m, m4cell num) {
 m4cell m4th_eval(m4th *m, m4pair arg) {
     const m4char is_interpreting = m4th_state(m) == m4state_interpret;
 
-    if (arg.err == m4num_is_word && arg.num != 0) {
+    if (arg.err == m4num_is_word && arg.w != NULL) {
         const m4word *w = arg.w;
         if (is_interpreting || (w->flags & m4flag_immediate)) {
             if (is_interpreting && (w->flags & m4flag_compile_only)) {

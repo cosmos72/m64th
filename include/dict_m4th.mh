@@ -153,15 +153,16 @@
 
 #define DICT_WORDS_M4TH_CORE(X)                                                                    \
     DICT_TOKENS_M4TH_CORE(X)                                                                       \
-    X(11, "string>word", string_to_word) /* ( c-addr u -- w|0 ) find word name in search order */  \
-    X(6, "/token", div_token)            /* alias of _SZt_div,    no dedicated m4token */          \
-    X(8, "to-token", to_token)           /* alias of to_SZtu,     no dedicated m4token */          \
-    X(6, "token!", token_store)          /* alias of _SZtu_store, no dedicated m4token */          \
-    X(6, "token@", token_fetch)          /* alias of _SZtu_fetch, no dedicated m4token */          \
-    X(6, "token+", token_plus)           /* alias of _SZt_plus,   no dedicated m4token */          \
-    X(6, "tokens", tokens)               /* alias of _SZt_times,  no dedicated m4token */          \
+    X(11, "string>word",                                                                           \
+      string_to_word)           /* ( c-addr u -- w|0 -1|0|1 ) find name in search order */         \
+    X(6, "/token", div_token)   /* alias of _SZt_div,    no dedicated m4token */                   \
+    X(8, "to-token", to_token)  /* alias of to_SZtu,     no dedicated m4token */                   \
+    X(6, "token!", token_store) /* alias of _SZtu_store, no dedicated m4token */                   \
+    X(6, "token@", token_fetch) /* alias of _SZtu_fetch, no dedicated m4token */                   \
+    X(6, "token+", token_plus)  /* alias of _SZt_plus,   no dedicated m4token */                   \
+    X(6, "tokens", tokens)      /* alias of _SZt_times,  no dedicated m4token */                   \
     X(12, "word-inline?", word_inline_query) /* ( w -- flag ) calls to word should be inlined? */  \
-    X(13, "wordlist-find", wordlist_find)    /* ( c-addr u wid -- w|0 ) search name in wordlist */
+    X(13, "wordlist-find", wordlist_find)    /* ( c-addr u wid -- w|0 -1|0|1 ) search in wordlist */
 
 /* ------- m4th-impl ---------------------------------------------------------------------------- */
 #define DICT_TOKENS_M4TH_IMPL(X)                                                                   \
@@ -185,6 +186,9 @@
     X(8, "(lit-8s)", _lit8s_)                                                                      \
     X(6, "(loop)", _loop_)                                                                         \
     X(9, "(missing)", _missing_)                                                                   \
+    X(8, "(repeat)", _repeat_)                                                                     \
+    X(7, "(while)", _while_)                                                                       \
+    X(8, "(while0)", _while_zero_)                                                                 \
     X(11, "[#compiled]", _num_compiled_)                                                           \
     X(14, "[compile-init]", _compile_init_)                                                        \
     X(13, "[compile-2s,]", _compile2s_)                                                            \
