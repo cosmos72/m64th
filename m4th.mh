@@ -26,8 +26,7 @@
 #define M4TH_SEARCHORDER_MAX 15 /**< maximum # of wordlists in search order */
 
 /* m4th state */
-#define M4TH_STATE_INTERPRET 0 /**< m4th is interpreting. By forth 2012, must be = 0  */
-#define M4TH_STATE_COMPILE 1   /**< m4th is compiling.    By forth 2012, must be <> 0 */
+#define M4STATE_INTERPRET 0 /**< m4th is interpreting. By forth 2012, must be = 0  */
 
 /* m4word flags */
 #define M4FLAG_COMPILE_ONLY (1 << 0)  /**< word cannot interpreted - only compiled     */

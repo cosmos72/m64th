@@ -154,5 +154,5 @@ FUNC_RAWEND(_compile_unresolved_jump_)
 
 FUNC_START(state)
         DPUSH( DTOP)
-        ADDI(  M4TH, M4TH_OFF_STATE, DTOP)
+        ADDI(  M4TH, M4TH_OFF_W, DTOP) /* we use m4th->w as state */
 FUNC_END(state)

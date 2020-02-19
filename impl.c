@@ -130,7 +130,7 @@ static m4cell m4th_compile_number(m4th *m, m4cell num) {
 
 /** temporary C implementation of (eval) */
 m4cell m4th_eval(m4th *m, m4pair arg) {
-    const m4char is_interpreting = m->state == m4th_state_interpret;
+    const m4char is_interpreting = m4th_state(m) == m4state_interpret;
 
     if (arg.err == m4num_is_word && arg.num != 0) {
         const m4word *w = arg.w;
@@ -158,7 +158,7 @@ m4cell m4th_eval(m4th *m, m4pair arg) {
     }
 }
 
-/** temporary C implementation of (repl) */
+/** temporary C implementation of (eval) */
 m4cell m4th_repl(m4th *m) {
     m4string str;
     m4pair arg;

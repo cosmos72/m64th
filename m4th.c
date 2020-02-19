@@ -383,9 +383,10 @@ const m4char *m4addr_align_4(const void *addr) {
 
 m4cell m4code_equal(m4code src, m4code dst) {
     m4cell_u i, n = src.n;
-    if (dst.n != n) {
+    if (dst.n != n || (n != 0 && (src.addr == NULL || dst.addr == NULL))) {
         return tfalse;
     }
+
     for (i = 0; i < n; i++) {
         if (src.addr[i] != dst.addr[i]) {
             return tfalse;
@@ -596,7 +597,11 @@ m4cell m4string_equals(m4string a, m4string b) {
 /* ----------------------- m4word ----------------------- */
 
 m4code m4word_code(const m4word *w) {
-    m4code ret = {(m4token *)((m4cell)w + w->code_off), w->code_n};
+    m4code ret = {};
+    if (w != NULL) {
+        ret.addr = (m4token *)((m4cell)w + w->code_off);
+        ret.n = w->code_n;
+    }
     return ret;
 }
 
@@ -726,7 +731,6 @@ m4th *m4th_new() {
     m->ftable = ftable;
     m->in = m4iobuf_new(inbuf_n);
     m->out = m4iobuf_new(outbuf_n);
-    m->state = m4th_state_interpret;
     memset(m->c_regs, '\0', sizeof(m->c_regs));
     m->user_size = ((m4cell)&m->user_var[0] - (m4cell)&m->user_size) / SZ;
     m->user_next = m->user_size;
@@ -763,6 +767,10 @@ void m4th_clear(m4th *m) {
     m->out->pos = 0;
     m->mem.curr = m->mem.start;
     m->err = 0;
+}
+
+const m4cell *m4th_state(const m4th *m) {
+    return (const m4cell *)&m->w;
 }
 
 void m4th_also(m4th *m, m4wordlist *wid) {

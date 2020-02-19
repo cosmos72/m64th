@@ -93,16 +93,8 @@ WORD_END(cr)
 WORD(fetch,            cr,         DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 WORD(abs,              fetch,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(and,              abs,        DSTACK(2,1), RSTACK(0,0), WORD_PURE)
-WORD_START(base, and)
-    WORD_FLAGS(M4FLAG_INLINE)
-    WORD_DSTACK(0,1)
-    WORD_RSTACK(0,0)
-    WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
-    WORD_CODE(
-        user_var, T(USERVAR_IDX_BASE), exit
-    )
-WORD_END(base)
+/* address of m4th.base is a per-thread constant */
+WORD(base,             and,        DSTACK(0,1), RSTACK(0,0), WORD_PURE)
 WORD_START(begin, base)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE)
     WORD_DSTACK(0,0)
@@ -264,16 +256,8 @@ WORD(r_from,           over,       DSTACK(0,1), RSTACK(1,0), WORD_R_PURE)
 WORD(r_fetch,          r_from,     DSTACK(0,1), RSTACK(1,1), WORD_R_PURE)
 WORD(rot,              r_fetch,    DSTACK(3,3), RSTACK(0,0), WORD_PURE)
 WORD(rshift,           rot,        DSTACK(2,1), RSTACK(0,0), WORD_PURE)
-WORD_START(state, rshift)
-    WORD_FLAGS(M4FLAG_INLINE)
-    WORD_DSTACK(0,1)
-    WORD_RSTACK(0,0)
-    WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
-    WORD_CODE(
-        user_var, T(USERVAR_IDX_STATE), exit
-    )
-WORD_END(state)
+/* address of m4th.w i.e. state is a per-thread constant */
+WORD(state,            rshift,     DSTACK(0,1), RSTACK(0,0), WORD_PURE)
 /* source ( -- c-addr u ) get current content of input buffer */
 WORD_START(source,     state)
     WORD_FLAGS(M4FLAG_INLINE)

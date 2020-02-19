@@ -96,7 +96,64 @@ WORD_START(_else_, _call_xt_)
     WORD_NATIVE_NONE()
     WORD_CODE(_call_, WADDR(else), exit)
 WORD_END(_else_)
-WORD_START(_exec_native_, _else_)
+WORD_START(_eval_err_notfound_, _else_)
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_DSTACK(2,0) /* stack effect when not jumping */
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_CODE(
+        /* M4ERR_NAME_NOTFOUND m4th>err !
+         * type space '?' emit cr
+         */
+        exit
+    )
+WORD_END(_eval_err_notfound_)
+WORD_START(_eval_number_, _eval_err_notfound_)
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_DSTACK(1,0) /* stack effect when not jumping */
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_CODE(
+        /* state @                                   ( x compiling|0            )
+         * if0                  (   interpreting   ) ( x                        )
+         *    exit                                   ( x                        )
+         * then                 (    compiling     ) ( x                        )
+         * postpone literal                          (                          )
+         */
+        state, fetch, _if_zero_, T(2),
+            exit,
+        then,
+        _call_, WADDR(literal), exit
+    )
+WORD_END(_eval_number_)
+WORD_START(_eval_word_, _eval_number_)
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_DSTACK(1,0) /* stack effect when not jumping */
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_CODE(
+        /* state @                                      ( w compiling|0            )
+         * if0                     (   interpreting   ) ( w                        )
+         *    dup word>flags M4FLAG_COMPILE_ONLY and    ( w flag                   )
+         *    if                                        ( w                        )
+         *       drop                                   (                          )
+         *       M4ERR_COMPILE_ONLY m4th>err ! exit     (                          )
+         *    then                                      ( w                        )
+         *    execute exit                              (                          )
+         * then                    (    compiling     ) ( w                        )
+         * dup word>flags M4FLAG_IMMEDIATE and          ( w flag                   )
+         * if                                           ( w                        )
+         *    execute exit                              (                          )
+         * then
+         * word>xt compile, exit                        (                          )
+         */
+        exit
+    )
+WORD_END(_eval_word_)
+WORD_START(_exec_native_, _eval_word_)
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_DSTACK(-1,-1)
     WORD_RSTACK(0,0)
@@ -196,64 +253,7 @@ WORD_START(_loop_, _lit8s_)
     WORD_CODE(_loop_, T(-1), exit)
 WORD_END(_loop_)
 WORD(_missing_,        _loop_,         DSTACK(0,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_JUMP)
-WORD_START(_repl_err_notfound_, _missing_)
-    WORD_FLAGS(M4FLAG_INLINE)
-    WORD_DSTACK(2,0) /* stack effect when not jumping */
-    WORD_RSTACK(0,0)
-    WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
-    WORD_CODE(
-        /* M4ERR_NAME_NOTFOUND m4th>err !
-         * type space '?' emit cr
-         */
-        exit
-    )
-WORD_END(_repl_err_notfound_)
-WORD_START(_repl_number_, _repl_err_notfound_)
-    WORD_FLAGS(M4FLAG_INLINE)
-    WORD_DSTACK(1,0) /* stack effect when not jumping */
-    WORD_RSTACK(0,0)
-    WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
-    WORD_CODE(
-        /* state @                                   ( x compiling|0            )
-         * if0                  (   interpreting   ) ( x                        )
-         *    exit                                   ( x                        )
-         * then                 (    compiling     ) ( x                        )
-         * postpone literal                          (                          )
-         */
-        state, fetch, _if_zero_, T(2),
-            exit,
-        then,
-        _call_, WADDR(literal), exit
-    )
-WORD_END(_repl_number_)
-WORD_START(_repl_word_, _repl_number_)
-    WORD_FLAGS(M4FLAG_INLINE)
-    WORD_DSTACK(1,0) /* stack effect when not jumping */
-    WORD_RSTACK(0,0)
-    WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
-    WORD_CODE(
-        /* state @                                      ( w compiling|0            )
-         * if0                     (   interpreting   ) ( w                        )
-         *    dup word>flags M4FLAG_COMPILE_ONLY and    ( w flag                   )
-         *    if                                        ( w                        )
-         *       drop                                   (                          )
-         *       M4ERR_COMPILE_ONLY m4th>err ! exit     (                          )
-         *    then                                      ( w                        )
-         *    execute exit                              (                          )
-         * then                    (    compiling     ) ( w                        )
-         * dup word>flags M4FLAG_IMMEDIATE and          ( w flag                   )
-         * if                                           ( w                        )
-         *    execute exit                              (                          )
-         * then
-         * word>xt compile, exit                        (                          )
-         */
-        exit
-    )
-WORD_END(_repl_word_)
-WORD(_num_compiled_,   _repl_word_,    DSTACK(0,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
+WORD(_num_compiled_,   _missing_,      DSTACK(0,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
 WORD(_compile_init_,   _num_compiled_, DSTACK(0,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
 WORD(_compile2s_,      _compile_init_, DSTACK(1,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
 WORD(_compile4s_,      _compile2s_,    DSTACK(1,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
@@ -483,7 +483,7 @@ WORD_START(string_to_base, char_to_u)
            then,
            drop,
         then,
-        _call_, WADDR(base), fetch, exit
+        base, fetch, exit
     )
 WORD_END(string_to_base)
 /* ( caddr n -- caddr' n' ch )  convert three-character string "'x'" to char 'x' for any x, else -1 */

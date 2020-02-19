@@ -147,13 +147,11 @@ FUNC_END(c_arg_6)
 
 
 /* must be followed by C function address. call it. */
-FUNC_START(c_call)
+FUNC_START(_c_call_)
         /* cannot use x0..x8 here, they are used by c-args-[N] and c-ret-[N] */
         ldr    x9,     AT(IP),   IMM(SZ); /* post-increment */
-        RPUSH( lr)         /* save lr = return address */
-        blr    x9;
-        RPOP(  lr)         /* load lr = return address */
-FUNC_END(c_call)
+        br     x9;                /* tail call optimization */
+FUNC_RAWEND(_c_call_)
 
 
 /* push 0 values returned by C function call */

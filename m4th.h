@@ -70,10 +70,9 @@ typedef enum m4flags_e {
 } m4flags;
 
 /** m4th state */
-typedef enum m4th_state_e {
-    m4th_state_interpret = M4TH_STATE_INTERPRET,
-    m4th_state_compile = M4TH_STATE_COMPILE,
-} m4th_state;
+typedef enum m4state_e {
+    m4state_interpret = M4STATE_INTERPRET,
+} m4state;
 
 typedef struct m4buf_s m4buf;
 typedef struct m4cbuf_s m4cbuf;
@@ -200,10 +199,9 @@ struct m4th_s {        /**< m4th forth interpreter and compiler */
     /* USER variables, i.e. thread-local */
     uint32_t user_size;        /**< # available cells in user variables     */
     uint32_t user_next;        /**< next available cell in user variables   */
-    m4cell state;              /**< m4th_state: interpret = 0, compile <> 0 */
     m4word *w;                 /**< forth word being compiled               */
-    m4cbuf mem;                /**< start, HERE and end of data space       */
     m4cell base;               /**< current BASE                            */
+    m4cbuf mem;                /**< start, HERE and end of data space       */
     m4searchorder searchorder; /**< wordlist search order                   */
     m4func quit;               /**< forth function to execute on quit. usually m4fbye or m4fquit */
     m4err err;                 /**< error set by ABORT                      */
@@ -234,6 +232,9 @@ m4cell m4th_execute_word(m4th *m, const m4word *w);
  * set ->ip to ->code.start
  */
 void m4th_clear(m4th *m);
+
+/** return address of state. state is zero when interpreting, nonzero when compiling */
+const m4cell *m4th_state(const m4th *m);
 
 /* add wid to the top of search order */
 void m4th_also(m4th *m, m4wordlist *wid);

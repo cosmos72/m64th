@@ -171,7 +171,7 @@ FUNC_END(c_arg_6)
 
 
 /* must be followed by C function address. call it. */
-FUNC_START(c_call)
+FUNC_START(_c_call_)
         /* in case C function has 6 args: */
         MOVE(  DTOP,   %r9)                        /* %r9  = C arg 6 = FTBL */
         /* do not restore %rsp, it would clobber our call stack */
@@ -183,7 +183,7 @@ FUNC_START(c_call)
         LOAD(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))    /* %rsi = RSTK */
         LOAD(  FTBL,   AT(M4TH, M4TH_OFF_FTABLE))  /* %r9  = FTBL */
         MOVE(  IMM(-1),RFFF)                       /* %r10 = RFFF */
-FUNC_END(c_call)
+FUNC_END(_c_call_)
 
 
 /* push 0 values returned by C function call */

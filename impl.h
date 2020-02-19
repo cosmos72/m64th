@@ -44,7 +44,7 @@ m4pair m4th_resolve(m4th *m, m4string key);
 /** temporary C implementation of (eval) */
 m4cell m4th_eval(m4th *m, m4pair arg);
 
-/** temporary C implementation of (repl) */
+/** temporary C implementation of (eval) */
 m4cell m4th_repl(m4th *m);
 
 /** used for testing and benchmark */

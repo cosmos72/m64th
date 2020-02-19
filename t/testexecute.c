@@ -23,9 +23,9 @@
 #include "../impl.h"
 #include "../include/err.h"
 #include "../include/func_fwd.h"
+#include "../include/iobuf.mh"
 #include "../include/token.h"
 #include "../include/word_fwd.h"
-#include "../include/iobuf.mh"
 #include "../m4th.h"
 #include "testcommon.h"
 
@@ -966,19 +966,19 @@ static m4testexecute testexecute_f[] = {
      {{2, {DXT(and), DXT(one_plus)}}, {}},
      {{}, {}},
      {2, {m4one_plus, m4and}}},
-    /* ----------------------------- c-call --------------------------------- */
-    {"c-call test_noop",
-     {m4c_arg_0, m4c_call, CELL(test_noop), m4c_ret_0, m4bye},
+    /* ----------------------------- (c-call) --------------------------------- */
+    {"(c-call) test_noop",
+     {m4c_arg_0, m4_c_call_, CELL(test_noop), m4c_ret_0, m4bye},
      {{}, {}},
      {{}, {}},
      {}},
-    {"c-call test_negate",
-     {m4c_arg_1, m4c_call, CELL(test_negate), m4c_ret_1, m4bye},
+    {"(c-call) test_negate",
+     {m4c_arg_1, m4_c_call_, CELL(test_negate), m4c_ret_1, m4bye},
      {{1, {9}}, {}},
      {{1, {-9}}, {}},
      {}},
-    {"c-call test_sum_triplets",
-     {m4c_arg_6, m4c_call, CELL(test_sum_triplets), m4c_ret_2, m4bye},
+    {"(c-call) test_sum_triplets",
+     {m4c_arg_6, m4_c_call_, CELL(test_sum_triplets), m4c_ret_2, m4bye},
      {{6, {1, 2, 3, 4, 5, 6}}, {}},
      {{2, {6, 15}}, {}},
      {}},
@@ -1013,15 +1013,17 @@ static m4cell m4testexecute_run(m4th *m, m4testexecute *t, const m4code_pair *pa
     m4word *w;
 
     m4th_clear(m);
-    w = m->w = (m4word *)m->mem.start;
-    memset(w, '\0', sizeof(m4word));
+    if (t->codegen.n != 0) {
+        w = m->w = (m4word *)m->mem.start;
+        memset(w, '\0', sizeof(m4word));
+        m->mem.curr = (m4char *)(w + 1);
+    }
     m4testexecute_fix(t, pair);
 
     m4countedstack_copy(&t->before.d, &m->dstack);
     m4countedstack_copy(&t->before.r, &m->rstack);
 
     m->ip = pair->first.addr;
-    m->mem.curr = (m4char *)(w + 1);
     m4th_run(m);
 
     return m4countedstack_equal(&t->after.d, &m->dstack) &&
@@ -1045,7 +1047,7 @@ static void m4testexecute_failed(m4th *m, const m4testexecute *t, const m4code_p
     fputs("\n      actual return stack ", out);
     m4stack_print(&m->rstack, out);
 
-    if (t->codegen.n == 0 && m->w->code_n == 0) {
+    if (t->codegen.n == 0 && (!m->w || m->w->code_n == 0)) {
         return;
     }
     fputs("\n... expected    codegen   ", out);

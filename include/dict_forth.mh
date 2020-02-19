@@ -51,6 +51,7 @@
     X(1, "@", fetch)                                                                               \
     X(3, "abs", abs)                                                                               \
     X(3, "and", and)                                                                               \
+    X(4, "base", base)                                                                             \
     X(5, "begin", begin)                                                                           \
     X(2, "bl", bl)                                                                                 \
     X(2, "c!", c_store)                                                                            \
@@ -92,7 +93,6 @@
     /* the following words are implemented in forth, thus no dedicated m4token value */            \
     X(3, ">in", to_in)                                                                             \
     X(7, ">number", to_number)                                                                     \
-    X(4, "base", base)                                                                             \
     X(8, "compile,", compile_comma)                                                                \
     X(2, "cr,", cr)                                                                                \
     X(4, "else,", else)                                                                            \

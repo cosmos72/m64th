@@ -28,15 +28,15 @@ DICT_START(forth)
 
 DICTNAME(5, "forth", forth)
 
-#include "dict_forth_core.S"
+#include "forth_core.S"
 
-#include "dict_forth_core_ext.S"
+#include "forth_core_ext.S"
 
-#include "dict_forth_tools_ext.S"
+#include "forth_tools_ext.S"
 
-#include "dict_forth_search_order.S"
+#include "forth_search_order.S"
 
-#include "dict_forth_string.S"
+#include "forth_string.S"
 
 
 DICT_BODY(forth, LASTWORD)

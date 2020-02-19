@@ -56,10 +56,10 @@
 #define M4c_arg_6 536             /* prepare 6 args for C function call    */
 #undef M4c_arg_7                  /*                       */
 #undef M4c_arg_8                  /*                       */
-#define M4c_call 539              /* call C function       */
-#define M4c_call_sync 540         /* save regs to m4th, call C function, load regs from m4th */
-#define M4c_exec 541              /* pop C function pointer, call it */
-#define M4c_exec_sync 542      /* save regs to m4th, call C function pointer, load regs from m4th */
+#define M4_c_call_ 539            /* must be followed by C function pointer. calls it. */
+#undef M4_c_call_sync_ /*540*/    /* save regs to m4th, call C function, reload regs   */
+#undef M4c_exec /*541*/           /* pop C function pointer, call it */
+#undef M4c_exec_sync /*542*/   /* save regs to m4th, pop C function pointer, call it, reload regs */
 #undef M4c_farg_1              /* pop 1 floating point arg  for C function call */
 #undef M4c_farg_2              /* pop 2 floating point args for C function call */
 #undef M4c_farg_3              /* pop 3 floating point args for C function call */

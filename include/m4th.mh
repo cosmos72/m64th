@@ -29,14 +29,10 @@
 #define M4TH_OFF_OUT SZ9          /* offset of m4th->out         */
 #define M4TH_OFF_C_REG0 SZ10      /* offset of m4th->c_regs[0]   */
 #define M4TH_OFF_USER SZ11        /* offset of m4th->user*       */
-#define M4TH_OFF_STATE SZ12       /* offset of m4th->state       */
-#define M4TH_OFF_W SZ13           /* offset of m4th->w           */
+#define M4TH_OFF_W SZ12           /* offset of m4th->w           */
+#define M4TH_OFF_BASE SZ13        /* offset of m4th->base        */
 #define M4TH_OFF_HERE SZ15        /* offset of m4th->mem.curr = HERE */
-#define M4TH_OFF_BASE SZ17        /* offset of m4th->base        */
-#define M4TH_OFF_SEARCHORDER SZ18 /* offset of m4th->searchorder */
-#define M4TH_OFF_ERR SZ22         /* offset of m4th->err         */
-
-#define USERVAR_IDX_STATE 1 /* index of m4th->state */
-#define USERVAR_IDX_BASE 6  /* index of m4th->base */
+#define M4TH_OFF_SEARCHORDER SZ17 /* offset of m4th->searchorder */
+#define M4TH_OFF_ERR SZ21         /* offset of m4th->err         */
 
 #endif /* M4TH_INCLUDE_M4TH_MH */

@@ -237,6 +237,12 @@ FUNC_START(and)
 FUNC_END(and)
 
 
+FUNC_START(base)
+        DPUSH( DTOP)
+        ADDI(  M4TH, M4TH_OFF_BASE, DTOP)
+FUNC_END(base)
+
+
 #ifndef M4FBL
 FUNC_START(bl)
         DPUSH( DTOP)
