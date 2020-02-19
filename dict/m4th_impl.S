@@ -60,7 +60,25 @@ WORD_START(_q_if_zero_, _q_if_)
     WORD_NATIVE_NONE()
     WORD_CODE(_compile_init_, _compile_unresolved_jump_, _q_if_zero_, _if_, exit)
 WORD_END(_q_if_zero_)
-WORD_START(_again_,      _q_if_zero_)
+WORD_START(_q_while_, _q_if_zero_)
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_MAY_JUMP | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
+    WORD_DSTACK(1,1) /* token stack effect when not jumping */
+    WORD_RSTACK(0,0)
+    WORD_DSTACK(1,1) /* token stack effect when jumping */
+    WORD_RSTACK(0,0)
+    WORD_NATIVE_NONE()
+    WORD_CODE(_compile_init_, _compile_unresolved_jump_, _q_while_, _while_, exit)
+WORD_END(_q_while_)
+WORD_START(_q_while_zero_, _q_while_)
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_MAY_JUMP | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
+    WORD_DSTACK(1,1) /* token stack effect when not jumping */
+    WORD_RSTACK(0,0)
+    WORD_DSTACK(1,1) /* token stack effect when jumping */
+    WORD_RSTACK(0,0)
+    WORD_NATIVE_NONE()
+    WORD_CODE(_compile_init_, _compile_unresolved_jump_, _q_while_zero_, _while_, exit)
+WORD_END(_q_while_zero_)
+WORD_START(_again_,      _q_while_zero_)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_JUMP | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_STACK_NONE()  /* stack effect if not jumping */
     WORD_DSTACK(0,0)   /* stack effect if jumping */

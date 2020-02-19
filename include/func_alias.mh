@@ -23,13 +23,15 @@
 #include "../dispatch/sz.mh" /* SZ */
 #include "macro.mh"          /* CAT3() */
 
-#define m4fbegin m4fnoop             /* begin    is a noop, used as compile marker */
-#define m4f_again_ m4f_jump_         /* (again)  is unconditional jump             */
-#define m4f_else_ m4f_jump_          /* (else)   is unconditional jump             */
-#define m4fthen m4fnoop              /* then     is a noop, used as compile marker */
-#define m4f_repeat_ m4f_jump_        /* (repeat) is unconditional jump             */
-#define m4f_while_ m4f_if_           /* (while)  is conditional jump if dtop <> 0  */
-#define m4f_while_zero_ m4f_if_zero_ /* (while0) is conditional jump if dtop == 0  */
+#define m4fbegin m4fnoop            /* begin     is a noop, used as compile marker */
+#define m4f_again_ m4f_jump_        /* (again)   is unconditional jump             */
+#define m4f_else_ m4f_jump_         /* (else)    is unconditional jump             */
+#define m4fthen m4fnoop             /* then      is a noop, used as compile marker */
+#define m4f_repeat_ m4f_jump_       /* (repeat)  is unconditional jump             */
+#define m4f_while_ m4f_if_zero_     /* (while)   is conditional jump if dtop == 0  */
+#define m4f_while_zero_ m4f_if_     /* (while0)  is conditional jump if dtop <> 0  */
+#define m4f_q_while_ m4f_q_if_zero_ /* (?while)  is conditional jump if dtop == 0  */
+#define m4f_q_while_zero_ m4f_q_if_ /* (?while0) is conditional jump if dtop <> 0  */
 
 /** these are implemented in forth - thus no corresponding assembly function */
 #define m4f_inline_ m4f_missing_

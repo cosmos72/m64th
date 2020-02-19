@@ -125,6 +125,7 @@
     X(9, "interpret", interpret) /* one iteration of forth interpret/compile loop */               \
     X(20, "iobuf-read-nonblanks", iobuf_read_nonblanks)                                            \
     X(17, "iobuf-skip-blanks", iobuf_skip_blanks) /* skip chars <= space from iobuf     */         \
+    X(8, "string<>", string_ne) /* ( addr1 addr2 u -- addr1 addr2 u t|f )         */               \
     /* ( caddr n -- caddr' n' x t|f ) convert string to number, recognizing base, sign prefix */   \
     X(13, "string>number", string_to_number)                                                       \
     X(11, "valid-base?", valid_base_q) /* ( base -- t|f ) true if 2 <= base <= 36       */
@@ -169,6 +170,8 @@
     X(5, "(?do)", _q_do_)                                                                          \
     X(5, "(?if)", _q_if_)                                                                          \
     X(6, "(?if0)", _q_if_zero_)                                                                    \
+    X(8, "(?while)", _q_while_)                                                                    \
+    X(9, "(?while0)", _q_while_zero_)                                                              \
     X(7, "(again)", _again_)                                                                       \
     X(6, "(call)", _call_)                                                                         \
     X(9, "(call-xt)", _call_xt_)                                                                   \

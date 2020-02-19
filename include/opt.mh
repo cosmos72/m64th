@@ -26,7 +26,7 @@
  * for standard forth tokens (cell+ char+ ...)
  */
 #define OPT1_BODY(x, _)            /* note: '_' represents noop */                                 \
-     x((div_cell), (SZ_div))    /* /cell    => SZ/           */                                 \
+    x((div_cell), (SZ_div))        /* /cell    => SZ/           */                                 \
         x((cell_plus), (SZ_plus))  /* cell+    => SZ+           */                                 \
         x((cells), (SZ_times))     /* cells    => SZ*           */                                 \
         x((char_plus), (one_plus)) /* char+    => 1+            */                                 \
@@ -166,12 +166,15 @@
         x((zero_equal, zero_more_equal), (zero_ne))          /* 0=    0>=     => 0<>            */ \
         x((zero_more, zero_more_equal), (zero_less_equal))   /* 0>    0>=     => 0<=            */ \
         x((zero_more_equal, zero_more_equal), (zero_less))   /* 0>=   0>=     => 0<             */ \
-        /*____ 0<=>  (if),(if-...) _______________________*/ /*                                 */ \
+        /*____ 0<=>  (if...),(while...) __________________*/ /*                                 */ \
         x((zero_ne, _if_), (_if_))                           /* 0<>   (if)    => (if)           */ \
         x((zero_equal, _if_), (_if_zero_))                   /* 0=    (if)    => (if0)          */ \
-        x((zero_equal, _if_zero_), (_if_))                   /* 0=    (if0)   => (if)           */ \
         x((zero_ne, _if_zero_), (_if_zero_))                 /* 0<>   (if0)   => (if0)          */ \
         x((zero_equal, _if_zero_), (_if_))                   /* 0=    (if0)   => (if)           */ \
+        x((zero_ne, _while_), (_while_))                     /* 0<>  (while)  => (while)        */ \
+        x((zero_equal, _while_), (_while_zero_))             /* 0=   (while)  => (while0)       */ \
+        x((zero_ne, _while_zero_), (_while_zero_))           /* 0<>  (while0) => (while0)       */ \
+        x((zero_equal, _while_zero_), (_while_))             /* 0=   (while0) => (while)        */ \
         /*____ 0<=>  invert ______________________________*/ /*                                 */ \
         x((zero_less, invert), (zero_more_equal))            /* 0<    invert  => 0>=            */ \
         x((zero_less_equal, invert), (zero_more))            /* 0<=   invert  => 0>             */ \
@@ -268,6 +271,8 @@
         x((c_fetch, drop), (drop))                           /* c@   drop     => drop           */ \
         x((dup, _if_), (_q_if_))                             /* dup  (if)     => (?if)          */ \
         x((dup, _if_zero_), (_q_if_zero_))                   /* dup  (if0)    => (?if0)         */ \
+        x((dup, _while_), (_q_while_))                       /* dup  (while)  => (?while)       */ \
+        x((dup, _while_zero_), (_q_while_zero_))             /* dup  (while0) => (?while0)      */ \
         x((dup, times), (squared))                           /* dup  *        => squared        */ \
         x((dup, plus), (two_times))                          /* dup  +        => 2*             */ \
         x((dup, minus), (drop, zero))                        /* dup  -        => drop 0         */ \
@@ -305,10 +310,14 @@
         x((invert, one_plus), (negate))                      /* invert 1+     => negate         */ \
         x((invert, invert), _)                               /* invert invert =>                */ \
         x((invert, negate), (one_plus))                      /* invert negate => 1+             */ \
-        x((invert, _if_zero_), (_if_))                       /* invert (if0)  => (if)           */ \
-        x((invert, _if_), (_if_zero_))                       /* invert (if)   => (if0)          */ \
-        x((negate, _if_zero_), (_if_zero_))                  /* negate (if0)  => (if0)          */ \
-        x((negate, _if_), (_if_))                            /* negate (if)   => (if)           */ \
+        x((invert, _if_), (_if_zero_))                       /* invert (if)     => (if0)        */ \
+        x((invert, _if_zero_), (_if_))                       /* invert (if0)    => (if)         */ \
+        x((invert, _while_), (_while_zero_))                 /* invert (while)  => (while0)     */ \
+        x((invert, _while_zero_), (_while_))                 /* invert (while0) => (while)      */ \
+        x((negate, _if_), (_if_))                            /* negate (if)     => (if)         */ \
+        x((negate, _if_zero_), (_if_zero_))                  /* negate (if0)    => (if0)        */ \
+        x((negate, _while_), (_while_))                      /* negate (while)  => (while)      */ \
+        x((negate, _while_zero_), (_while_zero_))            /* negate (while0) => (while0)     */ \
         x((negate, plus), (minus))                           /* negate +      => -              */ \
         x((negate, minus), (plus))                           /* negate -      => +              */ \
         x((negate, one_minus), (invert))                     /* negate 1-     => invert         */ \
