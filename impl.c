@@ -40,7 +40,7 @@ void m4th_crcinit(m4cell table[256]) {
         for (j = 0; j < 8; j++) {
             if (val & 1) {
                 val >>= 1;
-                /* 0x82f63b78 is crc-32c. Use 0xedb88320 for vanilla crc-32. */
+                /* 0x82f63b78 is crc-32c (Castagnoli). Use 0xedb88320 for vanilla crc-32. */
                 val ^= 0x82f63b78;
             } else {
                 val >>= 1;
@@ -71,7 +71,7 @@ static inline m4cell dpop(m4th *m) {
     return *m->dstack.curr++;
 }
 
-/** wrapper around string>number */
+/** wrapper around STRING>NUMBER */
 m4pair m4string_to_number(m4th *m, m4string str) {
     m4pair ret = {};
     dpush(m, (m4cell)str.addr);
@@ -84,7 +84,7 @@ m4pair m4string_to_number(m4th *m, m4string str) {
     return ret;
 }
 
-/** wrapper around parse-name */
+/** wrapper around PARSE-NAME */
 m4string m4th_parse_name(m4th *m) {
     m4string ret = {};
     m4th_execute_word(m, &m4w_parse_name);
@@ -93,7 +93,7 @@ m4string m4th_parse_name(m4th *m) {
     return ret;
 }
 
-/** wrapper around (string>word) */
+/** wrapper around STRING>WORD */
 static const m4word *m4th_string_to_word(m4th *m, m4string key) {
     dpush(m, (m4cell)key.addr);
     dpush(m, key.n);
@@ -117,13 +117,13 @@ m4pair m4th_resolve(m4th *m, m4string key) {
     return ret;
 }
 
-/** temporary C implementation of (compile-word) */
+/** wrapper around COMPILE, */
 static m4cell m4th_compile_word(m4th *m, const m4word *w) {
     dpush(m, (m4cell)m4word_code(w).addr);
     return m4th_execute_word(m, &WORD_SYM(compile_comma));
 }
 
-/** temporary C implementation of (compile-number) */
+/** wrapper around LITERAL */
 static m4cell m4th_compile_number(m4th *m, m4cell num) {
     dpush(m, num);
     return m4th_execute_word(m, &WORD_SYM(literal));
@@ -131,7 +131,7 @@ static m4cell m4th_compile_number(m4th *m, m4cell num) {
 
 /** temporary C implementation of (eval) */
 m4cell m4th_eval(m4th *m, m4pair arg) {
-    const m4char is_interpreting = m4th_state(m) == m4state_interpret;
+    const m4char is_interpreting = *m4th_state(m) == m4state_interpret;
 
     if (arg.err == m4num_is_word && arg.w != NULL) {
         const m4word *w = arg.w;
