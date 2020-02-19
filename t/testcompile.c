@@ -192,6 +192,7 @@ static void m4testcompile_failed(m4th *m, const m4testcompile *t, m4code t_codeg
     m4countedstack_print(&empty, out);
     fputs("\n      actual return stack ", out);
     m4stack_print(&m->rstack, out);
+    fputc('\n', out);
 }
 
 m4cell m4th_testcompile(m4th *m, FILE *out) {
