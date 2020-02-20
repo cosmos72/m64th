@@ -213,11 +213,9 @@
     cmp reg, val;                                                                                  \
     b.ne label;
 #define JNZ(reg, label) /* if reg != 0 jump to label    */                                         \
-    cmp reg, IMM(0);                                                                               \
-    b.ne label;
+    cbnz reg, label;
 #define JZ(reg, label) /* if reg == 0 jump to label    */                                          \
-    cmp reg, IMM(0);                                                                               \
-    b.eq label;
+    cbz  reg, label;
 #define JUMP(label) /* unconditional jump to label ____________________________________________ */ \
     b label;
 

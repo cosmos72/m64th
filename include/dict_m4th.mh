@@ -135,7 +135,10 @@
     X(8, "m4th>err", m4th_err)      /* (    -- addr ) get address of m4th.err            */        \
     X(8, "in>iobuf", in_to_iobuf)   /* (    -- io   ) get current input as iobuf         */        \
     X(10, "iobuf>addr", iobuf_addr) /* ( io -- c-addr   ) get start of iobuf data buffer */        \
-    X(10, "iobuf>data", iobuf_data) /* ( io -- c-addr u ) get iobuf current content      */        \
+    /* ( io -- c-addr u ) get iobuf entire content i.e. from 0 to iobuf>size */                    \
+    X(14, "iobuf>all-data", iobuf_all_data)                                                            \
+    /* ( io -- c-addr u ) get iobuf content i.e. from iobuf>pos to iobuf>size */                   \
+    X(10, "iobuf>data", iobuf_data)                                                                \
     X(9, "iobuf>max", iobuf_max)    /* ( io -- u    ) get iobuf.max i.e. capacity        */        \
     X(9, "iobuf>pos", iobuf_pos)    /* ( io -- addr ) get address of iobuf position      */        \
     X(10, "iobuf>size", iobuf_size) /* ( io -- addr ) get address of iobuf size          */        \

@@ -21,6 +21,13 @@
 
 /* clang-format off */
 
+
+#define M4F_MISSING_
+FUNC_START(_missing_)      /* (missing) called instead of invalid/unimplemented function */
+        .int   0; /* udf */            /* crash with SIGILL */
+FUNC_END(_missing_)
+
+
 /* signed divide */
 FUNC_START(div)      /* / */
         DPOP(  REG1)
@@ -77,6 +84,13 @@ FUNC_END(two_div)
 FUNC_START(two_times)      /* 2*   */
         lsl    DTOP,   DTOP,   IMM(1);
 FUNC_END(two_times)
+
+
+#define M4FTWO_NIP
+FUNC_START(two_nip)        /* 2nip     m4th-user */
+        LOAD(  REG1,   AT(DSTK))
+        str    REG1,   [DSTK, SZ2]! ;
+FUNC_END(two_nip)
 
 
 FUNC_START(four_div)       /* 4/   m4th-user */

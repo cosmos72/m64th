@@ -33,14 +33,16 @@ DICTNAME(9, "m4th-core", m4th_core)
 DICT_WORDS_M4TH_CORE(WORDNAME)
 
 WORD(div_token,        div_token,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-/* ( -- addr) get address of m4th.err. pure: m4th is a per-thread constant */
+/* ( -- addr ) get address of m4th.err. pure: m4th is a per-thread constant */
 WORD(m4th_err,         div_token,      DSTACK(0,1), RSTACK(0,0), WORD_PURE)
 WORD(in_to_iobuf,      m4th_err,       DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 WORD(iobuf_addr,       in_to_iobuf,    DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(iobuf_data,       iobuf_addr,     DSTACK(1,2), RSTACK(0,0), WORD_IMPURE)
+WORD(iobuf_all_data,   iobuf_addr,     DSTACK(1,2), RSTACK(0,0), WORD_IMPURE)
+WORD(iobuf_data,       iobuf_all_data, DSTACK(1,2), RSTACK(0,0), WORD_IMPURE)
 WORD(iobuf_max,        iobuf_data,     DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
 WORD(iobuf_pos,        iobuf_max,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(iobuf_size,       iobuf_pos,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+/* searchorder-i ( -- addr ) get address of ith wordlist in searchorder */
 WORD(searchorder_i,    iobuf_size,     DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
 /* searchorder-n ( -- addr ) get address of searchorder count */
 WORD(searchorder_n,    searchorder_i,  DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
@@ -114,7 +116,10 @@ WORD(word_to_flags,    word_to_code_n, DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M
 WORD(word_to_name,     word_to_flags,  DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 WORD(word_to_prev,     word_to_name,   DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 WORD(word_to_xt,       word_to_prev,   DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-/* wordlist-find ( c-addr u wid -- w|0 -1|0|1 ) search word name in wordlist */
+/**
+ * wordlist-find ( c-addr u wid -- w|0 -1|0|1 ) search word name in wordlist.
+ * return 0 if not found. return 1 if word is immediate, otherwise return -1
+ */
 WORD_START(wordlist_find, word_to_xt)
     WORD_FLAGS(M4FLAG_MEM_FETCH) /* multiple exits => cannot inline */
     WORD_DSTACK(3,2)

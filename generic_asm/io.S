@@ -48,7 +48,15 @@ FUNC_START(iobuf_addr)
 FUNC_END(iobuf_addr)
 
 
-/* iobuf>data ( io -- c-addr u ) get current content of iobuf */
+/* iobuf>all-data ( io -- c-addr u ) get iobuf entire content, i.e. from 0 to iobuf>size */
+FUNC_START(iobuf_all_data)
+        ADDI(  DTOP,   IOBUF_OFF_ADDR, REG1)       /* a = iobuf.addr    */
+        LOAD(  DTOP,   AT(DTOP, IOBUF_OFF_SIZE))   /* dtop = iobuf.size */
+        DPUSH( REG1)
+FUNC_END(iobuf_all_data)
+
+
+/* iobuf>data ( io -- c-addr u ) get iobuf current content, i.e. from iobuf>pos to iobuf>size */
 FUNC_START(iobuf_data)
         ADDI(  DTOP,   IOBUF_OFF_ADDR, REG1)       /* a = iobuf.addr    */
         LOAD(  REG2,   AT(DTOP, IOBUF_OFF_POS))    /* b = iobuf.pos     */

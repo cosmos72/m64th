@@ -20,14 +20,35 @@
 #ifndef M4TH_INCLUDE_ERR_H
 #define M4TH_INCLUDE_ERR_H
 
-/* the values below must match the #defines in file err.mh */
+#include "err.mh"
+
+/* the values below must match the s in file err.mh */
 typedef enum m4err_id_e {
-    m4num_is_word = -1, /* special case rather than an error  */
-    m4err_ok = 0,       /* success */
-    m4err_eof = 1,
-    m4err_syntax = 2,
-    m4err_bad_addr = 3,
-    m4err_bad_number = 4,
+    m4err_ok = M4ERR_OK, /* SUCCESS */
+    m4err_abort = M4ERR_ABORT,
+    m4err_abort_quote = M4ERR_ABORT_QUOTE,
+    /* ... */
+    m4err_undefined_word = M4ERR_UNDEFINED_WORD,
+    m4err_interpreting_compile_only_word = M4ERR_INTERPRETING_COMPILE_ONLY_WORD,
+    m4err_zero_length_name = M4ERR_ZERO_LENGTH_NAME,
+    /* ... */
+    m4err_parsed_string_overflow = M4ERR_PARSED_STRING_OVERFLOW,
+    m4err_definition_name_too_long = M4ERR_DEFINITION_NAME_TOO_LONG,
+    /* ... */
+    m4err_invalid_numeric_argument = M4ERR_INVALID_NUMERIC_ARGUMENT,
+    m4err_return_stack_imbalance = M4ERR_RETURN_STACK_IMBALANCE,
+    m4err_loop_parameters_unavailable = M4ERR_LOOP_PARAMETERS_UNAVAILABLE,
+    m4err_invalid_recursion = M4ERR_INVALID_RECURSION,
+    m4err_user_interrupt = M4ERR_USER_INTERRUPT,
+    /* ... */
+    m4err_file_io_exception = M4ERR_FILE_IO_EXCEPTION,
+    m4err_non_existent_file = M4ERR_NON_EXISTENT_FILE,
+    m4err_unexpected_end_of_file = M4ERR_UNEXPECTED_END_OF_FILE,
+    /* ... */
+    m4err_quit = M4ERR_QUIT,
+    m4err_exception_in_send_or_recv_char = M4ERR_EXCEPTION_IN_SEND_OR_RECV_CHAR,
+    /* ... */
+    m4err_is_word = M4ERR_IS_WORD, /* special case, not an error */
 } m4err_id;
 
 #endif /* M4TH_INCLUDE_ERR_MH */

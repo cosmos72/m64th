@@ -23,6 +23,34 @@
 
 
 /**
+ * ( n -- n ) examine dstack top without removing it.
+ * if <> 0 continue to next instruction, otherwise jump.
+ * must be followed by IP offset to jump.
+ * IP offset = 0 means first instruction after (?if) itself
+ */
+FUNC_START(_q_if_)
+        JNZ(   DTOP,   LABEL_SYM(_q_if_.enter))
+        RELJUMP()
+LABEL(_q_if_.enter)
+        NEXTT()                    /* skip IP offset          */
+FUNC_RAWEND(_q_if_)
+
+
+/**
+ * ( n -- n ) examine dstack top without removing it.
+ * if = 0 continue to next instruction, otherwise jump.
+ * must be followed by IP offset to jump.
+ * IP offset = 0 means first instruction after (?if0) itself
+ */
+FUNC_START(_q_if_zero_)
+        JZ(    DTOP,   LABEL_SYM(_q_if_zero_.enter))
+        RELJUMP()
+LABEL(_q_if_zero_.enter)
+        NEXTT()                    /* skip IP offset          */
+FUNC_RAWEND(_q_if_zero_)
+
+
+/**
  * implementation of '(jump)', used by all unconditional jumps: (again) (else)
  * must be followed by IP offset to skip.
  * IP offset = 0 means first instruction after (jump) itself

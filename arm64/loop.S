@@ -39,34 +39,6 @@ FUNC_START(_q_do_)
 FUNC_RAWEND(_q_do_)
 
 
-/**
- * ( n -- n ) examine dstack top without removing it.
- * if <> 0 continue to next instruction, otherwise jump.
- * must be followed by IP offset to jump.
- * IP offset = 0 means first instruction after (?if) itself
- */
-FUNC_START(_q_if_)
-        cmp    DTOP, IMM(0);
-        b.ne   .L_q_if_.enter;
-        RELJUMP()
-.L_q_if_.enter:
-        NEXTT()                    /* skip IP offset          */
-FUNC_RAWEND(_q_if_)
-
-
-/**
- * ( n -- n ) examine dstack top without removing it.
- * if = 0 continue to next instruction, otherwise jump.
- * must be followed by IP offset to jump.
- * IP offset = 0 means first instruction after (?if0) itself
- */
-FUNC_START(_q_if_zero_)
-        cmp    DTOP, IMM(0);
-        b.eq   .L_q_if_zero_.enter;
-        RELJUMP()
-.L_q_if_zero_.enter:
-        NEXTT()                    /* skip IP offset          */
-FUNC_RAWEND(_q_if_zero_)
 
 
 /**
@@ -83,6 +55,7 @@ FUNC_START(_if_)
 .L_if_.enter:
         NEXTT()                      /* skip IP offset          */
 FUNC_RAWEND(_if_)
+
 
 /**
  * pop dstack top.

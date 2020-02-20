@@ -149,11 +149,10 @@ WORD_START(else, find)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_CODE(
-        _compile_init_,
-        _compile_lit_, _else_,           /* compile our unresolved jump */
-        _compile_lit_, T(-1),
-        _call_, WADDR(_resolve_jump_here_), /* resolve jump offset of previous 'if' */
-        _num_compiled_, _lit_, _else_,   /* ( code_n _else_ ) push our unresolved jump */
+        _compile_unresolved_jump_, _else_, _else_, /* compile our unresolved jump */
+        two_to_r,                           /* move our jump_info out of the way  */
+        _call_, WADDR(_resolve_jump_here_), /* resolve jump of previous 'if'      */
+        two_r_from,                         /* restore our jump_info              */
         exit
     )
 WORD_END(else)
@@ -258,14 +257,14 @@ WORD(rot,              r_fetch,    DSTACK(3,3), RSTACK(0,0), WORD_PURE)
 WORD(rshift,           rot,        DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 /* address of m4th.w i.e. state is a per-thread constant */
 WORD(state,            rshift,     DSTACK(0,1), RSTACK(0,0), WORD_PURE)
-/* source ( -- c-addr u ) get current content of input buffer */
+/* source ( -- c-addr u ) get entire content of input buffer (including already parsed data) */
 WORD_START(source,     state)
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_DSTACK(0,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
-    WORD_CODE(in_to_iobuf, iobuf_data, exit)
+    WORD_CODE(in_to_iobuf, iobuf_all_data, exit)
 WORD_END(source)
 WORD(swap,             source,     DSTACK(2,2), RSTACK(0,0), WORD_PURE)
 WORD_START(then, swap)

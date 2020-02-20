@@ -78,7 +78,7 @@ m4pair m4string_to_number(m4th *m, m4string str) {
     dpush(m, (m4cell)str.n);
     m4th_execute_word(m, &WORD_SYM(string_to_number));
     if (!dpop(m)) { /* t|f */
-        ret.err = m4err_bad_number;
+        ret.err = m4err_invalid_numeric_argument;
     }
     ret.num = dpop(m); /* number */
     return ret;
@@ -107,10 +107,10 @@ m4pair m4th_resolve(m4th *m, m4string key) {
     m4pair ret = {};
     const m4word *w;
     if (key.addr == NULL || key.n == 0) {
-        ret.err = m4err_eof;
+        ret.err = m4err_unexpected_end_of_file;
     } else if ((w = m4th_string_to_word(m, key)) != NULL) {
         ret.w = w;
-        ret.err = m4num_is_word;
+        ret.err = m4err_is_word;
     } else {
         ret = m4string_to_number(m, key);
     }
@@ -133,7 +133,7 @@ static m4cell m4th_compile_number(m4th *m, m4cell num) {
 m4cell m4th_eval(m4th *m, m4pair arg) {
     const m4char is_interpreting = *m4th_state(m) == m4state_interpret;
 
-    if (arg.err == m4num_is_word && arg.w != NULL) {
+    if (arg.err == m4err_is_word && arg.w != NULL) {
         const m4word *w = arg.w;
         if (is_interpreting || (w->flags & m4flag_immediate)) {
             if (is_interpreting && (w->flags & m4flag_compile_only)) {
@@ -141,7 +141,7 @@ m4cell m4th_eval(m4th *m, m4pair arg) {
                 fputs("cannot execute compile-only word while interpreting: ", out);
                 m4string_print(m4word_name(w), out);
                 fputc('\n', out);
-                return m4err_syntax;
+                return m4err_interpreting_compile_only_word;
             }
             return m4th_execute_word(m, w);
         } else {

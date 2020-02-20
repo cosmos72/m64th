@@ -48,7 +48,7 @@ FUNC_RAWEND(_lit8s_)
 #ifndef M4F_MISSING_
 FUNC_START(_missing_)      /* (missing) called instead of invalid/unimplemented m4func */
         ZERO(  REG1)
-        LOAD(  REG1,   AT(REG1)) /* should crash */
+        LOAD(  REG1,   AT(REG1)) /* load NULL address, should crash */
 FUNC_END(_missing_)
 #endif
 
@@ -66,11 +66,13 @@ FUNC_START(two_dup)        /* 2dup     */
 FUNC_END(two_dup)
 
 
+#ifndef M4FTWO_NIP
 FUNC_START(two_nip)        /* 2nip     m4th-user */
         LOAD(  REG1,   AT(DSTK))
         STOR(  REG1,   AT(DSTK, SZ2))
         ADD2(  IMM(SZ2),   DSTK)
 FUNC_END(two_nip)
+#endif
 
 
 FUNC_START(two_over)       /* 2over    ( a b c d -- a b c d a b ) */
