@@ -229,6 +229,23 @@ WORD(noop,             iobuf_skip_blanks, DSTACK(0,0), RSTACK(0,0), WORD_PURE)
 WORD(r_from_drop,      noop,           DSTACK(0,0), RSTACK(1,0), WORD_R_PURE)
 WORD(r_plus,           r_from_drop,    DSTACK(1,0), RSTACK(1,1), WORD_R_PURE)
 WORD(r_store,          r_plus,         DSTACK(1,0), RSTACK(1,1), WORD_R_PURE)
+/**
+ * forth interpreter/compiler loop:
+ *    call INTERPRET repeatedly until EOF or an error.
+ */
+WORD_START(repl,  r_store)
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_DSTACK(-1,-1)
+    WORD_RSTACK(-1,-1)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_CODE(
+        begin,
+            _call_, WADDR(interpret),
+            m4th_err, fetch,
+        _until_, T(-5-SZ/SZt), exit
+    )
+WORD_END(repl)
 WORD(squared,          r_store,        DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(sub,              squared,        DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(minus_rot,        sub,            DSTACK(3,3), RSTACK(0,0), WORD_PURE)

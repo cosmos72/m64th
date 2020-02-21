@@ -32,19 +32,7 @@ struct m4pair_s {
     m4cell err;
 };
 
-/** wrapper around string>number */
-m4pair m4string_to_number(m4th *m, m4string str);
-
-/** temporary C implementation of (read) */
-m4string m4th_parse_name(m4th *m);
-
-/** temporary C implementation of (parse) */
-m4pair m4th_resolve(m4th *m, m4string key);
-
-/** temporary C implementation of (eval) */
-m4cell m4th_eval(m4th *m, m4pair arg);
-
-/** temporary C implementation of (eval) */
+/** wrapper around REPL */
 m4cell m4th_repl(m4th *m);
 
 /** used for testing and benchmark */

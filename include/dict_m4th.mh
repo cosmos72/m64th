@@ -121,11 +121,12 @@
     X(3, "?if", q_if)                 /* alias of dup if                                */         \
     X(4, "?if0", q_if_zero)           /* alias of dup 0= if                             */         \
     X(3, "if0", if_zero)              /* alias of 0= if                                 */         \
+    X(9, "interpret", interpret)      /* one iteration of forth interpret/compile loop  */         \
     /*                           ( -- c-addr u ) read blank-delimited string from iobuf */         \
-    X(9, "interpret", interpret) /* one iteration of forth interpret/compile loop */               \
     X(20, "iobuf-read-nonblanks", iobuf_read_nonblanks)                                            \
     X(17, "iobuf-skip-blanks", iobuf_skip_blanks) /* skip chars <= space from iobuf     */         \
-    X(8, "string<>", string_ne) /* ( addr1 addr2 u -- addr1 addr2 u t|f )         */               \
+    X(4, "repl", repl)          /* call INTERPRET repeatedly until EOF or an error      */         \
+    X(8, "string<>", string_ne) /* ( addr1 addr2 u -- addr1 addr2 u t|f )               */         \
     /* ( caddr n -- caddr' n' x t|f ) convert string to number, recognizing base, sign prefix */   \
     X(13, "string>number", string_to_number)                                                       \
     X(11, "valid-base?", valid_base_q) /* ( base -- t|f ) true if 2 <= base <= 36       */
@@ -193,6 +194,7 @@
     X(6, "(loop)", _loop_)                                                                         \
     X(9, "(missing)", _missing_)                                                                   \
     X(8, "(repeat)", _repeat_)                                                                     \
+    X(7, "(until)", _until_)                                                                       \
     X(7, "(while)", _while_)                                                                       \
     X(8, "(while0)", _while_zero_)                                                                 \
     X(11, "[#compiled]", _num_compiled_)                                                           \

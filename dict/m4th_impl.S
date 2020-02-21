@@ -302,13 +302,13 @@ WORD_START(_lit8s_, _lit4s_)
     WORD_CODE(_lit8s_, CELL(-1), exit)
 WORD_END(_lit8s_)
 WORD_START(_loop_, _lit8s_)
-    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_INLINE_ALWAYS | M4FLAG_MAY_JUMP)
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_MAY_JUMP | M4FLAG_IMMEDIATE)
     WORD_DSTACK(0,0) /* stack effect when not jumping */
     WORD_RSTACK(2,0)
     WORD_DSTACK(0,0) /* stack effect when jumping */
     WORD_RSTACK(2,2)
     WORD_NATIVE_NONE()
-    WORD_CODE(_loop_, T(-1), exit)
+    WORD_CODE(exit) /* TODO */
 WORD_END(_loop_)
 WORD(_missing_,        _loop_,         DSTACK(0,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_JUMP)
 WORD_START(_repeat_, _missing_)
@@ -319,7 +319,16 @@ WORD_START(_repeat_, _missing_)
     WORD_NATIVE_NONE()
     WORD_CODE(/* TODO _call_, WADDR(repeat), */ exit)
 WORD_END(_repeat_)
-WORD_START(_while_, _repeat_)
+WORD_START(_until_, _repeat_)
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_MAY_JUMP | M4FLAG_IMMEDIATE)
+    WORD_DSTACK(1,0) /* token stack effect when not jumping */
+    WORD_RSTACK(0,0)
+    WORD_DSTACK(1,0) /* token stack effect when jumping */
+    WORD_RSTACK(0,0)
+    WORD_NATIVE_NONE()
+    WORD_CODE(exit) /* TODO */
+WORD_END(_while_)
+WORD_START(_while_, _until_)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_MAY_JUMP | M4FLAG_IMMEDIATE)
     WORD_DSTACK(1,0) /* token stack effect when not jumping */
     WORD_RSTACK(0,0)

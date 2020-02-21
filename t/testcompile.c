@@ -33,7 +33,6 @@
 /* -------------- m4testcompile -------------- */
 
 static const m4testcompile testcompile[] = {
-#if 0
     /* ------------------------------- numbers ------------------------------ */
     {"", {}, {}, {}},
     {"0", {}, {}, {1, {m4zero}}},
@@ -61,7 +60,6 @@ static const m4testcompile testcompile[] = {
 #if SZ == 8
     {"$ffffffffffffffff", {}, {}, {1, {m4minus_one}}},
 #endif
-#endif /* 0 */
     /* ------------------------------- if else then ------------------------- */
     {"?if", {}, {2, {2, m4_if_}}, {2, {m4_q_if_, T(-1)}}},
     {"?if0", {}, {2, {2, m4_if_}}, {2, {m4_q_if_zero_, T(-1)}}},
