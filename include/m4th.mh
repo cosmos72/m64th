@@ -32,7 +32,7 @@
 #define M4TH_OFF_W SZ12           /* offset of m4th->w           */
 #define M4TH_OFF_BASE SZ13        /* offset of m4th->base        */
 #define M4TH_OFF_HERE SZ15        /* offset of m4th->mem.curr = HERE */
-#define M4TH_OFF_SEARCHORDER SZ17 /* offset of m4th->searchorder */
-#define M4TH_OFF_ERR SZ21         /* offset of m4th->err         */
+#define M4TH_OFF_ERR SZ17         /* offset of m4th->err         */
+#define M4TH_OFF_SEARCHORDER SZ19 /* offset of m4th->searchorder */
 
 #endif /* M4TH_INCLUDE_M4TH_MH */

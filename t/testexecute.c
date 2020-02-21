@@ -32,19 +32,6 @@
 #include <assert.h> /* assert()          */
 #include <string.h> /* memset()          */
 
-typedef m4cell m4fixedwcode[m4test_code_n];
-
-typedef struct m4testexecute_s {
-    const char *name;
-    m4fixedwcode code;
-    m4countedstacks before, after;
-    m4countedwcode codegen;
-} m4testexecute;
-
-typedef struct m4testexecute_code_s {
-
-} m4testexecute_code;
-
 /* -------------- m4cell[] -> m4token[] conversion -------------- */
 
 #define m4array_copy_to_tarray(array, tarray)                                                      \

@@ -161,6 +161,12 @@ m4cell m4th_eval(m4th *m, m4pair arg) {
 
 /** temporary C implementation of (eval) */
 m4cell m4th_repl(m4th *m) {
+#if 0
+    m4err_id ret;
+    while ((ret = m4th_execute_word(m, &m4w_interpret)) == m4err_ok) {
+    }
+    return ret;
+#else
     m4string str;
     m4pair arg;
     m4cell ret;
@@ -172,4 +178,5 @@ m4cell m4th_repl(m4th *m) {
         fputs(" ?", stderr);
     }
     return ret;
+#endif /* 0 */
 }

@@ -46,4 +46,19 @@ enum {
 /* store m4_call_xt_ and XT in a m4countedwcode. correct only if word->data_len == 0 */
 #define CALLXT(name) m4_call_xt_, CELL(WORD_SYM(name).data)
 
+typedef struct m4testcompile_s {
+    const char *input;
+    m4countedstack dbefore, dafter;
+    m4countedwcode codegen;
+} m4testcompile;
+
+typedef m4cell m4fixedwcode[m4test_code_n];
+
+typedef struct m4testexecute_s {
+    const char *name;
+    m4fixedwcode code;
+    m4countedstacks before, after;
+    m4countedwcode codegen;
+} m4testexecute;
+
 #endif /* M4TH_T_TEST_IMPL_H */

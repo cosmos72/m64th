@@ -202,9 +202,9 @@ struct m4th_s {        /**< m4th forth interpreter and compiler */
     m4word *w;                 /**< forth word being compiled               */
     m4cell base;               /**< current BASE                            */
     m4cbuf mem;                /**< start, HERE and end of data space       */
-    m4searchorder searchorder; /**< wordlist search order                   */
-    m4func quit;               /**< forth function to execute on quit. usually m4fbye or m4fquit */
     m4err err;                 /**< error set by ABORT                      */
+    m4func quit;               /**< forth function to execute on quit. usually m4fbye or m4fquit */
+    m4searchorder searchorder; /**< wordlist search order                   */
     m4cell user_var[0];        /**< further user variables                  */
 };
 

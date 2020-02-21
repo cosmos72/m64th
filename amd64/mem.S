@@ -25,7 +25,7 @@
 FUNC_START(store)          /* ! */
         LOAD(  REG1,  AT(DSTK))
         STOR(  REG1,  AT(DTOP))
-        LOAD(  DTOP,  AT(DSTK, SZ2))
+        LOAD(  DTOP,  AT(DSTK, SZ))
         ADD2(  IMM(SZ2), DSTK)
 FUNC_END(store)
 
@@ -33,7 +33,7 @@ FUNC_END(store)
 FUNC_START(c_store)        /* c! */
         LOAD(  REG1,  AT(DSTK))
         STORb( REG1b, AT(DTOP))
-        LOAD(  DTOP,  AT(DSTK, SZ2))
+        LOAD(  DTOP,  AT(DSTK, SZ))
         ADD2(  IMM(SZ2), DSTK)
 FUNC_END(c_store)
 
@@ -42,7 +42,7 @@ FUNC_END(c_store)
 FUNC_START(short_store)    /* short! */
         LOAD(  REG1,  AT(DSTK))
         STORh( REG1h, AT(DTOP))
-        LOAD(  DTOP,  AT(DSTK, SZ2))
+        LOAD(  DTOP,  AT(DSTK, SZ))
         ADD2(  IMM(SZ2), DSTK)
 FUNC_END(short_store)
 
@@ -51,7 +51,7 @@ FUNC_END(short_store)
 FUNC_START(int_store)      /* int! */
         LOAD(  REG1,  AT(DSTK))
         STORw( REG1w, AT(DTOP))
-        LOAD(  DTOP,  AT(DSTK, SZ2))
+        LOAD(  DTOP,  AT(DSTK, SZ))
         ADD2(  IMM(SZ2), DSTK)
 FUNC_END(int_store)
 
