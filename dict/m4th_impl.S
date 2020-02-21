@@ -21,6 +21,7 @@
 #include "../include/asm.mh"
 #include "../include/dict.mh"
 #include "../include/dict_m4th.mh"
+#include "../include/err.mh"
 
 /* clang-format off */
 
@@ -114,16 +115,34 @@ WORD_START(_else_, _call_xt_)
     WORD_NATIVE_NONE()
     WORD_CODE(_call_, WADDR(else), exit)
 WORD_END(_else_)
-WORD_START(_eval_err_notfound_, _else_)
+/* ( -- ) */
+WORD_START(_eval_err_eof_, _else_)
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_DSTACK(0,0) /* stack effect when not jumping */
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_CODE(
+        /* M4ERR_UNEXPECTED_END_OF_FILE m4th>err !
+         */
+        _lit_, T(M4ERR_UNEXPECTED_END_OF_FILE), m4th_err, store,
+        exit
+    )
+WORD_END(_eval_err_eof_)
+/* ( c-addr u -- ) */
+WORD_START(_eval_err_notfound_, _eval_err_eof_)
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_DSTACK(2,0) /* stack effect when not jumping */
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_CODE(
-        /* M4ERR_NAME_NOTFOUND m4th>err !
+        /* M4ERR_UNDEFINED_WORD m4th>err !
          * type space '?' emit cr
          */
+        _lit_, T(M4ERR_UNDEFINED_WORD), m4th_err, store,
+        two_drop,
+        /* TODO type, T(' '), emit, T('?'), emit, T('\n'), emit, */
         exit
     )
 WORD_END(_eval_err_notfound_)
@@ -135,40 +154,61 @@ WORD_START(_eval_number_, _eval_err_notfound_)
     WORD_NATIVE_NONE()
     WORD_CODE(
         /* state @                                   ( x compiling|0            )
-         * if0                  (   interpreting   ) ( x                        )
+         * 0= if                (   interpreting   ) ( x                        )
          *    exit                                   ( x                        )
          * then                 (    compiling     ) ( x                        )
          * postpone literal                          (                          )
          */
-        state, fetch, _if_zero_, T(2),
+        state, fetch,
+        _if_zero_, T(2),
             exit,
         then,
         _call_, WADDR(literal), exit
     )
 WORD_END(_eval_number_)
+/* ( w -1|1 -- ) interpret or compile word */
 WORD_START(_eval_word_, _eval_number_)
     WORD_FLAGS(M4FLAG_INLINE)
-    WORD_DSTACK(1,0) /* stack effect when not jumping */
-    WORD_RSTACK(0,0)
+    WORD_DSTACK(-1,-1) /* stack effect when not jumping */
+    WORD_RSTACK(-1,-1)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_CODE(
-        /* state @                                      ( w compiling|0            )
-         * if0                     (   interpreting   ) ( w                        )
-         *    dup word>flags M4FLAG_COMPILE_ONLY and    ( w flag                   )
-         *    if                                        ( w                        )
+        /* over word>xt -rot                            ( xt w 1|-1                )
+         * state @                                      ( xt w -1|1 compiling|0    )
+         * 0= if                   (   interpreting   ) ( xt w -1|1                )
+         *    drop word>flags                           ( xt m4flags               )
+         *    M4FLAG_COMPILE_ONLY and                   ( xt flag                  )
+         *    if                                        ( xt                       )
          *       drop                                   (                          )
-         *       M4ERR_COMPILE_ONLY m4th>err ! exit     (                          )
-         *    then                                      ( w                        )
-         *    execute exit                              (                          )
-         * then                    (    compiling     ) ( w                        )
-         * dup word>flags M4FLAG_IMMEDIATE and          ( w flag                   )
-         * if                                           ( w                        )
-         *    execute exit                              (                          )
-         * then
-         * word>xt compile, exit                        (                          )
+         *       M4ERR_INTERPRETING_COMPILE_ONLY_WORD   ( err                      )
+         *       m4th>err ! exit                        (                          )
+         *    then                                      ( xt                       )
+         *    execute exit                              ( ??                       )
+         * then                    (    compiling     ) ( xt w -1|1                )
+         * nip 1+                                       ( xt 0|2                   )
+         * if                                           ( xt                       )
+         *    execute exit                              ( ??                       )
+         * then                                         ( xt                       )
+         * compile, exit                                (                          )
          */
-        exit
+        over, word_to_xt, minus_rot,
+        state, fetch,
+        _if_zero_, T(17),
+            drop, word_to_flags,
+            _lit_, T(M4FLAG_COMPILE_ONLY), and,
+            _if_, T(7),
+                drop,
+                _lit_, T(M4ERR_INTERPRETING_COMPILE_ONLY_WORD),
+                m4th_err, store, exit,
+            then,
+            execute, exit,
+        then,
+        nip, one_plus,
+        _if_, T(3),
+            execute, exit,
+        then,
+        _call_, WADDR(compile_comma), exit
     )
 WORD_END(_eval_word_)
 WORD_START(_exec_native_, _eval_word_)

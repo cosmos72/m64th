@@ -753,7 +753,7 @@ static m4testexecute testexecute_e[] = {
      {{3, {TESTSTR(_z_), 36}}, {}},
      {{3, {TESTSTR(_z_, 1), 35}}, {}},
      {}},
-    /* ----------------------------- string>number -------------------------------- */
+    /* ----------------------------- string>number -------------------------- */
     {"\"\" string>number",
      {CALL(string_to_number), m4bye},
      {{2, {TESTSTR(_empty)}}, {}},
@@ -806,7 +806,7 @@ static m4testexecute testexecute_e[] = {
      {{2, {(m4cell)0xfffffffffffffffful, ttrue}}, {}},
      {}},
 #endif
-    /* ----------------------------- string= -------------------------------------- */
+    /* ----------------------------- string= -------------------------------- */
     {"\"abcdefg\" \"abcdefg\" string=",
      {CALL(string_equal), m4bye},
      {{3, {(m4cell) "abcdefgh0", (m4cell) "abcdefgh1", 7}}, {}},
@@ -842,6 +842,22 @@ static sum_triplets_ret test_sum_triplets(m4cell a, m4cell b, m4cell c, m4cell d
 }
 
 static m4testexecute testexecute_f[] = {
+    /* ----------------------------- (c-call) --------------------------------- */
+    {"(c-call) test_noop",
+     {m4c_arg_0, m4_c_call_, CELL(test_noop), m4c_ret_0, m4bye},
+     {{}, {}},
+     {{}, {}},
+     {}},
+    {"(c-call) test_negate",
+     {m4c_arg_1, m4_c_call_, CELL(test_negate), m4c_ret_1, m4bye},
+     {{1, {9}}, {}},
+     {{1, {-9}}, {}},
+     {}},
+    {"(c-call) test_sum_triplets",
+     {m4c_arg_6, m4_c_call_, CELL(test_sum_triplets), m4c_ret_2, m4bye},
+     {{6, {1, 2, 3, 4, 5, 6}}, {}},
+     {{2, {6, 15}}, {}},
+     {}},
     /* ----------------------------- compile-token, ------------------------- */
     {"0x123 (compile-token,)",
      {m4_compile_init_, m4_compile_token_, m4bye},
@@ -970,22 +986,27 @@ static m4testexecute testexecute_f[] = {
      {{2, {DXT(and), DXT(one_plus)}}, {}},
      {{}, {}},
      {2, {m4one_plus, m4and}}},
-    /* ----------------------------- (c-call) --------------------------------- */
-    {"(c-call) test_noop",
-     {m4c_arg_0, m4_c_call_, CELL(test_noop), m4c_ret_0, m4bye},
+    /* ----------------------------- (eval...) -------------------------------- */
+    {"0 (eval-number)",
+     {CALL(_eval_number_), m4bye},
+     {{1, {0}}, {}},
+     {{1, {0}}, {}},
+     {}}, // state = interpret
+    {"0 (eval-number)",
+     {CALL(_eval_number_), m4bye},
+     {{1, {0}}, {}},
      {{}, {}},
+     {1, {m4zero}}}, // state = compile
+    {"' dup (eval-word)",
+     {CALL(_eval_word_), m4bye},
+     {{3, {7, (m4cell)&WORD_SYM(dup), ttrue}}, {}},
+     {{2, {7, 7}}, {}},
+     {}}, // state = interpret
+    {"' dup (eval-word)",
+     {CALL(_eval_word_), m4bye},
+     {{2, {(m4cell)&WORD_SYM(dup), ttrue}}, {}},
      {{}, {}},
-     {}},
-    {"(c-call) test_negate",
-     {m4c_arg_1, m4_c_call_, CELL(test_negate), m4c_ret_1, m4bye},
-     {{1, {9}}, {}},
-     {{1, {-9}}, {}},
-     {}},
-    {"(c-call) test_sum_triplets",
-     {m4c_arg_6, m4_c_call_, CELL(test_sum_triplets), m4c_ret_2, m4bye},
-     {{6, {1, 2, 3, 4, 5, 6}}, {}},
-     {{2, {6, 15}}, {}},
-     {}},
+     {1, {m4dup}}}, // state = compile
 };
 
 static void m4testexecute_fix(m4testexecute *t, const m4code_pair *pair) {

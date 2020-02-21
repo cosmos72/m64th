@@ -104,7 +104,7 @@ WORD_START(if_zero, i_prime)
         _compile_init_, _compile_unresolved_jump_, _if_zero_, _if_, exit
     )
 WORD_END(if_zero)
-/* 
+/*
  * classic forth interpreter/compiler iteration:
  *    read a name i.e. a non-blank string from IN,
  *    execute STRING>WORD which searches the current search order for name,
@@ -120,23 +120,40 @@ WORD_END(if_zero)
  */
 WORD_START(interpret,  if_zero)
     WORD_FLAGS(M4FLAG_INLINE)
-    WORD_DSTACK(0,1)
-    WORD_RSTACK(0,0)
+    WORD_DSTACK(-1,-1)
+    WORD_RSTACK(-1,-1)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_CODE(
-        /* parse-name 2dup                              ( c-addr u c-addr u        )
-         * string>word                                  ( c-addr u w|0             )
-         * ?if                      ( is a word )       ( c-addr u w|0             )
-         *    nip nip (eval-word) exit                  (                          )
-         * then                                         ( c-addr u 0               )
-         * drop 2dup string>number                      ( c-addr u x t|f           )
+        /* parse-name                                   ( c-addr u                 )
+         * ?if0                                         ( c-addr u                 )
+         *    2drop (eval-err-eof) exit                 (                          )
+         * then
+         * 2dup                                         ( c-addr u c-addr u        )
+         * string>word                                  ( c-addr u w|0 -1|0|1      )
+         * ?if                      ( is a word )       ( c-addr u w   -1|1        )
+         *    2nip (eval-word) exit                     (                          )
+         * then                                         ( c-addr u 0 0             )
+         * 2drop 2dup string>number                     ( c-addr u x t|f           )
          * if                       ( is a number )     ( c-addr u x               )
          *    nip nip (eval-number) exit                (                          )
          * then                     ( neither )         ( c-addr u x               )
          * drop (eval-err-notfound)                     (                          )
          */
-        exit
+        _call_, WADDR(parse_name),
+        _q_if_zero_, T(4+SZ/SZt),
+            two_drop, _call_, WADDR(_eval_err_eof_), exit,
+        then,
+        two_dup,
+        _call_, WADDR(string_to_word),
+        _q_if_, T(4+SZ/SZt),
+            two_nip, _call_, WADDR(_eval_word_), exit,
+        then,
+        two_drop, two_dup, _call_, WADDR(string_to_number),
+        _if_, T(5+SZ/SZt),
+            nip, nip, _call_, WADDR(_eval_number_), exit,
+        then,
+        drop, _call_, WADDR(_eval_err_notfound_), exit
     )
 WORD_END(interpret)
 /* ( io -- c-addr u ) read blank-delimited string from iobuf. TODO: refill */
@@ -194,7 +211,7 @@ WORD_START(iobuf_skip_blanks, iobuf_read_nonblanks)
          *    one_plus,                                ( io u'           ) (R: end addr-i )
          * loop              ( better: 1 chars +loop ) ( io u            )
          * swap iobuf>pos                              ( u pos           )
-         * +!                                          
+         * +!
          */
         zero, over, iobuf_data, bounds,
         _q_do_, T(12),

@@ -70,9 +70,9 @@ typedef enum m4flags_e {
 } m4flags;
 
 /** m4th state */
-typedef enum m4state_e {
+typedef enum m4_state_e {
     m4state_interpret = M4STATE_INTERPRET,
-} m4state;
+} m4_state;
 
 typedef struct m4buf_s m4buf;
 typedef struct m4cbuf_s m4cbuf;
@@ -190,7 +190,7 @@ struct m4th_s {        /**< m4th forth interpreter and compiler */
     m4stack dstack;    /**< data stack                          */
     m4stack rstack;    /**< return stack                        */
     const m4token *ip; /**< instruction pointer                 */
-    m4func *ftable;    /**< table m4t -> asm function address   */
+    m4func *ftable;    /**< table m4token -> m4func asm function address */
     m4iobuf *in;       /**< input  buffer                       */
     m4iobuf *out;      /**< output buffer                       */
 
