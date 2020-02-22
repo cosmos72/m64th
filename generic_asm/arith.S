@@ -280,6 +280,13 @@ FUNC_START(dup)
 FUNC_END(dup)
 
 
+FUNC_START(flip)          /* flip      m4th-user ( a b c -- c b a ) equivalent to: swap rot */
+        LOAD(  REG1,   AT(DSTK, SZ))
+        STOR(  DTOP,   AT(DSTK, SZ))
+        MOVE(  REG1,   DTOP)
+FUNC_END(flip)
+
+
 FUNC_START(invert)
         NOT1(  DTOP)
 FUNC_END(invert)

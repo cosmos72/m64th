@@ -50,7 +50,8 @@
     X(7, "c-ret-0", c_ret_0)   /* push 0 values returned by C function call */                     \
     X(7, "c-ret-1", c_ret_1)   /* push 1 value  returned by C function call */                     \
     X(7, "c-ret-2", c_ret_2)   /* push 2 values returned by C function call */                     \
-    X(5, "dup>r", dup_to_r)                                                                        \
+    X(5, "dup>r", dup_to_r)    /*                    equivalent to dup >r   */                     \
+    X(4, "flip", flip)         /* ( a b c -- c b a ) equivalent to swap rot */                     \
     X(2, "i*", i_times)                                                                            \
     X(2, "i+", i_plus)                                                                             \
     X(2, "i-", i_minus)                                                                            \
@@ -142,9 +143,11 @@
     X(14, "iobuf>all-data", iobuf_all_data)                                                        \
     /* ( io -- c-addr u ) get iobuf content i.e. from iobuf>pos to iobuf>size */                   \
     X(10, "iobuf>data", iobuf_data)                                                                \
-    X(9, "iobuf>max", iobuf_max)    /* ( io -- u    ) get iobuf.max i.e. capacity        */        \
-    X(9, "iobuf>pos", iobuf_pos)    /* ( io -- addr ) get address of iobuf position      */        \
-    X(10, "iobuf>size", iobuf_size) /* ( io -- addr ) get address of iobuf size          */        \
+    X(10, "iobuf>func", iobuf_func)     /* ( io -- addr ) get address of iobuf I/O function  */    \
+    X(12, "iobuf>handle", iobuf_handle) /* ( io -- addr ) get address of iobuf handle        */    \
+    X(9, "iobuf>max", iobuf_max)        /* ( io -- u    ) get iobuf max size i.e. capacity   */    \
+    X(9, "iobuf>pos", iobuf_pos)        /* ( io -- addr ) get address of iobuf position      */    \
+    X(10, "iobuf>size", iobuf_size)     /* ( io -- addr ) get address of iobuf size          */    \
     /*              searchorder-i ( u -- addr ) get address of searchorder i-th element  */        \
     X(13, "searchorder-i", searchorder_i)                                                          \
     X(13, "searchorder-n", searchorder_n) /* (    -- addr    ) get address of searchorder count */ \
@@ -160,6 +163,9 @@
 
 #define DICT_WORDS_M4TH_CORE(X)                                                                    \
     DICT_TOKENS_M4TH_CORE(X)                                                                       \
+    /* ( handle c-addr u -- 0 M4ERR_UNEXPECTED_EOF ) always return EOF. usable for iobuf>func */   \
+    X(10, "always-eof", always_eof)                                                                \
+    X(12, "iobuf-refill", iobuf_refill) /* ( io -- err  ) read some data into iobuf     */         \
     X(11, "string>word",                                                                           \
       string_to_word)           /* ( c-addr u -- w|0 -1|0|1 ) find name in search order */         \
     X(6, "/token", div_token)   /* alias of _SZt_div,    no dedicated m4token */                   \

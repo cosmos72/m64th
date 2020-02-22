@@ -67,7 +67,19 @@ FUNC_START(iobuf_data)
 FUNC_END(iobuf_data)
 
 
-/* iobuf>max ( io -- u ) get iobuf.max i.e. capacity */
+/* iobuf>func ( io -- addr ) get address of iobuf I/O function  */
+FUNC_START(iobuf_func)
+        ADD2(  IMM(IOBUF_OFF_FUNC), DTOP)
+FUNC_END(iobuf_func)
+
+
+/* iobuf>handle ( io -- addr ) get address of iobuf handle  */
+FUNC_START(iobuf_handle)
+        ADD2(  IMM(IOBUF_OFF_HANDLE), DTOP)
+FUNC_END(iobuf_handle)
+
+
+/* iobuf>max ( io -- u ) get iobuf max size i.e. capacity */
 FUNC_START(iobuf_max)
         LOAD(  DTOP,   AT(DTOP, IOBUF_OFF_MAX))
 FUNC_END(iobuf_max)

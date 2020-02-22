@@ -495,7 +495,7 @@ void m4slice_copy_to_code(const m4slice src, m4code *dst) {
 
 static m4iobuf *m4iobuf_new(m4cell_u capacity) {
     m4iobuf *p = (m4iobuf *)m4mem_allocate(sizeof(m4iobuf) + capacity * sizeof(m4char));
-    p->func = (m4xt)WORD_SYM(two_drop).data;
+    p->func = (m4xt)WORD_SYM(always_eof).data;
     p->handle = p->pos = p->size = 0;
     p->max = capacity;
     return p;

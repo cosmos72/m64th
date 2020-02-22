@@ -295,11 +295,18 @@
         x((dup, u_less_equal), (drop, true))                 /* dup  u<=      => drop true      */ \
         x((dup, u_more), (drop, false))                      /* dup  u>       => drop false     */ \
         x((dup, u_more_equal), (drop, true))                 /* dup  u>=      => drop true      */ \
-        x((dup, xor), (drop, zero))                          /* dup  xor      => drop 0         */ \
+        x((dup, minus_rot), (tuck))                          /* dup  -rot     => tuck           */ \
+        x((dup, rot), (dup, flip))                           /* dup  rot      => dup flip       */ \
         x((dup, sub), (drop, zero))                          /* dup  sub      => drop 0         */ \
         x((dup, swap), (dup))                                /* dup  swap     => dup            */ \
         x((dup, trail), (dup, dup))                          /* dup  trail    => dup dup        */ \
         x((dup, tuck), (dup, dup))                           /* dup  tuck     => dup dup        */ \
+        x((dup, xor), (drop, zero))                          /* dup  xor      => drop 0         */ \
+        x((flip, flip), _)                                   /* flip flip     =>                */ \
+        x((flip, nip), (nip, swap))                          /* flip nip      => nip swap       */ \
+        x((flip, minus_rot), (swap))                         /* flip -rot     => swap           */ \
+        x((flip, rot), (rot, swap))                          /* flip rot      => rot swap       */ \
+        x((flip, swap), (minus_rot))                         /* flip swap     => -rot           */ \
         x((i, drop), _)                                      /* i    drop     =>                */ \
         x((i, times), (i_times))                             /* i    *        => i*             */ \
         x((i, plus), (i_plus))                               /* i    +        => i+             */ \
@@ -332,16 +339,21 @@
         x((negate, invert), (one_minus))                     /* negate invert => 1-             */ \
         x((negate, squared), (squared))                      /* negate squared => squared       */ \
         x((over, drop), _)                                   /* over   drop   =>                */ \
+        x((over, flip), (over))                              /* over   flip   => over           */ \
         x((over, nip), (drop, dup))                          /* over   nip    => drop dup       */ \
         x((over, minus_rot), (trail))                        /* over   -rot   => trail          */ \
+        x((over, rot), (swap, dup))                          /* over   rot    => swap dup       */ \
         x((over, swap), (trail))                             /* over   swap   => trail          */ \
         x((from_r, to_r), _)                                 /* r>     >r     =>                */ \
         x((r_from, drop), (r_from_drop))                     /* r>     drop   => r>drop         */ \
         x((r_from_drop, to_r), (r_store))                    /* r>drop >r     => r!             */ \
+        x((rot, flip), (swap))                               /* rot    flip   => swap           */ \
         x((rot, rot), (minus_rot))                           /* rot    rot    => -rot           */ \
         x((rot, minus_rot), _)                               /* rot    -rot   =>                */ \
+        x((minus_rot, over), (flip, tuck)                    /* -rot   over   => flip tuck      */ \
         x((minus_rot, rot), _)                               /* -rot   rot    =>                */ \
         x((minus_rot, minus_rot), (rot))                     /* -rot   -rot   => rot            */ \
+        x((minus_rot, flip), (swap, minus_rot))              /* -rot   flip   => swap -rot      */ \
         x((swap, times), (times))                            /* swap   *      => *              */ \
         x((swap, plus), (plus))                              /* swap   +      => +              */ \
         x((swap, minus), (sub))                              /* swap   -      => sub            */ \
@@ -350,6 +362,7 @@
         x((swap, less_equal), (more_equal))                  /* swap   <=     => >=             */ \
         x((swap, ne), (ne))                                  /* swap   <>     => <>             */ \
         x((swap, equal), (equal))                            /* swap   =      => =              */ \
+        x((swap, flip), (rot))                               /* swap   flip   => rot            */ \
         x((swap, more), (less_equal))                        /* swap   >      => <              */ \
         x((swap, more_equal), (less_equal))                  /* swap   >=     => <=             */ \
         x((swap, and), (and))                                /* swap   and    => and            */ \
@@ -359,6 +372,7 @@
         x((swap, nip), (drop))                               /* swap   nip    => drop           */ \
         x((swap, or), (or))                                  /* swap   or     => or             */ \
         x((swap, over), (tuck))                              /* swap   over   => tuck           */ \
+        x((swap, rot), (flip))                               /* swap   rot    => flip           */ \
         x((swap, sub), (minus))                              /* swap   sub    => -              */ \
         x((swap, swap), _)                                   /* swap   swap   =>                */ \
         x((swap, tuck), (over))                              /* swap   tuck   => over           */ \

@@ -123,9 +123,9 @@ WORD_START(_eval_err_eof_, _else_)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_CODE(
-        /* M4ERR_UNEXPECTED_END_OF_FILE m4th>err !
+        /* M4ERR_UNEXPECTED_EOF m4th>err !
          */
-        _lit_, T(M4ERR_UNEXPECTED_END_OF_FILE), m4th_err, store,
+        _lit_, T(M4ERR_UNEXPECTED_EOF), m4th_err, store,
         exit
     )
 WORD_END(_eval_err_eof_)

@@ -43,7 +43,7 @@ typedef enum m4err_id_e {
     /* ... */
     m4err_file_io_exception = M4ERR_FILE_IO_EXCEPTION,
     m4err_non_existent_file = M4ERR_NON_EXISTENT_FILE,
-    m4err_unexpected_end_of_file = M4ERR_UNEXPECTED_END_OF_FILE,
+    m4err_unexpected_end_of_file = M4ERR_UNEXPECTED_EOF,
     /* ... */
     m4err_quit = M4ERR_QUIT,
     m4err_exception_in_send_or_recv_char = M4ERR_EXCEPTION_IN_SEND_OR_RECV_CHAR,

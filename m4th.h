@@ -137,11 +137,11 @@ struct m4err_s {
 
 /** I/O buffer */
 struct m4iobuf_s {
-    m4xt func;     /* ( handle c-addr u -- u'|-1 ) read or write data */
-    m4cell handle; /**< FILE*, fd or whatever is needed by func       */
-    m4cell_u pos;  /**< next char to read (or write) is addr[pos]     */
-    m4cell_u size; /**< last char to read (or write) is addr[size-1]  */
-    m4cell_u max;  /**< capacity. I/O buffer is addr[0..max-1]        */
+    m4xt func;     /* ( handle c-addr u -- u' ior ) read or write data */
+    m4cell handle; /**< FILE*, fd or whatever is needed by func        */
+    m4cell_u pos;  /**< next char to read (or write) is addr[pos]      */
+    m4cell_u size; /**< last char to read (or write) is addr[size-1]   */
+    m4cell_u max;  /**< capacity. I/O buffer is addr[0..max-1]         */
     m4char addr[0];
 };
 

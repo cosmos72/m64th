@@ -20,6 +20,7 @@
 #include "../include/asm.mh"
 #include "../include/dict.mh"
 #include "../include/dict_m4th.mh"
+#include "../include/err.mh"
 
 /* clang-format off */
 
@@ -33,17 +34,52 @@ DICTNAME(9, "m4th-core", m4th_core)
 DICT_WORDS_M4TH_CORE(WORDNAME)
 
 WORD(div_token,        div_token,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-/* ( -- addr ) get address of m4th.err. pure: m4th is a per-thread constant */
-WORD(m4th_err,         div_token,      DSTACK(0,1), RSTACK(0,0), WORD_PURE)
+/* always-eof ( handle c-addr u -- 0 M4ERR_UNEXPECTED_EOF ) always return EOF. usable for iobuf>func */
+WORD_START(always_eof, div_token)
+    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_PURE)
+    WORD_DSTACK(3,2)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_CODE(two_drop, drop, zero, _lit_, T(M4ERR_UNEXPECTED_EOF), exit)
+WORD_END(always_eof)
+WORD(m4th_err,         always_eof,     DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 WORD(in_to_iobuf,      m4th_err,       DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
-WORD(iobuf_addr,       in_to_iobuf,    DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD(iobuf_addr,       in_to_iobuf,    DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
 WORD(iobuf_all_data,   iobuf_addr,     DSTACK(1,2), RSTACK(0,0), WORD_IMPURE)
 WORD(iobuf_data,       iobuf_all_data, DSTACK(1,2), RSTACK(0,0), WORD_IMPURE)
-WORD(iobuf_max,        iobuf_data,     DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
+WORD(iobuf_func,       iobuf_data,     DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD(iobuf_handle,     iobuf_handle,   DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD(iobuf_max,        iobuf_func,     DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
 WORD(iobuf_pos,        iobuf_max,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(iobuf_size,       iobuf_pos,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+/* iobuf-refill ( io -- err ) read some chars into iobuf */
+WORD_START(iobuf_refill, iobuf_size)
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_DSTACK(1,1)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_CODE(
+        /* dup iobuf>pos @                          ( io pos                )
+         * ?if                                      ( io pos                )
+         *    over dup iobuf>data                   ( io pos io c-addr u    )
+         *    rot iobuf>addr swap                   ( io pos c-addr addr0 u )
+         *    cmove                                 ( io pos                )
+         *    negate iobuf>size +!                  ( io                    )
+         *    0 iobuf>pos !                         ( io                    )
+         * else
+         *    drop
+         * then                                     ( io                    )
+         * dup iobuf>handle over iobuf>all-data     ( io handle c-addr u    )
+         * iobuf>func @ execute                     ( io u' err             )
+         * -rot swap iobuf>size                     ( err u' size-addr      )
+         */
+        exit /* TODO */
+    )
+WORD_END(iobuf_refill)
 /* searchorder-i ( -- addr ) get address of ith wordlist in searchorder */
-WORD(searchorder_i,    iobuf_size,     DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
+WORD(searchorder_i,    iobuf_refill,   DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
 /* searchorder-n ( -- addr ) get address of searchorder count */
 WORD(searchorder_n,    searchorder_i,  DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 /*
