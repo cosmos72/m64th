@@ -87,9 +87,9 @@
 #define M4r_plus 567           /* r+        equivalent to: r>   +    >r */
 #define M4r_from_drop 568      /* r>drop    equivalent to: r>   drop    */
 #define M4minus_rot 569        /* -rot      equivalent to: rot  rot     */
-#undef M4____gap               /*                       */
-#define M4squared 571          /* squared   equivalent to: dup  *       */
-#define M4string_equal 572     /* string=   ( addr1 addr2 n -- t|f )    */
+#define M4squared 570          /* squared   equivalent to: dup  *       */
+#define M4string_equal 571     /* string=    ( addr1 addr2 n -- t|f )   */
+#define M4string_ci_equal 572  /* string-ci= ( addr1 addr2 n -- t|f )   */
 #define M4sub 573              /* sub       equivalent to: swap -       */
 #define M4trail 574            /* trail     equivalent to: over swap    */
 #undef M4____gap               /*                       */

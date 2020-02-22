@@ -98,3 +98,36 @@ FUNC_START(fetch)          /* @ */
 FUNC_END(fetch)
 
 
+FUNC_START(string_ci_equal)   /* string-ci=  ( addr1 addr2 u -- addr1 addr2 u t|f ) m4th-user */
+        LOAD(  REG2,   AT(DSTK))       /* b = addr2 */
+        LOAD(  REG1,   AT(DSTK, SZ))   /* a = addr1 */
+        DPUSH( DTOP)
+        JEQ(   REG1,   REG2,    LABEL_SYM(string_ci_equal.true))   /* addr1 == addr2 */
+        JZ(    DTOP,            LABEL_SYM(string_ci_equal.true))   /* u == 0         */
+        ZERO(  REG0w)
+LABEL(string_ci_equal.byte)
+        LD_ub( REG3_ub,AT(REG1, REG0, 1))
+        LD_ub( REG4_ub,AT(REG2, REG0, 1))
+        JNE(   REG3w,  REG4w,   LABEL_SYM(string_ci_equal.cmp))
+LABEL(string_ci_equal.next)
+        INC1(  REG0)
+        JB(    REG0,   DTOP,    LABEL_SYM(string_ci_equal.byte))
+LABEL(string_ci_equal.true)
+#ifdef RFFF
+        MOVE(  RFFF,   DTOP)
+#else
+        MOVE(  IMM(-1),DTOP)
+#endif
+        NEXT()
+LABEL(string_ci_equal.cmp)
+        ORR2(  IMM('a'-'A'), REG3w)
+        ORR2(  IMM('a'-'A'), REG4w)
+        JNE(   REG3w,  REG4w,   LABEL_SYM(string_ci_equal.false))
+        JB(    REG3w,  IMM('a'),LABEL_SYM(string_ci_equal.false))
+        JA(    REG3w,  IMM('z'),LABEL_SYM(string_ci_equal.false))
+        JB(    REG4w,  IMM('a'),LABEL_SYM(string_ci_equal.false))
+        JA(    REG4w,  IMM('z'),LABEL_SYM(string_ci_equal.false))
+        JUMP(  LABEL_SYM(string_ci_equal.next))
+LABEL(string_ci_equal.false)
+        ZERO(  DTOPw)
+FUNC_END(string_ci_equal)

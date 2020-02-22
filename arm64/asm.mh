@@ -169,6 +169,7 @@
 #define SUB2(src,dst)     sub   dst, dst, src;      /* dst -= src     */
 #define SUB3(a,b,dst)     sub   dst, a, b;          /* dst  = a - b   */
 #define STOR(reg,at)      str   reg, at;            /* *at  = reg     */
+/* #define XOR2(src,dst)  xor   dst, dst, src; */   /* dst ^= src     NOT USED */
 #define ZERO(dst)         mov   dst, 0;             /* dst  = 0       */
 
 /* clang-format on */
@@ -212,10 +213,8 @@
 #define JNE(reg, val, label) /* if reg <> val jump to label */                                     \
     cmp reg, val;                                                                                  \
     b.ne label;
-#define JNZ(reg, label) /* if reg != 0 jump to label    */                                         \
-    cbnz reg, label;
-#define JZ(reg, label) /* if reg == 0 jump to label    */                                          \
-    cbz  reg, label;
+#define JNZ(reg, label) /* if reg != 0 jump to label    */ cbnz reg, label;
+#define JZ(reg, label) /* if reg == 0 jump to label    */ cbz reg, label;
 #define JUMP(label) /* unconditional jump to label ____________________________________________ */ \
     b label;
 

@@ -135,7 +135,7 @@ WORD_START(wordlist_find, word_to_xt)
          *    dup >r word>name                                 ( addr u addr' u'   ) (R: w  )
          *    rot tuck                                         ( addr addr' u u' u ) (R: w  )
          *    = if                                             ( addr addr' u      ) (R: w  )
-         *       string<> while                                ( addr addr' u      ) (R: w  )
+         *       string-ci<> while                             ( addr addr' u      ) (R: w  )
          *    then                                             ( addr addr' u      ) (R: w  )
          *    nip r> word>prev                                 ( addr u     w'     )
          * repeat
@@ -151,7 +151,7 @@ WORD_START(wordlist_find, word_to_xt)
             dup, to_r, word_to_name,
             rot, tuck,
             equal, _if_, T(4),
-                string_equal, _while_zero_, T(6),
+                string_ci_equal, _while_zero_, T(6),
             then,
             nip, r_from, word_to_prev,
         _repeat_, T(-24),

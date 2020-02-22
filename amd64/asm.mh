@@ -35,11 +35,25 @@
  * caller-saved registers: %r10 %r11 and argument/return registers
  * callee-saved registers: %rbx %rbp %rsp %r12 %r13 %r14 %r15
  */
+#define REG0  %r11  /* scratch register 0 */
 #define REG1  %rax  /* scratch register 1 */
 #define REG2  %rcx  /* scratch register 2 */
 #define REG3  %rdx  /* scratch register 3 */
 #define REG4  %r8   /* scratch register 4 */
 /* additional callee-saved registers: %rbp */
+
+#define REG0b   %r11b /* low  8 bits of REG0 */
+#define REG0h   %r11w /* low 16 bits of REG0 */
+#define REG0w   %r11d /* low 32 bits of REG0 */
+#define REG0t   %r11w /* (m4token)REG0        */
+#define REG0_sb %r11  /* sign-extend  8 bits into REG0 */
+#define REG0_sh %r11  /* sign-extend 16 bits into REG0 */
+#define REG0_sw %r11  /* sign-extend 32 bits into REG0 */
+#define REG0_st %r11  /* sign-extend m4token into REG0 */
+#define REG0_ub %r11d /* zero-extend  8 bits into REG0 */
+#define REG0_uh %r11d /* zero-extend 16 bits into REG0 */
+#define REG0_uw %r11d /* zero-extend 32 bits into REG0 */
+#define REG0_ut %r11d /* zero-extend m4token into REG0 */
 
 #define REG1b   %al  /* low  8 bits of REG1 */
 #define REG1h   %ax  /* low 16 bits of REG1 */
@@ -151,6 +165,7 @@
 #define SHL2(src, dst)        shl  src,     dst;   /* dst <<= src    */
 #define SUB2(src, dst)        sub  src,     dst;   /* dst -= src     */
 #define STOR(reg, at)         mov  reg,     at;    /* *at  = reg     */
+/* #define XOR2(src, dst)     xor  src,     dst; *//* dst ^= src     NOT USED */
 #define ZERO(dst)             xor  dst,     dst;   /* dst  = 0       */
 
 #define LD_sb(reg, at)        movsbq at,    reg;   /* reg = *(int8_t *)at  */
