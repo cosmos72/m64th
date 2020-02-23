@@ -85,8 +85,8 @@ WORD_START(iobuf_read_blanks, iobuf_size)
         drop, exit
     )
 WORD_END(iobuf_read_blanks)
-/* ( io -- c-addr u ) read blank-delimited string from iobuf. TODO: refill */
-WORD_START(iobuf_read_nonblanks, interpret)
+/* ( io -- c-addr u ) read blank-delimited string from iobuf, refilling as needed */
+WORD_START(iobuf_read_nonblanks, iobuf_read_blanks)
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_DSTACK(0,2)
     WORD_RSTACK(0,0)
@@ -95,6 +95,9 @@ WORD_START(iobuf_read_nonblanks, interpret)
     WORD_CODE(
         /*
          * dup iobuf-read-blanks                     ( io                  )
+         *
+         *          TODO use string-first-blank instead
+         *
          * dup iobuf>data bounds                     ( io end addr         )
          * dup 0 2swap                               ( io addr 0 end addr  )
          * ?do                                       ( io addr u           ) (R: end addr-i )
@@ -163,7 +166,7 @@ WORD_START(iobuf_refill, iobuf_read_blanks)
     )
 WORD_END(iobuf_refill)
 /* ( io -- ) skip blanks from iobuf current data */
-WORD_START(iobuf_skip_blanks, iobuf_read_nonblanks)
+WORD_START(iobuf_skip_blanks, iobuf_refill)
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)
@@ -194,7 +197,7 @@ WORD_START(iobuf_skip_blanks, iobuf_read_nonblanks)
     )
 WORD_END(iobuf_skip_blanks)
 /* searchorder-i ( -- addr ) get address of ith wordlist in searchorder */
-WORD(searchorder_i,    iobuf_refill,   DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
+WORD(searchorder_i, iobuf_skip_blanks, DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
 /* searchorder-n ( -- addr ) get address of searchorder count */
 WORD(searchorder_n,    searchorder_i,  DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 /*

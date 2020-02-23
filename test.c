@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
     /* m4th_testprint_dicts_crc(out); */
     /* m4th_testbench_crc_c(out); */
 
-    m4cell fail1 = 0; // m4th_testexecute(m, out);
+    m4cell fail1 = m4th_testexecute(m, out);
     m4cell fail2 = m4th_testcompile(m, out);
 
     m4th_del(m);

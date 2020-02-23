@@ -64,19 +64,19 @@
 #undef M4____gap                     /*                       */
 #undef M4____gap                     /*                       */
 #undef M4____gap                     /*                       */
-#define M4r_store 547                /* r!        equivalent to: r>   drop >r */
-#define M4r_plus 548                 /* r+        equivalent to: r>   +    >r */
-#define M4r_from_drop 549            /* r>drop    equivalent to: r>   drop    */
+#define M4r_store 547                /* r!        equivalent to: r>   drop >r   */
+#define M4r_plus 548                 /* r+        equivalent to: r>   +    >r   */
+#define M4r_from_drop 549            /* r>drop    equivalent to: r>   drop      */
 #undef M4____gap                     /*                       */
-#define M4minus_rot 551              /* -rot      equivalent to: rot  rot     */
+#define M4minus_rot 551              /* -rot      equivalent to: rot  rot       */
 #undef M4____gap                     /*                       */
-#define M4squared 553                /* squared   equivalent to: dup  *       */
-#define M4string_equal 554           /* string=    ( addr1 addr2 n -- t|f )   */
-#define M4string_ci_equal 555        /* string-ci= ( addr1 addr2 n -- t|f )   */
-#define M4sub 556                    /* sub       equivalent to: swap -       */
+#define M4squared 553                /* squared   equivalent to: dup  *         */
+#define M4string_equal 554           /* string=    ( c-addr1 c-addr2 u -- t|f ) */
+#define M4string_ci_equal 555        /* string-ci= ( c-addr1 c-addr2 u -- t|f ) */
+#define M4string_first_blank 556     /* string-first-blank ( c-addr u -- u' )   */
+#define M4sub 557                    /* sub       equivalent to: swap -         */
 #undef M4____gap                     /*                       */
-#define M4trail 558                  /* trail     equivalent to: over swap    */
-#undef M4____gap                     /*                       */
+#define M4trail 559                  /* trail     equivalent to: over swap    */
 #undef M4____gap                     /*                       */
 #define M4u_less_equal 561           /* u<=                   */
 #define M4u_more_equal 562           /* u>=                   */

@@ -98,7 +98,11 @@ FUNC_START(fetch)          /* @ */
 FUNC_END(fetch)
 
 
-FUNC_START(string_ci_equal)   /* string-ci=  ( addr1 addr2 u -- addr1 addr2 u t|f ) m4th-user */
+/**
+ * string-ci=  ( c-addr1 c-addr2 u -- c-addr1 c-addr2 u t|f ) m4th-user
+ * compare two strings, ignoring case
+ */
+FUNC_START(string_ci_equal)   
         LOAD(  REG2,   AT(DSTK))       /* b = addr2 */
         LOAD(  REG1,   AT(DSTK, SZ))   /* a = addr1 */
         DPUSH( DTOP)
@@ -131,3 +135,22 @@ LABEL(string_ci_equal.cmp)
 LABEL(string_ci_equal.false)
         ZERO(  DTOPw)
 FUNC_END(string_ci_equal)
+
+
+/**
+ * string-first-blank ( c-addr u -- u' ) return index of first blank (i.e. char <= 32) in string,
+ * return string length if not found.
+ */
+FUNC_START(string_first_blank)
+        DPOP(  REG2)                                               /* b = addr */
+        JZ(    DTOP,            LABEL_SYM(string_first_blank.ret)) /* u == 0   */
+        ZERO(  REG1w)
+LABEL(string_first_blank.byte)
+        LD_ub( REG3_ub,AT(REG2, REG1, 1))
+        JBE(   REG3w,  IMM(32), LABEL_SYM(string_first_blank.found))
+        INC1(  REG1)
+        JB(    REG1,   DTOP,    LABEL_SYM(string_first_blank.byte))
+LABEL(string_first_blank.found)
+        MOVE(  REG1,   DTOP)
+LABEL(string_first_blank.ret)
+FUNC_END(string_first_blank)
