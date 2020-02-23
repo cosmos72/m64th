@@ -56,10 +56,7 @@ int main(int argc, char *argv[]) {
 
     m4th *m = m4th_new();
     const m4dict *dict[] = {
-        &m4dict_forth,
-        &m4dict_m4th_user,
-        &m4dict_m4th_core,
-        &m4dict_m4th_impl,
+        &m4dict_forth, &m4dict_m4th_user, &m4dict_m4th_c, &m4dict_m4th_core, &m4dict_m4th_impl,
     };
     m4cell i;
 

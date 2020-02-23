@@ -64,6 +64,7 @@ MARKER(asm_data_start)
 #include "dict/m4th_core.S"
 #include "dict/m4th_impl.S"
 #include "dict/m4th_user.S"
+#include "dict/m4th_c.S"
 
 MARKER(asm_data_end)
 

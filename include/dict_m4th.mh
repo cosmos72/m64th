@@ -38,20 +38,9 @@
     X(7, "2dup2>r", two_dup_two_to_r)                                                              \
     X(4, "2nip", two_nip)                                                                          \
     X(7, "2r>2drop", two_r_from_two_drop)                                                          \
-    X(6, "bounds", bounds)     /* ( c-addr u -- c-addr+u c-addr ) get string bounds */             \
-    X(7, "c-arg-0", c_arg_0)   /* prepare 0 args for C function call    */                         \
-    X(7, "c-arg-1", c_arg_1)   /* prepare 1 arg  for C function call    */                         \
-    X(7, "c-arg-2", c_arg_2)   /* prepare 2 args for C function call    */                         \
-    X(7, "c-arg-3", c_arg_3)   /* prepare 3 args for C function call    */                         \
-    X(7, "c-arg-4", c_arg_4)   /* prepare 4 args for C function call    */                         \
-    X(7, "c-arg-5", c_arg_5)   /* prepare 5 args for C function call    */                         \
-    X(7, "c-arg-6", c_arg_6)   /* prepare 6 args for C function call    */                         \
-    X(8, "(c-call)", _c_call_) /* must be followed by C function address. calls it. */             \
-    X(7, "c-ret-0", c_ret_0)   /* push 0 values returned by C function call */                     \
-    X(7, "c-ret-1", c_ret_1)   /* push 1 value  returned by C function call */                     \
-    X(7, "c-ret-2", c_ret_2)   /* push 2 values returned by C function call */                     \
-    X(5, "dup>r", dup_to_r)    /*                    equivalent to dup >r   */                     \
-    X(4, "flip", flip)         /* ( a b c -- c b a ) equivalent to swap rot */                     \
+    X(6, "bounds", bounds)  /* ( c-addr u -- c-addr+u c-addr ) get string bounds */                \
+    X(5, "dup>r", dup_to_r) /*                    equivalent to dup >r   */                        \
+    X(4, "flip", flip)      /* ( a b c -- c b a ) equivalent to swap rot */                        \
     X(2, "i*", i_times)                                                                            \
     X(2, "i+", i_plus)                                                                             \
     X(2, "i-", i_minus)                                                                            \
@@ -133,6 +122,22 @@
     /* ( caddr n -- caddr' n' x t|f ) convert string to number, recognizing base, sign prefix */   \
     X(13, "string>number", string_to_number)                                                       \
     X(11, "valid-base?", valid_base_q) /* ( base -- t|f ) true if 2 <= base <= 36       */
+
+/* ------- m4th-c ------------------------------------------------------------------------------- */
+#define DICT_TOKENS_M4TH_C(X)                                                                      \
+    X(7, "c-arg-0", c_arg_0)   /* prepare 0 args for C function call    */                         \
+    X(7, "c-arg-1", c_arg_1)   /* prepare 1 arg  for C function call    */                         \
+    X(7, "c-arg-2", c_arg_2)   /* prepare 2 args for C function call    */                         \
+    X(7, "c-arg-3", c_arg_3)   /* prepare 3 args for C function call    */                         \
+    X(7, "c-arg-4", c_arg_4)   /* prepare 4 args for C function call    */                         \
+    X(7, "c-arg-5", c_arg_5)   /* prepare 5 args for C function call    */                         \
+    X(7, "c-arg-6", c_arg_6)   /* prepare 6 args for C function call    */                         \
+    X(8, "(c-call)", _c_call_) /* must be followed by C function address. calls it. */             \
+    X(7, "c-ret-0", c_ret_0)   /* push 0 values returned by C function call */                     \
+    X(7, "c-ret-1", c_ret_1)   /* push 1 value  returned by C function call */                     \
+    X(7, "c-ret-2", c_ret_2)   /* push 2 values returned by C function call */
+
+#define DICT_WORDS_M4TH_C(X) DICT_TOKENS_M4TH_C(X)
 
 /* ------- m4th-core ---------------------------------------------------------------------------- */
 #define DICT_TOKENS_M4TH_CORE(X)                                                                   \
@@ -246,9 +251,9 @@
 
 /* ------- m4th-* ------------------------------------------------------------------------------- */
 #define DICT_WORDS_M4TH(X) /* contains all DICT_WORDS_M4TH_* */                                    \
-    DICT_WORDS_M4TH_USER(X) DICT_WORDS_M4TH_CORE(X) DICT_WORDS_M4TH_IMPL(X)
+    DICT_WORDS_M4TH_USER(X) DICT_WORDS_M4TH_C(X) DICT_WORDS_M4TH_CORE(X) DICT_WORDS_M4TH_IMPL(X)
 
 #define DICT_TOKENS_M4TH(X) /* contains all DICT_TOKENS_M4TH_* */                                  \
-    DICT_TOKENS_M4TH_USER(X) DICT_TOKENS_M4TH_CORE(X) DICT_TOKENS_M4TH_IMPL(X)
+    DICT_TOKENS_M4TH_USER(X) DICT_TOKENS_M4TH_C(X) DICT_TOKENS_M4TH_CORE(X) DICT_TOKENS_M4TH_IMPL(X)
 
 #endif /* M4TH_INCLUDE_DICT_M4TH_MH */

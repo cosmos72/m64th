@@ -33,9 +33,13 @@ typedef struct m4dict_s m4dict;
 extern const m4dict m4dict_forth;
 /**
  * Contains commonly found words that are not part of the standard.
- * Examples: 0<= 0>= <= >= i* i+ i-
+ * Examples: 0<= 0>= <= >= bounds i* i+ i-
  */
 extern const m4dict m4dict_m4th_user;
+/**
+ * Contains API to call C functions from forth.
+ */
+extern const m4dict m4dict_m4th_c;
 /**
  * Contains words that directly interact with m4th implementation.
  */
