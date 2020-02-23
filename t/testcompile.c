@@ -35,7 +35,6 @@
 static const m4testcompile testcompile[] = {
     /* ------------------------------- numbers ------------------------------ */
     {"", {}, {}, {}},
-#if 0
     {"0", {}, {}, {1, {m4zero}}},
     {"1 2", {}, {}, {2, {m4one, m4two}}},
     {"3 4 8", {}, {}, {3, {m4three, m4four, m4eight}}},
@@ -121,7 +120,6 @@ static const m4testcompile testcompile[] = {
     /* ------------------------------- words -------------------------------- */
     {"compile,", {}, {}, {callsz, {CALLXT(compile_comma)}}},
     {"valid-base?", {}, {}, {4, {/*inlined*/ m4two, m4_lit2s_, T(37), m4within}}},
-#endif // 0
 };
 
 static m4code m4testcompile_init(const m4testcompile *t, m4countedcode *codegen_buf) {

@@ -96,8 +96,7 @@ WORD_START(iobuf_read_nonblanks, interpret)
         /*
          * dup iobuf-read-blanks                     ( io                  )
          * dup iobuf>data bounds                     ( io end addr         )
-         * tuck                                      ( io addr end addr    )
-         * 0 -rot                                    ( io addr 0 end addr  )
+         * dup 0 2swap                               ( io addr 0 end addr  )
          * ?do                                       ( io addr u           ) (R: end addr-i )
          *   i c@ bl <=                              ( io addr u t|f       ) (R: end addr-i )
          *   if                                      ( io addr u           ) (R: end addr-i )
@@ -110,8 +109,7 @@ WORD_START(iobuf_read_nonblanks, interpret)
          */
         dup, _call_, WADDR(iobuf_read_blanks),
         dup, iobuf_data, bounds,
-        tuck,
-        zero, minus_rot,
+        dup, zero, two_swap,
         _q_do_, T(12),
             i, c_fetch, bl, less_equal,
             _if_, T(3),
@@ -136,8 +134,8 @@ WORD_START(iobuf_refill, iobuf_read_blanks)
          *    over dup iobuf>data                   ( io pos io c-addr u    )
          *    rot iobuf>addr swap                   ( io pos c-addr addr0 u )
          *    cmove                                 ( io pos                )
-         *    negate iobuf>size +!                  ( io                    )
-         *    0 iobuf>pos !                         ( io                    )
+         *    negate over iobuf>size +!             ( io                    )
+         *    0 over iobuf>pos !                    ( io                    )
          * else
          *    drop
          * then                                     ( io                      )
@@ -148,12 +146,12 @@ WORD_START(iobuf_refill, iobuf_read_blanks)
          * +!                                       ( err                     )
          */
         dup, iobuf_pos, fetch,
-        _q_if_, T(15),
+        _q_if_, T(17),
             over, dup, iobuf_data,
             rot, iobuf_addr, swap,
             cmove,
-            negate, iobuf_size, plus_store,
-            zero, iobuf_pos, store,
+            negate, over, iobuf_size, plus_store,
+            zero, over, iobuf_pos, store,
         _else_, T(2),
             drop,
         then,
