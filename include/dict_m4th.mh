@@ -69,7 +69,6 @@
     /*X(7, "ushort!", ushort_store)*/ /* alias of short!                                */         \
     X(4, "int!", int_store)                                                                        \
     /*X(5, "uint!", uint_store)    */ /* alias of int!                                  */         \
-    /*                             */ /*                                                */         \
     X(7, "to-byte", to_byte)                                                                       \
     X(7, "to-char", to_char)                                                                       \
     X(8, "to-short", to_short)                                                                     \
@@ -81,41 +80,43 @@
 
 #define DICT_WORDS_M4TH_USER(X)                                                                    \
     DICT_TOKENS_M4TH_USER(X)                                                                       \
-    X(5, "/byte", div_byte)           /* alias of noop                                  */         \
-    X(5, "/char", div_char)           /* alias of noop                                  */         \
-    X(6, "/short", div_short)         /* alias of two_div                               */         \
-    X(7, "/ushort", div_ushort)       /* alias of two_div                               */         \
-    X(4, "/int", div_int)             /* alias of four_div                              */         \
-    X(5, "/uint", div_uint)           /* alias of four_div                              */         \
-    X(5, "/cell", div_cell)           /* alias of _SZ_div                               */         \
-    /*                             */ /*                                                */         \
-    X(5, "char@", char_fetch)         /* alias of c@                                    */         \
-    X(5, "byte!", byte_store)         /* alias of c!                                    */         \
-    X(5, "char!", char_store)         /* alias of c!                                    */         \
-    X(7, "ushort!", ushort_store)     /* alias of short!                                */         \
-    X(5, "uint!", uint_store)         /* alias of int!                                  */         \
-    /*                             */ /*                                                */         \
-    X(5, "byte+", byte_plus)          /* alias of one_plus                              */         \
-    /* X(5, "char+", char_plus)    */ /* already in forth 'core' word set               */         \
-    X(6, "short+", short_plus)        /* alias of two_plus                              */         \
-    X(7, "ushort+", ushort_plus)      /* alias of two_plus                              */         \
-    X(4, "int+", int_plus)            /* alias of four_plus                             */         \
-    X(4, "ints", ints)                /* alias of four_times                            */         \
-    X(5, "uint+", uint_plus)          /* alias of four_plus                             */         \
-    /*                             */ /*                                                */         \
-    X(5, "bytes", bytes)              /* alias of noop                                  */         \
-    /* X(5, "chars", chars) */        /* already in forth 'core' word set               */         \
-    X(6, "shorts", shorts)            /* alias of two_times                             */         \
-    X(7, "ushorts", ushorts)          /* alias of two_times                             */         \
-    X(5, "uints", uints)              /* alias of four_times                            */         \
-    /*                             */ /*                                                */         \
-    X(3, "?if", q_if)                 /* alias of dup if                                */         \
-    X(4, "?if0", q_if_zero)           /* alias of dup 0= if                             */         \
-    X(3, "if0", if_zero)              /* alias of 0= if                                 */         \
-    X(9, "interpret", interpret)      /* one iteration of forth interpret/compile loop  */         \
-    /*                           ( -- c-addr u ) read blank-delimited string from iobuf */         \
-    X(20, "iobuf-read-nonblanks", iobuf_read_nonblanks)                                            \
-    X(17, "iobuf-skip-blanks", iobuf_skip_blanks) /* skip chars <= space from iobuf     */         \
+    X(5, "/byte", div_byte)            /* alias of noop                                  */        \
+    X(5, "/char", div_char)            /* alias of noop                                  */        \
+    X(6, "/short", div_short)          /* alias of 2/                                    */        \
+    X(7, "/ushort", div_ushort)        /* alias of 2/                                    */        \
+    X(4, "/int", div_int)              /* alias of 4/                                    */        \
+    X(5, "/uint", div_uint)            /* alias of 4/                                    */        \
+    X(5, "/cell", div_cell)            /* alias of SZ/                                   */        \
+    /*                             */  /*                                                */        \
+    X(5, "char@", char_fetch)          /* alias of c@                                    */        \
+    X(5, "byte!", byte_store)          /* alias of c!                                    */        \
+    X(5, "char!", char_store)          /* alias of c!                                    */        \
+    X(7, "ushort!", ushort_store)      /* alias of short!                                */        \
+    X(5, "uint!", uint_store)          /* alias of int!                                  */        \
+    /*X(5, "cell!", cell_store)    */  /* alias of !                                     */        \
+    /*                             */  /*                                                */        \
+    X(5, "byte+", byte_plus)           /* alias of 1+                                    */        \
+    /* X(5, "char+", char_plus)    */  /* already in forth 'core' word set               */        \
+    X(6, "short+", short_plus)         /* alias of 2+                                    */        \
+    X(7, "ushort+", ushort_plus)       /* alias of 2+                                    */        \
+    X(4, "int+", int_plus)             /* alias of 4+                                    */        \
+    X(5, "uint+", uint_plus)           /* alias of 4+                                    */        \
+    /*X(5, "cell+", cell_plus)     */  /* already in forth 'core' word set               */        \
+    /*                             */  /*                                                */        \
+    X(5, "bytes", bytes)               /*                                                */        \
+    /* X(5, "chars", chars) */         /* already in forth 'core' word set               */        \
+    X(6, "shorts", shorts)             /* alias of 2*                                    */        \
+    X(7, "ushorts", ushorts)           /* alias of 2*                                    */        \
+    X(4, "ints", ints)                 /* alias of 4*                                    */        \
+    X(5, "uints", uints)               /* alias of 4*                                    */        \
+    /*X(5, "cells", cells)         */  /* already in forth 'core' word set               */        \
+    /*                             */  /*                                                */        \
+    X(3, "?if", q_if)                  /* alias of dup if                                */        \
+    X(4, "?if0", q_if_zero)            /* alias of dup 0= if                             */        \
+    X(5, "break", break)               /* alias of 0 while                               */        \
+    X(8, "continue", continue)         /* unconditional jump to 'begin'                  */        \
+    X(3, "if0", if_zero)               /* alias of 0= if                                 */        \
+    X(9, "interpret", interpret)       /* one iteration of forth interpret/compile loop  */        \
     X(4, "repl", repl)                 /* call INTERPRET repeatedly until EOF or an error */       \
     X(8, "string<>", string_ne)        /* ( addr1 addr2 u -- addr1 addr2 u t|f )          */       \
     X(11, "string-ci<>", string_ci_ne) /* ( addr1 addr2 u -- addr1 addr2 u t|f )          */       \
@@ -175,7 +176,12 @@
     DICT_TOKENS_M4TH_CORE(X)                                                                       \
     /* ( handle c-addr u -- 0 M4ERR_UNEXPECTED_EOF ) always return EOF. usable for iobuf>func */   \
     X(10, "always-eof", always_eof)                                                                \
+    /*                      ( -- c-addr u ) read blanks from iobuf, refilling as needed */         \
+    X(17, "iobuf-read-blanks", iobuf_read_blanks)                                                  \
+    /*      ( -- c-addr u ) read blank-delimited string from iobuf, refilling as needed */         \
+    X(20, "iobuf-read-nonblanks", iobuf_read_nonblanks)                                            \
     X(12, "iobuf-refill", iobuf_refill) /* ( io -- err  ) read some data into iobuf     */         \
+    X(17, "iobuf-skip-blanks", iobuf_skip_blanks) /* skip whitespace from iobuf current data */    \
     X(11, "string>word",                                                                           \
       string_to_word)           /* ( c-addr u -- w|0 -1|0|1 ) find name in search order */         \
     X(6, "/token", div_token)   /* alias of _SZt_div,    no dedicated m4token */                   \
@@ -195,8 +201,10 @@
     X(8, "(?while)", _q_while_)                                                                    \
     X(9, "(?while0)", _q_while_zero_)                                                              \
     X(7, "(again)", _again_)                                                                       \
+    X(7, "(break)", _break_)                                                                       \
     X(6, "(call)", _call_)                                                                         \
     X(9, "(call-xt)", _call_xt_)                                                                   \
+    X(10, "(continue)", _continue_)                                                                \
     X(6, "(else)", _else_)                                                                         \
     X(13, "(exec-native)", _exec_native_)                                                          \
     X(12, "(exec-token)", _exec_token_)                                                            \
@@ -221,6 +229,7 @@
     X(13, "[compile-4s,]", _compile4s_)                                                            \
     X(13, "[compile-8s,]", _compile8s_)                                                            \
     X(14, "[compile-lit,]", _compile_lit_)                                                         \
+    X(23, "[compile-resolved-jump]", _compile_resolved_jump_)                                      \
     X(25, "[compile-unresolved-jump]", _compile_unresolved_jump_)                                  \
     X(6, "[word]", _word_)                                                                         \
     X(2, "-1", minus_one)                                                                          \

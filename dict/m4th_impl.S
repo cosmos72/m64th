@@ -87,7 +87,17 @@ WORD_START(_again_,      _q_while_zero_)
     WORD_NATIVE_NONE()
     WORD_CODE(_call_, WADDR(again), exit)
 WORD_END(_again_)
-WORD_START(_call_,     _again_)
+WORD_START(_break_,    _again_)
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_JUMP | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
+    WORD_STACK_NONE()  /* stack effect if not jumping */
+    WORD_DSTACK(0,0)   /* stack effect if jumping */
+    WORD_RSTACK(0,0)
+    WORD_NATIVE_NONE()
+    WORD_CODE(
+       _call_, WADDR(break), exit
+    )
+WORD_END(_break_)
+WORD_START(_call_,     _break_)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZ | M4FLAG_INLINE_ALWAYS | M4FLAG_MAY_JUMP)
     WORD_DSTACK(-1,-1) /* stack effects of called word */
     WORD_RSTACK(0,0)
@@ -107,7 +117,17 @@ WORD_START(_call_xt_,  _call_)
     /* make inliner happy: it skips the final 'exit' of a word's code when inlining */
     WORD_CODE(_call_xt_, exit)
 WORD_END(_call_xt_)
-WORD_START(_else_, _call_xt_)
+WORD_START(_continue_, _call_xt_)
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_JUMP | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
+    WORD_STACK_NONE()  /* stack effect if not jumping */
+    WORD_DSTACK(0,0)   /* stack effect if jumping */
+    WORD_RSTACK(0,0)
+    WORD_NATIVE_NONE()
+    WORD_CODE(
+       _call_, WADDR(continue), exit
+    )
+WORD_END(_continue_)
+WORD_START(_else_, _continue_)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_JUMP | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_STACK_NONE()  /* dummy, token always jumps */
     WORD_DSTACK(0,0)   /* stack effect when jumping */
@@ -359,7 +379,15 @@ WORD_START(_compile_lit_, _compile8s_)
     WORD_NATIVE_NONE()
     WORD_CODE(_compile_init_, _compile_lit_, T(-1), exit)
 WORD_END(_compile_lit_)
-WORD_START(_compile_unresolved_jump_, _compile_lit_)
+WORD_START(_compile_resolved_jump_, _compile_lit_)
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt2 | M4FLAG_INLINE_ALWAYS)
+    WORD_DSTACK(0,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_CODE(_compile_init_, _compile_resolved_jump_, T(-1), T(-1), exit)
+WORD_END(_compile_resolved_jump_)
+WORD_START(_compile_unresolved_jump_, _compile_resolved_jump_)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt2 | M4FLAG_INLINE_ALWAYS)
     WORD_DSTACK(0,1)
     WORD_RSTACK(0,0)

@@ -176,25 +176,25 @@
 
 /* 'm4th-impl' wordlist */
 #undef M4____gap                /*                       */
-#undef M4____gap                /*                       */
-#undef M4____gap                /*                       */
-#define M4minus_one 661         /* -1       */
-#define M4zero 662              /* 0        */
-#define M4one 663               /* 1        */
-#define M4two 664               /* 2        */
-#define M4three 665             /* 3        */
-#define M4four 666              /* 4        */
-#define M4eight 667             /* 8        */
+#define M4minus_one 659         /* -1       */
+#define M4zero 660              /* 0        */
+#define M4one 661               /* 1        */
+#define M4two 662               /* 2        */
+#define M4three 663             /* 3        */
+#define M4four 664              /* 4        */
+#define M4eight 665             /* 8        */
 #undef M4____gap                /*                                         */
 #undef M4____gap                /*                                         */
-#define M4_q_do_ 670            /* (?do)     must be followed by IP offset to jump   */
-#define M4_q_if_ 671            /* (?if)     must be followed by IP offset to jump if dtop == 0 */
-#define M4_q_if_zero_ 672       /* (?if0)    must be followed by IP offset to jump if dtop <> 0 */
-#define M4_q_while_ 673         /* (?while)  must be followed by IP offset to jump if dtop == 0 */
-#define M4_q_while_zero_ 674    /* (?while0) must be followed by IP offset to jump if dtop <> 0 */
-#define M4_again_ 675           /* (again)   must be followed by IP offset to jump   */
-#define M4_call_ 676            /* (call)    must be followed by word. calls it.     */
-#define M4_call_xt_ 677         /* (call-xt) must be followed by XT. calls it.       */
+#define M4_q_do_ 668            /* (?do)     must be followed by IP offset to jump   */
+#define M4_q_if_ 669            /* (?if)     must be followed by IP offset to jump if dtop == 0 */
+#define M4_q_if_zero_ 670       /* (?if0)    must be followed by IP offset to jump if dtop <> 0 */
+#define M4_q_while_ 671         /* (?while)  must be followed by IP offset to jump if dtop == 0 */
+#define M4_q_while_zero_ 672    /* (?while0) must be followed by IP offset to jump if dtop <> 0 */
+#define M4_again_ 673           /* (again)   must be followed by IP offset to jump   */
+#define M4_break_ 674           /* (break)   must be followed by IP offset to jump   */
+#define M4_call_ 675            /* (call)     must be followed by word. calls it.    */
+#define M4_call_xt_ 676         /* (call-xt)  must be followed by XT. calls it.      */
+#define M4_continue_ 677        /* (continue) must be followed by IP offset to jump  */
 #define M4_else_ 678            /* (else) must be followed by IP offset to jump      */
 #define M4_exec_native_ 679     /* (exec-native) pop native code address, execute it */
 #define M4_exec_token_ 680      /* pop token, exec it. It must be 'inline' with consume_IP = 0  */
@@ -228,8 +228,9 @@
 #define M4_compile4s_ 707    /* [compile4s,] pop int32 from dstack, append it to compiled code  */
 #define M4_compile8s_ 708    /* [compile8s,] pop int64 from dstack, append it to compiled code  */
 #define M4_compile_lit_ 709  /* must be followed by m4token, append it to compiled code  */
-#define M4_compile_unresolved_jump_ 710 /* must be followed by m4token and its category */
-#define M4_word_ 711                    /* [word] push to dstack word being compiled */
-#define M4____end 712
+#define M4_compile_resolved_jump_ 710   /* must be followed by m4token and label to jump to */
+#define M4_compile_unresolved_jump_ 711 /* must be followed by m4token and its category */
+#define M4_word_ 712                    /* [word] push to dstack word being compiled */
+#define M4____end 713
 
 #endif /* M4TH_INCLUDE_TOKEN_M4TH_MH */

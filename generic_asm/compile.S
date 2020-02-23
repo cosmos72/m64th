@@ -126,6 +126,11 @@ FUNC_START(_compile8s_)    /* (compile-8s,) */
 FUNC_END(_compile8s_)
 
 
+FUNC_START(_compile_resolved_jump_)    /* [compile-resolved-jump] */
+        /* TODO */
+        NEXTT2()                                       /* skip two m4token           */
+FUNC_RAWEND(_compile_resolved_jump_)
+
 /**
  * ( -- jump_address jump_token ) must be followed by m4token and its category.
  * append m4token and T(-1) to XT being compiled,

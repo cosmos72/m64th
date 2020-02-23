@@ -102,8 +102,6 @@ static m4testexecute testexecute_a[] = {
      {{4, {'t', 0xffffffff, 1e8, 0}}, {1, {(m4cell)m4fcrc_plus_native_forth}}},
      {{1, {0x773edc4e}}, {}},
      {}},
-#elif 1
-    {"iobuf-refill", {m4in_to_iobuf, CALL(iobuf_refill), m4bye}, {{}, {}}, {{}, {}}, {}},
 #else
     /* ----------------------------- arithmetic ----------------------------- */
     {"*", {m4times, m4bye}, {{2, {20, 7}}, {}}, {{1, {140}}, {}}, {}},
@@ -399,6 +397,23 @@ static m4testexecute testexecute_c[] = {
      {m4iobuf_size, m4bye},
      {{1, {0x3000}}, {}},
      {{1, {0x3000 + IOBUF_OFF_SIZE}}, {}},
+     {}},
+    {"iobuf-refill",
+     {m4in_to_iobuf, CALL(iobuf_refill), m4bye},
+     {{}, {}},
+     {{1, {m4err_unexpected_eof}}, {}},
+     {}},
+    {"iobuf-read-blanks", {m4in_to_iobuf, CALL(iobuf_read_blanks), m4bye}, {{}, {}}, {{}, {}}, {}},
+    {"iobuf-read-nonblanks",
+     {m4in_to_iobuf, CALL(iobuf_read_nonblanks), m4zero_equal, m4swap, m4in_to_iobuf, m4iobuf_addr,
+      m4equal, m4bye},
+     {{}, {}},
+     {{2, {ttrue, ttrue}}, {}},
+     {}},
+    {"parse-name",
+     {CALL(parse_name), m4zero_equal, m4swap, m4in_to_iobuf, m4iobuf_addr, m4equal, m4bye},
+     {{}, {}},
+     {{2, {ttrue, ttrue}}, {}},
      {}},
 };
 
