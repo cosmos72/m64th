@@ -67,6 +67,17 @@ FUNC_START(iobuf_data)
 FUNC_END(iobuf_data)
 
 
+/* iobuf>free-data ( io -- c-addr u ) get iobuf free space, i.e. from iobuf>size to iobuf>max */
+FUNC_START(iobuf_free_data)
+        ADDI(  DTOP,   IOBUF_OFF_ADDR, REG1)       /* a = iobuf.addr     */
+        LOAD(  REG2,   AT(DTOP, IOBUF_OFF_SIZE))   /* b = iobuf.size     */
+        LOAD(  DTOP,   AT(DTOP, IOBUF_OFF_MAX))    /* dtop = iobuf.max   */
+        ADD2(  REG2,   REG1)     /* a = c-addr = iobuf.addr + iobuf.size */
+        SUB2(  REG2,   DTOP)     /* dtop =  u  = iobuf.max  - iobuf.size */
+        DPUSH( REG1)
+FUNC_END(iobuf_free_data)
+
+
 /* iobuf>func ( io -- addr ) get address of iobuf I/O function  */
 FUNC_START(iobuf_func)
         ADD2(  IMM(IOBUF_OFF_FUNC), DTOP)

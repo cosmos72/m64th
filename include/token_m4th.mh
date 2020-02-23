@@ -134,45 +134,45 @@
 #undef M4____gap               /*                       */
 
 /* 'm4th-core' wordlist */
-#undef M4____gap             /*                       */
-#undef M4____gap             /*                       */
-#undef M4____gap             /*                       */
-#define M4in_to_iobuf 620    /* in>iobuf     (    -- io     ) get current input as iobuf     */
-#define M4iobuf_addr 621     /* iobuf>addr   ( io -- c-addr ) get start of iobuf data buffer */
-#define M4iobuf_all_data 622 /* iobuf>all-data ( io -- c-addr u ) get all data, from 0 to size  */
-#define M4iobuf_data 623     /* iobuf>data   ( io -- c-addr u ) get data, from position to size */
-#define M4iobuf_func 624     /* iobuf>func   ( io -- addr ) get address of iobuf I/O function */
-#define M4iobuf_handle 625   /* iobuf>handle ( io -- addr ) get address of iobuf handle       */
-#define M4iobuf_max 626      /* iobuf>max    ( io -- u    ) get iobuf max size i.e. capacity  */
-#define M4iobuf_pos 627      /* iobuf>pos    ( io -- addr ) get address of iobuf position     */
-#define M4iobuf_size 628     /* iobuf>size   ( io -- addr ) get address of iobuf size         */
-#undef M4____gap             /*                       */
-#undef M4____gap             /*                       */
-#define M4m4th_err 615       /* (   -- addr ) get address of m4th.err */
-#undef M4____gap             /*                       */
-#undef M4____gap             /*                       */
-#undef M4____gap             /*                       */
-#undef M4____gap             /*                       */
-#undef M4____gap             /*                       */
-#define M4searchorder_i 637  /* ( u -- addr ) get address of searchorder i-th element  */
-#define M4searchorder_n 638  /* (   -- addr ) get address of searchorder count         */
-#undef M4____gap             /*                       */
-#define M4user_var 640       /* user-var ( -- addr ) must be followed by index of user var */
-#undef M4____gap             /*                       */
-#undef M4____gap             /*                       */
-#define M4word_to_code 643   /* word>code   ( w  -- addr n  ) get code array from word */
-#define M4word_to_code_n 644 /* word>code>n ( w  -- n       ) get code size from word  */
-#define M4word_to_flags 645  /* word>flags  ( w  -- m4flags ) get m4flags from word    */
-#define M4word_to_name 646   /* word>name   ( w  -- addr n  ) get word name            */
-#define M4word_to_prev 647   /* word>prev   ( w  -- w'|0    ) get previous word        */
-#define M4word_to_xt 648     /* word>xt     ( w  -- XT      ) get XT == code address from word */
-#undef M4____gap             /*                       */
-#define M4wordlist_last 650  /* wordlist-last ( wid -- w ) get last word in a wordlist */
-#undef M4____gap             /*                       */
-#define M4xt_to_word 652     /* xt>word  ( XT -- w ) get word from XT */
-#undef M4____gap             /*                       */
-#undef M4____gap             /*                       */
-#undef M4____gap             /*                       */
+#undef M4____gap              /*                       */
+#undef M4____gap              /*                       */
+#define M4in_to_iobuf 619     /* in>iobuf     (    -- io     ) get current input as iobuf     */
+#define M4iobuf_addr 620      /* iobuf>addr   ( io -- c-addr ) get start of iobuf data buffer */
+#define M4iobuf_all_data 621  /* iobuf>all-data ( io -- c-addr u ) get all data, from 0 to size  */
+#define M4iobuf_data 622      /* iobuf>data   ( io -- c-addr u ) get data, from position to size */
+#define M4iobuf_free_data 623 /*              ( io -- c-addr u ) get free data, from size to max*/
+#define M4iobuf_func 624      /* iobuf>func   ( io -- addr ) get address of iobuf I/O function */
+#define M4iobuf_handle 625    /* iobuf>handle ( io -- addr ) get address of iobuf handle       */
+#define M4iobuf_max 626       /* iobuf>max    ( io -- u    ) get iobuf max size i.e. capacity  */
+#define M4iobuf_pos 627       /* iobuf>pos    ( io -- addr ) get address of iobuf position     */
+#define M4iobuf_size 628      /* iobuf>size   ( io -- addr ) get address of iobuf size         */
+#undef M4____gap              /*                       */
+#undef M4____gap              /*                       */
+#define M4m4th_err 615        /* (   -- addr ) get address of m4th.err */
+#undef M4____gap              /*                       */
+#undef M4____gap              /*                       */
+#undef M4____gap              /*                       */
+#undef M4____gap              /*                       */
+#undef M4____gap              /*                       */
+#define M4searchorder_i 637   /* ( u -- addr ) get address of searchorder i-th element  */
+#define M4searchorder_n 638   /* (   -- addr ) get address of searchorder count         */
+#undef M4____gap              /*                       */
+#define M4user_var 640        /* user-var ( -- addr ) must be followed by index of user var */
+#undef M4____gap              /*                       */
+#undef M4____gap              /*                       */
+#define M4word_to_code 643    /* word>code   ( w  -- addr n  ) get code array from word */
+#define M4word_to_code_n 644  /* word>code>n ( w  -- n       ) get code size from word  */
+#define M4word_to_flags 645   /* word>flags  ( w  -- m4flags ) get m4flags from word    */
+#define M4word_to_name 646    /* word>name   ( w  -- addr n  ) get word name            */
+#define M4word_to_prev 647    /* word>prev   ( w  -- w'|0    ) get previous word        */
+#define M4word_to_xt 648      /* word>xt     ( w  -- XT      ) get XT == code address from word */
+#undef M4____gap              /*                       */
+#define M4wordlist_last 650   /* wordlist-last ( wid -- w ) get last word in a wordlist */
+#undef M4____gap              /*                       */
+#define M4xt_to_word 652      /* xt>word  ( XT -- w ) get word from XT */
+#undef M4____gap              /*                       */
+#undef M4____gap              /*                       */
+#undef M4____gap              /*                       */
 
 /* 'm4th-impl' wordlist */
 #undef M4____gap                /*                       */

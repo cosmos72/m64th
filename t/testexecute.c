@@ -102,6 +102,8 @@ static m4testexecute testexecute_a[] = {
      {{4, {'t', 0xffffffff, 1e8, 0}}, {1, {(m4cell)m4fcrc_plus_native_forth}}},
      {{1, {0x773edc4e}}, {}},
      {}},
+#elif 1
+    {"iobuf-refill", {m4in_to_iobuf, CALL(iobuf_refill), m4bye}, {{}, {}}, {{}, {}}, {}},
 #else
     /* ----------------------------- arithmetic ----------------------------- */
     {"*", {m4times, m4bye}, {{2, {20, 7}}, {}}, {{1, {140}}, {}}, {}},
@@ -1045,7 +1047,10 @@ static m4cell m4testexecute_run(m4th *m, m4testexecute *t, const m4code_pair *pa
 
     m4countedstack_copy(&t->before.d, &m->dstack);
     m4countedstack_copy(&t->before.r, &m->rstack);
-
+#if 0
+    m->in->handle = (m4cell)stdin;
+    m->in->func = m4word_code(&WORD_SYM(c_fread)).addr;
+#endif /* 0 */
     m->ip = pair->first.addr;
     m4th_run(m);
 

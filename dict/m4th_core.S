@@ -48,7 +48,8 @@ WORD(in_to_iobuf,      m4th_err,       DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 WORD(iobuf_addr,       in_to_iobuf,    DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
 WORD(iobuf_all_data,   iobuf_addr,     DSTACK(1,2), RSTACK(0,0), WORD_IMPURE)
 WORD(iobuf_data,       iobuf_all_data, DSTACK(1,2), RSTACK(0,0), WORD_IMPURE)
-WORD(iobuf_func,       iobuf_data,     DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD(iobuf_free_data,  iobuf_data,     DSTACK(1,2), RSTACK(0,0), WORD_IMPURE)
+WORD(iobuf_func,      iobuf_free_data, DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(iobuf_handle,     iobuf_handle,   DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(iobuf_max,        iobuf_func,     DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
 WORD(iobuf_pos,        iobuf_max,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
@@ -70,12 +71,28 @@ WORD_START(iobuf_refill, iobuf_size)
          *    0 iobuf>pos !                         ( io                    )
          * else
          *    drop
-         * then                                     ( io                    )
-         * dup iobuf>handle over iobuf>all-data     ( io handle c-addr u    )
-         * iobuf>func @ execute                     ( io u' err             )
-         * -rot swap iobuf>size                     ( err u' size-addr      )
+         * then                                     ( io                      )
+         * dup iobuf>handle @ over dup              ( io handle io io         )
+         * iobuf>free-data rot                      ( io handle addr u io     )
+         * iobuf>func @ execute                     ( io u' err               )
+         * flip iobuf>size                          ( err u' size-addr        )
+         * +!                                       ( err                     )
          */
-        exit /* TODO */
+        dup, iobuf_pos, fetch,
+        _q_if_, T(15),
+            over, dup, iobuf_data,
+            rot, iobuf_addr, swap,
+            cmove,
+            negate, iobuf_size, plus_store,
+            zero, iobuf_pos, store,
+        _else_, T(2),
+            drop,
+        then,
+        dup, iobuf_handle, fetch, over, dup,
+        iobuf_free_data, rot,
+        iobuf_func, fetch, execute,
+        flip, iobuf_size,
+        plus_store, exit
     )
 WORD_END(iobuf_refill)
 /* searchorder-i ( -- addr ) get address of ith wordlist in searchorder */

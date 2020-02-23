@@ -265,7 +265,7 @@ void m4mem_unmap(void *ptr, size_t bytes);   /** munmap() wrapper */
 
 m4cell m4code_equal(m4code src, m4code dst);
 void m4code_print(m4code src, FILE *out);
-const m4word *m4code_addr_to_word(const m4token *xt);
+const m4word *m4xt_word(m4xt xt);
 
 const m4word *m4dict_lastword(const m4dict *dict);
 m4string m4dict_name(const m4dict *dict);
@@ -294,6 +294,7 @@ m4code m4word_code(const m4word *w);
 m4string m4word_data(const m4word *w, m4cell code_start_n);
 m4string m4word_name(const m4word *w);
 const m4word *m4word_prev(const m4word *w);
+m4xt m4word_xt(const m4word *w);
 void m4word_print(const m4word *w, FILE *out);
 void m4word_code_print(const m4word *w, FILE *out);
 void m4word_data_print(const m4word *w, m4cell data_start_n, FILE *out);

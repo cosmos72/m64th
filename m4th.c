@@ -310,7 +310,7 @@ static m4cell m4token_print_xt(const m4token *code, FILE *out) {
     m4cell val;
     memcpy(&val, code, sizeof(val));
     if (val > 4096) {
-        const m4word *w = m4code_addr_to_word((const m4token *)val);
+        const m4word *w = m4xt_word((m4xt)val);
         const m4string name = m4word_name(w);
         if (name.addr && name.n > 0) {
             fputs("XT(", out);
@@ -607,11 +607,6 @@ m4code m4word_code(const m4word *w) {
     return ret;
 }
 
-const m4word *m4code_addr_to_word(const m4token *xt) {
-    const uint32_t data_off = *(const uint32_t *)((m4cell)xt - sizeof(uint32_t));
-    return (const m4word *)((m4cell)xt - data_off - WORD_OFF_DATA);
-}
-
 m4string m4word_data(const m4word *w, m4cell data_start_n) {
     m4string ret = {};
     if (w->data_n != 0 && w->data_n >= data_start_n) {
@@ -619,6 +614,19 @@ m4string m4word_data(const m4word *w, m4cell data_start_n) {
         ret.n = (m4cell)w->data_n - data_start_n;
     }
     return ret;
+}
+
+m4xt m4word_xt(const m4word *w) {
+    m4xt ret = NULL;
+    if (w != NULL) {
+        ret = (m4xt)((m4cell)w + w->code_off);
+    }
+    return ret;
+}
+
+const m4word *m4xt_word(m4xt xt) {
+    const uint32_t data_off = *(const uint32_t *)((m4cell)xt - sizeof(uint32_t));
+    return (const m4word *)((m4cell)xt - data_off - WORD_OFF_DATA);
 }
 
 void m4word_code_print(const m4word *w, FILE *out) {
