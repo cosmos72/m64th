@@ -19,7 +19,7 @@ clean:
 
 asm.o:  asm.S  $(wildcard *.mh */*.mh */*.S)
 impl.o: impl.c $(wildcard *.h *.mh include/*.h include/*.mh)
-m4th.o: m4th.c $(wildcard *.h *.mh include/*.h include/*.mh)
+m4th.o: m4th.c $(wildcard *.h *.mh include/*.h include/*.mh c/*.h c/*.c)
 main.o: main.c $(wildcard *.h *.mh include/*.h include/*.mh)
 test.o: test.c $(wildcard *.h *.mh include/*.h include/*.mh t/*.h t/*.c)
 

@@ -107,33 +107,33 @@
 #undef M4____gap        /*                       */
 
 /* 'm4th-c' wordlist */
-#define M4c_arg_0 590          /* prepare 0 args for C function call    */
-#define M4c_arg_1 591          /* prepare 1 arg  for C function call    */
-#define M4c_arg_2 592          /* prepare 2 args for C function call    */
-#define M4c_arg_3 593          /* prepare 3 args for C function call    */
-#define M4c_arg_4 594          /* prepare 4 args for C function call    */
-#define M4c_arg_5 595          /* prepare 5 args for C function call    */
-#define M4c_arg_6 596          /* prepare 6 args for C function call    */
-#undef M4c_arg_7               /*                       */
-#undef M4c_arg_8               /*                       */
+#define M4_c_arg_0_ 590        /* prepare 0 args for C function call    */
+#define M4_c_arg_1_ 591        /* prepare 1 arg  for C function call    */
+#define M4_c_arg_2_ 592        /* prepare 2 args for C function call    */
+#define M4_c_arg_3_ 593        /* prepare 3 args for C function call    */
+#define M4_c_arg_4_ 594        /* prepare 4 args for C function call    */
+#define M4_c_arg_5_ 595        /* prepare 5 args for C function call    */
+#define M4_c_arg_6_ 596        /* prepare 6 args for C function call    */
+#undef M4_c_arg_7_             /*                       */
+#undef M4_c_arg_8_             /*                       */
 #undef M4____gap               /*                       */
 #define M4_c_call_ 600         /* must be followed by C function pointer. calls it. */
 #undef M4_c_call_sync_ /*601*/ /* save regs to m4th, call C function, reload regs   */
 #undef M4c_exec /*602*/        /* pop C function pointer, call it */
 #undef M4c_exec_sync /*603*/   /* save regs to m4th, pop C function pointer, call it, reload regs */
-#undef M4c_farg_1              /* pop 1 floating point arg  for C function call */
-#undef M4c_farg_2              /* pop 2 floating point args for C function call */
-#undef M4c_farg_3              /* pop 3 floating point args for C function call */
-#undef M4c_fret_1              /*                       */
-#undef M4c_fret_2              /*                       */
+#undef M4_c_farg_1_            /* pop 1 floating point arg  for C function call */
+#undef M4_c_farg_2_            /* pop 2 floating point args for C function call */
+#undef M4_c_farg_3_            /* pop 3 floating point args for C function call */
+#undef M4_c_fret_1_            /*                       */
+#undef M4_c_fret_2_            /*                       */
 #undef M4____gap               /*                       */
-#define M4c_ret_0 610          /* push 0 values returned by C function call */
-#define M4c_ret_1 611          /* push 1 value  returned by C function call */
-#define M4c_ret_2 612          /* push 2 values returned by C function call */
+#define M4_c_ret_0_ 610        /* push 0 values returned by C function call */
+#define M4_c_ret_1_ 611        /* push 1 value  returned by C function call */
+#define M4_c_ret_2_ 612        /* push 2 values returned by C function call */
+#undef M4____gap               /*                       */
+#undef M4____gap               /*                       */
 
 /* 'm4th-core' wordlist */
-#undef M4____gap             /*                       */
-#undef M4____gap             /*                       */
 #undef M4____gap             /*                       */
 #undef M4____gap             /*                       */
 #undef M4____gap             /*                       */

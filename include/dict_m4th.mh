@@ -125,17 +125,17 @@
 
 /* ------- m4th-c ------------------------------------------------------------------------------- */
 #define DICT_TOKENS_M4TH_C(X)                                                                      \
-    X(7, "c-arg-0", c_arg_0)   /* prepare 0 args for C function call    */                         \
-    X(7, "c-arg-1", c_arg_1)   /* prepare 1 arg  for C function call    */                         \
-    X(7, "c-arg-2", c_arg_2)   /* prepare 2 args for C function call    */                         \
-    X(7, "c-arg-3", c_arg_3)   /* prepare 3 args for C function call    */                         \
-    X(7, "c-arg-4", c_arg_4)   /* prepare 4 args for C function call    */                         \
-    X(7, "c-arg-5", c_arg_5)   /* prepare 5 args for C function call    */                         \
-    X(7, "c-arg-6", c_arg_6)   /* prepare 6 args for C function call    */                         \
-    X(8, "(c-call)", _c_call_) /* must be followed by C function address. calls it. */             \
-    X(7, "c-ret-0", c_ret_0)   /* push 0 values returned by C function call */                     \
-    X(7, "c-ret-1", c_ret_1)   /* push 1 value  returned by C function call */                     \
-    X(7, "c-ret-2", c_ret_2)   /* push 2 values returned by C function call */
+    X(9, "(c-arg-0)", _c_arg_0_) /* prepare 0 args for C function call    */                       \
+    X(9, "(c-arg-1)", _c_arg_1_) /* prepare 1 arg  for C function call    */                       \
+    X(9, "(c-arg-2)", _c_arg_2_) /* prepare 2 args for C function call    */                       \
+    X(9, "(c-arg-3)", _c_arg_3_) /* prepare 3 args for C function call    */                       \
+    X(9, "(c-arg-4)", _c_arg_4_) /* prepare 4 args for C function call    */                       \
+    X(9, "(c-arg-5)", _c_arg_5_) /* prepare 5 args for C function call    */                       \
+    X(9, "(c-arg-6)", _c_arg_6_) /* prepare 6 args for C function call    */                       \
+    X(8, "(c-call)", _c_call_)   /* must be followed by C function address. calls it. */           \
+    X(9, "(c-ret-0)", _c_ret_0_) /* push 0 values returned by C function call */                   \
+    X(9, "(c-ret-1)", _c_ret_1_) /* push 1 value  returned by C function call */                   \
+    X(9, "(c-ret-2)", _c_ret_2_) /* push 2 values returned by C function call */
 
 #define DICT_WORDS_M4TH_C(X) DICT_TOKENS_M4TH_C(X)
 

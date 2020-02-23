@@ -96,54 +96,54 @@ FUNC_RAWEND(bye)
 
 
 /* pop 0 args, prepare for C function call */
-FUNC_START(c_arg_0)
+FUNC_START(_c_arg_0_)
         DPUSH( DTOP) /* c-ret-[N] will reload DTOP */
-FUNC_END(c_arg_0)
+FUNC_END(_c_arg_0_)
 
 
 /* pop 1 arg, prepare it for C function call */
-FUNC_START(c_arg_1)
+FUNC_START(_c_arg_1_)
         MOVE(  DTOP,   x0)
-FUNC_END(c_arg_1)
+FUNC_END(_c_arg_1_)
 
 
 /* pop 2 args, prepare them for C function call */
-FUNC_START(c_arg_2)
+FUNC_START(_c_arg_2_)
         MOVE(  DTOP,   x1)
         DPOP(  x0)
-FUNC_END(c_arg_2)
+FUNC_END(_c_arg_2_)
 
 
 /* pop 3 args, prepare them for C function call */
-FUNC_START(c_arg_3)
+FUNC_START(_c_arg_3_)
         MOVE(  DTOP,   x2)
         DPOP2( x1, x0)
-FUNC_END(c_arg_3)
+FUNC_END(_c_arg_3_)
 
 
 /* pop 4 args, prepare them for C function call */
-FUNC_START(c_arg_4)
+FUNC_START(_c_arg_4_)
         MOVE(  DTOP,   x3)
         DPOP(  x2)
         DPOP2( x1, x0)
-FUNC_END(c_arg_4)
+FUNC_END(_c_arg_4_)
 
 
 /* pop 5 args, prepare them for C function call */
-FUNC_START(c_arg_5)
+FUNC_START(_c_arg_5_)
         MOVE(  DTOP,   x4)
         DPOP2( x3, x2)
         DPOP2( x1, x0)
-FUNC_END(c_arg_5)
+FUNC_END(_c_arg_5_)
 
 
 /* pop 6 args, prepare them for C function call */
-FUNC_START(c_arg_6)
+FUNC_START(_c_arg_6_)
         MOVE(  DTOP,   x5)
         DPOP(  x4)
         DPOP2( x3, x2)
         DPOP2( x1, x0)
-FUNC_END(c_arg_6)
+FUNC_END(_c_arg_6_)
 
 
 /* must be followed by C function address. call it. */
@@ -155,24 +155,24 @@ FUNC_RAWEND(_c_call_)
 
 
 /* push 0 values returned by C function call */
-FUNC_START(c_ret_0)
+FUNC_START(_c_ret_0_)
         /* reload DTOP because c_arg_* above moved DSTK */
         DPOP(  DTOP)
-FUNC_END(c_ret_0)
+FUNC_END(_c_ret_0_)
 
 
 /* push 1 value  returned by C function call */
-FUNC_START(c_ret_1)
+FUNC_START(_c_ret_1_)
         MOVE(  x0,     DTOP)
-FUNC_END(c_ret_1)
+FUNC_END(_c_ret_1_)
 
 
 /* push 2 values returned by C function call */
-FUNC_START(c_ret_2)
+FUNC_START(_c_ret_2_)
         DPUSH( x0)
         MOVE(  x1,     DTOP)
         /* TODO */
-FUNC_END(c_ret_2)
+FUNC_END(_c_ret_2_)
 
 
 /** pop address of native code from dstack and call it. */

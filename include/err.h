@@ -43,12 +43,13 @@ typedef enum m4err_id_e {
     /* ... */
     m4err_file_io_exception = M4ERR_FILE_IO_EXCEPTION,
     m4err_non_existent_file = M4ERR_NON_EXISTENT_FILE,
-    m4err_unexpected_end_of_file = M4ERR_UNEXPECTED_EOF,
+    m4err_unexpected_eof = M4ERR_UNEXPECTED_EOF,
     /* ... */
     m4err_quit = M4ERR_QUIT,
     m4err_exception_in_send_or_recv_char = M4ERR_EXCEPTION_IN_SEND_OR_RECV_CHAR,
     /* ... */
     m4err_is_word = M4ERR_IS_WORD, /* special case, not an error */
+    m4err_c_errno = M4ERR_C_ERRNO, /* error is M4ERR_C_ERRNO - errno */
 } m4err_id;
 
 #endif /* M4TH_INCLUDE_ERR_MH */

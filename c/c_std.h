@@ -17,18 +17,10 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_IMPL_H
-#define M4TH_IMPL_H
+#include "../m4th.h"
 
-#include "m4th.h"
+/** wrapper around C function fread(), easier to call from forth than plain fread() */
+m4pair m4th_c_fread(FILE *in, void *addr, size_t len);
 
-/** wrapper around REPL */
-m4cell m4th_repl(m4th *m);
-
-/** used for testing and benchmark */
-extern m4cell m4th_crctable[256];
-void m4th_crcinit(m4cell table[256]);
-uint32_t m4th_crc1byte(uint32_t crc, unsigned char byte);
-uint32_t m4th_crcstring(m4string str);
-
-#endif /* M4TH_IMPL_H */
+/** wrapper around C function fwrite(), easier to call from forth than plain fwrite() */
+m4pair m4th_c_fwrite(FILE *out, const void *addr, size_t len);

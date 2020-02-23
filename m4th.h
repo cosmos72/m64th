@@ -83,6 +83,7 @@ typedef struct m4dict_s m4dict;
 typedef struct m4iobuf_s m4iobuf;
 typedef struct m4slice_s m4slice;
 typedef struct m4buf_s m4stack;
+typedef struct m4pair_s m4pair;
 typedef struct m4searchorder_s m4searchorder;
 typedef struct m4stackeffects_s m4stackeffects;
 typedef struct m4string_s m4string;
@@ -143,6 +144,14 @@ struct m4iobuf_s {
     m4cell_u size; /**< last char to read (or write) is addr[size-1]   */
     m4cell_u max;  /**< capacity. I/O buffer is addr[0..max-1]         */
     m4char addr[0];
+};
+
+struct m4pair_s {
+    union {
+        m4cell num;
+        const m4word *w;
+    };
+    m4cell err;
 };
 
 struct m4string_s { /**< array of m4char, with size */
