@@ -765,8 +765,8 @@ void m4th_clear(m4th *m) {
     m->w = NULL;
     m->ip = NULL;
     memset(m->c_regs, '\0', sizeof(m->c_regs));
-    m->in->pos = m->in->size;
-    m->out->pos = 0;
+    m->in->pos = m->in->size = 0;
+    m->out->pos = m->out->size = 0;
     m->mem.curr = m->mem.start;
     m->err = 0;
 }

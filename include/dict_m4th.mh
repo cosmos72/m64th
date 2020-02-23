@@ -137,7 +137,10 @@
     X(9, "(c-ret-1)", _c_ret_1_) /* push 1 value  returned by C function call */                   \
     X(9, "(c-ret-2)", _c_ret_2_) /* push 2 values returned by C function call */
 
-#define DICT_WORDS_M4TH_C(X) DICT_TOKENS_M4TH_C(X)
+#define DICT_WORDS_M4TH_C(X)                                                                       \
+    DICT_TOKENS_M4TH_C(X)                                                                          \
+    X(7, "c-fread", c_fread)   /* ( FILE* c-addr u -- u' err ) call C function fread()  */         \
+    X(8, "c-fwrite", c_fwrite) /* ( FILE* c-addr u -- u' err ) call C function fwrite() */
 
 /* ------- m4th-core ---------------------------------------------------------------------------- */
 #define DICT_TOKENS_M4TH_CORE(X)                                                                   \
