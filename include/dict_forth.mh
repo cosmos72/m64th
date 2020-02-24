@@ -95,14 +95,16 @@
     X(3, ">in", to_in)                                                                             \
     X(7, ">number", to_number)                                                                     \
     X(8, "compile,", compile_comma)                                                                \
-    X(2, "cr,", cr)                                                                                \
+    X(2, "cr", cr)                                                                                 \
     X(4, "else,", else)                                                                            \
+    X(4, "emit", emit)                                                                             \
     X(4, "find", find)                                                                             \
     X(2, "if,", if)                                                                                \
     X(5, "leave", leave)                                                                           \
     X(7, "literal", literal)                                                                       \
     X(4, "loop", loop)                                                                             \
-    X(6, "source", source)
+    X(6, "source", source)                                                                         \
+    X(5, "space", space)
 
 /* ------- forth 2012: core ext ----------------------------------------------------------------- */
 #define DICT_TOKENS_FORTH_CORE_EXT(X)                                                              \

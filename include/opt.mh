@@ -171,6 +171,10 @@
         x((zero_equal, _if_), (_if_zero_))                   /* 0=    (if)    => (if0)          */ \
         x((zero_ne, _if_zero_), (_if_zero_))                 /* 0<>   (if0)   => (if0)          */ \
         x((zero_equal, _if_zero_), (_if_))                   /* 0=    (if0)   => (if)           */ \
+        x((zero_ne, _until_), (_until_))                     /* 0<>  (until)  => (until)        */ \
+        x((zero_equal, _until_), (_until_zero_))             /* 0=   (until)  => (until0)       */ \
+        x((zero_ne, _until_zero_), (_until_zero_))           /* 0<>  (until0) => (until0)       */ \
+        x((zero_equal, _until_zero_), (_until_))             /* 0=   (until0) => (until)        */ \
         x((zero_ne, _while_), (_while_))                     /* 0<>  (while)  => (while)        */ \
         x((zero_equal, _while_), (_while_zero_))             /* 0=   (while)  => (while0)       */ \
         x((zero_ne, _while_zero_), (_while_zero_))           /* 0<>  (while0) => (while0)       */ \

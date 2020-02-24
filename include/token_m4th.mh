@@ -136,21 +136,21 @@
 /* 'm4th-core' wordlist */
 #undef M4____gap              /*                       */
 #undef M4____gap              /*                       */
-#define M4in_to_iobuf 619     /* in>iobuf     (    -- io     ) get current input as iobuf     */
-#define M4iobuf_addr 620      /* iobuf>addr   ( io -- c-addr ) get start of iobuf data buffer */
-#define M4iobuf_all_data 621  /* iobuf>all-data ( io -- c-addr u ) get all data, from 0 to size  */
-#define M4iobuf_data 622      /* iobuf>data   ( io -- c-addr u ) get data, from position to size */
+#define M4in_to_ibuf 619      /* in>ibuf      (    -- io     ) get current input as iobuf       */
+#define M4iobuf_addr 620      /* iobuf>addr   ( io -- c-addr ) get start of iobuf data buffer   */
+#define M4iobuf_all_data 621  /* iobuf>all-data ( io -- c-addr u ) get all data, from 0 to size */
+#define M4iobuf_data 622      /* iobuf>data   ( io -- c-addr u ) get data, from position to size*/
 #define M4iobuf_free_data 623 /*              ( io -- c-addr u ) get free data, from size to max*/
-#define M4iobuf_func 624      /* iobuf>func   ( io -- addr ) get address of iobuf I/O function */
-#define M4iobuf_handle 625    /* iobuf>handle ( io -- addr ) get address of iobuf handle       */
-#define M4iobuf_max 626       /* iobuf>max    ( io -- u    ) get iobuf max size i.e. capacity  */
-#define M4iobuf_pos 627       /* iobuf>pos    ( io -- addr ) get address of iobuf position     */
-#define M4iobuf_size 628      /* iobuf>size   ( io -- addr ) get address of iobuf size         */
+#define M4iobuf_func 624      /* iobuf>func   ( io -- addr ) get address of iobuf I/O function  */
+#define M4iobuf_handle 625    /* iobuf>handle ( io -- addr ) get address of iobuf handle        */
+#define M4iobuf_max 626       /* iobuf>max    ( io -- u    ) get iobuf max size i.e. capacity   */
+#define M4iobuf_pos 627       /* iobuf>pos    ( io -- addr ) get address of iobuf position      */
+#define M4iobuf_size 628      /* iobuf>size   ( io -- addr ) get address of iobuf size          */
 #undef M4____gap              /*                       */
 #undef M4____gap              /*                       */
-#define M4m4th_err 615        /* (   -- addr ) get address of m4th.err */
+#define M4m4th_err 631        /* (   -- addr ) get address of m4th.err */
 #undef M4____gap              /*                       */
-#undef M4____gap              /*                       */
+#define M4out_to_obuf 633     /* out>obuf     (    -- io     ) get current output as iobuf      */
 #undef M4____gap              /*                       */
 #undef M4____gap              /*                       */
 #undef M4____gap              /*                       */
@@ -213,9 +213,9 @@
 #define M4_missing_ 0           /* (missing) called instead of invalid/unimplemented function */
 #define M4_repeat_ 694          /* (repeat) must be followed by IP offset to jump   */
 #define M4_until_ 695           /* (until)  must be followed by IP offset to jump if dtop == 0 */
-#define M4_while_ 696           /* (while)  must be followed by IP offset to jump if dtop == 0 */
-#define M4_while_zero_ 697      /* (while0) must be followed by IP offset to jump if dtop <> 0 */
-#undef M4____gap                /*                                         */
+#define M4_until_zero_ 696      /* (until0) must be followed by IP offset to jump if dtop <> 0 */
+#define M4_while_ 697           /* (while)  must be followed by IP offset to jump if dtop == 0 */
+#define M4_while_zero_ 698      /* (while0) must be followed by IP offset to jump if dtop <> 0 */
 #undef M4____gap                /*                                         */
 #define M4_lit2s_ 700           /* (lit-2s) must be followed by int16, push it to dstack */
 #define M4_lit4s_ 701           /* (lit-4s) must be followed by int32, push it to dstack */

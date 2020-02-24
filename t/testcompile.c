@@ -49,10 +49,12 @@ static const m4testcompile testcompile[] = {
     {"#-4321", {}, {}, {2, {m4_lit2s_, SHORT(-4321)}}},
     {"$99", {}, {}, {2, {m4_lit2s_, SHORT(0x99)}}},
     {"$-7def", {}, {}, {2, {m4_lit2s_, SHORT(-0x7def)}}},
+    {"$-7DEF", {}, {}, {2, {m4_lit2s_, SHORT(-0x7def)}}},
     {"%1011", {}, {}, {2, {m4_lit2s_, SHORT(0xb)}}},
 #if SZ >= 4
     {"12345678", {}, {}, {3, {m4_lit4s_, INT(12345678)}}},
-    {"$12345678", {}, {}, {3, {m4_lit4s_, INT(0x12345678)}}},
+    {"$12abcdef", {}, {}, {3, {m4_lit4s_, INT(0x12abcdef)}}},
+    {"$12FEDCBA", {}, {}, {3, {m4_lit4s_, INT(0x12fedcba)}}},
 #endif
 #if SZ >= 8
     {"$7fffffffffffffff", {}, {}, {5, {m4_lit8s_, CELL(0x7fffffffffffffffl)}}},
@@ -71,6 +73,8 @@ static const m4testcompile testcompile[] = {
     {"if else then", {}, {}, {5, {m4_if_, T(2), m4_else_, T(1), m4then}}},
     {"if 1 else 2 then", {}, {}, {7, {m4_if_, T(3), m4one, m4_else_, T(2), m4two, m4then}}},
     /* ------------------------------- literal ------------------------------ */
+    {"LITERAL", {1, {0}}, {}, {1, {m4zero}}},
+    {"LiTeRaL", {1, {0}}, {}, {1, {m4zero}}},
     {"literal", {1, {0}}, {}, {1, {m4zero}}},
     {"literal", {1, {1}}, {}, {1, {m4one}}},
     {"literal", {1, {-1}}, {}, {1, {m4minus_one}}},
@@ -113,6 +117,9 @@ static const m4testcompile testcompile[] = {
     {"/mod drop false true", {}, {}, {4, {m4div_mod, m4drop, m4false, m4true}}},
     {"?dup dup exit", {}, {}, {3, {m4question_dup, m4dup, m4exit}}},
     {"string=", {}, {}, {1, {m4string_equal}}},
+    {"string<>", {}, {}, {2, {m4string_equal, m4invert}}},
+    {"STRING-CI=", {}, {}, {1, {m4string_ci_equal}}},
+    {"sTrInG-CI<>", {}, {}, {2, {m4string_ci_equal, m4invert}}},
     /* ------------------------------- immediate words ---------------------- */
     {"?do", {}, {2, {2, m4_q_do_}}, {2, {m4_q_do_, T(-1)}}},
     {"do", {}, {2, {1, m4do}}, {1, {m4do}}},

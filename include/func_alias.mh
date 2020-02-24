@@ -31,6 +31,7 @@
 #define m4fthen m4fnoop                  /* then       is a noop, used as compile marker */
 #define m4f_repeat_ m4f_jump_            /* (repeat)   is unconditional jump             */
 #define m4f_until_ m4f_if_               /* (until)    is conditional jump if dtop == 0  */
+#define m4f_until_zero_ m4f_if_zero_     /* (until0)   is conditional jump if dtop <> 0  */
 #define m4f_while_ m4f_if_               /* (while)    is conditional jump if dtop == 0  */
 #define m4f_while_zero_ m4f_if_zero_     /* (while0)   is conditional jump if dtop <> 0  */
 #define m4f_q_while_ m4f_q_if_           /* (?while)   is conditional jump if dtop == 0  */

@@ -22,24 +22,11 @@
 /* clang-format off */
 
 
-FUNC_START(emit)
-        LOAD(  REG1,   AT(M4TH, M4TH_OFF_OUT))
-        LOAD(  REG2,   AT(REG1, IOBUF_OFF_POS))
-        LOAD(  REG3,   AT(REG1, IOBUF_OFF_SIZE))
-        /* TODO flush output buffer */
-        JAE(   REG2,   REG3,  FUNC_SYM_NEXT(emit))
-        ADDI(  REG1,   IOBUF_OFF_ADDR, REG3)
-        STORb( DTOPb,  AT(REG3, REG2, 1))
-        INC1(  REG2)
-        STOR(  REG2,   AT(REG1, IOBUF_OFF_POS))
-FUNC_END(emit)
-
-
-/* in>iobuf ( -- io ) get current input as iobuf */
-FUNC_START(in_to_iobuf)
+/* in>ibuf ( -- io ) get current input as iobuf */
+FUNC_START(in_to_ibuf)
         DPUSH( DTOP)
         LOAD(  DTOP,   AT(M4TH, M4TH_OFF_IN))
-FUNC_END(in_to_iobuf)
+FUNC_END(in_to_ibuf)
 
 
 /* iobuf>addr ( io -- c-addr ) get start of iobuf data */
@@ -126,3 +113,10 @@ FUNC_START(key)
         INC1(  REG2)
         STOR(  REG2,   AT(REG1, IOBUF_OFF_POS))
 FUNC_END(key)
+
+
+/* out>obuf ( -- io ) get current output as iobuf */
+FUNC_START(out_to_obuf)
+        DPUSH( DTOP)
+        LOAD(  DTOP,   AT(M4TH, M4TH_OFF_OUT))
+FUNC_END(out_to_obuf)

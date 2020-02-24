@@ -146,8 +146,7 @@
 
 /* ------- m4th-core ---------------------------------------------------------------------------- */
 #define DICT_TOKENS_M4TH_CORE(X)                                                                   \
-    X(8, "m4th>err", m4th_err)      /* (    -- addr ) get address of m4th.err            */        \
-    X(8, "in>iobuf", in_to_iobuf)   /* (    -- io   ) get current input as iobuf         */        \
+    X(7, "in>ibuf", in_to_ibuf)     /* (    -- io       ) get current input as iobuf     */        \
     X(10, "iobuf>addr", iobuf_addr) /* ( io -- c-addr   ) get start of iobuf data buffer */        \
     /* ( io -- c-addr u ) get iobuf entire content i.e. from 0 to iobuf>size */                    \
     X(14, "iobuf>all-data", iobuf_all_data)                                                        \
@@ -160,7 +159,9 @@
     X(9, "iobuf>max", iobuf_max)        /* ( io -- u    ) get iobuf max size i.e. capacity   */    \
     X(9, "iobuf>pos", iobuf_pos)        /* ( io -- addr ) get address of iobuf position      */    \
     X(10, "iobuf>size", iobuf_size)     /* ( io -- addr ) get address of iobuf size          */    \
-    /*              searchorder-i ( u -- addr ) get address of searchorder i-th element  */        \
+    X(8, "m4th>err", m4th_err)    /*  (   -- addr ) get address of m4th.err                  */    \
+    X(8, "out>obuf", out_to_obuf) /*  (   -- io   ) get current output as iobuf              */    \
+    /*                  searchorder-i ( u -- addr ) get address of searchorder i-th element  */    \
     X(13, "searchorder-i", searchorder_i)                                                          \
     X(13, "searchorder-n", searchorder_n) /* (    -- addr    ) get address of searchorder count */ \
     X(8, "user-var", user_var)      /* ( -- addr ) must be followed by index of user variable */   \
@@ -178,19 +179,21 @@
     /* ( handle c-addr u -- 0 M4ERR_UNEXPECTED_EOF ) always return EOF. usable for iobuf>func */   \
     X(10, "always-eof", always_eof)                                                                \
     /*                      ( -- c-addr u ) read blanks from iobuf, refilling as needed */         \
-    X(17, "iobuf-read-blanks", iobuf_read_blanks)                                                  \
+    X(16, "ibuf-read-blanks", ibuf_read_blanks)                                                    \
     /*      ( -- c-addr u ) read blank-delimited string from iobuf, refilling as needed */         \
-    X(20, "iobuf-read-nonblanks", iobuf_read_nonblanks)                                            \
-    X(12, "iobuf-refill", iobuf_refill) /* ( io -- err  ) read some data into iobuf     */         \
-    X(17, "iobuf-skip-blanks", iobuf_skip_blanks) /* skip whitespace from iobuf current data */    \
-    X(11, "string>word",                                                                           \
-      string_to_word)           /* ( c-addr u -- w|0 -1|0|1 ) find name in search order */         \
-    X(6, "/token", div_token)   /* alias of _SZt_div,    no dedicated m4token */                   \
-    X(8, "to-token", to_token)  /* alias of to_SZtu,     no dedicated m4token */                   \
-    X(6, "token!", token_store) /* alias of _SZtu_store, no dedicated m4token */                   \
-    X(6, "token@", token_fetch) /* alias of _SZtu_fetch, no dedicated m4token */                   \
-    X(6, "token+", token_plus)  /* alias of _SZt_plus,   no dedicated m4token */                   \
-    X(6, "tokens", tokens)      /* alias of _SZt_times,  no dedicated m4token */                   \
+    X(19, "ibuf-read-nonblanks", ibuf_read_nonblanks)                                              \
+    X(11, "ibuf-refill", ibuf_refill)           /*   ( io -- err  ) read some data into iobuf   */ \
+    X(16, "ibuf-skip-blanks", ibuf_skip_blanks) /*   skip whitespace from iobuf current data    */ \
+    X(10, "obuf-flush", obuf_flush)             /*   ( io -- err  ) flush iobuf data            */ \
+    X(15, "obuf-write-char", obuf_write_char)   /*   ( io c -- err  ) write one char to iobuf   */ \
+    X(17, "obuf-write-string", obuf_write_string) /* ( io addr u -- err  ) write string to iobuf*/ \
+    X(11, "string>word", string_to_word) /* ( c-addr u -- w|0 -1|0|1 ) find name in search order*/ \
+    X(6, "/token", div_token)            /* alias of _SZt_div,    no dedicated m4token */          \
+    X(8, "to-token", to_token)           /* alias of to_SZtu,     no dedicated m4token */          \
+    X(6, "token!", token_store)          /* alias of _SZtu_store, no dedicated m4token */          \
+    X(6, "token@", token_fetch)          /* alias of _SZtu_fetch, no dedicated m4token */          \
+    X(6, "token+", token_plus)           /* alias of _SZt_plus,   no dedicated m4token */          \
+    X(6, "tokens", tokens)               /* alias of _SZt_times,  no dedicated m4token */          \
     X(12, "word-inline?", word_inline_query) /* ( w -- flag ) calls to word should be inlined? */  \
     X(13, "wordlist-find", wordlist_find)    /* ( c-addr u wid -- w|0 -1|0|1 ) search in wordlist */
 

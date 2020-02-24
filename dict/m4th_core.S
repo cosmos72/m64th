@@ -43,89 +43,67 @@ WORD_START(always_eof, div_token)
     WORD_NATIVE_NONE()
     WORD_CODE(two_drop, drop, zero, _lit_, T(M4ERR_UNEXPECTED_EOF), exit)
 WORD_END(always_eof)
-WORD(m4th_err,         always_eof,     DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
-WORD(in_to_iobuf,      m4th_err,       DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
-WORD(iobuf_addr,       in_to_iobuf,    DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
-WORD(iobuf_all_data,   iobuf_addr,     DSTACK(1,2), RSTACK(0,0), WORD_IMPURE)
-WORD(iobuf_data,       iobuf_all_data, DSTACK(1,2), RSTACK(0,0), WORD_IMPURE)
-WORD(iobuf_free_data,  iobuf_data,     DSTACK(1,2), RSTACK(0,0), WORD_IMPURE)
-WORD(iobuf_func,      iobuf_free_data, DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(iobuf_handle,     iobuf_handle,   DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(iobuf_max,        iobuf_func,     DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
-WORD(iobuf_pos,        iobuf_max,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(iobuf_size,       iobuf_pos,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 /* ( io -- ) read and skip blanks from iobuf, refilling as needed */
-WORD_START(iobuf_read_blanks, iobuf_size)
+WORD_START(ibuf_read_blanks, always_eof)
     WORD_FLAGS(M4FLAG_INLINE)
-    WORD_DSTACK(0,0)
+    WORD_DSTACK(1,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_CODE(
         /* begin                                       ( io           )
          *    dup iobuf-skip-blanks                    ( io           )
-         *    dup iobuf>data nip 0=                    ( io t|f       )
-         *    while                                    ( io           )
-         *    dup iobuf-refill                         ( io err       )
-         *    ?if                                      ( io err       )
-         *       m4th>err ! break                      ( io           )
-         *    then
-         * repeat                                      ( io           )
+         *    dup iobuf>data nip 0= while              ( io           )
+         *    dup iobuf-refill                         ( io           )
+         * until                                       ( io           )
          * drop                                        (              )
          */
         begin,
-            dup, _call_, WADDR(iobuf_skip_blanks),
-            dup, iobuf_data, nip,
-            _while_zero_, T(11+SZ/SZt),
-            dup, _call_, WADDR(iobuf_refill),
-            _q_if_, T(5),
-                m4th_err, store, _break_, T(3),
-            then,
-        _repeat_, T(-18-2*SZ/SZt),
+            dup, _call_, WADDR(ibuf_skip_blanks),
+            dup, iobuf_data, nip, _while_zero_, T(4+SZ/SZt),
+            dup, _call_, WADDR(ibuf_refill),
+        _until_, T(-9-2*SZ/SZt),
         drop, exit
     )
-WORD_END(iobuf_read_blanks)
+WORD_END(ibuf_read_blanks)
 /* ( io -- c-addr u ) read blank-delimited string from iobuf, refilling as needed */
-WORD_START(iobuf_read_nonblanks, iobuf_read_blanks)
+WORD_START(ibuf_read_nonblanks, ibuf_read_blanks)
     WORD_FLAGS(M4FLAG_INLINE)
-    WORD_DSTACK(0,2)
+    WORD_DSTACK(1,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_CODE(
         /*
-         * dup iobuf-read-blanks                     ( io                  )
-         *
-         *          TODO use string-first-blank instead
-         *
-         * dup iobuf>data bounds                     ( io end addr         )
-         * dup 0 2swap                               ( io addr 0 end addr  )
-         * ?do                                       ( io addr u           ) (R: end addr-i )
-         *   i c@ bl <=                              ( io addr u t|f       ) (R: end addr-i )
-         *   if                                      ( io addr u           ) (R: end addr-i )
-         *     leave                                 ( io addr u           )
-         *   then                                    ( io addr u           ) (R: end addr-i )
-         *   1+                                      ( io addr u'          ) (R: end addr-i )
-         * loop            ( better: 1 chars +loop ) ( io addr u           )
-         * rot trail iobuf>pos                       ( addr u u pos        )
-         * +!                                        ( addr u              )
+         * dup >r iobuf-read-blanks                  (               ) (R: io )
+         * begin                                     (               ) (R: io )
+         *    r@ iobuf>data 2dup string-first-blank  ( addr u u'     ) (R: io )
+         *    tuck = while                           ( addr u'       ) (R: io )
+         *    dup $ff < while  ( max name length )   ( addr u        ) (R: io )
+         *    2drop r@ iobuf-refill ( moves data )   ( err           ) (R: io )
+         *    if                                     (               ) (R: io )
+         *       r@ iobuf>data break                 ( addr u        ) (R: io )
+         *    then                                   (               ) (R: io )
+         * repeat                                    ( addr u        ) (R: io )
+         * dup r> iobuf>pos                          ( addr u u pos  )
+         * +!                                        ( addr u        )
          */
-        dup, _call_, WADDR(iobuf_read_blanks),
-        dup, iobuf_data, bounds,
-        dup, zero, two_swap,
-        _q_do_, T(12),
-            i, c_fetch, bl, less_equal,
-            _if_, T(3),
-                _leave_, T(4),
+        dup_to_r, _call_, WADDR(ibuf_read_blanks),
+        begin,
+            r_fetch, iobuf_data, two_dup, string_first_blank,
+            tuck, equal, _while_, T(18+SZ/SZt),
+            dup, _lit_, T(0xff), less, _while_, T(12+SZ/SZt),
+            two_drop, r_fetch, _call_, WADDR(ibuf_refill),
+            _if_, T(5),
+                r_fetch, iobuf_data, _break_, T(3),
             then,
-            one_plus,
-        _loop_, T(-12),
-        rot, trail, iobuf_pos,
+        _repeat_, T(-26-SZ/SZt),
+        dup, r_from, iobuf_pos,
         plus_store, exit
     )
-WORD_END(iobuf_read_nonblanks)
+WORD_END(ibuf_read_nonblanks)
 /* iobuf-refill ( io -- err ) read some chars into iobuf */
-WORD_START(iobuf_refill, iobuf_read_blanks)
+WORD_START(ibuf_refill, ibuf_read_nonblanks)
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)
@@ -164,9 +142,9 @@ WORD_START(iobuf_refill, iobuf_read_blanks)
         flip, iobuf_size,
         plus_store, exit
     )
-WORD_END(iobuf_refill)
+WORD_END(ibuf_refill)
 /* ( io -- ) skip blanks from iobuf current data */
-WORD_START(iobuf_skip_blanks, iobuf_refill)
+WORD_START(ibuf_skip_blanks, ibuf_refill)
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)
@@ -195,9 +173,94 @@ WORD_START(iobuf_skip_blanks, iobuf_refill)
         swap, iobuf_pos,
         plus_store, exit
     )
-WORD_END(iobuf_skip_blanks)
+WORD_END(ibuf_skip_blanks)
+WORD(in_to_ibuf,    ibuf_skip_blanks, DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
+WORD(iobuf_addr,       in_to_ibuf,    DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
+WORD(iobuf_all_data,   iobuf_addr,     DSTACK(1,2), RSTACK(0,0), WORD_IMPURE)
+WORD(iobuf_data,       iobuf_all_data, DSTACK(1,2), RSTACK(0,0), WORD_IMPURE)
+WORD(iobuf_free_data,  iobuf_data,     DSTACK(1,2), RSTACK(0,0), WORD_IMPURE)
+WORD(iobuf_func,      iobuf_free_data, DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD(iobuf_handle,     iobuf_handle,   DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD(iobuf_max,        iobuf_func,     DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
+WORD(iobuf_pos,        iobuf_max,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD(iobuf_size,       iobuf_pos,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD(m4th_err,         iobuf_size,     DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
+/* obuf-flush ( io -- err ) write iobuf data */
+WORD_START(obuf_flush, m4th_err)
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_DSTACK(1,1)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_CODE(
+        /* >r                                       (                    ) (R: io )
+         * begin                                    (                    ) (R: io )
+         *    r@ iobuf>data                         ( c-addr u           ) (R: io )
+         *    ?if0                                  ( c-addr u           ) (R: io )
+         *       0 r@ iobuf>pos !                   ( c-addr 0           ) (R: io )
+         *       0 r@ iobuf>size !                  ( c-addr 0           ) (R: io )
+         *       nip break                          ( 0                  ) (R: io )
+         *    then                                  ( c-addr u           ) (R: io )
+         *    r@ iobuf>handle @ -rot                ( handle c-addr u    ) (R: io )
+         *    r@ iobuf>func @ execute               ( u' err             ) (R: io )
+         *    swap r@ iobuf>pos +!                  ( err                ) (R: io )
+         * until                                    ( err                ) (R: io )
+         * r> drop
+         */
+        to_r,
+        begin,
+            r_fetch, iobuf_data,
+            _q_if_zero_, T(12),
+                zero, r_fetch, iobuf_pos, store,
+                zero, r_fetch, iobuf_size, store,
+                nip, _break_, T(15),
+            then,
+            r_fetch, iobuf_handle, fetch, minus_rot,
+            r_fetch, iobuf_func, fetch, execute,
+            swap, r_fetch, iobuf_pos, plus_store,
+        _until_, T(-30),
+        r_from_drop, exit
+    )
+WORD_END(obuf_flush)
+/* obuf-write-char ( io c -- err  ) write one char to iobuf */
+WORD_START(obuf_write_char, obuf_flush)
+    WORD_FLAGS(0)
+    WORD_DSTACK(2,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_CODE(
+        /* swap dup >r iobuf>free-data                 ( c c-addr u   ) (R: io )
+         * if0                                         ( c c-addr     ) (R: io )
+         *   drop r@ iobuf-flush                       ( c err        ) (R: io )
+         *   ?if                                       ( c err        ) (R: io )
+         *      nip r> drop exit                       ( err          )
+         *   then                                      ( c err        ) (R: io )
+         *   drop                                      ( c            ) (R: io )
+         *   r@ iobuf>free-data drop                   ( c c-addr     ) (R: io )
+         * then                                        ( c c-addr     ) (R: io )
+         * c!                                          (              ) (R: io )
+         * 1 r> iobuf>size                             ( 1 size-addr  )
+         * +! 0                                        ( 0            )
+         */
+        swap, dup, to_r, iobuf_free_data,
+        _if_zero_, T(14+SZ/SZt),
+            drop, r_fetch, _call_, WADDR(obuf_flush),
+            _q_if_, T(4),
+                nip, r_from_drop, exit,
+            then,
+            drop,
+            r_fetch, iobuf_free_data, drop,
+        then,
+        c_store,
+        one, r_from, iobuf_size,
+        plus_store, zero,
+        exit
+    )
+WORD_END(obuf_write_char)
+WORD(out_to_obuf,     obuf_write_char, DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 /* searchorder-i ( -- addr ) get address of ith wordlist in searchorder */
-WORD(searchorder_i, iobuf_skip_blanks, DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
+WORD(searchorder_i,    out_to_obuf,    DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
 /* searchorder-n ( -- addr ) get address of searchorder count */
 WORD(searchorder_n,    searchorder_i,  DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 /*
