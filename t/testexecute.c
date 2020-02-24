@@ -34,9 +34,6 @@
 
 /* -------------- m4cell[] -> m4token[] conversion -------------- */
 
-#define m4array_copy_to_tarray(array, tarray)                                                      \
-    m4array_n_copy_to_tarray_n(array, N_OF(array), tarray, N_OF(tarray))
-
 void m4array_n_copy_to_tarray_n(const m4cell array[], const m4cell array_n /*               */,
                                 m4token tarray[], const m4cell tarray_n) {
     m4slice src = {(m4cell *)array, array_n};
@@ -102,6 +99,8 @@ static m4testexecute testexecute_a[] = {
      {{4, {'t', 0xffffffff, 1e8, 0}}, {1, {(m4cell)m4fcrc_plus_native_forth}}},
      {{1, {0x773edc4e}}, {}},
      {}},
+#elif 1
+    {"cr", {CALL(cr), m4bye}, {{}, {}}, {{}, {}}, {}},
 #else
     /* ----------------------------- arithmetic ----------------------------- */
     {"*", {m4times, m4bye}, {{2, {20, 7}}, {}}, {{1, {140}}, {}}, {}},
@@ -1124,11 +1123,6 @@ static void m4testexecute_failed(m4th *m, const m4testexecute *t, const m4code_p
     m4word_code_print(m->w, out);
     fputc('\n', out);
 }
-
-typedef struct m4testcount_s {
-    m4cell failed;
-    m4cell total;
-} m4testcount;
 
 static void m4th_testexecute_bunch(m4th *m, m4testexecute bunch[], m4cell n, m4testcount *count,
                                    FILE *out) {

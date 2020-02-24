@@ -46,11 +46,15 @@ enum {
 /* store m4_call_xt_ and XT in a m4countedwcode. correct only if word->data_len == 0 */
 #define CALLXT(name) m4_call_xt_, CELL(WORD_SYM(name).data)
 
+/* -------------- m4testcompile --------------------------------------------- */
+
 typedef struct m4testcompile_s {
     const char *input;
     m4countedstack dbefore, dafter;
     m4countedwcode codegen;
 } m4testcompile;
+
+/* -------------- m4testexecute --------------------------------------------- */
 
 typedef m4cell m4fixedwcode[m4test_code_n];
 
@@ -60,5 +64,33 @@ typedef struct m4testexecute_s {
     m4countedstacks before, after;
     m4countedwcode codegen;
 } m4testexecute;
+
+/* -------------- m4testio -------------------------------------------------- */
+
+typedef struct m4cstr_pair_s {
+    const char *in, *out;
+} m4cstr_pair;
+
+typedef struct m4testio_s {
+    const char *name;
+    m4fixedwcode code;
+    m4countedstacks before, after;
+    m4cstr_pair iobefore, ioafter;
+} m4testio;
+
+/* -------------- m4testcount ----------------------------------------------- */
+
+typedef struct m4testcount_s {
+    m4cell failed;
+    m4cell total;
+} m4testcount;
+
+/* -------------- m4cell[] -> m4token[] conversion -------------------------- */
+
+#define m4array_copy_to_tarray(array, tarray)                                                      \
+    m4array_n_copy_to_tarray_n(array, N_OF(array), tarray, N_OF(tarray))
+
+void m4array_n_copy_to_tarray_n(const m4cell array[], const m4cell array_n /*               */,
+                                m4token tarray[], const m4cell tarray_n);
 
 #endif /* M4TH_T_TEST_IMPL_H */
