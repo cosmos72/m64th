@@ -42,18 +42,19 @@ class PrintDataStack(gdb.Command):
         self.code_print(inf, "code   ", ip)
     def read_registers(self, inf):
         frame = gdb.selected_frame()
-        names = ()
-        if inf.architecture().name() == "i386:x86-64":
-            names = ("rbx", "r12", "rdi", "rsi", "r13", "r15")
-        else:
-            names = ("x20", "x22", "x21", "x23", "x24", "x27")
+        regs = ()
+        arch_name = inf.architecture().name()
+        if arch_name == "i386:x86-64":
+            regs = ("rbx", "r12", "rdi", "rsi", "r13", "r15")
+        elif arch_name == "aarch64":
+            regs = ("x20", "x22", "x21", "x23", "x24", "x27")
         return (
-            int(frame.read_register(names[0])), # dtop
-            int(frame.read_register(names[1])), # rtop
-            int(frame.read_register(names[2])), # dstk
-            int(frame.read_register(names[3])), # rstk
-            int(frame.read_register(names[4])), # m4th
-            int(frame.read_register(names[5])) - self.szt) # ip
+            int(frame.read_register(regs[0])), # dtop
+            int(frame.read_register(regs[1])), # rtop
+            int(frame.read_register(regs[2])), # dstk
+            int(frame.read_register(regs[3])), # rstk
+            int(frame.read_register(regs[4])), # m4th
+            int(frame.read_register(regs[5])) - self.szt) # ip
     def stack_print(self, inf, label, top, stk, n):
         gdb.write("%s <%d> " % (label, n))
         if n > 0:
