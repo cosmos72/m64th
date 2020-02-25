@@ -247,7 +247,20 @@ WORD_START(_exec_token_, _exec_native_)
     WORD_NATIVE_NONE() /* (exec-token) uses tail-call optimization: cannot inline into native code */
     WORD_CODE(_exec_token_, exit)
 WORD_END(_exec_token_)
-WORD_START(_if_, _exec_token_)
+WORD_START(_exec_xt_from_native_, _exec_token_)
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_MAY_JUMP)
+    WORD_DSTACK(-1,-1) /* stack effect when not jumping */
+    WORD_RSTACK(0,0)
+    WORD_DSTACK(1,0)   /* stack effect when jumping */
+    WORD_RSTACK(0,1)
+    /*
+     * (exec-xt-from-native) uses %rip-relative call to m4f_vm_ and has embedded data after ret:
+     * cannot inline into native code
+     */
+    WORD_NATIVE_NONE()
+    WORD_CODE(_exec_xt_from_native_, exit)
+WORD_END(_exec_xt_from_native_)
+WORD_START(_if_, _exec_xt_from_native_)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_MAY_JUMP | M4FLAG_IMMEDIATE)
     WORD_DSTACK(1,0) /* token stack effect when not jumping */
     WORD_RSTACK(0,0)
@@ -339,6 +352,14 @@ WORD_START(_repeat_, _missing_)
     WORD_NATIVE_NONE()
     WORD_CODE(/* TODO _call_, WADDR(repeat), */ exit)
 WORD_END(_repeat_)
+WORD_START(_return_to_native_, _repeat_)
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS | M4FLAG_JUMP)
+    WORD_STACK_NONE() /* stack effect when not jumping */
+    WORD_DSTACK(0,0)  /* stack effect when jumping */
+    WORD_RSTACK(1,0)
+    WORD_NATIVE_NONE() /* (return-to-native) messes with %rsp to redirect ret: cannot inline into native code */
+    WORD_CODE(_return_to_native_, exit)
+WORD_END(_exec_native_)
 WORD_START(_until_, _repeat_)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_MAY_JUMP | M4FLAG_IMMEDIATE)
     WORD_DSTACK(1,0) /* token stack effect when not jumping */
@@ -347,7 +368,7 @@ WORD_START(_until_, _repeat_)
     WORD_RSTACK(0,0)
     WORD_NATIVE_NONE()
     WORD_CODE(exit) /* TODO */
-WORD_END(_while_)
+WORD_END(_until_)
 WORD_START(_while_, _until_)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_MAY_JUMP | M4FLAG_IMMEDIATE)
     WORD_DSTACK(1,0) /* token stack effect when not jumping */

@@ -146,7 +146,7 @@
 #define M4state 116               /* state    */
 #define M4swap 117                /* swap     */
 #define M4then 118                /* then     */
-#undef M4type /*119*/             /* type     */
+#undef M4type /*119*/             /* type     implemented in forth, no dedicated m4token */
 #undef M4u_dot /*120*/            /* u.       */
 #define M4u_less 121              /* u<       */
 #undef M4u_m_times /*122*/        /* um*      */
@@ -495,7 +495,7 @@
 
 /* 'forth' wordlist: 'string' word set */
 #undef M4minus_trailing /*467*/ /* -trailing  */
-#undef M4div_string /*468*/     /* /string    */
+#define M4div_string 468        /* /string    */
 #undef M4blank /*469*/          /* blank      */
 #define M4cmove 470             /* cmove      */
 #undef M4cmove_top /*471*/      /* cmove>     */

@@ -17,6 +17,7 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include "../include/word.mh" /* WORD_CODE_ALIGN(), WORD_CODE_TOKENS() */
 #include "asm.mh"
 
 #define m4fth_run m4th_run
@@ -61,6 +62,7 @@ FUNC_START(_vm_)
         call *(FTBL, %r11, SZ);        /* execute vm instruction                */
         jmp    FUNC_SYM(_vm_);         /* loop                                  */
 FUNC_RAWEND(_vm_)
+
 
 /**
  * exit m4th interpreter and return to C:
@@ -217,7 +219,33 @@ FUNC_RAWEND(_exec_native_)
 /** pop m4token from dstack and call it. works only for tokens with native_len != -1 */
 FUNC_START(_exec_token_)
         /* FIXME this assumes SZt = 2 */
-        movzwl DTOPt,  REG3_ut;    /* REG1 = m4token                */
+        movzwl DTOPt,  REG3_ut;    /* a = m4token                   */
         DPOP(  DTOP)               /* reload dstack top             */
         jmp    *(FTBL, REG3, SZ);  /* tail-call optimization: jump to token */
 FUNC_RAWEND(_exec_token_)
+
+
+/** pop XT from dstack and call it from native code. */
+FUNC_START(_exec_xt_from_native_)
+        /* TODO: TEST this */
+        RPUSH( RTOP)               /* save rtop                       */
+        MOVE(  IP,     RTOP)       /* rtop = IP                       */
+        /*                          let token 'execute' pop dtop = xt */
+        lea    LABEL_SYM(_exec_xt_from_native_.vm_code)(%rip), IP;
+        call   FUNC_SYM(_vm_);
+        MOVE(  RTOP,   IP)         /* IP   = rtop                     */
+        RPOP(  RTOP)               /* load rtop                       */
+        ret;
+LABEL(_exec_xt_from_native_.vm_code)
+	WORD_CODE_ALIGN()
+        WORD_CODE_TOKENS(execute, _return_to_native_)
+FUNC_RAWEND(_exec_xt_from_native_)
+
+
+/* return to native code */
+FUNC_START(_return_to_native_)
+        /* TODO: TEST this */
+        ADD2(  IMM(SZ),%rsp)       /* skip return address, it's inside _vm_ */
+        ret;                       /* return to caller of _vm_ - usually _exec_xt_from_native_ */
+FUNC_RAWEND(_return_to_native_)
+

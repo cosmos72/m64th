@@ -192,3 +192,14 @@ FUNC_START(_exec_token_)
 FUNC_RAWEND(_exec_token_)
 
 
+/** pop XT from dstack and call it from native code. */
+FUNC_START(_exec_xt_from_native_)
+        /* TODO */
+FUNC_RAWEND(_exec_xt_from_native_)
+
+
+/* return to native code */
+FUNC_START(_return_to_native_)
+        /* TODO */
+FUNC_RAWEND(_return_to_native_)
+

@@ -104,7 +104,8 @@
     X(7, "literal", literal)                                                                       \
     X(4, "loop", loop)                                                                             \
     X(6, "source", source)                                                                         \
-    X(5, "space", space)
+    X(5, "space", space)                                                                           \
+    X(4, "type", type)
 
 /* ------- forth 2012: core ext ----------------------------------------------------------------- */
 #define DICT_TOKENS_FORTH_CORE_EXT(X)                                                              \
@@ -138,6 +139,7 @@
 
 /* ------- forth 2012: string ------------------------------------------------------------------- */
 #define DICT_TOKENS_FORTH_STRING(X)                                                                \
+    X(7, "/string", div_string)                                                                    \
     X(5, "cmove", cmove)                                                                           \
     /*X(6, "cmove>", cmove_top)*/
 

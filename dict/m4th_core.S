@@ -185,7 +185,7 @@ WORD(iobuf_max,        iobuf_func,     DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
 WORD(iobuf_pos,        iobuf_max,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(iobuf_size,       iobuf_pos,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(m4th_err,         iobuf_size,     DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
-/* obuf-flush ( io -- err ) write iobuf data */
+/* obuf-flush ( io -- err ) flush iobuf data */
 WORD_START(obuf_flush, m4th_err)
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_DSTACK(1,1)
@@ -220,6 +220,31 @@ WORD_START(obuf_flush, m4th_err)
             swap, r_fetch, iobuf_pos, plus_store,
         _until_, T(-30),
         r_from_drop, exit
+    )
+WORD_END(obuf_flush)
+/*
+ * (obuf-overflow) ( io c-addr u -- c-addr' u' err ) send string to iobuf I/O func,
+ * ignoring current data. return string still to write - non-empty only on I/O error
+ */
+WORD_START(_obuf_overflow_, m4th_err)
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_DSTACK(3,3)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_CODE(
+        /* rot >r 0                                 ( c-addr u 0               ) (R: io )
+         * begin                                    ( c-addr u err             ) (R: io )
+         *    drop ?while                           ( c-addr u                 ) (R: io )
+         *    2dup r@ iobuf>handle @ -rot           ( c-addr u handle c-addr u ) (R: io )
+         *    r@ iobuf>func @ execute               ( c-addr u u' err          ) (R: io )
+         *    >r /string                            ( c-addr' u'               ) (R: io err )
+         *    r>                                    ( c-addr u err             ) (R: io )
+         *    ?while0                               ( c-addr u err             ) (R: io )
+         * until                                    ( c-addr u err             ) (R: io )
+         * r> drop                                  ( c-addr u err             )
+         */
+        exit
     )
 WORD_END(obuf_flush)
 /* obuf-write-char ( io c -- err  ) write one char to iobuf */
@@ -258,7 +283,19 @@ WORD_START(obuf_write_char, obuf_flush)
         exit
     )
 WORD_END(obuf_write_char)
-WORD(out_to_obuf,     obuf_write_char, DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
+/* obuf-write-string ( io c-addr u -- err  ) write a string to iobuf */
+WORD_START(obuf_write_string, obuf_write_char)
+    WORD_FLAGS(0)
+    WORD_DSTACK(3,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_CODE(
+        /* TODO */
+        exit
+    )
+WORD_END(obuf_write_string)
+WORD(out_to_obuf,   obuf_write_string, DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 /* searchorder-i ( -- addr ) get address of ith wordlist in searchorder */
 WORD(searchorder_i,    out_to_obuf,    DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
 /* searchorder-n ( -- addr ) get address of searchorder count */

@@ -98,6 +98,19 @@ FUNC_START(fetch)          /* @ */
 FUNC_END(fetch)
 
 
+#ifndef M4FDIV_STRING
+/* /string ( c-addr u n -- c-addr' u' )  'string' word set */
+FUNC_START(div_string)
+        MOVE(  DTOP,   REG1)           /* a = n       */
+        DPOP(  DTOP)                   /* dtop = u    */
+        LOAD(  REG2,   AT(DSTK))       /* b = c-addr  */
+        SUB2(  REG1,   DTOP)           /* dtop -= n   */
+        ADD2(  REG1,   REG2)           /* c-addr += n */
+        STOR(  REG2,   AT(DSTK))
+FUNC_END(div_string)
+#endif /* M4FDIV_STRING */
+
+
 /**
  * string-ci=  ( c-addr1 c-addr2 u -- c-addr1 c-addr2 u t|f ) m4th-user
  * compare two strings, ignoring case

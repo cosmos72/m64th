@@ -36,6 +36,13 @@
 
 static m4testio testio_a[] = {
     {"cr", {CALL(cr), m4bye}, {{}, {}}, {{}, {}}, {"", ""}, {"", "\n"}},
+    {"parse-name",
+     {CALL(parse_name), /*CALL(type),*/ m4two_drop, m4bye},
+     {{}, {}},
+     {{}, {}},
+     {" a b", ""},
+     {" b", ""}},
+    {"space", {CALL(space), m4bye}, {{}, {}}, {{}, {}}, {"", ""}, {"", " "}},
 };
 
 static m4code m4testio_init(m4testio *t, m4countedcode *code_buf) {

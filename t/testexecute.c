@@ -99,8 +99,6 @@ static m4testexecute testexecute_a[] = {
      {{4, {'t', 0xffffffff, 1e8, 0}}, {1, {(m4cell)m4fcrc_plus_native_forth}}},
      {{1, {0x773edc4e}}, {}},
      {}},
-#elif 1
-    {"cr", {CALL(cr), m4bye}, {{}, {}}, {{}, {}}, {}},
 #else
     /* ----------------------------- arithmetic ----------------------------- */
     {"*", {m4times, m4bye}, {{2, {20, 7}}, {}}, {{1, {140}}, {}}, {}},
@@ -218,6 +216,17 @@ static m4testexecute testexecute_b[] = {
     {"u /cell", {m4div_cell, m4bye}, {{1, {13}}, {}}, {{1, {13 / SZ}}, {}}, {}},
     {"n /token", {m4div_token, m4bye}, {{1, {-13}}, {}}, {{1, {-13 / SZt}}, {}}, {}},
     {"u /token", {m4div_token, m4bye}, {{1, {13}}, {}}, {{1, {13 / SZt}}, {}}, {}},
+    /*                                                                          */
+    {"n /string",
+     {m4div_string, m4bye},
+     {{3, {0x7ff123, 1000, -11}}, {}},
+     {{2, {0x7ff123 - 11, 1000 + 11}}, {}},
+     {}},
+    {"u /string",
+     {m4div_string, m4bye},
+     {{3, {0x8ee321, 1000, 13}}, {}},
+     {{2, {0x8ee321 + 13, 1000 - 13}}, {}},
+     {}},
     /*                                                                          */
     {"-261 to-byte", {m4to_byte, m4bye}, {{1, {-261}}, {}}, {{1, {(int8_t)-261}}, {}}, {}},
     {"-128 to-byte", {m4to_byte, m4bye}, {{1, {-128}}, {}}, {{1, {-128}}, {}}, {}},
@@ -1115,6 +1124,7 @@ static void m4testexecute_failed(m4th *m, const m4testexecute *t, const m4code_p
     m4stack_print(&m->rstack, out);
 
     if (t->codegen.n == 0 && (!m->w || m->w->code_n == 0)) {
+        fputc('\n', out);
         return;
     }
     fputs("\n... expected    codegen   ", out);

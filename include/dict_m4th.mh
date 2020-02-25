@@ -185,7 +185,10 @@
     X(11, "ibuf-refill", ibuf_refill)           /*   ( io -- err  ) read some data into iobuf   */ \
     X(16, "ibuf-skip-blanks", ibuf_skip_blanks) /*   skip whitespace from iobuf current data    */ \
     X(10, "obuf-flush", obuf_flush)             /*   ( io -- err  ) flush iobuf data            */ \
-    X(15, "obuf-write-char", obuf_write_char)   /*   ( io c -- err  ) write one char to iobuf   */ \
+    /* ( io c-addr u -- c-addr' u' err  ) send string to iobuf I/O func, ignoring current data. */ \
+    /* return string still to write - non-empty only on I/O error                               */ \
+    X(15, "(obuf-overflow)", _obuf_overflow_)                                                      \
+    X(15, "obuf-write-char", obuf_write_char) /*   ( io c -- err  ) write one char to iobuf   */   \
     X(17, "obuf-write-string", obuf_write_string) /* ( io addr u -- err  ) write string to iobuf*/ \
     X(11, "string>word", string_to_word) /* ( c-addr u -- w|0 -1|0|1 ) find name in search order*/ \
     X(6, "/token", div_token)            /* alias of _SZt_div,    no dedicated m4token */          \
@@ -212,6 +215,7 @@
     X(6, "(else)", _else_)                                                                         \
     X(13, "(exec-native)", _exec_native_)                                                          \
     X(12, "(exec-token)", _exec_token_)                                                            \
+    X(21, "(exec-xt-from-native)", _exec_xt_from_native_)                                          \
     X(4, "(if)", _if_)                                                                             \
     X(5, "(if0)", _if_zero_)                                                                       \
     X(4, "(ip)", _ip_)                                                                             \
@@ -224,6 +228,7 @@
     X(6, "(loop)", _loop_)                                                                         \
     X(9, "(missing)", _missing_)                                                                   \
     X(8, "(repeat)", _repeat_)                                                                     \
+    X(18, "(return-to-native)", _return_to_native_)                                                \
     X(7, "(until)", _until_)                                                                       \
     X(7, "(while)", _while_)                                                                       \
     X(8, "(while0)", _while_zero_)                                                                 \

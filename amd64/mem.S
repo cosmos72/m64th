@@ -56,6 +56,16 @@ FUNC_START(int_store)      /* int! */
 FUNC_END(int_store)
 
 
+#define M4FDIV_STRING
+/* /string ( c-addr u n -- c-addr' u' )  'string' word set */
+FUNC_START(div_string)
+        MOVE(  DTOP,   REG1)           /* a = n       */
+        DPOP(  DTOP)                   /* dtop = u    */
+        SUB2(  REG1,   DTOP)           /* dtop -= n   */
+        ADD2(  REG1,   AT(DSTK))       /* c-addr += n */
+FUNC_END(div_string)
+
+
 FUNC_START(cmove)          /* cmove   'string' word set */
         MOVE(  %rdi,  %rax)            /* save DSTK == %rdi */
         MOVE(  %rsi,  %rdx)            /* save RSTK == %rsi */
