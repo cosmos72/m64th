@@ -32,12 +32,12 @@ class PrintDataStack(gdb.Command):
     def invoke(self, arg, from_tty):
         inf = gdb.selected_inferior()
         frame = gdb.selected_frame()
-        dtop = int(frame.read_register("rbx"))
-        rtop = int(frame.read_register("r12"))
-        dstk = int(frame.read_register("rdi"))
-        rstk = int(frame.read_register("rsi"))
-        m4th = int(frame.read_register("r13"))
-        ip   = int(frame.read_register("r15")) - self.szt
+        dtop = int(frame.read_register("rbx")) # x20
+        rtop = int(frame.read_register("r12")) # x22
+        dstk = int(frame.read_register("rdi")) # x21
+        rstk = int(frame.read_register("rsi")) # x23
+        m4th = int(frame.read_register("r13")) # x24
+        ip   = int(frame.read_register("r15")) - self.szt # x27
         dend = int(gdb.parse_and_eval("((m4th *)%d)->dstack.end" % m4th))
         rend = int(gdb.parse_and_eval("((m4th *)%d)->rstack.end" % m4th))
         dn = int((dend - dstk) / self.sz) + 1

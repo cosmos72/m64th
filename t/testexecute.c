@@ -460,14 +460,14 @@ static m4testexecute testexecute_d[] = {
      {{3, {0xffffffff, 't', (m4cell)m4ftest_crc_plus_native_forth}}, {}},
      {{1, {0x1b806fbc}}, {}},
      {}},
+#endif /* __x86_64__ */
+    {"' one (exec-token)", {m4_exec_token_, m4bye}, {{1, {m4one}}, {}}, {{1, {1}}, {}}, {}},
+    {"' noop (exec-token)", {m4_exec_token_, m4bye}, {{1, {m4noop}}, {}}, {{}, {}}, {}},
     {"(exec-xt-from-native)",
      {m4_exec_native_, m4bye},
      {{2, {(m4cell)DXT(three), (m4cell)m4ftest_exec_xt_from_native, m4bye}}, {}},
      {{1, {3}}, {}},
      {}},
-#endif /* __x86_64__ */
-    {"' one (exec-token)", {m4_exec_token_, m4bye}, {{1, {m4one}}, {}}, {{1, {1}}, {}}, {}},
-    {"' noop (exec-token)", {m4_exec_token_, m4bye}, {{1, {m4noop}}, {}}, {{}, {}}, {}},
     {"' noop execute", {m4execute, m4bye}, {{1, {DXT(noop)}}, {}}, {{}, {}}, {}},
     {"' eight execute", {m4execute, m4bye}, {{1, {DXT(eight)}}, {}}, {{1, {8}}, {}}, {}},
     {"6 7 ' plus execute", {m4execute, m4bye}, {{3, {6, 7, DXT(plus)}}, {}}, {{1, {13}}, {}}, {}},

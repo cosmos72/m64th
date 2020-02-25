@@ -48,19 +48,22 @@ FUNC_START(th_run)
         LOAD(  HERE, AT(M4TH, M4TH_OFF_HERE))   /* load HERE pointer               */
         DPOP(  DTOP)                            /* load first data   stack element */
         RPOP(  RTOP)                            /* load first return stack element */
-        b      FUNC_SYM(_vm_)                   /* enter vm loop                   */
+        b      LABEL_SYM(_vm_.loop)      /* enter vm loop, without saving LR again */
 FUNC_RAWEND(th_run)
 
 /**
  * forth vm main loop: fetch m4token instructions and execute them
  */
 FUNC_START(_vm_)
+        RPUSH( RTOP)                       /* save LR. needed by (return-from-native) */
+        MOVE(  lr,     RTOP)
+LABEL(_vm_.loop)
         /* cannot use x0..x8 here: they are used by c-arg-[N] and c-ret-[N] */
         LD_ut( w9,     AT(IP))             /* load m4token of current vm instruction */
         ADD2(  IMM(SZt), IP)               /* pre-increment vm IP                    */
         LOAD(  x9,     AT(FTBL, x9, SZ))   /* load m4func of current vm instruction  */
         blr    x9;                         /* execute vm instruction                 */
-        b      FUNC_SYM(_vm_);             /* loop                                   */
+        b      LABEL_SYM(_vm_.loop);       /* loop                                   */
 FUNC_RAWEND(_vm_)
 
 /**
@@ -70,7 +73,6 @@ FUNC_RAWEND(_vm_)
  * return to C
  */
 FUNC_START(bye)
-        ADD2(  IMM(SZ), IP)                     /* point IP to next instruction    */
         RPUSH( RTOP)                            /* save first return stack element */
         DPUSH( DTOP)                            /* save first data   stack element */
         STOR(  HERE, AT(M4TH, M4TH_OFF_HERE))   /* save HERE pointer               */
@@ -194,7 +196,9 @@ FUNC_RAWEND(_exec_token_)
 
 /* return to native code */
 FUNC_START(_return_to_native_)
-        RPOP(  lr)                 /* skip current return address (it's inside _vm_) and load next one */
+        /* skip current return address (it's inside _vm_) and load previous one */
+        MOVE(  RTOP,   lr)
+        RPOP(  RTOP)
         ASM_RET()                  /* return to caller of _vm_ - usually _exec_xt_from_native_ */
 FUNC_RAWEND(_return_to_native_)
 

@@ -115,7 +115,7 @@ FUNC_END(div_string)
  * string-ci=  ( c-addr1 c-addr2 u -- c-addr1 c-addr2 u t|f ) m4th-user
  * compare two strings, ignoring case
  */
-FUNC_START(string_ci_equal)   
+FUNC_START(string_ci_equal)
         LOAD(  REG2,   AT(DSTK))       /* b = addr2 */
         LOAD(  REG1,   AT(DSTK, SZ))   /* a = addr1 */
         DPUSH( DTOP)

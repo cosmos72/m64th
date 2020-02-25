@@ -27,19 +27,19 @@
 int main(int argc, char *argv[]) {
     FILE *out = stdout;
     m4th *m = m4th_new();
-    m4cell fail1, fail2, fail3;
+    m4cell fail = 0;
 
     m4th_crcinit(m4th_crctable);
 
     /* m4th_testprint_dicts_crc(out); */
     /* m4th_testbench_crc_c(out); */
 
-    fail1 = m4th_testexecute(m, out);
-    fail2 = m4th_testcompile(m, out);
-    fail3 = m4th_testio(m, out);
+    fail += m4th_testexecute(m, out);
+    fail += m4th_testcompile(m, out);
+    fail += m4th_testio(m, out);
 
     m4th_del(m);
 
     /* suppress 'unused parameter' warning */
-    return (fail1 + fail2 + fail3) || (0 & argc & (m4cell)argv);
+    return fail || (0 & argc & (m4cell)argv);
 }
