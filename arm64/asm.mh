@@ -190,10 +190,12 @@
 #define STORw(reg, at) str reg, at;  /* *(uint32_t*)at  = reg */
 #define STORt(reg, at) strh reg, at; /* *(m4token *)at  = reg */
 
-#define CALL(func) /* call native code from m4func */                                              \
+#define ASM_CALL(func) /* raw/native assembly: call native code  */                                \
     RPUSH(lr)                                                                                      \
-    bl FUNC_SYM(func);                                                                             \
+    bl func;                                                                                       \
     RPOP(lr)
+
+#define ASM_RET() ret; /* raw/native assembly: return */
 
 #define JA(reg, val, label) /* if reg u>  val jump to label */                                     \
     cmp reg, val;                                                                                  \
@@ -220,9 +222,9 @@
 
 /* clang-format off */
 
-#define FADDR(fun, dst) /* load function address */ \
-    adrp  dst,  fun;             /* high 21 bits */ \
-    add   dst,  dst,  :lo12:fun; /* low  12 bits */
+#define ADDROF(sym, dst) /* load symbol address into dst */ \
+    adrp  dst,  sym;             /* high 21 bits */ \
+    add   dst,  dst,  :lo12:sym; /* low  12 bits */
 
 #define DPUSH(val)       str   val, [DSTK, -SZ]!; /* push val to second data stack element */
 #define DPOP(val)        ldr   val, [DSTK], SZ;   /* pop second data stack element into val */

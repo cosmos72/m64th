@@ -76,7 +76,8 @@ static m4testexecute testexecute_cmove[] = {
 };
 #endif /* 0 */
 
-void m4fcrc_plus_native_forth(m4arg _); /* implemented in generic_asm/testcrc.S */
+void m4ftest_crc_plus_native_forth(m4arg _); /* implemented in generic_asm/test.S */
+void m4ftest_exec_xt_from_native(m4arg _);   /* implemented in generic_asm/test.S */
 
 static m4testexecute testexecute_a[] = {
 #if 0
@@ -96,7 +97,7 @@ static m4testexecute testexecute_a[] = {
 #elif 0
     {"1e8 0 do crc+-native-forth loop",
      {m4do, m4over, m4j, m4_exec_native_, m4_loop_, T(-5), m4nip, m4r_from_drop, m4bye},
-     {{4, {'t', 0xffffffff, 1e8, 0}}, {1, {(m4cell)m4fcrc_plus_native_forth}}},
+     {{4, {'t', 0xffffffff, 1e8, 0}}, {1, {(m4cell)m4ftest_crc_plus_native_forth}}},
      {{1, {0x773edc4e}}, {}},
      {}},
 #else
@@ -456,8 +457,13 @@ static m4testexecute testexecute_d[] = {
 #ifdef __x86_64__
     {"' crc+-native-forth (exec-native)",
      {m4_exec_native_, m4bye},
-     {{3, {0xffffffff, 't', (m4cell)m4fcrc_plus_native_forth}}, {}},
+     {{3, {0xffffffff, 't', (m4cell)m4ftest_crc_plus_native_forth}}, {}},
      {{1, {0x1b806fbc}}, {}},
+     {}},
+    {"(exec-xt-from-native)",
+     {m4_exec_native_, m4bye},
+     {{2, {(m4cell)DXT(three), (m4cell)m4ftest_exec_xt_from_native, m4bye}}, {}},
+     {{1, {3}}, {}},
      {}},
 #endif /* __x86_64__ */
     {"' one (exec-token)", {m4_exec_token_, m4bye}, {{1, {m4one}}, {}}, {{1, {1}}, {}}, {}},

@@ -225,27 +225,9 @@ FUNC_START(_exec_token_)
 FUNC_RAWEND(_exec_token_)
 
 
-/** pop XT from dstack and call it from native code. */
-FUNC_START(_exec_xt_from_native_)
-        /* TODO: TEST this */
-        RPUSH( RTOP)               /* save rtop                       */
-        MOVE(  IP,     RTOP)       /* rtop = IP                       */
-        /*                          let token 'execute' pop dtop = xt */
-        lea    LABEL_SYM(_exec_xt_from_native_.vm_code)(%rip), IP;
-        call   FUNC_SYM(_vm_);
-        MOVE(  RTOP,   IP)         /* IP   = rtop                     */
-        RPOP(  RTOP)               /* load rtop                       */
-        ret;
-LABEL(_exec_xt_from_native_.vm_code)
-	WORD_CODE_ALIGN()
-        WORD_CODE_TOKENS(execute, _return_to_native_)
-FUNC_RAWEND(_exec_xt_from_native_)
-
-
 /* return to native code */
 FUNC_START(_return_to_native_)
-        /* TODO: TEST this */
         ADD2(  IMM(SZ),%rsp)       /* skip return address, it's inside _vm_ */
-        ret;                       /* return to caller of _vm_ - usually _exec_xt_from_native_ */
+        ASM_RET()                  /* return to caller of _vm_ - usually _exec_xt_from_native_ */
 FUNC_RAWEND(_return_to_native_)
 

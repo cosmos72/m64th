@@ -186,8 +186,8 @@
 
 /* clang-format on */
 
-#define CALL(func) /*     call native code from m4func ______________________________________ */   \
-    call FUNC_SYM(func);
+#define ASM_CALL(func) call func; /* raw/native assembly: call native code */
+#define ASM_RET() ret;            /* raw/native assembly: return */
 
 #define JA(reg, val, label) /*  if reg u> val jump to label */                                     \
     cmp val, reg;                                                                                  \
@@ -216,7 +216,7 @@
 #define JUMP(label) /*     unconditional jump to label _______________________________________ */  \
     jmp label;
 
-#define FADDR(fun, dst) /* */ lea fun(RIP), dst; /* load function address */
+#define ADDROF(sym, dst) /* */ lea sym(RIP), dst; /* load symbol address into dst */
 
 #define DPUSH(val) /* push val to second data stack element */                                     \
     STOR(val, AT(DSTK, -SZ))                                                                       \

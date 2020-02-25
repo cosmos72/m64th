@@ -192,14 +192,9 @@ FUNC_START(_exec_token_)
 FUNC_RAWEND(_exec_token_)
 
 
-/** pop XT from dstack and call it from native code. */
-FUNC_START(_exec_xt_from_native_)
-        /* TODO */
-FUNC_RAWEND(_exec_xt_from_native_)
-
-
 /* return to native code */
 FUNC_START(_return_to_native_)
-        /* TODO */
+        RPOP(  lr)                 /* skip current return address (it's inside _vm_) and load next one */
+        ASM_RET()                  /* return to caller of _vm_ - usually _exec_xt_from_native_ */
 FUNC_RAWEND(_return_to_native_)
 

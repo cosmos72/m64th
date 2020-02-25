@@ -37,7 +37,7 @@
  *    plus, fetch, swap, eight, rshift, xor, exit
  * )
  */
-FUNC_START(crc_plus_native_forth)
+FUNC_START(test_crc_plus_native_forth)
 #ifdef __x86_64__
         /* over */
         DPUSH( DTOP)
@@ -77,4 +77,9 @@ FUNC_START(crc_plus_native_forth)
         xor    AT(DSTK),   DTOP;
         ADD2(  IMM(8), DSTK)
 #endif /* __x86_64__ */
-FUNC_END(crc_plus_native_forth)
+FUNC_END(test_crc_plus_native_forth)
+
+
+FUNC_START(test_exec_xt_from_native)
+        ASM_CALL(      FUNC_SYM(_exec_xt_from_native_))
+FUNC_END(test_exec_xt_from_native)
