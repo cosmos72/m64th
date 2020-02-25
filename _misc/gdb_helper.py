@@ -31,13 +31,7 @@ class PrintDataStack(gdb.Command):
         self.szt = 2
     def invoke(self, arg, from_tty):
         inf = gdb.selected_inferior()
-        frame = gdb.selected_frame()
-        dtop = int(frame.read_register("rbx")) # x20
-        rtop = int(frame.read_register("r12")) # x22
-        dstk = int(frame.read_register("rdi")) # x21
-        rstk = int(frame.read_register("rsi")) # x23
-        m4th = int(frame.read_register("r13")) # x24
-        ip   = int(frame.read_register("r15")) - self.szt # x27
+        (dtop,rtop,dstk,rstk,m4th,ip) = self.read_registers(inf)
         dend = int(gdb.parse_and_eval("((m4th *)%d)->dstack.end" % m4th))
         rend = int(gdb.parse_and_eval("((m4th *)%d)->rstack.end" % m4th))
         dn = int((dend - dstk) / self.sz) + 1
@@ -46,6 +40,20 @@ class PrintDataStack(gdb.Command):
         self.stack_print(inf, "rstack", rtop, rstk, rn)
         self.ip_print("ip    ", ip)
         self.code_print(inf, "code   ", ip)
+    def read_registers(self, inf):
+        frame = gdb.selected_frame()
+        names = ()
+        if inf.architecture().name() == "i386:x86-64":
+            names = ("rbx", "r12", "rdi", "rsi", "r13", "r15")
+        else:
+            names = ("x20", "x22", "x21", "x23", "x24", "x27")
+        return (
+            int(frame.read_register(names[0])), # dtop
+            int(frame.read_register(names[1])), # rtop
+            int(frame.read_register(names[2])), # dstk
+            int(frame.read_register(names[3])), # rstk
+            int(frame.read_register(names[4])), # m4th
+            int(frame.read_register(names[5])) - self.szt) # ip
     def stack_print(self, inf, label, top, stk, n):
         gdb.write("%s <%d> " % (label, n))
         if n > 0:
