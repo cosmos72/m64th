@@ -57,7 +57,7 @@ FUNC_RAWEND(th_run)
  */
 FUNC_START(_vm_)
         /* cannot use REG1..REG4: they are used by c-arg-[N] */
-        LD_ut( %r11d,  AT(IP))         /* load m4token of current vm instruction */
+        LD_ut( %r11,   AT(IP))         /* load m4token of current vm instruction */
         ADD2(IMM(SZt), IP)             /* increment vm IP                       */
         call *(FTBL,   %r11,   SZ);    /* execute vm instruction                */
         jmp    FUNC_SYM(_vm_);         /* loop                                  */
