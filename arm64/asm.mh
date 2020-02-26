@@ -166,10 +166,11 @@
 #define ORR2(src,dst)     orr   dst, dst, src;      /* dst |= src     */
 #define SAR2(src,dst)     asr   dst, dst, src;      /* dst >>= src    signed   */
 #define SHL2(src,dst)     lsl   dst, dst, src;      /* dst <<= src    */
+#define SHR2(src,dst)     lsr   dst, dst, src;      /* dst >>= src    unsigned */
 #define SUB2(src,dst)     sub   dst, dst, src;      /* dst -= src     */
 #define SUB3(a,b,dst)     sub   dst, a, b;          /* dst  = a - b   */
 #define STOR(reg,at)      str   reg, at;            /* *at  = reg     */
-/* #define XOR2(src,dst)  xor   dst, dst, src; */   /* dst ^= src     NOT USED */
+#define XOR2(src,dst)     eor   dst, dst, src;      /* dst ^= src     */
 #define ZERO(dst)         mov   dst, 0;             /* dst  = 0       */
 
 /* clang-format on */
@@ -224,9 +225,12 @@
 
 /* clang-format off */
 
-#define ADDROF(sym, dst) /* load symbol address into dst */ \
+#define ADDROF_4G(sym, dst) /* load symbol address into dst. symbol must be within +/- 4GB */ \
     adrp  dst,  sym;             /* high 21 bits */ \
     add   dst,  dst,  :lo12:sym; /* low  12 bits */
+
+#define ADDROF_1M(sym, dst) /* load symbol address into dst. symbol must be within +/- 1MB */ \
+    adr   dst,  sym;             /* low 21 bits */
 
 #define DPUSH(val)       str   val, [DSTK, -SZ]!; /* push val to second data stack element */
 #define DPOP(val)        ldr   val, [DSTK], SZ;   /* pop second data stack element into val */

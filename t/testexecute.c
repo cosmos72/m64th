@@ -454,13 +454,11 @@ static m4testexecute testexecute_d[] = {
      {{1, {(m4cell)m4ftwo}}, {}},
      {{1, {2}}, {}},
      {}},
-#ifdef __x86_64__
     {"' crc+-native-forth (exec-native)",
      {m4_exec_native_, m4bye},
      {{3, {0xffffffff, 't', (m4cell)m4ftest_crc_plus_native_forth}}, {}},
      {{1, {0x1b806fbc}}, {}},
      {}},
-#endif /* __x86_64__ */
     {"' one (exec-token)", {m4_exec_token_, m4bye}, {{1, {m4one}}, {}}, {{1, {1}}, {}}, {}},
     {"' noop (exec-token)", {m4_exec_token_, m4bye}, {{1, {m4noop}}, {}}, {{}, {}}, {}},
     {"(exec-xt-from-native)",

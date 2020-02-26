@@ -38,20 +38,28 @@
  * )
  */
 FUNC_START(test_crc_plus_native_forth)
-#ifdef __x86_64__
         /* over */
         DPUSH( DTOP)
         LOAD(  DTOP,   AT(DSTK, SZ))
         /* xor */
-        xor    AT(DSTK),   DTOP;
+#ifdef __x86_64__
+        XOR2(  AT(DSTK),   DTOP)
         ADD2(  IMM(8), DSTK)
+#else
+        DPOP(  REG1)
+        XOR2(  REG1,   DTOP)
+#endif
         /* to_char */
+#ifdef __x86_64__
         movzbl DTOPb,  DTOP_ub;
+#else
+        ubfx   DTOPw,  DTOPw, 0, 8;
+#endif
         /* cells */
         SHL2(  IMM(3), DTOP)
         /* _lit_cell_, CELL(m4th_crctable) */
         DPUSH( DTOP)
-        lea    m4th_crctable(%rip),  DTOP;
+        ADDROF_4G(m4th_crctable,  DTOP)
         /* plus */
         DPOP(  REG1)
         ADD2(  REG1,   DTOP)
@@ -61,22 +69,16 @@ FUNC_START(test_crc_plus_native_forth)
         LOAD(  REG1,   AT(DSTK))
         STOR(  DTOP,   AT(DSTK))
         MOVE(  REG1,   DTOP)
-#if 1
         /* eight rshift */
-        shr    IMM(8), DTOP;
-#else
-        /* eight */
-        DPUSH( DTOP)
-        MOVE(  IMM(8), DTOPw)
-        /* rshift */
-        MOVE(  DTOP,   %rcx)
-        DPOP(  DTOP)
-        shr    %cl,    DTOP;
-#endif
+        SHR2(  IMM(8), DTOP)
         /* xor */
-        xor    AT(DSTK),   DTOP;
+#ifdef __x86_64__
+        XOR2(  AT(DSTK),   DTOP)
         ADD2(  IMM(8), DSTK)
-#endif /* __x86_64__ */
+#else
+	DPOP(  REG1)
+        XOR2(  REG1,   DTOP)
+#endif
 FUNC_END(test_crc_plus_native_forth)
 
 

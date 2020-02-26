@@ -263,5 +263,5 @@ FUNC_END(within)
 
 FUNC_START(xor)
         DPOP(  REG1)
-        eor    DTOP,   DTOP,   REG1;
+        XOR2(  REG1,   DTOP)
 FUNC_END(xor)
