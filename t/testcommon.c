@@ -64,4 +64,11 @@ void m4countedstack_print(const m4countedstack *src, FILE *out) {
     }
 }
 
+/* -------------- m4iobuf -------------- */
+
+m4cell m4iobuf_equal(const m4iobuf *io, const char *cstr) {
+    m4cell_u n = cstr ? strlen(cstr) : 0;
+    return io->size - io->pos == n && memcmp(&io->addr[io->pos], cstr, n) == 0;
+}
+
 #endif /* M4TH_T_TESTCOMMON_C */

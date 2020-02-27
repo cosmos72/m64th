@@ -32,16 +32,41 @@
 #include <assert.h> /* assert()          */
 #include <string.h> /* memset()          */
 
+static void m4cstr_print(const char *cstr, FILE *out) {
+    if (cstr) {
+        fprintf(out, "<%lu> [%s]", (unsigned long)strlen(cstr), cstr);
+    } else {
+        fputs("<0> []", out);
+    }
+}
+
+static m4cell_u m4cstr_len(const char *cstr) {
+    return cstr ? strlen(cstr) : 0;
+}
+
+static void m4iobuf_fill(m4iobuf *io, const char *cstr) {
+    io->pos = 0;
+    if ((io->size = m4cstr_len(cstr))) {
+        memcpy(io->addr, cstr, io->size);
+    }
+}
+
+static void m4iobuf_print(const m4iobuf *io, FILE *out) {
+    fprintf(out, "<%lu> [", (unsigned long)(io->size - io->pos));
+    fwrite(io->addr + io->pos, 1, io->size, out);
+    fputc(']', out);
+}
+
 /* -------------- m4testio -------------- */
 
 static m4testio testio_a[] = {
-    {"cr", {CALL(cr), m4bye}, {{}, {}}, {{}, {}}, {"", ""}, {"", "\n"}},
     {"parse-name",
      {CALL(parse_name), /*CALL(type),*/ m4two_drop, m4bye},
      {{}, {}},
      {{}, {}},
      {" a b", ""},
      {" b", ""}},
+    {"cr", {CALL(cr), m4bye}, {{}, {}}, {{}, {}}, {"", ""}, {"", "\n"}},
     {"space", {CALL(space), m4bye}, {{}, {}}, {{}, {}}, {"", ""}, {"", " "}},
 };
 
@@ -57,6 +82,7 @@ static m4cell m4testio_run(m4th *m, m4testio *t, const m4code *code) {
 
     m4countedstack_copy(&t->before.d, &m->dstack);
     m4countedstack_copy(&t->before.r, &m->rstack);
+    m4iobuf_fill(m->in, t->iobefore.in);
 #if 0
     m->in->handle = (m4cell)stdin;
     m->in->func = m4word_code(&WORD_SYM(c_fread)).addr;
@@ -65,10 +91,12 @@ static m4cell m4testio_run(m4th *m, m4testio *t, const m4code *code) {
     m4th_run(m);
 
     return m4countedstack_equal(&t->after.d, &m->dstack) &&
-           m4countedstack_equal(&t->after.r, &m->rstack);
+           m4countedstack_equal(&t->after.r, &m->rstack) /* ______________________ */ &&
+           m4iobuf_equal(m->in, t->ioafter.in) /* ______________________ */ &&
+           m4iobuf_equal(m->out, t->ioafter.out);
 }
 
-static void m4testio_failed(m4th *m, const m4testio *t, FILE *out) {
+static void m4testio_failed(const m4th *m, const m4testio *t, FILE *out) {
     if (out == NULL) {
         return;
     }
@@ -82,6 +110,16 @@ static void m4testio_failed(m4th *m, const m4testio *t, FILE *out) {
     m4countedstack_print(&t->after.r, out);
     fputs("\n      actual return stack ", out);
     m4stack_print(&m->rstack, out);
+
+    fputs("\n... expected  in   buffer ", out);
+    m4cstr_print(t->ioafter.in, out);
+    fputs("\n      actual  in   buffer ", out);
+    m4iobuf_print(m->in, out);
+
+    fputs("\n... expected  out  buffer ", out);
+    m4cstr_print(t->ioafter.out, out);
+    fputs("\n      actual  out  buffer ", out);
+    m4iobuf_print(m->out, out);
     fputc('\n', out);
 }
 

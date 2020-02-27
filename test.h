@@ -71,4 +71,8 @@ typedef struct m4countedwcode_s {
     m4cell data[m4test_code_n];
 } m4countedwcode;
 
+/* -------------- m4iobuf  -------------- */
+
+m4cell m4iobuf_equal(const m4iobuf *io, const char *cstr);
+
 #endif /* M4TH_TEST_H */

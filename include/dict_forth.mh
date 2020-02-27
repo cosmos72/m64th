@@ -65,6 +65,7 @@
     X(2, "do,", do)                                                                                \
     X(4, "drop", drop)                                                                             \
     X(3, "dup", dup)                                                                               \
+    X(4, "emit", emit)                                                                             \
     X(7, "execute", execute)                                                                       \
     X(4, "exit", exit)                                                                             \
     X(1, "i", i)                                                                                   \
@@ -97,7 +98,6 @@
     X(8, "compile,", compile_comma)                                                                \
     X(2, "cr", cr)                                                                                 \
     X(4, "else,", else)                                                                            \
-    X(4, "emit", emit)                                                                             \
     X(4, "find", find)                                                                             \
     X(2, "if,", if)                                                                                \
     X(5, "leave", leave)                                                                           \

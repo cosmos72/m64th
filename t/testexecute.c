@@ -1043,22 +1043,22 @@ static m4testexecute testexecute_f[] = {
      {CALL(_eval_number_), m4bye},
      {{1, {0}}, {}},
      {{1, {0}}, {}},
-     {}}, // state = interpret
+     {}}, /* state = interpret */
     {"0 (eval-number)",
      {CALL(_eval_number_), m4bye},
      {{1, {0}}, {}},
      {{}, {}},
-     {1, {m4zero}}}, // state = compile
+     {1, {m4zero}}}, /* state = compile */
     {"' dup (eval-word)",
      {CALL(_eval_word_), m4bye},
      {{3, {7, (m4cell)&WORD_SYM(dup), ttrue}}, {}},
      {{2, {7, 7}}, {}},
-     {}}, // state = interpret
+     {}}, /* state = interpret */
     {"' dup (eval-word)",
      {CALL(_eval_word_), m4bye},
      {{2, {(m4cell)&WORD_SYM(dup), ttrue}}, {}},
      {{}, {}},
-     {1, {m4dup}}}, // state = compile
+     {1, {m4dup}}}, /* state = compile */
 };
 
 static void m4testexecute_fix(m4testexecute *t, const m4code_pair *pair) {

@@ -100,7 +100,7 @@
 #define M4drop 70                 /* drop     */
 #define M4dup 71                  /* dup      */
 #undef M4else /*72*/              /* else     implemented in forth, no dedicated m4token */
-#undef M4emit /*73*/              /* emit     implemented in forth, no dedicated m4token */
+#define M4emit 73                 /* emit     */
 #undef M4environment_query /*74*/ /* environment? */
 #undef M4evaluate /*75*/          /* evaluate */
 #define M4execute 76              /* execute  */
