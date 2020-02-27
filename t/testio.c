@@ -32,6 +32,31 @@
 #include <assert.h> /* assert()          */
 #include <string.h> /* memset()          */
 
+/* -------------- m4testio_counteddata -------------- */
+
+typedef struct m4testio_counteddata_s {
+    m4counteddata impl;
+    m4char data[1024];
+} m4testio_counteddata;
+
+static m4testio_counteddata m4testio_counteddata_buf = {};
+
+static m4pair m4testio_counteddata_append_c(m4counteddata *dst, const m4char *src, m4cell_u n) {
+    m4pair ret = {{n}, 0};
+    memcpy(dst->addr + n, src, n);
+    dst->n += n;
+    return ret;
+}
+
+/* ( io c-addr u -- u' err ) */
+static const m4cell m4testio_counteddata_append_w[m4test_code_n] = {
+    m4_c_arg_3_, m4_c_call_, CELL(m4testio_counteddata_append_c), m4_c_ret_2_, m4exit,
+};
+
+static m4token m4testio_counteddata_append[m4test_code_n];
+
+/* -------------- m4cstr -------------- */
+
 static void m4cstr_print(const char *cstr, FILE *out) {
     if (cstr) {
         fprintf(out, "<%lu> [%s]", (unsigned long)strlen(cstr), cstr);
@@ -43,6 +68,8 @@ static void m4cstr_print(const char *cstr, FILE *out) {
 static m4cell_u m4cstr_len(const char *cstr) {
     return cstr ? strlen(cstr) : 0;
 }
+
+/* -------------- m4iobuf -------------- */
 
 static void m4iobuf_fill(m4iobuf *io, const char *cstr) {
     io->pos = 0;
@@ -70,6 +97,12 @@ static m4testio testio_a[] = {
     {"space", {CALL(space), m4bye}, {{}, {}}, {{}, {}}, {"", ""}, {"", " "}},
 };
 
+static void m4testio_global_init() {
+    m4slice code_in = {(m4cell *)m4testio_counteddata_append_w, m4test_code_n};
+    m4code code = {m4testio_counteddata_append, m4test_code_n};
+    m4slice_copy_to_code(code_in, &code);
+}
+
 static m4code m4testio_init(m4testio *t, m4countedcode *code_buf) {
     m4slice t_code_in = {(m4cell *)t->code, m4test_code_n};
     m4code t_code = {code_buf->data, code_buf->n};
@@ -83,10 +116,12 @@ static m4cell m4testio_run(m4th *m, m4testio *t, const m4code *code) {
     m4countedstack_copy(&t->before.d, &m->dstack);
     m4countedstack_copy(&t->before.r, &m->rstack);
     m4iobuf_fill(m->in, t->iobefore.in);
-#if 0
-    m->in->handle = (m4cell)stdin;
-    m->in->func = m4word_code(&WORD_SYM(c_fread)).addr;
-#endif /* 0 */
+
+    m4testio_counteddata_buf.impl.n = 0;
+    m->out->handle = (m4cell)&m4testio_counteddata_buf;
+    m->out->func = m4testio_counteddata_append;
+    m->out->max = 2; /* lower capacity to trigger iobuf flush */
+
     m->ip = code->addr;
     m4th_run(m);
 
@@ -123,7 +158,7 @@ static void m4testio_failed(const m4th *m, const m4testio *t, FILE *out) {
     fputc('\n', out);
 }
 
-static void m4th_testio_bunch(m4th *m, m4testio bunch[], m4cell n, m4testcount *count, FILE *out) {
+static void m4testio_bunch(m4th *m, m4testio bunch[], m4cell n, m4testcount *count, FILE *out) {
     m4countedcode countedcode = {m4test_code_n, {}};
     m4cell i, fail = 0;
     for (i = 0; i < n; i++) {
@@ -138,7 +173,8 @@ static void m4th_testio_bunch(m4th *m, m4testio bunch[], m4cell n, m4testcount *
 
 m4cell m4th_testio(m4th *m, FILE *out) {
     m4testcount count = {};
-    m4th_testio_bunch(m, testio_a, N_OF(testio_a), &count, out);
+    m4testio_global_init();
+    m4testio_bunch(m, testio_a, N_OF(testio_a), &count, out);
 
     if (out != NULL) {
         if (count.failed == 0) {
