@@ -115,6 +115,12 @@ static m4testio testio_a[] = {
      {{3, {(m4cell)s_foobar + 6, 0, 0}}, {}},
      {"", "x"},
      {"", "foobarx"}}, /* 'x' remains at obuf.addr[0] */
+    {"(obuf-flush-write-char)",
+     {m4out_to_obuf, m4swap, CALL(_obuf_flush_write_char_), m4bye},
+     {{1, {'b'}}, {}},
+     {{1, {0}}, {}},
+     {"", "a"},
+     {"", "ab"}},
     {"(obuf-flush-write-string)",
      {m4out_to_obuf, m4minus_rot, CALL(_obuf_flush_write_string_), m4bye},
      {{2, {(m4cell)s_foobar, 6}}, {}},
