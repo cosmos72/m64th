@@ -195,7 +195,7 @@
 #undef M4pad /*165*/             /* pad      */
 #undef M4parse /*166*/           /* parse    */
 #undef M4parse_name /*167*/      /* parse-name   */
-#undef M4pick /*168*/            /* pick     */
+#define M4pick 168               /* pick     */
 #undef M4refill /*169*/          /* refill   */
 #undef M4restore_input /*170*/   /* restore-input    */
 #undef M4roll /*171*/            /* roll     */

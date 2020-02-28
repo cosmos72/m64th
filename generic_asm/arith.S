@@ -330,6 +330,12 @@ FUNC_END(over)
 #endif
 
 
+/* pick ( xu ... x1 x0 u -- xu ... x1 x0 xu ) core-ext */
+FUNC_START(pick)           
+        LOAD(  DTOP,   AT(DSTK, DTOP, SZ))
+FUNC_END(pick)
+
+
 FUNC_START(rot)            /* rot   ( a b c -- b c a ) */
         LOAD(  REG1,   AT(DSTK))     /* REG1 = b */
         STOR(  DTOP,   AT(DSTK))     /* store  c */
