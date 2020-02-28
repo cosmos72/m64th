@@ -64,15 +64,6 @@ static m4cell_u m4cstr_len(const char *cstr) {
 
 /* -------------- m4iobuf -------------- */
 
-static m4cell m4iobuf_with_counteddata_equal(const m4iobuf *io, const char *cstr) {
-    const m4counteddata *d = (m4counteddata *)io->handle;
-    m4cell_u n0 = d->n;
-    m4cell_u n1 = io->size - io->pos;
-    m4cell_u n2 = m4cstr_len(cstr);
-    return n0 + n1 == n2 && !memcmp(d->addr, cstr, n0) &&
-           !memcmp(io->addr + io->pos, cstr + n0, n1);
-}
-
 static void m4iobuf_fill(m4iobuf *io, const char *cstr) {
     io->pos = 0;
     if ((io->size = m4cstr_len(cstr))) {
@@ -81,8 +72,28 @@ static void m4iobuf_fill(m4iobuf *io, const char *cstr) {
 }
 
 static void m4iobuf_print(const m4iobuf *io, FILE *out) {
-    fprintf(out, "<%lu> [", (unsigned long)(io->size - io->pos));
-    fwrite(io->addr + io->pos, 1, io->size, out);
+    const m4cell_u n = io->size - io->pos;
+    fprintf(out, "<%lu> [", (unsigned long)n);
+    fwrite(io->addr + io->pos, 1, n, out);
+    fputc(']', out);
+}
+
+static m4cell m4iobuf_with_counteddata_equal(const m4iobuf *io, const char *cstr) {
+    const m4counteddata *d = (m4counteddata *)io->handle;
+    const m4cell_u n0 = d->n;
+    const m4cell_u n1 = io->size - io->pos;
+    const m4cell_u n2 = m4cstr_len(cstr);
+    return n0 + n1 == n2 && !memcmp(d->addr, cstr, n0) &&
+           !memcmp(io->addr + io->pos, cstr + n0, n1);
+}
+
+static void m4iobuf_with_counteddata_print(const m4iobuf *io, FILE *out) {
+    const m4counteddata *d = (m4counteddata *)io->handle;
+    const m4cell_u nd = d->n;
+    const m4cell_u nio = io->size - io->pos;
+    fprintf(out, "<%lu> [", (unsigned long)(nd + nio));
+    fwrite(d->addr, 1, nd, out);
+    fwrite(io->addr + io->pos, 1, nio, out);
     fputc(']', out);
 }
 
@@ -92,18 +103,24 @@ static const char s_foobar[] = "foobar";
 
 static m4testio testio_a[] = {
     /* ------------------------- obuf --------------------------------------- */
-    {"(obuf-overflow)",
-     {m4out_to_obuf, m4minus_rot, CALL(_obuf_overflow_), m4bye},
-     {{2, {(m4cell)s_foobar, 6}}, {}},
-     {{3, {(m4cell)s_foobar + 6, 0, 0}}, {}},
-     {"", "x"},
-     {"", "foobarx"}}, /* 'x' remains at obuf.addr[0] */
     {"obuf-flush",
      {m4out_to_obuf, CALL(obuf_flush), m4bye},
      {{}, {}},
      {{1, {0}}, {}},
      {"", "="},
      {"", "="}},
+    {"(obuf-overflow)",
+     {m4out_to_obuf, m4minus_rot, CALL(_obuf_overflow_), m4bye},
+     {{2, {(m4cell)s_foobar, 6}}, {}},
+     {{3, {(m4cell)s_foobar + 6, 0, 0}}, {}},
+     {"", "x"},
+     {"", "foobarx"}}, /* 'x' remains at obuf.addr[0] */
+    {"(obuf-flush-write-string)",
+     {m4out_to_obuf, m4minus_rot, CALL(_obuf_flush_write_string_), m4bye},
+     {{2, {(m4cell)s_foobar, 6}}, {}},
+     {{1, {0}}, {}},
+     {"", "x"},
+     {"", "xfoobar"}},
     {"cr", {CALL(cr), m4bye}, {{}, {}}, {{}, {}}, {"", ""}, {"", "\n"}},
     {"space", {CALL(space), m4bye}, {{}, {}}, {{}, {}}, {"", ""}, {"", " "}},
     {"cr space", {CALL(cr), CALL(space), m4bye}, {{}, {}}, {{}, {}}, {"", ""}, {"", "\n "}},
@@ -177,7 +194,7 @@ static void m4testio_failed(const m4th *m, const m4testio *t, FILE *out) {
     fputs("\n... expected  out  buffer ", out);
     m4cstr_print(t->ioafter.out, out);
     fputs("\n      actual  out  buffer ", out);
-    m4iobuf_print(m->out, out);
+    m4iobuf_with_counteddata_print(m->out, out);
     fputc('\n', out);
 }
 
