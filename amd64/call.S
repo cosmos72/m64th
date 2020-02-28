@@ -56,10 +56,10 @@ FUNC_RAWEND(th_run)
  * forth vm main loop: fetch m4token instructions and execute them
  */
 FUNC_START(_vm_)
-        /* cannot use REG1..REG4: they are used by c-arg-[N] */
-        LD_ut( %r11,   AT(IP))         /* load m4token of current vm instruction */
+        /* cannot use REG1..REG4 or %r9: they are used by c-arg-[N] */
+        LD_ut( REG0,   AT(IP))         /* load m4token of current vm instruction */
         ADD2(IMM(SZt), IP)             /* increment vm IP                       */
-        call *(FTBL,   %r11,   SZ);    /* execute vm instruction                */
+        call *(FTBL,   REG0,   SZ);    /* execute vm instruction                */
         jmp    FUNC_SYM(_vm_);         /* loop                                  */
 FUNC_RAWEND(_vm_)
 
@@ -107,7 +107,7 @@ FUNC_END(_c_arg_0_)
 FUNC_START(_c_arg_1_)
         STOR(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))   /* save rstk = %rsi (clobbered) */
         STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))   /* save dstk = %rdi = C arg1 */
-        MOVE(  DTOP, %rdi)                        /* %rdi = C arg 1 */
+        MOVE(  DTOP,   %rdi)                      /* %rdi = C arg 1 */
 FUNC_END(_c_arg_1_)
 
 
@@ -116,7 +116,7 @@ FUNC_START(_c_arg_2_)
         ADD2(  IMM(SZ), DSTK)
         STOR(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))   /* save rstk = %rsi = C arg2 */
         STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))   /* save dstk = %rdi = C arg1 */
-        MOVE(  DTOP, %rsi)                        /* %rsi = C arg 2 */
+        MOVE(  DTOP,   %rsi)                      /* %rsi = C arg 2 */
         LOAD(  %rdi,   AT(DSTK, -SZ))             /* %rdi = C arg 1 */
 FUNC_END(_c_arg_2_)
 
@@ -126,7 +126,7 @@ FUNC_START(_c_arg_3_)
         ADD2(  IMM(SZ2), DSTK)
         STOR(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))   /* save rstk = %rsi = C arg2 */
         STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))   /* save dstk = %rdi = C arg1 */
-        MOVE(  DTOP, %rdx)                        /* %rdx = C arg 3 */
+        MOVE(  DTOP,   %rdx)                      /* %rdx = C arg 3 */
         LOAD(  %rsi,   AT(DSTK, -SZ2))            /* %rsi = C arg 2 */
         LOAD(  %rdi,   AT(DSTK, -SZ))             /* %rdi = C arg 1 */
 FUNC_END(_c_arg_3_)
@@ -137,7 +137,7 @@ FUNC_START(_c_arg_4_)
         ADD2(  IMM(SZ3), DSTK)
         STOR(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))   /* save rstk = %rsi = C arg2 */
         STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))   /* save dstk = %rdi = C arg1 */
-        MOVE(  DTOP, %rcx)                        /* %rcx = C arg 4 */
+        MOVE(  DTOP,   %rcx)                      /* %rcx = C arg 4 */
         LOAD(  %rdx,   AT(DSTK, -SZ3))            /* %rdx = C arg 3 */
         LOAD(  %rsi,   AT(DSTK, -SZ2))            /* %rsi = C arg 2 */
         LOAD(  %rdi,   AT(DSTK, -SZ))             /* %rdi = C arg 1 */
@@ -149,7 +149,7 @@ FUNC_START(_c_arg_5_)
         ADD2(  IMM(SZ4), DSTK)
         STOR(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))    /* save rstk = %rsi = C arg2 */
         STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))    /* save dstk = %rdi = C arg1 */
-        MOVE(  DTOP, %r8)                          /* %r8  = C arg 5 */
+        MOVE(  DTOP,   %r8)                        /* %r8  = C arg 5 */
         LOAD(  %rcx,   AT(DSTK, -SZ4))             /* %rcx = C arg 4 */
         LOAD(  %rdx,   AT(DSTK, -SZ3))             /* %rdx = C arg 3 */
         LOAD(  %rsi,   AT(DSTK, -SZ2))             /* %rsi = C arg 2 */
@@ -162,7 +162,7 @@ FUNC_START(_c_arg_6_)
         ADD2(  IMM(SZ5), DSTK)
         STOR(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))    /* save rstk = %rsi = C arg2 */
         STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))    /* save dstk = %rdi = C arg1 */
-        /* cannot set FTBL = %r9 = C arg 6 now, it is needed by m4f_vm_ */
+        MOVE(  DTOP,   %r9)                        /* %r9  = C arg 6 */
         LOAD(  %r8,    AT(DSTK, -SZ5))             /* %r8  = C arg 5 */
         LOAD(  %rcx,   AT(DSTK, -SZ4))             /* %rcx = C arg 4 */
         LOAD(  %rdx,   AT(DSTK, -SZ3))             /* %rdx = C arg 3 */
@@ -173,23 +173,25 @@ FUNC_END(_c_arg_6_)
 
 /* must be followed by C function address. call it. */
 FUNC_START(_c_call_)
-        /* in case C function has 6 args: */
-        MOVE(  DTOP,   %r9)                        /* %r9  = C arg 6 = FTBL */
         /* do not restore %rsp, it would clobber our call stack */
         call   *AT(IP);
         ADD2(  IMM(SZ),IP)                         /* skip C function address */
-        /* C functions clobber %rdi %rsi %rdx %rcx %r8 %r9 %r10 %r11 */
-        /* we must restore only the following ones: */
+        /*
+         * C functions can clobber %rdi %rsi %rdx %rcx %r8 %r9 %r10 %r11
+         * i.e our DSTK RSTK REG3 REG2 REG4 (unused %r9) REG0 RFFF
+         * and write their results in %rax %rdx
+         * i.e. our REG1 REG3
+         * we need to restore only: DSTK RSTK RFFF
+         */
         LOAD(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))    /* %rdi = DSTK */
         LOAD(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))    /* %rsi = RSTK */
-        LOAD(  FTBL,   AT(M4TH, M4TH_OFF_FTABLE))  /* %r9  = FTBL */
         MOVE(  IMM(-1),RFFF)                       /* %r10 = RFFF */
 FUNC_END(_c_call_)
 
 
 /* push 0 values returned by C function call */
 FUNC_START(_c_ret_0_)
-        /* reload DTOP because c_arg_* above moved DSTK */
+        /* reload DTOP because c-arg-[N] above moved DSTK */
         DPOP(  DTOP)
 FUNC_END(_c_ret_0_)
 

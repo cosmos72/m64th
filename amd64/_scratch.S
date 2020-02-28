@@ -4,37 +4,22 @@
 
 #include "asm.mh"
 
-FUNC_START(push_rbx_rdi)
-        SUB2(  IMM(SZ), %rdi)
-        STOR(  %rbx,    AT(%rdi))
-FUNC_END(push_rbx_rdi)
+FUNC_START(scratch_vm)
+        call *(%rbp,   %r10,   SZ);
+        call *(%rbp,   %r11,   SZ);
+        call *(%r8,    %r10,   SZ);
+        call *(%r8,    %r11,   SZ);
+        call *(%r9,    %r10,   SZ);
+        call *(%r9,    %r11,   SZ);
+        call *(%r10,   %r10,   SZ);
+        call *(%r10,   %r11,   SZ);
+        call *(%r12,   %r10,   SZ);
+        call *(%r12,   %r11,   SZ);
+        call *(%r13,   %r10,   SZ);
+        call *(%r13,   %r11,   SZ);
+        call *(%r14,   %r10,   SZ);
+        call *(%r14,   %r11,   SZ);
+        call *(%r15,   %r10,   SZ);
+        call *(%r15,   %r11,   SZ);
+FUNC_END(scratch_vm)
 
-
-FUNC_START(push_rbx_r12)
-        SUB2(  IMM(SZ), %r12)
-        STOR(  %rbx,    AT(%r12))
-FUNC_END(push_rbx_r12)
-
-
-FUNC_START(push_rbx_r13)
-        SUB2(  IMM(SZ), %r13)
-        STOR(  %rbx,    AT(%r13))
-FUNC_END(push_rbx_r13)
-
-
-FUNC_START(push_rbx_r14)
-        SUB2(  IMM(SZ), %r14)
-        STOR(  %rbx,    AT(%r14))
-FUNC_END(push_rbx_r14)
-
-
-FUNC_START(push_rbx_r15)
-        SUB2(  IMM(SZ), %r15)
-        STOR(  %rbx,    AT(%r15))
-FUNC_END(push_rbx_r15)
-
-
-FUNC_START(push_r8_rdi)
-        SUB2(  IMM(SZ), %rdi)
-        STOR(  %r8,    AT(%rdi))
-FUNC_END(push_r8_rdi)

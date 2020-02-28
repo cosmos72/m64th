@@ -89,15 +89,23 @@ static void m4iobuf_print(const m4iobuf *io, FILE *out) {
 /* -------------- m4testio -------------- */
 
 static m4testio testio_a[] = {
+    /* ------------------------- obuf --------------------------------------- */
+    {"obuf-flush",
+     {m4out_to_obuf, CALL(obuf_flush), m4bye},
+     {{}, {}},
+     {{1, {0}}, {}},
+     {"", "="},
+     {"", "="}},
+    {"cr", {CALL(cr), m4bye}, {{}, {}}, {{}, {}}, {"", ""}, {"", "\n"}},
+    {"space", {CALL(space), m4bye}, {{}, {}}, {{}, {}}, {"", ""}, {"", " "}},
+    {"cr space", {CALL(cr), CALL(space), m4bye}, {{}, {}}, {{}, {}}, {"", ""}, {"", "\n "}},
+    /* ------------------------- ibuf --------------------------------------- */
     {"parse-name",
      {CALL(parse_name), /*CALL(type),*/ m4two_drop, m4bye},
      {{}, {}},
      {{}, {}},
      {" a b", ""},
      {" b", ""}},
-    {"cr", {CALL(cr), m4bye}, {{}, {}}, {{}, {}}, {"", ""}, {"", "\n"}},
-    {"space", {CALL(space), m4bye}, {{}, {}}, {{}, {}}, {"", ""}, {"", " "}},
-    {"cr space", {CALL(cr), CALL(space), m4bye}, {{}, {}}, {{}, {}}, {"", ""}, {"", "\n "}},
 };
 
 static void m4testio_global_init() {
@@ -120,6 +128,7 @@ static m4cell m4testio_run(m4th *m, m4testio *t, const m4code *code) {
     m4countedstack_copy(&t->before.d, &m->dstack);
     m4countedstack_copy(&t->before.r, &m->rstack);
     m4iobuf_fill(m->in, t->iobefore.in);
+    m4iobuf_fill(m->out, t->iobefore.out);
 
     /* reuse part of m->out->addr buffer as m4counteddata */
     d = (m4counteddata *)(m->out->addr + SZ);

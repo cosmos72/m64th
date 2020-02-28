@@ -204,8 +204,9 @@ WORD_START(obuf_flush, m4th_err)
          *    r@ iobuf>handle @ -rot                ( handle c-addr u    ) (R: io )
          *    r@ iobuf>func @ execute               ( u' err             ) (R: io )
          *    swap r@ iobuf>pos +!                  ( err                ) (R: io )
+         *    ?dup                                  ( err err | 0        ) (R: io )
          * until                                    ( err                ) (R: io )
-         * r> drop
+         * r> drop                                  ( err                )
          */
         to_r,
         begin,
@@ -213,20 +214,64 @@ WORD_START(obuf_flush, m4th_err)
             _q_if_zero_, T(12),
                 zero, r_fetch, iobuf_pos, store,
                 zero, r_fetch, iobuf_size, store,
-                nip, _break_, T(15),
+                nip, _break_, T(16),
             then,
             r_fetch, iobuf_handle, fetch, minus_rot,
             r_fetch, iobuf_func, fetch, execute,
             swap, r_fetch, iobuf_pos, plus_store,
-        _until_, T(-30),
+            question_dup,
+        _until_, T(-31),
         r_from_drop, exit
     )
 WORD_END(obuf_flush)
+/* (obuf-flush-write-char) ( io c -- err  ) flush iobuf, then write one char to it */
+WORD_START(_obuf_flush_write_char_, obuf_flush)
+    WORD_FLAGS(0)
+    WORD_DSTACK(2,1)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_CODE(
+        /* over                                        ( io c io      )
+         * iobuf-flush                                 ( io c err     )
+         * ?if                                         ( io c err     )
+         *    nip nip exit                             ( err          )
+         * then                                        ( io c err     )
+         * drop                                        ( io c         )
+         * over iobuf>free-data drop                   ( io c c-addr  )
+         * c!                                          ( io           )
+         * 1 swap iobuf>size                           ( 1 size-addr  )
+         * +! 0                                        ( 0            )
+         */
+        over,
+        _call_, WADDR(obuf_flush),
+        _q_if_, T(4),
+            nip, r_from_drop, exit,
+        then,
+        drop,
+        over, iobuf_free_data, drop,
+        c_store,
+        one, swap, iobuf_size,
+        plus_store, zero, exit
+    )
+WORD_END(_obuf_flush_write_char_)
+/* (obuf-flush-write-string) ( io c-addr u -- err  ) flush iobuf, then write string to it */
+WORD_START(_obuf_flush_write_string_, _obuf_flush_write_char_)
+    WORD_FLAGS(0)
+    WORD_DSTACK(3,1)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_CODE(
+        /* TODO */
+        exit
+    )
+WORD_END(_obuf_flush_write_string_)
 /*
  * (obuf-overflow) ( io c-addr u -- c-addr' u' err ) send string to iobuf I/O func,
  * ignoring current data. return string still to write - non-empty only on I/O error
  */
-WORD_START(_obuf_overflow_, m4th_err)
+WORD_START(_obuf_overflow_, _obuf_flush_write_string_)
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_DSTACK(3,3)
     WORD_RSTACK(0,0)
@@ -246,42 +291,15 @@ WORD_START(_obuf_overflow_, m4th_err)
          */
         exit
     )
-WORD_END(obuf_flush)
-/* obuf-write-char ( io c -- err  ) write one char to iobuf */
-WORD_START(obuf_write_char, obuf_flush)
-    WORD_FLAGS(0)
-    WORD_DSTACK(2,0)
+WORD_END(_obuf_overflow_)
+/* obuf-write-char ( io c-addr u -- err  ) write one char to iobuf */
+WORD_START(obuf_write_char, _obuf_overflow_)
+    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH | M4FLAG_MEM_STORE)
+    WORD_DSTACK(3,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
-    WORD_CODE(
-        /* swap dup >r iobuf>free-data                 ( c c-addr u   ) (R: io )
-         * if0                                         ( c c-addr     ) (R: io )
-         *   drop r@ iobuf-flush                       ( c err        ) (R: io )
-         *   ?if                                       ( c err        ) (R: io )
-         *      nip r> drop exit                       ( err          )
-         *   then                                      ( c err        ) (R: io )
-         *   drop                                      ( c            ) (R: io )
-         *   r@ iobuf>free-data drop                   ( c c-addr     ) (R: io )
-         * then                                        ( c c-addr     ) (R: io )
-         * c!                                          (              ) (R: io )
-         * 1 r> iobuf>size                             ( 1 size-addr  )
-         * +! 0                                        ( 0            )
-         */
-        swap, dup, to_r, iobuf_free_data,
-        _if_zero_, T(14+SZ/SZt),
-            drop, r_fetch, _call_, WADDR(obuf_flush),
-            _q_if_, T(4),
-                nip, r_from_drop, exit,
-            then,
-            drop,
-            r_fetch, iobuf_free_data, drop,
-        then,
-        c_store,
-        one, r_from, iobuf_size,
-        plus_store, zero,
-        exit
-    )
+    WORD_NATIVE_NONE() /* cannot inline in native code: has multiple returns + uses ip-relative JUMP */
+    WORD_CODE(obuf_write_char, exit)
 WORD_END(obuf_write_char)
 /* obuf-write-string ( io c-addr u -- err  ) write a string to iobuf */
 WORD_START(obuf_write_string, obuf_write_char)

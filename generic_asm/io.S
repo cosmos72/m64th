@@ -25,30 +25,9 @@
 /* emit ( ch -- ) write one char to current output */
 FUNC_START(emit)
         LOAD(  REG1,   AT(M4TH, M4TH_OFF_OUT))         /* a = io                 */
-        LOAD(  REG2,   AT(REG1, IOBUF_OFF_SIZE))       /* b = io.size            */
-        /* check if enough space in iobuf, i.e. io.size < io.max */
-#ifdef __x86_64__
-        JAE(   REG2,   AT(REG1, IOBUF_OFF_MAX), LABEL_SYM(emit.slow))
-        STORb( DTOPb,  IOBUF_OFF_ADDR(REG1, REG2))     /* io.addr[io.pos] = dtop */
-#else
-        LOAD(  REG3,   AT(REG1, IOBUF_OFF_MAX))        /* c = io.max             */
-        JAE(   REG2,   REG3, LABEL_SYM(emit.slow))
-        ADDI(  REG1,   IOBUF_OFF_ADDR,  REG4)          /* d = io.addr            */
-        STORb( DTOPb,  AT(REG4, REG2, 1))              /* io.addr[io.pos] = dtop */
-#endif
-        INC1(  REG2)
-        DPOP(  DTOP)                                   /* dstk (               ) */
-        STOR(  REG2,   AT(REG1, IOBUF_OFF_SIZE))       /* io.size++              */
-        NEXT0()
-LABEL(emit.slow)
-        /* not enough space, call forth word obuf-write-char */
-        ADDROF_4G( WORD_SYM(obuf_write_char),  REG2)   /* b = word               */
         DPUSH( REG1)                                   /* dstk ( io ch         ) */
-        LD_uw( REG3_uw,AT(REG2, WORD_OFF_CODE_OFF))    /* c = w.code_off         */
-        DPUSH( DTOP)                                   /* dstk ( io ch _       ) */
-        ADD4(  REG2, REG3, 0, DTOP)                    /* dstk ( io ch xt      ) */
-        ASM_CALL(  FUNC_SYM(_exec_xt_from_native_))    /* dstk ( err           ) */
-        DPOP(  DTOP)                                   /* dstk (               ) */
+        ASM_CALL(  FUNC_SYM(obuf_write_char))          /* dstk ( err           ) */
+        DPOP(DTOP)                                     /* dstk (               ) */
 FUNC_END(emit)
 
 
@@ -143,6 +122,41 @@ FUNC_START(key)
         INC1(  REG2)
         STOR(  REG2,   AT(REG1, IOBUF_OFF_POS))
 FUNC_END(key)
+
+
+/* obuf-write-char ( io ch -- ) write one char iobuf */
+FUNC_START(obuf_write_char)
+        LOAD(  REG1,   AT(DSTK))                       /* a = io                 */
+        LOAD(  REG2,   AT(REG1, IOBUF_OFF_SIZE))       /* b = io.size            */
+        /* check if enough space in iobuf, i.e. io.size < io.max */
+#ifdef __x86_64__
+        JAE(   REG2,   AT(REG1, IOBUF_OFF_MAX), LABEL_SYM(emit.slow))
+        STORb( DTOPb,  IOBUF_OFF_ADDR(REG1, REG2))     /* io.addr[io.pos] = dtop */
+#else
+        LOAD(  REG3,   AT(REG1, IOBUF_OFF_MAX))        /* c = io.max             */
+        JAE(   REG2,   REG3, LABEL_SYM(emit.slow))
+        ADDI(  REG1,   IOBUF_OFF_ADDR,  REG4)          /* d = io.addr            */
+        STORb( DTOPb,  AT(REG4, REG2, 1))              /* io.addr[io.pos] = dtop */
+#endif
+        INC1(  REG2)
+        STOR(  REG2,   AT(REG1, IOBUF_OFF_SIZE))       /* io.size++              */
+        ZERO(  DTOPw)                                  /* dtop = 0               */
+        ADD2(  IMM(SZ), DSTK)                          /* dstk ( 0             ) */
+        NEXT0()
+LABEL(emit.slow)
+        /* not enough space, call forth word (obuf-flush-write-char) */
+        ADDROF_4G( WORD_SYM(_obuf_flush_write_char_), REG2) /* b = word          */
+        LD_uw( REG3_uw,AT(REG2, WORD_OFF_CODE_OFF))    /* c = w.code_off         */
+        DPUSH( DTOP)                                   /* dstk ( io ch _       ) */
+        ADD4(  REG2, REG3, 0, DTOP)                    /* dstk ( io ch xt      ) */
+        JUMP(  FUNC_SYM(_exec_xt_from_native_))        /* dstk ( err           ) */
+FUNC_RAWEND(obuf_write_char)
+
+
+/* obuf-write-string ( io c-addr u -- ) write string to iobuf */
+FUNC_START(obuf_write_string)
+        /* TODO */
+FUNC_END(obuf_write_string)
 
 
 /* out>obuf ( -- io ) get current output as iobuf */

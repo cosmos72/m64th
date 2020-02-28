@@ -35,25 +35,25 @@
  * caller-saved registers: %r10 %r11 and argument/return registers
  * callee-saved registers: %rbx %rbp %rsp %r12 %r13 %r14 %r15
  */
-#define REG0  %r11  /* scratch register 0 */
+#define REG0  %r10  /* scratch register 0 */
 #define REG1  %rax  /* scratch register 1 */
 #define REG2  %rcx  /* scratch register 2 */
 #define REG3  %rdx  /* scratch register 3 */
 #define REG4  %r8   /* scratch register 4 */
-/* additional callee-saved registers: %rbp */
+/* additional scratch registers: %r9 */
 
-#define REG0b   %r11b /* low  8 bits of REG0 */
-#define REG0h   %r11w /* low 16 bits of REG0 */
-#define REG0w   %r11d /* low 32 bits of REG0 */
-#define REG0t   %r11w /* (m4token)REG0        */
-#define REG0_sb %r11  /* sign-extend  8 bits into REG0 */
-#define REG0_sh %r11  /* sign-extend 16 bits into REG0 */
-#define REG0_sw %r11  /* sign-extend 32 bits into REG0 */
-#define REG0_st %r11  /* sign-extend m4token into REG0 */
-#define REG0_ub %r11d /* zero-extend  8 bits into REG0 */
-#define REG0_uh %r11d /* zero-extend 16 bits into REG0 */
-#define REG0_uw %r11d /* zero-extend 32 bits into REG0 */
-#define REG0_ut %r11d /* zero-extend m4token into REG0 */
+#define REG0b   %r10b /* low  8 bits of REG0 */
+#define REG0h   %r10w /* low 16 bits of REG0 */
+#define REG0w   %r10d /* low 32 bits of REG0 */
+#define REG0t   %r10w /* (m4token)REG0        */
+#define REG0_sb %r10  /* sign-extend  8 bits into REG0 */
+#define REG0_sh %r10  /* sign-extend 16 bits into REG0 */
+#define REG0_sw %r10  /* sign-extend 32 bits into REG0 */
+#define REG0_st %r10  /* sign-extend m4token into REG0 */
+#define REG0_ub %r10d /* zero-extend  8 bits into REG0 */
+#define REG0_uh %r10d /* zero-extend 16 bits into REG0 */
+#define REG0_uw %r10d /* zero-extend 32 bits into REG0 */
+#define REG0_ut %r10d /* zero-extend m4token into REG0 */
 
 #define REG1b   %al  /* low  8 bits of REG1 */
 #define REG1h   %ax  /* low 16 bits of REG1 */
@@ -121,28 +121,28 @@
 #define DTOP_uw %ebx  /* zero-extend 32 bits into DTOP */
 #define DTOP_ut %ebx  /* zero-extend m4token into DTOP */
 
-#define RTOP    %r12  /* value of first data stack element */
-#define RTOPb   %r12b /* low  8 bits of RTOP */
-#define RTOPh   %r12w /* low 16 bits of RTOP */
-#define RTOPw   %r12d /* low 32 bits of RTOP */
-#define RTOPt   %r12w /* (m4token)RTOP        */
-#define RTOP_sb %r12  /* sign-extend  8 bits into RTOP */
-#define RTOP_sh %r12  /* sign-extend 16 bits into RTOP */
-#define RTOP_sw %r12  /* sign-extend 32 bits into RTOP */
-#define RTOP_st %r12  /* sign-extend m4token into RTOP */
-#define RTOP_ub %r12d /* zero-extend  8 bits into RTOP */
-#define RTOP_uh %r12d /* zero-extend 16 bits into RTOP */
-#define RTOP_uw %r12d /* zero-extend 32 bits into RTOP */
-#define RTOP_ut %r12d /* zero-extend m4token into RTOP */
+#define RTOP    %rbp  /* value of first data stack element */
+#define RTOPb   %bpl  /* low  8 bits of RTOP */
+#define RTOPh   %bp   /* low 16 bits of RTOP */
+#define RTOPw   %ebp  /* low 32 bits of RTOP */
+#define RTOPt   %bp   /* (m4token)RTOP        */
+#define RTOP_sb %rbp  /* sign-extend  8 bits into RTOP */
+#define RTOP_sh %rbp  /* sign-extend 16 bits into RTOP */
+#define RTOP_sw %rbp  /* sign-extend 32 bits into RTOP */
+#define RTOP_st %rbp  /* sign-extend m4token into RTOP */
+#define RTOP_ub %ebp  /* zero-extend  8 bits into RTOP */
+#define RTOP_uh %ebp  /* zero-extend 16 bits into RTOP */
+#define RTOP_uw %ebp  /* zero-extend 32 bits into RTOP */
+#define RTOP_ut %ebp  /* zero-extend m4token into RTOP */
 
-#define RFFF  %r10  /* always contains -1 */
-#define RFFFt %r10w /* (m4token)-1        */
+#define RFFF  %r11  /* always contains -1 */
+#define RFFFt %r11w /* (m4token)-1        */
 
 #define DSTK  %rdi  /* pointer to second data stack element */
 #define RSTK  %rsi  /* pointer to second return stack element */
 #define M4TH  %r13  /* pointer to C struct m4th */
 #define HERE  %r14  /* pointer to first available code/data location */
-#define FTBL  %r9   /* pointer to table m4func[m4token] containing asm function addresses */
+#define FTBL  %r12  /* pointer to table m4func[m4token] containing asm function addresses */
 #define IP    %r15  /* forth bytecode instruction pointer */
 #define RIP   %rip  /* x86-64 instruction pointer */
 

@@ -154,12 +154,15 @@
     X(10, "iobuf>data", iobuf_data)                                                                \
     /* ( io -- c-addr u ) get iobuf free space i.e. from iobuf>size to iobuf>max */                \
     X(15, "iobuf>free-data", iobuf_free_data)                                                      \
-    X(10, "iobuf>func", iobuf_func)     /* ( io -- addr ) get address of iobuf I/O function  */    \
-    X(12, "iobuf>handle", iobuf_handle) /* ( io -- addr ) get address of iobuf handle        */    \
-    X(9, "iobuf>max", iobuf_max)        /* ( io -- u    ) get iobuf max size i.e. capacity   */    \
-    X(9, "iobuf>pos", iobuf_pos)        /* ( io -- addr ) get address of iobuf position      */    \
-    X(10, "iobuf>size", iobuf_size)     /* ( io -- addr ) get address of iobuf size          */    \
-    X(8, "m4th>err", m4th_err)    /*  (   -- addr ) get address of m4th.err                  */    \
+    X(10, "iobuf>func", iobuf_func)     /* ( io -- addr ) get address of iobuf I/O function */     \
+    X(12, "iobuf>handle", iobuf_handle) /* ( io -- addr ) get address of iobuf handle       */     \
+    X(9, "iobuf>max", iobuf_max)        /* ( io -- u    ) get iobuf max size i.e. capacity  */     \
+    X(9, "iobuf>pos", iobuf_pos)        /* ( io -- addr ) get address of iobuf position     */     \
+    X(10, "iobuf>size", iobuf_size)     /* ( io -- addr ) get address of iobuf size         */     \
+    X(8, "m4th>err", m4th_err) /*          (    -- addr ) get address of m4th.err           */     \
+    X(15, "obuf-write-char", obuf_write_char) /* ( io c -- err  ) write one char to iobuf   */     \
+    /* ( io c-addr u -- err  ) write string to iobuf */                                            \
+    X(17, "obuf-write-string", obuf_write_string)                                                  \
     X(8, "out>obuf", out_to_obuf) /*  (   -- io   ) get current output as iobuf              */    \
     /*                  searchorder-i ( u -- addr ) get address of searchorder i-th element  */    \
     X(13, "searchorder-i", searchorder_i)                                                          \
@@ -185,11 +188,13 @@
     X(11, "ibuf-refill", ibuf_refill)           /*   ( io -- err  ) read some data into iobuf   */ \
     X(16, "ibuf-skip-blanks", ibuf_skip_blanks) /*   skip whitespace from iobuf current data    */ \
     X(10, "obuf-flush", obuf_flush)             /*   ( io -- err  ) flush iobuf data            */ \
+    /* ( io c -- err  ) flush iobuf, then write one char to it */                                  \
+    X(23, "(obuf-flush-write-char)", _obuf_flush_write_char_)                                      \
+    /* ( io c-addr u -- err  ) flush iobuf, then write string to it */                             \
+    X(25, "(obuf-flush-write-string)", _obuf_flush_write_string_)                                  \
     /* ( io c-addr u -- c-addr' u' err  ) send string to iobuf I/O func, ignoring current data. */ \
     /* return string still to write - non-empty only on I/O error                               */ \
     X(15, "(obuf-overflow)", _obuf_overflow_)                                                      \
-    X(15, "obuf-write-char", obuf_write_char) /*   ( io c -- err  ) write one char to iobuf   */   \
-    X(17, "obuf-write-string", obuf_write_string) /* ( io addr u -- err  ) write string to iobuf*/ \
     X(11, "string>word", string_to_word) /* ( c-addr u -- w|0 -1|0|1 ) find name in search order*/ \
     X(6, "/token", div_token)            /* alias of _SZt_div,    no dedicated m4token */          \
     X(8, "to-token", to_token)           /* alias of to_SZtu,     no dedicated m4token */          \
