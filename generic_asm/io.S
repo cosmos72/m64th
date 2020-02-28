@@ -161,13 +161,18 @@ FUNC_START(obuf_write_string)
         /* check if enough space in iobuf, i.e. io.size + u <= io.max */
 #ifdef __x86_64__
         JA(    REG3,   AT(REG1, IOBUF_OFF_MAX), LABEL_SYM(obuf_write_string.slow))
+        STOR(  REG3,   AT(REG1, IOBUF_OFF_SIZE))       /* io.size += u           */
+        lea    IOBUF_OFF_ADDR(REG1, REG2), REG1;       /* a = io.dst             */
 #else
         LOAD(  REG4,   AT(REG1, IOBUF_OFF_MAX))        /* d = io.max             */
         JA(    REG3,   REG4, LABEL_SYM(obuf_write_string.slow))
-#endif
         STOR(  REG3,   AT(REG1, IOBUF_OFF_SIZE))       /* io.size += u           */
-        ADD2(  IMM(IOBUF_OFF_ADDR),   REG1)            /* a = io.addr            */
-        STOR(  REG1,   AT(DSTK, SZ))                   /* dstk ( io.addr c-addr u ) */
+        ADD2(  IMM(IOBUF_OFF_ADDR), REG1)              /* a = io.addr            */
+        ADD2(  REG2,   REG1)                           /* a = io.dst             */
+#endif
+        LOAD(  REG2,   AT(DSTK))                       /* b = c-addr             */
+        STOR(  REG1,   AT(DSTK))                       /* dstk ( io io.dst u )   */
+        STOR(  REG2,   AT(DSTK, SZ))                   /* dstk ( c-addr io.dst u  ) */
         ASM_CALL(FUNC_SYM(cmove))                      /* dstk (                  ) */
         DPUSH( DTOP)                                   /* dstk ( _                ) */
         ZERO(  DTOPw)                                  /* dstk ( 0                ) */

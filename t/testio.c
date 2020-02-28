@@ -103,6 +103,7 @@ static const char s_foobar[] = "foobar";
 
 static m4testio testio_a[] = {
     /* ------------------------- obuf --------------------------------------- */
+    {"\"k\" type", {m4type, m4bye}, {{2, {(m4cell) "k", 1}}, {}}, {{}, {}}, {"", ""}, {"", "k"}},
     {"obuf-flush",
      {m4out_to_obuf, CALL(obuf_flush), m4bye},
      {{}, {}},
@@ -136,6 +137,14 @@ static m4testio testio_a[] = {
     {"cr", {CALL(cr), m4bye}, {{}, {}}, {{}, {}}, {"", ""}, {"", "\n"}},
     {"space", {CALL(space), m4bye}, {{}, {}}, {{}, {}}, {"", ""}, {"", " "}},
     {"cr space", {CALL(cr), CALL(space), m4bye}, {{}, {}}, {{}, {}}, {"", ""}, {"", "\n "}},
+    {"emit", {m4emit, m4bye}, {{1, {'#'}}, {}}, {{}, {}}, {"", ""}, {"", "#"}},
+    {"emit emit", {m4emit, m4emit, m4bye}, {{2, {')', '('}}, {}}, {{}, {}}, {"", ""}, {"", "()"}},
+    {"\"pq\" type",
+     {m4type, m4bye},
+     {{2, {(m4cell) "pq", 2}}, {}},
+     {{}, {}},
+     {"", "o"},
+     {"", "opq"}},
     /* ------------------------- ibuf --------------------------------------- */
     {"parse-name",
      {CALL(parse_name), /*CALL(type),*/ m4two_drop, m4bye},
