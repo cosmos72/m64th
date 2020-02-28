@@ -255,31 +255,45 @@ WORD_START(_obuf_flush_write_char_, obuf_flush)
 WORD_END(_obuf_flush_write_char_)
 /* (obuf-flush-write-string) ( io c-addr u -- err  ) flush iobuf, then write string to it */
 WORD_START(_obuf_flush_write_string_, _obuf_flush_write_char_)
-    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_FLAGS(0)
     WORD_DSTACK(3,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_CODE(
-        /* rot dup iobuf-flush                         ( c-addr u io err )
+        /* rot dup obuf-flush                         ( c-addr u io err )
          * ?if                                         ( c-addr u io err )
-         *    2nip                                     ( io err          )
-         * else                                        ( c-addr u io err )
-         *    drop -rot                                ( io c-addr u     )
+         *    2nip nip exit                            ( err             )
+         * then                                        ( c-addr u io err )
+         * drop dup >r                                 ( c-addr u io              ) (R: io )
+         * iobuf>free-data dup                         ( c-addr u c-addr' u' u'   ) (R: io )
+         * 2over drop                                  ( c-addr u c-addr' u' u' u ) (R: io )
+         * <                                           ( c-addr u c-addr' u' t|f  ) (R: io )
+         * if        ( string does not fit free data ) ( c-addr u c-addr' u'      ) (R: io )
+         *    2drop r> -rot                            ( io c-addr u     )
          *    obuf-overflow                            ( c-addr' u' err  )
-         *    nip                                      ( c-addr' err     )
-         * then                                        ( x err           )
-         * nip                                         ( err             )
+         *    nip nip exit                             ( err             )
+         * then      ( string fits free data )         ( c-addr u c-addr' u'      ) (R: io )
+         * drop swap dup >r                            ( c-addr c-addr' u         ) (R: io u )
+         * cmove r> r>                                 ( u io                     )
+         * iobuf>size +! 0                             ( 0                        )
          */
         rot, dup, _call_, WADDR(obuf_flush),
-        _q_if_, T(3),
-            two_nip,
-        _else_, T(5+SZ/SZt),
-            drop, minus_rot,
-            _call_, WADDR(_obuf_overflow_),
-            nip,
+        _q_if_, T(4),
+            two_nip, nip, exit,
         then,
-        nip, exit
+        drop, dup, to_r,
+        iobuf_free_data, dup,
+        two_over, drop,
+        less,
+        _if_, T(8+SZ/SZt),
+            two_drop, r_from, minus_rot,
+            _call_, WADDR(_obuf_overflow_),
+            nip, nip, exit,
+        then,
+        drop, swap, dup, to_r,
+        cmove, r_from, r_from,
+        iobuf_size, plus_store, zero, exit
     )
 WORD_END(_obuf_flush_write_string_)
 /*
