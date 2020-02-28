@@ -146,12 +146,18 @@ static m4testio testio_a[] = {
      {"", "o"},
      {"", "opq"}},
     /* ------------------------- ibuf --------------------------------------- */
-    {"parse-name",
-     {CALL(parse_name), /*CALL(type),*/ m4two_drop, m4bye},
+    {"\" a b\" parse-name",
+     {CALL(parse_name), m4type, m4bye},
      {{}, {}},
      {{}, {}},
      {" a b", ""},
-     {" b", ""}},
+     {" b", "a"}},
+    {"\"  11 22\" parse-name",
+     {CALL(parse_name), m4type, m4bye},
+     {{}, {}},
+     {{}, {}},
+     {" 11 22", ""},
+     {" 22", "11"}},
 };
 
 static void m4testio_global_init() {
