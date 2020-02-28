@@ -62,6 +62,7 @@
         x((zero, lshift), _)                                 /* 0  lshift     =>                */ \
         x((zero, or), _)                                     /* 0  or         =>                */ \
         x((zero, pick), dup)                                 /* 0  pick       => dup            */ \
+        x((zero, roll), _)                                   /* 0  roll       =>                */ \
         x((zero, rshift), _)                                 /* 0  rshift     =>                */ \
         x((zero, u_less), (drop, false))                     /* 0  u<         => drop false     */ \
         x((zero, u_less_equal), (zero_equal))                /* 0  u<=        => 0=             */ \
@@ -76,6 +77,7 @@
         x((one, lshift), (two_times))                        /* 1  lshift     => 2*             */ \
         x((one, mod), _)                                     /* 1  mod        => drop 0         */ \
         x((one, pick), over)                                 /* 1  pick       => over           */ \
+        x((one, roll), (swap))                               /* 0  roll       => swap           */ \
         x((one_plus, two_minus), (one_minus))                /* 1+ 2-         => 1-             */ \
         x((one_plus, one_minus), _)                          /* 1+ 1-         =>                */ \
         x((one_plus, one_plus), (two_plus))                  /* 1+ 1+         => 2+             */ \
@@ -93,6 +95,7 @@
         x((two, minus), (two_minus))                         /* 2  -          => 2-             */ \
         x((two, div), (two_div))                             /* 2  /          => 2/             */ \
         x((two, lshift), (four_times))                       /* 2  lshift     => 4*             */ \
+        x((two, roll), (rot))                                /* 2  roll       => rot            */ \
         /*x((two_times, eight_div), (four_div))*/            /* 2* 8/         => 4/   OVERFLOW! */ \
         /*x((two_times, four_div), (two_div))*/              /* 2* 4/         => 2/   OVERFLOW! */ \
         /*x((two_times, two_div), _)*/                       /* 2* 2/         =>      OVERFLOW! */ \
@@ -356,7 +359,7 @@
         x((rot, flip), (swap))                               /* rot    flip   => swap           */ \
         x((rot, rot), (minus_rot))                           /* rot    rot    => -rot           */ \
         x((rot, minus_rot), _)                               /* rot    -rot   =>                */ \
-        x((minus_rot, over), (flip, tuck)                    /* -rot   over   => flip tuck      */ \
+        x((minus_rot, over), (flip, tuck))                   /* -rot   over   => flip tuck      */ \
         x((minus_rot, rot), _)                               /* -rot   rot    =>                */ \
         x((minus_rot, minus_rot), (rot))                     /* -rot   -rot   => rot            */ \
         x((minus_rot, flip), (swap, minus_rot))              /* -rot   flip   => swap -rot      */ \
@@ -397,6 +400,7 @@
         x((tuck, rot), (dup))                                /* tuck   rot    => dup            */ \
         x((tuck, minus_rot), (dup))                          /* tuck   -rot   => dup            */ \
         x((xor, invert), (invert, xor))                      /* xor    invert => invert xor     */
+
 #if 0
         x((one_plus, byte_fetch), (byte_bracket1))           /* 1+    byte@   => byte[1]      */ \
         x((one_plus, c_fetch), (char_bracket1))              /* 1+    c@      => char[1]      */ \
