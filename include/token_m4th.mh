@@ -183,11 +183,11 @@
 #define M4three 663          /* 3        */
 #define M4four 664           /* 4        */
 #define M4eight 665          /* 8        */
-#undef M4____gap             /*                                         */
-#undef M4____gap             /*                                         */
-#define M4_q_do_ 668         /* (?do)     must be followed by IP offset to jump   */
-#define M4_q_if_ 669         /* (?if)     must be followed by IP offset to jump if dtop == 0 */
-#define M4_q_if_zero_ 670    /* (?if0)    must be followed by IP offset to jump if dtop <> 0 */
+#define M4_q_do_ 666         /* (?do)     must be followed by IP offset to jump   */
+#define M4_q_if_ 667         /* (?if)     must be followed by IP offset to jump if dtop == 0 */
+#define M4_q_if_zero_ 668    /* (?if0)    must be followed by IP offset to jump if dtop <> 0 */
+#define M4_q_until_ 669      /* (?until)  must be followed by IP offset to jump if dtop == 0 */
+#define M4_q_until_zero_ 670 /* (?until0) must be followed by IP offset to jump if dtop <> 0 */
 #define M4_q_while_ 671      /* (?while)  must be followed by IP offset to jump if dtop == 0 */
 #define M4_q_while_zero_ 672 /* (?while0) must be followed by IP offset to jump if dtop <> 0 */
 #define M4_again_ 673        /* (again)   must be followed by IP offset to jump   */

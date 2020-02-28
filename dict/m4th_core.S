@@ -232,8 +232,7 @@ WORD_START(_obuf_flush_write_char_, obuf_flush)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_CODE(
-        /* over                                        ( io c io      )
-         * iobuf-flush                                 ( io c err     )
+        /* over iobuf-flush                            ( io c err     )
          * ?if                                         ( io c err     )
          *    nip nip exit                             ( err          )
          * then                                        ( io c err     )
@@ -243,8 +242,7 @@ WORD_START(_obuf_flush_write_char_, obuf_flush)
          * 1 swap iobuf>size                           ( 1 size-addr  )
          * +! 0                                        ( 0            )
          */
-        over,
-        _call_, WADDR(obuf_flush),
+        over, _call_, WADDR(obuf_flush),
         _q_if_, T(4),
             nip, r_from_drop, exit,
         then,
@@ -257,14 +255,31 @@ WORD_START(_obuf_flush_write_char_, obuf_flush)
 WORD_END(_obuf_flush_write_char_)
 /* (obuf-flush-write-string) ( io c-addr u -- err  ) flush iobuf, then write string to it */
 WORD_START(_obuf_flush_write_string_, _obuf_flush_write_char_)
-    WORD_FLAGS(0)
+    WORD_FLAGS(M4FLAG_INLINE)
     WORD_DSTACK(3,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_CODE(
-        /* TODO */
-        exit
+        /* rot dup iobuf-flush                         ( c-addr u io err )
+         * ?if                                         ( c-addr u io err )
+         *    2nip                                     ( io err          )
+         * else                                        ( c-addr u io err )
+         *    drop -rot                                ( io c-addr u     )
+         *    obuf-overflow                            ( c-addr' u' err  )
+         *    nip                                      ( c-addr' err     )
+         * then                                        ( x err           )
+         * nip                                         ( err             )
+         */
+        rot, dup, _call_, WADDR(obuf_flush),
+        _q_if_, T(3),
+            two_nip,
+        _else_, T(5+SZ/SZt),
+            drop, minus_rot,
+            _call_, WADDR(_obuf_overflow_),
+            nip,
+        then,
+        nip, exit
     )
 WORD_END(_obuf_flush_write_string_)
 /*
@@ -285,11 +300,18 @@ WORD_START(_obuf_overflow_, _obuf_flush_write_string_)
          *    r@ iobuf>func @ execute               ( c-addr u u' err          ) (R: io )
          *    >r /string                            ( c-addr' u'               ) (R: io err )
          *    r>                                    ( c-addr u err             ) (R: io )
-         *    ?while0                               ( c-addr u err             ) (R: io )
-         * until                                    ( c-addr u err             ) (R: io )
+         * ?until                                   ( c-addr u err             ) (R: io )
          * r> drop                                  ( c-addr u err             )
          */
-        exit
+        rot, to_r, zero,
+        begin,
+            drop, _q_while_, T(14),
+            two_dup, r_fetch, iobuf_handle, fetch, minus_rot,
+            r_fetch, iobuf_func, fetch, execute,
+            to_r, div_string,
+            r_from,
+        _q_until_, T(-17),
+        r_from_drop, exit
     )
 WORD_END(_obuf_overflow_)
 /* obuf-write-char ( io c-addr u -- err  ) write one char to iobuf */

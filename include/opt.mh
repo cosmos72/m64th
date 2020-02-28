@@ -275,6 +275,8 @@
         x((c_fetch, drop), (drop))                           /* c@   drop     => drop           */ \
         x((dup, _if_), (_q_if_))                             /* dup  (if)     => (?if)          */ \
         x((dup, _if_zero_), (_q_if_zero_))                   /* dup  (if0)    => (?if0)         */ \
+        x((dup, _until_), (_q_until_))                       /* dup  (until)  => (?until)       */ \
+        x((dup, _until_zero_), (_q_until_zero_))             /* dup  (until0) => (?until0)      */ \
         x((dup, _while_), (_q_while_))                       /* dup  (while)  => (?while)       */ \
         x((dup, _while_zero_), (_q_while_zero_))             /* dup  (while0) => (?while0)      */ \
         x((dup, times), (squared))                           /* dup  *        => squared        */ \

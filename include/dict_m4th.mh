@@ -210,6 +210,8 @@
     X(5, "(?do)", _q_do_)                                                                          \
     X(5, "(?if)", _q_if_)                                                                          \
     X(6, "(?if0)", _q_if_zero_)                                                                    \
+    X(8, "(?until)", _q_until_)                                                                    \
+    X(9, "(?until0)", _q_until_zero_)                                                              \
     X(8, "(?while)", _q_while_)                                                                    \
     X(9, "(?while0)", _q_while_zero_)                                                              \
     X(7, "(again)", _again_)                                                                       \
@@ -235,6 +237,7 @@
     X(8, "(repeat)", _repeat_)                                                                     \
     X(18, "(return-to-native)", _return_to_native_)                                                \
     X(7, "(until)", _until_)                                                                       \
+    X(8, "(until0)", _until_zero_)                                                                 \
     X(7, "(while)", _while_)                                                                       \
     X(8, "(while0)", _while_zero_)                                                                 \
     X(11, "[#compiled]", _num_compiled_)                                                           \
