@@ -134,7 +134,7 @@ FUNC_START(obuf_write_char)
         STORb( DTOPb,  IOBUF_OFF_ADDR(REG1, REG2))     /* io.addr[io.pos] = dtop */
 #else
         LOAD(  REG3,   AT(REG1, IOBUF_OFF_MAX))        /* c = io.max             */
-        JAE(   REG2,   REG3, LABEL_SYM(emit.slow))
+        JAE(   REG2,   REG3, LABEL_SYM(obuf_write_char.slow))
         ADDI(  REG1,   IOBUF_OFF_ADDR,  REG4)          /* d = io.addr            */
         STORb( DTOPb,  AT(REG4, REG2, 1))              /* io.addr[io.pos] = dtop */
 #endif
@@ -171,6 +171,7 @@ FUNC_START(obuf_write_string)
         ASM_CALL(FUNC_SYM(cmove))                      /* dstk (                  ) */
         DPUSH( DTOP)                                   /* dstk ( _                ) */
         ZERO(  DTOPw)                                  /* dstk ( 0                ) */
+        NEXT0()
 LABEL(obuf_write_string.slow)
         /* not enough space, call forth word (obuf-flush-write-string) */
         ADDROF_4G( WORD_SYM(_obuf_flush_write_string_), REG2) /* b = word           */

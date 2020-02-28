@@ -86,6 +86,7 @@
     X(5, "state", state)                                                                           \
     X(4, "swap", swap)                                                                             \
     X(4, "then", then)                                                                             \
+    X(4, "type", type)                                                                             \
     X(2, "u<", u_less)                                                                             \
     X(6, "unloop", unloop)                                                                         \
     X(3, "xor", xor)
@@ -104,8 +105,7 @@
     X(7, "literal", literal)                                                                       \
     X(4, "loop", loop)                                                                             \
     X(6, "source", source)                                                                         \
-    X(5, "space", space)                                                                           \
-    X(4, "type", type)
+    X(5, "space", space)
 
 /* ------- forth 2012: core ext ----------------------------------------------------------------- */
 #define DICT_TOKENS_FORTH_CORE_EXT(X)                                                              \
