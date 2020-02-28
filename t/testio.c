@@ -88,8 +88,16 @@ static void m4iobuf_print(const m4iobuf *io, FILE *out) {
 
 /* -------------- m4testio -------------- */
 
+static const char s_foobar[] = "foobar";
+
 static m4testio testio_a[] = {
     /* ------------------------- obuf --------------------------------------- */
+    {"(obuf-overflow)",
+     {m4out_to_obuf, m4minus_rot, CALL(_obuf_overflow_), m4bye},
+     {{2, {(m4cell)s_foobar, 6}}, {}},
+     {{3, {(m4cell)s_foobar + 6, 0, 0}}, {}},
+     {"", "x"},
+     {"", "foobarx"}}, /* 'x' remains at obuf.addr[0] */
     {"obuf-flush",
      {m4out_to_obuf, CALL(obuf_flush), m4bye},
      {{}, {}},

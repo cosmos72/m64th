@@ -287,31 +287,41 @@ WORD_END(_obuf_flush_write_string_)
  * ignoring current data. return string still to write - non-empty only on I/O error
  */
 WORD_START(_obuf_overflow_, _obuf_flush_write_string_)
-    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_FLAGS(0)
     WORD_DSTACK(3,3)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_CODE(
-        /* rot >r 0                                 ( c-addr u 0               ) (R: io )
-         * begin                                    ( c-addr u err             ) (R: io )
-         *    drop ?while                           ( c-addr u                 ) (R: io )
-         *    2dup r@ iobuf>handle @ -rot           ( c-addr u handle c-addr u ) (R: io )
+        /* rot >r                                   ( c-addr u                 ) (R: io )
+         * begin                                    ( c-addr u                 ) (R: io )
+         *    ?while                                ( c-addr u                 ) (R: io )
+         *    2dup                                  ( c-addr u c-addr u        ) (R: io )
+         *    r@ iobuf>handle @ -rot                ( c-addr u handle c-addr u ) (R: io )
          *    r@ iobuf>func @ execute               ( c-addr u u' err          ) (R: io )
          *    >r /string                            ( c-addr' u'               ) (R: io err )
          *    r>                                    ( c-addr u err             ) (R: io )
-         * ?until                                   ( c-addr u err             ) (R: io )
-         * r> drop                                  ( c-addr u err             )
+         *    ?if                                   ( c-addr u err             ) (R: io )
+         *       r> drop exit                       ( c-addr u err             )
+         *    then                                  ( c-addr u err             ) (R: io )
+         *    drop                                  ( c-addr u                 ) (R: io )
+         * repeat                                   ( c-addr u                 ) (R: io )
+         * r> drop 0                                ( c-addr u 0               )
          */
-        rot, to_r, zero,
+        rot, to_r,
         begin,
-            drop, _q_while_, T(14),
-            two_dup, r_fetch, iobuf_handle, fetch, minus_rot,
+            _q_while_, T(20),
+            two_dup,
+            r_fetch, iobuf_handle, fetch, minus_rot,
             r_fetch, iobuf_func, fetch, execute,
             to_r, div_string,
             r_from,
-        _q_until_, T(-17),
-        r_from_drop, exit
+            _q_if_, T(3),
+                r_from_drop, exit,
+            then,
+            drop,
+        _repeat_, T(-22),
+        r_from_drop, zero, exit
     )
 WORD_END(_obuf_overflow_)
 /* obuf-write-char ( io c-addr u -- err  ) write one char to iobuf */
