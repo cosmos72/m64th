@@ -130,7 +130,7 @@ FUNC_START(obuf_write_char)
         LOAD(  REG2,   AT(REG1, IOBUF_OFF_SIZE))       /* b = io.size            */
         /* check if enough space in iobuf, i.e. io.size < io.max */
 #ifdef __x86_64__
-        JAE(   REG2,   AT(REG1, IOBUF_OFF_MAX), LABEL_SYM(emit.slow))
+        JAE(   REG2,   AT(REG1, IOBUF_OFF_MAX), LABEL_SYM(obuf_write_char.slow))
         STORb( DTOPb,  IOBUF_OFF_ADDR(REG1, REG2))     /* io.addr[io.pos] = dtop */
 #else
         LOAD(  REG3,   AT(REG1, IOBUF_OFF_MAX))        /* c = io.max             */
@@ -143,7 +143,7 @@ FUNC_START(obuf_write_char)
         ZERO(  DTOPw)                                  /* dtop = 0               */
         ADD2(  IMM(SZ), DSTK)                          /* dstk ( 0             ) */
         NEXT0()
-LABEL(emit.slow)
+LABEL(obuf_write_char.slow)
         /* not enough space, call forth word (obuf-flush-write-char) */
         ADDROF_4G( WORD_SYM(_obuf_flush_write_char_), REG2) /* b = word          */
         LD_uw( REG3_uw,AT(REG2, WORD_OFF_CODE_OFF))    /* c = w.code_off         */
@@ -155,7 +155,29 @@ FUNC_RAWEND(obuf_write_char)
 
 /* obuf-write-string ( io c-addr u -- ) write string to iobuf */
 FUNC_START(obuf_write_string)
-        /* TODO */
+        LOAD(  REG1,   AT(DSTK, SZ))                   /* a = io                 */
+        LOAD(  REG2,   AT(REG1, IOBUF_OFF_SIZE))       /* b = io.size            */
+        ADD4(  DTOP,   REG2, 0, REG3)                  /* c = io.size + u        */
+        /* check if enough space in iobuf, i.e. io.size + u <= io.max */
+#ifdef __x86_64__
+        JA(    REG3,   AT(REG1, IOBUF_OFF_MAX), LABEL_SYM(obuf_write_string.slow))
+#else
+        LOAD(  REG4,   AT(REG1, IOBUF_OFF_MAX))        /* d = io.max             */
+        JA(    REG3,   REG4, LABEL_SYM(obuf_write_string.slow))
+#endif
+        STOR(  REG3,   AT(REG1, IOBUF_OFF_SIZE))       /* io.size += u           */
+        ADD2(  IMM(IOBUF_OFF_ADDR),   REG1)            /* a = io.addr            */
+        STOR(  REG1,   AT(DSTK, SZ))                   /* dstk ( io.addr c-addr u ) */
+        ASM_CALL(FUNC_SYM(cmove))                      /* dstk (                  ) */
+        DPUSH( DTOP)                                   /* dstk ( _                ) */
+        ZERO(  DTOPw)                                  /* dstk ( 0                ) */
+LABEL(obuf_write_string.slow)
+        /* not enough space, call forth word (obuf-flush-write-string) */
+        ADDROF_4G( WORD_SYM(_obuf_flush_write_string_), REG2) /* b = word           */
+        LD_uw( REG3_uw,AT(REG2, WORD_OFF_CODE_OFF))    /* c = w.code_off            */
+        DPUSH( DTOP)                                   /* dstk ( io c-addr u _    ) */
+        ADD4(  REG2, REG3, 0, DTOP)                    /* dstk ( io c-addr u xt   ) */
+        JUMP(  FUNC_SYM(_exec_xt_from_native_))        /* dstk ( err              ) */
 FUNC_END(obuf_write_string)
 
 
@@ -164,3 +186,14 @@ FUNC_START(out_to_obuf)
         DPUSH( DTOP)
         LOAD(  DTOP,   AT(M4TH, M4TH_OFF_OUT))
 FUNC_END(out_to_obuf)
+
+
+/* type ( c-addr u -- ) write string to current output */
+FUNC_START(type)
+        LOAD(  REG1,   AT(M4TH, M4TH_OFF_OUT))         /* a = io                 */
+        LOAD(  REG2,   AT(DSTK))                       /* b = c-addr             */
+        STOR(  REG1,   AT(DSTK))                       /* dstk ( io u          ) */
+        DPUSH( REG2)                                   /* dstk ( io c-addr u   ) */
+        ASM_CALL(  FUNC_SYM(obuf_write_string))        /* dstk ( err           ) */
+        DPOP(DTOP)                                     /* dstk (               ) */
+FUNC_END(type)

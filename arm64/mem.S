@@ -21,7 +21,8 @@
 
 /* clang-format off */
 
-FUNC_START(cmove)    /* cmove   'string' word set */
+/* cmove ( addr-src addr-dst u -- ) 'string' word set */
+FUNC_START(cmove)    
         DPOP(  REG2)            /* REG2 = dst   */
         DPOP(  REG1)            /* REG1 = src   */
         ZERO(  REG0)            /* REG0 = index */

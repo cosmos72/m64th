@@ -66,7 +66,8 @@ FUNC_START(div_string)
 FUNC_END(div_string)
 
 
-FUNC_START(cmove)          /* cmove   'string' word set */
+/* cmove ( addr-src addr-dst u -- ) 'string' word set */
+FUNC_START(cmove)
         MOVE(  %rdi,  %rax)            /* save DSTK == %rdi */
         MOVE(  %rsi,  %rdx)            /* save RSTK == %rsi */
         LOAD(  %rdi,  AT(%rax))        /* src               */
