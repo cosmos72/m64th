@@ -55,8 +55,8 @@
     ADD2(IMM(((n)-1)), reg)                                                                        \
     AND2(IMM((-(n))),  reg)
 
-#define LABEL_SYM(label) .L##label /* local label */
-#define LABEL(label) LABEL_SYM(label) :
+#define TO(label) .L##label /* local label */
+#define LABEL(label) TO(label) :
 
 /* clang-format on */
 

@@ -31,7 +31,7 @@ FUNC_START(_q_do_)
         cmp    REG2, DTOP;
         b.eq   .L_q_do_.skip;
         ADD2(  IMM(SZt), IP)           /* skip jump offset      */
-        b      FUNC_SYM(do);
+        b      FUNC(do);
 .L_q_do_.skip:                  /* skip the loop:        */
         LOAD(  DTOP,   AT(DSTK, SZ))   /* reload dstack top     */
         ADD2(  IMM(SZ2), DSTK)         /* drop i' i from dstack */

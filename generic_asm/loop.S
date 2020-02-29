@@ -29,7 +29,7 @@
  * IP offset = 0 means first instruction after (?if) itself
  */
 FUNC_START(_q_if_)
-        JNZ(   DTOP,   LABEL_SYM(_q_if_.enter))
+        JNZ(   DTOP,   TO(_q_if_.enter))
         RELJUMP()
 LABEL(_q_if_.enter)
         NEXTT()                    /* skip IP offset          */
@@ -43,7 +43,7 @@ FUNC_RAWEND(_q_if_)
  * IP offset = 0 means first instruction after (?if0) itself
  */
 FUNC_START(_q_if_zero_)
-        JZ(    DTOP,   LABEL_SYM(_q_if_zero_.enter))
+        JZ(    DTOP,   TO(_q_if_zero_.enter))
         RELJUMP()
 LABEL(_q_if_zero_.enter)
         NEXTT()                    /* skip IP offset          */

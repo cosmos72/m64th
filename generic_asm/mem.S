@@ -119,16 +119,16 @@ FUNC_START(string_ci_equal)
         LOAD(  REG2,   AT(DSTK))       /* b = addr2 */
         LOAD(  REG1,   AT(DSTK, SZ))   /* a = addr1 */
         DPUSH( DTOP)
-        JEQ(   REG1,   REG2,    LABEL_SYM(string_ci_equal.true))   /* addr1 == addr2 */
-        JZ(    DTOP,            LABEL_SYM(string_ci_equal.true))   /* u == 0         */
+        JEQ(   REG1,   REG2,    TO(string_ci_equal.true))   /* addr1 == addr2 */
+        JZ(    DTOP,            TO(string_ci_equal.true))   /* u == 0         */
         ZERO(  REG0w)
 LABEL(string_ci_equal.byte)
         LD_ub( REG3_ub,AT(REG1, REG0, 1))
         LD_ub( REG4_ub,AT(REG2, REG0, 1))
-        JNE(   REG3w,  REG4w,   LABEL_SYM(string_ci_equal.cmp))
+        JNE(   REG3w,  REG4w,   TO(string_ci_equal.cmp))
 LABEL(string_ci_equal.next)
         INC1(  REG0)
-        JB(    REG0,   DTOP,    LABEL_SYM(string_ci_equal.byte))
+        JB(    REG0,   DTOP,    TO(string_ci_equal.byte))
 LABEL(string_ci_equal.true)
 #ifdef RFFF
         MOVE(  RFFF,   DTOP)
@@ -139,12 +139,12 @@ LABEL(string_ci_equal.true)
 LABEL(string_ci_equal.cmp)
         ORR2(  IMM('a'-'A'), REG3w)
         ORR2(  IMM('a'-'A'), REG4w)
-        JNE(   REG3w,  REG4w,   LABEL_SYM(string_ci_equal.false))
-        JB(    REG3w,  IMM('a'),LABEL_SYM(string_ci_equal.false))
-        JA(    REG3w,  IMM('z'),LABEL_SYM(string_ci_equal.false))
-        JB(    REG4w,  IMM('a'),LABEL_SYM(string_ci_equal.false))
-        JA(    REG4w,  IMM('z'),LABEL_SYM(string_ci_equal.false))
-        JUMP(  LABEL_SYM(string_ci_equal.next))
+        JNE(   REG3w,  REG4w,   TO(string_ci_equal.false))
+        JB(    REG3w,  IMM('a'),TO(string_ci_equal.false))
+        JA(    REG3w,  IMM('z'),TO(string_ci_equal.false))
+        JB(    REG4w,  IMM('a'),TO(string_ci_equal.false))
+        JA(    REG4w,  IMM('z'),TO(string_ci_equal.false))
+        JUMP(  TO(string_ci_equal.next))
 LABEL(string_ci_equal.false)
         ZERO(  DTOPw)
 FUNC_END(string_ci_equal)
@@ -156,13 +156,13 @@ FUNC_END(string_ci_equal)
  */
 FUNC_START(string_first_blank)
         DPOP(  REG2)                                               /* b = addr */
-        JZ(    DTOP,            LABEL_SYM(string_first_blank.ret)) /* u == 0   */
+        JZ(    DTOP,            TO(string_first_blank.ret)) /* u == 0   */
         ZERO(  REG1w)
 LABEL(string_first_blank.byte)
         LD_ub( REG3_ub,AT(REG2, REG1, 1))
-        JBE(   REG3w,  IMM(32), LABEL_SYM(string_first_blank.found))
+        JBE(   REG3w,  IMM(32), TO(string_first_blank.found))
         INC1(  REG1)
-        JB(    REG1,   DTOP,    LABEL_SYM(string_first_blank.byte))
+        JB(    REG1,   DTOP,    TO(string_first_blank.byte))
 LABEL(string_first_blank.found)
         MOVE(  REG1,   DTOP)
 LABEL(string_first_blank.ret)

@@ -46,8 +46,8 @@ FUNC_START(_exec_xt_from_native_)
         RPUSH( RTOP)               /* save rtop                       */
         MOVE(  IP,     RTOP)       /* rtop = IP                       */
         /*                          let token 'execute' pop dtop = xt */
-        ADDROF_1M(LABEL_SYM(_exec_xt_from_native_.vm_code), IP)
-        ASM_CALL(      FUNC_SYM(_vm_))
+        ADDROF_1M(TO(_exec_xt_from_native_.vm_code), IP)
+        ASM_CALL(      FUNC(_vm_))
         MOVE(  RTOP,   IP)         /* IP   = rtop                     */
         RPOP(  RTOP)               /* load rtop                       */
         ASM_RET()

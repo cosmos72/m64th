@@ -45,14 +45,14 @@ FUNC_START(_compile_init_)
         /* TODO check if enough space */
         LOAD(  REG1,       AT(M4TH, M4TH_OFF_W))       /* a = [word]            */
         LD_uh( REG2_uh,    AT(REG1, WORD_OFF_CODE_OFF))/* b = w.code_off        */
-        JNZ(   REG2,       LABEL_SYM(_compile_init_.done))
+        JNZ(   REG2,       TO(_compile_init_.done))
         LD_uh( REG2_uh,    AT(REG1, WORD_OFF_DATA_N))  /* b = w.data_n          */
-        JNZ(   REG2,       LABEL_SYM(_compile_init_.full))
+        JNZ(   REG2,       TO(_compile_init_.full))
 LABEL(_compile_init_.simple)
         /* word.data_n == 0, simple initialization                              */
         MOVE(  IMM(WORD_OFF_DATA),     REG2w)          /* b = w.code - w        */
         STORh( REG2h,      AT(REG1, WORD_OFF_CODE_OFF))/* w.code_off = b        */
-        JUMP(              LABEL_SYM(_compile_init_.done))
+        JUMP(              TO(_compile_init_.done))
 LABEL(_compile_init_.full)
         /* word.data_n != 0, full initialization                                */
         ADDI(  REG1,       WORD_OFF_DATA,  REG3)       /* c = w.data            */

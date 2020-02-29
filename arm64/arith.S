@@ -153,7 +153,7 @@ FUNC_END(more_equal)
 
 
 FUNC_START(question_dup)   /* ?dup */
-        cbz    DTOP,   FUNC_SYM_NEXT(question_dup);
+        cbz    DTOP,   FUNC_NEXT(question_dup);
         DPUSH( DTOP)
 FUNC_END(question_dup)
 

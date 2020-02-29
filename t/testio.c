@@ -99,11 +99,10 @@ static void m4iobuf_with_counteddata_print(const m4iobuf *io, FILE *out) {
 
 /* -------------- m4testio -------------- */
 
-static const char s_foobar[] = "foobar";
+static const char s_foobarbaz[] = "foobarbaz";
 
 static m4testio testio_a[] = {
     /* ------------------------- obuf --------------------------------------- */
-    {"\"k\" type", {m4type, m4bye}, {{2, {(m4cell) "k", 1}}, {}}, {{}, {}}, {"", ""}, {"", "k"}},
     {"obuf-flush",
      {m4out_to_obuf, CALL(obuf_flush), m4bye},
      {{}, {}},
@@ -112,10 +111,10 @@ static m4testio testio_a[] = {
      {"", "="}},
     {"(obuf-overflow)",
      {m4out_to_obuf, m4minus_rot, CALL(_obuf_overflow_), m4bye},
-     {{2, {(m4cell)s_foobar, 6}}, {}},
-     {{3, {(m4cell)s_foobar + 6, 0, 0}}, {}},
+     {{2, {(m4cell)s_foobarbaz, 9}}, {}},
+     {{3, {(m4cell)s_foobarbaz + 9, 0, 0}}, {}},
      {"", "x"},
-     {"", "foobarx"}}, /* 'x' remains at obuf.addr[0] */
+     {"", "foobarbazx"}}, /* 'x' remains at obuf.addr[0] */
     {"(obuf-flush-write-char)",
      {m4out_to_obuf, m4swap, CALL(_obuf_flush_write_char_), m4bye},
      {{1, {'b'}}, {}},
@@ -128,23 +127,30 @@ static m4testio testio_a[] = {
      {{1, {0}}, {}},
      {"", "c"},
      {"", "cd"}},
-    {"\"foobar\" (obuf-flush-write-string)",
+    {"\"foobarbaz\" (obuf-flush-write-string)",
      {m4out_to_obuf, m4minus_rot, CALL(_obuf_flush_write_string_), m4bye},
-     {{2, {(m4cell)s_foobar, 6}}, {}},
+     {{2, {(m4cell)s_foobarbaz, 9}}, {}},
      {{1, {0}}, {}},
      {"", "x"},
-     {"", "xfoobar"}},
+     {"", "xfoobarbaz"}},
     {"cr", {CALL(cr), m4bye}, {{}, {}}, {{}, {}}, {"", ""}, {"", "\n"}},
     {"space", {CALL(space), m4bye}, {{}, {}}, {{}, {}}, {"", ""}, {"", " "}},
     {"cr space", {CALL(cr), CALL(space), m4bye}, {{}, {}}, {{}, {}}, {"", ""}, {"", "\n "}},
     {"emit", {m4emit, m4bye}, {{1, {'#'}}, {}}, {{}, {}}, {"", ""}, {"", "#"}},
     {"emit emit", {m4emit, m4emit, m4bye}, {{2, {')', '('}}, {}}, {{}, {}}, {"", ""}, {"", "()"}},
+    {"\"k\" type", {m4type, m4bye}, {{2, {(m4cell) "k", 1}}, {}}, {{}, {}}, {"", ""}, {"", "k"}},
     {"\"pq\" type",
      {m4type, m4bye},
      {{2, {(m4cell) "pq", 2}}, {}},
      {{}, {}},
      {"", "o"},
      {"", "opq"}},
+    {"\"foobarbaz\" type",
+     {m4type, m4bye},
+     {{2, {(m4cell)s_foobarbaz, 9}}, {}},
+     {{}, {}},
+     {"", "e"},
+     {"", "efoobarbaz"}},
     /* ------------------------- ibuf --------------------------------------- */
     {"\" a b\" parse-name",
      {CALL(parse_name), m4type, m4bye},

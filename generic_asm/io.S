@@ -26,7 +26,7 @@
 FUNC_START(emit)
         LOAD(  REG1,   AT(M4TH, M4TH_OFF_OUT))         /* a = io                 */
         DPUSH( REG1)                                   /* dstk ( io ch         ) */
-        ASM_CALL(  FUNC_SYM(obuf_write_char))          /* dstk ( err           ) */
+        ASM_CALL(  FUNC(obuf_write_char))          /* dstk ( err           ) */
         DPOP(DTOP)                                     /* dstk (               ) */
 FUNC_END(emit)
 
@@ -116,7 +116,7 @@ FUNC_START(key)
         MOVE(  IMM(-1),DTOP)
 #endif
         /* TODO refill input buffer */
-        JAE(   REG2,   REG3,  FUNC_SYM_NEXT(key))
+        JAE(   REG2,   REG3,  FUNC_NEXT(key))
         ADDI(  REG1,   IOBUF_OFF_ADDR, REG4)
         LD_ub( DTOP_ub,AT(REG4, REG2, 1))
         INC1(  REG2)
@@ -130,11 +130,11 @@ FUNC_START(obuf_write_char)
         LOAD(  REG2,   AT(REG1, IOBUF_OFF_SIZE))       /* b = io.size            */
         /* check if enough space in iobuf, i.e. io.size < io.max */
 #ifdef __x86_64__
-        JAE(   REG2,   AT(REG1, IOBUF_OFF_MAX), LABEL_SYM(obuf_write_char.slow))
+        JAE(   REG2,   AT(REG1, IOBUF_OFF_MAX), TO(obuf_write_char.slow))
         STORb( DTOPb,  IOBUF_OFF_ADDR(REG1, REG2))     /* io.addr[io.pos] = dtop */
 #else
         LOAD(  REG3,   AT(REG1, IOBUF_OFF_MAX))        /* c = io.max             */
-        JAE(   REG2,   REG3, LABEL_SYM(obuf_write_char.slow))
+        JAE(   REG2,   REG3, TO(obuf_write_char.slow))
         ADDI(  REG1,   IOBUF_OFF_ADDR,  REG4)          /* d = io.addr            */
         STORb( DTOPb,  AT(REG4, REG2, 1))              /* io.addr[io.pos] = dtop */
 #endif
@@ -149,7 +149,7 @@ LABEL(obuf_write_char.slow)
         LD_uw( REG3_uw,AT(REG2, WORD_OFF_CODE_OFF))    /* c = w.code_off         */
         DPUSH( DTOP)                                   /* dstk ( io ch _       ) */
         ADD4(  REG2, REG3, 0, DTOP)                    /* dstk ( io ch xt      ) */
-        JUMP(  FUNC_SYM(_exec_xt_from_native_))        /* dstk ( err           ) */
+        JUMP(  FUNC(_exec_xt_from_native_))        /* dstk ( err           ) */
 FUNC_RAWEND(obuf_write_char)
 
 
@@ -160,12 +160,12 @@ FUNC_START(obuf_write_string)
         ADD4(  DTOP,   REG2, 0, REG3)                  /* c = io.size + u        */
         /* check if enough space in iobuf, i.e. io.size + u <= io.max */
 #ifdef __x86_64__
-        JA(    REG3,   AT(REG1, IOBUF_OFF_MAX), LABEL_SYM(obuf_write_string.slow))
+        JA(    REG3,   AT(REG1, IOBUF_OFF_MAX), TO(obuf_write_string.slow))
         STOR(  REG3,   AT(REG1, IOBUF_OFF_SIZE))       /* io.size += u           */
         lea    IOBUF_OFF_ADDR(REG1, REG2), REG1;       /* a = io.dst             */
 #else
         LOAD(  REG4,   AT(REG1, IOBUF_OFF_MAX))        /* d = io.max             */
-        JA(    REG3,   REG4, LABEL_SYM(obuf_write_string.slow))
+        JA(    REG3,   REG4, TO(obuf_write_string.slow))
         STOR(  REG3,   AT(REG1, IOBUF_OFF_SIZE))       /* io.size += u           */
         ADD2(  IMM(IOBUF_OFF_ADDR), REG1)              /* a = io.addr            */
         ADD2(  REG2,   REG1)                           /* a = io.dst             */
@@ -173,7 +173,7 @@ FUNC_START(obuf_write_string)
         LOAD(  REG2,   AT(DSTK))                       /* b = c-addr             */
         STOR(  REG1,   AT(DSTK))                       /* dstk ( io io.dst u )   */
         STOR(  REG2,   AT(DSTK, SZ))                   /* dstk ( c-addr io.dst u  ) */
-        ASM_CALL(FUNC_SYM(cmove))                      /* dstk (                  ) */
+        ASM_CALL(FUNC(cmove))                      /* dstk (                  ) */
         DPUSH( DTOP)                                   /* dstk ( _                ) */
         ZERO(  DTOPw)                                  /* dstk ( 0                ) */
         NEXT0()
@@ -183,7 +183,7 @@ LABEL(obuf_write_string.slow)
         LD_uw( REG3_uw,AT(REG2, WORD_OFF_CODE_OFF))    /* c = w.code_off            */
         DPUSH( DTOP)                                   /* dstk ( io c-addr u _    ) */
         ADD4(  REG2, REG3, 0, DTOP)                    /* dstk ( io c-addr u xt   ) */
-        JUMP(  FUNC_SYM(_exec_xt_from_native_))        /* dstk ( err              ) */
+        JUMP(  FUNC(_exec_xt_from_native_))        /* dstk ( err              ) */
 FUNC_END(obuf_write_string)
 
 
@@ -200,6 +200,6 @@ FUNC_START(type)
         LOAD(  REG2,   AT(DSTK))                       /* b = c-addr             */
         STOR(  REG1,   AT(DSTK))                       /* dstk ( io u          ) */
         DPUSH( REG2)                                   /* dstk ( io c-addr u   ) */
-        ASM_CALL(  FUNC_SYM(obuf_write_string))        /* dstk ( err           ) */
+        ASM_CALL(  FUNC(obuf_write_string))        /* dstk ( err           ) */
         DPOP(DTOP)                                     /* dstk (               ) */
 FUNC_END(type)

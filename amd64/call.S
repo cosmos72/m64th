@@ -48,7 +48,7 @@ FUNC_START(th_run)
         DPOP(  DTOP)                   /* load first data   stack element */
         RPOP(  RTOP)                   /* load first return stack element */
         MOVE(  IMM(-1),RFFF)           /* set RFFF to -1                  */
-        jmp    FUNC_SYM(_vm_)          /* enter vm loop                   */
+        jmp    FUNC(_vm_)          /* enter vm loop                   */
 FUNC_RAWEND(th_run)
 
 
@@ -60,7 +60,7 @@ FUNC_START(_vm_)
         LD_ut( REG0,   AT(IP))         /* load m4token of current vm instruction */
         ADD2(IMM(SZt), IP)             /* increment vm IP                       */
         call *(FTBL,   REG0,   SZ);    /* execute vm instruction                */
-        jmp    FUNC_SYM(_vm_);         /* loop                                  */
+        jmp    FUNC(_vm_);         /* loop                                  */
 FUNC_RAWEND(_vm_)
 
 

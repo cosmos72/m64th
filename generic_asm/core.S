@@ -114,9 +114,9 @@ FUNC_END(word_to_flags)
 
 FUNC_START(word_to_name) /* ( w -- addr n ) */
         LD_uh( REG1_uh,    AT(DTOP, WORD_OFF_NAME_OFF)) /* a = w.name_off  */
-        JNZ(   REG1,       LABEL_SYM(word_to_name.body))
+        JNZ(   REG1,       TO(word_to_name.body))
         ZERO(  DTOPw)                  /* dtop = 0               */
-        JUMP(              LABEL_SYM(word_to_name.push_reg1))
+        JUMP(              TO(word_to_name.push_reg1))
 LABEL(word_to_name.body)
         SUB2(  REG1,       DTOP)       /* dtop = m4countedstring* */
         ADDI(  DTOP,       1,  REG1)   /* a = addr                */

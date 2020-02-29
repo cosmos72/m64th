@@ -48,7 +48,7 @@ FUNC_START(th_run)
         LOAD(  HERE, AT(M4TH, M4TH_OFF_HERE))   /* load HERE pointer               */
         DPOP(  DTOP)                            /* load first data   stack element */
         RPOP(  RTOP)                            /* load first return stack element */
-        b      LABEL_SYM(_vm_.loop)      /* enter vm loop, without saving LR again */
+        b      TO(_vm_.loop)      /* enter vm loop, without saving LR again */
 FUNC_RAWEND(th_run)
 
 /**
@@ -63,7 +63,7 @@ LABEL(_vm_.loop)
         ADD2(  IMM(SZt), IP)               /* pre-increment vm IP                    */
         LOAD(  x9,     AT(FTBL, x9, SZ))   /* load m4func of current vm instruction  */
         blr    x9;                         /* execute vm instruction                 */
-        b      LABEL_SYM(_vm_.loop);       /* loop                                   */
+        b      TO(_vm_.loop);       /* loop                                   */
 FUNC_RAWEND(_vm_)
 
 /**

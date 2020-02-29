@@ -220,9 +220,9 @@ void m4flags_print(m4flags fl, FILE *out) {
 #endif
 
 /* initialize the whole m4token -> m4func conversion table in one fell swoop */
-#define FTABLE_ENTRY(strlen, str, name) [M4TOKEN_VAL(name)] = FUNC_SYM(name),
+#define FTABLE_ENTRY(strlen, str, name) [M4TOKEN_VAL(name)] = FUNC(name),
 static m4func ftable[] = {
-    DICT_TOKENS_ALL(FTABLE_ENTRY) /**/[M4____end] = FUNC_SYM(_missing_),
+    DICT_TOKENS_ALL(FTABLE_ENTRY) /**/[M4____end] = FUNC(_missing_),
 };
 #undef FTABLE_ENTRY
 

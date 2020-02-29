@@ -242,7 +242,7 @@ FUNC_END(more_equal)
 
 FUNC_START(question_dup)   /* ?dup */
         test   DTOP, DTOP;
-        jz     FUNC_SYM_NEXT(question_dup);
+        jz     FUNC_NEXT(question_dup);
         DPUSH( DTOP)
 FUNC_END(question_dup)
 

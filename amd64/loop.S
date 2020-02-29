@@ -39,7 +39,7 @@ FUNC_START(_q_do_)
 
 
 #define M4FDO
-FUNC_DEF_SYM(do)
+FUNC_DEF(do)
 /* FUNC_START(do) */
         SUB2(  IMM(SZ2),   RSTK)       /* update rstack pointer */
         LOAD(  REG1, AT(DSTK))         /* REG1 = i'             */
@@ -100,7 +100,7 @@ FUNC_RAWEND(_leave_)
  */
 FUNC_START(_loop_)
         INC1(  RTOP)               /* increment i                 */
-        JEQ(   RTOP,   (RSTK), LABEL_SYM(_loop_.leave))     /* leave if i == i'            */
+        JEQ(   RTOP,   (RSTK), TO(_loop_.leave))     /* leave if i == i'            */
         RELJUMP()
 LABEL(_loop_.leave)
         LOAD(  RTOP,   AT(RSTK, SZ)) /* load new top of rstack      */
