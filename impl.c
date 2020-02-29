@@ -75,3 +75,9 @@ inline m4cell dpop(m4th *m) {
 m4cell m4th_repl(m4th *m) {
     return m4th_execute_word(m, &m4w_repl);
 }
+
+/** temporary C implementation of '.' */
+void m4th_dot(m4cell n) {
+    fprintf(stdout, "%ld ", n);
+    fflush(stdout);
+}

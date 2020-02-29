@@ -105,6 +105,15 @@ static m4testio testio_a[] = {
      {{}, {}},
      {" foobarbaz qwertyuiop", ""},
      {" qwertyuiop", "foobarbaz"}},
+    /* ------------------------- interpret ---------------------------------- */
+    {"\" 1 2\" interpret",
+     {CALL(interpret), m4bye},
+     {{}, {}},
+     {{1, {1}}, {}},
+     {" 1 2", ""},
+     {" 2", ""}},
+    /* ------------------------- repl --------------------------------------- */
+    {"\"1 2 +\" repl", {CALL(repl), m4bye}, {{}, {}}, {{1, {3}}, {}}, {"1 2 +", ""}, {"", ""}},
 };
 
 /* -------------- m4cstr -------------- */
@@ -151,11 +160,11 @@ static void m4ibuf_with_counteddata_init(m4iobuf *in) {
 
 static m4cell m4ibuf_with_counteddata_equal(const m4iobuf *io, const char *cstr) {
     const m4counteddata *d = (m4counteddata *)io->handle;
-    const m4cell_u n0 = io->size - io->pos;
-    const m4cell_u n1 = d->n;
-    const m4cell_u n2 = m4cstr_len(cstr);
-    return n0 + n1 == n2 && !memcmp(io->addr + io->pos, cstr, n0) &&
-           !memcmp(d->addr, cstr + n0, n1);
+    const m4cell_u n = m4cstr_len(cstr);
+    const m4cell_u nd = d->n;
+    const m4cell_u nio = io->size - io->pos;
+    return nio + nd == n && !memcmp(io->addr + io->pos, cstr, nio) &&
+           !memcmp(d->addr, cstr + nio, nd);
 }
 
 static void m4ibuf_with_counteddata_fill(m4iobuf *io, const char *cstr) {
@@ -213,11 +222,11 @@ static void m4obuf_with_counteddata_init(m4iobuf *out) {
 
 static m4cell m4obuf_with_counteddata_equal(const m4iobuf *io, const char *cstr) {
     const m4counteddata *d = (m4counteddata *)io->handle;
-    const m4cell_u n0 = d->n;
-    const m4cell_u n1 = io->size - io->pos;
-    const m4cell_u n2 = m4cstr_len(cstr);
-    return n0 + n1 == n2 && !memcmp(d->addr, cstr, n0) &&
-           !memcmp(io->addr + io->pos, cstr + n0, n1);
+    const m4cell_u n = m4cstr_len(cstr);
+    const m4cell_u nd = d->n;
+    const m4cell_u nio = io->size - io->pos;
+    return nd + nio == n && !memcmp(d->addr, cstr, nd) &&
+           !memcmp(io->addr + io->pos, cstr + nd, nio);
 }
 
 static void m4obuf_with_counteddata_fill(m4iobuf *io, const char *cstr) {

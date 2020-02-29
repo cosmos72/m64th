@@ -42,7 +42,7 @@
 #undef M4plus_loop /*12*/         /* +loop    */
 #undef M4comma /*13*/             /* ,        */
 #define M4minus 14                /* -        */
-#undef M4dot /*15*/               /* .        */
+#undef M4dot /*15*/               /* .        implemented in forth, no dedicated m4token */
 #undef M4dot_quote /*16*/         /* ."       */
 #define M4div 17                  /* /        */
 #define M4div_mod 18              /* /mod     */

@@ -19,6 +19,7 @@
 
 #include "impl.h"
 #include "include/dict_fwd.h" /* m4dict_... */
+#include "include/word_fwd.h" /* m4w_... */
 #include "m4th.h"
 
 #include <stdio.h>
@@ -63,6 +64,13 @@ int main(int argc, char *argv[]) {
     for (i = 0; i < (m4cell)N_OF(dict); i++) {
         m4dict_print(dict[i], stdout);
     }
+
+    m->in->func = m4word_code(&WORD_SYM(c_fread)).addr;
+    m->in->handle = (m4cell)stdin;
+    m->out->func = m4word_code(&WORD_SYM(c_fwrite)).addr;
+    m->out->handle = (m4cell)stdout;
+
+    m4th_repl(m);
 
     m4th_del(m);
 

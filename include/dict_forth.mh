@@ -94,6 +94,7 @@
 #define DICT_WORDS_FORTH_CORE(X)                                                                   \
     DICT_TOKENS_FORTH_CORE(X)                                                                      \
     /* the following words are implemented in forth, thus no dedicated m4token value */            \
+    X(1, ".", dot)                                                                                 \
     X(3, ">in", to_in)                                                                             \
     X(7, ">number", to_number)                                                                     \
     X(8, "compile,", compile_comma)                                                                \

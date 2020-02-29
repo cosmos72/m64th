@@ -62,7 +62,7 @@ WORD_START(ibuf_read_blanks, always_eof)
             dup, _call_, WADDR(ibuf_skip_blanks),
             dup, iobuf_data, nip, _while_zero_, T(4+SZ/SZt),
             dup, _call_, WADDR(ibuf_refill),
-        _until_, T(-9-2*SZ/SZt),
+        _until_, T(-11-2*SZ/SZt),
         drop, exit
     )
 WORD_END(ibuf_read_blanks)
