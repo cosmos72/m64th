@@ -23,20 +23,25 @@
 
 /* cmove ( addr-src addr-dst u -- ) 'string' word set */
 FUNC_START(cmove)    
-        DPOP(  REG2)                       /* b = dst   */
-        DPOP(  REG1)                       /* a = src   */
-        ZERO(  REG0)                       /* @ = index */
-        JB(    DTOP,   IMM(SZ),TO(cmove_1.test))
-        JB(    REG1,   REG2,   TO(cmove_1.test))
+        DPOP(  REG2)                       /* b = dst        */
+        DPOP(  REG1)                       /* a = src        */
+        ZERO(  REG0)                       /* @ = index      */
+        JB(    DTOP,   IMM(SZ),TO(cmove_1.test))  /* copying < SZ bytes => slow       */
+        JAE(   REG1,   REG2,   TO(cmove_SZ.init)) /* copying to lower address => fast */
+        SUB3(  REG2,   REG1,   REG3)              /* c = dst - src                    */
+        JB(    REG3,   IMM(SZ),TO(cmove_1))       /* copying to too near address => slow */ 
+LABEL(cmove_SZ.init)
         SUB2(  IMM(SZ),DTOP)               /* u -= SZ        */
         /* copy SZ bytes per iteration */
 LABEL(cmove_SZ)
         LOAD(  REG3,   AT(REG1, REG0))     /* c = src[index] */
         STOR(  REG3,   AT(REG2, REG0))     /* dst[index] = c */
         ADD2(  IMM(SZ),REG0)               /* index += SZ    */
-        JBE(   REG0,   DTOP,   TO(cmove_SZ))/* loop if index <= u */
-        ADD2(  IMM(SZ),DTOP)               /* u += SZ        */
-        JUMP(  TO(cmove_1.test))
+        JB(    REG0,   DTOP,   TO(cmove_SZ))/* loop if index < u i.e. still > SZ bytes to copy */
+        /* copy last SZ bytes */
+        LOAD(  REG3,   AT(REG1, DTOP))     /* c = src[u-SZ] */
+        STOR(  REG3,   AT(REG2, DTOP))     /* dst[u-SZ] = c */
+        JUMP(  TO(cmove.done))
         /* copy 1 byte per iteration */
 LABEL(cmove_1)
         LD_ub( REG3_ub,AT(REG1, REG0))     /* c = src[index] */
@@ -44,6 +49,7 @@ LABEL(cmove_1)
         ADD2(  IMM(1), REG0)               /* index++        */
 LABEL(cmove_1.test)
         JB(    REG0,   DTOP,   TO(cmove_1))/* loop if index < u */
+LABEL(cmove.done)
         DPOP(  DTOP)
 FUNC_END(cmove)
 
