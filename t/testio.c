@@ -32,112 +32,6 @@
 #include <assert.h> /* assert()                    */
 #include <string.h> /* memcpy() memmove() memset() */
 
-/* -------------- m4cstr -------------- */
-
-static void m4cstr_print(const char *cstr, FILE *out) {
-    if (cstr) {
-        fprintf(out, "<%lu> [%s]", (unsigned long)strlen(cstr), cstr);
-    } else {
-        fputs("<0> []", out);
-    }
-}
-
-static m4cell_u m4cstr_len(const char *cstr) {
-    return cstr ? strlen(cstr) : 0;
-}
-
-/* -------------- m4ibuf_with_counteddata -------------- */
-
-static m4pair m4ibuf_with_counteddata_read_c(m4counteddata *src, m4char *dst, m4cell_u n) {
-    m4cell_u chunk = src->n < n ? src->n : n;
-    m4pair ret = {{chunk}, chunk ? 0 : m4err_unexpected_eof};
-    memcpy(dst, src->addr, chunk);
-    if ((src->n -= chunk) != 0) {
-        memmove(src->addr + chunk, src->addr, src->n);
-    }
-    return ret;
-}
-
-/* ( io c-addr u -- u' err ) */
-static const m4cell m4ibuf_with_counteddata_read_w[m4test_code_n] = {
-    m4_c_arg_3_, m4_c_call_, CELL(m4ibuf_with_counteddata_read_c), m4_c_ret_2_, m4exit,
-};
-
-static m4token m4ibuf_with_counteddata_read[m4test_code_n];
-
-static void m4ibuf_with_counteddata_init(m4iobuf *in) {
-    /* reuse part of in->addr buffer as m4counteddata */
-    m4counteddata *d = (m4counteddata *)(in->addr + SZ3);
-    d->n = 0;
-    in->handle = (m4cell)d;
-    in->func = m4ibuf_with_counteddata_read;
-    in->max = SZ3; /* reduce capacity to trigger iobuf refill */
-}
-
-/* -------------- m4obuf_with_counteddata -------------- */
-
-static m4pair m4obuf_with_counteddata_write_c(m4counteddata *dst, const m4char *src, m4cell_u n) {
-    m4pair ret = {{n}, 0};
-    memcpy(dst->addr + dst->n, src, n);
-    dst->n += n;
-    return ret;
-}
-
-/* ( io c-addr u -- u' err ) */
-static const m4cell m4obuf_with_counteddata_write_w[m4test_code_n] = {
-    m4_c_arg_3_, m4_c_call_, CELL(m4obuf_with_counteddata_write_c), m4_c_ret_2_, m4exit,
-};
-
-static m4token m4obuf_with_counteddata_write[m4test_code_n];
-
-static void m4obuf_with_counteddata_init(m4iobuf *out) {
-    /* reuse part of out->addr buffer as m4counteddata */
-    m4counteddata *d = (m4counteddata *)(out->addr + SZ);
-    d->n = 0;
-    out->handle = (m4cell)d;
-    out->func = m4obuf_with_counteddata_write;
-    out->max = 1; /* reduce capacity to trigger iobuf flush */
-}
-
-/* -------------- m4iobuf_with_counteddata -------------- */
-
-static m4cell m4iobuf_with_counteddata_equal(const m4iobuf *io, const char *cstr) {
-    const m4counteddata *d = (m4counteddata *)io->handle;
-    const m4cell_u n0 = d->n;
-    const m4cell_u n1 = io->size - io->pos;
-    const m4cell_u n2 = m4cstr_len(cstr);
-    return n0 + n1 == n2 && !memcmp(d->addr, cstr, n0) &&
-           !memcmp(io->addr + io->pos, cstr + n0, n1);
-}
-
-static void m4iobuf_with_counteddata_fill(m4iobuf *io, const char *cstr) {
-    m4counteddata *d = (m4counteddata *)io->handle;
-    m4cell_u n = m4cstr_len(cstr);
-    m4cell_u max = io->max;
-    io->pos = 0;
-    if (max >= n) {
-        memcpy(io->addr, cstr, n);
-        io->size = n;
-        d->n = 0;
-    } else {
-        n -= max;
-        memcpy(io->addr, cstr, max);
-        memcpy(d->addr, cstr + max, n);
-        io->size = max;
-        d->n = n;
-    }
-}
-
-static void m4iobuf_with_counteddata_print(const m4iobuf *io, FILE *out) {
-    const m4counteddata *d = (m4counteddata *)io->handle;
-    const m4cell_u nd = d->n;
-    const m4cell_u nio = io->size - io->pos;
-    fprintf(out, "<%lu> [", (unsigned long)(nd + nio));
-    fwrite(d->addr, 1, nd, out);
-    fwrite(io->addr + io->pos, 1, nio, out);
-    fputc(']', out);
-}
-
 /* -------------- m4testio -------------- */
 
 static const char s_foobarbaz[] = "foobarbaz";
@@ -207,6 +101,114 @@ static m4testio testio_a[] = {
      {" 22", "11"}},
 };
 
+/* -------------- m4cstr -------------- */
+
+static void m4cstr_print(const char *cstr, FILE *out) {
+    if (cstr) {
+        fprintf(out, "<%lu> [%s]", (unsigned long)strlen(cstr), cstr);
+    } else {
+        fputs("<0> []", out);
+    }
+}
+
+static m4cell_u m4cstr_len(const char *cstr) {
+    return cstr ? strlen(cstr) : 0;
+}
+
+/* -------------- m4ibuf_with_counteddata -------------- */
+
+static m4pair m4ibuf_with_counteddata_read_c(m4counteddata *src, m4char *dst, m4cell_u n) {
+    m4cell_u chunk = src->n < n ? src->n : n;
+    m4pair ret = {{chunk}, chunk ? 0 : m4err_unexpected_eof};
+    memcpy(dst, src->addr, chunk);
+    if ((src->n -= chunk) != 0) {
+        memmove(src->addr + chunk, src->addr, src->n);
+    }
+    return ret;
+}
+
+/* ( io c-addr u -- u' err ) */
+static const m4cell m4ibuf_with_counteddata_read_w[m4test_code_n] = {
+    m4_c_arg_3_, m4_c_call_, CELL(m4ibuf_with_counteddata_read_c), m4_c_ret_2_, m4exit,
+};
+
+static m4token m4ibuf_with_counteddata_read[m4test_code_n];
+
+static void m4ibuf_with_counteddata_init(m4iobuf *in) {
+    /* reuse part of in->addr buffer as m4counteddata */
+    m4counteddata *d = (m4counteddata *)(in->addr + SZ2);
+    d->n = 0;
+    in->handle = (m4cell)d;
+    in->func = m4ibuf_with_counteddata_read;
+    in->max = SZ2; /* reduce capacity to trigger iobuf refill */
+}
+
+/* -------------- m4obuf_with_counteddata -------------- */
+
+static m4pair m4obuf_with_counteddata_write_c(m4counteddata *dst, const m4char *src, m4cell_u n) {
+    m4pair ret = {{n}, 0};
+    memcpy(dst->addr + dst->n, src, n);
+    dst->n += n;
+    return ret;
+}
+
+/* ( io c-addr u -- u' err ) */
+static const m4cell m4obuf_with_counteddata_write_w[m4test_code_n] = {
+    m4_c_arg_3_, m4_c_call_, CELL(m4obuf_with_counteddata_write_c), m4_c_ret_2_, m4exit,
+};
+
+static m4token m4obuf_with_counteddata_write[m4test_code_n];
+
+static void m4obuf_with_counteddata_init(m4iobuf *out) {
+    /* reuse part of out->addr buffer as m4counteddata */
+    m4counteddata *d = (m4counteddata *)(out->addr + SZ);
+    d->n = 0;
+    out->handle = (m4cell)d;
+    out->func = m4obuf_with_counteddata_write;
+    out->max = 1; /* reduce capacity to trigger iobuf flush */
+}
+
+/* -------------- m4iobuf_with_counteddata -------------- */
+
+static m4cell m4iobuf_with_counteddata_equal(const m4iobuf *io, const char *cstr) {
+    const m4counteddata *d = (m4counteddata *)io->handle;
+    const m4cell_u n0 = d->n;
+    const m4cell_u n1 = io->size - io->pos;
+    const m4cell_u n2 = m4cstr_len(cstr);
+    return n0 + n1 == n2 && !memcmp(d->addr, cstr, n0) &&
+           !memcmp(io->addr + io->pos, cstr + n0, n1);
+}
+
+static void m4iobuf_with_counteddata_fill(m4iobuf *io, const char *cstr) {
+    m4counteddata *d = (m4counteddata *)io->handle;
+    m4cell_u n = m4cstr_len(cstr);
+    m4cell_u max = io->max;
+    io->pos = 0;
+    if (max >= n) {
+        memcpy(io->addr, cstr, n);
+        io->size = n;
+        d->n = 0;
+    } else {
+        n -= max;
+        memcpy(io->addr, cstr, max);
+        memcpy(d->addr, cstr + max, n);
+        io->size = max;
+        d->n = n;
+    }
+}
+
+static void m4iobuf_with_counteddata_print(const m4iobuf *io, FILE *out) {
+    const m4counteddata *d = (m4counteddata *)io->handle;
+    const m4cell_u nd = d->n;
+    const m4cell_u nio = io->size - io->pos;
+    fprintf(out, "<%lu> [", (unsigned long)(nd + nio));
+    fwrite(d->addr, 1, nd, out);
+    fwrite(io->addr + io->pos, 1, nio, out);
+    fputc(']', out);
+}
+
+/* -------------- m4testio -------------- */
+
 static void m4testio_global_init() {
     {
         m4slice code_in = {(m4cell *)m4ibuf_with_counteddata_read_w, m4test_code_n};
@@ -275,6 +277,7 @@ static void m4testio_failed(const m4th *m, const m4testio *t, FILE *out) {
 }
 
 static void m4testio_bunch(m4th *m, m4testio bunch[], m4cell n, m4testcount *count, FILE *out) {
+    const m4iobuf ibuf = *m->in, obuf = *m->out;
     m4countedcode countedcode = {m4test_code_n, {}};
     m4cell i, fail = 0;
     for (i = 0; i < n; i++) {
@@ -285,6 +288,9 @@ static void m4testio_bunch(m4th *m, m4testio bunch[], m4cell n, m4testcount *cou
     }
     count->failed += fail;
     count->total += n;
+    /* restore m->in and m->out */
+    *m->in = ibuf;
+    *m->out = obuf;
 }
 
 m4cell m4th_testio(m4th *m, FILE *out) {
