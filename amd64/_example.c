@@ -18,7 +18,12 @@
  */
 
 #include "../m4th.h"
+#include <errno.h>  /* errno     */
 #include <stddef.h> /* size_t    */
+
+int *errno_location(void) {
+    return &errno;
+}
 
 void *word_to_xt(m4word *w) {
     return w->data + w->code_off;

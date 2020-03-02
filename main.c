@@ -65,8 +65,8 @@ int main(int argc, char *argv[]) {
         m4dict_print(dict[i], stdout);
     }
 
-    m->in->func = m4word_code(&WORD_SYM(c_fread)).addr;
-    m->in->handle = (m4cell)stdin;
+    m->in->func = m4word_code(&WORD_SYM(c_linenoise)).addr;
+    m->in->handle = (m4cell) "m4th> "; /* prompt */
     m->out->func = m4word_code(&WORD_SYM(c_fwrite)).addr;
     m->out->handle = (m4cell)stdout;
 

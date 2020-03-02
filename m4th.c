@@ -38,6 +38,7 @@
 #endif
 
 #include "c/c_std.c"
+#include "c/c_liblinenoise.c"
 
 enum {
     dstack_n = 256,

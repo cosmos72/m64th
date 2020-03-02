@@ -17,29 +17,29 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "c_std.h"
+#include "c_liblinenoise.h"
 #include "../include/err.h"
+#include "../linenoise/linenoise.h"
 
-#include <errno.h>  /* errno            */
-#include <stdio.h>  /* fread() fwrite() */
+#include <errno.h>  /* errno    */
 
 
-m4pair m4th_c_fread(FILE *in, void *addr, size_t len) {
+m4pair m4th_c_linenoise(const char *prompt, char *addr, size_t len) {
     m4pair ret = {};
-    if (len != 0 && (ret.num = fread(addr, 1, len, in)) == 0) {
-        if (feof(in)) {
-            ret.err = m4err_unexpected_eof;
-        } else {
-            ret.err = m4err_c_errno - errno;
+    int n = linenoise(addr, len, prompt);
+    if (n > 0) {
+        ret.num = n;
+        if (addr[n-1] == '\n') {
+            addr[n-1] = '\0';
+            linenoiseHistoryAdd(addr);
+            addr[n-1] = '\n';
         }
-    }
-    return ret;
-}
-
-m4pair m4th_c_fwrite(FILE *out, const void *addr, size_t len) {
-    m4pair ret = {};
-    if (len != 0 && (ret.num = fwrite(addr, 1, len, out)) == 0) {
+    } else if (n == 0) {
+        ret.err = m4err_unexpected_eof;
+    } else {
         ret.err = m4err_c_errno - errno;
     }
     return ret;
 }
+
+#include "../linenoise/linenoise.c"

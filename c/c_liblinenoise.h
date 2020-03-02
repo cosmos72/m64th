@@ -17,29 +17,12 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "c_std.h"
-#include "../include/err.h"
+#ifndef M4TH_C_LIBLINENOISE_H
+#define M4TH_C_LIBLINENOISE_H
 
-#include <errno.h>  /* errno            */
-#include <stdio.h>  /* fread() fwrite() */
+#include "../m4th.h"
 
+/** wrapper around liblinenoise C function linenoise() */
+m4pair m4th_c_linenoise(const char *prompt, char *addr, size_t len);
 
-m4pair m4th_c_fread(FILE *in, void *addr, size_t len) {
-    m4pair ret = {};
-    if (len != 0 && (ret.num = fread(addr, 1, len, in)) == 0) {
-        if (feof(in)) {
-            ret.err = m4err_unexpected_eof;
-        } else {
-            ret.err = m4err_c_errno - errno;
-        }
-    }
-    return ret;
-}
-
-m4pair m4th_c_fwrite(FILE *out, const void *addr, size_t len) {
-    m4pair ret = {};
-    if (len != 0 && (ret.num = fwrite(addr, 1, len, out)) == 0) {
-        ret.err = m4err_c_errno - errno;
-    }
-    return ret;
-}
+#endif /* M4TH_C_LIBLINENOISE_H */

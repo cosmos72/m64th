@@ -78,6 +78,6 @@ m4cell m4th_repl(m4th *m) {
 
 /** temporary C implementation of '.' */
 void m4th_dot(m4cell n) {
-    fprintf(stdout, "%ld ", n);
+    fprintf(stdout, " %ld\n", n);
     fflush(stdout);
 }

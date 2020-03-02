@@ -15,7 +15,7 @@ OBJS=asm.o impl.o m4th.o
 all: m4th test
 
 clean:
-	rm -f m4th test ./*.gprof ./*.o ./*~ */*.o */*~
+	rm -f m4th test ./*.gprof ./*.o ./*~ */*.o */*~ linenoise/linenoise_example linenoise/history.txt
 
 asm.o:  asm.S  $(wildcard *.mh */*.mh */*.S)
 impl.o: impl.c $(wildcard *.h *.mh include/*.h include/*.mh)
