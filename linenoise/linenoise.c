@@ -799,9 +799,9 @@ static int linenoiseEdit(int stdin_fd, int stdout_fd, char *buf, size_t buflen, 
 
     if (write(l.ofd,prompt,l.plen) == -1) return -1;
     while(l.len < l.buflen) {
-        char c;
         int nread;
         char seq[3];
+        char c;
 
         nread = read(l.ifd,&c,1);
         if (nread <= 0) return l.len;
@@ -810,11 +810,12 @@ static int linenoiseEdit(int stdin_fd, int stdout_fd, char *buf, size_t buflen, 
          * there was an error reading from fd. Otherwise it will return the
          * character that should be handled next. */
         if (c == TAB && completionCallback != NULL) {
-            c = completeLine(&l);
+            int n = completeLine(&l);
             /* Return on errors */
-            if (c < 0) return l.len;
+            if (n < 0) return l.len;
             /* Read next character when 0 */
-            if (c == 0) continue;
+            if (n == 0) continue;
+            c = (char)n;
         }
 
         switch(c) {
