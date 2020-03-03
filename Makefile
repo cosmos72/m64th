@@ -10,7 +10,7 @@ ASFLAGS=$(FLAGS)
 LD=$(CC)
 LDFLAGS=$(FLAGS)
 
-OBJS=asm.o impl.o m4th.o
+OBJS=asm.o cffi.o impl.o m4th.o
 
 all: m4th test
 
@@ -18,8 +18,9 @@ clean:
 	rm -f m4th test ./*.gprof ./*.o ./*~ */*.o */*~ linenoise/linenoise_example linenoise/history.txt
 
 asm.o:  asm.S  $(wildcard *.mh */*.mh */*.S)
+cffi.o: cffi.c $(wildcard *.h *.mh include/*.h include/*.mh c/*.h c/*.c linenoise/*.c)
 impl.o: impl.c $(wildcard *.h *.mh include/*.h include/*.mh)
-m4th.o: m4th.c $(wildcard *.h *.mh include/*.h include/*.mh c/*.h c/*.c)
+m4th.o: m4th.c $(wildcard *.h *.mh include/*.h include/*.mh)
 main.o: main.c $(wildcard *.h *.mh include/*.h include/*.mh)
 test.o: test.c $(wildcard *.h *.mh include/*.h include/*.mh t/*.h t/*.c)
 

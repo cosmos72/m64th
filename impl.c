@@ -78,6 +78,27 @@ m4cell m4th_repl(m4th *m) {
 
 /** temporary C implementation of '.' */
 void m4th_dot(m4cell n) {
-    fprintf(stdout, " %ld\n", n);
+    enum { N = SZ*3+3 }; /* large enough also for initial space and sign */
+    char buf[N];
+    char * addr = buf + N;
+
+    *--addr = '\n'; /* TODO print ' ok\n' from repl instead */
+
+    if (n == 0) {
+        *--addr = '0';
+    } else {
+        m4cell negative = n < 0;
+        m4cell_u u = (m4cell_u)(negative ? -n : n);
+
+        while (u != 0) {
+            *--addr = (u % 10) + '0';
+            u /= 10;
+        }
+        if (negative) {
+            *--addr = '-';
+        }
+    }
+    *--addr = ' ';
+    fwrite(addr, 1, buf + N - addr, stdout);
     fflush(stdout);
 }
