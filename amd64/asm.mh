@@ -202,16 +202,28 @@
 #define JBE(reg, val, label) /* if reg u<= val jump to label */                                    \
     cmp val, reg;                                                                                  \
     jbe label;
+#define JG(reg, val, label) /*  if reg  >  val jump to label */                                    \
+    cmp val, reg;                                                                                  \
+    jg label;
+#define JGE(reg, val, label) /* if reg  >= val jump to label */                                    \
+    cmp val, reg;                                                                                  \
+    jge label;
+#define JL(reg, val, label) /*  if reg  <  val jump to label */                                    \
+    cmp val, reg;                                                                                  \
+    jl label;
+#define JLE(reg, val, label) /* if reg  <= val jump to label */                                    \
+    cmp val, reg;                                                                                  \
+    jle label;
 #define JEQ(reg, val, label) /* if reg  =  val jump to label */                                    \
     cmp val, reg;                                                                                  \
     je label;
-#define JNE(reg, val, label) /* if reg <>  val jump to label */                                    \
+#define JNE(reg, val, label) /* if reg  <> val jump to label */                                    \
     cmp val, reg;                                                                                  \
     jne label;
-#define JNZ(reg, label) /* if reg != 0 jump to label */                                            \
+#define JNZ(reg, label) /*      if reg != 0 jump to label */                                       \
     test reg, reg;                                                                                 \
     jnz label;
-#define JZ(reg, label) /*  if reg == 0 jump to label */                                            \
+#define JZ(reg, label) /*       if reg == 0 jump to label */                                       \
     test reg, reg;                                                                                 \
     jz label;
 #define JUMP(label) /*     unconditional jump to label _______________________________________ */  \

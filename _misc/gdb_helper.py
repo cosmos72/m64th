@@ -75,6 +75,9 @@ class PrintDataStack(gdb.Command):
             shift += 8
         self.number_print(val)
     def number_print(self, val):
+        # reduce to range -2^63 .. (2^63)-1
+        if val >= (1<<63):
+            val -= (1<<64)
         gdb.write("%s " % self.number_to_str(val))
     def number_to_str(self, val):
         if val < -1024 or val > 1024:

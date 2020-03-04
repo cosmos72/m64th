@@ -117,9 +117,9 @@ WORD_START(_break_,    _again_)
 WORD_END(_break_)
 WORD_START(_call_,     _break_)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZ | M4FLAG_INLINE_ALWAYS | M4FLAG_MAY_JUMP)
-    WORD_DSTACK(-1,-1) /* stack effects of called word */
+    WORD_DSTACK(-1,-1) /* stack effect of called word */
     WORD_RSTACK(0,0)
-    WORD_DSTACK(0,0) /* stack effect when calling */
+    WORD_DSTACK(0,0)   /* stack effect when calling */
     WORD_RSTACK(0,1)
     WORD_NATIVE_NONE()
     /* make inliner happy: it skips the final 'exit' of a word's code when inlining */
@@ -127,9 +127,9 @@ WORD_START(_call_,     _break_)
 WORD_END(_call_)
 WORD_START(_call_xt_,  _call_)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZ | M4FLAG_INLINE_ALWAYS | M4FLAG_MAY_JUMP)
-    WORD_DSTACK(-1,-1) /* stack effects of called XT */
+    WORD_DSTACK(-1,-1) /* stack effect of called XT */
     WORD_RSTACK(0,0)
-    WORD_DSTACK(0,0) /* stack effect when calling */
+    WORD_DSTACK(0,0)   /* stack effect when calling */
     WORD_RSTACK(0,1)
     WORD_NATIVE_NONE()
     /* make inliner happy: it skips the final 'exit' of a word's code when inlining */
@@ -138,8 +138,8 @@ WORD_END(_call_xt_)
 WORD_START(_catch_beg_,  _call_xt_)
     WORD_FLAGS(M4FLAG_INLINE_ALWAYS | M4FLAG_MAY_JUMP)
     WORD_DSTACK(-1,-1) /* stack effect of called word */
-    WORD_RSTACK(0,3)
-    WORD_DSTACK(1,0) /* stack effect when jumping */
+    WORD_RSTACK(0,2)   /* one cell consumed by word's 'exit' */
+    WORD_DSTACK(1,0)   /* stack effect when jumping */
     WORD_RSTACK(0,3)
     WORD_NATIVE_NONE()
     WORD_CODE(_catch_beg_, exit)
@@ -147,7 +147,7 @@ WORD_END(_catch_beg_)
 WORD_START(_catch_end_,  _catch_beg_)
     WORD_FLAGS(M4FLAG_INLINE_ALWAYS)
     WORD_DSTACK(-1,-1) /* stack effect of called word */
-    WORD_RSTACK(3,0)
+    WORD_RSTACK(2,0)   /* one cell consumed by word's 'exit' */
     WORD_STACK_NONE()
     WORD_NATIVE_LEN(_catch_end_)
     WORD_CODE(_catch_end_, exit)

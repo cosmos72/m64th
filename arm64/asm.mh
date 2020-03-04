@@ -200,7 +200,7 @@
 
 #define ASM_RET() ret; /* raw/native assembly: return */
 
-#define JA(reg, val, label) /* if reg u>  val jump to label */                                     \
+#define JA(reg, val, label) /*  if reg u>  val jump to label */                                    \
     cmp reg, val;                                                                                  \
     b.hi label;
 #define JAE(reg, val, label) /* if reg u>= val jump to label */                                    \
@@ -212,10 +212,22 @@
 #define JBE(reg, val, label) /* if reg u<= val jump to label */                                    \
     cmp reg, val;                                                                                  \
     b.ls label;
-#define JEQ(reg, val, label) /* if reg =  val jump to label */                                     \
+#define JG(reg, val, label) /*  if reg  >  val jump to label */                                    \
+    cmp reg, val;                                                                                  \
+    b.gt label;
+#define JGE(reg, val, label) /* if reg  >= val jump to label */                                    \
+    cmp reg, val;                                                                                  \
+    b.ge label;
+#define JL(reg, val, label) /*  if reg  <  val jump to label */                                    \
+    cmp reg, val;                                                                                  \
+    b.lt label;
+#define JLE(reg, val, label) /* if reg  <= val jump to label */                                    \
+    cmp reg, val;                                                                                  \
+    b.le label;
+#define JEQ(reg, val, label) /* if reg  =  val jump to label */                                    \
     cmp reg, val;                                                                                  \
     b.eq label;
-#define JNE(reg, val, label) /* if reg <> val jump to label */                                     \
+#define JNE(reg, val, label) /* if reg  <> val jump to label */                                    \
     cmp reg, val;                                                                                  \
     b.ne label;
 #define JNZ(reg, label) /* if reg != 0 jump to label    */ cbnz reg, label;

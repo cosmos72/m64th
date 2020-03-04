@@ -96,15 +96,32 @@ FUNC_START(_catch_beg_)
         NEXT0()
 FUNC_RAWEND(_catch_beg_)
 
+
+
+
 /* second part of 'catch'. invoked both if nothing was thrown, and if an exception was thrown */
 FUNC_START(_catch_end_)
-        /* recompute rstk from m4th.rend and m4th.handler = rend - rstk = depth */
-        LOAD(  RSTK,   AT(M4TH, M4TH_OFF_REND))     /* r = rend        */
+        LOAD(  REG1,   AT(M4TH, M4TH_OFF_EX))       /* exception thrown?         */
+        JNZ(   REG1,   TO(_catch_end_.thrown))
+
+        /* no exception was thrown. just restore m4th.handler and rstk,          */
+        /* without restoring dstk                                                */
+        STOR(  RTOP,   AT(M4TH, M4TH_OFF_HANDLER))  /* m4th.handler = rtop = previous m4th.handler */
+        LOAD(  RTOP,   AT(RSTK, SZ))                /* reload rtop               */
+        ADD2(  IMM(SZ2), RSTK)                      /* adjust rstk               */
+        DPUSH( DTOP)
+        MOVE(  REG1,   DTOP)                        /* push 0 i.e. no exception  */
+        JUMP(  FUNC_NEXT(_catch_end_))
+
+LABEL(_catch_end_.thrown)
+        /* an exception was thrown.                                              */
+        /* recompute rstk from m4th.rend and m4th.handler = rend - rstk = depth  */
+        LOAD(  RSTK,   AT(M4TH, M4TH_OFF_REND))     /* r = rend'                 */
 #ifdef __x86_64__
-        SUB2(  AT(M4TH, M4TH_OFF_HANDLER), RSTK)    /* r = rend - (rend - rstk) = rstk */
+        SUB2(  AT(M4TH, M4TH_OFF_HANDLER), RSTK)    /* r = rend' - (rend - rstk) = rstk' */
 #else
-        LOAD(  REG1,   AT(M4TH, M4TH_OFF_HANDLER))  /* a = rend - rstk */
-        SUB2(  REG1,   RSTK)                        /* r = rend - (rend - rstk) = rstk */
+        LOAD(  REG1,   AT(M4TH, M4TH_OFF_HANDLER))  /* a = rend - rstk                   */
+        SUB2(  REG1,   RSTK)                        /* r = rend' - (rend - rstk) = rstk' */
 #endif
 
         /*
@@ -122,9 +139,10 @@ FUNC_START(_catch_end_)
          * this is tricky because we must also preserve/restore DTOP
          */
         RPOP(  REG1)                                 /* a = dend - dstk = saved depth      */
-        LOAD(  REG2,   AT(M4TH, M4TH_OFF_DEND))      /* b = dend'                          */
+        LOAD(  REG3,   AT(M4TH, M4TH_OFF_DEND))      /* c = dend'                          */
+        MOVE(  REG3,   REG2)                         /* b = dend'                          */
         SUB2(  DSTK,   REG3)                         /* c = dend' - dstk' = current depth' */
-        JBE(   REG1,   REG3,   TO(_catch_end_.dstk)) /* jump if depth <= depth'            */
+        JLE(   REG1,   REG3,   TO(_catch_end_.dstk)) /* jump if depth <= depth'            */
 
         /* depth > depth' i.e. we must invent some values and push them to dstk */
         STOR(  DTOP,   AT(DSTK, -SZ))                /* save current DTOP */
@@ -143,7 +161,7 @@ LABEL(_catch_end_.dstk)
         MOVE(  REG2,   DSTK)                         /* dstk' = a                          */
 #endif
         /* we carefully preserved REG1 and REG3. if depth < depth' we must reload DTOP     */
-        JAE(   REG1,   REG3,   TO(_catch_end_.done)) /* jump if depth >= depth'            */
+        JGE(   REG1,   REG3,   TO(_catch_end_.done)) /* jump if depth >= depth'            */
         LOAD(  DTOP,   AT(DSTK, -SZ))
 
 LABEL(_catch_end_.done)

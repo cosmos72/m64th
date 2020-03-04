@@ -470,7 +470,7 @@ static m4testexecute testexecute_d[] = {
     {"' noop (exec-token)", {m4_exec_token_, m4bye}, {{1, {m4noop}}, {}}, {{}, {}}, {}},
     {"(exec-xt-from-native)",
      {m4_exec_native_, m4bye},
-     {{2, {(m4cell)DXT(three), (m4cell)m4ftest_exec_xt_from_native, m4bye}}, {}},
+     {{2, {DXT(three), (m4cell)m4ftest_exec_xt_from_native, m4bye}}, {}},
      {{1, {3}}, {}},
      {}},
     {"' noop execute", {m4execute, m4bye}, {{1, {DXT(noop)}}, {}}, {{}, {}}, {}},
@@ -484,6 +484,17 @@ static m4testexecute testexecute_d[] = {
      {{1, {-1 /* fixed by m4testexecute_fix() */}}, {}},
      {}},
 #endif
+    /* ----------------------------- catch, throw --------------------------- */
+    {"' noop catch",
+     {m4_catch_beg_, m4_catch_end_, m4bye},
+     {{2, {23, DXT(noop)}}, {}},
+     {{2, {23, 0}}, {}},
+     {}},
+    {"' + catch",
+     {m4_catch_beg_, m4_catch_end_, m4bye},
+     {{4, {13, 15, 17, DXT(plus)}}, {}},
+     {{3, {13, 15 + 17, 0}}, {}},
+     {}},
     /* ----------------------------- [token-gives-cell?] -------------------- */
     {"0 'zero [token-gives-cell?]",
      {CALL(_token_gives_cell_q_), m4bye},
