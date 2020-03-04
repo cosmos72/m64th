@@ -57,11 +57,11 @@ FUNC_START(_ip_to_data_addr_)
 FUNC_END(_ip_to_data_addr_)
 
 
-/* ( -- addr ) get address of m4th.err */
-FUNC_START(m4th_err)
+/* ( -- addr ) get address of m4th.ex */
+FUNC_START(m4th_ex)
         DPUSH( DTOP)
-        ADDI(  M4TH,   M4TH_OFF_ERR,   DTOP)
-FUNC_END(m4th_err)
+        ADDI(  M4TH,   M4TH_OFF_EX,   DTOP)
+FUNC_END(m4th_ex)
 
 
 /* searchorder-i ( u -- addr ) get address of i-th wordlist in search order */

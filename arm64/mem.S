@@ -22,14 +22,14 @@
 /* clang-format off */
 
 /* cmove ( addr-src addr-dst u -- ) 'string' word set */
-FUNC_START(cmove)    
+FUNC_START(cmove)
         DPOP(  REG2)                       /* b = dst        */
         DPOP(  REG1)                       /* a = src        */
         ZERO(  REG0)                       /* @ = index      */
         JB(    DTOP,   IMM(SZ),TO(cmove_1.test))  /* copying < SZ bytes => slow       */
         JAE(   REG1,   REG2,   TO(cmove_SZ.init)) /* copying to lower address => fast */
         SUB3(  REG2,   REG1,   REG3)              /* c = dst - src                    */
-        JB(    REG3,   IMM(SZ),TO(cmove_1))       /* copying to too near address => slow */ 
+        JB(    REG3,   IMM(SZ),TO(cmove_1))       /* copying to too near address => slow */
 LABEL(cmove_SZ.init)
         SUB2(  IMM(SZ),DTOP)               /* u -= SZ        */
         /* copy SZ bytes per iteration */

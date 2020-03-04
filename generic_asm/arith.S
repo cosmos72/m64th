@@ -331,7 +331,7 @@ FUNC_END(over)
 
 
 /* pick ( xu ... x1 x0 u -- xu ... x1 x0 xu ) core-ext */
-FUNC_START(pick)           
+FUNC_START(pick)
         LOAD(  DTOP,   AT(DSTK, DTOP, SZ))
 FUNC_END(pick)
 

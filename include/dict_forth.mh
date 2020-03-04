@@ -126,6 +126,14 @@
     X(5, "again", again)                                                                           \
     X(10, "parse-name", parse_name)
 
+/* ------- forth 2012: exception ---------------------------------------------------------------- */
+#define DICT_TOKENS_FORTH_EXCEPTION(X) /*                                                       */ \
+    X(5, "throw", throw)
+
+#define DICT_WORDS_FORTH_EXCEPTION(X) /*                                                        */ \
+    DICT_TOKENS_FORTH_EXCEPTION(X)    /*                                                        */ \
+    X(5, "catch", catch)
+
 /* ------- forth 2012: tools ext ---------------------------------------------------------------- */
 #define DICT_TOKENS_FORTH_TOOLS_EXT(X) X(3, "bye", bye)
 
@@ -151,6 +159,7 @@
 #define DICT_TOKENS_FORTH(X)                                                                       \
     DICT_TOKENS_FORTH_CORE(X)                                                                      \
     DICT_TOKENS_FORTH_CORE_EXT(X)                                                                  \
+    DICT_TOKENS_FORTH_EXCEPTION(X)                                                                 \
     DICT_TOKENS_FORTH_TOOLS_EXT(X)                                                                 \
     DICT_TOKENS_FORTH_SEARCH_ORDER(X)                                                              \
     DICT_TOKENS_FORTH_STRING(X)
@@ -158,6 +167,7 @@
 #define DICT_WORDS_FORTH(X)                                                                        \
     DICT_WORDS_FORTH_CORE(X)                                                                       \
     DICT_WORDS_FORTH_CORE_EXT(X)                                                                   \
+    DICT_WORDS_FORTH_EXCEPTION(X)                                                                  \
     DICT_WORDS_FORTH_TOOLS_EXT(X)                                                                  \
     DICT_WORDS_FORTH_SEARCH_ORDER(X)                                                               \
     DICT_WORDS_FORTH_STRING(X)

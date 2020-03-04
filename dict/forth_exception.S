@@ -17,29 +17,27 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "../include/asm.mh"
-#include "../include/dict.mh"
-#include "../include/dict_forth.mh"
-
 /* clang-format off */
 
-/* ---------------------------------------------------------------------------------------------- */
-DICT_START(forth)
+DICT_WORDS_FORTH_EXCEPTION(WORDNAME)
 
-DICTNAME(5, "forth", forth)
+WORD_START(catch,      LASTWORD)
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_DSTACK(-1,-1) /* stack effect of called word */
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_CODE(_catch_beg_, _catch_end_, exit)
+WORD_END(catch)
+WORD_START(throw,      catch)
+    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MAY_JUMP)
+    WORD_DSTACK(1,0) /* stack effect when not throwing */
+    WORD_RSTACK(0,0)
+    WORD_DSTACK(1,-1) /* stack effect when throwing */
+    WORD_RSTACK(0,-1)
+    WORD_NATIVE_NONE()
+    WORD_CODE(throw, exit)
+WORD_END(throw)
 
-#include "forth_core.S"
-
-#include "forth_core_ext.S"
-
-#include "forth_exception.S"
-
-#include "forth_tools_ext.S"
-
-#include "forth_search_order.S"
-
-#include "forth_string.S"
-
-
-DICT_BODY(forth, LASTWORD)
-DICT_END(forth)
+#undef LASTWORD
+#define LASTWORD throw

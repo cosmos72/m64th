@@ -148,7 +148,7 @@
 #define M4iobuf_size 628        /* iobuf>size   ( io -- addr ) get address of iobuf size          */
 #undef M4____gap                /*                       */
 #undef M4____gap                /*                       */
-#define M4m4th_err 631          /* (   -- addr ) get address of m4th.err */
+#define M4m4th_ex 631           /* (   -- addr ) get address of m4th.ex */
 #undef M4____gap                /*                       */
 #define M4obuf_write_char 633   /* obuf-write-char   ( io c -- err ) write one char to iobuf */
 #define M4obuf_write_string 634 /* obuf-write-string ( io c -- err ) write string to iobuf   */
@@ -192,18 +192,18 @@
 #define M4_q_while_zero_ 672 /* (?while0) must be followed by IP offset to jump if dtop <> 0 */
 #define M4_again_ 673        /* (again)   must be followed by IP offset to jump   */
 #define M4_break_ 674        /* (break)   must be followed by IP offset to jump   */
-#define M4_call_ 675         /* (call)     must be followed by word. calls it.    */
-#define M4_call_xt_ 676      /* (call-xt)  must be followed by XT. calls it.      */
-#define M4_continue_ 677     /* (continue) must be followed by IP offset to jump  */
-#define M4_else_ 678         /* (else)     must be followed by IP offset to jump  */
-#define M4_exec_native_ 679  /* (exec-native) pop native code address, execute it */
-#define M4_exec_token_ 680   /* pop token, exec it. It must be 'inline' with consume_IP = 0  */
-#define M4_exec_xt_from_native_ 681 /* pop XT and execute it from native code  */
+#define M4_call_ 675         /* (call)    must be followed by word. calls it.     */
+#define M4_call_xt_ 676      /* (call-xt) must be followed by XT. calls it.       */
+#define M4_catch_beg_ 677    /* (catch-beg) first  half of 'catch'                */
+#define M4_catch_end_ 678    /* (catch-end) second half of 'catch'                */
+#define M4_continue_ 679     /* (continue) must be followed by IP offset to jump  */
+#define M4_else_ 680         /* (else)     must be followed by IP offset to jump  */
+#define M4_exec_native_ 681  /* (exec-native) pop native code address, execute it */
+#define M4_exec_token_ 682   /* pop token, exec it. It must be 'inline' with consume_IP = 0  */
+#define M4_exec_xt_from_native_ 683 /* pop XT and execute it from native code  */
 #undef M4____gap                    /*                                         */
-#undef M4____gap                    /*                                         */
-#define M4_if_ 684                  /* (if)  must be followed by IP offset     */
-#define M4_if_zero_ 685             /* (if0) must be followed by IP offset     */
-#undef M4____gap                    /*                                         */
+#define M4_if_ 685                  /* (if)  must be followed by IP offset     */
+#define M4_if_zero_ 686             /* (if0) must be followed by IP offset     */
 #undef M4____gap                    /*                                         */
 #define M4_ip_ 688                  /* (ip)      get vm's current instruction pointer */
 #define M4_ip_to_data_ 689          /* (ip>data) must be 1st instr in word. return word's data */

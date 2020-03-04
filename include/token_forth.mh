@@ -265,8 +265,8 @@
 #undef M4d_u_less /*235*/  /* du<      */
 
 /* 'forth' wordlist: 'exception' word set */
-#undef M4catch /*238*/ /* catch    */
-#undef M4throw /*239*/ /* throw    */
+#undef M4catch /*238*/ /* catch    implemented in forth, no dedicated m4token */
+#define M4throw 239    /* throw    */
 
 /* 'forth' wordlist: 'exception ext' word set */
 /*extends M4abort*/ /*242*/       /* abort    extended definition */

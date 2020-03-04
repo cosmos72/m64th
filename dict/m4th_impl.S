@@ -135,7 +135,24 @@ WORD_START(_call_xt_,  _call_)
     /* make inliner happy: it skips the final 'exit' of a word's code when inlining */
     WORD_CODE(_call_xt_, exit)
 WORD_END(_call_xt_)
-WORD_START(_continue_, _call_xt_)
+WORD_START(_catch_beg_,  _call_xt_)
+    WORD_FLAGS(M4FLAG_INLINE_ALWAYS | M4FLAG_MAY_JUMP)
+    WORD_DSTACK(-1,-1) /* stack effect of called word */
+    WORD_RSTACK(0,3)
+    WORD_DSTACK(1,0) /* stack effect when jumping */
+    WORD_RSTACK(0,3)
+    WORD_NATIVE_NONE()
+    WORD_CODE(_catch_beg_, exit)
+WORD_END(_catch_beg_)
+WORD_START(_catch_end_,  _catch_beg_)
+    WORD_FLAGS(M4FLAG_INLINE_ALWAYS)
+    WORD_DSTACK(-1,-1) /* stack effect of called word */
+    WORD_RSTACK(3,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_LEN(_catch_end_)
+    WORD_CODE(_catch_end_, exit)
+WORD_END(_catch_end_)
+WORD_START(_continue_, _catch_end_)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_JUMP | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_STACK_NONE()  /* stack effect if not jumping */
     WORD_DSTACK(0,0)   /* stack effect if jumping */
@@ -163,7 +180,7 @@ WORD_START(_eval_err_eof_, _else_)
     WORD_CODE(
         /* M4ERR_UNEXPECTED_EOF m4th>err !
          */
-        _lit_, T(M4ERR_UNEXPECTED_EOF), m4th_err, store,
+        _lit_, T(M4ERR_UNEXPECTED_EOF), m4th_ex, store,
         exit
     )
 WORD_END(_eval_err_eof_)
@@ -178,7 +195,7 @@ WORD_START(_eval_err_notfound_, _eval_err_eof_)
         /* M4ERR_UNDEFINED_WORD m4th>err !
          * type space '?' emit cr
          */
-        _lit_, T(M4ERR_UNDEFINED_WORD), m4th_err, store,
+        _lit_, T(M4ERR_UNDEFINED_WORD), m4th_ex, store,
         two_drop,
         /* TODO type, T(' '), emit, T('?'), emit, T('\n'), emit, */
         exit
@@ -238,7 +255,7 @@ WORD_START(_eval_word_, _eval_number_)
             _if_, T(7),
                 drop,
                 _lit_, T(M4ERR_INTERPRETING_COMPILE_ONLY_WORD),
-                m4th_err, store, exit,
+                m4th_ex, store, exit,
             then,
             execute, exit,
         then,

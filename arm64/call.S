@@ -85,7 +85,7 @@ FUNC_START(bye)
          *       executed since m4th_run(). how to preserve it?
          */
         LOAD(  REG1, AT(M4TH, M4TH_OFF_C_REG0)) /* load C stack pointer            */
-        LOAD(  x0,   AT(M4TH, M4TH_OFF_ERR))    /* load return value = m4th.err    */
+        LOAD(  x0,   AT(M4TH, M4TH_OFF_EX))     /* load return value = m4th.ex     */
         MOVE(  REG1, sp)
         ldp    x20,  x21,  AT(sp);              /* load C registers                */
         ldp    x22,  x23,  AT(sp, SZ2);

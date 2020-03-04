@@ -206,13 +206,13 @@ struct m4th_s {        /**< m4th forth interpreter and compiler */
     const void *c_regs[1]; /**< m4th_run() may save C registers here  */
 
     /* USER variables, i.e. thread-local */
-    uint32_t user_size;        /**< # available cells in user variables     */
-    uint32_t user_next;        /**< next available cell in user variables   */
-    m4word *w;                 /**< forth word being compiled               */
-    m4cell base;               /**< current BASE                            */
-    m4cbuf mem;                /**< start, HERE and end of data space       */
-    m4err err;                 /**< error set by ABORT                      */
-    m4func quit;               /**< forth function to execute on quit. usually m4fbye or m4fquit */
+    uint32_t user_size; /**< # available cells in user variables     */
+    uint32_t user_next; /**< next available cell in user variables   */
+    m4word *w;          /**< forth word being compiled               */
+    m4cell base;        /**< current BASE                            */
+    m4cbuf mem;         /**< start, HERE and end of data space       */
+    m4cell ex;          /**< exception set by THROW                  */
+    m4cell handler;     /**< exception handler i.e. rstack.end - rstack.curr saved by 'catch' */
     m4searchorder searchorder; /**< wordlist search order                   */
     m4cell user_var[0];        /**< further user variables                  */
 };

@@ -176,7 +176,7 @@ WORD_START(repl,  r_store)
     WORD_CODE(
         begin,
             _call_, WADDR(interpret),
-            m4th_err, fetch,
+            m4th_ex, fetch,
         _until_, T(-5-SZ/SZt), exit
     )
 WORD_END(repl)

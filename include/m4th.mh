@@ -23,6 +23,7 @@
 #define M4TH_OFF_DSTK SZ          /* offset of m4th->dstack.curr */
 #define M4TH_OFF_DEND SZ2         /* offset of m4th->dstack.end  */
 #define M4TH_OFF_RSTK SZ4         /* offset of m4th->rstack.curr */
+#define M4TH_OFF_REND SZ5         /* offset of m4th->rstack.end  */
 #define M4TH_OFF_IP SZ6           /* offset of m4th->ip          */
 #define M4TH_OFF_FTABLE SZ7       /* offset of m4th->ftable      */
 #define M4TH_OFF_IN SZ8           /* offset of m4th->in          */
@@ -32,7 +33,8 @@
 #define M4TH_OFF_W SZ12           /* offset of m4th->w           */
 #define M4TH_OFF_BASE SZ13        /* offset of m4th->base        */
 #define M4TH_OFF_HERE SZ15        /* offset of m4th->mem.curr = HERE */
-#define M4TH_OFF_ERR SZ17         /* offset of m4th->err         */
+#define M4TH_OFF_EX SZ17          /* offset of m4th->ex          */
+#define M4TH_OFF_HANDLER SZ18     /* offset of m4th->handler     */
 #define M4TH_OFF_SEARCHORDER SZ19 /* offset of m4th->searchorder */
 
 #endif /* M4TH_INCLUDE_M4TH_MH */
