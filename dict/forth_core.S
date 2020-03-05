@@ -142,10 +142,10 @@ WORD_START(find, dup)
     WORD_NATIVE_NONE()
     WORD_CODE(
 #if 0 /* TODO */
-        dup, count, _call_, WADDR(string_to_word),   /* ( c-addr word|0 -1|0|1 ) */
-        _q_if_zero_, T(5), nip, exit,                /* ( c-addr 0             ) */
-        then,                                        /* ( c-addr word -1|1     ) */
-        to_r, nip, word_to_xt, r_from,               /* ( xt     -1|1          ) */
+        dup, count, _call_, WADDR(string_to_name),   /* ( c-addr nt|0 -1|0|1 ) */
+        _q_if_zero_, T(5), nip, exit,                /* ( c-addr 0           ) */
+        then,                                        /* ( c-addr nt -1|1     ) */
+        to_r, nip, name_to, r_from,                  /* ( xt     -1|1        ) */
 #endif /* 0 */
         exit
     )

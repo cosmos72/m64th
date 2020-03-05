@@ -160,16 +160,16 @@
 #define M4user_var 640          /* user-var ( -- addr ) must be followed by index of user var */
 #undef M4____gap                /*                       */
 #undef M4____gap                /*                       */
-#define M4word_to_code 643      /* word>code   ( w  -- addr n  ) get code array from word */
-#define M4word_to_code_n 644    /* word>code>n ( w  -- n       ) get code size from word  */
-#define M4word_to_flags 645     /* word>flags  ( w  -- m4flags ) get m4flags from word    */
-#define M4word_to_name 646      /* word>name   ( w  -- addr n  ) get word name            */
-#define M4word_to_prev 647      /* word>prev   ( w  -- w'|0    ) get previous word        */
-#define M4word_to_xt 648        /* word>xt     ( w  -- XT      ) get XT == code address from word */
+#define M4name_to_code 643      /* name>code   ( nt -- addr u  ) get code array from name */
+#define M4name_to_code_n 644    /* name>code>n ( nt -- u       ) get code size from name  */
+#define M4name_to_flags 645     /* name>flags  ( nt -- m4flags ) get m4flags from name    */
+#undef M4____gap                /* name>string already defined in forth 'tools ext' word set */
+#define M4name_to_prev 647      /* name>prev   ( nt -- nt'|0   ) get previous name        */
+#define M4name_to 648           /* name>       ( nt -- XT      ) get XT == code address from name */
 #undef M4____gap                /*                       */
-#define M4wordlist_last 650     /* wordlist-last ( wid -- w ) get last word in a wordlist */
+#define M4wordlist_last 650     /* wordlist-last ( wid -- nt ) get last name in a wordlist */
 #undef M4____gap                /*                       */
-#define M4xt_to_word 652        /* xt>word  ( XT -- w ) get word from XT */
+#define M4to_name 652           /* >name       ( XT -- nt ) get name from XT */
 #undef M4____gap                /*                       */
 #undef M4____gap                /*                       */
 #undef M4____gap                /*                       */

@@ -170,7 +170,48 @@ WORD_START(_else_, _continue_)
     WORD_NATIVE_NONE()
     WORD_CODE(_call_, WADDR(else), exit)
 WORD_END(_else_)
-WORD_START(_eval_number_, _else_)
+/* ( nt -1|1 -- ) interpret or compile name. dtop == -1 if name is immediate */
+WORD_START(_eval_name_, _else_)
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_DSTACK(-1,-1) /* stack effect when not jumping */
+    WORD_RSTACK(-1,-1)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_CODE(
+        /* over name> -rot                              ( xt nt 1|-1               )
+         * state @                                      ( xt nt -1|1 compiling|0   )
+         * 0= if                   (   interpreting   ) ( xt nt -1|1               )
+         *    drop name>flags                           ( xt m4flags               )
+         *    M4FLAG_COMPILE_ONLY and                   ( xt flag                  )
+         *    if                                        ( xt                       )
+         *       (throw-compile-only-xt)                (                          )
+         *    then                                      ( xt                       )
+         *    execute exit                              ( ??                       )
+         * then                    (    compiling     ) ( xt nt -1|1               )
+         * nip 1+                                       ( xt 0|2                   )
+         * if                                           ( xt                       )
+         *    execute exit                              ( ??                       )
+         * then                                         ( xt                       )
+         * compile, exit                                (                          )
+         */
+        over, name_to, minus_rot,
+        state, fetch,
+        _if_zero_, T(12+SZ/SZt),
+            drop, name_to_flags,
+            _lit_, T(M4FLAG_COMPILE_ONLY), and,
+            _if_, T(2+SZ/SZt),
+                _call_, WADDR(_throw_compile_only_xt_),
+            then,
+            execute, exit,
+        then,
+        nip, one_plus,
+        _if_, T(3),
+            execute, exit,
+        then,
+        _call_, WADDR(compile_comma), exit
+    )
+WORD_END(_eval_name_)
+WORD_START(_eval_number_, _eval_name_)
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_DSTACK(1,0) /* stack effect when not jumping */
     WORD_RSTACK(0,0)
@@ -188,48 +229,7 @@ WORD_START(_eval_number_, _else_)
         then, exit
     )
 WORD_END(_eval_number_)
-/* ( w -1|1 -- ) interpret or compile word */
-WORD_START(_eval_word_, _eval_number_)
-    WORD_FLAGS(M4FLAG_INLINE)
-    WORD_DSTACK(-1,-1) /* stack effect when not jumping */
-    WORD_RSTACK(-1,-1)
-    WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
-    WORD_CODE(
-        /* over word>xt -rot                            ( xt w 1|-1                )
-         * state @                                      ( xt w -1|1 compiling|0    )
-         * 0= if                   (   interpreting   ) ( xt w -1|1                )
-         *    drop word>flags                           ( xt m4flags               )
-         *    M4FLAG_COMPILE_ONLY and                   ( xt flag                  )
-         *    if                                        ( xt                       )
-         *       (throw-compile-only-xt)                (                          )
-         *    then                                      ( xt                       )
-         *    execute exit                              ( ??                       )
-         * then                    (    compiling     ) ( xt w -1|1                )
-         * nip 1+                                       ( xt 0|2                   )
-         * if                                           ( xt                       )
-         *    execute exit                              ( ??                       )
-         * then                                         ( xt                       )
-         * compile, exit                                (                          )
-         */
-        over, word_to_xt, minus_rot,
-        state, fetch,
-        _if_zero_, T(12+SZ/SZt),
-            drop, word_to_flags,
-            _lit_, T(M4FLAG_COMPILE_ONLY), and,
-            _if_, T(2+SZ/SZt),
-                _call_, WADDR(_throw_compile_only_xt_),
-            then,
-            execute, exit,
-        then,
-        nip, one_plus,
-        _if_, T(3),
-            execute, exit,
-        then,
-        _call_, WADDR(compile_comma), exit
-    )
-WORD_END(_eval_word_)
-WORD_START(_exec_native_, _eval_word_)
+WORD_START(_exec_native_, _eval_number_)
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_DSTACK(-1,-1)
     WORD_RSTACK(0,0)
@@ -454,7 +454,7 @@ WORD_START(_inline_, _compile_unresolved_jump_)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_CODE(
-        word_to_code, one_minus, /* ( code n-1 )  skip 'exit' at the end of XT */
+        name_to_code, one_minus, /* ( code n-1 )  skip 'exit' at the end of XT */
         dup, zero, less_equal, _if_, T(2),
             exit,              /* inline length is <= 0 */
         then,                  /* ( code n-1 )   */
@@ -502,7 +502,7 @@ WORD_START(_resolve_jump_here_, _resolve_begin_repeat_)
     WORD_CODE(
         drop, dup, negate, _num_compiled_, plus, /* ( #tokens IP-offset )    */
         swap, one_minus, tokens,           /* ( IP-offset toffset ) toffset of token after (if) or (else) */
-        _word_, word_to_xt, plus,          /* ( IP-offset taddr   ) taddr   of token after (if) or (else) */
+        _word_, name_to, plus,          /* ( IP-offset taddr   ) taddr   of token after (if) or (else) */
         token_store, exit
     )
 WORD_END(_resolve_jump_here_)
@@ -545,10 +545,10 @@ WORD_START(_throw_compile_only_xt_, _token_gives_cell_q_)
     WORD_RSTACK(0,0)
     WORD_NATIVE_NONE()
     WORD_CODE(
-        /* xt>word word>name type space '!' emit cr
+        /* >name name>string type space '!' emit cr
          * M4ERR_INTERPRETING_COMPILE_ONLY_WORD throw
          */
-        xt_to_word, word_to_name,
+        to_name, name_to_string,
         type, bl, emit, _lit_, T('?'), emit, _lit_, T('\n'), emit,
         _lit_, T(M4ERR_INTERPRETING_COMPILE_ONLY_WORD), throw,
         exit

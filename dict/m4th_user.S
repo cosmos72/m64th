@@ -133,9 +133,9 @@ WORD_START(interpret,  if_zero)
          *    2drop M4ERR_UNEXPECTED_EOF throw          (                          )
          * then                                         ( c-addr u                 )
          * 2dup                                         ( c-addr u c-addr u        )
-         * string>word                                  ( c-addr u w|0 -1|0|1      )
-         * ?if                      ( is a word )       ( c-addr u w   -1|1        )
-         *    2nip (eval-word) exit                     (                          )
+         * string>name                                  ( c-addr u nt|0 -1|0|1     )
+         * ?if                      ( is a word )       ( c-addr u nt  -1|1        )
+         *    2nip (eval-name) exit                     (                          )
          * then                                         ( c-addr u 0 0             )
          * 2drop 2dup string>number                     ( c-addr u x t|f           )
          * if                       ( is a number )     ( c-addr u x               )
@@ -148,9 +148,9 @@ WORD_START(interpret,  if_zero)
             two_drop, _lit_, T(M4ERR_UNEXPECTED_EOF), throw,
         then,
         two_dup,
-        _call_, WADDR(string_to_word),
+        _call_, WADDR(string_to_name),
         _q_if_, T(4+SZ/SZt),
-            two_nip, _call_, WADDR(_eval_word_), exit,
+            two_nip, _call_, WADDR(_eval_name_), exit,
         then,
         two_drop, two_dup, _call_, WADDR(string_to_number),
         _if_, T(5+SZ/SZt),

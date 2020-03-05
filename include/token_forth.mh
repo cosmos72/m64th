@@ -464,7 +464,7 @@
 #undef M4n_to_r /*434*/            /* n>r      */
 #undef M4name_to_compile /*435*/   /* name>compile */
 #undef M4name_to_interpret /*436*/ /* name>interpret   */
-#undef M4name_to_string /*437*/    /* name>string  */
+#define M4name_to_string 437       /* name>string ( nt -- addr u  ) convert name to string */
 #undef M4nr_from /*438*/           /* nr>      */
 /*extends M4state*/ /*439*/        /* state    */
 #undef M4synonym /*440*/           /* synonym  */

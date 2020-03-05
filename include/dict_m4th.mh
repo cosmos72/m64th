@@ -167,15 +167,15 @@
     /*                  searchorder-i ( u -- addr ) get address of searchorder i-th element  */    \
     X(13, "searchorder-i", searchorder_i)                                                          \
     X(13, "searchorder-n", searchorder_n) /* (    -- addr    ) get address of searchorder count */ \
-    X(8, "user-var", user_var)      /* ( -- addr ) must be followed by index of user variable */   \
-    X(9, "word>code", word_to_code) /* ( w  -- taddr n ) get code array from word         */       \
-    X(11, "word>code>n", word_to_code_n)  /* ( w  -- n       ) get code size from word          */ \
-    X(10, "word>flags", word_to_flags)    /* ( w  -- m4flags ) get m4flags of word              */ \
-    X(9, "word>name", word_to_name)       /* ( w  -- addr n  ) get name of word                 */ \
-    X(9, "word>prev", word_to_prev)       /* ( w  -- w'|0    ) get previous word in wordlist    */ \
-    X(7, "word>xt", word_to_xt)           /* ( w  -- XT      ) get XT == code address from word */ \
-    X(13, "wordlist-last", wordlist_last) /* ( wid -- w      ) get last word in wordlist        */ \
-    X(7, "xt>word", xt_to_word)           /* ( XT -- w       ) convert XT to word               */
+    X(8, "user-var", user_var)      /*   ( -- addr ) must be followed by index of user variable */ \
+    X(9, "name>code", name_to_code) /*       ( nt  -- taddr n ) get code array from name        */ \
+    X(11, "name>code>n", name_to_code_n)  /* ( nt -- u       ) get code size from name          */ \
+    X(10, "name>flags", name_to_flags)    /* ( nt -- m4flags ) get m4flags of name              */ \
+    X(11, "name>string", name_to_string)  /* ( nt -- addr n  ) convert name to string           */ \
+    X(9, "name>prev", name_to_prev)       /* ( nt -- nt'|0   ) get previous word in wordlist    */ \
+    X(5, "name>", name_to)                /* ( nt -- XT      ) get XT == code address from name */ \
+    X(13, "wordlist-last", wordlist_last) /* ( wid -- nt     ) get last name in wordlist        */ \
+    X(7, ">name", to_name)                /* ( XT  -- nt     ) convert XT to name               */
 
 #define DICT_WORDS_M4TH_CORE(X)                                                                    \
     DICT_TOKENS_M4TH_CORE(X)                                                                       \
@@ -195,14 +195,14 @@
     /* ( io c-addr u -- c-addr' u' err  ) send string to iobuf I/O func, ignoring current data. */ \
     /* return string still to write - non-empty only on I/O error                               */ \
     X(15, "(obuf-overflow)", _obuf_overflow_)                                                      \
-    X(11, "string>word", string_to_word) /* ( c-addr u -- w|0 -1|0|1 ) find name in search order*/ \
+    X(11, "string>name", string_to_name) /*( c-addr u -- nt|0 -1|0|1 ) find name in search order*/ \
     X(6, "/token", div_token)            /* alias of _SZt_div,    no dedicated m4token */          \
     X(8, "to-token", to_token)           /* alias of to_SZtu,     no dedicated m4token */          \
     X(6, "token!", token_store)          /* alias of _SZtu_store, no dedicated m4token */          \
     X(6, "token@", token_fetch)          /* alias of _SZtu_fetch, no dedicated m4token */          \
     X(6, "token+", token_plus)           /* alias of _SZt_plus,   no dedicated m4token */          \
     X(6, "tokens", tokens)               /* alias of _SZt_times,  no dedicated m4token */          \
-    X(12, "word-inline?", word_inline_query) /* ( w -- flag ) calls to word should be inlined? */  \
+    X(12, "name-inline?", name_inline_query) /* ( nt -- flag ) calls to name should be inlined? */ \
     X(13, "wordlist-find", wordlist_find)    /* ( c-addr u wid -- w|0 -1|0|1 ) search in wordlist */
 
 /* ------- m4th-impl ---------------------------------------------------------------------------- */
@@ -261,8 +261,8 @@
 
 #define DICT_WORDS_M4TH_IMPL(X)                                                                    \
     DICT_TOKENS_M4TH_IMPL(X)                                                                       \
+    X(11, "(eval-name)", _eval_name_)                                                              \
     X(13, "(eval-number)", _eval_number_)                                                          \
-    X(11, "(eval-word)", _eval_word_)                                                              \
     X(23, "[any-token-gives-cell?]", _any_token_gives_cell_q_)                                     \
     X(8, "[inline]", _inline_)      /* ( w -- ) inline a call to w into word being compiled */     \
     X(10, "[optimize]", _optimize_) /* optimize word being compiled  */                            \

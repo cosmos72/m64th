@@ -382,10 +382,10 @@ WORD(searchorder_i,    out_to_obuf,    DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
 /* searchorder-n ( -- addr ) get address of searchorder count */
 WORD(searchorder_n,    searchorder_i,  DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 /*
- * string>word ( c-addr u -- w|0 -1|0|1 ) find word name in current search order.
- * return 1 if word is immediate, else -1
+ * string>name ( c-addr u -- nt|0 -1|0|1 ) find name in current search order.
+ * return 1 if name is immediate, else -1
  */
-WORD_START(string_to_word, searchorder_n)
+WORD_START(string_to_name, searchorder_n)
     WORD_FLAGS(0)
     WORD_DSTACK(2,2)
     WORD_RSTACK(0,0)
@@ -414,8 +414,8 @@ WORD_START(string_to_word, searchorder_n)
         _loop_, T(-14-SZ/SZt),
         two_drop, zero, zero, exit
     )
-WORD_END(string_to_word)
-WORD(to_token,         string_to_word, DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD_END(string_to_name)
+WORD(to_token,         string_to_name, DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(token_plus,       to_token,       DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(tokens,           token_plus,     DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(token_store,      tokens,         DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE)
@@ -428,75 +428,75 @@ WORD_START(user_var,   token_fetch)
     WORD_NATIVE_NONE()
     WORD_CODE(user_var, T(-1), exit)
 WORD_END(user_var)
-WORD_START(word_inline_query,  user_var)
+WORD_START(name_inline_query,  user_var)
     WORD_FLAGS(M4FLAG_MEM_FETCH) /* multiple exits => cannot inline */
     WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_CODE(
-        dup, word_to_flags,
+        dup, name_to_flags,
         dup, _lit2s_, SHORT(M4FLAG_INLINE_ALWAYS), and, _if_, T(4),
             two_drop, true, exit,
         then,
         _lit2s_, SHORT(M4FLAG_INLINE), and, _if_zero_, T(4),
             drop, false, exit,
         then,
-        word_to_code_n, eight, less, exit
+        name_to_code_n, eight, less, exit
     )
-WORD_END(word_inline_query)
-WORD(word_to_code,  word_inline_query, DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD(word_to_code_n,   word_to_code,   DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD(word_to_flags,    word_to_code_n, DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD(word_to_name,     word_to_flags,  DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD(word_to_prev,     word_to_name,   DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD(word_to_xt,       word_to_prev,   DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD_END(name_inline_query)
+WORD(name_to_code,  name_inline_query, DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(name_to_code_n,   name_to_code,   DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(name_to_flags,    name_to_code_n, DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(name_to_string,     name_to_flags,  DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(name_to_prev,     name_to_string,   DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(name_to,       name_to_prev,   DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 /**
  * wordlist-find ( c-addr u wid -- w|0 -1|0|1 ) search word name in wordlist.
  * return 0 if not found. return 1 if word is immediate, otherwise return -1
  */
-WORD_START(wordlist_find, word_to_xt)
+WORD_START(wordlist_find, name_to)
     WORD_FLAGS(M4FLAG_MEM_FETCH) /* multiple exits => cannot inline */
     WORD_DSTACK(3,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_CODE(
-        /* wordlist-last                                       ( addr u w          )
+        /* wordlist-last                                       ( addr u nt         )
          * begin
          *    ?if0                                             ( addr u 0          )
          *       nip nip 0 exit                                ( 0 0               )
-         *    then                                             ( addr u w          )
-         *    dup >r word>name                                 ( addr u addr' u'   ) (R: w  )
+         *    then                                             ( addr u nt         )
+         *    dup >r name>string                               ( addr u addr' u'   ) (R: w  )
          *    rot tuck                                         ( addr addr' u u' u ) (R: w  )
          *    = if                                             ( addr addr' u      ) (R: w  )
          *       string-ci<> while                             ( addr addr' u      ) (R: w  )
          *    then                                             ( addr addr' u      ) (R: w  )
-         *    nip r> word>prev                                 ( addr u     w'     )
+         *    nip r> name>prev                                 ( addr u     nt'    )
          * repeat
-         * 2drop drop r> dup                                   ( w w               )
-         * word>flags M4FLAG_IMMEDIATE and 0=                  ( w t|f             )
-         * 2* 1+ exit                                          ( w -1|1            )
+         * 2drop drop r> dup                                   ( nt nt             )
+         * name>flags M4FLAG_IMMEDIATE and 0=                  ( nt t|f            )
+         * 2* 1+ exit                                          ( nt -1|1           )
          */
         wordlist_last,
         begin,
             _q_if_zero_, T(5),
                 nip, nip, zero, exit,
             then,
-            dup, to_r, word_to_name,
+            dup, to_r, name_to_string,
             rot, tuck,
             equal, _if_, T(4),
                 string_ci_equal, _while_zero_, T(6),
             then,
-            nip, r_from, word_to_prev,
+            nip, r_from, name_to_prev,
         _repeat_, T(-24),
         two_drop, drop, r_from, dup,
-        word_to_flags, _lit_, T(M4FLAG_IMMEDIATE), and, zero_equal,
+        name_to_flags, _lit_, T(M4FLAG_IMMEDIATE), and, zero_equal,
         two_times, one_plus, exit
     )
 WORD_END(wordlist_find)
 WORD(wordlist_last,  wordlist_find,    DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD(xt_to_word,     wordlist_last,    DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(to_name,     wordlist_last,    DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 
-DICT_BODY(m4th_core, xt_to_word)
+DICT_BODY(m4th_core, to_name)
 DICT_END(m4th_core)

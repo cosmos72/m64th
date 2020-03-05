@@ -61,12 +61,12 @@ WORD_START(compile_comma, again)
     WORD_NATIVE_NONE()
     WORD_CODE(
         _compile_init_,
-        dup, xt_to_word, _call_, WADDR(word_inline_query),
+        dup, to_name, _call_, WADDR(name_inline_query),
         _if_zero_, T(5),
             _compile_lit_, _call_xt_,  /* compile (call-xt) */
             _compile_xt_, exit,        /* compile XT        */
         then,
-        xt_to_word, _call_, WADDR(_inline_), exit
+        to_name, _call_, WADDR(_inline_), exit
    )
 WORD_END(compile_comma)
 WORD(false,        compile_comma,  DSTACK(0,1), RSTACK(0,0), WORD_PURE)

@@ -24,18 +24,18 @@
 /* clang-format off */
 
 
-FUNC_START(word_to_prev) /* ( w -- w'|0 ) */
-        LD_uw( REG1_uw,    AT(DTOP, WORD_OFF_PREV_OFF)) /* a = w.prev_off  */
-        SUB2(  REG1,       DTOP)               /* dtop = w'               */
+FUNC_START(name_to_prev) /* ( nt -- nt'|0 ) */
+        LD_uw( REG1_uw,    AT(DTOP, WORD_OFF_PREV_OFF)) /* a = nt.prev_off  */
+        SUB2(  REG1,       DTOP)               /* dtop = nt'               */
         cmp    REG1,       IMM(0);
-        csel   DTOP,       DTOP,   xzr,    ne; /* dtop = w'|0             */
-FUNC_END(word_to_prev)
+        csel   DTOP,       DTOP,   xzr,    ne; /* dtop = nt'|0             */
+FUNC_END(name_to_prev)
 
 
-FUNC_START(wordlist_last) /* ( l -- w ) */
-        LOAD(  DTOP,       AT(DTOP, WORDLIST_OFF_DICT))     /* dtop = dict            */
+FUNC_START(wordlist_last) /* ( wid -- nt ) */
+        LOAD(  DTOP,       AT(DTOP, WORDLIST_OFF_DICT))     /* dtop = wid.dict        */
         LOAD(  REG1_uw,    AT(DTOP, DICT_OFF_LASTWORD_OFF)) /* a = dict.last_word_off */
-        SUB2(  REG1,       DTOP)               /* dtop = w                */
+        SUB2(  REG1,       DTOP)               /* dtop = nt               */
         cmp    REG1,       IMM(0);
-        csel   DTOP,       DTOP,   xzr,    ne; /* dtop = w|0             */
+        csel   DTOP,       DTOP,   xzr,    ne; /* dtop = nt|0             */
 FUNC_END(wordlist_last)

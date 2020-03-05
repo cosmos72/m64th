@@ -73,12 +73,12 @@ FUNC_START(searchorder_n)
 FUNC_END(searchorder_n)
 
 
-FUNC_START(word_to_code) /* ( w -- taddr n ) */
+FUNC_START(name_to_code) /* ( w -- taddr n ) */
         LD_uw( REG1_uw,    AT(DTOP, WORD_OFF_CODE_OFF)) /* REG1 = w.code_off  */
         ADD2(  DTOP,       REG1)                        /* REG1 = w.code      */
         LD_uh( DTOP_uh,    AT(DTOP, WORD_OFF_CODE_N))   /* DTOP = w.code_n    */
         DPUSH( REG1)                                    /*  d2  = w.code      */
-FUNC_END(word_to_code)
+FUNC_END(name_to_code)
 
 
 /* user-var ( -- addr ) must be followed by index. get address of i-th user variable  */
@@ -95,38 +95,38 @@ FUNC_START(user_var)
 FUNC_RAWEND(user_var)
 
 
-FUNC_START(word_to_code_n) /* ( w -- n ) */
+FUNC_START(name_to_code_n) /* ( w -- n ) */
         LD_uh( DTOP_uh,    AT(DTOP, WORD_OFF_CODE_N)) /* DTOP = w.code_n    */
-FUNC_END(word_to_code_n)
+FUNC_END(name_to_code_n)
 
 
-FUNC_START(word_to_flags) /* ( w -- m4flags ) */
+FUNC_START(name_to_flags) /* ( w -- m4flags ) */
         LD_uh( DTOP_uh,    AT(DTOP, WORD_OFF_FLAGS)) /* dtop = m4flags    */
-FUNC_END(word_to_flags)
+FUNC_END(name_to_flags)
 
 
-FUNC_START(word_to_name) /* ( w -- addr n ) */
+FUNC_START(name_to_string) /* ( w -- addr n ) */
         LD_uh( REG1_uh,    AT(DTOP, WORD_OFF_NAME_OFF)) /* a = w.name_off  */
-        JNZ(   REG1,       TO(word_to_name.body))
+        JNZ(   REG1,       TO(name_to_string.body))
         ZERO(  DTOPw)                  /* dtop = 0               */
-        JUMP(              TO(word_to_name.push_reg1))
-LABEL(word_to_name.body)
+        JUMP(              TO(name_to_string.push_reg1))
+LABEL(name_to_string.body)
         SUB2(  REG1,       DTOP)       /* dtop = m4countedstring* */
         ADDI(  DTOP,       1,  REG1)   /* a = addr                */
         LD_ub( DTOP_ub,    AT(DTOP))   /* dtop = len              */
-LABEL(word_to_name.push_reg1)
+LABEL(name_to_string.push_reg1)
         DPUSH( REG1)                   /* d1 = a = addr           */
-FUNC_END(word_to_name)
+FUNC_END(name_to_string)
 
 
-FUNC_START(word_to_xt) /* ( w -- xt ) */
+FUNC_START(name_to) /* ( w -- xt ) */
         LD_uw( REG1_uw,    AT(DTOP, WORD_OFF_CODE_OFF)) /* a = w.code_off     */
         ADD2(  REG1,       DTOP)                        /* dtop = w.code      */
-FUNC_END(word_to_xt)
+FUNC_END(name_to)
 
 
-FUNC_START(xt_to_word) /* ( XT -- w ) */
+FUNC_START(to_name) /* ( XT -- w ) */
         LD_uw( REG1_uw,    AT(DTOP, XT_OFF_DATA_OFF)) /* REG1 = xt.data_off */
         SUB2(  REG1,       DTOP)                      /* DTOP = w.data      */
         SUB2(  IMM(WORD_OFF_XT), DTOP)                /* DTOP = w           */
-FUNC_END(xt_to_word)
+FUNC_END(to_name)
