@@ -74,6 +74,12 @@ FUNC_START(iobuf_free_data)
 FUNC_END(iobuf_free_data)
 
 
+/* iobuf>err ( io -- addr ) get address of iobuf.err */
+FUNC_START(iobuf_err)
+        ADD2(  IMM(IOBUF_OFF_ERR), DTOP)
+FUNC_END(iobuf_err)
+
+
 /* iobuf>func ( io -- addr ) get address of iobuf I/O function  */
 FUNC_START(iobuf_func)
         ADD2(  IMM(IOBUF_OFF_FUNC), DTOP)

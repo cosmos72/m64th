@@ -496,7 +496,7 @@ void m4slice_copy_to_code(const m4slice src, m4code *dst) {
 static m4iobuf *m4iobuf_new(m4cell_u capacity) {
     m4iobuf *p = (m4iobuf *)m4mem_allocate(sizeof(m4iobuf) + capacity * sizeof(m4char));
     p->func = (m4xt)WORD_SYM(always_eof).data;
-    p->handle = p->pos = p->size = 0;
+    p->handle = p->err = p->pos = p->size = 0;
     p->max = capacity;
     return p;
 }
@@ -771,8 +771,8 @@ void m4th_clear(m4th *m) {
     m->w = NULL;
     m->ip = NULL;
     memset(m->c_regs, '\0', sizeof(m->c_regs));
-    m->in->pos = m->in->size = 0;
-    m->out->pos = m->out->size = 0;
+    m->in->err = m->in->pos = m->in->size = 0;
+    m->out->err = m->out->pos = m->out->size = 0;
     m->mem.curr = m->mem.start;
     m->ex = 0;
 }
