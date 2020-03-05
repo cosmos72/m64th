@@ -135,7 +135,9 @@
     X(5, "catch", catch)
 
 /* ------- forth 2012: tools ext ---------------------------------------------------------------- */
-#define DICT_TOKENS_FORTH_TOOLS_EXT(X) X(3, "bye", bye)
+#define DICT_TOKENS_FORTH_TOOLS_EXT(X)                                                             \
+    X(3, "bye", bye)                                                                               \
+    X(11, "name>string", name_to_string) /* ( nt -- addr n  ) convert name to string           */
 
 #define DICT_WORDS_FORTH_TOOLS_EXT(X) DICT_TOKENS_FORTH_TOOLS_EXT(X)
 

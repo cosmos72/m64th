@@ -33,7 +33,7 @@ WORD_START(search_wordlist, LASTWORD)
         _q_if_zero_, T(2),                             /* ( 0   0            ) */
             nip, exit,                                 /* ( 0                ) */
         then,                                          /* ( w   -1|1         ) */
-        swap, name_to, swap, exit                   /* ( xt  -1|1         ) */
+        swap, name_to_xt, swap, exit                   /* ( xt  -1|1         ) */
     )
 WORD_END(search_wordlist)
 

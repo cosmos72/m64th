@@ -194,7 +194,7 @@ WORD_START(_eval_name_, _else_)
          * then                                         ( xt                       )
          * compile, exit                                (                          )
          */
-        over, name_to, minus_rot,
+        over, name_to_xt, minus_rot,
         state, fetch,
         _if_zero_, T(12+SZ/SZt),
             drop, name_to_flags,
@@ -502,7 +502,7 @@ WORD_START(_resolve_jump_here_, _resolve_begin_repeat_)
     WORD_CODE(
         drop, dup, negate, _num_compiled_, plus, /* ( #tokens IP-offset )    */
         swap, one_minus, tokens,           /* ( IP-offset toffset ) toffset of token after (if) or (else) */
-        _word_, name_to, plus,          /* ( IP-offset taddr   ) taddr   of token after (if) or (else) */
+        _word_, name_to_xt, plus,          /* ( IP-offset taddr   ) taddr   of token after (if) or (else) */
         token_store, exit
     )
 WORD_END(_resolve_jump_here_)
@@ -548,7 +548,7 @@ WORD_START(_throw_compile_only_xt_, _token_gives_cell_q_)
         /* >name name>string type space '!' emit cr
          * M4ERR_INTERPRETING_COMPILE_ONLY_WORD throw
          */
-        to_name, name_to_string,
+        xt_to_name, name_to_string,
         type, bl, emit, _lit_, T('?'), emit, _lit_, T('\n'), emit,
         _lit_, T(M4ERR_INTERPRETING_COMPILE_ONLY_WORD), throw,
         exit

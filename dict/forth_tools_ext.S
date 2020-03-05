@@ -30,6 +30,7 @@ WORD_START(bye, LASTWORD)
     WORD_NATIVE_NONE()
     WORD_CODE(bye, exit) /* exit is reachable by subsequent m4th_run() */
 WORD_END(bye)
+WORD(name_to_string,     bye,          DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 
 #undef LASTWORD
-#define LASTWORD bye
+#define LASTWORD name_to_string

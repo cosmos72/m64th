@@ -165,11 +165,11 @@
 #define M4name_to_flags 645     /* name>flags  ( nt -- m4flags ) get m4flags from name    */
 #undef M4____gap                /* name>string already defined in forth 'tools ext' word set */
 #define M4name_to_prev 647      /* name>prev   ( nt -- nt'|0   ) get previous name        */
-#define M4name_to 648           /* name>       ( nt -- XT      ) get XT == code address from name */
+#define M4name_to_xt 648        /* name>xt     ( nt -- XT      ) get XT == code address from name */
 #undef M4____gap                /*                       */
 #define M4wordlist_last 650     /* wordlist-last ( wid -- nt ) get last name in a wordlist */
 #undef M4____gap                /*                       */
-#define M4to_name 652           /* >name       ( XT -- nt ) get name from XT */
+#define M4xt_to_name 652        /* xt>name       ( XT -- nt ) get name from XT */
 #undef M4____gap                /*                       */
 #undef M4____gap                /*                       */
 #undef M4____gap                /*                       */

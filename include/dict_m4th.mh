@@ -169,13 +169,13 @@
     X(13, "searchorder-n", searchorder_n) /* (    -- addr    ) get address of searchorder count */ \
     X(8, "user-var", user_var)      /*   ( -- addr ) must be followed by index of user variable */ \
     X(9, "name>code", name_to_code) /*       ( nt  -- taddr n ) get code array from name        */ \
-    X(11, "name>code>n", name_to_code_n)  /* ( nt -- u       ) get code size from name          */ \
-    X(10, "name>flags", name_to_flags)    /* ( nt -- m4flags ) get m4flags of name              */ \
-    X(11, "name>string", name_to_string)  /* ( nt -- addr n  ) convert name to string           */ \
+    X(11, "name>code>n", name_to_code_n) /* ( nt -- u       ) get code size from name          */  \
+    X(10, "name>flags", name_to_flags)   /* ( nt -- m4flags ) get m4flags of name              */  \
+    /* name>string is already defined by forth 'tools ext' wordset */                              \
     X(9, "name>prev", name_to_prev)       /* ( nt -- nt'|0   ) get previous word in wordlist    */ \
-    X(5, "name>", name_to)                /* ( nt -- XT      ) get XT == code address from name */ \
+    X(7, "name>xt", name_to_xt)           /* ( nt -- XT      ) get XT == code address from name */ \
     X(13, "wordlist-last", wordlist_last) /* ( wid -- nt     ) get last name in wordlist        */ \
-    X(7, ">name", to_name)                /* ( XT  -- nt     ) convert XT to name               */
+    X(9, "xt>name", xt_to_name)           /* ( XT  -- nt     ) convert XT to name               */
 
 #define DICT_WORDS_M4TH_CORE(X)                                                                    \
     DICT_TOKENS_M4TH_CORE(X)                                                                       \

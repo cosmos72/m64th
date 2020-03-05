@@ -119,14 +119,14 @@ LABEL(name_to_string.push_reg1)
 FUNC_END(name_to_string)
 
 
-FUNC_START(name_to) /* ( w -- xt ) */
+FUNC_START(name_to_xt) /* ( w -- xt ) */
         LD_uw( REG1_uw,    AT(DTOP, WORD_OFF_CODE_OFF)) /* a = w.code_off     */
         ADD2(  REG1,       DTOP)                        /* dtop = w.code      */
-FUNC_END(name_to)
+FUNC_END(name_to_xt)
 
 
-FUNC_START(to_name) /* ( XT -- w ) */
+FUNC_START(xt_to_name) /* ( XT -- w ) */
         LD_uw( REG1_uw,    AT(DTOP, XT_OFF_DATA_OFF)) /* REG1 = xt.data_off */
         SUB2(  REG1,       DTOP)                      /* DTOP = w.data      */
         SUB2(  IMM(WORD_OFF_XT), DTOP)                /* DTOP = w           */
-FUNC_END(to_name)
+FUNC_END(xt_to_name)
