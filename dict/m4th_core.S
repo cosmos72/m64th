@@ -128,37 +128,41 @@ WORD_START(ibuf_refill, ibuf_read_nonblanks)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_CODE(
-        /* dup iobuf>pos @                          ( io pos                )
-         * ?if                                      ( io pos                )
-         *    over dup iobuf>data                   ( io pos io c-addr u    )
-         *    rot iobuf>addr swap                   ( io pos c-addr addr0 u )
-         *    cmove                                 ( io pos                )
-         *    negate over iobuf>size +!             ( io                    )
-         *    0 over iobuf>pos !                    ( io                    )
+        /* dup >r iobuf>pos @                       ( pos                ) (R: io )
+         * ?if                                      ( pos                ) (R: io )
+         *    r@ iobuf>data                         ( pos c-addr u       ) (R: io )
+         *    r@ iobuf>addr swap                    ( pos c-addr addr0 u ) (R: io )
+         *    cmove                                 ( pos                ) (R: io )
+         *    negate r@ iobuf>size +!               (                    ) (R: io )
+         *    0 r@ iobuf>pos !                      (                    ) (R: io )
          * else
-         *    drop
-         * then                                     ( io                      )
-         * dup iobuf>handle @ over dup              ( io handle io io         )
-         * iobuf>free-data rot                      ( io handle addr u io     )
-         * iobuf>func @ execute                     ( io u' err               )
-         * flip iobuf>size                          ( err u' size-addr        )
-         * +!                                       ( err                     )
+         *    drop                                  (                    ) (R: io )
+         * then                                     (                    ) (R: io )
+         * r@ iobuf>handle @                        ( handle             ) (R: io )
+         * r@ iobuf>free-data                       ( handle addr u      ) (R: io )
+         * r@ iobuf>func @ execute                  ( u' err             ) (R: io )
+         * tuck                                     ( err u' err         ) (R: io )
+         * r@ iobuf>err !                           ( err u'             ) (R: io )
+         * r@ iobuf>size                            ( err u' size-addr   ) (R: io )
+         * +! r> drop                               ( err                )
          */
-        dup, iobuf_pos, fetch,
-        _q_if_, T(17),
-            over, dup, iobuf_data,
-            rot, iobuf_addr, swap,
+        dup_to_r, iobuf_pos, fetch,
+        _q_if_, T(16),
+            r_fetch, iobuf_data,
+            r_fetch, iobuf_addr, swap,
             cmove,
-            negate, over, iobuf_size, plus_store,
-            zero, over, iobuf_pos, store,
+            negate, r_fetch, iobuf_size, plus_store,
+            zero, r_fetch, iobuf_pos, store,
         _else_, T(2),
             drop,
         then,
-        dup, iobuf_handle, fetch, over, dup,
-        iobuf_free_data, rot,
-        iobuf_func, fetch, execute,
-        flip, iobuf_size,
-        plus_store, exit
+        r_fetch, iobuf_handle, fetch,
+        r_fetch, iobuf_free_data,
+        r_fetch, iobuf_func, fetch, execute,
+        tuck,
+        r_fetch, iobuf_err, store,
+        r_fetch, iobuf_size,
+        plus_store, r_from_drop, exit
     )
 WORD_END(ibuf_refill)
 /* ( io -- ) skip blanks from iobuf current data */
