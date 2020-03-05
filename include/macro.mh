@@ -165,6 +165,7 @@
 #define M4SIZEOF_INT(x) _, 4
 #define M4SIZEOF_CELL(x) _, SZ
 #define M4SIZEOF_WADDR(x) _, SZ
+#define M4SIZEOF_XT(x) _, SZ
 
 #define M4SIZEOF(token) SECOND_ARG(M4SIZEOF_##token, SZt)
 

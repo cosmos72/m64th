@@ -51,13 +51,13 @@ FUNC_RAWEND(_q_if_zero_)
 
 
 /**
- * implementation of '(jump)', used by all unconditional jumps: (again) (else)
+ * implementation of '(jump)', used by all unconditional jumps: (again) (break) (continue) (else)
  * must be followed by IP offset to skip.
  * IP offset = 0 means first instruction after (jump) itself
  */
 FUNC_START(_jump_)
         RELJUMP()
-FUNC_END(_jump_)
+FUNC_RAWEND(_jump_)
 
 
 /** implementation of 'do', enters a (do) ... (loop) */

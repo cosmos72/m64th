@@ -35,7 +35,7 @@ WORD_START(throw,      catch)
     WORD_RSTACK(0,0)
     WORD_DSTACK(1,-1) /* stack effect when throwing */
     WORD_RSTACK(0,-1)
-    WORD_NATIVE_NONE()
+    WORD_NATIVE_NONE() /* uses IP-relative jump to 'bye', cannot inline in native code */
     WORD_CODE(throw, exit)
 WORD_END(throw)
 

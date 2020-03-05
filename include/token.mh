@@ -43,4 +43,10 @@
 /* assembler macro: insert word address in a sequence of m4token */
 #define M4WADDR(wordname) WORD_SYM(wordname)
 
+/*
+ * assembler macro: insert XT address in a sequence of m4token.
+ * only works if word.data_n == 0
+ */
+#define M4XT(wordname) (WORD_SYM(wordname) + WORD_OFF_XT)
+
 #endif /* M4TH_INCLUDE_TOKEN_MH */

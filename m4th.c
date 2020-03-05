@@ -624,7 +624,7 @@ m4xt m4word_xt(const m4word *w) {
 
 const m4word *m4xt_word(m4xt xt) {
     const uint32_t data_off = *(const uint32_t *)((m4cell)xt - sizeof(uint32_t));
-    return (const m4word *)((m4cell)xt - data_off - WORD_OFF_DATA);
+    return (const m4word *)((m4cell)xt - data_off - WORD_OFF_XT);
 }
 
 void m4word_code_print(const m4word *w, FILE *out) {

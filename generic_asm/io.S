@@ -110,11 +110,7 @@ FUNC_START(key)
         LOAD(  REG1,   AT(M4TH, M4TH_OFF_IN))
         LOAD(  REG2,   AT(REG1, IOBUF_OFF_POS))
         LOAD(  REG3,   AT(REG1, IOBUF_OFF_SIZE))
-#ifdef RFFF
-        MOVE(  RFFF,   DTOP)
-#else
-        MOVE(  IMM(-1),DTOP)
-#endif
+        MOVE(  IMM_1,  DTOP)
         /* TODO refill input buffer */
         JAE(   REG2,   REG3,  FUNC_NEXT(key))
         ADDI(  REG1,   IOBUF_OFF_ADDR, REG4)

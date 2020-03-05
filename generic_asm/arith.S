@@ -132,12 +132,10 @@ FUNC_END(minus)
 
 
 
-#ifndef M4FMINUS_ONE
 FUNC_START(minus_one)      /* -1   m4th-impl */
         DPUSH( DTOP)
-        MOVE(  IMM(-1),DTOP)
+        MOVE(  IMM_1,  DTOP)
 FUNC_END(minus_one)
-#endif
 
 
 #ifndef M4FZERO

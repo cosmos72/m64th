@@ -45,10 +45,10 @@ FUNC_START(th_run)
         LOAD(  IP,     AT(M4TH, M4TH_OFF_IP))     /* load instruction  pointer       */
         LOAD(  FTBL,   AT(M4TH, M4TH_OFF_FTABLE)) /* load table m4token -> m4func    */
         LOAD(  HERE,   AT(M4TH, M4TH_OFF_HERE))   /* load HERE pointer               */
-        DPOP(  DTOP)                   /* load first data   stack element */
-        RPOP(  RTOP)                   /* load first return stack element */
-        MOVE(  IMM(-1),RFFF)           /* set RFFF to -1                  */
-        jmp    FUNC(_vm_)          /* enter vm loop                   */
+        DPOP(  DTOP)                              /* load first data   stack element */
+        RPOP(  RTOP)                              /* load first return stack element */
+        MOVE(  IMM(-1),RFFF)                      /* set RFFF to -1                  */
+        jmp    FUNC(_vm_)                         /* enter vm loop                   */
 FUNC_RAWEND(th_run)
 
 
@@ -58,9 +58,9 @@ FUNC_RAWEND(th_run)
 FUNC_START(_vm_)
         /* cannot use REG1..REG4 or %r9: they are used by c-arg-[N] */
         LD_ut( REG0,   AT(IP))         /* load m4token of current vm instruction */
-        ADD2(IMM(SZt), IP)             /* increment vm IP                       */
-        call *(FTBL,   REG0,   SZ);    /* execute vm instruction                */
-        jmp    FUNC(_vm_);         /* loop                                  */
+        ADD2(IMM(SZt), IP)             /* increment vm IP                        */
+        call *(FTBL,   REG0,   SZ);    /* execute vm instruction                 */
+        jmp    FUNC(_vm_);             /* loop                                   */
 FUNC_RAWEND(_vm_)
 
 

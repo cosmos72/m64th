@@ -148,7 +148,7 @@
 #define M4iobuf_size 628        /* iobuf>size   ( io -- addr ) get address of iobuf size          */
 #undef M4____gap                /*                       */
 #undef M4____gap                /*                       */
-#define M4m4th_ex 631           /* (   -- addr ) get address of m4th.ex */
+#undef M4____gap                /*                       */
 #undef M4____gap                /*                       */
 #define M4obuf_write_char 633   /* obuf-write-char   ( io c -- err ) write one char to iobuf */
 #define M4obuf_write_string 634 /* obuf-write-string ( io c -- err ) write string to iobuf   */

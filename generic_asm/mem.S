@@ -130,11 +130,7 @@ LABEL(string_ci_equal.next)
         INC1(  REG0)
         JB(    REG0,   DTOP,    TO(string_ci_equal.byte))
 LABEL(string_ci_equal.true)
-#ifdef RFFF
-        MOVE(  RFFF,   DTOP)
-#else
-        MOVE(  IMM(-1),DTOP)
-#endif
+        MOVE(  IMM_1,  DTOP)
         NEXT()
 LABEL(string_ci_equal.cmp)
         ORR2(  IMM('a'-'A'), REG3w)

@@ -22,6 +22,7 @@
 
 /** used to insert a word in a sequence of functions */
 #define m4WADDR(x) WORD_SYM(x)
+#define m4XT(x) (WORD_SYM(x) + WORD_OFF_XT) /* only works if word.data_n == 0 */
 
 #define WORD_OFF_PREV_OFF 0  /* offset of m4word->prev_off  */
 #define WORD_OFF_NAME_OFF 4  /* offset of m4word->name_off  */
@@ -101,7 +102,7 @@
 
 #define WORD_CODE(...)                                                                             \
     WORD_CODE_N(M4SUM_SIZEOF(__VA_ARGS__) / SZt)                                                   \
-    WORD_CODE_OFF(WORD_OFF_DATA) /* no data, word->data is code */                                 \
+    WORD_CODE_OFF(WORD_OFF_XT) /* no data, word->data is code */                                   \
     WORD_DATA_N_BYTES(0)                                                                           \
     WORD_CODE_ALIGN()                                                                              \
     WORD_CODE_TOKENS(__VA_ARGS__)

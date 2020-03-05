@@ -170,38 +170,7 @@ WORD_START(_else_, _continue_)
     WORD_NATIVE_NONE()
     WORD_CODE(_call_, WADDR(else), exit)
 WORD_END(_else_)
-/* ( -- ) */
-WORD_START(_eval_err_eof_, _else_)
-    WORD_FLAGS(M4FLAG_INLINE)
-    WORD_DSTACK(0,0) /* stack effect when not jumping */
-    WORD_RSTACK(0,0)
-    WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
-    WORD_CODE(
-        /* M4ERR_UNEXPECTED_EOF m4th>err !
-         */
-        _lit_, T(M4ERR_UNEXPECTED_EOF), m4th_ex, store,
-        exit
-    )
-WORD_END(_eval_err_eof_)
-/* ( c-addr u -- ) */
-WORD_START(_eval_err_notfound_, _eval_err_eof_)
-    WORD_FLAGS(M4FLAG_INLINE)
-    WORD_DSTACK(2,0) /* stack effect when not jumping */
-    WORD_RSTACK(0,0)
-    WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
-    WORD_CODE(
-        /* M4ERR_UNDEFINED_WORD m4th>err !
-         * type space '?' emit cr
-         */
-        _lit_, T(M4ERR_UNDEFINED_WORD), m4th_ex, store,
-        two_drop,
-        /* TODO type, T(' '), emit, T('?'), emit, T('\n'), emit, */
-        exit
-    )
-WORD_END(_eval_err_notfound_)
-WORD_START(_eval_number_, _eval_err_notfound_)
+WORD_START(_eval_number_, _else_)
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_DSTACK(1,0) /* stack effect when not jumping */
     WORD_RSTACK(0,0)
@@ -209,16 +178,14 @@ WORD_START(_eval_number_, _eval_err_notfound_)
     WORD_NATIVE_NONE()
     WORD_CODE(
         /* state @                                   ( x compiling|0            )
-         * 0= if                (   interpreting   ) ( x                        )
-         *    exit                                   ( x                        )
-         * then                 (    compiling     ) ( x                        )
-         * postpone literal                          (                          )
+         * if                   (    compiling     ) ( x                        )
+         *    postpone literal                       (                          )
+         * then                                      ( x | --                   )
          */
         state, fetch,
-        _if_zero_, T(2),
-            exit,
-        then,
-        _call_, WADDR(literal), exit
+        _if_, T(2+SZ/SZt),
+            _call_, WADDR(literal),
+        then, exit
     )
 WORD_END(_eval_number_)
 /* ( w -1|1 -- ) interpret or compile word */
@@ -235,9 +202,7 @@ WORD_START(_eval_word_, _eval_number_)
          *    drop word>flags                           ( xt m4flags               )
          *    M4FLAG_COMPILE_ONLY and                   ( xt flag                  )
          *    if                                        ( xt                       )
-         *       drop                                   (                          )
-         *       M4ERR_INTERPRETING_COMPILE_ONLY_WORD   ( err                      )
-         *       m4th>err ! exit                        (                          )
+         *       (throw-compile-only-xt)                (                          )
          *    then                                      ( xt                       )
          *    execute exit                              ( ??                       )
          * then                    (    compiling     ) ( xt w -1|1                )
@@ -249,13 +214,11 @@ WORD_START(_eval_word_, _eval_number_)
          */
         over, word_to_xt, minus_rot,
         state, fetch,
-        _if_zero_, T(17),
+        _if_zero_, T(12+SZ/SZt),
             drop, word_to_flags,
             _lit_, T(M4FLAG_COMPILE_ONLY), and,
-            _if_, T(7),
-                drop,
-                _lit_, T(M4ERR_INTERPRETING_COMPILE_ONLY_WORD),
-                m4th_ex, store, exit,
+            _if_, T(2+SZ/SZt),
+                _call_, WADDR(_throw_compile_only_xt_),
             then,
             execute, exit,
         then,
@@ -431,7 +394,31 @@ WORD_START(_while_zero_, _while_)
     WORD_NATIVE_NONE()
     WORD_CODE(_compile_init_, _compile_unresolved_jump_, _while_zero_, _while_, exit)
 WORD_END(_while_zero_)
-WORD(_num_compiled_,   _while_zero_,   DSTACK(0,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
+/**
+ * test whether executing one of the tokens taddr[0...tn-1] produces the given cell value
+ * ( x taddr tn -- token true | x false )
+ */
+WORD_START(_any_token_gives_cell_q_, _while_zero_)
+    WORD_FLAGS(0) /* multiple exits => cannot inline */
+    WORD_DSTACK(3,2)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_CODE(
+        zero, _q_do_, T(14+SZ/SZt),          /* loop if tn != 0          */
+                                             /* ( x taddr )              */
+            dup_to_r, token_fetch,           /* ( x token ) (R taddr )   */
+            _call_, WADDR(_token_gives_cell_q_),/* ( token true | x false ) (R taddr ) */
+            _if_, T(5),
+                r_from_drop, true,           /* ( token true )           */
+                unloop, exit,                /* exit                     */
+            then,
+            r_from, token_plus,              /* ( x taddr )              */
+        _loop_, T(-14-SZ/SZt),
+        drop, false, exit                    /* ( x false )              */
+    )
+WORD_END(_any_token_gives_cell_q_)
+WORD(_num_compiled_,_any_token_gives_cell_q_,DSTACK(0,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
 WORD(_compile_init_,   _num_compiled_, DSTACK(0,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
 WORD(_compile2s_,      _compile_init_, DSTACK(1,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
 WORD(_compile4s_,      _compile2s_,    DSTACK(1,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
@@ -551,31 +538,39 @@ WORD_START(_token_gives_cell_q_, _resolve_loop_)
         drop, false, exit                  /* ( x false )         */
     )
 WORD_END(_token_gives_cell_q_)
-/**
- * test whether executing one of the tokens taddr[0...tn-1] produces the given cell value
- * ( x taddr tn -- token true | x false )
- */
-WORD_START(_any_token_gives_cell_q_, _token_gives_cell_q_)
-    WORD_FLAGS(0) /* multiple exits => cannot inline */
-    WORD_DSTACK(3,2)
+WORD_START(_throw_compile_only_xt_, _token_gives_cell_q_)
+    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_JUMP)
+    WORD_STACK_NONE() /* stack effect when not jumping */
+    WORD_DSTACK(1,0)  /* stack effect when jumping */
     WORD_RSTACK(0,0)
-    WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_CODE(
-        zero, _q_do_, T(14+SZ/SZt),          /* loop if tn != 0          */
-                                             /* ( x taddr )              */
-            dup_to_r, token_fetch,           /* ( x token ) (R taddr )   */
-            _call_, WADDR(_token_gives_cell_q_),/* ( token true | x false ) (R taddr ) */
-            _if_, T(5),
-                r_from_drop, true,           /* ( token true )           */
-                unloop, exit,                /* exit                     */
-            then,
-            r_from, token_plus,              /* ( x taddr )              */
-        _loop_, T(-14-SZ/SZt),
-        drop, false, exit                    /* ( x false )              */
+        /* xt>word word>name type space '!' emit cr
+         * M4ERR_INTERPRETING_COMPILE_ONLY_WORD throw
+         */
+        xt_to_word, word_to_name,
+        type, bl, emit, _lit_, T('?'), emit, _lit_, T('\n'), emit,
+        _lit_, T(M4ERR_INTERPRETING_COMPILE_ONLY_WORD), throw,
+        exit
     )
-WORD_END(_token_gives_cell_q_)
-WORD(_word_, _any_token_gives_cell_q_, DSTACK(0,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
+WORD_END(_throw_compile_only_xt_)
+/* ( c-addr u -- ) */
+WORD_START(_throw_undefined_name_, _throw_compile_only_xt_)
+    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_JUMP)
+    WORD_STACK_NONE() /* stack effect when not jumping */
+    WORD_DSTACK(2,0)  /* stack effect when jumping */
+    WORD_RSTACK(0,0)
+    WORD_NATIVE_NONE()
+    WORD_CODE(
+        /* type space '?' emit cr
+         * M4ERR_UNDEFINED_WORD throw
+         */
+        type, bl, emit, _lit_, T('?'), emit, _lit_, T('\n'), emit,
+        _lit_, T(M4ERR_UNDEFINED_WORD), throw,
+        exit
+    )
+WORD_END(_throw_undefined_name_)
+WORD(_word_,   _throw_undefined_name_, DSTACK(0,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
 WORD(minus_one,        _word_,         DSTACK(0,1), RSTACK(0,0), WORD_PURE)
 WORD(zero,             minus_one,      DSTACK(0,1), RSTACK(0,0), WORD_PURE)
 WORD(one,              zero,           DSTACK(0,1), RSTACK(0,0), WORD_PURE)

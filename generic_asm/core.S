@@ -57,13 +57,6 @@ FUNC_START(_ip_to_data_addr_)
 FUNC_END(_ip_to_data_addr_)
 
 
-/* ( -- addr ) get address of m4th.ex */
-FUNC_START(m4th_ex)
-        DPUSH( DTOP)
-        ADDI(  M4TH,   M4TH_OFF_EX,   DTOP)
-FUNC_END(m4th_ex)
-
-
 /* searchorder-i ( u -- addr ) get address of i-th wordlist in search order */
 FUNC_START(searchorder_i)
         ADDI(  M4TH, M4TH_OFF_SEARCHORDER, REG1) /* a = &m->searchorder */
@@ -135,5 +128,5 @@ FUNC_END(word_to_xt)
 FUNC_START(xt_to_word) /* ( XT -- w ) */
         LD_uw( REG1_uw,    AT(DTOP, XT_OFF_DATA_OFF)) /* REG1 = xt.data_off */
         SUB2(  REG1,       DTOP)                      /* DTOP = w.data      */
-        SUB2(  IMM(WORD_OFF_DATA), DTOP)              /* DTOP = w           */
+        SUB2(  IMM(WORD_OFF_XT), DTOP)                /* DTOP = w           */
 FUNC_END(xt_to_word)

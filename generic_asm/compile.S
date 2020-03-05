@@ -138,14 +138,14 @@ FUNC_RAWEND(_compile_resolved_jump_)
  */
 FUNC_START(_compile_unresolved_jump_)    /* [compile-unresolved-jump] */
         LOAD(  REG1,       AT(M4TH, M4TH_OFF_W))       /* a = [word]                 */
-        LD_uh( REG2_uh,    AT(REG1, WORD_OFF_CODE_N))  /* b = w.code_n            */
+        LD_uh( REG2_uh,    AT(REG1, WORD_OFF_CODE_N))  /* b = w.code_n               */
         LD_ut( REG3_ut,    AT(IP))                     /* c = jump_token             */
         DPUSH( DTOP)
         STORt( REG3t,      AT(HERE))                   /* here[0] = c                */
 #ifdef RFFFt
         STORt( RFFFt,      AT(HERE, SZt))              /* here[1] = -1               */
 #else
-        MOVE(  IMM(-1),    DTOP)                       /* d = -1                     */
+        MOVE(  IMM_1,      DTOP)                       /* d = -1                     */
         STORt( DTOPt,      AT(HERE, SZt))              /* here[1] = d                */
 #endif
         ADD2(  IMM(2),     REG2)                       /* code_n += 2                */

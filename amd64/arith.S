@@ -36,14 +36,6 @@ FUNC_START(plus_store)     /* +!   */
 FUNC_END(plus_store)
 
 
-
-#define M4FMINUS_ONE
-FUNC_START(minus_one)      /* -1   m4th-impl */
-        DPUSH( DTOP)
-        MOVE(  RFFF, DTOP)
-FUNC_END(minus_one)
-
-
 /* signed divide */
 FUNC_START(div)            /* / */
         DPOP(  %rax)

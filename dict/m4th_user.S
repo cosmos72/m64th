@@ -130,7 +130,7 @@ WORD_START(interpret,  if_zero)
     WORD_CODE(
         /* parse-name                                   ( c-addr u                 )
          * ?if0                                         ( c-addr u                 )
-         *    2drop (eval-err-eof) exit                 (                          )
+         *    2drop M4ERR_UNEXPECTED_EOF throw          (                          )
          * then                                         ( c-addr u                 )
          * 2dup                                         ( c-addr u c-addr u        )
          * string>word                                  ( c-addr u w|0 -1|0|1      )
@@ -141,11 +141,11 @@ WORD_START(interpret,  if_zero)
          * if                       ( is a number )     ( c-addr u x               )
          *    nip nip (eval-number) exit                (                          )
          * then                     ( neither )         ( c-addr u x               )
-         * drop (eval-err-notfound)                     (                          )
+         * drop (throw-undefined-name)                  (                          )
          */
         _call_, WADDR(parse_name),
-        _q_if_zero_, T(4+SZ/SZt),
-            two_drop, _call_, WADDR(_eval_err_eof_), exit,
+        _q_if_zero_, T(5),
+            two_drop, _lit_, T(M4ERR_UNEXPECTED_EOF), throw,
         then,
         two_dup,
         _call_, WADDR(string_to_word),
@@ -156,7 +156,7 @@ WORD_START(interpret,  if_zero)
         _if_, T(5+SZ/SZt),
             nip, nip, _call_, WADDR(_eval_number_), exit,
         then,
-        drop, _call_, WADDR(_eval_err_notfound_), exit
+        drop, _call_, WADDR(_throw_undefined_name_), exit
     )
 WORD_END(interpret)
 WORD(noop,             interpret,      DSTACK(0,0), RSTACK(0,0), WORD_PURE)
@@ -165,7 +165,7 @@ WORD(r_plus,           r_from_drop,    DSTACK(1,0), RSTACK(1,1), WORD_R_PURE)
 WORD(r_store,          r_plus,         DSTACK(1,0), RSTACK(1,1), WORD_R_PURE)
 /**
  * forth interpreter/compiler loop:
- *    call INTERPRET repeatedly until EOF or an error.
+ *    call INTERPRET repeatedly until an exception is thrown.
  */
 WORD_START(repl,  r_store)
     WORD_FLAGS(M4FLAG_INLINE)
@@ -174,9 +174,12 @@ WORD_START(repl,  r_store)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_CODE(
+        /* begin
+         *    ' interpret catch
+         * until
+         */
         begin,
-            _call_, WADDR(interpret),
-            m4th_ex, fetch,
+            _lit_cell_, XT(interpret), _catch_beg_, _catch_end_,
         _until_, T(-5-SZ/SZt), exit
     )
 WORD_END(repl)

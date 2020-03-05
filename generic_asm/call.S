@@ -109,19 +109,45 @@ FUNC_START(_catch_end_)
         STOR(  RTOP,   AT(M4TH, M4TH_OFF_HANDLER))   /* m4th.handler = rtop = previous m4th.handler */
         LOAD(  RTOP,   AT(RSTK, SZ))                 /* reload rtop              */
         ADD2(  IMM(SZ2), RSTK)                       /* adjust rstk              */
-        DPUSH( DTOP)
-        MOVE(  REG1,   DTOP)                         /* push 0 i.e. no exception */
-        JUMP(  FUNC_NEXT(_catch_end_))
+        JUMP(  TO(_catch_end_.push))
 
 LABEL(_catch_end_.thrown)
-        /* an exception was thrown. rstk has already been restored by 'throw'    */
-
         /*
-         * now we should restore the IP saved to RTOP by (catch-beg):
-         * if we are executing this, IP is already correct
-         * => nothing needed in order to undo MOVE( IP, RTOP )
+         * an exception was thrown. almost everything has already been restored by 'throw':
+         * we only need to push exception m4th.ex to dstk then clear m4th.ex
          */
+        ZERO(  REG2)
+        STOR(  REG2,   AT(M4TH, M4TH_OFF_EX))        /* clear m4th.ex                      */
 
+LABEL(_catch_end_.push)
+        /* final touch: push REG1 to dstk */
+        DPUSH( DTOP)
+        MOVE(  REG1,   DTOP)                         /* push exception or zero             */
+FUNC_END(_catch_end_)
+
+
+/* ( ex -- ) throw exception if ex != 0 */
+FUNC_START(throw)
+        MOVE(  DTOP,   REG1)
+        DPOP(  DTOP)
+        JZ(    REG1,   FUNC_NEXT(throw))             /* 0 means 'do not throw'             */
+
+        STOR(  REG1,   AT(M4TH, M4TH_OFF_EX))        /* save exception to m4th.ex          */
+        LOAD(  REG2,   AT(M4TH, M4TH_OFF_HANDLER))   /* b = m4th.handler = rend - rstk     */
+        JZ(    REG2,   FUNC(bye))                    /* no handler => jump to 'bye'        */
+
+        /* recompute rstk from m4th.rend and m4th.handler                                  */
+        LOAD(  REG1,   AT(M4TH, M4TH_OFF_REND))      /* a = rend'                          */
+        SUB2(  REG2,   REG1)                         /* a = rend' - (rend - rstk) = rstk'  */
+
+        /* speculatively copy RTOP to IP: it may contain the IP saved to RTOP by (catch-beg) */
+        MOVE(  RTOP,   IP)
+        JEQ(   REG1,   RSTK,  TO(throw.rstk_ok))
+        /* rstk changed. it must contain *more* items, thus saved IP is no longer in RTOP  */
+        LOAD(  IP,     AT(REG1, -SZ))
+        MOVE(  REG1,   RSTK)
+
+LABEL(throw.rstk_ok)
         /* load previous m4th.handler from rstk */
         RPOP(  REG1)                                 /* a = previous m4th.handler */
         STOR(  REG1,   AT(M4TH, M4TH_OFF_HANDLER))   /* m4th.handler = a          */
@@ -134,18 +160,15 @@ LABEL(_catch_end_.thrown)
         LOAD(  REG3,   AT(M4TH, M4TH_OFF_DEND))      /* c = dend'                          */
         MOVE(  REG3,   REG2)                         /* b = dend'                          */
         SUB2(  DSTK,   REG3)                         /* c = dend' - dstk' = current depth' */
-        JLE(   REG1,   REG3,   TO(_catch_end_.dstk)) /* jump if depth <= depth'            */
+        JEQ(   REG1,   REG3,   TO(throw.dstk_ok))    /* jump if depth = depth'             */
+        JL(    REG1,   REG3,   TO(throw.dstk))       /* jump if depth < depth'             */
 
         /* depth > depth' i.e. we must invent some values and push them to dstk            */
         STOR(  DTOP,   AT(DSTK, -SZ))                /* save current DTOP                  */
-#ifdef RFFF
-        MOVE(  RFFF,   DTOP)                         /* invent a new value for DTOP        */
-#else
-        MOVE(  IMM(-1),DTOP)
-#endif
+        MOVE(  IMM_1,  DTOP)                         /* invent a new value for DTOP        */
 
-LABEL(_catch_end_.dstk)
-        /* recompute dstk */
+LABEL(throw.dstk)
+        /* recompute dstk, because depth <> depth' */
 #ifdef SUB3
         SUB3(  REG2,   REG1,   DSTK)                 /* dstk' = dend' - (dend - dstk)      */
 #else
@@ -153,43 +176,11 @@ LABEL(_catch_end_.dstk)
         MOVE(  REG2,   DSTK)                         /* dstk' = a                          */
 #endif
         /* we carefully preserved REG1 and REG3. if depth < depth' we must reload DTOP     */
-        JGE(   REG1,   REG3,   TO(_catch_end_.done)) /* jump if depth >= depth'            */
+        JGE(   REG1,   REG3,   TO(throw.dstk_ok))    /* jump if depth >= depth'            */
         LOAD(  DTOP,   AT(DSTK, -SZ))
 
-LABEL(_catch_end_.done)
-        DPUSH( DTOP)
-        LOAD(  DTOP,   AT(M4TH, M4TH_OFF_EX))        /* push exception m4th.ex to dstk     */
-        ZERO(  REG1)
-        STOR(  REG1,   AT(M4TH, M4TH_OFF_EX))        /* clear m4th.ex                      */
-
-        RPOP(  RTOP)                                 /* restore pushed RTOP                */
-FUNC_END(_catch_end_)
-
-
-/* ( ex -- ) throw exception if ex != 0 */
-FUNC_START(throw)
-        JZ(    DTOP,   TO(throw.done))
-        STOR(  DTOP,   AT(M4TH, M4TH_OFF_EX))        /* save exception to m4th.ex          */
-
-        /* recompute rstk from m4th.rend and m4th.handler = rend - rstk = depth  */
-        LOAD(  REG1,   AT(M4TH, M4TH_OFF_REND))      /* a = rend'                          */
-#ifdef __x86_64__
-        SUB2(  AT(M4TH, M4TH_OFF_HANDLER), REG1)     /* a = rend' - (rend - rstk) = rstk'  */
-#else
-        LOAD(  REG2,   AT(M4TH, M4TH_OFF_HANDLER))   /* b = rend - rstk                    */
-        SUB2(  REG2,   REG1)                         /* a = rend' - (rend - rstk) = rstk'  */
-#endif
-        /* speculatively copy to IP the IP saved to RTOP by (catch-beg) */
-        MOVE(  RTOP,   IP)
-
-        JEQ(   REG1,   RSTK,  TO(throw.done))
-        /* rstk changed. it must contain *more* items, thus saved IP is no longer in RTOP  */
-        LOAD(  IP,     AT(REG1, -SZ))
-        MOVE(  REG1,   RSTK)
-
-
-LABEL(throw.done)
-        DPOP(  DTOP)
+LABEL(throw.dstk_ok)
+        RPOP(  RTOP)                                 /* restore RTOP pushed by (catch-beg) */
 FUNC_END(throw)
 
 
