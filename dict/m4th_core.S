@@ -143,8 +143,8 @@ WORD_START(ibuf_refill, ibuf_read_nonblanks)
          * r@ iobuf>func @ execute                  ( u' err             ) (R: io )
          * tuck                                     ( err u' err         ) (R: io )
          * r@ iobuf>err !                           ( err u'             ) (R: io )
-         * r@ iobuf>size                            ( err u' size-addr   ) (R: io )
-         * +! r> drop                               ( err                )
+         * r> iobuf>size                            ( err u' size-addr   )
+         * +!                                       ( err                )
          */
         dup_to_r, iobuf_pos, fetch,
         _q_if_, T(16),
@@ -161,8 +161,8 @@ WORD_START(ibuf_refill, ibuf_read_nonblanks)
         r_fetch, iobuf_func, fetch, execute,
         tuck,
         r_fetch, iobuf_err, store,
-        r_fetch, iobuf_size,
-        plus_store, r_from_drop, exit
+        r_from, iobuf_size,
+        plus_store, exit
     )
 WORD_END(ibuf_refill)
 /* ( io -- ) skip blanks from iobuf current data */
