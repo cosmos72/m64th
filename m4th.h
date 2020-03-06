@@ -196,26 +196,27 @@ struct m4searchorder_s {                 /**< counted array of wordlists */
     m4wordlist *addr[m4searchorder_max]; /* array of wordlists           */
 };
 
-struct m4th_s {        /**< m4th forth interpreter and compiler */
-    m4stack dstack;    /**< data stack                          */
-    m4stack rstack;    /**< return stack                        */
-    const m4token *ip; /**< instruction pointer                 */
+struct m4th_s {        /**< m4th forth interpreter and compiler          */
+    m4stack dstack;    /**< data stack                                   */
+    m4stack rstack;    /**< return stack                                 */
+    const m4token *ip; /**< instruction pointer                          */
     m4func *ftable;    /**< table m4token -> m4func asm function address */
-    m4iobuf *in;       /**< input  buffer                       */
-    m4iobuf *out;      /**< output buffer                       */
+    m4iobuf *in;       /**< input  buffer                                */
+    m4iobuf *out;      /**< output buffer                                */
 
-    const void *c_regs[1]; /**< m4th_run() may save C registers here  */
+    const void *c_regs[1]; /**< m4th_run() may save C registers here     */
 
     /* USER variables, i.e. thread-local */
-    uint32_t user_size; /**< # available cells in user variables     */
-    uint32_t user_next; /**< next available cell in user variables   */
-    m4word *w;          /**< forth word being compiled               */
-    m4cell base;        /**< current BASE                            */
-    m4cbuf mem;         /**< start, HERE and end of data space       */
-    m4cell ex;          /**< exception set by THROW                  */
-    m4cell handler;     /**< exception handler i.e. rstack.end - rstack.curr saved by 'catch' */
-    m4searchorder searchorder; /**< wordlist search order                   */
-    m4cell user_var[0];        /**< further user variables                  */
+    uint32_t user_size; /**< # available cells in user variables         */
+    uint32_t user_next; /**< next available cell in user variables       */
+    m4word *w;          /**< forth word being compiled                   */
+    m4cell base;        /**< current BASE                                */
+    m4cbuf mem;         /**< start, HERE and end of data space           */
+    m4cell handler;     /**< exception handler installed by CATCH        */
+    m4cell ex;          /**< exception set by THROW                      */
+    m4string ex_string; /**< exception string, set manually before THROW */
+    m4searchorder searchorder; /**< wordlist search order                */
+    m4cell user_var[0]; /**< further user variables                      */
 };
 
 #ifdef __cplusplus

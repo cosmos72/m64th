@@ -31,14 +31,14 @@
  * execute m4th->code.start[0] and subsequent instructions until m4bye is found.
  */
 FUNC_START(th_run)
-        SUB2(  IMM(SZ10), sp)          /* save C registers                */
-                                    /* not clobbered: x18 x19 x28 x29 x30 */
+        SUB2(  IMM(SZ10), sp)                   /* save C registers                */
+                                             /* not clobbered: x18 x19 x28 x29 x30 */
         stp    x20,  x21,  AT(sp);
         stp    x22,  x23,  AT(sp, SZ2);
         stp    x24,  x25,  AT(sp, SZ4);
         stp    x26,  x27,  AT(sp, SZ6);
-        STOR(  lr,   AT(sp, SZ9))      /* save LR register (return addr)  */
-        MOVE(  x0,   M4TH)             /* load m4th*                      */
+        STOR(  lr,   AT(sp, SZ9))               /* save LR register (return addr)  */
+        ADDI(  x0,   M4TH_OFF_,  M4TH)          /* load m4th*                      */
         MOVE(  sp,   REG1)
         STOR(  REG1, AT(M4TH, M4TH_OFF_C_REG0)) /* save C stack pointer            */
         LOAD(  DSTK, AT(M4TH, M4TH_OFF_DSTK))   /* load data   stack pointer       */
@@ -48,7 +48,7 @@ FUNC_START(th_run)
         LOAD(  HERE, AT(M4TH, M4TH_OFF_HERE))   /* load HERE pointer               */
         DPOP(  DTOP)                            /* load first data   stack element */
         RPOP(  RTOP)                            /* load first return stack element */
-        b      TO(_vm_.loop)      /* enter vm loop, without saving LR again */
+        b      TO(_vm_.loop)             /* enter vm loop, without saving LR again */
 FUNC_RAWEND(th_run)
 
 /**
@@ -81,7 +81,7 @@ FUNC_START(bye)
         STOR(  RSTK, AT(M4TH, M4TH_OFF_RSTK))   /* save return stack pointer       */
         STOR(  DSTK, AT(M4TH, M4TH_OFF_DSTK))   /* save data   stack pointer       */
         /*
-         * TODO: these discard the call stack of compiled forth code
+         * TODO: these discard the call stack of native forth code
          *       executed since m4th_run(). how to preserve it?
          */
         LOAD(  REG1, AT(M4TH, M4TH_OFF_C_REG0)) /* load C stack pointer            */

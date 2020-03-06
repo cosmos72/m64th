@@ -32,13 +32,13 @@
  * execute m4th->code.start[0] and subsequent instructions until m4bye is found.
  */
 FUNC_START(th_run)
-        push   %rbp;                   /* save C registers                */
+        push   %rbp;                              /* save C registers                */
         push   %rbx;
         push   %r12;
         push   %r13;
         push   %r14;
         push   %r15;
-        MOVE(  %rdi,   M4TH)                      /* m                               */
+        ADDI(  %rdi,   M4TH_OFF_,  M4TH)          /* m4th                            */
         STOR(  %rsp,   AT(M4TH, M4TH_OFF_C_REG0)) /* save C stack pointer            */
         LOAD(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))   /* load data   stack pointer       */
         LOAD(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))   /* load return stack pointer       */
@@ -57,7 +57,7 @@ FUNC_RAWEND(th_run)
  */
 FUNC_START(_vm_)
         /* cannot use REG1..REG4 or %r9: they are used by c-arg-[N] */
-        LD_ut( REG0,   AT(IP))         /* load m4token of current vm instruction */
+        LD_ut(REG0_ut, AT(IP))         /* load m4token of current vm instruction */
         ADD2(IMM(SZt), IP)             /* increment vm IP                        */
         call *(FTBL,   REG0,   SZ);    /* execute vm instruction                 */
         jmp    FUNC(_vm_);             /* loop                                   */
@@ -79,7 +79,7 @@ FUNC_START(bye)
         STOR(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))   /* save return stack pointer       */
         STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))   /* save data   stack pointer       */
         /*
-         * TODO: this discards the call stack of compiled forth code
+         * TODO: this discards the call stack of native forth code
          *       executed since m4th_run(). how to preserve it?
          */
         LOAD(  %rsp,   AT(M4TH, M4TH_OFF_C_REG0))  /* load C stack pointer            */

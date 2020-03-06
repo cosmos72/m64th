@@ -748,8 +748,9 @@ m4th *m4th_new() {
     memset(&m->searchorder, '\0', sizeof(m->searchorder));
     m4th_also(m, &m4wordlist_forth);
     m4th_also(m, &m4wordlist_m4th_user);
-    m->ex = 0;
-    m->handler = 0;
+    m->handler = m->ex = 0;
+    m->ex_string.addr = NULL;
+    m->ex_string.n = 0;
     return m;
 }
 
@@ -774,7 +775,9 @@ void m4th_clear(m4th *m) {
     m->in->err = m->in->pos = m->in->size = 0;
     m->out->err = m->out->pos = m->out->size = 0;
     m->mem.curr = m->mem.start;
-    m->ex = 0;
+    m->handler = m->ex = 0;
+    m->ex_string.addr = NULL;
+    m->ex_string.n = 0;
 }
 
 const m4cell *m4th_state(const m4th *m) {
