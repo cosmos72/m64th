@@ -276,7 +276,19 @@ WORD_START(_if_zero_, _if_)
     WORD_NATIVE_NONE()
     WORD_CODE(_compile_init_, _compile_unresolved_jump_, _if_zero_, _if_, exit)
 WORD_END(_if_zero_)
-WORD_START(_ip_, _if_zero_)
+/* ( ex|0 -- ) write " ok\n" or exception and ex-string@ to current output */
+WORD_START(_interpret_type_ex_,   _if_zero_)
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_DSTACK(1,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_CODE(
+        /* TODO */
+        drop, exit
+    )
+WORD_END(_interpret_type_ex_)
+WORD_START(_ip_, _interpret_type_ex_)
     WORD_FLAGS(M4FLAG_INLINE_ALWAYS)
     WORD_DSTACK(0,1)
     WORD_RSTACK(0,0)
@@ -538,6 +550,7 @@ WORD_START(_token_gives_cell_q_, _resolve_loop_)
         drop, false, exit                  /* ( x false )         */
     )
 WORD_END(_token_gives_cell_q_)
+/* ( xt -- ) always throws */
 WORD_START(_throw_compile_only_xt_, _token_gives_cell_q_)
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_JUMP)
     WORD_STACK_NONE() /* stack effect when not jumping */
@@ -545,16 +558,15 @@ WORD_START(_throw_compile_only_xt_, _token_gives_cell_q_)
     WORD_RSTACK(0,0)
     WORD_NATIVE_NONE()
     WORD_CODE(
-        /* >name name>string type space '!' emit cr
+        /* xt>name name>string ex-string!
          * M4ERR_INTERPRETING_COMPILE_ONLY_WORD throw
          */
-        xt_to_name, name_to_string,
-        type, bl, emit, _lit_, T('?'), emit, _lit_, T('\n'), emit,
+        xt_to_name, name_to_string, ex_string_store,
         _lit_, T(M4ERR_INTERPRETING_COMPILE_ONLY_WORD), throw,
         exit
     )
 WORD_END(_throw_compile_only_xt_)
-/* ( c-addr u -- ) */
+/* ( c-addr u -- ) always throws */
 WORD_START(_throw_undefined_name_, _throw_compile_only_xt_)
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_JUMP)
     WORD_STACK_NONE() /* stack effect when not jumping */
@@ -562,10 +574,10 @@ WORD_START(_throw_undefined_name_, _throw_compile_only_xt_)
     WORD_RSTACK(0,0)
     WORD_NATIVE_NONE()
     WORD_CODE(
-        /* type space '?' emit cr
+        /* ex-string!
          * M4ERR_UNDEFINED_WORD throw
          */
-        type, bl, emit, _lit_, T('?'), emit, _lit_, T('\n'), emit,
+        ex_string_store,
         _lit_, T(M4ERR_UNDEFINED_WORD), throw,
         exit
     )

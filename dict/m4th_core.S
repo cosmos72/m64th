@@ -209,8 +209,30 @@ WORD(iobuf_handle,     iobuf_handle,   DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(iobuf_max,        iobuf_func,     DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
 WORD(iobuf_pos,        iobuf_max,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(iobuf_size,       iobuf_pos,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD_START(name_inline_query,  iobuf_size)
+    WORD_FLAGS(M4FLAG_MEM_FETCH) /* multiple exits => cannot inline */
+    WORD_DSTACK(1,1)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_CODE(
+        dup, name_to_flags,
+        dup, _lit2s_, SHORT(M4FLAG_INLINE_ALWAYS), and, _if_, T(4),
+            two_drop, true, exit,
+        then,
+        _lit2s_, SHORT(M4FLAG_INLINE), and, _if_zero_, T(4),
+            drop, false, exit,
+        then,
+        name_to_code_n, eight, less, exit
+    )
+WORD_END(name_inline_query)
+WORD(name_to_code,  name_inline_query, DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(name_to_code_n,   name_to_code,   DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(name_to_flags,    name_to_code_n, DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(name_to_prev,     name_to_flags,  DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(name_to_xt,       name_to_prev,   DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 /* obuf-flush ( io -- err ) flush iobuf data */
-WORD_START(obuf_flush, iobuf_size)
+WORD_START(obuf_flush, name_to_xt)
     WORD_FLAGS(0)
     WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)
@@ -431,7 +453,7 @@ WORD(token_plus,       to_token,       DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(tokens,           token_plus,     DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(token_store,      tokens,         DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE)
 WORD(token_fetch,      token_store,    DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD_START(user_var,   token_fetch)
+WORD_START(user_var,   token_store)
     WORD_FLAGS(M4FLAG_INLINE_ALWAYS | M4FLAG_CONSUMES_IP_2)
     WORD_DSTACK(0,1)
     WORD_RSTACK(0,0)
@@ -439,33 +461,11 @@ WORD_START(user_var,   token_fetch)
     WORD_NATIVE_NONE()
     WORD_CODE(user_var, T(-1), exit)
 WORD_END(user_var)
-WORD_START(name_inline_query,  user_var)
-    WORD_FLAGS(M4FLAG_MEM_FETCH) /* multiple exits => cannot inline */
-    WORD_DSTACK(1,1)
-    WORD_RSTACK(0,0)
-    WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
-    WORD_CODE(
-        dup, name_to_flags,
-        dup, _lit2s_, SHORT(M4FLAG_INLINE_ALWAYS), and, _if_, T(4),
-            two_drop, true, exit,
-        then,
-        _lit2s_, SHORT(M4FLAG_INLINE), and, _if_zero_, T(4),
-            drop, false, exit,
-        then,
-        name_to_code_n, eight, less, exit
-    )
-WORD_END(name_inline_query)
-WORD(name_to_code,  name_inline_query, DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD(name_to_code_n,   name_to_code,   DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD(name_to_flags,    name_to_code_n, DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD(name_to_prev,     name_to_flags,  DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD(name_to_xt,       name_to_prev,   DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 /**
  * wordlist-find ( c-addr u wid -- w|0 -1|0|1 ) search word name in wordlist.
  * return 0 if not found. return 1 if word is immediate, otherwise return -1
  */
-WORD_START(wordlist_find, name_to_xt)
+WORD_START(wordlist_find, user_var)
     WORD_FLAGS(M4FLAG_MEM_FETCH) /* multiple exits => cannot inline */
     WORD_DSTACK(3,2)
     WORD_RSTACK(0,0)

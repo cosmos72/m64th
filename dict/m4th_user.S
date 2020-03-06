@@ -175,12 +175,16 @@ WORD_START(repl,  r_store)
     WORD_NATIVE_NONE()
     WORD_CODE(
         /* begin
-         *    ' interpret catch
+         *    ' interpret catch                        ( ... ex|0      )
+         *    type-exception                           ( ...           )
+         *    in>ibuf iobuf>err @                      ( ... err|0     )
          * until
          */
         begin,
             _lit_cell_, XT(interpret), _catch_beg_, _catch_end_,
-        _until_, T(-5-SZ/SZt), exit
+            _call_, WADDR(_interpret_type_ex_),
+            in_to_ibuf, iobuf_err, fetch,
+        _until_, T(-9-2*SZ/SZt), exit
     )
 WORD_END(repl)
 WORD(squared,          r_store,        DSTACK(1,1), RSTACK(0,0), WORD_PURE)

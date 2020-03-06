@@ -163,6 +163,12 @@
     X(9, "iobuf>max", iobuf_max)        /* ( io -- u    ) get iobuf max size i.e. capacity  */     \
     X(9, "iobuf>pos", iobuf_pos)        /* ( io -- addr ) get address of iobuf position     */     \
     X(10, "iobuf>size", iobuf_size)     /* ( io -- addr ) get address of iobuf size         */     \
+    X(9, "name>code", name_to_code) /*       ( nt  -- taddr n ) get code array from name        */ \
+    X(11, "name>code>n", name_to_code_n) /* ( nt -- u       ) get code size from name          */  \
+    X(10, "name>flags", name_to_flags)   /* ( nt -- m4flags ) get m4flags of name              */  \
+    /* name>string is already defined by forth 'tools ext' wordset */                              \
+    X(9, "name>prev", name_to_prev) /* ( nt -- nt'|0   ) get previous word in wordlist    */       \
+    X(7, "name>xt", name_to_xt)     /* ( nt -- XT      ) get XT == code address from name */       \
     X(15, "obuf-write-char", obuf_write_char) /* ( io c -- err  ) write one char to iobuf   */     \
     /* ( io c-addr u -- err  ) write string to iobuf */                                            \
     X(17, "obuf-write-string", obuf_write_string)                                                  \
@@ -170,13 +176,7 @@
     /*                  searchorder-i ( u -- addr ) get address of searchorder i-th element  */    \
     X(13, "searchorder-i", searchorder_i)                                                          \
     X(13, "searchorder-n", searchorder_n) /* (    -- addr    ) get address of searchorder count */ \
-    X(8, "user-var", user_var)      /*   ( -- addr ) must be followed by index of user variable */ \
-    X(9, "name>code", name_to_code) /*       ( nt  -- taddr n ) get code array from name        */ \
-    X(11, "name>code>n", name_to_code_n) /* ( nt -- u       ) get code size from name          */  \
-    X(10, "name>flags", name_to_flags)   /* ( nt -- m4flags ) get m4flags of name              */  \
-    /* name>string is already defined by forth 'tools ext' wordset */                              \
-    X(9, "name>prev", name_to_prev)       /* ( nt -- nt'|0   ) get previous word in wordlist    */ \
-    X(7, "name>xt", name_to_xt)           /* ( nt -- XT      ) get XT == code address from name */ \
+    X(8, "user-var", user_var) /*        ( -- addr ) must be followed by index of user variable */ \
     X(13, "wordlist-last", wordlist_last) /* ( wid -- nt     ) get last name in wordlist        */ \
     X(9, "xt>name", xt_to_name)           /* ( XT  -- nt     ) convert XT to name               */
 
@@ -190,7 +190,8 @@
     X(19, "ibuf-read-nonblanks", ibuf_read_nonblanks)                                              \
     X(11, "ibuf-refill", ibuf_refill)           /*   ( io -- err  ) read some data into iobuf   */ \
     X(16, "ibuf-skip-blanks", ibuf_skip_blanks) /*   skip whitespace from iobuf current data    */ \
-    X(10, "obuf-flush", obuf_flush)             /*   ( io -- err  ) flush iobuf data            */ \
+    X(12, "name-inline?", name_inline_query) /* ( nt -- flag ) calls to name should be inlined? */ \
+    X(10, "obuf-flush", obuf_flush)          /* ( io -- err  ) flush iobuf data                 */ \
     /* ( io c -- err  ) flush iobuf, then write one char to it */                                  \
     X(23, "(obuf-flush-write-char)", _obuf_flush_write_char_)                                      \
     /* ( io c-addr u -- err  ) flush iobuf, then write string to it */                             \
@@ -205,8 +206,7 @@
     X(6, "token@", token_fetch)          /* alias of _SZtu_fetch, no dedicated m4token */          \
     X(6, "token+", token_plus)           /* alias of _SZt_plus,   no dedicated m4token */          \
     X(6, "tokens", tokens)               /* alias of _SZt_times,  no dedicated m4token */          \
-    X(12, "name-inline?", name_inline_query) /* ( nt -- flag ) calls to name should be inlined? */ \
-    X(13, "wordlist-find", wordlist_find)    /* ( c-addr u wid -- w|0 -1|0|1 ) search in wordlist */
+    X(13, "wordlist-find", wordlist_find) /* ( c-addr u wid -- w|0 -1|0|1 ) search in wordlist */
 
 /* ------- m4th-impl ---------------------------------------------------------------------------- */
 #define DICT_TOKENS_M4TH_IMPL(X)                                                                   \
@@ -266,6 +266,8 @@
     DICT_TOKENS_M4TH_IMPL(X)                                                                       \
     X(11, "(eval-name)", _eval_name_)                                                              \
     X(13, "(eval-number)", _eval_number_)                                                          \
+    /*         ( ex|0 -- ) write " ok\n" or exception and ex-string@ to current output */          \
+    X(19, "(interpret-type-ex)", _interpret_type_ex_)                                              \
     X(23, "[any-token-gives-cell?]", _any_token_gives_cell_q_)                                     \
     X(8, "[inline]", _inline_)      /* ( w -- ) inline a call to w into word being compiled */     \
     X(10, "[optimize]", _optimize_) /* optimize word being compiled  */                            \
