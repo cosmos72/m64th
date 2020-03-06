@@ -831,6 +831,8 @@ static int linenoiseEdit(int stdin_fd, int stdout_fd, char *buf, size_t buflen, 
                 refreshLine(&l);
                 hintsCallback = hc;
             }
+            /* forth expects a space to be displayed instead of '\n' */
+            (void)write(l.ofd," ",1);
             l.buf[l.len++] = '\n';
             return (int)l.len;
         case CTRL_C:     /* ctrl-c */

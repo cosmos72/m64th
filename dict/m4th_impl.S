@@ -313,19 +313,22 @@ WORD_START(_interpret_type_ex_,   _if_zero_)
          *    else                    ( interpreting ) (               )
          *       s" ok\n"                              ( c-addr u      )
          *    then                                     ( c-addr u      )
-         *    type exit                                (               )
-         * then                                        ( ex            )
-         * s" exception " type . space                 (               )
-         * ex-string@ type cr                          (               )
+         *    type                                     (               )
+         * else                                        ( ex            )
+         *    s" exception " type . space              (               )
+         *    ex-string@ type cr                       (               )
+         * then
+         * out>obuf obuf-flush
          */
         _q_if_zero_, T(4),
             /* TODO */
-            drop, _lit_, T('\n'), emit, exit,
+            drop, _lit_, T('\n'), emit,
+        _else_, T(9+SZ/SZt),
+            /* TODO */
+            bl, emit, _call_, WADDR(dot),
+            ex_string_fetch, type, _lit_, T('\n'), emit,
         then,
-        /* TODO */
-        bl, emit, _call_, WADDR(dot),
-        ex_string_fetch, type, _lit_, T('\n'), emit,
-        exit
+        out_to_obuf, _call_, WADDR(obuf_flush), exit
     )
 WORD_END(_interpret_type_ex_)
 WORD_START(_ip_, _interpret_type_ex_)
