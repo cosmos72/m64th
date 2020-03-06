@@ -152,7 +152,7 @@ WORD_START(_catch_end_,  _catch_beg_)
     WORD_NATIVE_LEN(_catch_end_)
     WORD_CODE(_catch_end_, exit)
 WORD_END(_catch_end_)
-/* ( -- ) throw on stack underflow */
+/* ( -- ) throw on stack or return stack underflow */
 WORD_START(_check_stacks_, _catch_end_)
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_STACK_NONE()  /* stack effect if not jumping */
@@ -317,10 +317,15 @@ WORD_START(_interpret_type_ex_,   _if_zero_)
          * then                                        ( ex            )
          * s" exception " type . space                 (               )
          * ex-string@ type cr                          (               )
-         *
-         * TODO
          */
-        drop, exit
+        _q_if_zero_, T(4),
+            /* TODO */
+            drop, _lit_, T('\n'), emit, exit,
+        then,
+        /* TODO */
+        bl, emit, _call_, WADDR(dot),
+        ex_string_fetch, type, _lit_, T('\n'), emit,
+        exit
     )
 WORD_END(_interpret_type_ex_)
 WORD_START(_ip_, _interpret_type_ex_)
