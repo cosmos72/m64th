@@ -67,7 +67,7 @@
 #define M4r_store 547                /* r!        equivalent to: r>   drop >r   */
 #define M4r_plus 548                 /* r+        equivalent to: r>   +    >r   */
 #define M4r_from_drop 549            /* r>drop    equivalent to: r>   drop      */
-#undef M4____gap                     /*                       */
+#define M4rdepth 550                 /* rdepth    get return stack depth        */
 #define M4minus_rot 551              /* -rot      equivalent to: rot  rot       */
 #undef M4____gap                     /*                       */
 #define M4squared 553                /* squared   equivalent to: dup  *         */

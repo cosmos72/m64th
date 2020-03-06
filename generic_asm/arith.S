@@ -265,7 +265,7 @@ FUNC_START(drop)
 FUNC_END(drop)
 
 
-FUNC_START(depth)
+FUNC_START(depth)          /* ( -- n ) get stack depth */
         DPUSH( DTOP)
         LOAD(  DTOP,   AT(M4TH, M4TH_OFF_DEND))
         SUB2(  DSTK,   DTOP)
@@ -332,6 +332,14 @@ FUNC_END(over)
 FUNC_START(pick)
         LOAD(  DTOP,   AT(DSTK, DTOP, SZ))
 FUNC_END(pick)
+
+
+FUNC_START(rdepth)          /* ( -- n ) get return stack depth */
+        DPUSH( DTOP)
+        LOAD(  DTOP,   AT(M4TH, M4TH_OFF_REND))
+        SUB2(  RSTK,   DTOP)
+        SAR2(  IMM(PSZ),   DTOP)
+FUNC_END(rdepth)
 
 
 FUNC_START(rot)            /* rot   ( a b c -- b c a ) */

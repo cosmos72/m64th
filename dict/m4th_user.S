@@ -135,7 +135,7 @@ WORD_START(interpret,  if_zero)
          * 2dup                                         ( c-addr u c-addr u        )
          * string>name                                  ( c-addr u nt|0 -1|0|1     )
          * ?if                      ( is a word )       ( c-addr u nt  -1|1        )
-         *    2nip (eval-name) exit                     (                          )
+         *    2nip (eval-name) (check-stacks) exit      (                          )
          * then                                         ( c-addr u 0 0             )
          * 2drop 2dup string>number                     ( c-addr u x t|f           )
          * if                       ( is a number )     ( c-addr u x               )
@@ -149,8 +149,8 @@ WORD_START(interpret,  if_zero)
         then,
         two_dup,
         _call_, WADDR(string_to_name),
-        _q_if_, T(4+SZ/SZt),
-            two_nip, _call_, WADDR(_eval_name_), exit,
+        _q_if_, T(5+2*SZ/SZt),
+            two_nip, _call_, WADDR(_eval_name_), _call_, WADDR(_check_stacks_), exit,
         then,
         two_drop, two_dup, _call_, WADDR(string_to_number),
         _if_, T(5+SZ/SZt),
@@ -160,14 +160,15 @@ WORD_START(interpret,  if_zero)
     )
 WORD_END(interpret)
 WORD(noop,             interpret,      DSTACK(0,0), RSTACK(0,0), WORD_PURE)
-WORD(r_from_drop,      noop,           DSTACK(0,0), RSTACK(1,0), WORD_R_PURE)
-WORD(r_plus,           r_from_drop,    DSTACK(1,0), RSTACK(1,1), WORD_R_PURE)
-WORD(r_store,          r_plus,         DSTACK(1,0), RSTACK(1,1), WORD_R_PURE)
+WORD(r_store,          noop,           DSTACK(1,0), RSTACK(1,1), WORD_R_PURE)
+WORD(r_plus,           r_store,        DSTACK(1,0), RSTACK(1,1), WORD_R_PURE)
+WORD(r_from_drop,      r_plus,         DSTACK(0,0), RSTACK(1,0), WORD_R_PURE)
+WORD(rdepth,          r_from_drop,    DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 /**
  * forth interpreter/compiler loop:
  *    call INTERPRET repeatedly until an exception is thrown.
  */
-WORD_START(repl,  r_store)
+WORD_START(repl,  rdepth)
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_DSTACK(-1,-1)
     WORD_RSTACK(-1,-1)

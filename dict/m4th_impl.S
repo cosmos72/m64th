@@ -152,6 +152,28 @@ WORD_START(_catch_end_,  _catch_beg_)
     WORD_NATIVE_LEN(_catch_end_)
     WORD_CODE(_catch_end_, exit)
 WORD_END(_catch_end_)
+/* ( -- ) throw on stack underflow */
+WORD_START(_check_stacks_, _catch_end_)
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_STACK_NONE()  /* stack effect if not jumping */
+    WORD_STACK_NONE()  /* stack effect if jumping */
+    WORD_NATIVE_NONE()
+    WORD_CODE(
+        /* depth 0< if                                 (               )
+         *    M4ERR_STACK_UNDERFLOW throw              (               )
+         * then
+         * rdepth 0< if                                (               )
+         *    M4ERR_RETURN_STACK_UNDERFLOW throw       (               )
+         * then
+         */
+        depth, zero_less, _if_, T(4),
+            _lit_, T(M4ERR_STACK_UNDERFLOW), throw,
+        then,
+        rdepth, zero_less, _if_, T(4),
+            _lit_, T(M4ERR_RETURN_STACK_UNDERFLOW), throw,
+        then, exit
+    )
+WORD_END(_check_stacks_)
 WORD_START(_continue_, _catch_end_)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_JUMP | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_STACK_NONE()  /* stack effect if not jumping */
@@ -284,7 +306,20 @@ WORD_START(_interpret_type_ex_,   _if_zero_)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_CODE(
-        /* TODO */
+        /* ?if0                                        ( ex|0          )
+         *    drop state @                             ( flag          )
+         *    if                      ( compiling )    (               )
+         *       s" compiled\n"                        ( c-addr u      )
+         *    else                    ( interpreting ) (               )
+         *       s" ok\n"                              ( c-addr u      )
+         *    then                                     ( c-addr u      )
+         *    type exit                                (               )
+         * then                                        ( ex            )
+         * s" exception " type . space                 (               )
+         * ex-string@ type cr                          (               )
+         *
+         * TODO
+         */
         drop, exit
     )
 WORD_END(_interpret_type_ex_)
