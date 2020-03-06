@@ -57,6 +57,64 @@ FUNC_START(_ip_to_data_addr_)
 FUNC_END(_ip_to_data_addr_)
 
 
+#ifndef M4FEX_STRING_STORE
+FUNC_START(ex_string_store)
+        STOR(  DTOP,   AT(M4TH, M4TH_OFF_EX_STRING_N))
+        DPOP(  DTOP)
+        STOR(  DTOP,   AT(M4TH, M4TH_OFF_EX_STRING_ADDR))
+        DPOP(  DTOP)
+FUNC_END(ex_string_store)
+#endif /* M4FEX_STRING_STORE */
+
+
+#ifndef M4FEX_STRING_FETCH
+FUNC_START(ex_string_fetch)
+        DPUSH( DTOP)
+        LOAD(  DTOP,   AT(M4TH, M4TH_OFF_EX_STRING_ADDR))
+        DPUSH( DTOP)
+        LOAD(  DTOP,   AT(M4TH, M4TH_OFF_EX_STRING_N))
+FUNC_END(ex_string_fetch)
+#endif /* M4FEX_STRING_FETCH */
+
+
+FUNC_START(name_to_code) /* ( w -- taddr n ) */
+        LD_uw( REG1_uw,    AT(DTOP, WORD_OFF_CODE_OFF)) /* REG1 = w.code_off  */
+        ADD2(  DTOP,       REG1)                        /* REG1 = w.code      */
+        LD_uh( DTOP_uh,    AT(DTOP, WORD_OFF_CODE_N))   /* DTOP = w.code_n    */
+        DPUSH( REG1)                                    /*  d2  = w.code      */
+FUNC_END(name_to_code)
+
+
+FUNC_START(name_to_code_n) /* ( nt -- n ) */
+        LD_uh( DTOP_uh,    AT(DTOP, WORD_OFF_CODE_N)) /* DTOP = w.code_n    */
+FUNC_END(name_to_code_n)
+
+
+FUNC_START(name_to_flags) /* ( nt -- m4flags ) */
+        LD_uh( DTOP_uh,    AT(DTOP, WORD_OFF_FLAGS)) /* dtop = m4flags    */
+FUNC_END(name_to_flags)
+
+
+FUNC_START(name_to_string) /* ( nt -- addr n ) */
+        LD_uh( REG1_uh,    AT(DTOP, WORD_OFF_NAME_OFF)) /* a = w.name_off  */
+        JNZ(   REG1,       TO(name_to_string.body))
+        ZERO(  DTOPw)                  /* dtop = 0               */
+        JUMP(              TO(name_to_string.push_reg1))
+LABEL(name_to_string.body)
+        SUB2(  REG1,       DTOP)       /* dtop = m4countedstring* */
+        ADDI(  DTOP,       1,  REG1)   /* a = addr                */
+        LD_ub( DTOP_ub,    AT(DTOP))   /* dtop = len              */
+LABEL(name_to_string.push_reg1)
+        DPUSH( REG1)                   /* d1 = a = addr           */
+FUNC_END(name_to_string)
+
+
+FUNC_START(name_to_xt)     /* ( nt -- xt ) */
+        LD_uw( REG1_uw,    AT(DTOP, WORD_OFF_CODE_OFF)) /* a = w.code_off     */
+        ADD2(  REG1,       DTOP)                        /* dtop = w.code      */
+FUNC_END(name_to_xt)
+
+
 /* searchorder-i ( u -- addr ) get address of i-th wordlist in search order */
 FUNC_START(searchorder_i)
         ADDI(  M4TH, M4TH_OFF_SEARCHORDER, REG1) /* a = &m->searchorder */
@@ -73,59 +131,19 @@ FUNC_START(searchorder_n)
 FUNC_END(searchorder_n)
 
 
-FUNC_START(name_to_code) /* ( w -- taddr n ) */
-        LD_uw( REG1_uw,    AT(DTOP, WORD_OFF_CODE_OFF)) /* REG1 = w.code_off  */
-        ADD2(  DTOP,       REG1)                        /* REG1 = w.code      */
-        LD_uh( DTOP_uh,    AT(DTOP, WORD_OFF_CODE_N))   /* DTOP = w.code_n    */
-        DPUSH( REG1)                                    /*  d2  = w.code      */
-FUNC_END(name_to_code)
-
-
 /* user-var ( -- addr ) must be followed by index. get address of i-th user variable  */
 FUNC_START(user_var)
         DPUSH( DTOP)
         LD_ut( REG1_ut,    AT(IP)) /* a = index */
-#ifdef __x86_64__
-        lea    M4TH_OFF_USER(M4TH, REG1, SZ), DTOP;
-#else
+#if M4TH_OFF_USER != 0
         ADD2(  IMM(M4TH_OFF_USER/SZ), REG1)
-        ADD4(  M4TH,       REG1, PSZ, DTOP)
 #endif
+        ADD4(  M4TH,       REG1, PSZ, DTOP)
         NEXTT()
 FUNC_RAWEND(user_var)
 
 
-FUNC_START(name_to_code_n) /* ( w -- n ) */
-        LD_uh( DTOP_uh,    AT(DTOP, WORD_OFF_CODE_N)) /* DTOP = w.code_n    */
-FUNC_END(name_to_code_n)
-
-
-FUNC_START(name_to_flags) /* ( w -- m4flags ) */
-        LD_uh( DTOP_uh,    AT(DTOP, WORD_OFF_FLAGS)) /* dtop = m4flags    */
-FUNC_END(name_to_flags)
-
-
-FUNC_START(name_to_string) /* ( w -- addr n ) */
-        LD_uh( REG1_uh,    AT(DTOP, WORD_OFF_NAME_OFF)) /* a = w.name_off  */
-        JNZ(   REG1,       TO(name_to_string.body))
-        ZERO(  DTOPw)                  /* dtop = 0               */
-        JUMP(              TO(name_to_string.push_reg1))
-LABEL(name_to_string.body)
-        SUB2(  REG1,       DTOP)       /* dtop = m4countedstring* */
-        ADDI(  DTOP,       1,  REG1)   /* a = addr                */
-        LD_ub( DTOP_ub,    AT(DTOP))   /* dtop = len              */
-LABEL(name_to_string.push_reg1)
-        DPUSH( REG1)                   /* d1 = a = addr           */
-FUNC_END(name_to_string)
-
-
-FUNC_START(name_to_xt) /* ( w -- xt ) */
-        LD_uw( REG1_uw,    AT(DTOP, WORD_OFF_CODE_OFF)) /* a = w.code_off     */
-        ADD2(  REG1,       DTOP)                        /* dtop = w.code      */
-FUNC_END(name_to_xt)
-
-
-FUNC_START(xt_to_name) /* ( XT -- w ) */
+FUNC_START(xt_to_name)     /* ( XT -- nt ) */
         LD_uw( REG1_uw,    AT(DTOP, XT_OFF_DATA_OFF)) /* REG1 = xt.data_off */
         SUB2(  REG1,       DTOP)                      /* DTOP = w.data      */
         SUB2(  IMM(WORD_OFF_XT), DTOP)                /* DTOP = w           */

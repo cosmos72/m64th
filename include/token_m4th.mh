@@ -134,8 +134,8 @@
 #undef M4____gap               /*                       */
 
 /* 'm4th-core' wordlist */
-#undef M4____gap                /*                       */
-#undef M4____gap                /*                       */
+#define M4ex_string_store 617   /* ( c-addr u -- ) save string addr&len as exception description  */
+#define M4ex_string_fetch 618   /* ( -- c-addr u ) fetch exception description string             */
 #define M4in_to_ibuf 619        /* in>ibuf      (    -- io     ) get current input as iobuf       */
 #define M4iobuf_addr 620        /* iobuf>addr   ( io -- c-addr ) get start of iobuf data buffer   */
 #define M4iobuf_all_data 621    /* iobuf>all-data ( io -- c-addr u ) get all data, from 0 to size */

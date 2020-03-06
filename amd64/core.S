@@ -23,6 +23,25 @@
 
 /* clang-format off */
 
+#define M4FEX_STRING_STORE
+FUNC_START(ex_string_store)
+        LOAD(  REG1,   AT(DSTK))
+        STOR(  DTOP,   AT(M4TH, M4TH_OFF_EX_STRING_N))
+        STOR(  REG1,   AT(M4TH, M4TH_OFF_EX_STRING_ADDR))
+        LOAD(  DTOP,   AT(DSTK, SZ))
+        ADD2(IMM(SZ2), DSTK)
+FUNC_END(ex_string_store)
+
+
+#define M4FEX_STRING_FETCH
+FUNC_START(ex_string_fetch)
+        STOR(  DTOP,   AT(DSTK, -SZ))
+        LOAD(  REG1,   AT(M4TH, M4TH_OFF_EX_STRING_ADDR))
+        LOAD(  DTOP,   AT(M4TH, M4TH_OFF_EX_STRING_N))
+        STOR(  REG1,   AT(DSTK, -SZ2))
+        SUB2(IMM(SZ2), DSTK)
+FUNC_END(ex_string_fetch)
+
 
 FUNC_START(name_to_prev) /* ( nt -- nt'|0 ) */
         LD_uw( REG1_uw,    AT(DTOP, WORD_OFF_PREV_OFF)) /* a = w.prev_off  */
@@ -39,5 +58,3 @@ FUNC_START(wordlist_last) /* ( wid -- nt ) */
         test   REG1,       REG1;
         cmovz  REG1,       DTOP;       /* dtop = nt|0              */
 FUNC_END(wordlist_last)
-
-

@@ -43,8 +43,10 @@ WORD_START(always_eof, div_token)
     WORD_NATIVE_NONE()
     WORD_CODE(two_drop, drop, zero, _lit_, T(M4ERR_UNEXPECTED_EOF), exit)
 WORD_END(always_eof)
+WORD(ex_string_store,  always_eof,     DSTACK(2,0), RSTACK(0,0), WORD_IMPURE)
+WORD(ex_string_fetch, ex_string_store, DSTACK(0,2), RSTACK(0,0), WORD_IMPURE)
 /* ( io -- err ) read and skip blanks from iobuf, refilling as needed */
-WORD_START(ibuf_read_blanks, always_eof)
+WORD_START(ibuf_read_blanks, ex_string_fetch)
     WORD_FLAGS(0)
     WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)
@@ -209,7 +211,7 @@ WORD(iobuf_pos,        iobuf_max,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(iobuf_size,       iobuf_pos,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 /* obuf-flush ( io -- err ) flush iobuf data */
 WORD_START(obuf_flush, iobuf_size)
-    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_FLAGS(0)
     WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -221,14 +223,15 @@ WORD_START(obuf_flush, iobuf_size)
          *    ?if0                                  ( c-addr u           ) (R: io )
          *       0 r@ iobuf>pos !                   ( c-addr 0           ) (R: io )
          *       0 r@ iobuf>size !                  ( c-addr 0           ) (R: io )
-         *       nip break                          ( 0                  ) (R: io )
+         *       nip r> drop exit                   ( 0                  )
          *    then                                  ( c-addr u           ) (R: io )
          *    r@ iobuf>handle @ -rot                ( handle c-addr u    ) (R: io )
          *    r@ iobuf>func @ execute               ( u' err             ) (R: io )
          *    swap r@ iobuf>pos +!                  ( err                ) (R: io )
          *    ?dup                                  ( err err | 0        ) (R: io )
          * until                                    ( err                ) (R: io )
-         * r> drop                                  ( err                )
+         * dup r> iobuf>err                         ( err err addr       )
+         * !                                        ( err                )
          */
         to_r,
         begin,
@@ -236,14 +239,15 @@ WORD_START(obuf_flush, iobuf_size)
             _q_if_zero_, T(12),
                 zero, r_fetch, iobuf_pos, store,
                 zero, r_fetch, iobuf_size, store,
-                nip, _break_, T(16),
+                nip, r_from_drop, exit,
             then,
             r_fetch, iobuf_handle, fetch, minus_rot,
             r_fetch, iobuf_func, fetch, execute,
             swap, r_fetch, iobuf_pos, plus_store,
             question_dup,
         _until_, T(-31),
-        r_from_drop, exit
+        dup, r_from, iobuf_err,
+        store, exit
     )
 WORD_END(obuf_flush)
 /* (obuf-flush-write-char) ( io c -- err  ) flush iobuf, then write one char to it */
@@ -338,7 +342,8 @@ WORD_START(_obuf_overflow_, _obuf_flush_write_string_)
          *    >r /string                            ( c-addr' u'               ) (R: io err )
          *    r>                                    ( c-addr u err             ) (R: io )
          *    ?if                                   ( c-addr u err             ) (R: io )
-         *       r> drop exit                       ( c-addr u err             )
+         *       dup r> iobuf>err                   ( c-addr u err err addr    )
+         *       ! exit                             ( c-addr u err             )
          *    then                                  ( c-addr u err             ) (R: io )
          *    drop                                  ( c-addr u                 ) (R: io )
          * repeat                                   ( c-addr u                 ) (R: io )
@@ -346,17 +351,18 @@ WORD_START(_obuf_overflow_, _obuf_flush_write_string_)
          */
         rot, to_r,
         begin,
-            _q_while_, T(20),
+            _q_while_, T(23),
             two_dup,
             r_fetch, iobuf_handle, fetch, minus_rot,
             r_fetch, iobuf_func, fetch, execute,
             to_r, div_string,
             r_from,
-            _q_if_, T(3),
-                r_from_drop, exit,
+            _q_if_, T(6),
+                dup, r_from, iobuf_err,
+                store, exit,
             then,
             drop,
-        _repeat_, T(-22),
+        _repeat_, T(-25),
         r_from_drop, zero, exit
     )
 WORD_END(_obuf_overflow_)
