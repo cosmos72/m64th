@@ -611,23 +611,7 @@ WORD_START(_throw_compile_only_xt_, _token_gives_cell_q_)
         exit
     )
 WORD_END(_throw_compile_only_xt_)
-/* ( c-addr u -- ) always throws */
-WORD_START(_throw_undefined_name_, _throw_compile_only_xt_)
-    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_JUMP)
-    WORD_STACK_NONE() /* stack effect when not jumping */
-    WORD_DSTACK(2,0)  /* stack effect when jumping */
-    WORD_RSTACK(0,0)
-    WORD_NATIVE_NONE()
-    WORD_CODE(
-        /* ex-string!
-         * M4ERR_UNDEFINED_WORD throw
-         */
-        ex_string_store,
-        _lit_, T(M4ERR_UNDEFINED_WORD), throw,
-        exit
-    )
-WORD_END(_throw_undefined_name_)
-WORD(_word_,   _throw_undefined_name_, DSTACK(0,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
+WORD(_word_,  _throw_compile_only_xt_, DSTACK(0,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
 WORD(minus_one,        _word_,         DSTACK(0,1), RSTACK(0,0), WORD_PURE)
 WORD(zero,             minus_one,      DSTACK(0,1), RSTACK(0,0), WORD_PURE)
 WORD(one,              zero,           DSTACK(0,1), RSTACK(0,0), WORD_PURE)

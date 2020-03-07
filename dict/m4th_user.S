@@ -122,7 +122,7 @@ WORD_END(if_zero)
  *    otherwise, set an error condition
  */
 WORD_START(interpret,  if_zero)
-    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_FLAGS(0)
     WORD_DSTACK(-1,-1)
     WORD_RSTACK(-1,-1)
     WORD_STACK_NONE()
@@ -141,7 +141,8 @@ WORD_START(interpret,  if_zero)
          * if                       ( is a number )     ( c-addr u x               )
          *    nip nip (eval-number) exit                (                          )
          * then                     ( neither )         ( c-addr u x               )
-         * drop (throw-undefined-name)                  (                          )
+         * drop ex-string!                              (                          )
+         * M4ERR_UNDEFINED_WORD throw                   (                          )
          */
         _call_, WADDR(parse_name),
         _q_if_zero_, T(5),
@@ -156,7 +157,8 @@ WORD_START(interpret,  if_zero)
         _if_, T(5+SZ/SZt),
             nip, nip, _call_, WADDR(_eval_number_), exit,
         then,
-        drop, _call_, WADDR(_throw_undefined_name_), exit
+        drop, ex_string_store,
+        _lit_, T(M4ERR_UNDEFINED_WORD), throw, exit
     )
 WORD_END(interpret)
 WORD(noop,             interpret,      DSTACK(0,0), RSTACK(0,0), WORD_PURE)
