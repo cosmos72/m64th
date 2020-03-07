@@ -178,6 +178,7 @@ WORD_START(repl,  rdepth)
     WORD_NATIVE_NONE()
     WORD_CODE(
         /* begin
+         *    (repl-refill)
          *    ' interpret catch                        ( ... ex|0      )
          *    type-exception                           ( ...           )
          *    in>ibuf iobuf>err @                      ( ... err|0     )
@@ -185,7 +186,7 @@ WORD_START(repl,  rdepth)
          */
         begin,
             _lit_cell_, XT(interpret), _catch_beg_, _catch_end_,
-            _call_, WADDR(_interpret_type_ex_),
+            _call_, WADDR(type_exception),
             in_to_ibuf, iobuf_err, fetch,
         _until_, T(-9-2*SZ/SZt), exit
     )
@@ -193,7 +194,32 @@ WORD_END(repl)
 WORD(squared,          r_store,        DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(sub,              squared,        DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(minus_rot,        sub,            DSTACK(3,3), RSTACK(0,0), WORD_PURE)
-WORD(div_byte,         minus_rot,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+/* ( ex|0 -- ) write cr exception and ex-string@ to current output */
+WORD_START(type_exception,   minus_rot)
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_DSTACK(1,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_CODE(
+        /* ?if                                         ( ex|0          )
+         *    cr s" exception " type . space           (               )
+         *    ex-string@ type                          (               )
+         * else                                        ( 0             )
+         *    drop                                     (               )
+         * then                                        (               )
+         */
+        _q_if_, T(12+2*SZ/SZt),
+            _lit_, T('\n'), emit,
+            /* TODO: s" exception " type */
+            _call_, WADDR(dot), bl, emit,
+            ex_string_fetch, type,
+        _else_, T(2),
+            drop,
+        then, exit
+    )
+WORD_END(type_exception)
+WORD(div_byte,         type_exception, DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(div_char,         div_byte,       DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(div_short,        div_char,       DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(div_ushort,       div_short,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)

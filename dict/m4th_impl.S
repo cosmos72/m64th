@@ -298,42 +298,7 @@ WORD_START(_if_zero_, _if_)
     WORD_NATIVE_NONE()
     WORD_CODE(_compile_init_, _compile_unresolved_jump_, _if_zero_, _if_, exit)
 WORD_END(_if_zero_)
-/* ( ex|0 -- ) write " ok\n" or exception and ex-string@ to current output */
-WORD_START(_interpret_type_ex_,   _if_zero_)
-    WORD_FLAGS(M4FLAG_INLINE)
-    WORD_DSTACK(1,0)
-    WORD_RSTACK(0,0)
-    WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
-    WORD_CODE(
-        /* ?if0                                        ( ex|0          )
-         *    drop state @                             ( flag          )
-         *    if                      ( compiling )    (               )
-         *       s" compiled\n"                        ( c-addr u      )
-         *    else                    ( interpreting ) (               )
-         *       s" ok\n"                              ( c-addr u      )
-         *    then                                     ( c-addr u      )
-         *    type                                     (               )
-         * else                                        ( ex            )
-         *    s" exception " type . space              (               )
-         *    ex-string@ type cr                       (               )
-         * then
-         * out>obuf obuf-flush
-         */
-        /* TODO */
-        drop, exit
-#if 0
-        _q_if_zero_, T(4),
-            drop, _lit_, T('\n'), emit,
-        _else_, T(9+SZ/SZt),
-            bl, emit, _call_, WADDR(dot),
-            ex_string_fetch, type, _lit_, T('\n'), emit,
-        then,
-        out_to_obuf, _call_, WADDR(obuf_flush), exit
-#endif
-    )
-WORD_END(_interpret_type_ex_)
-WORD_START(_ip_, _interpret_type_ex_)
+WORD_START(_ip_, _if_zero_)
     WORD_FLAGS(M4FLAG_INLINE_ALWAYS)
     WORD_DSTACK(0,1)
     WORD_RSTACK(0,0)

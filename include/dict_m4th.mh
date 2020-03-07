@@ -119,12 +119,14 @@
     X(8, "continue", continue)         /* unconditional jump to 'begin'                  */        \
     X(3, "if0", if_zero)               /* alias of 0= if                                 */        \
     X(9, "interpret", interpret)       /* one iteration of forth interpret/compile loop  */        \
-    X(4, "repl", repl)                 /* call INTERPRET repeatedly until EOF or an error */       \
-    X(8, "string<>", string_ne)        /* ( addr1 addr2 u -- addr1 addr2 u t|f )          */       \
-    X(11, "string-ci<>", string_ci_ne) /* ( addr1 addr2 u -- addr1 addr2 u t|f )          */       \
+    X(4, "repl", repl)                 /* call INTERPRET repeatedly until IN I/O error   */        \
+    X(8, "string<>", string_ne)        /* ( addr1 addr2 u -- addr1 addr2 u t|f )         */        \
+    X(11, "string-ci<>", string_ci_ne) /* ( addr1 addr2 u -- addr1 addr2 u t|f )         */        \
     /* ( caddr n -- caddr' n' x t|f ) convert string to number, recognizing base, sign prefix */   \
     X(13, "string>number", string_to_number)                                                       \
-    X(11, "valid-base?", valid_base_q) /* ( base -- t|f ) true if 2 <= base <= 36       */
+    /*         ( ex|0 -- ) write cr exception and ex-string@ to current output           */        \
+    X(14, "type-exception", type_exception)                                                        \
+    X(11, "valid-base?", valid_base_q) /* ( base -- t|f ) true if 2 <= base <= 36        */
 
 /* ------- m4th-c ------------------------------------------------------------------------------- */
 #define DICT_TOKENS_M4TH_C(X)                                                                      \
@@ -268,8 +270,6 @@
     /* ( nt -1|1 -- ) interpret or compile name. dtop == -1 if name is immediate */                \
     X(11, "(eval-name)", _eval_name_)                                                              \
     X(13, "(eval-number)", _eval_number_) /* ( x -- ) interpret or compile number */               \
-    /*         ( ex|0 -- ) write " ok\n" or exception and ex-string@ to current output */          \
-    X(19, "(interpret-type-ex)", _interpret_type_ex_)                                              \
     X(23, "[any-token-gives-cell?]", _any_token_gives_cell_q_)                                     \
     X(8, "[inline]", _inline_)      /* ( w -- ) inline a call to w into word being compiled */     \
     X(10, "[optimize]", _optimize_) /* optimize word being compiled  */                            \

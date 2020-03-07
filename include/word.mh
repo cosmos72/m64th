@@ -20,10 +20,6 @@
 #ifndef M4TH_INCLUDE_WORD_MH
 #define M4TH_INCLUDE_WORD_MH
 
-/** used to insert a word in a sequence of functions */
-#define m4WADDR(x) WORD_SYM(x)
-#define m4XT(x) (WORD_SYM(x) + WORD_OFF_XT) /* only works if word.data_n == 0 */
-
 #define WORD_OFF_PREV_OFF 0  /* offset of m4word->prev_off  */
 #define WORD_OFF_NAME_OFF 4  /* offset of m4word->name_off  */
 #define WORD_OFF_FLAGS 6     /* offset of m4word->flags     */
