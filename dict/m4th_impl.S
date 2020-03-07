@@ -320,15 +320,17 @@ WORD_START(_interpret_type_ex_,   _if_zero_)
          * then
          * out>obuf obuf-flush
          */
+        /* TODO */
+        drop, exit
+#if 0
         _q_if_zero_, T(4),
-            /* TODO */
             drop, _lit_, T('\n'), emit,
         _else_, T(9+SZ/SZt),
-            /* TODO */
             bl, emit, _call_, WADDR(dot),
             ex_string_fetch, type, _lit_, T('\n'), emit,
         then,
         out_to_obuf, _call_, WADDR(obuf_flush), exit
+#endif
     )
 WORD_END(_interpret_type_ex_)
 WORD_START(_ip_, _interpret_type_ex_)
