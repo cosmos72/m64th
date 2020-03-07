@@ -43,6 +43,16 @@ FUNC_START(ex_string_fetch)
 FUNC_END(ex_string_fetch)
 
 
+/* iobuf-empty? ( io -- t|f ) true if iobuf is currently empty */
+FUNC_START(iobuf_empty_query)
+        LOAD(  REG1,   AT(DTOP, IOBUF_OFF_POS))    /* a = iobuf.pos     */
+        LOAD(  REG2,   AT(DTOP, IOBUF_OFF_SIZE))   /* b = iobuf.size    */
+        ZERO(  DTOPw)
+        cmp    REG2,   REG1;
+        cmovge RFFF,   DTOP;
+FUNC_END(iobuf_empty_query)
+
+
 FUNC_START(name_to_prev) /* ( nt -- nt'|0 ) */
         LD_uw( REG1_uw,    AT(DTOP, WORD_OFF_PREV_OFF)) /* a = w.prev_off  */
         SUB2(  REG1,       DTOP)       /* dtop = nt'               */

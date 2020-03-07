@@ -32,6 +32,15 @@ FUNC_START(name_to_prev) /* ( nt -- nt'|0 ) */
 FUNC_END(name_to_prev)
 
 
+/* iobuf-empty? ( io -- t|f ) true if iobuf is currently empty */
+FUNC_START(iobuf_empty_query)
+        LOAD(  REG1,   AT(DTOP, IOBUF_OFF_POS))    /* a = iobuf.pos     */
+        LOAD(  REG2,   AT(DTOP, IOBUF_OFF_SIZE))   /* b = iobuf.size    */
+        cmp    REG1,   REG2;
+        csetm  DTOP,   ge;
+FUNC_END(iobuf_empty_query)
+
+
 FUNC_START(wordlist_last) /* ( wid -- nt ) */
         LOAD(  DTOP,       AT(DTOP, WORDLIST_OFF_DICT))     /* dtop = wid.dict        */
         LOAD(  REG1_uw,    AT(DTOP, DICT_OFF_LASTWORD_OFF)) /* a = dict.last_word_off */

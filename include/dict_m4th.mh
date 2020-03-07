@@ -158,6 +158,7 @@
     X(10, "iobuf>data", iobuf_data)                                                                \
     /* ( io -- c-addr u ) get iobuf free space i.e. from iobuf>size to iobuf>max */                \
     X(15, "iobuf>free-data", iobuf_free_data)                                                      \
+    X(12, "iobuf-empty?", iobuf_empty_query) /* ( io -- t|f ) true if iobuf is currently empty */  \
     X(9, "iobuf>err", iobuf_err)        /* ( io -- addr ) get address of iobuf err          */     \
     X(10, "iobuf>func", iobuf_func)     /* ( io -- addr ) get address of iobuf I/O function */     \
     X(12, "iobuf>handle", iobuf_handle) /* ( io -- addr ) get address of iobuf handle       */     \

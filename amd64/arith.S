@@ -218,7 +218,7 @@ FUNC_END(equal)
 
 FUNC_START(more)           /* > */
         DPOP(  REG2)
-        cmp    DTOP, REG2;
+        cmp    DTOP,   REG2;
         mov    IMM(0), DTOPw;      /* xor would affect EFLAGS */
         cmovg  RFFF,   DTOP;
 FUNC_END(more)
@@ -226,7 +226,7 @@ FUNC_END(more)
 
 FUNC_START(more_equal)     /* >=   m4th-user */
         DPOP(  REG2)
-        cmp    DTOP, REG2;
+        cmp    DTOP,   REG2;
         mov    IMM(0), DTOPw;      /* xor would affect EFLAGS */
         cmovge RFFF,   DTOP;
 FUNC_END(more_equal)

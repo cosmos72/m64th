@@ -122,7 +122,7 @@ WORD_START(ibuf_read_nonblanks, ibuf_read_blanks)
         two_r_from_two_drop, exit
     )
 WORD_END(ibuf_read_nonblanks)
-/* iobuf-refill ( io -- err ) read some chars into iobuf */
+/* ibuf-refill ( io -- err ) read some chars into iobuf */
 WORD_START(ibuf_refill, ibuf_read_nonblanks)
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_DSTACK(1,1)
@@ -203,7 +203,8 @@ WORD(iobuf_addr,       in_to_ibuf,    DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
 WORD(iobuf_all_data,   iobuf_addr,     DSTACK(1,2), RSTACK(0,0), WORD_IMPURE)
 WORD(iobuf_data,       iobuf_all_data, DSTACK(1,2), RSTACK(0,0), WORD_IMPURE)
 WORD(iobuf_free_data,  iobuf_data,     DSTACK(1,2), RSTACK(0,0), WORD_IMPURE)
-WORD(iobuf_err,       iobuf_free_data, DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD(iobuf_empty_query,iobuf_free_data,DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
+WORD(iobuf_err,     iobuf_empty_query, DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(iobuf_func,       iobuf_err,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(iobuf_handle,     iobuf_handle,   DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(iobuf_max,        iobuf_func,     DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
