@@ -26,7 +26,7 @@
 FUNC_START(emit)
         LOAD(  REG1,   AT(M4TH, M4TH_OFF_OUT))         /* a = io                 */
         DPUSH( REG1)                                   /* dstk ( io ch         ) */
-        ASM_CALL(  FUNC(obuf_write_char))          /* dstk ( err           ) */
+        ASM_CALL(      FUNC(obuf_write_char))          /* dstk ( err           ) */
         DPOP(DTOP)                                     /* dstk (               ) */
 FUNC_END(emit)
 
@@ -133,12 +133,12 @@ FUNC_START(obuf_write_char)
         /* check if enough space in iobuf, i.e. io.size < io.max */
 #ifdef __x86_64__
         JAE(   REG2,   AT(REG1, IOBUF_OFF_MAX), TO(obuf_write_char.slow))
-        STORb( DTOPb,  IOBUF_OFF_ADDR(REG1, REG2))     /* io.addr[io.pos] = dtop */
+        STORb( DTOPb,  IOBUF_OFF_ADDR(REG1, REG2))     /* io.addr[io.size] = dtop */
 #else
         LOAD(  REG3,   AT(REG1, IOBUF_OFF_MAX))        /* c = io.max             */
         JAE(   REG2,   REG3, TO(obuf_write_char.slow))
         ADDI(  REG1,   IOBUF_OFF_ADDR,  REG4)          /* d = io.addr            */
-        STORb( DTOPb,  AT(REG4, REG2, 1))              /* io.addr[io.pos] = dtop */
+        STORb( DTOPb,  AT(REG4, REG2, 1))              /* io.addr[io.size] = dtop */
 #endif
         INC1(  REG2)
         STOR(  REG2,   AT(REG1, IOBUF_OFF_SIZE))       /* io.size++              */
@@ -202,6 +202,6 @@ FUNC_START(type)
         LOAD(  REG2,   AT(DSTK))                       /* b = c-addr             */
         STOR(  REG1,   AT(DSTK))                       /* dstk ( io u          ) */
         DPUSH( REG2)                                   /* dstk ( io c-addr u   ) */
-        ASM_CALL(  FUNC(obuf_write_string))        /* dstk ( err           ) */
+        ASM_CALL(      FUNC(obuf_write_string))        /* dstk ( err           ) */
         DPOP(DTOP)                                     /* dstk (               ) */
 FUNC_END(type)
