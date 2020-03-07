@@ -40,6 +40,9 @@
 /* assembler macro: insert an m4cell in a sequence of m4token */
 #define M4CELL(x) (x)
 
+/* assembler macro: insert string in a sequence of m4token */
+#define M4STRING_LIT(len, str)
+
 /* assembler macro: insert word address in a sequence of m4token */
 #define M4WADDR(wordname) WORD_SYM(wordname)
 
@@ -48,5 +51,8 @@
  * only works if word.data_n == 0
  */
 #define M4XT(wordname) (WORD_SYM(wordname) + WORD_OFF_XT)
+
+/* not here: defined by file macro.mh */
+/* #define M4LIT_STRING(len, str) */
 
 #endif /* M4TH_INCLUDE_TOKEN_MH */

@@ -212,9 +212,9 @@
 #define M4_lit2s_ 692               /* (lit-2s) must be followed by int16, push it to dstack   */
 #define M4_lit4s_ 693               /* (lit-4s) must be followed by int32, push it to dstack   */
 #define M4_lit8s_ 694               /* (lit-8s) must be followed by int64, push it to dstack   */
-#define M4_loop_ 695                /* (loop)   must be followed by IP offset to jump          */
+#define M4_lit_string_ 695          /* must be followed by T(len) and ascii, push them to dstack */
 #undef M4____gap                    /*                                         */
-#undef M4____gap                    /*                                         */
+#define M4_loop_ 697                /* (loop)   must be followed by IP offset to jump          */
 #undef M4____gap                    /*                                         */
 #define M4_missing_ 0            /* (missing) called instead of invalid/unimplemented function  */
 #define M4_repeat_ 700           /* (repeat) must be followed by IP offset to jump              */

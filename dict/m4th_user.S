@@ -211,6 +211,7 @@ WORD_START(type_exception,   minus_rot)
          */
         _q_if_, T(12+2*SZ/SZt),
             _lit_, T('\n'), emit,
+            LIT_STRING(11, " exception "),
             /* TODO: s" exception " type */
             _call_, WADDR(dot), bl, emit,
             ex_string_fetch, type,

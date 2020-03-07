@@ -166,8 +166,17 @@
 #define M4SIZEOF_CELL(x) _, SZ
 #define M4SIZEOF_WADDR(x) _, SZ
 #define M4SIZEOF_XT(x) _, SZ
+#define M4SIZEOF_LIT_STRING(len, str) _, ((3 * SZt + len - 1) & (SZt - 1))
+
+#define M4UNITOF_SHORT(x) _, 2
+#define M4UNITOF_INT(x) _, 4
+#define M4UNITOF_CELL(x) _, SZ
+#define M4UNITOF_WADDR(x) _, SZ
+#define M4UNITOF_XT(x) _, SZ
+#define M4UNITOF_LIT_STRING(len, str) _, LIT_STRING
 
 #define M4SIZEOF(token) SECOND_ARG(M4SIZEOF_##token, SZt)
+#define M4UNITOF(token) SECOND_ARG(M4UNITOF_##token, SZt)
 
 #define M4SUM_SIZEOF_(arg) M4SIZEOF(arg) +
 #define M4SUM_SIZEOF(...) (WRAP_ARGS(M4SUM_SIZEOF_, __VA_ARGS__) 0)
@@ -175,5 +184,27 @@
 #define M4FLAG_CONSUMES_IP_SZ CAT2(M4FLAG_CONSUMES_IP_, SZ)
 #define M4FLAG_CONSUMES_IP_SZt CAT2(M4FLAG_CONSUMES_IP_, SZt)
 #define M4FLAG_CONSUMES_IP_SZt2 CAT2(M4FLAG_CONSUMES_IP_, SZt2)
+
+/* expand to the correct .[N]byte sequence for token i.e. one of:
+ * .byte ...
+ * .2byte ...
+ * .4byte ...
+ * .8byte ...
+ */
+#define M4ASM_BYTES(token) CAT2(M4ASM_BYTES_, M4UNITOF(token))(token)
+#define M4ASM_BYTES_1(token) .byte M4TOKEN_VAL(token)
+#define M4ASM_BYTES_2(token) .2byte M4TOKEN_VAL(token)
+#define M4ASM_BYTES_4(token) .4byte M4TOKEN_VAL(token)
+#define M4ASM_BYTES_8(token) .8byte M4TOKEN_VAL(token)
+#define M4ASM_BYTES_LIT_STRING(token) M4TOKEN_VAL(token) /* expands to M4LIT_STRING(len, str) */
+
+/*
+ * assembler macro: insert M4_lit_string_, length and padded ascii string
+ * in a sequence of m4token.
+ */
+#define M4LIT_STRING(len, str)                                                                     \
+    CAT3(., SZt, byte) M4_lit_string_, M4T(len);                                                   \
+    .ascii str;                                                                                    \
+    .p2align PSZt, 0
 
 #endif /* M4TH_INCLUDE_MACRO_MH */
