@@ -70,7 +70,7 @@ int main(int argc, char *argv[]) {
     m->out->func = m4word_code(&WORD_SYM(c_fwrite)).addr;
     m->out->handle = (m4cell)stdout;
 
-    m4th_repl(m);
+    /* m4th_repl(m); */
 
     m4th_del(m);
 
