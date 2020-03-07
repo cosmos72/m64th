@@ -49,11 +49,11 @@ FUNC_RAWEND(_lit8s_)
 FUNC_START(_lit_string_)   /* (lit-string) push to dstack the SZt and ascii at following IP */
         DPUSH( DTOP)
         LD_ut( DTOP_ut,AT(IP))         /* dtop = length                     */
-        ADDI(  IP,     SZt,    REG1)   /* a = c-addr                        */
+        ADDI(  IP,     SZt,    REG1)   /* a  = c-addr                       */
         ADD4(  REG1,   DTOP,0, IP)     /* IP = c-addr + length              */
         DPUSH( REG1)
         ALIGN( SZt,   IP)              /* IP = aligned@SZt(c-addr + length) */
-        NEXT0()                        /* jump to end of string */
+        NEXT0()                        /* jump to end of string             */
 FUNC_RAWEND(_lit_string_)
 #endif
 
