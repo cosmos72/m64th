@@ -186,10 +186,8 @@
     DICT_TOKENS_M4TH_CORE(X)                                                                       \
     /* ( handle c-addr u -- 0 M4ERR_UNEXPECTED_EOF ) always return EOF. usable for iobuf>func */   \
     X(10, "always-eof", always_eof)                                                                \
-    /*                        ( io -- err ) read blanks from iobuf, refilling as needed */         \
-    X(16, "ibuf-read-blanks", ibuf_read_blanks)                                                    \
-    /*   ( io -- c-addr u ) read blank-delimited string from iobuf, refilling as needed */         \
-    X(19, "ibuf-read-nonblanks", ibuf_read_nonblanks)                                              \
+    /*   ( io -- c-addr u ) find blank-delimited string in current iobuf data (no refilling) */    \
+    X(19, "ibuf-find-nonblanks", ibuf_find_nonblanks)                                              \
     X(11, "ibuf-refill", ibuf_refill)           /*   ( io -- err  ) read some data into iobuf   */ \
     X(16, "ibuf-skip-blanks", ibuf_skip_blanks) /*   skip whitespace from iobuf current data    */ \
     X(12, "name-inline?", name_inline_query) /* ( nt -- flag ) calls to name should be inlined? */ \

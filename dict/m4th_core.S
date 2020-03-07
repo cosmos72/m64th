@@ -45,85 +45,32 @@ WORD_START(always_eof, div_token)
 WORD_END(always_eof)
 WORD(ex_string_store,  always_eof,     DSTACK(2,0), RSTACK(0,0), WORD_IMPURE)
 WORD(ex_string_fetch, ex_string_store, DSTACK(0,2), RSTACK(0,0), WORD_IMPURE)
-/* ( io -- err ) read and skip blanks from iobuf, refilling as needed */
-WORD_START(ibuf_read_blanks, ex_string_fetch)
-    WORD_FLAGS(0)
-    WORD_DSTACK(1,1)
-    WORD_RSTACK(0,0)
-    WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
-    WORD_CODE(
-        /* begin                                       ( io           )
-         *    dup iobuf-skip-blanks                    ( io           )
-         *    dup iobuf>data nip                       ( io len       )
-         *    if                                       ( io           )
-         *       drop 0 exit                           ( 0            )
-         *    then                                     ( io           )
-         *    dup iobuf-refill                         ( io err       )
-         *    ?if                                      ( io err       )
-         *       nip exit         ( may be eof )       ( err          )
-         *    then                                     ( io err       )
-         *    drop                                     ( io           )
-         * again                                       ( io           )
-         */
-        begin,
-            dup, _call_, WADDR(ibuf_skip_blanks),
-            dup, iobuf_data, nip,
-            _if_, T(4),
-                drop, zero, exit,
-            then,
-            dup, _call_, WADDR(ibuf_refill),
-            _q_if_, T(3),
-                nip, exit,
-            then,
-            drop,
-        _again_, T(-21-2*SZ/SZt)
-    )
-WORD_END(ibuf_read_blanks)
-/* ( io -- c-addr u ) read blank-delimited string from iobuf, refilling as needed */
-WORD_START(ibuf_read_nonblanks, ibuf_read_blanks)
-    WORD_FLAGS(0)
+/* ( io -- c-addr u ) find blank-delimited string in current iobuf data (without refilling) */
+WORD_START(ibuf_find_nonblanks, ex_string_fetch)
+    WORD_FLAGS(M4FLAG_INLINE)
     WORD_DSTACK(1,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_CODE(
         /*
-         * dup dup iobuf-read-blanks 2>r             ( io            ) (R: io err )
-         * iobuf>data                                ( addr u        ) (R: io err )
-         * begin                                     ( addr u        ) (R: io err )
-         *    2dup string-first-blank                ( addr u u'     ) (R: io err )
-         *    tuck = while                           ( addr u'       ) (R: io err )
-         *    dup $ff < while    ( max name length ) ( addr u        ) (R: io err )
-         *    r@ while0          ( I/O err ?       ) ( addr u        ) (R: io err )
-         *    2drop i'                               ( io            ) (R: io err )
-         *    iobuf-refill       ( also moves data ) ( err'          ) (R: io err )
-         *    r!                                     (               ) (R: io err')
-         *    i' iobuf>data                          ( addr u        ) (R: io err )
-         * ?until0                                   ( addr u        ) (R: io err )
-         * dup i' iobuf>pos                          ( addr u u pos  ) (R: io err )
-         * +!                                        ( addr u        ) (R: io err )
-         * 2r> 2drop                                 ( addr u        )
+         * dup >r ibuf-skip-blanks                   (               ) (R: io     )
+         * r@ iobuf>data                             ( addr u        ) (R: io     )
+         * trail string-first-blank                  ( addr u'       ) (R: io     )
+         * dup r@ iobuf>pos                          ( addr u u pos  ) (R: io     )
+         * +!                                        ( addr u        ) (R: io     )
+         * r> drop                                   ( addr u        )
          */
-        dup, dup, _call_, WADDR(ibuf_read_blanks), two_to_r,
-        iobuf_data,
-        begin,
-            two_dup, string_first_blank,
-            tuck, equal, _while_, T(17+SZ/SZt),
-            dup, _lit_, T(0xff), less, _while_, T(11+SZ/SZt),
-            r_fetch, _while_zero_, T(8+SZ/SZt),
-            two_drop, i_prime,
-            _call_, WADDR(ibuf_refill),
-            r_store,
-            i_prime, iobuf_data,
-        _q_until_zero_, T(-23-SZ/SZt),
-        dup, i_prime, iobuf_pos,
+        dup_to_r, _call_, WADDR(ibuf_skip_blanks),
+        r_fetch, iobuf_data,
+        trail, string_first_blank,
+        dup, r_fetch, iobuf_pos,
         plus_store,
-        two_r_from_two_drop, exit
+        r_from_drop, exit
     )
-WORD_END(ibuf_read_nonblanks)
+WORD_END(ibuf_find_nonblanks)
 /* ibuf-refill ( io -- err ) read some chars into iobuf */
-WORD_START(ibuf_refill, ibuf_read_nonblanks)
+WORD_START(ibuf_refill, ibuf_find_nonblanks)
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)
