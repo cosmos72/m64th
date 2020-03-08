@@ -166,7 +166,7 @@
 #define M4SIZEOF_CELL(x) _, SZ
 #define M4SIZEOF_WADDR(x) _, SZ
 #define M4SIZEOF_XT(x) _, SZ
-#define M4SIZEOF_LIT_STRING(len, str) _, ((3 * SZt + len - 1) & (SZt - 1))
+#define M4SIZEOF_LIT_STRING(len, str) _, ((3 * SZt + len - 1) & ~(SZt - 1))
 
 #define M4UNITOF_SHORT(x) _, 2
 #define M4UNITOF_INT(x) _, 4

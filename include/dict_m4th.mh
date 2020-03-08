@@ -182,7 +182,7 @@
     X(13, "searchorder-n", searchorder_n) /* (    -- addr    ) get address of searchorder count */ \
     X(8, "user-var", user_var) /*        ( -- addr ) must be followed by index of user variable */ \
     X(13, "wordlist-last", wordlist_last) /* ( wid -- nt     ) get last name in wordlist        */ \
-    X(9, "xt>name", xt_to_name)           /* ( XT  -- nt     ) convert XT to name               */
+    X(7, "xt>name", xt_to_name)           /* ( XT  -- nt     ) convert XT to name               */
 
 #define DICT_WORDS_M4TH_CORE(X)                                                                    \
     DICT_TOKENS_M4TH_CORE(X)                                                                       \
