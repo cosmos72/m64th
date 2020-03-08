@@ -479,6 +479,11 @@ static m4testexecute testexecute_d[] = {
      {{1, {-1 /* fixed by m4testexecute_fix() */}}, {}},
      {}},
 #endif
+    {"(lit-string)",
+     {m4_ip_, m4_lit_string_, T(3), (m4cell) "abc", m4minus_rot, m4minus, m4bye},
+     {{}, {}},
+     {{2, {3, -3 * SZt /*distance between the tokens (ip) and "abc"*/}}, {}},
+     {}},
     /* ----------------------------- catch, throw --------------------------- */
     {"' noop catch",
      {m4_catch_beg_, m4_catch_end_, m4bye},
@@ -1087,7 +1092,9 @@ static m4testexecute testexecute_f[] = {
 static void m4testexecute_fix(m4testexecute *t, const m4code_pair *pair) {
     switch (t->code[0]) {
     case m4_ip_:
-        t->after.d.data[0] = (m4cell)pair->first.addr;
+        if (t->code[1] == m4bye) {
+            t->after.d.data[0] = (m4cell)pair->first.addr;
+        }
         break;
     case m4_ip_to_data_addr_:
         /* TODO t->after.d.data[0] = (m4cell)w->data; */
@@ -1127,6 +1134,7 @@ static m4cell m4testexecute_run(m4th *m, m4testexecute *t, const m4code_pair *pa
     m->in->func = m4word_code(&WORD_SYM(c_fread)).addr;
 #endif /* 0 */
     m->ip = pair->first.addr;
+
     m4th_run(m);
 
     return m4countedstack_equal(&t->after.d, &m->dstack) &&

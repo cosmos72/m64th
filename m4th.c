@@ -266,15 +266,15 @@ void m4token_print(m4token tok, FILE *out) {
 static m4cell m4token_print_int16(const m4token *code, FILE *out) {
     int16_t val;
     memcpy(&val, code, sizeof(val));
-    fprintf(out, "%s(%d) ", (sizeof(val) == sizeof(m4token) ? "E" : "SHORT"), (int)val);
-    return sizeof(val) / sizeof(m4token);
+    fprintf(out, "%s(%d) ", (sizeof(val) == SZt ? "T" : "SHORT"), (int)val);
+    return sizeof(val) / SZt;
 }
 
 static m4cell m4token_print_int32(const m4token *code, FILE *out) {
     int32_t val;
     memcpy(&val, code, sizeof(val));
     fprintf(out, "INT(%ld) ", (long)val);
-    return sizeof(val) / sizeof(m4token);
+    return sizeof(val) / SZt;
 }
 
 static m4cell m4token_print_int64(const m4token *code, FILE *out) {
@@ -285,7 +285,14 @@ static m4cell m4token_print_int64(const m4token *code, FILE *out) {
     } else {
         fprintf(out, "CELL(0x%lx) ", (unsigned long)val);
     }
-    return sizeof(val) / sizeof(m4token);
+    return sizeof(val) / SZt;
+}
+
+static m4cell m4token_print_ascii(const m4cell_u len, const m4char *ascii, FILE *out) {
+    fputs("ASCII(\"", out);
+    fwrite(ascii, 1, (size_t)len, out);
+    fputs("\") ", out);
+    return (len + SZt - 1) / SZt;
 }
 
 static m4cell m4token_print_word(const m4token *code, FILE *out) {
@@ -298,7 +305,7 @@ static m4cell m4token_print_word(const m4token *code, FILE *out) {
             fputs("WADDR(", out);
             m4string_print(name, out);
             fputs(") ", out);
-            return sizeof(val) / sizeof(m4token);
+            return sizeof(val) / SZt;
         }
     }
     return m4token_print_int64(code, out);
@@ -314,7 +321,7 @@ static m4cell m4token_print_xt(const m4token *code, FILE *out) {
             fputs("XT(", out);
             m4string_print(name, out);
             fputs(") ", out);
-            return sizeof(val) / sizeof(m4token);
+            return sizeof(val) / SZt;
         }
     }
     return m4token_print_int64(code, out);
@@ -325,9 +332,13 @@ m4cell m4token_print_consumed_ip(m4token tok, const m4token *code, m4cell maxn, 
     if (nbytes == 0 || nbytes / SZt > maxn) {
         return 0;
     } else if (nbytes == SZt) {
+        m4cell consumed = 1;
         fputc('\'', out);
         m4token_print(code[0], out);
-        return 1;
+        if (tok == m4_lit_string_) {
+            consumed += m4token_print_ascii(code[0], (const m4char *)(code + 1), out);
+        }
+        return consumed;
     } else if (tok == m4_compile_unresolved_jump_ && nbytes == 2 * SZt) {
         fputc('\'', out);
         m4token_print(code[0], out);
@@ -461,34 +472,67 @@ void m4slice_copy_to_code(const m4slice src, m4code *dst) {
         }
         return;
     }
-    if (dst == NULL || dst->addr == NULL || dst->n < src.n) {
-        fputs(" m4slice_copy_to_code(): invalid args, dst is smaller than src", stderr);
+    if (dst == NULL || dst->addr == NULL) {
+        fputs(" m4slice_copy_to_code(): invalid args, dst.addr is NULL", stderr);
         return;
     }
-    m4cell i = 0, n = src.n;
+    m4cell_u i = 0, j = 0, delta, sn = src.n, dn = dst->n;
     const m4cell *sdata = src.addr;
     m4token *ddata = dst->addr;
 
-    while (i < n) {
-        m4cell x = sdata[i];
+    while (i < sn && j < dn) {
         const m4word *w;
-        ddata[i++] = (m4token)x;
+        m4cell x = sdata[i++];
+        ddata[j++] = (m4token)x;
         if (x < 0 || x >= M4____end || (w = wtable[x]) == NULL) {
+            continue;
+        }
+        if (x == m4bye) {
+            sn = i;
+            break;
+        }
+        if (x == m4_lit_string_) {
+            uint16_t len = (uint16_t)sdata[i];
+            if (j + 1 + (len + SZt - 1) / SZt > dn) {
+                goto fail;
+            }
+            delta = m4_2bytes_copy_to_token(len, ddata + j);
+            i += delta, j += delta;
+            memcpy(ddata + j, (const char *)sdata[i++], len);
+            j += (len + SZt - 1) / SZt;
             continue;
         }
         switch (w->flags & M4FLAG_CONSUMES_IP_MASK) {
         case M4FLAG_CONSUMES_IP_2:
-            i += m4_2bytes_copy_to_token((uint16_t)sdata[i], ddata + i);
+            if (j + 2 / SZt > dn) {
+                goto fail;
+            }
+            delta = m4_2bytes_copy_to_token((uint16_t)sdata[i], ddata + j);
+            i += delta, j += delta;
             break;
         case M4FLAG_CONSUMES_IP_4:
-            i += m4_4bytes_copy_to_token((uint32_t)sdata[i], ddata + i);
+            if (j + 4 / SZt > dn) {
+                goto fail;
+            }
+            delta = m4_4bytes_copy_to_token((uint32_t)sdata[i], ddata + j);
+            i += delta, j += delta;
             break;
         case M4FLAG_CONSUMES_IP_8:
-            i += m4_8bytes_copy_to_token((uint64_t)sdata[i], ddata + i);
+            if (j + 8 / SZt >= dn) {
+                goto fail;
+            }
+            delta = m4_8bytes_copy_to_token((uint64_t)sdata[i], ddata + j);
+            i += delta, j += delta;
             break;
         }
     }
-    dst->n = n;
+    if (i == sn) {
+        dst->n = j;
+        return;
+    }
+fail:
+    fputs(" m4slice_copy_to_code(): invalid args, dst is too small\n", stderr);
+    dst->n = 0;
 }
 
 /* ----------------------- m4iobuf ----------------------- */
@@ -640,7 +684,7 @@ void m4word_data_print(const m4word *w, m4cell data_start_n, FILE *out) {
     }
     m4string data = m4word_data(w, data_start_n);
     if (w->flags & m4flag_data_tokens) {
-        m4code code = {(m4token *)data.addr, data.n / (m4cell)sizeof(m4token)};
+        m4code code = {(m4token *)data.addr, data.n / (m4cell)SZt};
         m4code_print(code, out);
     } else {
         fprintf(out, "<%ld> ", (long)data.n);
