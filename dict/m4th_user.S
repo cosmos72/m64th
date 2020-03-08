@@ -178,10 +178,11 @@ WORD_START(repl,  rdepth)
     WORD_NATIVE_NONE()
     WORD_CODE(
         /* begin
-         *    (repl-refill)
+         *    (refill-if-empty)
          *    ' interpret catch                        ( ... ex|0      )
          *    type-exception                           ( ...           )
-         *    in>ibuf iobuf>err @                      ( ... err|0     )
+         *    (type-ok-if-eol)
+	 * in>ibuf iobuf>err @                      ( ... err|0     )
          * until
          */
         begin,
