@@ -642,7 +642,8 @@ static void refreshLine(struct linenoiseState *l) {
  *
  * On error writing to the terminal -1 is returned, otherwise 0. */
 int linenoiseEditInsert(struct linenoiseState *l, char c) {
-    if (l->len < l->buflen) {
+    /* leave space for ENTER */
+    if (l->len + 1 < l->buflen) {
         if (l->len == l->pos) {
             l->buf[l->pos] = c;
             l->pos++;
@@ -798,7 +799,7 @@ static int linenoiseEdit(int stdin_fd, int stdout_fd, char *buf, size_t buflen, 
     linenoiseHistoryAdd("");
 
     if (write(l.ofd,prompt,l.plen) == -1) return -1;
-    while(l.len < l.buflen) {
+    while(1) {
         int nread;
         char seq[3];
         char c;
@@ -831,8 +832,6 @@ static int linenoiseEdit(int stdin_fd, int stdout_fd, char *buf, size_t buflen, 
                 refreshLine(&l);
                 hintsCallback = hc;
             }
-            /* forth expects a space to be displayed instead of '\n' */
-            (void)write(l.ofd," ",1);
             l.buf[l.len++] = '\n';
             return (int)l.len;
         case CTRL_C:     /* ctrl-c */

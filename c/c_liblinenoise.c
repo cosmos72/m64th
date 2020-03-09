@@ -26,6 +26,7 @@
 
 m4pair m4th_c_linenoise(const char *prompt, char *addr, size_t len) {
     m4pair ret = {};
+    linenoiseSetMultiLine(1);
     int n = linenoise(addr, len, prompt);
     if (n > 0) {
         ret.num = n;

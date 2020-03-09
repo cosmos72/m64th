@@ -26,7 +26,7 @@
 m4cell m4th_repl(m4th *m);
 
 /** temporary C implementation of '.' */
-void m4th_dot(m4cell n);
+void m4th_dot(m4cell n, m4iobuf *io);
 
 /** used for testing and benchmark */
 extern m4cell m4th_crctable[256];

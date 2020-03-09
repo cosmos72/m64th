@@ -276,21 +276,24 @@ void m4dict_print(const m4dict *dict, FILE *out);
 /** return how many bytes of code are consumed by token or word marked with given flags */
 m4cell m4flags_consume_ip(m4flags fl);
 void m4flags_print(m4flags fl, FILE *out);
-
-/** return how many bytes of code are consumed by executing token */
-m4cell m4token_consumes_ip(m4token tok);
-void m4token_print(m4token val, FILE *out);
-/** try to find the m4word that describes given token */
-const m4word *m4token_to_word(m4token tok);
-
+       
 void m4slice_copy_to_code(m4slice src, m4code *dst);
 void m4slice_to_word_code(const m4slice *src, m4word *dst);
 
 m4cell m4string_equals(m4string a, m4string b);
 void m4string_print(m4string str, FILE *out);
 void m4string_print_hex(m4string str, FILE *out);
+/** print, replacing non-printable chars with escape sequences */
+void m4string_print_escape(m4string str, FILE *out);
+void m4string2_print_escape(const m4char *addr, const m4cell_u n, FILE *out);
 
 void m4stack_print(const m4stack *stack, FILE *out);
+
+/** return how many bytes of code are consumed by executing token */
+m4cell m4token_consumes_ip(m4token tok);
+void m4token_print(m4token val, FILE *out);
+/** try to find the m4word that describes given token */
+const m4word *m4token_to_word(m4token tok);
 
 m4code m4word_code(const m4word *w);
 m4string m4word_data(const m4word *w, m4cell code_start_n);

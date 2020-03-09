@@ -49,7 +49,7 @@ WORD_START(again,      question_do)
     WORD_CODE(
         _compile_init_,
         _compile_unresolved_jump_, _again_, repeat,
-        _call_, WADDR(_resolve_begin_repeat_), /* resolve all jump offsets of begin.. */
+        CALL(_resolve_begin_repeat_), /* resolve all jump offsets of begin.. */
         exit
     )
 WORD_END(again)
@@ -61,12 +61,12 @@ WORD_START(compile_comma, again)
     WORD_NATIVE_NONE()
     WORD_CODE(
         _compile_init_,
-        dup, xt_to_name, _call_, WADDR(name_inline_query),
+        dup, xt_to_name, CALL(name_inline_query),
         _if_zero_, T(5),
             _compile_lit_, _call_xt_,  /* compile (call-xt) */
             _compile_xt_, exit,        /* compile XT        */
         then,
-        xt_to_name, _call_, WADDR(_inline_), exit
+        xt_to_name, CALL(_inline_), exit
    )
 WORD_END(compile_comma)
 WORD(false,        compile_comma,  DSTACK(0,1), RSTACK(0,0), WORD_PURE)
@@ -77,7 +77,7 @@ WORD_START(parse_name, nip)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
-    WORD_CODE(in_to_ibuf, _call_, WADDR(ibuf_find_nonblanks), exit)
+    WORD_CODE(in_to_ibuf, CALL(ibuf_find_nonblanks), exit)
 WORD_END(parse_name)
 WORD(pick,             parse_name, DSTACK(-1,-1),RSTACK(0,0), WORD_PURE)
 WORD(true,             pick,       DSTACK(0,1), RSTACK(0,0), WORD_PURE)

@@ -36,7 +36,51 @@
 
 static const char s_foobarbaz[] = "foobarbaz";
 
-static m4testio testio_a[] = {
+static const m4testio testio_a[] = {
+    /* ------------------------- iobuf -------------------------------------- */
+    {"iobuf>data>n",
+     {m4in_to_ibuf, m4iobuf_data_n, m4bye},
+     {{}, {}},
+     {{1, {0}}, {}},
+     {"", ""},
+     {"", ""}},
+    {"\"foo\" iobuf>data>n",
+     {m4in_to_ibuf, m4iobuf_data_n, m4bye},
+     {{}, {}},
+     {{1, {3}}, {}},
+     {"foo", ""},
+     {"foo", ""}},
+    {"iobuf-empty?",
+     {m4in_to_ibuf, m4iobuf_empty_query, m4bye},
+     {{}, {}},
+     {{1, {ttrue}}, {}},
+     {"", ""},
+     {"", ""}},
+    {"\" \" iobuf-empty?",
+     {m4in_to_ibuf, m4iobuf_empty_query, m4bye},
+     {{}, {}},
+     {{1, {tfalse}}, {}},
+     {" ", ""},
+     {" ", ""}},
+    /* ------------------------- ibuf --------------------------------------- */
+    {"ibuf-skip-blanks",
+     {m4in_to_ibuf, CALL(ibuf_skip_blanks), m4bye},
+     {{}, {}},
+     {{}, {}},
+     {"\x01\x02\x03\x04\x05\x06\a\b\t\n\v\f\r # ", ""},
+     {"# ", ""}},
+    {"\"...\n... # \" ibuf-skip-blanks-until-cr",
+     {m4in_to_ibuf, CALL(ibuf_skip_blanks_until_cr), m4bye},
+     {{}, {}},
+     {{1, {ttrue}}, {}},
+     {"\x01\x02\x03\x04\x05\x06\a\b\t\n\v\f\r # ", ""},
+     {"\v\f\r # ", ""}},
+    {"\"... # \" ibuf-skip-blanks-until-cr",
+     {m4in_to_ibuf, CALL(ibuf_skip_blanks_until_cr), m4bye},
+     {{}, {}},
+     {{1, {tfalse}}, {}},
+     {"\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1a\x1b\x1c\x1d\x1e\x1f # ", ""},
+     {" # ", ""}},
     /* ------------------------- obuf --------------------------------------- */
     {"obuf-flush",
      {m4out_to_obuf, CALL(obuf_flush), m4bye},
@@ -86,19 +130,6 @@ static m4testio testio_a[] = {
      {{}, {}},
      {"", "e"},
      {"", "efoobarbaz"}},
-    /* ------------------------- iobuf -------------------------------------- */
-    {"iobuf-empty?",
-     {m4in_to_ibuf, m4iobuf_empty_query, m4bye},
-     {{}, {}},
-     {{1, {ttrue}}, {}},
-     {"", ""},
-     {"", ""}},
-    {"\" \" iobuf-empty?",
-     {m4in_to_ibuf, m4iobuf_empty_query, m4bye},
-     {{}, {}},
-     {{1, {tfalse}}, {}},
-     {" ", ""},
-     {" ", ""}},
     /* ------------------------- emit, type --------------------------------- */
     {"'x' emit 'y' emit",
      {m4emit, m4emit, m4bye},
@@ -125,7 +156,12 @@ static m4testio testio_a[] = {
      {{}, {}},
      {"", ""},
      {"", "pq"}},
-    /* ------------------------- ibuf --------------------------------------- */
+};
+
+static const m4testio testio_b[] = {
+    /* ------------------------- dot ---------------------------------------- */
+    {"9 .", {CALL(dot), m4bye}, {{1, {9}}, {}}, {{}, {}}, {"", ""}, {"", "9 "}},
+    /* ------------------------- parse-name --------------------------------- */
     {"\"   \" parse-name",
      {CALL(parse_name), m4type, m4bye},
      {{}, {}},
@@ -168,6 +204,9 @@ static m4testio testio_a[] = {
      {{}, {}},
      {" foobarbaz qwertyuiop", ""},
      {" qwertyuiop", "foobarbaz"}},
+};
+
+static const m4testio testio_c[] = {
     /* ------------------------- interpret ---------------------------------- */
     {"\" 1 2\" interpret",
      {CALL(interpret), m4bye},
@@ -183,9 +222,12 @@ static m4testio testio_a[] = {
 
 /* -------------- m4cstr -------------- */
 
-static void m4cstr_print(const char *cstr, FILE *out) {
+static void m4cstr_print_escape(const char *cstr, FILE *out) {
     if (cstr) {
-        fprintf(out, "<%lu> [%s]", (unsigned long)strlen(cstr), cstr);
+        m4cell_u len = (m4cell_u)strlen(cstr);
+        fprintf(out, "<%ld> [", (unsigned long)len);
+        m4string2_print_escape((const m4char *)cstr, len, out);
+        fputc(']', out);
     } else {
         fputs("<0> []", out);
     }
@@ -226,10 +268,10 @@ static void m4ibuf_with_counteddata_init(m4iobuf *in) {
 static m4cell m4ibuf_with_counteddata_equal(const m4iobuf *io, const char *cstr) {
     const m4counteddata *d = (m4counteddata *)io->handle;
     const m4cell_u n = m4cstr_len(cstr);
-    const m4cell_u nd = d->n;
+    const m4cell_u nd = d ? d->n : 0;
     const m4cell_u nio = io->size - io->pos;
-    return nio + nd == n && !memcmp(io->addr + io->pos, cstr, nio) &&
-           !memcmp(d->addr, cstr + nio, nd);
+    return nio + nd == n && (nio == 0 || !memcmp(io->addr + io->pos, cstr, nio)) &&
+           (nd == 0 || !memcmp(d->addr, cstr + nio, nd));
 }
 
 static void m4ibuf_with_counteddata_fill(m4iobuf *io, const char *cstr) {
@@ -252,11 +294,15 @@ static void m4ibuf_with_counteddata_fill(m4iobuf *io, const char *cstr) {
 
 static void m4ibuf_with_counteddata_print(const m4iobuf *io, FILE *out) {
     const m4counteddata *d = (m4counteddata *)io->handle;
-    const m4cell_u nd = d->n;
+    const m4cell_u nd = d ? d->n : 0;
     const m4cell_u nio = io->size - io->pos;
     fprintf(out, "<%lu> [", (unsigned long)(nd + nio));
-    fwrite(io->addr + io->pos, 1, nio, out);
-    fwrite(d->addr, 1, nd, out);
+    if (nio) {
+        m4string2_print_escape(io->addr + io->pos, nio, out);
+    }
+    if (nd) {
+        m4string2_print_escape(d->addr, nd, out);
+    }
     fputc(']', out);
 }
 
@@ -282,16 +328,16 @@ static void m4obuf_with_counteddata_init(m4iobuf *out) {
     d->n = 0;
     out->handle = (m4cell)d;
     out->func = m4obuf_with_counteddata_write;
-    out->max = 1; /* reduce capacity to trigger iobuf flush */
+    out->max = 2; /* reduce capacity to trigger iobuf flush */
 }
 
 static m4cell m4obuf_with_counteddata_equal(const m4iobuf *io, const char *cstr) {
     const m4counteddata *d = (m4counteddata *)io->handle;
     const m4cell_u n = m4cstr_len(cstr);
-    const m4cell_u nd = d->n;
+    const m4cell_u nd = d ? d->n : 0;
     const m4cell_u nio = io->size - io->pos;
-    return nd + nio == n && !memcmp(d->addr, cstr, nd) &&
-           !memcmp(io->addr + io->pos, cstr + nd, nio);
+    return nd + nio == n && (nd == 0 || !memcmp(d->addr, cstr, nd)) &&
+           (nio == 0 || !memcmp(io->addr + io->pos, cstr + nd, nio));
 }
 
 static void m4obuf_with_counteddata_fill(m4iobuf *io, const char *cstr) {
@@ -302,23 +348,31 @@ static void m4obuf_with_counteddata_fill(m4iobuf *io, const char *cstr) {
     if (max >= n) {
         memcpy(io->addr, cstr, n);
         io->size = n;
-        d->n = 0;
+        if (d) {
+            d->n = 0;
+        }
     } else {
         n -= max;
-        memcpy(d->addr, cstr, n);
+        if (d) {
+            memcpy(d->addr, cstr, n);
+            d->n = n;
+        }
         memcpy(io->addr, cstr + n, max);
         io->size = max;
-        d->n = n;
     }
 }
 
 static void m4obuf_with_counteddata_print(const m4iobuf *io, FILE *out) {
     const m4counteddata *d = (m4counteddata *)io->handle;
-    const m4cell_u nd = d->n;
+    const m4cell_u nd = d ? d->n : 0;
     const m4cell_u nio = io->size - io->pos;
     fprintf(out, "<%lu> [", (unsigned long)(nd + nio));
-    fwrite(d->addr, 1, nd, out);
-    fwrite(io->addr + io->pos, 1, nio, out);
+    if (nd) {
+        m4string2_print_escape(d->addr, nd, out);
+    }
+    if (nio) {
+        m4string2_print_escape(io->addr + io->pos, nio, out);
+    }
     fputc(']', out);
 }
 
@@ -337,14 +391,14 @@ static void m4testio_global_init() {
     }
 }
 
-static m4code m4testio_init(m4testio *t, m4countedcode *code_buf) {
+static m4code m4testio_init(const m4testio *t, m4countedcode *code_buf) {
     m4slice t_code_in = {(m4cell *)t->code, m4test_code_n};
     m4code t_code = {code_buf->data, code_buf->n};
     m4slice_copy_to_code(t_code_in, &t_code);
     return t_code;
 }
 
-static m4cell m4testio_run(m4th *m, m4testio *t, const m4code *code) {
+static m4cell m4testio_run(m4th *m, const m4testio *t, const m4code *code) {
     m4th_clear(m);
 
     m4countedstack_copy(&t->before.d, &m->dstack);
@@ -377,18 +431,19 @@ static void m4testio_failed(const m4th *m, const m4testio *t, FILE *out) {
     m4stack_print(&m->rstack, out);
 
     fputs("\n... expected  in   buffer ", out);
-    m4cstr_print(t->ioafter.in, out);
+    m4cstr_print_escape(t->ioafter.in, out);
     fputs("\n      actual  in   buffer ", out);
     m4ibuf_with_counteddata_print(m->in, out);
 
     fputs("\n... expected  out  buffer ", out);
-    m4cstr_print(t->ioafter.out, out);
+    m4cstr_print_escape(t->ioafter.out, out);
     fputs("\n      actual  out  buffer ", out);
     m4obuf_with_counteddata_print(m->out, out);
     fputc('\n', out);
 }
 
-static void m4testio_bunch(m4th *m, m4testio bunch[], m4cell n, m4testcount *count, FILE *out) {
+static void m4testio_bunch(m4th *m, const m4testio bunch[], m4cell n, m4testcount *count,
+                           FILE *out) {
     const m4iobuf ibuf = *m->in, obuf = *m->out;
     m4countedcode countedcode = {m4test_code_n, {}};
     m4cell i, fail = 0;
@@ -413,6 +468,8 @@ m4cell m4th_testio(m4th *m, FILE *out) {
     m4testcount count = {};
     m4testio_global_init();
     m4testio_bunch(m, testio_a, N_OF(testio_a), &count, out);
+    m4testio_bunch(m, testio_b, N_OF(testio_b), &count, out);
+    m4testio_bunch(m, testio_c, N_OF(testio_c), &count, out);
 
     if (out != NULL) {
         if (count.failed == 0) {

@@ -130,18 +130,18 @@
 #define M4_c_ret_0_ 610        /* push 0 values returned by C function call */
 #define M4_c_ret_1_ 611        /* push 1 value  returned by C function call */
 #define M4_c_ret_2_ 612        /* push 2 values returned by C function call */
-#undef M4____gap               /*                       */
-#undef M4____gap               /*                       */
 
 /* 'm4th-core' wordlist */
-#define M4ex_string_store 617   /* ( c-addr u -- ) save string addr&len as exception description  */
-#define M4ex_string_fetch 618   /* ( -- c-addr u ) fetch exception description string             */
-#define M4in_to_ibuf 619        /* in>ibuf      (    -- io     ) get current input as iobuf       */
-#define M4iobuf_addr 620        /* iobuf>addr   ( io -- c-addr ) get start of iobuf data buffer   */
-#define M4iobuf_all_data 621    /* iobuf>all-data ( io -- c-addr u ) get all data, from 0 to size */
-#define M4iobuf_data 622        /* iobuf>data   ( io -- c-addr u ) get data, from position to size*/
+#define M4ex_string_store 615   /* ( c-addr u -- ) save string addr&len as exception description  */
+#define M4ex_string_fetch 616   /* ( -- c-addr u ) fetch exception description string             */
+#undef M4____gap                /*                       */
+#define M4in_to_ibuf 618        /* in>ibuf      (    -- io     ) get current input as iobuf       */
+#define M4iobuf_addr 619        /* iobuf>addr   ( io -- c-addr ) get start of iobuf data buffer   */
+#define M4iobuf_all_data 620    /* iobuf>all-data ( io -- c-addr u ) get all data, from 0 to size */
+#define M4iobuf_data 621        /* iobuf>data   ( io -- c-addr u ) get data, from position to size*/
+#define M4iobuf_data_n 622      /* iobuf>data>n ( io -- u    ) get data length = size - position  */
 #define M4iobuf_free_data 623   /*              ( io -- c-addr u ) get free data, from size to max*/
-#define M4iobuf_empty_query 234 /*              ( io -- t|f ) true if iobuf is currently empty */
+#define M4iobuf_empty_query 234 /* iobuf-empty? ( io -- t|f  ) true if iobuf data is empty        */
 #define M4iobuf_err 625         /* iobuf>err    ( io -- addr ) get address of iobuf.err           */
 #define M4iobuf_func 626        /* iobuf>func   ( io -- addr ) get address of iobuf I/O function  */
 #define M4iobuf_handle 627      /* iobuf>handle ( io -- addr ) get address of iobuf handle        */

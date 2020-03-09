@@ -164,13 +164,15 @@
 #define M4SIZEOF_SHORT(x) _, 2
 #define M4SIZEOF_INT(x) _, 4
 #define M4SIZEOF_CELL(x) _, SZ
+#define M4SIZEOF_CALL(x) _, (SZt+SZ)
 #define M4SIZEOF_WADDR(x) _, SZ
 #define M4SIZEOF_XT(x) _, SZ
-#define M4SIZEOF_LIT_STRING(len, str) _, ((3 * SZt + len - 1) & (SZt - 1))
+#define M4SIZEOF_LIT_STRING(len, str) _, ((3 * SZt + len - 1) & ~(SZt - 1))
 
 #define M4UNITOF_SHORT(x) _, 2
 #define M4UNITOF_INT(x) _, 4
 #define M4UNITOF_CELL(x) _, SZ
+#define M4UNITOF_CALL(x) _, CALL
 #define M4UNITOF_WADDR(x) _, SZ
 #define M4UNITOF_XT(x) _, SZ
 #define M4UNITOF_LIT_STRING(len, str) _, LIT_STRING
@@ -196,7 +198,15 @@
 #define M4ASM_BYTES_2(token) .2byte M4TOKEN_VAL(token)
 #define M4ASM_BYTES_4(token) .4byte M4TOKEN_VAL(token)
 #define M4ASM_BYTES_8(token) .8byte M4TOKEN_VAL(token)
+#define M4ASM_BYTES_CALL(token)       M4TOKEN_VAL(token) /* expands to M4CALL(word)           */
 #define M4ASM_BYTES_LIT_STRING(token) M4TOKEN_VAL(token) /* expands to M4LIT_STRING(len, str) */
+
+/*
+ * assembler macro: insert M4_call_, WORD_SYM(word) in a sequence of m4token.
+ */
+#define M4CALL(word)                                                                     \
+    CAT3(., SZt, byte) M4_call_;                                                                   \
+    CAT3(., SZ,  byte) WORD_SYM(word);
 
 /*
  * assembler macro: insert M4_lit_string_, length and padded ascii string

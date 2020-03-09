@@ -63,6 +63,14 @@ FUNC_START(iobuf_data)
 FUNC_END(iobuf_data)
 
 
+/* iobuf>data>n ( io -- u ) get iobuf current length, i.e. the distance iobuf>size - iobuf>pos */
+FUNC_START(iobuf_data_n)
+        LOAD(  REG2,   AT(DTOP, IOBUF_OFF_POS))    /* b = iobuf.pos     */
+        LOAD(  DTOP,   AT(DTOP, IOBUF_OFF_SIZE))   /* dtop = iobuf.size */
+        SUB2(  REG2,   DTOP)     /* dtop =  u  = iobuf.size - iobuf.pos */
+FUNC_END(iobuf_data_n)
+
+
 /* iobuf>free-data ( io -- c-addr u ) get iobuf free space, i.e. from iobuf>size to iobuf>max */
 FUNC_START(iobuf_free_data)
         ADDI(  DTOP,   IOBUF_OFF_ADDR, REG1)       /* a = iobuf.addr     */

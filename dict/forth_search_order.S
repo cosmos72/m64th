@@ -29,7 +29,7 @@ WORD_START(search_wordlist, LASTWORD)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_CODE(
-        _call_, WADDR(wordlist_find),                  /* ( w|0 -1|0|1       ) */
+        CALL(wordlist_find),                  /* ( w|0 -1|0|1       ) */
         _q_if_zero_, T(2),                             /* ( 0   0            ) */
             nip, exit,                                 /* ( 0                ) */
         then,                                          /* ( w   -1|1         ) */

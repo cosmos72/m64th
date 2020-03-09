@@ -130,7 +130,7 @@ WORD_START(interpret,  if_zero)
     WORD_CODE(
         /* parse-name                                   ( c-addr u                 )
          * ?if0                                         ( c-addr u                 )
-         *    2drop M4ERR_UNEXPECTED_EOF throw          (                          )
+         *    2drop exit                                (                          )
          * then                                         ( c-addr u                 )
          * 2dup                                         ( c-addr u c-addr u        )
          * string>name                                  ( c-addr u nt|0 -1|0|1     )
@@ -144,18 +144,18 @@ WORD_START(interpret,  if_zero)
          * drop ex-string!                              (                          )
          * M4ERR_UNDEFINED_WORD throw                   (                          )
          */
-        _call_, WADDR(parse_name),
-        _q_if_zero_, T(5),
-            two_drop, _lit_, T(M4ERR_UNEXPECTED_EOF), throw,
+        CALL(parse_name),
+        _q_if_zero_, T(3),
+            two_drop, exit,
         then,
         two_dup,
-        _call_, WADDR(string_to_name),
+        CALL(string_to_name),
         _q_if_, T(5+2*SZ/SZt),
-            two_nip, _call_, WADDR(_eval_name_), _call_, WADDR(_check_stacks_), exit,
+            two_nip, CALL(_eval_name_), CALL(_check_stacks_), exit,
         then,
-        two_drop, two_dup, _call_, WADDR(string_to_number),
+        two_drop, two_dup, CALL(string_to_number),
         _if_, T(5+SZ/SZt),
-            nip, nip, _call_, WADDR(_eval_number_), exit,
+            nip, nip, CALL(_eval_number_), exit,
         then,
         drop, ex_string_store,
         _lit_, T(M4ERR_UNDEFINED_WORD), throw, exit
@@ -165,7 +165,7 @@ WORD(noop,             interpret,      DSTACK(0,0), RSTACK(0,0), WORD_PURE)
 WORD(r_store,          noop,           DSTACK(1,0), RSTACK(1,1), WORD_R_PURE)
 WORD(r_plus,           r_store,        DSTACK(1,0), RSTACK(1,1), WORD_R_PURE)
 WORD(r_from_drop,      r_plus,         DSTACK(0,0), RSTACK(1,0), WORD_R_PURE)
-WORD(rdepth,          r_from_drop,    DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
+WORD(rdepth,           r_from_drop,    DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 /**
  * forth interpreter/compiler loop:
  *    call INTERPRET repeatedly until an exception is thrown.
@@ -177,21 +177,38 @@ WORD_START(repl,  rdepth)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_CODE(
-        /* begin
-         *    (repl-refill)
-         *    ' interpret catch                        ( ... ex|0      )
-         *    type-exception                           ( ...           )
+        /* begin                                       ( ...           )
+         *    in>ibuf ibuf-refill-if-empty drop        ( ...           )
+         *    ' interpret catch                        ( ...' ex|0     )
+         *    dup 0=                                   ( ... ex|0 t|f  )
+         *    in>ibuf ibuf-skip-blanks-until-cr and    ( ... ex|0 t|f  )
+         *    if                                       ( ... 0         )
+         *       drop (repl-type-ack)                  ( ...           )
+         *    else                                     ( ... ex        )
+         *       type-exception                        ( ...           )
+         *    then                                     ( ...           )
+         *    out>obuf obuf-flush drop                 ( ...           )
          *    in>ibuf iobuf>err @                      ( ... err|0     )
-         * until
+         * until                                       ( ...           )
+         * cr out>obuf obuf-flush drop                 ( ...           )
          */
         begin,
+            in_to_ibuf, CALL(ibuf_refill_if_empty), drop,
             _lit_cell_, XT(interpret), _catch_beg_, _catch_end_,
-            _call_, WADDR(type_exception),
+            dup, zero_equal,
+            in_to_ibuf, CALL(ibuf_skip_blanks_until_cr), and,
+            _if_, T(4+SZ/SZt),
+                drop, CALL(_repl_type_ack_),
+            _else_, T(2+SZ/SZt),
+                CALL(type_exception),
+            then,
+            out_to_obuf, CALL(obuf_flush), drop,
             in_to_ibuf, iobuf_err, fetch,
-        _until_, T(-9-2*SZ/SZt), exit
+        _until_, T(-28-6*SZ/SZt),
+        _lit_, T('\n'), emit, out_to_obuf, CALL(obuf_flush), drop, exit
     )
 WORD_END(repl)
-WORD(squared,          r_store,        DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD(squared,          repl,           DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(sub,              squared,        DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(minus_rot,        sub,            DSTACK(3,3), RSTACK(0,0), WORD_PURE)
 /* ( ex|0 -- ) write cr exception and ex-string@ to current output */
@@ -203,17 +220,16 @@ WORD_START(type_exception,   minus_rot)
     WORD_NATIVE_NONE()
     WORD_CODE(
         /* ?if                                         ( ex|0          )
-         *    cr s" exception " type . space           (               )
+         *    s\" \n exception " type                  (               )
+         *    .                                        (               )
          *    ex-string@ type                          (               )
          * else                                        ( 0             )
          *    drop                                     (               )
          * then                                        (               )
          */
-        _q_if_, T(12+2*SZ/SZt),
-            _lit_, T('\n'), emit,
-            LIT_STRING(11, " exception "),
-            /* TODO: s" exception " type */
-            _call_, WADDR(dot), bl, emit,
+        _q_if_, T(8 + (12+SZt-1)/SZt + SZ/SZt),
+            LIT_STRING(12, "\n exception "), type,
+            CALL(dot),
             ex_string_fetch, type,
         _else_, T(2),
             drop,
@@ -297,17 +313,17 @@ WORD_START(string_to_number, string_first_blank)
         _q_if_zero_, T(4),
             nip, false, exit,
         then,
-        _call_, WADDR(string_to_char), dup, invert,
+        CALL(string_to_char), dup, invert,
         _if_, T(5),
             nip, nip, true, exit,
         then,
-        drop, _call_, WADDR(string_to_base), minus_rot,
-        _call_, WADDR(string_to_sign), over,
+        drop, CALL(string_to_base), minus_rot,
+        CALL(string_to_sign), over,
         _if_zero_, T(5),
             two_drop, drop, false, exit,
         then,
         to_r, rot,
-        _call_, WADDR(string_base_to_u),
+        CALL(string_base_to_u),
         rot, drop, r_from, times, swap,
         zero_equal, exit
     )

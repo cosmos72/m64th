@@ -77,7 +77,8 @@ m4cell m4th_repl(m4th *m) {
 }
 
 /** temporary C implementation of '.' */
-void m4th_dot(m4cell n) {
+void m4th_dot(m4cell n, m4iobuf *io) {
+    m4cell_u len;
     enum { N = SZ * 3 + 2 }; /* large enough also for sign and final space */
     char buf[N];
     char *addr = buf + N;
@@ -98,6 +99,10 @@ void m4th_dot(m4cell n) {
             *--addr = '-';
         }
     }
-    fwrite(addr, 1, buf + N - addr, stdout);
-    fflush(stdout);
+    len = buf + N - addr;
+    if (io->max - io->size >= len) {
+        memcpy(io->addr + io->size, addr, len);
+        io->size += len;
+        return;
+    }
 }

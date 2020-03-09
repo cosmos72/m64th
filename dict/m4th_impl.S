@@ -103,7 +103,7 @@ WORD_START(_again_,      _q_while_zero_)
     WORD_DSTACK(0,0)   /* stack effect if jumping */
     WORD_RSTACK(0,0)
     WORD_NATIVE_NONE()
-    WORD_CODE(_call_, WADDR(again), exit)
+    WORD_CODE(CALL(again), exit)
 WORD_END(_again_)
 WORD_START(_break_,    _again_)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_JUMP | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
@@ -112,7 +112,7 @@ WORD_START(_break_,    _again_)
     WORD_RSTACK(0,0)
     WORD_NATIVE_NONE()
     WORD_CODE(
-       _call_, WADDR(break), exit
+       CALL(break), exit
     )
 WORD_END(_break_)
 WORD_START(_call_,     _break_)
@@ -181,7 +181,7 @@ WORD_START(_continue_, _catch_end_)
     WORD_RSTACK(0,0)
     WORD_NATIVE_NONE()
     WORD_CODE(
-       _call_, WADDR(continue), exit
+       CALL(continue), exit
     )
 WORD_END(_continue_)
 WORD_START(_else_, _continue_)
@@ -190,7 +190,7 @@ WORD_START(_else_, _continue_)
     WORD_DSTACK(0,0)   /* stack effect when jumping */
     WORD_RSTACK(0,0)
     WORD_NATIVE_NONE()
-    WORD_CODE(_call_, WADDR(else), exit)
+    WORD_CODE(CALL(else), exit)
 WORD_END(_else_)
 /* ( nt -1|1 -- ) interpret or compile name. dtop == -1 if name is immediate */
 WORD_START(_eval_name_, _else_)
@@ -222,7 +222,7 @@ WORD_START(_eval_name_, _else_)
             drop, name_to_flags,
             _lit_, T(M4FLAG_COMPILE_ONLY), and,
             _if_, T(2+SZ/SZt),
-                _call_, WADDR(_throw_compile_only_xt_),
+                CALL(_throw_compile_only_xt_),
             then,
             execute, exit,
         then,
@@ -230,7 +230,7 @@ WORD_START(_eval_name_, _else_)
         _if_, T(3),
             execute, exit,
         then,
-        _call_, WADDR(compile_comma), exit
+        CALL(compile_comma), exit
     )
 WORD_END(_eval_name_)
 WORD_START(_eval_number_, _eval_name_)
@@ -247,7 +247,7 @@ WORD_START(_eval_number_, _eval_name_)
          */
         state, fetch,
         _if_, T(2+SZ/SZt),
-            _call_, WADDR(literal),
+            CALL(literal),
         then, exit
     )
 WORD_END(_eval_number_)
@@ -360,7 +360,7 @@ WORD_START(_lit_string_, _lit8s_)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
-    WORD_CODE(_lit_string_, T(-1), T(0), exit)
+    WORD_CODE(LIT_STRING(0, ""), exit)
 WORD_END(_lit_string_)
 WORD_START(_loop_, _lit_string_)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_MAY_JUMP | M4FLAG_IMMEDIATE)
@@ -378,17 +378,33 @@ WORD_START(_repeat_, _missing_)
     WORD_DSTACK(0,0)  /* stack effect when jumping */
     WORD_RSTACK(0,0)
     WORD_NATIVE_NONE()
-    WORD_CODE(/* TODO _call_, WADDR(repeat), */ exit)
+    WORD_CODE(/* TODO CALL(repeat), */ exit)
 WORD_END(_repeat_)
-WORD_START(_return_to_native_, _repeat_)
+/* ( -- ) if interpreting type " ok\n", otherwise type " compiled\n" */
+WORD_START(_repl_type_ack_, _repeat_)
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_STACK_NONE() /* stack effect when not jumping */
+    WORD_STACK_NONE() /* stack effect when jumping */
+    WORD_NATIVE_NONE()
+    WORD_CODE(
+        state, fetch,
+        _if_, T(4+(10+SZt-1)/SZt),
+            LIT_STRING(10, " compiled\n"),
+        _else_, T(3+(4+SZt-1)/SZt),
+            LIT_STRING(4, " ok\n"),
+        then,
+        type, exit
+    )
+WORD_END(_repl_type_ack_)
+WORD_START(_return_to_native_, _repl_type_ack_)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS | M4FLAG_JUMP)
     WORD_STACK_NONE() /* stack effect when not jumping */
     WORD_DSTACK(0,0)  /* stack effect when jumping */
     WORD_RSTACK(1,0)
     WORD_NATIVE_NONE() /* (return-to-native) messes with %rsp to redirect ret: cannot inline into native code */
     WORD_CODE(_return_to_native_, exit)
-WORD_END(_exec_native_)
-WORD_START(_until_, _repeat_)
+WORD_END(_return_to_native_)
+WORD_START(_until_, _return_to_native_)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_MAY_JUMP | M4FLAG_IMMEDIATE)
     WORD_DSTACK(1,0) /* token stack effect when not jumping */
     WORD_RSTACK(0,0)
@@ -438,7 +454,7 @@ WORD_START(_any_token_gives_cell_q_, _while_zero_)
         zero, _q_do_, T(14+SZ/SZt),          /* loop if tn != 0          */
                                              /* ( x taddr )              */
             dup_to_r, token_fetch,           /* ( x token ) (R taddr )   */
-            _call_, WADDR(_token_gives_cell_q_),/* ( token true | x false ) (R taddr ) */
+            CALL(_token_gives_cell_q_),/* ( token true | x false ) (R taddr ) */
             _if_, T(5),
                 r_from_drop, true,           /* ( token true )           */
                 unloop, exit,                /* exit                     */
@@ -670,7 +686,7 @@ WORD_START(string_to_base, char_to_u)
          * base @ exit                     ( caddr n base  )
          */
         _q_if_, T(15+SZ/SZt),
-           over, c_fetch, _call_, WADDR(char_to_base),
+           over, c_fetch, CALL(char_to_base),
            _q_if_, T(8),
               to_r,
               one_minus, swap, char_plus, swap,
@@ -753,7 +769,7 @@ WORD_START(string_base_to_u, string_to_char)
         then,
         to_r, zero, minus_rot, zero,
         do,
-            dup, c_fetch, _call_, WADDR(char_to_u), dup, zero, j/*NON-PORTABLE*/, within,
+            dup, c_fetch, CALL(char_to_u), dup, zero, j/*NON-PORTABLE*/, within,
             _if_zero_, T(10),
                 drop, swap,
                 i_prime, i, minus, unloop, r_from_drop,

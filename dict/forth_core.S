@@ -34,7 +34,14 @@ WORD_START(dot,        minus)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
-    WORD_CODE(_c_arg_1_, _c_call_, CELL(m4th_dot), _c_ret_0_, exit)
+    WORD_CODE(
+        /* out>obuf dup obuf-flush drop     ( ensure enough space )  ( n io          )
+         * (c-arg-2) (c-call) m4th_dot (c-ret-0)                     (               )
+         */
+        out_to_obuf, dup, CALL(obuf_flush), drop,
+        _c_arg_2_, _c_call_, CELL(m4th_dot), _c_ret_0_,
+        exit
+    )
 WORD_END(dot)
 WORD(div,              dot,        DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(div_mod,          div,        DSTACK(2,2), RSTACK(0,0), WORD_PURE)
@@ -142,7 +149,7 @@ WORD_START(find, dup)
     WORD_NATIVE_NONE()
     WORD_CODE(
 #if 0 /* TODO */
-        dup, count, _call_, WADDR(string_to_name),   /* ( c-addr nt|0 -1|0|1 ) */
+        dup, count, CALL(string_to_name),   /* ( c-addr nt|0 -1|0|1 ) */
         _q_if_zero_, T(5), nip, exit,                /* ( c-addr 0           ) */
         then,                                        /* ( c-addr nt -1|1     ) */
         to_r, nip, name_to_xt, r_from,                  /* ( xt     -1|1        ) */
@@ -159,7 +166,7 @@ WORD_START(else, find)
     WORD_CODE(
         _compile_unresolved_jump_, _else_, _else_, /* compile our unresolved jump */
         two_to_r,                           /* move our jump_info out of the way  */
-        _call_, WADDR(_resolve_jump_here_), /* resolve jump of previous 'if'      */
+        CALL(_resolve_jump_here_), /* resolve jump of previous 'if'      */
         two_r_from,                         /* restore our jump_info              */
         exit
     )
@@ -228,7 +235,7 @@ WORD_START(literal, leave)
       WORD_CODE_TOKENS(
         _ip_to_data_, div_token,         /* ( n taddr tn )             */
         _compile_init_,
-        _call_, WADDR(_any_token_gives_cell_q_),
+        CALL(_any_token_gives_cell_q_),
         _if_, T(3), _compile_token_,     /* if executing token gives n */
             exit,                        /* append token to XT, exit   */
         then,
@@ -257,7 +264,7 @@ WORD_START(loop, literal)
     WORD_NATIVE_NONE()
     WORD_CODE(
         _compile_init_, _compile_unresolved_jump_, _loop_, _loop_,
-        _call_, WADDR(_resolve_loop_), exit
+        CALL(_resolve_loop_), exit
     )
 WORD_END(loop)
 WORD(lshift,           loop,       DSTACK(2,1), RSTACK(0,0), WORD_PURE)
@@ -298,7 +305,7 @@ WORD_START(then, swap)
     WORD_NATIVE_NONE()
     WORD_CODE(
         _compile_init_, _compile_lit_, then,
-        _call_, WADDR(_resolve_jump_here_), exit
+        CALL(_resolve_jump_here_), exit
     )
 WORD_END(then)
 WORD_START(type, then)

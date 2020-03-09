@@ -51,6 +51,45 @@ enum {
 typedef char m4th_assert_sizeof_m4token_equal_SZt[(sizeof(m4token) == SZt) ? 1 : -1];
 typedef char m4th_assert_sizeof_m4cell_equal_SZ[(sizeof(m4cell) == SZ) ? 1 : -1];
 
+/* -------------- m4char -------------- */
+
+static void m4char_print_escape(const m4char ch, FILE *out) {
+    const char *seq = NULL;
+    if (ch >= ' ' && ch <= '~' && ch != '\\' ) {
+        fputc((char)ch, out);
+        return;
+    }
+    switch (ch) {
+    case '\a':
+        seq = "\\a"; break;
+    case '\b':
+        seq = "\\b"; break;
+    case '\t':
+        seq = "\\t"; break;
+    case '\n':
+        seq = "\\n"; break;
+    case '\v':
+        seq = "\\v"; break;
+    case '\f':
+        seq = "\\f"; break;
+    case '\r':
+        seq = "\\r"; break;
+    case 27: /* escape */
+        seq = "\\e"; break;
+    case '"':
+        seq = "\\\""; break;
+    case '\'':
+        seq = "\\\'"; break;
+    case '\\':
+        seq = "\\\\"; break;
+    }
+    if (seq) {
+        fputs(seq, out);
+    } else {
+        fprintf(out, "\\x%02x", (unsigned)ch);
+    }
+}
+
 /* ----------------------- m4mem ----------------------- */
 
 static void m4mem_oom(size_t bytes) {
@@ -211,6 +250,19 @@ void m4flags_print(m4flags fl, FILE *out) {
     }
 }
 
+/* ----------------------- m4string ---------------------- */
+
+void m4string2_print_escape(const m4char *addr, const m4cell_u n, FILE *out) {
+    m4cell_u i;
+    for (i = 0; i < n; i++) {
+        m4char_print_escape(addr[i], out);
+    }
+}
+
+void m4string_print_escape(m4string str, FILE *out) {
+    m4string2_print_escape(str.addr, str.n, out);
+}
+
 /* ----------------------- m4token ----------------------- */
 
 #if !defined(__STDC_VERSION__) || __STDC_VERSION__ < 199901L
@@ -288,11 +340,30 @@ static m4cell m4token_print_int64(const m4token *code, FILE *out) {
     return sizeof(val) / SZt;
 }
 
-static m4cell m4token_print_ascii(const m4cell_u len, const m4char *ascii, FILE *out) {
-    fputs("ASCII(\"", out);
-    fwrite(ascii, 1, (size_t)len, out);
+static m4cell m4token_print_lit_string(const m4char *ascii, const m4cell_u len, FILE *out) {
+    fprintf(out, "LIT_STRING(%lu, \"", (unsigned long)len);
+    m4string2_print_escape(ascii, len, out);
     fputs("\") ", out);
-    return (len + SZt - 1) / SZt;
+    return 1 + (len + SZt - 1) / SZt;
+}
+
+static m4cell m4token_print_call(const m4token *code, FILE *out) {
+    m4cell val, ret = 0;
+    memcpy(&val, code, sizeof(val));
+    fputs("CALL(", out);
+    if (val > 4096) {
+        const m4word *w = (const m4word *)val;
+        const m4string name = m4word_name(w);
+        if (name.addr && name.n > 0) {
+            m4string_print(name, out);
+            ret = sizeof(val) / SZt;
+        }
+    }
+    if (ret == 0) {
+        ret = m4token_print_int64(code, out);
+    }
+    fputs(") ", out);
+    return ret;
 }
 
 static m4cell m4token_print_word(const m4token *code, FILE *out) {
@@ -332,13 +403,9 @@ m4cell m4token_print_consumed_ip(m4token tok, const m4token *code, m4cell maxn, 
     if (nbytes == 0 || nbytes / SZt > maxn) {
         return 0;
     } else if (nbytes == SZt) {
-        m4cell consumed = 1;
         fputc('\'', out);
         m4token_print(code[0], out);
-        if (tok == m4_lit_string_) {
-            consumed += m4token_print_ascii(code[0], (const m4char *)(code + 1), out);
-        }
-        return consumed;
+        return 1;
     } else if (tok == m4_compile_unresolved_jump_ && nbytes == 2 * SZt) {
         fputc('\'', out);
         m4token_print(code[0], out);
@@ -415,8 +482,14 @@ void m4code_print(m4code src, FILE *out) {
     fprintf(out, "<%ld> ", (long)n);
     for (i = 0; i < n;) {
         const m4token tok = code[i++];
-        m4token_print(tok, out);
-        i += m4token_print_consumed_ip(tok, code + i, n - i, out);
+        if (tok == m4_call_ && n - i >= SZ / SZt) {
+            i += m4token_print_call(code + i, out);
+        } else if (tok == m4_lit_string_ && n - i >= 2 + (m4cell_u)(code[i] + SZt - 1) / SZt) {
+            i += m4token_print_lit_string((const m4char *)&code[i + 1], code[i], out);
+        } else {
+            m4token_print(tok, out);
+            i += m4token_print_consumed_ip(tok, code + i, n - i, out);
+        }
     }
 }
 

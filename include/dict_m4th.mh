@@ -158,6 +158,8 @@
     X(14, "iobuf>all-data", iobuf_all_data)                                                        \
     /* ( io -- c-addr u ) get iobuf content i.e. from iobuf>pos to iobuf>size */                   \
     X(10, "iobuf>data", iobuf_data)                                                                \
+    /* ( io -- u ) get iobuf content length i.e. the distance iobuf>size - iobuf>pos */            \
+    X(12, "iobuf>data>n", iobuf_data_n)                                                            \
     /* ( io -- c-addr u ) get iobuf free space i.e. from iobuf>size to iobuf>max */                \
     X(15, "iobuf>free-data", iobuf_free_data)                                                      \
     X(12, "iobuf-empty?", iobuf_empty_query) /* ( io -- t|f ) true if iobuf is currently empty */  \
@@ -182,7 +184,7 @@
     X(13, "searchorder-n", searchorder_n) /* (    -- addr    ) get address of searchorder count */ \
     X(8, "user-var", user_var) /*        ( -- addr ) must be followed by index of user variable */ \
     X(13, "wordlist-last", wordlist_last) /* ( wid -- nt     ) get last name in wordlist        */ \
-    X(9, "xt>name", xt_to_name)           /* ( XT  -- nt     ) convert XT to name               */
+    X(7, "xt>name", xt_to_name)           /* ( XT  -- nt     ) convert XT to name               */
 
 #define DICT_WORDS_M4TH_CORE(X)                                                                    \
     DICT_TOKENS_M4TH_CORE(X)                                                                       \
@@ -191,7 +193,9 @@
     /*   ( io -- c-addr u ) find blank-delimited string in current iobuf data (no refilling) */    \
     X(19, "ibuf-find-nonblanks", ibuf_find_nonblanks)                                              \
     X(11, "ibuf-refill", ibuf_refill)           /*   ( io -- err  ) read some data into iobuf   */ \
-    X(16, "ibuf-skip-blanks", ibuf_skip_blanks) /*   skip whitespace from iobuf current data    */ \
+    X(20, "ibuf-refill-if-empty", ibuf_refill_if_empty) /* ( io -- err ) */                        \
+    X(16, "ibuf-skip-blanks", ibuf_skip_blanks) /* skip blanks from iobuf current data          */ \
+    X(25, "ibuf-skip-blanks-until-cr", ibuf_skip_blanks_until_cr) /* skip blanks until CR/LF    */ \
     X(12, "name-inline?", name_inline_query) /* ( nt -- flag ) calls to name should be inlined? */ \
     X(10, "obuf-flush", obuf_flush)          /* ( io -- err  ) flush iobuf data                 */ \
     /* ( io c -- err  ) flush iobuf, then write one char to it */                                  \
@@ -271,6 +275,7 @@
     /* ( nt -1|1 -- ) interpret or compile name. dtop == -1 if name is immediate */                \
     X(11, "(eval-name)", _eval_name_)                                                              \
     X(13, "(eval-number)", _eval_number_) /* ( x -- ) interpret or compile number */               \
+    X(15, "(repl-type-ack)", _repl_type_ack_)                                                      \
     X(23, "[any-token-gives-cell?]", _any_token_gives_cell_q_)                                     \
     X(8, "[inline]", _inline_)      /* ( w -- ) inline a call to w into word being compiled */     \
     X(10, "[optimize]", _optimize_) /* optimize word being compiled  */                            \
