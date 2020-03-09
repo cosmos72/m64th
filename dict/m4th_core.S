@@ -413,13 +413,12 @@ WORD_END(obuf_write_char)
 /* obuf-write-string ( io c-addr u -- err  ) write a string to iobuf */
 WORD_START(obuf_write_string, obuf_write_char)
     WORD_FLAGS(0)
-    WORD_DSTACK(3,0)
+    WORD_DSTACK(3,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_CODE(
-        /* TODO */
-        exit
+        obuf_write_string, exit
     )
 WORD_END(obuf_write_string)
 WORD(out_to_obuf,   obuf_write_string, DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
