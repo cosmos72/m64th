@@ -31,13 +31,13 @@
 #define m4fthen m4fnoop                  /* then       noop, used as compile marker   */
 #define m4f_repeat_ m4f_jump_            /* (repeat)   unconditional jump             */
 #define m4f_until_ m4f_if_               /* (until)    conditional jump if dtop == 0  */
-#define m4f_until_zero_ m4f_if_zero_     /* (until0)   conditional jump if dtop <> 0  */
+#define m4f_until0_ m4f_if0_     /* (until0)   conditional jump if dtop <> 0  */
 #define m4f_q_until_ m4f_q_if_           /* (?until)   conditional jump if dtop == 0  */
-#define m4f_q_until_zero_ m4f_q_if_zero_ /* (?until0)  conditional jump if dtop <> 0  */
+#define m4f_q_until0_ m4f_q_if0_ /* (?until0)  conditional jump if dtop <> 0  */
 #define m4f_while_ m4f_if_               /* (while)    conditional jump if dtop == 0  */
-#define m4f_while_zero_ m4f_if_zero_     /* (while0)   conditional jump if dtop <> 0  */
+#define m4f_while0_ m4f_if0_     /* (while0)   conditional jump if dtop <> 0  */
 #define m4f_q_while_ m4f_q_if_           /* (?while)   conditional jump if dtop == 0  */
-#define m4f_q_while_zero_ m4f_q_if_zero_ /* (?while0)  conditional jump if dtop <> 0  */
+#define m4f_q_while0_ m4f_q_if0_ /* (?while0)  conditional jump if dtop <> 0  */
 
 /** these are implemented in forth - thus no corresponding assembly function */
 #define m4f_inline_ m4f_missing_

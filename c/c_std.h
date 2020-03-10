@@ -20,12 +20,12 @@
 #ifndef M4TH_C_STD_H
 #define M4TH_C_STD_H
 
-# include "../m4th.h"
+#include "../m4th.h"
 
 /** wrapper around C function fread(), easier to call from forth than plain fread() */
 m4pair m4th_c_fread(FILE *in, void *addr, size_t len);
 
-/** wrapper around C function fwrite(), easier to call from forth than plain fwrite() */
-m4pair m4th_c_fwrite(FILE *out, const void *addr, size_t len);
+/** wrapper around C functions fwrite() + fflush(), easier to call from forth */
+m4pair m4th_c_fwrite_fflush(FILE *out, const void *addr, size_t len);
 
 #endif /* M4TH_C_STD_H */

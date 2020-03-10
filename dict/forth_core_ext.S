@@ -62,7 +62,7 @@ WORD_START(compile_comma, again)
     WORD_CODE(
         _compile_init_,
         dup, xt_to_name, CALL(name_inline_query),
-        _if_zero_, T(5),
+        _if0_, T(5),
             _compile_lit_, _call_xt_,  /* compile (call-xt) */
             _compile_xt_, exit,        /* compile XT        */
         then,

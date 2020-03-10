@@ -33,7 +33,7 @@ int main(int argc, char *argv[]) {
 
     m->in->func = m4word_code(&WORD_SYM(c_linenoise)).addr;
     m->in->handle = (m4cell) "m4th> "; /* prompt */
-    m->out->func = m4word_code(&WORD_SYM(c_fwrite)).addr;
+    m->out->func = m4word_code(&WORD_SYM(c_fwrite_fflush)).addr;
     m->out->handle = (m4cell)stdout;
 
     ret = m4th_repl(m);

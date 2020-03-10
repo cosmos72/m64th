@@ -63,14 +63,14 @@ FUNC_RAWEND(_if_)
  * must be followed by IP offset to jump.
  * IP offset = 0 means first instruction after (if0) itself
  */
-FUNC_START(_if_zero_)
+FUNC_START(_if0_)
         cmp    DTOP, IMM(0);
         DPOP(  DTOP)
-        b.eq   .L_if_zero_.enter;
+        b.eq   .L_if0_.enter;
         RELJUMP()
-.L_if_zero_.enter:
+.L_if0_.enter:
         NEXTT()                      /* skip IP offset          */
-FUNC_RAWEND(_if_zero_)
+FUNC_RAWEND(_if0_)
 
 /**
  * break from a loop.

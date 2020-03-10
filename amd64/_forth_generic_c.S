@@ -17,31 +17,17 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "c_std.h"
-#include "../include/err.h"
+#include "../dispatch/asm.mh"
+#include "../include/section.mh"
 
-#include <errno.h>  /* errno            */
-#include <stdio.h>  /* fread() fwrite() */
+SECTION_FUNC()
 
+FUNC_START(_next_)
+    movzwl (%r8),%r10d;
+    mov    0x38(%r9),%rax;
+    add    $0x2,%r8;
+    jmpq   *(%rax,%r10,8);
+FUNC_RAWEND(_next_)
 
-m4pair m4th_c_fread(FILE *in, void *addr, size_t len) {
-    m4pair ret = {};
-    if (len != 0 && (ret.num = fread(addr, 1, len, in)) == 0) {
-        if (feof(in)) {
-            ret.err = m4err_unexpected_eof;
-        } else {
-            ret.err = m4err_c_errno - errno;
-        }
-    }
-    return ret;
-}
-
-m4pair m4th_c_fwrite_fflush(FILE *out, const void *addr, size_t len) {
-    m4pair ret = {};
-    if (len != 0) {
-        if ((ret.num = fwrite(addr, 1, len, out)) == 0 || fflush(out) != 0) {
-            ret.err = m4err_c_errno - errno;
-        }
-    }
-    return ret;
-}
+        .ident "m4th 0.0.0"
+        .section .note.GNU-stack,"",@progbits

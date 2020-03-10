@@ -15,7 +15,7 @@ OBJS=asm.o cffi.o impl.o m4th.o
 all: dump m4th test
 
 clean:
-	rm -f m4th test ./*.gprof ./*.o ./*~ */*.o */*~ linenoise/linenoise_example linenoise/history.txt
+	rm -f dump m4th test ./*.gprof ./*.o ./*~ */*.o */*~ linenoise/linenoise_example linenoise/history.txt
 
 asm.o:  asm.S  $(wildcard *.mh */*.mh */*.S)
 cffi.o: cffi.c $(wildcard *.h *.mh include/*.h include/*.mh c/*.h c/*.c linenoise/*.c)

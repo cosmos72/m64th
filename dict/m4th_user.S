@@ -66,7 +66,7 @@ WORD_START(q_if_zero, q_if)
     WORD_RSTACK(0,0)
     WORD_NATIVE_NONE()
     WORD_CODE(
-        _compile_init_, _compile_unresolved_jump_, _q_if_zero_, _if_, exit
+        _compile_init_, _compile_unresolved_jump_, _q_if0_, _if_, exit
     )
 WORD_END(q_if_zero)
 WORD(bounds,           q_if_zero,      DSTACK(2,2), RSTACK(0,0), M4FLAG_PURE)
@@ -104,7 +104,7 @@ WORD_START(if_zero, i_prime)
     WORD_RSTACK(0,0)
     WORD_NATIVE_NONE()
     WORD_CODE(
-        _compile_init_, _compile_unresolved_jump_, _if_zero_, _if_, exit
+        _compile_init_, _compile_unresolved_jump_, _if0_, _if_, exit
     )
 WORD_END(if_zero)
 /*
@@ -145,7 +145,7 @@ WORD_START(interpret,  if_zero)
          * M4ERR_UNDEFINED_WORD throw                   (                          )
          */
         CALL(parse_name),
-        _q_if_zero_, T(3),
+        _q_if0_, T(3),
             two_drop, exit,
         then,
         two_dup,
@@ -222,15 +222,16 @@ WORD_START(type_exception,   minus_rot)
         /* ?if                                         ( ex|0          )
          *    s\" \n exception " type                  (               )
          *    .                                        (               )
-         *    ex-string@ type                          (               )
+         *    ex-string@ type cr                       (               )
          * else                                        ( 0             )
          *    drop                                     (               )
          * then                                        (               )
          */
-        _q_if_, T(8 + (12+SZt-1)/SZt + SZ/SZt),
-            LIT_STRING(12, "\n exception "), type,
+        _q_if_, T(11 + (11+SZt-1)/SZt + SZ/SZt),
+            LIT_STRING(11, "\nexception "), type,
             CALL(dot),
             ex_string_fetch, type,
+            _lit_, T('\n'), emit,
         _else_, T(2),
             drop,
         then, exit
@@ -310,7 +311,7 @@ WORD_START(string_to_number, string_first_blank)
          * r> * swap                       ( x n                 )
          * 0=                              ( x t|f               )
          */
-        _q_if_zero_, T(4),
+        _q_if0_, T(4),
             nip, false, exit,
         then,
         CALL(string_to_char), dup, invert,
@@ -319,7 +320,7 @@ WORD_START(string_to_number, string_first_blank)
         then,
         drop, CALL(string_to_base), minus_rot,
         CALL(string_to_sign), over,
-        _if_zero_, T(5),
+        _if0_, T(5),
             two_drop, drop, false, exit,
         then,
         to_r, rot,

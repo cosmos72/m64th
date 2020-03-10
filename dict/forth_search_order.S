@@ -30,7 +30,7 @@ WORD_START(search_wordlist, LASTWORD)
     WORD_NATIVE_NONE()
     WORD_CODE(
         CALL(wordlist_find),                  /* ( w|0 -1|0|1       ) */
-        _q_if_zero_, T(2),                             /* ( 0   0            ) */
+        _q_if0_, T(2),                             /* ( 0   0            ) */
             nip, exit,                                 /* ( 0                ) */
         then,                                          /* ( w   -1|1         ) */
         swap, name_to_xt, swap, exit                   /* ( xt  -1|1         ) */

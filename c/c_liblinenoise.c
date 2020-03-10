@@ -22,7 +22,9 @@
 #include "../linenoise/linenoise.h"
 
 #include <errno.h>  /* errno    */
-
+#ifdef __unix__
+#include <unistd.h> /* write()  */
+#endif
 
 m4pair m4th_c_linenoise(const char *prompt, char *addr, size_t len) {
     m4pair ret = {};
@@ -31,6 +33,10 @@ m4pair m4th_c_linenoise(const char *prompt, char *addr, size_t len) {
     if (n > 0) {
         ret.num = n;
         if (addr[n-1] == '\n') {
+#ifdef __unix__
+            /* forth expects a space to be printed instead of newline */
+            (void)write(1, " ", 1);
+#endif
             addr[n-1] = '\0';
             linenoiseHistoryAdd(addr);
             addr[n-1] = '\n';

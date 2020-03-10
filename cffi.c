@@ -19,6 +19,5 @@
 
 #include "m4th.h"
 
-#include "c/c_std.c"
 #include "c/c_liblinenoise.c"
-
+#include "c/c_std.c"

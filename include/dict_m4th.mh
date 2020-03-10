@@ -145,7 +145,7 @@
 #define DICT_WORDS_M4TH_C(X)                                                                       \
     DICT_TOKENS_M4TH_C(X)                                                                          \
     X(7, "c-fread", c_fread)          /* ( FILE* c-addr u -- u' err ) call C function fread()  */  \
-    X(8, "c-fwrite", c_fwrite)        /* ( FILE* c-addr u -- u' err ) call C function fwrite() */  \
+    X(15, "c-fwrite+fflush", c_fwrite_fflush) /* ( FILE* c-addr u -- u' err ) fwrite()+fflush() */ \
     X(11, "c-linenoise", c_linenoise) /* ( prompt c-addr u -- u' err ) call C linenoise() */
 
 /* ------- m4th-core ---------------------------------------------------------------------------- */
@@ -194,8 +194,9 @@
     X(19, "ibuf-find-nonblanks", ibuf_find_nonblanks)                                              \
     X(11, "ibuf-refill", ibuf_refill)           /*   ( io -- err  ) read some data into iobuf   */ \
     X(20, "ibuf-refill-if-empty", ibuf_refill_if_empty) /* ( io -- err ) */                        \
-    X(16, "ibuf-skip-blanks", ibuf_skip_blanks) /* skip blanks from iobuf current data          */ \
-    X(25, "ibuf-skip-blanks-until-cr", ibuf_skip_blanks_until_cr) /* skip blanks until CR/LF    */ \
+    X(16, "ibuf-skip-blanks", ibuf_skip_blanks) /* ( io -- ) skip blanks from iobuf current data*/ \
+    X(26, "ibuf-skip-blanks-except-cr", ibuf_skip_blanks_except_cr) /* ( io -- t|f ) */            \
+    X(25, "ibuf-skip-blanks-until-cr", ibuf_skip_blanks_until_cr) /* ( io -- t|f ) consumes CR  */ \
     X(12, "name-inline?", name_inline_query) /* ( nt -- flag ) calls to name should be inlined? */ \
     X(10, "obuf-flush", obuf_flush)          /* ( io -- err  ) flush iobuf data                 */ \
     /* ( io c -- err  ) flush iobuf, then write one char to it */                                  \
@@ -218,11 +219,11 @@
 #define DICT_TOKENS_M4TH_IMPL(X)                                                                   \
     X(5, "(?do)", _q_do_)                                                                          \
     X(5, "(?if)", _q_if_)                                                                          \
-    X(6, "(?if0)", _q_if_zero_)                                                                    \
+    X(6, "(?if0)", _q_if0_)                                                                    \
     X(8, "(?until)", _q_until_)                                                                    \
-    X(9, "(?until0)", _q_until_zero_)                                                              \
+    X(9, "(?until0)", _q_until0_)                                                              \
     X(8, "(?while)", _q_while_)                                                                    \
-    X(9, "(?while0)", _q_while_zero_)                                                              \
+    X(9, "(?while0)", _q_while0_)                                                              \
     X(7, "(again)", _again_)                                                                       \
     X(7, "(break)", _break_)                                                                       \
     X(6, "(call)", _call_)                                                                         \
@@ -235,7 +236,7 @@
     X(12, "(exec-token)", _exec_token_)                                                            \
     X(21, "(exec-xt-from-native)", _exec_xt_from_native_)                                          \
     X(4, "(if)", _if_)                                                                             \
-    X(5, "(if0)", _if_zero_)                                                                       \
+    X(5, "(if0)", _if0_)                                                                       \
     X(4, "(ip)", _ip_)                                                                             \
     X(9, "(ip>data)", _ip_to_data_)                                                                \
     X(14, "(ip>data>addr)", _ip_to_data_addr_)                                                     \
@@ -249,9 +250,9 @@
     X(8, "(repeat)", _repeat_)                                                                     \
     X(18, "(return-to-native)", _return_to_native_)                                                \
     X(7, "(until)", _until_)                                                                       \
-    X(8, "(until0)", _until_zero_)                                                                 \
+    X(8, "(until0)", _until0_)                                                                 \
     X(7, "(while)", _while_)                                                                       \
-    X(8, "(while0)", _while_zero_)                                                                 \
+    X(8, "(while0)", _while0_)                                                                 \
     X(11, "[#compiled]", _num_compiled_)                                                           \
     X(14, "[compile-init]", _compile_init_)                                                        \
     X(13, "[compile-2s,]", _compile2s_)                                                            \

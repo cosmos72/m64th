@@ -42,12 +42,12 @@ FUNC_RAWEND(_q_if_)
  * must be followed by IP offset to jump.
  * IP offset = 0 means first instruction after (?if0) itself
  */
-FUNC_START(_q_if_zero_)
-        JZ(    DTOP,   TO(_q_if_zero_.enter))
+FUNC_START(_q_if0_)
+        JZ(    DTOP,   TO(_q_if0_.enter))
         RELJUMP()
-LABEL(_q_if_zero_.enter)
+LABEL(_q_if0_.enter)
         NEXTT()                    /* skip IP offset          */
-FUNC_RAWEND(_q_if_zero_)
+FUNC_RAWEND(_q_if0_)
 
 
 /**

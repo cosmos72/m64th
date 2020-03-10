@@ -74,15 +74,15 @@ FUNC_RAWEND(_if_)
  * must be followed by IP offset to jump.
  * IP offset = 0 means first instruction after (if0) itself
  */
-FUNC_START(_if_zero_)
+FUNC_START(_if0_)
         test   DTOP, DTOP;
-        jz     .L_if_zero_.enter;
+        jz     .L_if0_.enter;
         DPOP(  DTOP)               /* affects EFLAGS          */
         RELJUMP()
-.L_if_zero_.enter:
+.L_if0_.enter:
         DPOP(  DTOP)               /* affects EFLAGS          */
         NEXTT()                    /* skip IP offset          */
-FUNC_RAWEND(_if_zero_)
+FUNC_RAWEND(_if0_)
 
 /**
  * must be followed by IP offset of first instruction after (loop)

@@ -141,7 +141,7 @@
 #define M4iobuf_data 621        /* iobuf>data   ( io -- c-addr u ) get data, from position to size*/
 #define M4iobuf_data_n 622      /* iobuf>data>n ( io -- u    ) get data length = size - position  */
 #define M4iobuf_free_data 623   /*              ( io -- c-addr u ) get free data, from size to max*/
-#define M4iobuf_empty_query 234 /* iobuf-empty? ( io -- t|f  ) true if iobuf data is empty        */
+#define M4iobuf_empty_query 234 /* iobuf-empty? ( io -- t|f  ) true if iobuf data is empty */
 #define M4iobuf_err 625         /* iobuf>err    ( io -- addr ) get address of iobuf.err           */
 #define M4iobuf_func 626        /* iobuf>func   ( io -- addr ) get address of iobuf I/O function  */
 #define M4iobuf_handle 627      /* iobuf>handle ( io -- addr ) get address of iobuf handle        */
@@ -175,68 +175,88 @@
 #undef M4____gap                /*                       */
 
 /* 'm4th-impl' wordlist */
-#undef M4____gap             /*                       */
-#define M4minus_one 659      /* -1       */
-#define M4zero 660           /* 0        */
-#define M4one 661            /* 1        */
-#define M4two 662            /* 2        */
-#define M4three 663          /* 3        */
-#define M4four 664           /* 4        */
-#define M4eight 665          /* 8        */
-#define M4_q_do_ 666         /* (?do)     must be followed by IP offset to jump   */
-#define M4_q_if_ 667         /* (?if)     must be followed by IP offset to jump if dtop == 0 */
-#define M4_q_if_zero_ 668    /* (?if0)    must be followed by IP offset to jump if dtop <> 0 */
-#define M4_q_until_ 669      /* (?until)  must be followed by IP offset to jump if dtop == 0 */
-#define M4_q_until_zero_ 670 /* (?until0) must be followed by IP offset to jump if dtop <> 0 */
-#define M4_q_while_ 671      /* (?while)  must be followed by IP offset to jump if dtop == 0 */
-#define M4_q_while_zero_ 672 /* (?while0) must be followed by IP offset to jump if dtop <> 0 */
-#define M4_again_ 673        /* (again)   must be followed by IP offset to jump   */
-#define M4_break_ 674        /* (break)   must be followed by IP offset to jump   */
-#define M4_call_ 675         /* (call)    must be followed by word. calls it.     */
-#define M4_call_xt_ 676      /* (call-xt) must be followed by XT. calls it.       */
-#define M4_catch_beg_ 677    /* (catch-beg) first  half of 'catch'                */
-#define M4_catch_end_ 678    /* (catch-end) second half of 'catch'                */
-#define M4_continue_ 679     /* (continue) must be followed by IP offset to jump  */
-#define M4_else_ 680         /* (else)     must be followed by IP offset to jump  */
-#define M4_exec_native_ 681  /* (exec-native) pop native code address, execute it */
-#define M4_exec_token_ 682   /* pop token, exec it. It must be 'inline' with consume_IP = 0  */
-#define M4_exec_xt_from_native_ 683 /* pop XT and execute it from native code  */
+#undef M4____gap                    /*                       */
+#define M4minus_one 659             /* -1       */
+#define M4zero 660                  /* 0        */
+#define M4one 661                   /* 1        */
+#define M4two 662                   /* 2        */
+#define M4three 663                 /* 3        */
+#define M4four 664                  /* 4        */
+#define M4eight 665                 /* 8        */
+#undef M4____gap                    /*                       */
+#undef M4____gap                    /*                       */
+#define M4_q_break_if_ 668          /* (?break-if)     followed by IP offset to jump if dtop <> 0 */
+#define M4_q_break_if0_ 669         /* (?break-if0)    followed by IP offset to jump if dtop == 0 */
+#define M4_q_continue_if_ 670       /* (?continue-if)  followed by IP offset to jump if dtop <> 0 */
+#define M4_q_continue_if0_ 671      /* (?continue-if0) followed by IP offset to jump if dtop == 0 */
+#define M4_q_do_ 672                /* (?do)           followed by IP offset to jump              */
+#define M4_q_if_ 673                /* (?if)           followed by IP offset to jump if dtop == 0 */
+#define M4_q_if0_ 674               /* (?if0)          followed by IP offset to jump if dtop <> 0 */
+#define M4_q_until_ 675             /* (?until)        followed by IP offset to jump if dtop == 0 */
+#define M4_q_until0_ 676            /* (?until0)       followed by IP offset to jump if dtop <> 0 */
+#define M4_q_while_ 677             /* (?while)        followed by IP offset to jump if dtop == 0 */
+#define M4_q_while0_ 678            /* (?while0)       followed by IP offset to jump if dtop <> 0 */
+#undef M4____gap                    /*                                                            */
+#undef M4____gap                    /*                                                            */
+#define M4_again_ 681               /* (again)         followed by IP offset to jump              */
+#define M4_break_ 682               /* (break)         followed by IP offset to jump              */
+#define M4_break_if_ 683            /* (break-if)      followed by IP offset to jump if dtop <> 0 */
+#define M4_break_if0_ 684           /* (break-if0)     followed by IP offset to jump if dtop == 0 */
+#define M4_call_ 685                /* (call)          followed by word. calls it.                */
+#define M4_call_xt_ 686             /* (call-xt)       followed by XT. calls it.                  */
+#define M4_catch_beg_ 687           /* (catch-beg)     first  half of 'catch'                     */
+#define M4_catch_end_ 688           /* (catch-end)     second half of 'catch'                     */
+#define M4_continue_ 689            /* (continue)      followed by IP offset to jump              */
+#define M4_continue_if_ 690         /* (continue-if)   followed by IP offset to jump if dtop <> 0 */
+#define M4_continue_if0_ 691        /* (continue-if0)  followed by IP offset to jump if dtop == 0 */
+#undef M4____gap                    /*                                                            */
+#undef M4____gap                    /*                                                            */
+#define M4_else_ 694                /* (else)          followed by IP offset to jump              */
+#undef M4____gap                    /*                                                            */
+#define M4_exec_native_ 696         /* (exec-native) pop native code address, execute it          */
+#define M4_exec_token_ 697          /* pop token, exec it. It must be 'inline' and not consume IP */
+#define M4_exec_xt_from_native_ 698 /* pop XT and execute it from native code  */
 #undef M4____gap                    /*                                         */
-#define M4_if_ 685                  /* (if)  must be followed by IP offset     */
-#define M4_if_zero_ 686             /* (if0) must be followed by IP offset     */
+#define M4_if_ 700                  /* (if)  followed by IP offset to jump */
+#define M4_if0_ 701                 /* (if0) followed by IP offset to jump */
 #undef M4____gap                    /*                                         */
-#define M4_ip_ 688                  /* (ip)      get vm's current instruction pointer */
-#define M4_ip_to_data_ 689          /* (ip>data) must be 1st instr in word. return word's data */
-#define M4_ip_to_data_addr_ 690     /* must be 1st instr in word. return word's data>addr      */
-#define M4_leave_ 691               /* (leave)  must be followed by IP offset to jump          */
-#define M4_lit2s_ 692               /* (lit-2s) must be followed by int16, push it to dstack   */
-#define M4_lit4s_ 693               /* (lit-4s) must be followed by int32, push it to dstack   */
-#define M4_lit8s_ 694               /* (lit-8s) must be followed by int64, push it to dstack   */
-#define M4_lit_string_ 695          /* must be followed by T(len) and ascii, push them to dstack */
 #undef M4____gap                    /*                                         */
-#define M4_loop_ 697                /* (loop)   must be followed by IP offset to jump          */
+#define M4_ip_ 704                  /* (ip)      get vm's current instruction pointer */
+#define M4_ip_to_data_ 705          /* (ip>data) must be 1st instr in word. return word's data */
+#define M4_ip_to_data_addr_ 706     /* must be 1st instr in word. return word's data>addr      */
 #undef M4____gap                    /*                                         */
-#define M4_missing_ 0            /* (missing) called instead of invalid/unimplemented function  */
-#define M4_repeat_ 700           /* (repeat) must be followed by IP offset to jump              */
-#define M4_return_to_native_ 701 /* (return-to-native) return to native code                    */
+#undef M4____gap                    /*                                         */
+#undef M4____gap                    /*                                         */
+#define M4_leave_ 710               /* (leave)  followed by IP offset to jump          */
+#define M4_lit2s_ 711               /* (lit-2s) followed by int16, push it to dstack   */
+#define M4_lit4s_ 712               /* (lit-4s) followed by int32, push it to dstack   */
+#define M4_lit8s_ 713               /* (lit-8s) followed by int64, push it to dstack   */
+#define M4_lit_string_ 714          /* followed by T(len) and ascii, push them to dstack */
+#define M4_loop_ 715                /* (loop)   followed by IP offset to jump          */
+#undef M4____gap                    /*                                         */
+#define M4_missing_ 0               /* (missing) called instead of invalid/unimplemented function */
+#undef M4____gap                    /*                                         */
+#undef M4____gap                    /*                                         */
+#define M4_repeat_ 720              /* (repeat) followed by IP offset to jump              */
+#define M4_return_to_native_ 721 /* (return-to-native) return to native code */
 #undef M4____gap                 /*                                         */
 #undef M4____gap                 /*                                         */
-#define M4_until_ 704            /* (until)  must be followed by IP offset to jump if dtop == 0 */
-#define M4_until_zero_ 705       /* (until0) must be followed by IP offset to jump if dtop <> 0 */
-#define M4_while_ 706            /* (while)  must be followed by IP offset to jump if dtop == 0 */
-#define M4_while_zero_ 707       /* (while0) must be followed by IP offset to jump if dtop <> 0 */
+#define M4_until_ 724            /* (until)  followed by IP offset to jump if dtop == 0 */
+#define M4_until0_ 725           /* (until0) followed by IP offset to jump if dtop <> 0 */
+#define M4_while_ 726            /* (while)  followed by IP offset to jump if dtop == 0 */
+#define M4_while0_ 727           /* (while0) followed by IP offset to jump if dtop <> 0 */
 #undef M4____gap                 /*                                         */
 #undef M4____gap                 /*                                         */
 #undef M4____gap                 /*                                         */
-#define M4_num_compiled_ 711 /* [#compiled]  code size i.e. # of tokens in word being compiled  */
-#define M4_compile_init_ 712 /* [compile-init] must be called once x word before any [compile*] */
-#define M4_compile2s_ 713    /* [compile2s,] pop int16 from dstack, append it to compiled code  */
-#define M4_compile4s_ 714    /* [compile4s,] pop int32 from dstack, append it to compiled code  */
-#define M4_compile8s_ 715    /* [compile8s,] pop int64 from dstack, append it to compiled code  */
-#define M4_compile_lit_ 716  /* must be followed by m4token, append it to compiled code  */
-#define M4_compile_resolved_jump_ 717   /* must be followed by m4token and label to jump to */
-#define M4_compile_unresolved_jump_ 718 /* must be followed by m4token and its category */
-#define M4_word_ 719                    /* [word] push to dstack word being compiled */
-#define M4____end 720
+#define M4_num_compiled_ 731 /* [#compiled]  code size i.e. # of tokens in word being compiled  */
+#define M4_compile_init_ 732 /* [compile-init] must be called once x word before any [compile*] */
+#define M4_compile2s_ 733    /* [compile2s,] pop int16 from dstack, append it to compiled code  */
+#define M4_compile4s_ 734    /* [compile4s,] pop int32 from dstack, append it to compiled code  */
+#define M4_compile8s_ 735    /* [compile8s,] pop int64 from dstack, append it to compiled code  */
+#define M4_compile_lit_ 736  /* followed by m4token, append it to compiled code  */
+#define M4_compile_resolved_jump_ 737   /* followed by m4token and label to jump to */
+#define M4_compile_unresolved_jump_ 738 /* followed by m4token and its category */
+#define M4_word_ 739                    /* [word] push to dstack word being compiled */
+#define M4____end 740
 
 #endif /* M4TH_INCLUDE_TOKEN_M4TH_MH */
