@@ -222,12 +222,15 @@ static int isUnsupportedTerm(void) {
 static int enableRawMode(int fd) {
     struct termios raw;
 
-    if (!isatty(STDIN_FILENO)) goto fatal;
+    if (!isatty(STDIN_FILENO)) {
+        errno = ENOTTY;
+        return -1;
+    }
     if (!atexit_registered) {
         atexit(linenoiseAtExit);
         atexit_registered = 1;
     }
-    if (tcgetattr(fd,&orig_termios) == -1) goto fatal;
+    if (tcgetattr(fd,&orig_termios) == -1) return -1;
 
     raw = orig_termios;  /* modify the original mode */
     /* input modes: no break, no CR to NL, no parity check, no strip char,
@@ -245,13 +248,9 @@ static int enableRawMode(int fd) {
     raw.c_cc[VMIN] = 1; raw.c_cc[VTIME] = 0; /* 1 byte, no timer */
 
     /* put terminal in raw mode after flushing */
-    if (tcsetattr(fd,TCSAFLUSH,&raw) < 0) goto fatal;
+    if (tcsetattr(fd,TCSAFLUSH,&raw) < 0) return -1;
     rawmode = 1;
     return 0;
-
-fatal:
-    errno = ENOTTY;
-    return -1;
 }
 
 static void disableRawMode(int fd) {
@@ -986,14 +985,24 @@ void linenoisePrintKeyCodes(void) {
     disableRawMode(STDIN_FILENO);
 }
 
+static int linenoiseFgets(char *buf, size_t buflen, const char *prompt) {
+    if (prompt[0]) {
+        fputs(prompt,stdout);
+        fflush(stdout);
+    }
+    if (fgets(buf,buflen,stdin) == NULL) return -1;
+    return strlen(buf);
+}
+
 /* This function calls the line editing function linenoiseEdit() using
  * the STDIN file descriptor set in raw mode. */
 static int linenoiseRaw(char *buf, size_t buflen, const char *prompt) {
-    int count;
-    if (enableRawMode(STDIN_FILENO) == -1) return -1;
-    count = linenoiseEdit(STDIN_FILENO, STDOUT_FILENO, buf, buflen, prompt);
-    disableRawMode(STDIN_FILENO);
-    return count;
+    if (enableRawMode(STDIN_FILENO) == 0) {
+        int count = linenoiseEdit(STDIN_FILENO, STDOUT_FILENO, buf, buflen, prompt);
+        disableRawMode(STDIN_FILENO);
+	return count;
+    }
+    return linenoiseFgets(buf,buflen,prompt);
 }
 
 static int linenoiseFread(char *buf, size_t buflen) {
@@ -1019,12 +1028,7 @@ int linenoise(char *buf, size_t buflen, const char *prompt) {
         /* Not a tty: read from file / pipe. */
         return linenoiseFread(buf,buflen);
     } else if (isUnsupportedTerm()) {
-        if (prompt[0]) {
-            fputs(prompt,stdout);
-            fflush(stdout);
-        }
-        if (fgets(buf,buflen,stdin) == NULL) return -1;
-        return strlen(buf);
+        return linenoiseFgets(buf,buflen,prompt);
     } else {
         return linenoiseRaw(buf,buflen,prompt);
     }
