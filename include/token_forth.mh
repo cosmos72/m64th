@@ -75,7 +75,7 @@
 #define M4abs 45                  /* abs      */
 #undef M4accept /*46*/            /* accept   */
 #undef M4align /*47*/             /* align    */
-#undef M4aligned /*48*/           /* aligned  */
+#define M4aligned 48              /* aligned  */
 #undef M4allot /*49*/             /* allot    */
 #define M4and 50                  /* and      */
 #define M4base 51                 /* base     */

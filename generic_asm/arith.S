@@ -143,7 +143,6 @@ FUNC_START(minus)          /* -    */
 FUNC_END(minus)
 
 
-
 FUNC_START(minus_one)      /* -1   m4th-impl */
         DPUSH( DTOP)
         MOVE(  IMM_1,  DTOP)
@@ -243,6 +242,11 @@ FUNC_START(eight_plus)     /* 8+  m4th-user */
 FUNC_END(eight_plus)
 
 
+FUNC_START(aligned)
+        ALIGN( SZ,     DTOP)
+FUNC_END(aligned)
+
+
 FUNC_START(and)
         DPOP(  REG1)
         AND2(  REG1,   DTOP)
@@ -295,6 +299,12 @@ FUNC_START(flip)          /* flip      m4th-user ( a b c -- c b a ) equivalent t
         STOR(  DTOP,   AT(DSTK, SZ))
         MOVE(  REG1,   DTOP)
 FUNC_END(flip)
+
+
+FUNC_START(here)
+        DPUSH( DTOP)
+        MOVE(  HERE,   DTOP)
+FUNC_END(here)
 
 
 FUNC_START(invert)

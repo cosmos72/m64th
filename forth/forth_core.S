@@ -69,8 +69,26 @@ WORD_START(colon,      two_swap)
     WORD_DSTACK(0,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
     WORD_CODE(
+        /* state @
+         * if
+         *    M4ERR_COMPILER_NESTING throw
+         * then
+         * parse-name                                  ( c-addr u      )
+         * ?if0                                        ( c-addr u      )
+         *   2drop M4ERR_ZERO_LENGTH_NAME throw        (               )
+         * then                                        ( c-addr u      )
+         */
         /* TODO */
+        state, fetch,
+        _if_, T(4),
+            _lit_, T(M4ERR_COMPILER_NESTING), throw,
+        then,
+        CALL(parse_name),
+        _q_if0_, T(5),
+            two_drop, _lit_, T(M4ERR_ZERO_LENGTH_NAME), throw,
+        then,
         exit
     )
 WORD_END(colon)
@@ -127,8 +145,8 @@ WORD_END(cr)
 WORD(fetch,            cr,         DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 WORD(abs,              fetch,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(and,              abs,        DSTACK(2,1), RSTACK(0,0), WORD_PURE)
-/* address of m4th.base is a per-thread constant */
-WORD(base,             and,        DSTACK(0,1), RSTACK(0,0), WORD_PURE)
+WORD(aligned,          and,        DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD(base,             aligned,    DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 WORD_START(begin, base)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE)
     WORD_DSTACK(0,0)
@@ -216,7 +234,8 @@ WORD_START(exit, execute)
    /* make inliner happy: it skips the final 'exit' of a word's code when inlining */
     WORD_CODE(exit, exit)
 WORD_END(exit)
-WORD(i,                exit,       DSTACK(0,1), RSTACK(1,1), WORD_R_PURE)
+WORD(here,             exit,       DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
+WORD(i,                here,       DSTACK(0,1), RSTACK(1,1), WORD_R_PURE)
 WORD_START(if, i)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_DSTACK(0,1)
