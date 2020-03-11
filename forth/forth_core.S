@@ -79,6 +79,7 @@ WORD_START(colon,      two_swap)
          * ?if0                                        ( c-addr u      )
          *   2drop M4ERR_ZERO_LENGTH_NAME throw        (               )
          * then                                        ( c-addr u      )
+         * dup c,                                      ( c-addr u      )
          */
         /* TODO */
         state, fetch,
@@ -129,6 +130,7 @@ WORD_START(to_number, to_in)
          * loop
          * r> drop r> swap 0
          */
+        /* TODO */
         exit
     )
 WORD_END(to_number)
