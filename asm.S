@@ -24,8 +24,8 @@
 
         .file "asm.S"
 
-#include "include/section.mh"
 #include "include/marker.mh"
+#include "include/section.mh"
 
 SECTION_FUNC()
 MARKER(asm_func_start)
@@ -60,11 +60,11 @@ MARKER(asm_func_end)
 SECTION_RODATA()
 MARKER(asm_data_start)
 
-#include "dict/forth.S"
-#include "dict/m4th_core.S"
-#include "dict/m4th_impl.S"
-#include "dict/m4th_user.S"
-#include "dict/m4th_c.S"
+#include "forth/forth.S"
+#include "forth/m4th_c.S"
+#include "forth/m4th_core.S"
+#include "forth/m4th_impl.S"
+#include "forth/m4th_user.S"
 
 MARKER(asm_data_end)
 

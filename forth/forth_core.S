@@ -64,7 +64,17 @@ WORD(two_drop,         two_div,    DSTACK(2,0), RSTACK(0,0), WORD_PURE)
 WORD(two_dup,          two_drop,   DSTACK(2,4), RSTACK(0,0), WORD_PURE)
 WORD(two_over,         two_dup,    DSTACK(4,6), RSTACK(0,0), WORD_PURE)
 WORD(two_swap,         two_over,   DSTACK(4,4), RSTACK(0,0), WORD_PURE)
-WORD(less,             two_swap,   DSTACK(2,1), RSTACK(0,0), WORD_PURE)
+WORD_START(colon,      two_swap)
+    WORD_FLAGS(0)
+    WORD_DSTACK(0,2)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_CODE(
+        /* TODO */
+        exit
+    )
+WORD_END(colon)
+WORD(less,             colon,      DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(equal,            less,       DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(more,             equal,      DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD_START(to_in,      more)
