@@ -40,7 +40,7 @@
 #define M4plus 10                 /* +        */
 #define M4plus_store 11           /* +!       */
 #undef M4plus_loop /*12*/         /* +loop    */
-#undef M4comma /*13*/             /* ,        */
+#define M4comma 13                /* ,        */
 #define M4minus 14                /* -        */
 #undef M4dot /*15*/               /* .        implemented in forth, no dedicated m4token */
 #undef M4dot_quote /*16*/         /* ."       */
@@ -82,7 +82,7 @@
 #define M4begin 52                /* begin    */
 #define M4bl 53                   /* bl       */
 #define M4c_store 54              /* c!       */
-#undef M4c_comma /*55*/           /* c,       */
+#define M4c_comma 55              /* c,       */
 #define M4c_fetch 56              /* c@       */
 #define M4cell_plus 57            /* cell+    */
 #define M4cells 58                /* cells    */

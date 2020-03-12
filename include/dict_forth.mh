@@ -26,6 +26,7 @@
     X(1, "*", times)                                                                               \
     X(1, "+", plus)                                                                                \
     X(2, "+!", plus_store)                                                                         \
+    X(1, ",", comma)                                                                               \
     X(1, "-", minus)                                                                               \
     X(1, "/", div)                                                                                 \
     X(4, "/mod", div_mod)                                                                          \
@@ -56,6 +57,7 @@
     X(5, "begin", begin)                                                                           \
     X(2, "bl", bl)                                                                                 \
     X(2, "c!", c_store)                                                                            \
+    X(2, "c,", c_comma)                                                                            \
     X(2, "c@", c_fetch)                                                                            \
     X(5, "cell+", cell_plus)                                                                       \
     X(5, "cells", cells)                                                                           \

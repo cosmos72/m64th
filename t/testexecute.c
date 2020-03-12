@@ -941,7 +941,7 @@ static m4testexecute testexecute_f[] = {
      {{6, {1, 2, 3, 4, 5, 6}}, {}},
      {{2, {6, 15}}, {}},
      {}},
-    /* ----------------------------- compile-token, ------------------------- */
+    /* ----------------------------- comma... ------------------------------- */
     {"0x123 (compile-token,)",
      {m4_compile_init_, m4_compile_token_, m4bye},
      {{1, {0x123}}, {}},
@@ -952,6 +952,26 @@ static m4testexecute testexecute_f[] = {
      {{}, {}},
      {{}, {}},
      {1, {500}}},
+    {"1 c, 2 c,",
+     {m4_compile_init_, m4c_comma, m4c_comma, m4bye},
+     {{2, {2, 1}}, {}},
+     {{}, {}},
+     {1, {1 | (2 << 8)}}},
+#if defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+#if SZ == 8 && SZt == 2
+    {"0x08090a0b0c0d0e0f ,",
+     {m4_compile_init_, m4comma, m4bye},
+     {{1, {0x08090a0b0c0d0e0f}}, {}},
+     {{}, {}},
+     {4, {0x0e0f, 0x0c0d, 0x0a0b, 0x0809}}},
+#elif SZ == 4 && SZt == 2
+    {"0x0c0d0e0f ,",
+     {m4_compile_init_, m4comma, m4bye},
+     {{1, {0x0c0d0e0f}}, {}},
+     {{}, {}},
+     {2, {0x0e0f, 0x0c0d}}},
+#endif
+#endif
     /* ----------------------------- word.... ------------------------------- */
     {"name>flags",
      {CALL(name_to_flags), m4bye},

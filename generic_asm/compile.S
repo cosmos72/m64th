@@ -146,7 +146,21 @@ FUNC_START(_compile_unresolved_jump_)    /* [compile-unresolved-jump] */
 FUNC_RAWEND(_compile_unresolved_jump_)
 
 
+FUNC_START(comma)
+        STOR(  DTOP,       AT(HERE))
+        ADD2(  IMM(SZ),    HERE)
+        DPOP(  DTOP)
+FUNC_END(comma)
+
+
+FUNC_START(c_comma)
+        STORb( DTOPb,      AT(HERE))
+        INC1(  HERE)
+        DPOP(  DTOP)
+FUNC_END(c_comma)
+
+
 FUNC_START(state)
         DPUSH( DTOP)
-        ADDI(  M4TH, M4TH_OFF_XT, DTOP) /* we use m4th->xt as state */
+        ADDI(  M4TH, M4TH_OFF_XT, DTOP)                /* &m4th.xt is also used as STATE */
 FUNC_END(state)
