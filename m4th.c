@@ -55,33 +55,44 @@ typedef char m4th_assert_sizeof_m4cell_equal_SZ[(sizeof(m4cell) == SZ) ? 1 : -1]
 
 static void m4char_print_escape(const m4char ch, FILE *out) {
     const char *seq = NULL;
-    if (ch >= ' ' && ch <= '~' && ch != '\\' ) {
+    if (ch >= ' ' && ch <= '~' && ch != '\\') {
         fputc((char)ch, out);
         return;
     }
     switch (ch) {
     case '\a':
-        seq = "\\a"; break;
+        seq = "\\a";
+        break;
     case '\b':
-        seq = "\\b"; break;
+        seq = "\\b";
+        break;
     case '\t':
-        seq = "\\t"; break;
+        seq = "\\t";
+        break;
     case '\n':
-        seq = "\\n"; break;
+        seq = "\\n";
+        break;
     case '\v':
-        seq = "\\v"; break;
+        seq = "\\v";
+        break;
     case '\f':
-        seq = "\\f"; break;
+        seq = "\\f";
+        break;
     case '\r':
-        seq = "\\r"; break;
+        seq = "\\r";
+        break;
     case 27: /* escape */
-        seq = "\\e"; break;
+        seq = "\\e";
+        break;
     case '"':
-        seq = "\\\""; break;
+        seq = "\\\"";
+        break;
     case '\'':
-        seq = "\\\'"; break;
+        seq = "\\\'";
+        break;
     case '\\':
-        seq = "\\\\"; break;
+        seq = "\\\\";
+        break;
     }
     if (seq) {
         fputs(seq, out);
@@ -859,7 +870,8 @@ m4th *m4th_new() {
     memset(m->c_regs, '\0', sizeof(m->c_regs));
     m->user_size = ((m4cell)&m->user_var[0] - (m4cell)&m->user_size) / SZ;
     m->user_next = m->user_size;
-    m->w = NULL;
+    m->lastw = NULL;
+    m->xt = NULL;
     m->mem = m4cbuf_alloc(dataspace_n);
     m->base = 10;
     memset(&m->searchorder, '\0', sizeof(m->searchorder));
@@ -886,11 +898,12 @@ void m4th_del(m4th *m) {
 void m4th_clear(m4th *m) {
     m->dstack.curr = m->dstack.end;
     m->rstack.curr = m->rstack.end;
-    m->w = NULL;
-    m->ip = NULL;
     memset(m->c_regs, '\0', sizeof(m->c_regs));
     m->in->err = m->in->pos = m->in->size = 0;
     m->out->err = m->out->pos = m->out->size = 0;
+    m->ip = NULL;
+    m->lastw = NULL;
+    m->xt = NULL;
     m->mem.curr = m->mem.start;
     m->handler = m->ex = 0;
     m->ex_string.addr = NULL;
@@ -898,13 +911,67 @@ void m4th_clear(m4th *m) {
 }
 
 const m4cell *m4th_state(const m4th *m) {
-    return (const m4cell *)&m->w;
+    return (const m4cell *)&m->xt;
 }
 
 void m4th_also(m4th *m, m4wordlist *wid) {
     m4searchorder *s = &m->searchorder;
     if (wid != NULL && s->n < m4searchorder_max) {
         s->addr[s->n++] = wid;
+    }
+}
+
+static inline m4char *m4_aligned_at(void *addr, m4cell_u power_of_two) {
+    return (m4char *)(((m4cell)addr + power_of_two - 1) & ~(m4cell)(power_of_two - 1));
+}
+
+/* C implementation of ':' i.e. start compiling a new word */
+void m4th_colon(m4th *m, m4string name) {
+    m4char *here = m->mem.curr;
+    m4word *w;
+    if (!name.addr) {
+        name.n = 0;
+    } else if (name.n >= 0xff) {
+        name.n = 0xff;
+    }
+    if (name.n) {
+        *here++ = name.n;
+        memcpy(here, name.addr, name.n);
+        here += name.n;
+    }
+    here = m4_aligned_at(here, SZ);
+    w = (m4word *)here;
+    memset(w, '\0', sizeof(m4word));
+    w->name_off = name.n ? here - m->mem.start : 0;
+    w->code_off = WORD_OFF_XT;
+    m->lastw = w;
+    m->mem.curr = (m4char *)(m->xt = m4word_xt(w));
+}
+
+/* C implementation of ';' i.e. finish compiling a new word */
+void m4th_semi(m4th *m) {
+    m4token *here = (m4token *)m4_aligned_at(m->mem.curr, SZt);
+    if (m->lastw == NULL) {
+        return;
+    }
+    *here++ = m4exit;
+    m->lastw->code_n = here - m->xt;
+    m->xt = NULL;
+    m->mem.curr = (m4char *)here;
+}
+
+/* compute m->lastw->data_n (if not compiling) or m->lastw->code_n (if compiling) from HERE */
+void m4th_sync_lastw(m4th *m) {
+    if (m->lastw == NULL) {
+        ;
+    } else if (m->xt) {
+        /* compiling */
+        m4char *here = m4_aligned_at(m->mem.curr, SZt);
+        m->lastw->code_n = (m4token *)here - m->xt;
+        m->mem.curr = here;
+    } else {
+        /* not compiling */
+        m->lastw->data_n = m->mem.curr - m->lastw->data;
     }
 }
 

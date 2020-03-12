@@ -144,8 +144,10 @@ static m4cell m4testcompile_run(m4th *m, const m4testcompile *t, m4code t_codege
 
     m4th_clear(m);
 
-    w = m->w = (m4word *)m->mem.start;
+    w = m->lastw = (m4word *)m->mem.start;
     memset(w, '\0', sizeof(m4word));
+    w->code_off = WORD_OFF_XT;
+    m->xt = m4word_xt(w);
 
     assert(input_n <= m->in->max);
     m->in->pos = 0;
@@ -157,9 +159,11 @@ static m4cell m4testcompile_run(m4th *m, const m4testcompile *t, m4code t_codege
 
     m4th_repl(m);
 
+    m4th_sync_lastw(m);
+
     return m4countedstack_equal(&t->dafter, &m->dstack) &&
            m4countedstack_equal(&empty, &m->rstack) /**/ &&
-           m4code_equal(t_codegen, m4word_code(m->w));
+           m4code_equal(t_codegen, m4word_code(m->lastw));
 }
 
 static void m4testcompile_print(const m4testcompile *t, FILE *out) {
@@ -179,7 +183,7 @@ static void m4testcompile_failed(m4th *m, const m4testcompile *t, m4code t_codeg
     fputs("\n    expected    codegen   ", out);
     m4code_print(t_codegen, out);
     fputs("\n      actual    codegen   ", out);
-    m4word_code_print(m->w, out);
+    m4word_code_print(m->lastw, out);
     if (m->dstack.curr == m->dstack.end && m->rstack.curr == m->rstack.end) {
         fputc('\n', out);
         return;

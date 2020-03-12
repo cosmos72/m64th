@@ -31,13 +31,14 @@
 #define M4TH_OFF_OUT -SZ2           /* offset of m4th->out             */
 #define M4TH_OFF_C_REG0 -SZ         /* offset of m4th->c_regs[0]       */
 #define M4TH_OFF_USER 0             /* offset of m4th->user*           */
-#define M4TH_OFF_W SZ               /* offset of m4th->w               */
-#define M4TH_OFF_BASE SZ2           /* offset of m4th->base            */
-#define M4TH_OFF_HERE SZ4           /* offset of m4th->mem.curr = HERE */
-#define M4TH_OFF_HANDLER SZ6        /* offset of m4th->handler         */
-#define M4TH_OFF_EX SZ7             /* offset of m4th->ex              */
-#define M4TH_OFF_EX_STRING_ADDR SZ8 /* offset of m4th->ex_string.addr  */
-#define M4TH_OFF_EX_STRING_N SZ9    /* offset of m4th->ex_string.n     */
-#define M4TH_OFF_SEARCHORDER SZ10   /* offset of m4th->searchorder     */
+#define M4TH_OFF_LASTW SZ           /* offset of m4th->lastw           */
+#define M4TH_OFF_XT SZ2             /* offset of m4th->xt              */
+#define M4TH_OFF_BASE SZ3           /* offset of m4th->base            */
+#define M4TH_OFF_HERE SZ5           /* offset of m4th->mem.curr = HERE */
+#define M4TH_OFF_HANDLER SZ7        /* offset of m4th->handler         */
+#define M4TH_OFF_EX SZ8             /* offset of m4th->ex              */
+#define M4TH_OFF_EX_STRING_ADDR SZ9 /* offset of m4th->ex_string.addr  */
+#define M4TH_OFF_EX_STRING_N SZ10   /* offset of m4th->ex_string.n     */
+#define M4TH_OFF_SEARCHORDER SZ11   /* offset of m4th->searchorder     */
 
 #endif /* M4TH_INCLUDE_M4TH_MH */

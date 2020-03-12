@@ -490,7 +490,7 @@ WORD_START(_compile_unresolved_jump_, _compile_resolved_jump_)
     WORD_DSTACK(0,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
+    WORD_NATIVE_NONE() /* consumes IP and uses IP-relative ASM_CALL(), cannot inline in native code */
     WORD_CODE(_compile_init_, _compile_unresolved_jump_, T(-1), T(-1), exit)
 WORD_END(_compile_unresolved_jump_)
 WORD_START(_inline_, _compile_unresolved_jump_)
@@ -816,4 +816,3 @@ WORD_END(string_to_sign)
 
 DICT_BODY(m4th_impl, string_to_sign)
 DICT_END(m4th_impl)
-

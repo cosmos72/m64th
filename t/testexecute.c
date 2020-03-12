@@ -1120,13 +1120,10 @@ static m4code_pair m4testexecute_init(m4testexecute *t, m4countedcode_pair *code
 }
 
 static m4cell m4testexecute_run(m4th *m, m4testexecute *t, const m4code_pair *pair) {
-    m4word *w;
-
     m4th_clear(m);
     if (t->codegen.n != 0) {
-        w = m->w = (m4word *)m->mem.start;
-        memset(w, '\0', sizeof(m4word));
-        m->mem.curr = (m4char *)(w + 1);
+        m4string name = {};
+        m4th_colon(m, name);
     }
     m4testexecute_fix(t, pair);
 
@@ -1140,9 +1137,11 @@ static m4cell m4testexecute_run(m4th *m, m4testexecute *t, const m4code_pair *pa
 
     m4th_run(m);
 
+    m4th_sync_lastw(m);
+
     return m4countedstack_equal(&t->after.d, &m->dstack) &&
            m4countedstack_equal(&t->after.r, &m->rstack) &&
-           m4code_equal(pair->second, m4word_code(m->w));
+           m4code_equal(pair->second, m4word_code(m->lastw));
 }
 
 static void m4testexecute_failed(m4th *m, const m4testexecute *t, const m4code_pair *pair,
@@ -1161,14 +1160,14 @@ static void m4testexecute_failed(m4th *m, const m4testexecute *t, const m4code_p
     fputs("\n      actual return stack ", out);
     m4stack_print(&m->rstack, out);
 
-    if (t->codegen.n == 0 && (!m->w || m->w->code_n == 0)) {
+    if (t->codegen.n == 0 && (!m->lastw || m->lastw->code_n == 0)) {
         fputc('\n', out);
         return;
     }
     fputs("\n... expected    codegen   ", out);
     m4code_print(pair->second, out);
     fputs("\n      actual    codegen   ", out);
-    m4word_code_print(m->w, out);
+    m4word_code_print(m->lastw, out);
     fputc('\n', out);
 }
 

@@ -207,16 +207,17 @@ struct m4th_s {        /**< m4th forth interpreter and compiler          */
     const void *c_regs[1]; /**< m4th_run() may save C registers here     */
 
     /* USER variables, i.e. thread-local */
-    uint32_t user_size; /**< # available cells in user variables         */
-    uint32_t user_next; /**< next available cell in user variables       */
-    m4word *w;          /**< forth word being compiled                   */
-    m4cell base;        /**< current BASE                                */
-    m4cbuf mem;         /**< start, HERE and end of data space           */
-    m4cell handler;     /**< exception handler installed by CATCH        */
-    m4cell ex;          /**< exception set by THROW                      */
-    m4string ex_string; /**< exception string, set manually before THROW */
-    m4searchorder searchorder; /**< wordlist search order                */
-    m4cell user_var[0]; /**< further user variables                      */
+    uint32_t user_size;        /**< # available cells in user variables         */
+    uint32_t user_next;        /**< next available cell in user variables       */
+    m4word *lastw;             /**< last defined forth word                     */
+    m4xt xt;                   /**< XT being compiled. also used for STATE      */
+    m4cell base;               /**< current BASE                                */
+    m4cbuf mem;                /**< start, HERE and end of data space           */
+    m4cell handler;            /**< exception handler installed by CATCH        */
+    m4cell ex;                 /**< exception set by THROW                      */
+    m4string ex_string;        /**< exception string, set manually before THROW */
+    m4searchorder searchorder; /**< wordlist search order                       */
+    m4cell user_var[0];        /**< further user variables                      */
 };
 
 #ifdef __cplusplus
@@ -250,6 +251,15 @@ const m4cell *m4th_state(const m4th *m);
 /* add wid to the top of search order */
 void m4th_also(m4th *m, m4wordlist *wid);
 
+/* start compiling a new word */
+void m4th_colon(m4th *m, m4string name);
+
+/* finish compiling a new word */
+void m4th_semi(m4th *m);
+
+/* compute m->lastw->data_n (if not compiling) or m->lastw->code_n (if compiling) from HERE */
+void m4th_sync_lastw(m4th *m);
+
 /* return <> 0 if search order contains wid */
 m4cell m4th_knows(const m4th *m, const m4wordlist *wid);
 
@@ -276,7 +286,7 @@ void m4dict_print(const m4dict *dict, FILE *out);
 /** return how many bytes of code are consumed by token or word marked with given flags */
 m4cell m4flags_consume_ip(m4flags fl);
 void m4flags_print(m4flags fl, FILE *out);
-       
+
 void m4slice_copy_to_code(m4slice src, m4code *dst);
 void m4slice_to_word_code(const m4slice *src, m4word *dst);
 
