@@ -146,18 +146,32 @@ FUNC_START(_compile_unresolved_jump_)    /* [compile-unresolved-jump] */
 FUNC_RAWEND(_compile_unresolved_jump_)
 
 
-FUNC_START(comma)
-        STOR(  DTOP,       AT(HERE))
-        ADD2(  IMM(SZ),    HERE)
-        DPOP(  DTOP)
-FUNC_END(comma)
-
-
-FUNC_START(c_comma)
+FUNC_START(c_comma)        /* c,   */
         STORb( DTOPb,      AT(HERE))
         INC1(  HERE)
         DPOP(  DTOP)
 FUNC_END(c_comma)
+
+
+FUNC_START(short_comma)    /* short,   m4th-user */
+        STORh( DTOPh,      AT(HERE))
+        ADD2(  IMM(2),     HERE)
+        DPOP(  DTOP)
+FUNC_END(short_comma)
+
+
+FUNC_START(int_comma)      /* int,     m4th-user */
+        STORw( DTOPw,      AT(HERE))
+        ADD2(  IMM(4),     HERE)
+        DPOP(  DTOP)
+FUNC_END(int_comma)
+
+
+FUNC_START(comma)          /* ,    */
+        STOR(  DTOP,       AT(HERE))
+        ADD2(  IMM(SZ),    HERE)
+        DPOP(  DTOP)
+FUNC_END(comma)
 
 
 FUNC_START(state)

@@ -39,7 +39,7 @@ FUNC_START(count)          /* count */
 FUNC_END(count)
 
 #ifndef M4FSHORT_STORE
-FUNC_START(short_store)    /* short! */
+FUNC_START(short_store)    /* short!   m4th-user */
         DPOP(  REG1)
         STORh( REG1h, AT(DTOP))
         DPOP(  DTOP)
@@ -47,7 +47,7 @@ FUNC_END(short_store)
 #endif
 
 #ifndef M4FINT_STORE
-FUNC_START(int_store)      /* int! */
+FUNC_START(int_store)      /* int!     m4th-user */
         DPOP(  REG1)
         STORw( REG1w, AT(DTOP))
         DPOP(  DTOP)
@@ -63,7 +63,7 @@ FUNC_END(store)
 #endif
 
 
-FUNC_START(byte_fetch)     /* byte@ */
+FUNC_START(byte_fetch)     /* byte@    m4th-user */
         LD_sb(DTOP_sb, AT(DTOP))
 FUNC_END(byte_fetch)
 
@@ -73,22 +73,22 @@ FUNC_START(c_fetch)        /* c@ */
 FUNC_END(c_fetch)
 
 
-FUNC_START(short_fetch)    /* short@ */
+FUNC_START(short_fetch)    /* short@   m4th-user */
         LD_sh(DTOP_sh, AT(DTOP))
 FUNC_END(short_fetch)
 
 
-FUNC_START(ushort_fetch)   /* ushort@ */
+FUNC_START(ushort_fetch)   /* ushort@  m4th-user */
         LD_uh(DTOP_uh, AT(DTOP))
 FUNC_END(ushort_fetch)
 
 
-FUNC_START(int_fetch)      /* int@ */
+FUNC_START(int_fetch)      /* int@     m4th-user */
         LD_sw(DTOP_sw, AT(DTOP))
 FUNC_END(int_fetch)
 
 
-FUNC_START(uint_fetch)     /* uint@ */
+FUNC_START(uint_fetch)     /* uint@    m4th-user */
         LD_uw(DTOP_uw, AT(DTOP))
 FUNC_END(uint_fetch)
 

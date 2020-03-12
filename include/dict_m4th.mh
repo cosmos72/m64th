@@ -57,20 +57,27 @@
     X(18, "string-first-blank", string_first_blank) /* ( c-addr u -- u' )               */         \
     X(3, "sub", sub)                                /* equivalent to: swap -            */         \
     X(5, "trail", trail)                            /* equivalent to: over swap         */         \
-    /*                             */ /*                                                */         \
+    /*                              */ /*                                               */         \
     X(5, "byte@", byte_fetch)                                                                      \
-    /* X(5, "char@", char_fetch)   */ /* alias of: c@                                   */         \
+    /* X(5, "char@", char_fetch)    */ /* alias of: c@                                  */         \
     X(6, "short@", short_fetch)                                                                    \
     X(7, "ushort@", ushort_fetch)                                                                  \
     X(4, "int@", int_fetch)                                                                        \
     X(5, "uint@", uint_fetch)                                                                      \
-    /*                             */ /*                                                */         \
-    /* X(5, "byte!", byte_store)   */ /* alias of: c!                                   */         \
-    /* X(5, "char!", char_store)   */ /* alias of: c!                                   */         \
+    /*                              */ /*                                               */         \
+    /* X(5, "byte!", byte_store)    */ /* alias of: c!                                  */         \
+    /* X(5, "char!", char_store)    */ /* alias of: c!                                  */         \
     X(6, "short!", short_store)                                                                    \
-    /*X(7, "ushort!", ushort_store)*/ /* alias of: short!                               */         \
+    /* X(7, "ushort!", ushort_store)*/ /* alias of: short!                              */         \
     X(4, "int!", int_store)                                                                        \
-    /*X(5, "uint!", uint_store)    */ /* alias of: int!                                 */         \
+    /* X(5, "uint!", uint_store)    */ /* alias of: int!                                */         \
+    /*                              */ /*                                               */         \
+    /* X(5, "byte,", byte_comma)    */ /* alias of: c,                                  */         \
+    /* X(5, "char,", char_comma)    */ /* alias of: c,                                  */         \
+    X(6, "short,", short_comma)                                                                    \
+    /* X(7, "ushort,", ushort_comma)*/ /* alias of: short,                              */         \
+    X(4, "int,", int_comma)                                                                        \
+    /* X(5, "uint,", uint_comma)    */ /* alias of: int,                                */         \
     X(7, "to-byte", to_byte)                                                                       \
     X(7, "to-char", to_char)                                                                       \
     X(8, "to-short", to_short)                                                                     \
@@ -144,9 +151,9 @@
 
 #define DICT_WORDS_M4TH_C(X)                                                                       \
     DICT_TOKENS_M4TH_C(X)                                                                          \
-    X(7, "c-fread", c_fread)          /* ( FILE* c-addr u -- u' err ) call C function fread()  */  \
+    X(7, "c-fread", c_fread) /* ( FILE* c-addr u -- u' err ) call C function fread()  */           \
     X(15, "c-fwrite+fflush", c_fwrite_fflush) /* ( FILE* c-addr u -- u' err ) fwrite()+fflush() */ \
-    X(11, "c-linenoise", c_linenoise) /* ( prompt c-addr u -- u' err ) call C linenoise() */
+    X(11, "c-linenoise", c_linenoise)         /* ( prompt c-addr u -- u' err ) call C linenoise() */
 
 /* ------- m4th-core ---------------------------------------------------------------------------- */
 #define DICT_TOKENS_M4TH_CORE(X)                                                                   \
@@ -192,7 +199,7 @@
     X(10, "always-eof", always_eof)                                                                \
     /*   ( io -- c-addr u ) find blank-delimited string in current iobuf data (no refilling) */    \
     X(19, "ibuf-find-nonblanks", ibuf_find_nonblanks)                                              \
-    X(11, "ibuf-refill", ibuf_refill)           /*   ( io -- err  ) read some data into iobuf   */ \
+    X(11, "ibuf-refill", ibuf_refill) /*   ( io -- err  ) read some data into iobuf   */           \
     X(20, "ibuf-refill-if-empty", ibuf_refill_if_empty) /* ( io -- err ) */                        \
     X(16, "ibuf-skip-blanks", ibuf_skip_blanks) /* ( io -- ) skip blanks from iobuf current data*/ \
     X(26, "ibuf-skip-blanks-except-cr", ibuf_skip_blanks_except_cr) /* ( io -- t|f ) */            \
@@ -219,11 +226,11 @@
 #define DICT_TOKENS_M4TH_IMPL(X)                                                                   \
     X(5, "(?do)", _q_do_)                                                                          \
     X(5, "(?if)", _q_if_)                                                                          \
-    X(6, "(?if0)", _q_if0_)                                                                    \
+    X(6, "(?if0)", _q_if0_)                                                                        \
     X(8, "(?until)", _q_until_)                                                                    \
-    X(9, "(?until0)", _q_until0_)                                                              \
+    X(9, "(?until0)", _q_until0_)                                                                  \
     X(8, "(?while)", _q_while_)                                                                    \
-    X(9, "(?while0)", _q_while0_)                                                              \
+    X(9, "(?while0)", _q_while0_)                                                                  \
     X(7, "(again)", _again_)                                                                       \
     X(7, "(break)", _break_)                                                                       \
     X(6, "(call)", _call_)                                                                         \
@@ -236,7 +243,7 @@
     X(12, "(exec-token)", _exec_token_)                                                            \
     X(21, "(exec-xt-from-native)", _exec_xt_from_native_)                                          \
     X(4, "(if)", _if_)                                                                             \
-    X(5, "(if0)", _if0_)                                                                       \
+    X(5, "(if0)", _if0_)                                                                           \
     X(4, "(ip)", _ip_)                                                                             \
     X(9, "(ip>data)", _ip_to_data_)                                                                \
     X(14, "(ip>data>addr)", _ip_to_data_addr_)                                                     \
@@ -250,9 +257,9 @@
     X(8, "(repeat)", _repeat_)                                                                     \
     X(18, "(return-to-native)", _return_to_native_)                                                \
     X(7, "(until)", _until_)                                                                       \
-    X(8, "(until0)", _until0_)                                                                 \
+    X(8, "(until0)", _until0_)                                                                     \
     X(7, "(while)", _while_)                                                                       \
-    X(8, "(while0)", _while0_)                                                                 \
+    X(8, "(while0)", _while0_)                                                                     \
     X(11, "[#compiled]", _num_compiled_)                                                           \
     X(14, "[compile-init]", _compile_init_)                                                        \
     X(13, "[compile-2s,]", _compile2s_)                                                            \

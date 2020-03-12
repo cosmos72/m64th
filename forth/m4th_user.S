@@ -270,7 +270,9 @@ WORD(short_fetch,      char_fetch,     DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M
 WORD(ushort_fetch,     short_fetch,    DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 WORD(int_fetch,        ushort_fetch,   DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 WORD(uint_fetch,       int_fetch,      DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD(to_byte,          uint_fetch,     DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD(short_comma,      uint_fetch,     DSTACK(1,0), RSTACK(0,0), WORD_IMPURE)
+WORD(int_comma,        short_comma,    DSTACK(1,0), RSTACK(0,0), WORD_IMPURE)
+WORD(to_byte,          int_comma,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(to_char,          to_byte,        DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(to_short,         to_char,        DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(to_ushort,        to_short,       DSTACK(1,1), RSTACK(0,0), WORD_PURE)
@@ -367,4 +369,3 @@ WORD_END(valid_base_q)
 
 DICT_BODY(m4th_user, valid_base_q)
 DICT_END(m4th_user)
-

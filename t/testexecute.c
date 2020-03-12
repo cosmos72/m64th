@@ -952,12 +952,24 @@ static m4testexecute testexecute_f[] = {
      {{}, {}},
      {{}, {}},
      {1, {500}}},
+    {"0xcdef short,",
+     {m4_compile_init_, m4short_comma, m4bye},
+     {{1, {0xcdef}}, {}},
+     {{}, {}},
+     {1, {0xcdef}}},
+#if defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
     {"1 c, 2 c,",
      {m4_compile_init_, m4c_comma, m4c_comma, m4bye},
      {{2, {2, 1}}, {}},
      {{}, {}},
-     {1, {1 | (2 << 8)}}},
-#if defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+     {1, {0x0201}}},
+#if SZt == 2
+    {"0x12345678 int,",
+     {m4_compile_init_, m4int_comma, m4bye},
+     {{1, {0x12345678}}, {}},
+     {{}, {}},
+     {2, {0x5678, 0x1234}}},
+#endif
 #if SZ == 8 && SZt == 2
     {"0x08090a0b0c0d0e0f ,",
      {m4_compile_init_, m4comma, m4bye},

@@ -81,25 +81,35 @@
 #define M4u_less_equal 561           /* u<=                   */
 #define M4u_more_equal 562           /* u>=                   */
 #undef M4____gap                     /*                       */
-#undef M4____gap                     /*                       */
-#define M4byte_fetch 565             /* byte@     read   int8_t at address dtop, sign-extend */
+/*                                */ /*                       */
+#define M4byte_fetch 564             /* byte@     read   int8_t at address dtop, sign-extend */
 #define M4char_fetch M4c_fetch       /* char@     read  uint8_t at address dtop, sign-extend */
-#define M4short_fetch 567            /* short@    read  int16_t at address dtop, sign-extend */
-#define M4ushort_fetch 568           /* ushort@   read uint16_t at address dtop, sign-extend */
-#define M4int_fetch 569              /* int@      read  int32_t at address dtop, sign-extend */
-#define M4uint_fetch 570             /* uint@     read uint32_t at address dtop, sign-extend */
+#define M4short_fetch 565            /* short@    read  int16_t at address dtop, sign-extend */
+#define M4ushort_fetch 566           /* ushort@   read uint16_t at address dtop, sign-extend */
+#define M4int_fetch 567              /* int@      read  int32_t at address dtop, sign-extend */
+#define M4uint_fetch 568             /* uint@     read uint32_t at address dtop, sign-extend */
 #define M4byte_store M4c_store       /* byte!     write   (int8_t)dtop at address d2         */
 #define M4char_store M4c_store       /* char!     write  (uint8_t)dtop at address d2         */
-#define M4short_store 573            /* short!    write  (int16_t)dtop at address d2         */
+#define M4short_store 569            /* short!    write  (int16_t)dtop at address d2         */
 #define M4ushort_store M4short_store /* ushort!   write (uint16_t)dtop at address d2         */
-#define M4int_store 575              /* int!      write  (int32_t)dtop at address d2         */
+#define M4int_store 570              /* int!      write  (int32_t)dtop at address d2         */
 #define M4uint_store M4int_store     /* uint!     write (uint32_t)dtop at address d2         */
-#define M4to_byte 577   /* to-byte   truncate dtop to   int8_t, sign-extend high bits  */
-#define M4to_char 578   /* to-char   truncate dtop to  uint8_t, zero-extend high bits  */
-#define M4to_short 579  /* to-short  truncate dtop to  int16_t, sign-extend high bits  */
-#define M4to_ushort 580 /* to-ushort truncate dtop to uint16_t, zero-extend high bits  */
-#define M4to_int 581    /* to-int    truncate dtop to  int32_t, sign-extend high bits  */
-#define M4to_uint 582   /* to-uint   truncate dtop to uint32_t, zero-extend high bits  */
+#define M4byte_comma M4c_comma       /* byte,   append    (int8_t)dtop to last word's data   */
+#define M4char_comma M4c_comma       /* char,   append   (uint8_t)dtop to last word's data   */
+#define M4short_comma 571            /* short,  append   (int16_t)dtop to last word's data   */
+#define M4ushort_comma M4short_comma /* ushort, append  (uint16_t)dtop to last word's data   */
+#define M4int_comma 572              /* int,    append   (int32_t)dtop to last word's data   */
+#define M4uint_comma M4int_comma     /* uint,   append  (uint32_t)dtop to last word's data   */
+#define M4to_byte 573   /* to-byte   truncate dtop to   int8_t, sign-extend high bits  */
+#define M4to_char 574   /* to-char   truncate dtop to  uint8_t, zero-extend high bits  */
+#define M4to_short 575  /* to-short  truncate dtop to  int16_t, sign-extend high bits  */
+#define M4to_ushort 576 /* to-ushort truncate dtop to uint16_t, zero-extend high bits  */
+#define M4to_int 577    /* to-int    truncate dtop to  int32_t, sign-extend high bits  */
+#define M4to_uint 578   /* to-uint   truncate dtop to uint32_t, zero-extend high bits  */
+#undef M4____gap        /*                       */
+#undef M4____gap        /*                       */
+#undef M4____gap        /*                       */
+#undef M4____gap        /*                       */
 #undef M4____gap        /*                       */
 #undef M4____gap        /*                       */
 #undef M4____gap        /*                       */
@@ -238,16 +248,16 @@
 #undef M4____gap                    /*                                         */
 #undef M4____gap                    /*                                         */
 #define M4_repeat_ 720              /* (repeat) followed by IP offset to jump              */
-#define M4_return_to_native_ 721 /* (return-to-native) return to native code */
-#undef M4____gap                 /*                                         */
-#undef M4____gap                 /*                                         */
-#define M4_until_ 724            /* (until)  followed by IP offset to jump if dtop == 0 */
-#define M4_until0_ 725           /* (until0) followed by IP offset to jump if dtop <> 0 */
-#define M4_while_ 726            /* (while)  followed by IP offset to jump if dtop == 0 */
-#define M4_while0_ 727           /* (while0) followed by IP offset to jump if dtop <> 0 */
-#undef M4____gap                 /*                                         */
-#undef M4____gap                 /*                                         */
-#undef M4____gap                 /*                                         */
+#define M4_return_to_native_ 721    /* (return-to-native) return to native code */
+#undef M4____gap                    /*                                         */
+#undef M4____gap                    /*                                         */
+#define M4_until_ 724               /* (until)  followed by IP offset to jump if dtop == 0 */
+#define M4_until0_ 725              /* (until0) followed by IP offset to jump if dtop <> 0 */
+#define M4_while_ 726               /* (while)  followed by IP offset to jump if dtop == 0 */
+#define M4_while0_ 727              /* (while0) followed by IP offset to jump if dtop <> 0 */
+#undef M4____gap                    /*                                         */
+#undef M4____gap                    /*                                         */
+#undef M4____gap                    /*                                         */
 #define M4_num_compiled_ 731 /* [#compiled]  code size i.e. # of tokens in word being compiled  */
 #define M4_compile_init_ 732 /* [compile-init] must be called once x word before any [compile*] */
 #define M4_compile2s_ 733    /* [compile2s,] pop int16 from dstack, append it to compiled code  */
