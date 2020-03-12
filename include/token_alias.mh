@@ -27,11 +27,12 @@
 /* m4token identifiers have lowercase prefix 'm4'                             */
 /* -------------------------------------------------------------------------- */
 
-#define m4_compile_short_ m4_compile2s_
-#define m4_compile_int_ m4_compile4s_
-#define m4_compile_token_ CAT3(m4_compile, SZt, s_)
-#define m4_compile_cell_ CAT3(m4_compile, SZ, s_)
-#define m4_compile_xt_ CAT3(m4_compile, SZ, s_)
+#define m4_1s_comma m4c_comma
+#define m4_2s_comma m4short_comma
+#define m4_4s_comma m4int_comma
+#define m4_8s_comma m4comma
+#define m4token_comma CAT3(m4_, SZt, s_comma)
+#define m4xt_comma CAT3(m4_, SZ, s_comma)
 
 #define m4_lit_short_ m4_lit2s_
 #define m4_lit_int_ m4_lit4s_
@@ -117,11 +118,12 @@
 /* M4* numeric values have uppercase prefix 'M4'                              */
 /* -------------------------------------------------------------------------- */
 
-#define M4_compile_short_ M4_compile2s_
-#define M4_compile_int_ M4_compile4s_
-#define M4_compile_token_ CAT3(M4_compile, SZt, s_)
-#define M4_compile_cell_ CAT3(M4_compile, SZ, s_)
-#define M4_compile_xt_ CAT3(M4_compile, SZ, s_)
+#define M4_1s_comma M4c_comma
+#define M4_2s_comma M4short_comma
+#define M4_4s_comma M4int_comma
+#define M4_8s_comma M4comma
+#define M4token_comma CAT3(M4_, SZt, s_comma)
+#define M4xt_comma CAT3(M4_, SZ, s_comma)
 
 #define M4_lit_short_ M4_lit2s_
 #define M4_lit_int_ M4_lit4s_

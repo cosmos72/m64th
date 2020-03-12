@@ -94,30 +94,6 @@ FUNC_START(_compile_lit_)    /* [compile-lit] */
 FUNC_RAWEND(_compile_lit_)
 
 
-/** (int16 -- ) pop int16 from dstack and append it to XT being compiled. */
-FUNC_START(_compile2s_)    /* [compile-2s,] */
-        STORh( DTOPh,      AT(HERE))                   /* *here = (int16)DTOP     */
-        ADD2(  IMM(2),     HERE)                       /* here += 2               */
-        DPOP(  DTOP)
-FUNC_END(_compile2s_)
-
-
-/** (int32 -- ) pop int32 from dstack and append it to XT being compiled. */
-FUNC_START(_compile4s_)    /* (compile-4s,) */
-        STORw( DTOPw,      AT(HERE))                   /* *here = (int32)DTOP     */
-        ADD2(  IMM(4),     HERE)                       /* here += 4               */
-        DPOP(  DTOP)
-FUNC_END(_compile4s_)
-
-
-/** (int64 -- ) pop int64 from dstack and append it to XT being compiled. */
-FUNC_START(_compile8s_)    /* (compile-8s,) */
-        STOR(  DTOP,       AT(HERE))                   /* *here = (int64)DTOP     */
-        ADD2(  IMM(8),     HERE)                       /* here += 8               */
-        DPOP(  DTOP)
-FUNC_END(_compile8s_)
-
-
 FUNC_START(_compile_resolved_jump_)    /* [compile-resolved-jump] */
         /* TODO */
         NEXTT2()                                       /* skip two m4token           */

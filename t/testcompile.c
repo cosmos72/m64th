@@ -120,6 +120,7 @@ static const m4testcompile testcompile[] = {
     {"string<>", {}, {}, {2, {m4string_equal, m4invert}}},
     {"STRING-CI=", {}, {}, {1, {m4string_ci_equal}}},
     {"sTrInG-CI<>", {}, {}, {2, {m4string_ci_equal, m4invert}}},
+    {"c, short, int, ,", {}, {}, {4, {m4c_comma, m4short_comma, m4int_comma, m4comma}}},
     /* ------------------------------- immediate words ---------------------- */
     {"?do", {}, {2, {2, m4_q_do_}}, {2, {m4_q_do_, T(-1)}}},
     {"do", {}, {2, {1, m4do}}, {1, {m4do}}},

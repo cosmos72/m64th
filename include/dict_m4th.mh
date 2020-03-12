@@ -262,9 +262,6 @@
     X(8, "(while0)", _while0_)                                                                     \
     X(11, "[#compiled]", _num_compiled_)                                                           \
     X(14, "[compile-init]", _compile_init_)                                                        \
-    X(13, "[compile-2s,]", _compile2s_)                                                            \
-    X(13, "[compile-4s,]", _compile4s_)                                                            \
-    X(13, "[compile-8s,]", _compile8s_)                                                            \
     X(14, "[compile-lit,]", _compile_lit_)                                                         \
     X(23, "[compile-resolved-jump]", _compile_resolved_jump_)                                      \
     X(25, "[compile-unresolved-jump]", _compile_unresolved_jump_)                                  \

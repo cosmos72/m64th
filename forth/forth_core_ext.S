@@ -60,11 +60,19 @@ WORD_START(compile_comma, again)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_CODE(
+        /* [compile-init]                              ( xt            )
+         * dup xt>name name-inline?                    ( xt t|f        )
+         * if0                                         ( xt            )
+         *    ' (call-xt) compile,                     ( xt            )
+         *    (compile-xt,) exit                       (               )
+         * then                                        ( xt            )
+         * xt>name [inline]
+         */
         _compile_init_,
         dup, xt_to_name, CALL(name_inline_query),
         _if0_, T(5),
             _compile_lit_, _call_xt_,  /* compile (call-xt) */
-            _compile_xt_, exit,        /* compile XT        */
+            xt_comma, exit,        /* compile XT        */
         then,
         xt_to_name, CALL(_inline_), exit
    )

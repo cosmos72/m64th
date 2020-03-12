@@ -466,10 +466,7 @@ WORD_START(_any_token_gives_cell_q_, _while0_)
 WORD_END(_any_token_gives_cell_q_)
 WORD(_num_compiled_,_any_token_gives_cell_q_,DSTACK(0,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
 WORD(_compile_init_,   _num_compiled_, DSTACK(0,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
-WORD(_compile2s_,      _compile_init_, DSTACK(1,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
-WORD(_compile4s_,      _compile2s_,    DSTACK(1,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
-WORD(_compile8s_,      _compile4s_,    DSTACK(1,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
-WORD_START(_compile_lit_, _compile8s_)
+WORD_START(_compile_lit_, _compile_init_)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_INLINE_ALWAYS)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)
@@ -507,7 +504,7 @@ WORD_START(_inline_, _compile_unresolved_jump_)
         _compile_init_,
         zero, do,
             dup, token_fetch,  /* ( code token ) */
-            _compile_token_,
+            token_comma,
             token_plus,        /* ( code++ )     */
         _loop_, T(-6), drop, exit
     )

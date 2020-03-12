@@ -278,21 +278,21 @@ WORD_START(literal, leave)
         _ip_to_data_, div_token,         /* ( n taddr tn )             */
         _compile_init_,
         CALL(_any_token_gives_cell_q_),
-        _if_, T(3), _compile_token_,     /* if executing token gives n */
+        _if_, T(3), token_comma,         /* if executing token gives n */
             exit,                        /* append token to XT, exit   */
         then,
         dup, dup, to_short,
         equal, _if_, T(5),               /* if n == to_short(n)        */
-            _compile_lit_, _lit2s_,      /* append _lit2s_     to XT   */
-            _compile2s_, exit,           /* append (int16)n    to XT   */
+            _compile_lit_, _lit_short_,  /* append _lit_short_ to XT   */
+            short_comma, exit,           /* append (int16)n    to XT   */
         then,
         dup, dup, to_int,
         equal, _if_, T(5),               /* if n == to_int(n)          */
-            _compile_lit_, _lit4s_,      /* append _lit4s_     to XT   */
-            _compile4s_, exit,           /* append (int32)n    to XT   */
+            _compile_lit_, _lit_int_,    /* append _lit_int_   to XT   */
+            int_comma, exit,             /* append (int32)n    to XT   */
         then,
         _compile_lit_, _lit_cell_,       /* append _lit_cell_  to XT   */
-        _compile_cell_,                  /* append dtop        to XT   */
+        comma,                           /* append dtop        to XT   */
         exit
       )
     )

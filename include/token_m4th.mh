@@ -260,13 +260,10 @@
 #undef M4____gap                    /*                                         */
 #define M4_num_compiled_ 731 /* [#compiled]  code size i.e. # of tokens in word being compiled  */
 #define M4_compile_init_ 732 /* [compile-init] must be called once x word before any [compile*] */
-#define M4_compile2s_ 733    /* [compile2s,] pop int16 from dstack, append it to compiled code  */
-#define M4_compile4s_ 734    /* [compile4s,] pop int32 from dstack, append it to compiled code  */
-#define M4_compile8s_ 735    /* [compile8s,] pop int64 from dstack, append it to compiled code  */
-#define M4_compile_lit_ 736  /* followed by m4token, append it to compiled code  */
-#define M4_compile_resolved_jump_ 737   /* followed by m4token and label to jump to */
-#define M4_compile_unresolved_jump_ 738 /* followed by m4token and its category */
-#define M4_word_ 739                    /* [word] push to dstack word being compiled */
-#define M4____end 740
+#define M4_compile_lit_ 733  /* followed by m4token, append it to compiled code  */
+#define M4_compile_resolved_jump_ 734   /* followed by m4token and label to jump to */
+#define M4_compile_unresolved_jump_ 735 /* followed by m4token and its category */
+#define M4_word_ 736                    /* [word] push to dstack word being compiled */
+#define M4____end 737
 
 #endif /* M4TH_INCLUDE_TOKEN_M4TH_MH */
