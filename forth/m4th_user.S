@@ -272,7 +272,31 @@ WORD(int_fetch,        ushort_fetch,   DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M
 WORD(uint_fetch,       int_fetch,      DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 WORD(short_comma,      uint_fetch,     DSTACK(1,0), RSTACK(0,0), WORD_IMPURE)
 WORD(int_comma,        short_comma,    DSTACK(1,0), RSTACK(0,0), WORD_IMPURE)
-WORD(to_byte,          int_comma,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD_START(countedstring_comma, int_comma)
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_DSTACK(2,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_CODE(
+        /* dup dup to-char <>                          ( c-addr u t|f    )
+         * if                                          ( c-addr u        )
+         *    M4ERR_DEFINITION_NAME_TOO_LONG throw     (                 )
+         * then                                        ( c-addr u        )
+         * dup c, here swap                            ( c-addr here u   )
+         * dup allot                                   ( c-addr here u   )
+         * cmove                                       (                 )
+         */
+        dup, dup, to_char, ne,
+        _if_, T(4),
+            _lit_, T(M4ERR_DEFINITION_NAME_TOO_LONG), throw,
+        then,
+        dup, c_comma, here, swap,
+        dup, allot,
+        cmove, exit
+    )
+WORD_END(countedstring_comma)
+WORD(to_byte,     countedstring_comma, DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(to_char,          to_byte,        DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(to_short,         to_char,        DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(to_ushort,        to_short,       DSTACK(1,1), RSTACK(0,0), WORD_PURE)

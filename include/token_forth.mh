@@ -74,9 +74,9 @@
 #undef M4abort_quote /*44*/       /* abort"   */
 #define M4abs 45                  /* abs      */
 #undef M4accept /*46*/            /* accept   */
-#undef M4align /*47*/             /* align    */
+#define M4align 47                /* align    */
 #define M4aligned 48              /* aligned  */
-#undef M4allot /*49*/             /* allot    */
+#define M4allot 49                /* allot    */
 #define M4and 50                  /* and      */
 #define M4base 51                 /* base     */
 #define M4begin 52                /* begin    */

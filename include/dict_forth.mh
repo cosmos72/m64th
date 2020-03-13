@@ -52,7 +52,9 @@
     X(1, "@", fetch)                                                                               \
     X(3, "abs", abs)                                                                               \
     X(3, "and", and)                                                                               \
+    X(5, "align", align)                                                                           \
     X(7, "aligned", aligned)                                                                       \
+    X(5, "allot", allot)                                                                           \
     X(4, "base", base)                                                                             \
     X(5, "begin", begin)                                                                           \
     X(2, "bl", bl)                                                                                 \

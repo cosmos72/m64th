@@ -122,6 +122,17 @@ FUNC_START(_compile_unresolved_jump_)    /* [compile-unresolved-jump] */
 FUNC_RAWEND(_compile_unresolved_jump_)
 
 
+FUNC_START(align)          /* align */
+        ALIGN( SZ,         HERE)
+FUNC_END(align)
+
+
+FUNC_START(allot)          /* allot */
+        ADD2(  DTOP,       HERE)
+        DPOP(  DTOP)
+FUNC_END(allot)
+
+
 FUNC_START(c_comma)        /* c,   */
         STORb( DTOPb,      AT(HERE))
         INC1(  HERE)

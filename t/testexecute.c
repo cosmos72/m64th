@@ -942,7 +942,7 @@ static m4testexecute testexecute_f[] = {
      {{2, {6, 15}}, {}},
      {}},
     /* ----------------------------- comma... ------------------------------- */
-    {"0x123 (compile-token,)",
+    {"0x123 token,",
      {m4_compile_init_, m4token_comma, m4bye},
      {{1, {0x123}}, {}},
      {{}, {}},
@@ -969,21 +969,26 @@ static m4testexecute testexecute_f[] = {
      {{1, {0x12345678}}, {}},
      {{}, {}},
      {2, {0x5678, 0x1234}}},
-#endif
-#if SZ == 8 && SZt == 2
+    {"\"foo\" 3 countedstring,",
+     {m4_compile_init_, CALL(countedstring_comma), m4bye},
+     {{2, {(m4cell) "foo", 3}}, {}},
+     {{}, {}},
+     {2, {3 | ('f' << 8), 'o' | ('o' << 8)}}},
+#if SZ == 8
     {"0x08090a0b0c0d0e0f ,",
      {m4_compile_init_, m4comma, m4bye},
      {{1, {0x08090a0b0c0d0e0f}}, {}},
      {{}, {}},
      {4, {0x0e0f, 0x0c0d, 0x0a0b, 0x0809}}},
-#elif SZ == 4 && SZt == 2
+#elif SZ == 4
     {"0x0c0d0e0f ,",
      {m4_compile_init_, m4comma, m4bye},
      {{1, {0x0c0d0e0f}}, {}},
      {{}, {}},
      {2, {0x0e0f, 0x0c0d}}},
-#endif
-#endif
+#endif /* __BYTE_ORDER__ */
+#endif /* SZt == 2 */
+#endif /* SZ */
     /* ----------------------------- word.... ------------------------------- */
     {"name>flags",
      {CALL(name_to_flags), m4bye},
