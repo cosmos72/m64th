@@ -39,6 +39,7 @@
 #define M4TH_OFF_EX SZ8             /* offset of m4th->ex              */
 #define M4TH_OFF_EX_STRING_ADDR SZ9 /* offset of m4th->ex_string.addr  */
 #define M4TH_OFF_EX_STRING_N SZ10   /* offset of m4th->ex_string.n     */
-#define M4TH_OFF_SEARCHORDER SZ11   /* offset of m4th->searchorder     */
+#define M4TH_OFF_COMPILE_WID SZ11   /* offset of m4th->compile_wid     */
+#define M4TH_OFF_SEARCHORDER SZ12   /* offset of m4th->searchorder     */
 
 #endif /* M4TH_INCLUDE_M4TH_MH */

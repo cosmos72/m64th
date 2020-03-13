@@ -77,6 +77,13 @@ FUNC_END(ex_string_fetch)
 #endif /* M4FEX_STRING_FETCH */
 
 
+/* get-current ( -- wid ) forth 'search order' word set */
+FUNC_START(get_current)
+        DPUSH( DTOP)
+        LOAD(  DTOP,   AT(M4TH, M4TH_OFF_COMPILE_WID))
+FUNC_END(get_current)
+
+
 FUNC_START(name_to_code) /* ( w -- taddr n ) */
         LD_uw( REG1_uw,    AT(DTOP, WORD_OFF_CODE_OFF)) /* REG1 = w.code_off  */
         ADD2(  DTOP,       REG1)                        /* REG1 = w.code      */
@@ -127,8 +134,15 @@ FUNC_END(searchorder_i)
 /* searchorder-n ( -- addr ) get address of searchorder count */
 FUNC_START(searchorder_n)
         DPUSH( DTOP)
-        ADDI(  M4TH,       M4TH_OFF_SEARCHORDER, DTOP)
+        ADDI(  M4TH,   M4TH_OFF_SEARCHORDER, DTOP)
 FUNC_END(searchorder_n)
+
+
+/* set-current ( wid -- ) forth 'search order' word set */
+FUNC_START(set_current)
+        STOR(  DTOP,   AT(M4TH, M4TH_OFF_COMPILE_WID))
+        DPOP(  DTOP)
+FUNC_END(set_current)
 
 
 /* user-var ( -- addr ) must be followed by index. get address of i-th user variable  */

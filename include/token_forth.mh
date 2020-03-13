@@ -479,10 +479,10 @@
 #undef M4definitions /*449*/     /* definitions     */
 #undef M4find /*450*/            /* find            */
 #undef M4forth_wordlist /*451*/  /* forth-wordlist  */
-#undef M4get_current /*452*/     /* get-current     */
+#define M4get_current 452        /* get-current     */
 #undef M4get_order /*453*/       /* get-order       implemented in forth, no dedicated m4token */
 #undef M4search_wordlist /*454*/ /* search-wordlist implemented in forth, no dedicated m4token */
-#undef M4set_current /*455*/     /* set-current     */
+#define M4set_current 455        /* set-current     */
 #undef M4set_order /*456*/       /* set-order       */
 #undef M4wordlist /*457*/        /* wordlist        */
 

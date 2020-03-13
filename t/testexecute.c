@@ -989,6 +989,17 @@ static m4testexecute testexecute_f[] = {
 #endif /* __BYTE_ORDER__ */
 #endif /* SZt == 2 */
 #endif /* SZ */
+    /* ----------------------------- search order --------------------------- */
+    {"get-current",
+     {m4get_current, m4bye},
+     {{}, {}},
+     {{1, {(m4cell)&m4wordlist_m4th_user}}, {}},
+     {}},
+    {"set-current",
+     {m4get_current, m4swap, m4set_current, m4get_current, m4swap, m4set_current, m4bye},
+     {{1, {(m4cell)&m4wordlist_m4th_impl}}, {}},
+     {{1, {(m4cell)&m4wordlist_m4th_impl}}, {}},
+     {}},
     /* ----------------------------- word.... ------------------------------- */
     {"name>flags",
      {CALL(name_to_flags), m4bye},

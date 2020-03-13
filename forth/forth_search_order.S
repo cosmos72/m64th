@@ -21,21 +21,25 @@
 
 DICT_WORDS_FORTH_SEARCH_ORDER(WORDNAME)
 
+/* ( -- wid ) get compilation wordlist */
+WORD(get_current,      LASTWORD,       DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 /* ( c-addr u wid -- 0 | xt 1 | xt -1 ) */
-WORD_START(search_wordlist, LASTWORD)
+WORD_START(search_wordlist, get_current)
     WORD_FLAGS(M4FLAG_MEM_FETCH)
     WORD_DSTACK(3,-1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_CODE(
-        CALL(wordlist_find),                  /* ( w|0 -1|0|1       ) */
-        _q_if0_, T(2),                             /* ( 0   0            ) */
+        CALL(wordlist_find),                           /* ( w|0 -1|0|1       ) */
+        _q_if0_, T(2),                                 /* ( 0   0            ) */
             nip, exit,                                 /* ( 0                ) */
         then,                                          /* ( w   -1|1         ) */
         swap, name_to_xt, swap, exit                   /* ( xt  -1|1         ) */
     )
 WORD_END(search_wordlist)
+/* ( wid -- ) set compilation wordlist */
+WORD(set_current,     search_wordlist, DSTACK(1,0), RSTACK(0,0), WORD_IMPURE)
 
 #undef LASTWORD
-#define LASTWORD search_wordlist
+#define LASTWORD set_current

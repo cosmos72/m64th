@@ -216,6 +216,7 @@ struct m4th_s {        /**< m4th forth interpreter and compiler          */
     m4cell handler;            /**< exception handler installed by CATCH        */
     m4cell ex;                 /**< exception set by THROW                      */
     m4string ex_string;        /**< exception string, set manually before THROW */
+    m4wordlist *compile_wid;   /**< compilation wordlist                        */
     m4searchorder searchorder; /**< wordlist search order                       */
     m4cell user_var[0];        /**< further user variables                      */
 };

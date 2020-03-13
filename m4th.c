@@ -874,12 +874,13 @@ m4th *m4th_new() {
     m->xt = NULL;
     m->mem = m4cbuf_alloc(dataspace_n);
     m->base = 10;
-    memset(&m->searchorder, '\0', sizeof(m->searchorder));
-    m4th_also(m, &m4wordlist_forth);
-    m4th_also(m, &m4wordlist_m4th_user);
     m->handler = m->ex = 0;
     m->ex_string.addr = NULL;
     m->ex_string.n = 0;
+    m->compile_wid = &m4wordlist_m4th_user;
+    memset(&m->searchorder, '\0', sizeof(m->searchorder));
+    m4th_also(m, &m4wordlist_forth);
+    m4th_also(m, &m4wordlist_m4th_user);
     return m;
 }
 

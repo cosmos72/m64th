@@ -149,7 +149,9 @@
 #define DICT_WORDS_FORTH_TOOLS_EXT(X) DICT_TOKENS_FORTH_TOOLS_EXT(X)
 
 /* ------- forth 2012: search order ------------------------------------------------------------- */
-#define DICT_TOKENS_FORTH_SEARCH_ORDER(X)
+#define DICT_TOKENS_FORTH_SEARCH_ORDER(X)                                                          \
+    X(11, "get-current", get_current)                                                              \
+    X(11, "set-current", set_current)
 
 #define DICT_WORDS_FORTH_SEARCH_ORDER(X)                                                           \
     DICT_TOKENS_FORTH_SEARCH_ORDER(X)                                                              \
