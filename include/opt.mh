@@ -347,6 +347,7 @@
         x((negate, negate), _)                               /* negate negate =>                */ \
         x((negate, invert), (one_minus))                     /* negate invert => 1-             */ \
         x((negate, squared), (squared))                      /* negate squared => squared       */ \
+        x((over, minus), (trail, sub))                       /* over   -      => trail sub      */ \
         x((over, drop), _)                                   /* over   drop   =>                */ \
         x((over, flip), (over))                              /* over   flip   => over           */ \
         x((over, nip), (drop, dup))                          /* over   nip    => drop dup       */ \
@@ -399,7 +400,7 @@
         x((tuck, nip), (nip, dup))                           /* tuck   nip    => nip dup        */ \
         x((tuck, rot), (dup))                                /* tuck   rot    => dup            */ \
         x((tuck, minus_rot), (dup))                          /* tuck   -rot   => dup            */ \
-        x((xor, invert), (invert, xor))                      /* xor    invert => invert xor     */
+        x( (xor, invert), (invert, xor))                     /* xor    invert => invert xor     */
 
 #if 0
         x((one_plus, byte_fetch), (byte_bracket1))           /* 1+    byte@   => byte[1]      */ \

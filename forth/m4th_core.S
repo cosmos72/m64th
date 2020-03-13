@@ -269,20 +269,44 @@ WORD_START(name_comma,  iobuf_size)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_CODE(
-        /* ?if                                         ( c-addr u       )
-         *    here -rot                                ( caddr c-addr u )
-         *    countedstring,                           ( caddr          )
-         * else                                        ( c-addr u       )
-         *    2drop                                    (                )
-         *    align here                               ( caddr          )
-         * then                                        ( caddr          )
-         * align here dup >r sub                       ( nt-caddr       ) (R: nt )
-         * []
-         * int,                                        (                ) (R: nt )
-         *
-         *
+        /* ?if                                         ( c-addr u           )
+         *    here -rot                                ( caddr c-addr u     )
+         *    countedstring,                           ( caddr              )
+         * else                                        ( c-addr u           )
+         *    2drop align here                         ( caddr              )
+         * then                                        ( caddr              )
+         * align here                                  ( caddr nt           )
+         * get-current wordlist-last                   ( caddr nt prevnt    )
+         * ?if                                         ( caddr nt prevnt    )
+         *    over -                                   ( caddr nt prevnt-nt )
+         * then                                        ( caddr nt prevnt-nt )
+         * int,         ( prevnt-nt                 )  ( caddr nt           )
+         * tuck -                                      ( nt caddr-nt        )
+         * short,       ( caddr-nt                  )  ( nt                 )
+         * -1 short,    ( stack effects             )  ( nt                 )
+         * -1 short,    ( native code len           )  ( nt                 )
+         * 0 short,     ( forth code size in tokens )  ( nt                 )
+         * 0 int,       ( offset of code in bytes. 0 = not present ) ( nt   )
+         * 0 int,       ( data size in bytes        )  ( nt                 )
          */
-        exit
+        _q_if_, T(5+SZ/SZt),
+            here, minus_rot,
+            CALL(countedstring_comma),
+        _else_, T(4),
+            two_drop, align, here,
+        then,
+        get_current, wordlist_last,
+        _q_if_, T(3),
+            over, minus,
+        then,
+        int_comma,
+        tuck, minus,
+        short_comma,
+        minus_one, short_comma,
+        minus_one, short_comma,
+        zero, short_comma,
+        zero, int_comma,
+        zero, int_comma, exit
     )
 WORD_END(name_comma)
 WORD_START(name_inline_query,  name_comma)
