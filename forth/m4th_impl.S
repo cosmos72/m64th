@@ -545,7 +545,7 @@ WORD_START(_resolve_jump_here_, _resolve_begin_repeat_)
     WORD_CODE(
         drop, dup, negate, _num_compiled_, plus, /* ( #tokens IP-offset )    */
         swap, one_minus, tokens,           /* ( IP-offset toffset ) toffset of token after (if) or (else) */
-        _word_, name_to_xt, plus,          /* ( IP-offset taddr   ) taddr   of token after (if) or (else) */
+        latest, name_to_xt, plus,          /* ( IP-offset taddr   ) taddr   of token after (if) or (else) */
         token_store, exit
     )
 WORD_END(_resolve_jump_here_)
@@ -597,8 +597,7 @@ WORD_START(_throw_compile_only_xt_, _token_gives_cell_q_)
         exit
     )
 WORD_END(_throw_compile_only_xt_)
-WORD(_word_,  _throw_compile_only_xt_, DSTACK(0,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
-WORD(minus_one,        _word_,         DSTACK(0,1), RSTACK(0,0), WORD_PURE)
+WORD(minus_one,_throw_compile_only_xt_,DSTACK(0,1), RSTACK(0,0), WORD_PURE)
 WORD(zero,             minus_one,      DSTACK(0,1), RSTACK(0,0), WORD_PURE)
 WORD(one,              zero,           DSTACK(0,1), RSTACK(0,0), WORD_PURE)
 WORD(two,              one,            DSTACK(0,1), RSTACK(0,0), WORD_PURE)

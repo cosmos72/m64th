@@ -172,19 +172,20 @@
     /* ( io -- c-addr u ) get iobuf free space i.e. from iobuf>size to iobuf>max */                \
     X(15, "iobuf>free-data", iobuf_free_data)                                                      \
     X(12, "iobuf-empty?", iobuf_empty_query) /* ( io -- t|f ) true if iobuf is currently empty */  \
-    X(9, "iobuf>err", iobuf_err)        /* ( io -- addr ) get address of iobuf err          */     \
-    X(10, "iobuf>func", iobuf_func)     /* ( io -- addr ) get address of iobuf I/O function */     \
-    X(12, "iobuf>handle", iobuf_handle) /* ( io -- addr ) get address of iobuf handle       */     \
-    X(9, "iobuf>max", iobuf_max)        /* ( io -- u    ) get iobuf max size i.e. capacity  */     \
-    X(9, "iobuf>pos", iobuf_pos)        /* ( io -- addr ) get address of iobuf position     */     \
-    X(10, "iobuf>size", iobuf_size)     /* ( io -- addr ) get address of iobuf size         */     \
-    X(9, "name>code", name_to_code) /*       ( nt  -- taddr n ) get code array from name        */ \
-    X(11, "name>code>n", name_to_code_n) /* ( nt -- u       ) get code size from name          */  \
-    X(10, "name>flags", name_to_flags)   /* ( nt -- m4flags ) get m4flags of name              */  \
+    X(9, "iobuf>err", iobuf_err)         /* ( io -- addr ) get address of iobuf err          */    \
+    X(10, "iobuf>func", iobuf_func)      /* ( io -- addr ) get address of iobuf I/O function */    \
+    X(12, "iobuf>handle", iobuf_handle)  /* ( io -- addr ) get address of iobuf handle       */    \
+    X(9, "iobuf>max", iobuf_max)         /* ( io -- u    ) get iobuf max size i.e. capacity  */    \
+    X(9, "iobuf>pos", iobuf_pos)         /* ( io -- addr ) get address of iobuf position     */    \
+    X(10, "iobuf>size", iobuf_size)      /* ( io -- addr ) get address of iobuf size         */    \
+    X(6, "latest", latest)               /* (    -- nt   ) get last defined word             */    \
+    X(9, "name>code", name_to_code)      /* ( nt  -- taddr n ) get code array from name      */    \
+    X(11, "name>code>n", name_to_code_n) /* ( nt -- u        ) get code size from name       */    \
+    X(10, "name>flags", name_to_flags)   /* ( nt -- m4flags  ) get m4flags of name           */    \
     /* name>string is already defined by forth 'tools ext' wordset */                              \
-    X(9, "name>prev", name_to_prev) /* ( nt -- nt'|0   ) get previous word in wordlist    */       \
-    X(7, "name>xt", name_to_xt)     /* ( nt -- XT      ) get XT == code address from name */       \
-    X(15, "obuf-write-char", obuf_write_char) /* ( io c -- err  ) write one char to iobuf   */     \
+    X(9, "name>prev", name_to_prev) /* ( nt -- nt'|0   ) get previous word in wordlist       */    \
+    X(7, "name>xt", name_to_xt)     /* ( nt -- XT      ) get XT == code address from name    */    \
+    X(15, "obuf-write-char", obuf_write_char) /* ( io c -- err  ) write one char to iobuf    */    \
     /* ( io c-addr u -- err  ) write string to iobuf */                                            \
     X(17, "obuf-write-string", obuf_write_string)                                                  \
     X(8, "out>obuf", out_to_obuf) /*  (   -- io   ) get current output as iobuf              */    \
@@ -206,6 +207,7 @@
     X(16, "ibuf-skip-blanks", ibuf_skip_blanks) /* ( io -- ) skip blanks from iobuf current data*/ \
     X(26, "ibuf-skip-blanks-except-cr", ibuf_skip_blanks_except_cr) /* ( io -- t|f ) */            \
     X(25, "ibuf-skip-blanks-until-cr", ibuf_skip_blanks_until_cr) /* ( io -- t|f ) consumes CR  */ \
+    X(5, "name,", name_comma)                /* ( c-addr u -- nt ) create a new name */            \
     X(12, "name-inline?", name_inline_query) /* ( nt -- flag ) calls to name should be inlined? */ \
     X(10, "obuf-flush", obuf_flush)          /* ( io -- err  ) flush iobuf data                 */ \
     /* ( io c -- err  ) flush iobuf, then write one char to it */                                  \
@@ -267,7 +269,6 @@
     X(14, "[compile-lit,]", _compile_lit_)                                                         \
     X(23, "[compile-resolved-jump]", _compile_resolved_jump_)                                      \
     X(25, "[compile-unresolved-jump]", _compile_unresolved_jump_)                                  \
-    X(6, "[word]", _word_)                                                                         \
     X(2, "-1", minus_one)                                                                          \
     X(1, "0", zero)                                                                                \
     X(1, "1", one)                                                                                 \

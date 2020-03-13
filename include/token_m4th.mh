@@ -158,7 +158,7 @@
 #define M4iobuf_max 628         /* iobuf>max    ( io -- u    ) get iobuf max size i.e. capacity   */
 #define M4iobuf_pos 629         /* iobuf>pos    ( io -- addr ) get address of iobuf position      */
 #define M4iobuf_size 630        /* iobuf>size   ( io -- addr ) get address of iobuf size          */
-#undef M4____gap                /*                       */
+#define M4latest 631            /* latest       (    -- nt   ) get last defined word              */
 #undef M4____gap                /*                       */
 #define M4obuf_write_char 633   /* obuf-write-char   ( io c -- err ) write one char to iobuf */
 #define M4obuf_write_string 634 /* obuf-write-string ( io c -- err ) write string to iobuf   */
@@ -263,7 +263,6 @@
 #define M4_compile_lit_ 733  /* followed by m4token, append it to compiled code  */
 #define M4_compile_resolved_jump_ 734   /* followed by m4token and label to jump to */
 #define M4_compile_unresolved_jump_ 735 /* followed by m4token and its category */
-#define M4_word_ 736                    /* [word] push to dstack word being compiled */
-#define M4____end 737
+#define M4____end 736
 
 #endif /* M4TH_INCLUDE_TOKEN_M4TH_MH */

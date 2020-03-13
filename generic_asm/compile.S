@@ -22,11 +22,11 @@
 /* clang-format off */
 
 
-/* [word] ( -- w ) push to dstack word being compiled */
-FUNC_START(_word_)
+/* latest ( -- nt ) push to dstack last defined word */
+FUNC_START(latest)
         DPUSH( DTOP)
-        LOAD(  DTOP,       AT(M4TH, M4TH_OFF_LASTW))       /* w = word             */
-FUNC_END(_word_)
+        LOAD(  DTOP,       AT(M4TH, M4TH_OFF_LASTW))   /* nt = word             */
+FUNC_END(latest)
 
 
 /** [#compiled] ( -- u ) code size i.e. # of tokens in XT being compiled  */

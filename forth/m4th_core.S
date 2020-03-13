@@ -261,7 +261,31 @@ WORD(iobuf_handle,     iobuf_handle,   DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(iobuf_max,        iobuf_func,     DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
 WORD(iobuf_pos,        iobuf_max,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(iobuf_size,       iobuf_pos,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD_START(name_inline_query,  iobuf_size)
+WORD(latest,           iobuf_size,     DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
+WORD_START(name_comma,  iobuf_size)
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_DSTACK(2,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_CODE(
+        /* ?if                                         ( c-addr u       )
+         *    here -rot                                ( caddr c-addr u )
+         *    countedstring,                           ( caddr          )
+         * else                                        ( c-addr u       )
+         *    2drop                                    (                )
+         *    align here                               ( caddr          )
+         * then                                        ( caddr          )
+         * align here dup >r sub                       ( nt-caddr       ) (R: nt )
+         * []
+         * int,                                        (                ) (R: nt )
+         *
+         *
+         */
+        exit
+    )
+WORD_END(name_comma)
+WORD_START(name_inline_query,  name_comma)
     WORD_FLAGS(M4FLAG_MEM_FETCH) /* multiple exits => cannot inline */
     WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)
