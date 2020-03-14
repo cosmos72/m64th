@@ -100,22 +100,13 @@ LABEL(name_comma.str)
         STORh( RTOPh,  AT(HERE, WORD_OFF_NAME_OFF))    /* nt.name_off = rtop      */
         RPOP(  RTOP)
 LABEL(name_comma.str_done)
-        DPUSH( DTOP)
-        LOAD(  DTOP,   AT(M4TH, M4TH_OFF_COMPILE_WID)) /* ( wid                 ) */
-        ASM_CALL(      FUNC(wordlist_last))            /* ( prevnt              ) */
-        JZ(    DTOP,   TO(name_comma.prevnt))
-        SUB2(  HERE,   DTOP)                           /* ( prevnt-nt           ) */
-LABEL(name_comma.prevnt)
+        DPUSH( DTOP)                                   /* ( _                   ) */
         ZERO(  REG1w)                                  /* a = 0                   */
         MOVE(  IMM_1,  REG2)                           /* b = -1                  */
-        STORw( DTOPw,  AT(HERE, WORD_OFF_PREV_OFF))    /* nt.prev_off = prevnt-nt */
-        STORh( REG1h,  AT(HERE, WORD_OFF_FLAGS))       /* nt.flags    = 0         */
-        STORh( REG2h,  AT(HERE, WORD_OFF_STK_EFF))     /* nt.eff      = -1        */
-        STORh( REG2h,  AT(HERE, WORD_OFF_STK_JMP))     /* nt.jump     = -1        */
-        STORh( REG2h,  AT(HERE, WORD_OFF_NATIVE_LEN))  /* nt.native_len = -1      */
+        STOR(  REG1,   AT(HERE, WORD_OFF_PREV_OFF))    /* nt.prev_off = nt.flags = 0, clobber nt.eff */
+        STOR(  REG2,   AT(HERE, WORD_OFF_STK_EFF))     /* nt.eff = nt.jump = -1 = nt.native_len = -1, clobber nt.code_n */
         STORh( REG1h,  AT(HERE, WORD_OFF_CODE_N))      /* nt.code_n   = 0         */
-        STORw( REG1w,  AT(HERE, WORD_OFF_CODE_OFF))    /* nt.code_off = 0         */
-        STORw( REG1w,  AT(HERE, WORD_OFF_DATA_N))      /* nt.data_n   = 0         */
+        STOR(  REG1,   AT(HERE, WORD_OFF_CODE_OFF))    /* nt.code_off = nt.data_n = 0 */
         DPUSH( HERE)                                   /* ( nt _                ) */
         LOAD(  DTOP,   AT(M4TH, M4TH_OFF_COMPILE_WID)) /* ( nt wid              ) */
         ADD2(  IMM(WORD_OFF_DATA), HERE)               /* update HERE             */
@@ -197,6 +188,12 @@ FUNC_RAWEND(user_var)
 
 
 FUNC_START(wordlist_last_store) /* ( nt wid -- ) */
+#if 0
+        LOAD(  DTOP,   AT(M4TH, M4TH_OFF_COMPILE_WID)) /* ( wid                 ) */
+        ASM_CALL(      FUNC(wordlist_last))            /* ( prevnt              ) */
+        JZ(    DTOP,   TO(name_comma.prevnt))
+        SUB2(  HERE,   DTOP)                           /* ( prevnt-nt           ) */
+#endif /* 0 */
         DPOP(  REG1)                                        /* a    = nt              */
         LOAD(  DTOP,       AT(DTOP, WORDLIST_OFF_DICT))     /* dtop = wid.dict        */
         SUB2(  DTOP,       REG1)                            /* a    = nt-dict         */
