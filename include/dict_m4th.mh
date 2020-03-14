@@ -78,6 +78,8 @@
     /* X(7, "ushort,", ushort_comma)*/ /* alias of: short,                              */         \
     X(4, "int,", int_comma)                                                                        \
     /* X(5, "uint,", uint_comma)    */ /* alias of: int,                                */         \
+    X(14, "countedstring,", countedstring_comma) /* countedstring, ( c-addr u -- )      */         \
+    /*                             */ /*                                                */         \
     X(7, "to-byte", to_byte)                                                                       \
     X(7, "to-char", to_char)                                                                       \
     X(8, "to-short", to_short)                                                                     \
@@ -89,38 +91,36 @@
 
 #define DICT_WORDS_M4TH_USER(X)                                                                    \
     DICT_TOKENS_M4TH_USER(X)                                                                       \
-    X(5, "/byte", div_byte)           /* alias of noop                                  */         \
-    X(5, "/char", div_char)           /* alias of noop                                  */         \
-    X(6, "/short", div_short)         /* alias of 2/                                    */         \
-    X(7, "/ushort", div_ushort)       /* alias of 2/                                    */         \
-    X(4, "/int", div_int)             /* alias of 4/                                    */         \
-    X(5, "/uint", div_uint)           /* alias of 4/                                    */         \
-    X(5, "/cell", div_cell)           /* alias of SZ/                                   */         \
-    /*                             */ /*                                                */         \
-    X(5, "char@", char_fetch)         /* alias of c@                                    */         \
-    X(5, "byte!", byte_store)         /* alias of c!                                    */         \
-    X(5, "char!", char_store)         /* alias of c!                                    */         \
-    X(7, "ushort!", ushort_store)     /* alias of short!                                */         \
-    X(5, "uint!", uint_store)         /* alias of int!                                  */         \
-    /*X(5, "cell!", cell_store)    */ /* alias of !                                     */         \
-    /*                             */ /*                                                */         \
-    X(5, "byte+", byte_plus)          /* alias of 1+                                    */         \
-    /* X(5, "char+", char_plus)    */ /* already in forth 'core' word set               */         \
-    X(6, "short+", short_plus)        /* alias of 2+                                    */         \
-    X(7, "ushort+", ushort_plus)      /* alias of 2+                                    */         \
-    X(4, "int+", int_plus)            /* alias of 4+                                    */         \
-    X(5, "uint+", uint_plus)          /* alias of 4+                                    */         \
-    /*X(5, "cell+", cell_plus)     */ /* already in forth 'core' word set               */         \
-    /*                             */ /*                                                */         \
-    X(5, "bytes", bytes)              /*                                                */         \
-    /* X(5, "chars", chars) */        /* already in forth 'core' word set               */         \
-    X(6, "shorts", shorts)            /* alias of 2*                                    */         \
-    X(7, "ushorts", ushorts)          /* alias of 2*                                    */         \
-    X(4, "ints", ints)                /* alias of 4*                                    */         \
-    X(5, "uints", uints)              /* alias of 4*                                    */         \
-    /*X(5, "cells", cells)         */ /* already in forth 'core' word set               */         \
-    /*                             */ /*                                                */         \
-    X(14, "countedstring,", countedstring_comma) /* countedstring, ( c-addr u -- )      */         \
+    X(5, "/byte", div_byte)            /* alias of noop                                  */        \
+    X(5, "/char", div_char)            /* alias of noop                                  */        \
+    X(6, "/short", div_short)          /* alias of 2/                                    */        \
+    X(7, "/ushort", div_ushort)        /* alias of 2/                                    */        \
+    X(4, "/int", div_int)              /* alias of 4/                                    */        \
+    X(5, "/uint", div_uint)            /* alias of 4/                                    */        \
+    X(5, "/cell", div_cell)            /* alias of SZ/                                   */        \
+    /*                             */  /*                                                */        \
+    X(5, "char@", char_fetch)          /* alias of c@                                    */        \
+    X(5, "byte!", byte_store)          /* alias of c!                                    */        \
+    X(5, "char!", char_store)          /* alias of c!                                    */        \
+    X(7, "ushort!", ushort_store)      /* alias of short!                                */        \
+    X(5, "uint!", uint_store)          /* alias of int!                                  */        \
+    /*X(5, "cell!", cell_store)    */  /* alias of !                                     */        \
+    /*                             */  /*                                                */        \
+    X(5, "byte+", byte_plus)           /* alias of 1+                                    */        \
+    /* X(5, "char+", char_plus)    */  /* already in forth 'core' word set               */        \
+    X(6, "short+", short_plus)         /* alias of 2+                                    */        \
+    X(7, "ushort+", ushort_plus)       /* alias of 2+                                    */        \
+    X(4, "int+", int_plus)             /* alias of 4+                                    */        \
+    X(5, "uint+", uint_plus)           /* alias of 4+                                    */        \
+    /*X(5, "cell+", cell_plus)     */  /* already in forth 'core' word set               */        \
+    /*                             */  /*                                                */        \
+    X(5, "bytes", bytes)               /*                                                */        \
+    /* X(5, "chars", chars) */         /* already in forth 'core' word set               */        \
+    X(6, "shorts", shorts)             /* alias of 2*                                    */        \
+    X(7, "ushorts", ushorts)           /* alias of 2*                                    */        \
+    X(4, "ints", ints)                 /* alias of 4*                                    */        \
+    X(5, "uints", uints)               /* alias of 4*                                    */        \
+    /*X(5, "cells", cells)         */  /* already in forth 'core' word set               */        \
     /*                             */  /*                                                */        \
     X(3, "?if", q_if)                  /* alias of dup if                                */        \
     X(4, "?if0", q_if_zero)            /* alias of dup 0= if                             */        \
@@ -179,6 +179,7 @@
     X(9, "iobuf>pos", iobuf_pos)         /* ( io -- addr ) get address of iobuf position     */    \
     X(10, "iobuf>size", iobuf_size)      /* ( io -- addr ) get address of iobuf size         */    \
     X(6, "latest", latest)               /* (    -- nt   ) get last defined word             */    \
+    X(5, "name,", name_comma)            /* ( c-addr u -- nt ) create a new name             */    \
     X(9, "name>code", name_to_code)      /* ( nt  -- taddr n ) get code array from name      */    \
     X(11, "name>code>n", name_to_code_n) /* ( nt -- u        ) get code size from name       */    \
     X(10, "name>flags", name_to_flags)   /* ( nt -- m4flags  ) get m4flags of name           */    \
@@ -207,7 +208,6 @@
     X(16, "ibuf-skip-blanks", ibuf_skip_blanks) /* ( io -- ) skip blanks from iobuf current data*/ \
     X(26, "ibuf-skip-blanks-except-cr", ibuf_skip_blanks_except_cr) /* ( io -- t|f ) */            \
     X(25, "ibuf-skip-blanks-until-cr", ibuf_skip_blanks_until_cr) /* ( io -- t|f ) consumes CR  */ \
-    X(5, "name,", name_comma)                /* ( c-addr u -- nt ) create a new name */            \
     X(12, "name-inline?", name_inline_query) /* ( nt -- flag ) calls to name should be inlined? */ \
     X(10, "obuf-flush", obuf_flush)          /* ( io -- err  ) flush iobuf data                 */ \
     /* ( io c -- err  ) flush iobuf, then write one char to it */                                  \

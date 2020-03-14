@@ -969,11 +969,18 @@ static m4testexecute testexecute_f[] = {
      {{1, {0x12345678}}, {}},
      {{}, {}},
      {2, {0x5678, 0x1234}}},
+#define P(a, b) ((a) | ((b) << 8))
     {"\"foo\" 3 countedstring,",
-     {m4_compile_init_, CALL(countedstring_comma), m4bye},
-     {{2, {(m4cell) "foo", 3}}, {}},
+     {m4_compile_init_, m4countedstring_comma, m4bye},
+     {{2, {(m4cell) "foobarbaz", 3}}, {}},
      {{}, {}},
-     {2, {3 | ('f' << 8), 'o' | ('o' << 8)}}},
+     {2, {P(3, 'f'), P('o', 'o')}}},
+    {"\"foobarbaz\" 9 countedstring,",
+     {m4_compile_init_, m4countedstring_comma, m4bye},
+     {{2, {(m4cell) "foobarbaz", 9}}, {}},
+     {{}, {}},
+     {5, {P(9, 'f'), P('o', 'o'), P('b', 'a'), P('r', 'b'), P('a', 'z')}}},
+#undef P
 #if SZ == 8
     {"0x08090a0b0c0d0e0f ,",
      {m4_compile_init_, m4comma, m4bye},

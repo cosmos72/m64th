@@ -18,6 +18,7 @@
  */
 
 #include "../dispatch/asm.mh"
+#include "../include/err.mh"
 
 /* clang-format off */
 
@@ -159,6 +160,20 @@ FUNC_START(comma)          /* ,    */
         ADD2(  IMM(SZ),    HERE)
         DPOP(  DTOP)
 FUNC_END(comma)
+
+
+/* countedstring, ( c-addr u -- ) m4th-user */
+FUNC_START(countedstring_comma)
+        JA(    DTOP,   IMM(0xff),  TO(countedstring_comma.throw))
+        STORb( DTOPb,  AT(HERE))
+        INC1(  HERE)                                   /* here++            */
+        DPUSH( HERE)                                   /* ( c-addr here u ) */
+        ADD2(  DTOP,   HERE)                           /* here += u         */
+        JUMP(  FUNC(cmove))
+LABEL(countedstring_comma.throw)
+        MOVE(  IMM(M4ERR_DEFINITION_NAME_TOO_LONG),  DTOP)
+        JUMP(  FUNC(throw))
+FUNC_RAWEND(countedstring_comma)
 
 
 FUNC_START(state)

@@ -289,9 +289,9 @@ WORD_START(name_comma,  iobuf_size)
          * 0 int,       ( offset of code in bytes. 0 = not present ) ( nt   )
          * 0 int,       ( data size in bytes        )  ( nt                 )
          */
-        _q_if_, T(5+SZ/SZt),
+        _q_if_, T(5),
             here, minus_rot,
-            CALL(countedstring_comma),
+            countedstring_comma,
         _else_, T(4),
             two_drop, align, here,
         then,

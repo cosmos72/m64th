@@ -24,14 +24,6 @@
 /* clang-format off */
 
 
-FUNC_START(name_to_prev) /* ( nt -- nt'|0 ) */
-        LD_uw( REG1_uw,    AT(DTOP, WORD_OFF_PREV_OFF)) /* a = nt.prev_off  */
-        SUB2(  REG1,       DTOP)               /* dtop = nt'               */
-        cmp    REG1,       IMM(0);
-        csel   DTOP,       DTOP,   xzr,    ne; /* dtop = nt'|0             */
-FUNC_END(name_to_prev)
-
-
 /* iobuf-empty? ( io -- t|f ) true if iobuf is currently empty */
 FUNC_START(iobuf_empty_query)
         LOAD(  REG1,   AT(DTOP, IOBUF_OFF_POS))    /* a = iobuf.pos     */
@@ -39,6 +31,14 @@ FUNC_START(iobuf_empty_query)
         cmp    REG1,   REG2;
         csetm  DTOP,   ge;
 FUNC_END(iobuf_empty_query)
+
+
+FUNC_START(name_to_prev) /* ( nt -- nt'|0 ) */
+        LD_uw( REG1_uw,    AT(DTOP, WORD_OFF_PREV_OFF)) /* a = nt.prev_off  */
+        SUB2(  REG1,       DTOP)               /* dtop = nt'               */
+        cmp    REG1,       IMM(0);
+        csel   DTOP,       DTOP,   xzr,    ne; /* dtop = nt'|0             */
+FUNC_END(name_to_prev)
 
 
 FUNC_START(wordlist_last) /* ( wid -- nt ) */

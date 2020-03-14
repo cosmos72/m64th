@@ -132,14 +132,9 @@ FUNC_END(plus_store)
 #endif
 
 
-FUNC_START(minus)          /* -    */
-        DPOP(  REG1)
-#ifdef SUB3
-        SUB3(  REG1,   DTOP,   DTOP)
-#else
-        NEG1(  DTOP)
-        ADD2(  REG1,   DTOP)
-#endif
+FUNC_START(minus)          /* -  ( x y -- x-y )  */
+        DPOP(  REG1)       /* a = x              */
+        XSUB2(REG1,   DTOP)/* dtop = x-dtop      */
 FUNC_END(minus)
 
 

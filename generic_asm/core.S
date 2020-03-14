@@ -83,6 +83,45 @@ FUNC_START(get_current)
         LOAD(  DTOP,   AT(M4TH, M4TH_OFF_COMPILE_WID))
 FUNC_END(get_current)
 
+/* name, ( c-addr u -- ) create a new word */
+FUNC_START(name_comma)
+        JNZ(   DTOP,   TO(name_comma.str))
+        ALIGN( SZ,     HERE)                           /* here = nt               */
+        STORh( DTOPh,  AT(HERE, WORD_OFF_NAME_OFF))    /* nt.name_off = 0         */
+        LOAD(  DTOP,   AT(DSTK, SZ))
+        ADD2(IMM(SZ2), DSTK)                           /* (                     ) */
+        JUMP(  TO(name_comma.str_done))
+LABEL(name_comma.str)
+        RPUSH( RTOP)
+        MOVE(  HERE,   RTOP)                           /* save countedstring addr */
+        ASM_CALL(      FUNC(countedstring_comma))      /* (                     ) */
+        ALIGN( SZ,     HERE)                           /* here = nt               */
+        SUB2(  HERE,   RTOP)                           /* rtop = c_addr-nt        */
+        STORh( RTOPh,  AT(HERE, WORD_OFF_NAME_OFF))    /* nt.name_off = rtop      */
+        RPOP(  RTOP)
+LABEL(name_comma.str_done)
+        DPUSH( DTOP)
+        LOAD(  DTOP,   AT(M4TH, M4TH_OFF_COMPILE_WID)) /* ( wid                 ) */
+        ASM_CALL(      FUNC(wordlist_last))            /* ( prevnt              ) */
+        JZ(    DTOP,   TO(name_comma.prevnt))
+        SUB2(  HERE,   DTOP)                           /* ( prevnt-nt           ) */
+LABEL(name_comma.prevnt)
+        ZERO(  REG1w)                                  /* a = 0                   */
+        MOVE(  IMM_1,  REG2)                           /* b = -1                  */
+        STORw( DTOPw,  AT(HERE, WORD_OFF_PREV_OFF))    /* nt.prev_off = prevnt-nt */
+        STORh( REG1h,  AT(HERE, WORD_OFF_FLAGS))       /* nt.flags    = 0         */
+        STORh( REG2h,  AT(HERE, WORD_OFF_STK_EFF))     /* nt.eff      = -1        */
+        STORh( REG2h,  AT(HERE, WORD_OFF_STK_JMP))     /* nt.jump     = -1        */
+        STORh( REG2h,  AT(HERE, WORD_OFF_NATIVE_LEN))  /* nt.native_len = -1      */
+        STORh( REG1h,  AT(HERE, WORD_OFF_CODE_N))      /* nt.code_n   = 0         */
+        STORw( REG1w,  AT(HERE, WORD_OFF_CODE_OFF))    /* nt.code_off = 0         */
+        STORw( REG1w,  AT(HERE, WORD_OFF_DATA_N))      /* nt.data_n   = 0         */
+        DPUSH( HERE)                                   /* ( nt _                ) */
+        LOAD(  DTOP,   AT(M4TH, M4TH_OFF_COMPILE_WID)) /* ( nt wid              ) */
+        ADD2(  IMM(WORD_OFF_DATA), HERE)               /* update HERE             */
+        JUMP(  FUNC(wordlist_last_store))
+FUNC_RAWEND(name_comma)
+
 
 FUNC_START(name_to_code) /* ( w -- taddr n ) */
         LD_uw( REG1_uw,    AT(DTOP, WORD_OFF_CODE_OFF)) /* REG1 = w.code_off  */
@@ -155,6 +194,15 @@ FUNC_START(user_var)
         ADD4(  M4TH,       REG1, PSZ, DTOP)
         NEXTT()
 FUNC_RAWEND(user_var)
+
+
+FUNC_START(wordlist_last_store) /* ( nt wid -- ) */
+        DPOP(  REG1)                                        /* a    = nt              */
+        LOAD(  DTOP,       AT(DTOP, WORDLIST_OFF_DICT))     /* dtop = wid.dict        */
+        SUB2(  DTOP,       REG1)                            /* a    = nt-dict         */
+        STORw( REG1w,      AT(DTOP, DICT_OFF_LASTWORD_OFF)) /* dict.last_word_off = a */
+        DPOP(  DTOP)
+FUNC_END(wordlist_last_store)
 
 
 FUNC_START(xt_to_name)     /* ( XT -- nt ) */

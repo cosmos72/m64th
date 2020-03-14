@@ -100,15 +100,15 @@
 #define M4ushort_comma M4short_comma /* ushort, append  (uint16_t)dtop to last word's data   */
 #define M4int_comma 572              /* int,    append   (int32_t)dtop to last word's data   */
 #define M4uint_comma M4int_comma     /* uint,   append  (uint32_t)dtop to last word's data   */
-#define M4to_byte 573   /* to-byte   truncate dtop to   int8_t, sign-extend high bits  */
-#define M4to_char 574   /* to-char   truncate dtop to  uint8_t, zero-extend high bits  */
-#define M4to_short 575  /* to-short  truncate dtop to  int16_t, sign-extend high bits  */
-#define M4to_ushort 576 /* to-ushort truncate dtop to uint16_t, zero-extend high bits  */
-#define M4to_int 577    /* to-int    truncate dtop to  int32_t, sign-extend high bits  */
-#define M4to_uint 578   /* to-uint   truncate dtop to uint32_t, zero-extend high bits  */
-#undef M4____gap        /*                       */
-#undef M4____gap        /*                       */
-#undef M4____gap        /*                       */
+#define M4countedstring_comma 573    /* ( c-addr u -- ) append countedstring to last word's data */
+#undef M4____gap                     /*                       */
+#undef M4____gap                     /*                       */
+#define M4to_byte 576   /* to-byte   truncate dtop to   int8_t, sign-extend high bits  */
+#define M4to_char 577   /* to-char   truncate dtop to  uint8_t, zero-extend high bits  */
+#define M4to_short 578  /* to-short  truncate dtop to  int16_t, sign-extend high bits  */
+#define M4to_ushort 579 /* to-ushort truncate dtop to uint16_t, zero-extend high bits  */
+#define M4to_int 580    /* to-int    truncate dtop to  int32_t, sign-extend high bits  */
+#define M4to_uint 581   /* to-uint   truncate dtop to uint32_t, zero-extend high bits  */
 #undef M4____gap        /*                       */
 
 /* 'm4th-c' wordlist */
@@ -169,7 +169,7 @@
 #undef M4____gap                /*                       */
 #define M4user_var 640          /* user-var ( -- addr ) must be followed by index of user var */
 #undef M4____gap                /*                       */
-#undef M4____gap                /*                       */
+#define M4name_comma 642        /* name,       ( c-addr u --   ) create a new name        */
 #define M4name_to_code 643      /* name>code   ( nt -- addr u  ) get code array from name */
 #define M4name_to_code_n 644    /* name>code>n ( nt -- u       ) get code size from name  */
 #define M4name_to_flags 645     /* name>flags  ( nt -- m4flags ) get m4flags from name    */

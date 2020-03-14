@@ -277,23 +277,9 @@ WORD_START(countedstring_comma, int_comma)
     WORD_DSTACK(2,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
+    WORD_NATIVE_NONE() /* uses IP-relative JUMP, cannot inline in native code */
     WORD_CODE(
-        /* dup dup to-char <>                          ( c-addr u t|f    )
-         * if                                          ( c-addr u        )
-         *    M4ERR_DEFINITION_NAME_TOO_LONG throw     (                 )
-         * then                                        ( c-addr u        )
-         * dup c, here swap                            ( c-addr here u   )
-         * dup allot                                   ( c-addr here u   )
-         * cmove                                       (                 )
-         */
-        dup, dup, to_char, ne,
-        _if_, T(4),
-            _lit_, T(M4ERR_DEFINITION_NAME_TOO_LONG), throw,
-        then,
-        dup, c_comma, here, swap,
-        dup, allot,
-        cmove, exit
+        countedstring_comma, exit
     )
 WORD_END(countedstring_comma)
 WORD(to_byte,     countedstring_comma, DSTACK(1,1), RSTACK(0,0), WORD_PURE)
