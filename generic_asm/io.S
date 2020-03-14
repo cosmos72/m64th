@@ -90,7 +90,9 @@ FUNC_END(iobuf_err)
 
 /* iobuf>func ( io -- addr ) get address of iobuf I/O function  */
 FUNC_START(iobuf_func)
+#if IOBUF_OFF_FUNC != 0
         ADD2(  IMM(IOBUF_OFF_FUNC), DTOP)
+#endif
 FUNC_END(iobuf_func)
 
 
