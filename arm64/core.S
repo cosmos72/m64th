@@ -42,9 +42,13 @@ FUNC_END(iobuf_empty_query)
 
 
 FUNC_START(wordlist_last) /* ( wid -- nt ) */
+        LOAD(  REG1,       AT(DTOP, WORDLIST_OFF_LASTW))    /* b = wid.lastw          */
+        cmp    REG1,       IMM(0);
+        csel   DTOP,       REG1,   DTOP,   ne;              /* dtop = nt|wid          */
+        b.ne               FUNC_NEXT(wordlist_last);
         LOAD(  DTOP,       AT(DTOP, WORDLIST_OFF_DICT))     /* dtop = wid.dict        */
         LOAD(  REG1_uw,    AT(DTOP, DICT_OFF_LASTWORD_OFF)) /* a = dict.last_word_off */
-        SUB2(  REG1,       DTOP)               /* dtop = nt               */
+        SUB2(  REG1,       DTOP)                            /* dtop = nt              */
         cmp    REG1,       IMM(0);
-        csel   DTOP,       DTOP,   xzr,    ne; /* dtop = nt|0             */
+        csel   DTOP,       DTOP,   xzr,    ne;              /* dtop = nt|0            */
 FUNC_END(wordlist_last)

@@ -184,8 +184,9 @@ struct m4word_s {
     m4char data[0];
 };
 
-struct m4wordlist_s {   /**< wordlist                                             */
-    const m4dict *dict; /**< pointer to implementation dictionary                 */
+struct m4wordlist_s {   /**< wordlist                                                 */
+    const m4dict *dict; /**< pointer to read-only dictionary                          */
+    m4word *lastw;      /**< pointer to last word. if NULL, use m4dict_lastword(dict) */
     /* TODO hash table of contained words */
 };
 
@@ -282,7 +283,7 @@ const m4word *m4xt_word(m4xt xt);
 
 const m4word *m4dict_lastword(const m4dict *dict);
 m4string m4dict_name(const m4dict *dict);
-void m4dict_print(const m4dict *dict, FILE *out);
+void m4dict_print(const m4dict *dict, const m4word *override_lastw, FILE *out);
 
 /** return how many bytes of code are consumed by token or word marked with given flags */
 m4cell m4flags_consume_ip(m4flags fl);

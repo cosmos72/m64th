@@ -262,52 +262,14 @@ WORD(iobuf_max,        iobuf_func,     DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
 WORD(iobuf_pos,        iobuf_max,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(iobuf_size,       iobuf_pos,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(latest,           iobuf_size,     DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
+/* ( c-addr u -- ) create a new name */
 WORD_START(name_comma,  iobuf_size)
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_DSTACK(2,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
-    WORD_CODE(
-        /* ?if                                         ( c-addr u           )
-         *    here -rot                                ( caddr c-addr u     )
-         *    countedstring,                           ( caddr              )
-         * else                                        ( c-addr u           )
-         *    2drop align here                         ( caddr              )
-         * then                                        ( caddr              )
-         * align here                                  ( caddr nt           )
-         * get-current wordlist-last                   ( caddr nt prevnt    )
-         * ?if                                         ( caddr nt prevnt    )
-         *    over -                                   ( caddr nt prevnt-nt )
-         * then                                        ( caddr nt prevnt-nt )
-         * int,         ( prevnt-nt                 )  ( caddr nt           )
-         * tuck -                                      ( nt caddr-nt        )
-         * short,       ( caddr-nt                  )  ( nt                 )
-         * -1 short,    ( stack effects             )  ( nt                 )
-         * -1 short,    ( native code len           )  ( nt                 )
-         * 0 short,     ( forth code size in tokens )  ( nt                 )
-         * 0 int,       ( offset of code in bytes. 0 = not present ) ( nt   )
-         * 0 int,       ( data size in bytes        )  ( nt                 )
-         */
-        _q_if_, T(5),
-            here, minus_rot,
-            countedstring_comma,
-        _else_, T(4),
-            two_drop, align, here,
-        then,
-        get_current, wordlist_last,
-        _q_if_, T(3),
-            over, minus,
-        then,
-        int_comma,
-        tuck, minus,
-        short_comma,
-        minus_one, short_comma,
-        minus_one, short_comma,
-        zero, short_comma,
-        zero, int_comma,
-        zero, int_comma, exit
-    )
+    WORD_NATIVE_NONE() /* uses IP-relative jump to m4func, cannot inline in native code */
+    WORD_CODE(name_comma, exit)
 WORD_END(name_comma)
 WORD_START(name_inline_query,  name_comma)
     WORD_FLAGS(M4FLAG_MEM_FETCH) /* multiple exits => cannot inline */
@@ -605,7 +567,8 @@ WORD_START(wordlist_find, user_var)
     )
 WORD_END(wordlist_find)
 WORD(wordlist_last,  wordlist_find,    DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD(xt_to_name,     wordlist_last,    DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(wordlist_reset, wordlist_last,    DSTACK(1,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE)
+WORD(xt_to_name,     wordlist_reset,   DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 
 DICT_BODY(m4th_core, xt_to_name)
 DICT_END(m4th_core)

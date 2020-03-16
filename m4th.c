@@ -526,12 +526,12 @@ m4string m4dict_name(const m4dict *d) {
 
 static void m4word_print_fwd_recursive(const m4word *w, FILE *out);
 
-void m4dict_print(const m4dict *dict, FILE *out) {
+void m4dict_print(const m4dict *dict, const m4word *lastw, FILE *out) {
     fputs("/* -------- ", out);
     m4string_print(m4dict_name(dict), out);
     fputs(" -------- */\n", out);
 
-    m4word_print_fwd_recursive(m4dict_lastword(dict), out);
+    m4word_print_fwd_recursive(lastw ? lastw : m4dict_lastword(dict), out);
 }
 
 /* ----------------------- m4slice ----------------------- */
@@ -830,14 +830,16 @@ const m4word *m4word_prev(const m4word *w) {
 
 /* ----------------------- m4wordlist ----------------------- */
 
-m4wordlist m4wordlist_forth = {&m4dict_forth};
-m4wordlist m4wordlist_m4th_user = {&m4dict_m4th_user};
-m4wordlist m4wordlist_m4th_core = {&m4dict_m4th_core};
-m4wordlist m4wordlist_m4th_impl = {&m4dict_m4th_impl};
+m4wordlist m4wordlist_forth = {&m4dict_forth, NULL};
+m4wordlist m4wordlist_m4th_user = {&m4dict_m4th_user, NULL};
+m4wordlist m4wordlist_m4th_core = {&m4dict_m4th_core, NULL};
+m4wordlist m4wordlist_m4th_impl = {&m4dict_m4th_impl, NULL};
 
 const m4word *m4wordlist_lastword(const m4wordlist *wid) {
     if (wid == NULL) {
         return NULL;
+    } else if (wid->lastw) {
+        return wid->lastw;
     }
     return m4dict_lastword(wid->dict);
 }
@@ -854,7 +856,7 @@ void m4wordlist_print(const m4wordlist *wid, FILE *out) {
     if (out == NULL || wid == NULL) {
         return;
     }
-    m4dict_print(wid->dict, out);
+    m4dict_print(wid->dict, wid->lastw, out);
 }
 
 /* ----------------------- m4th ----------------------- */

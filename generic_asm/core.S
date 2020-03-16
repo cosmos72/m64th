@@ -83,34 +83,45 @@ FUNC_START(get_current)
         LOAD(  DTOP,   AT(M4TH, M4TH_OFF_COMPILE_WID))
 FUNC_END(get_current)
 
-/* name, ( c-addr u -- ) create a new word */
+
+/* name, ( c-addr u -- ) create a new name */
 FUNC_START(name_comma)
         JNZ(   DTOP,   TO(name_comma.str))
         ALIGN( SZ,     HERE)                           /* here = nt               */
-        STORh( DTOPh,  AT(HERE, WORD_OFF_NAME_OFF))    /* nt.name_off = 0         */
-        LOAD(  DTOP,   AT(DSTK, SZ))
-        ADD2(IMM(SZ2), DSTK)                           /* (                     ) */
+        ADD2(  IMM(SZ),DSTK)                           /* ( 0                   ) */
         JUMP(  TO(name_comma.str_done))
 LABEL(name_comma.str)
-        RPUSH( RTOP)
-        MOVE(  HERE,   RTOP)                           /* save countedstring addr */
-        ASM_CALL(      FUNC(countedstring_comma))      /* (                     ) */
+        LOAD(  REG1,   AT(DSTK))                       /* a = c-addr              */
+        STOR(  HERE,   AT(DSTK))                       /* ( addr u              ) */
+        DPUSH( REG1)                                   /* ( addr c-addr u       ) */
+        ASM_CALL(      FUNC(countedstring_comma))      /* ( addr                ) */
         ALIGN( SZ,     HERE)                           /* here = nt               */
-        SUB2(  HERE,   RTOP)                           /* rtop = c_addr-nt        */
-        STORh( RTOPh,  AT(HERE, WORD_OFF_NAME_OFF))    /* nt.name_off = rtop      */
-        RPOP(  RTOP)
+        SUB2(  HERE,   DTOP)                           /* dtop = addr-nt          */
 LABEL(name_comma.str_done)
-        DPUSH( DTOP)                                   /* ( _                   ) */
+        DPUSH( HERE)                                   /* ( nt addr             ) */
+#ifndef R000
         ZERO(  REG1w)                                  /* a = 0                   */
+#define R000  REG1
+#define R000h REG1h
+#endif
+#ifndef RFFF
         MOVE(  IMM_1,  REG2)                           /* b = -1                  */
-        STOR(  REG1,   AT(HERE, WORD_OFF_PREV_OFF))    /* nt.prev_off = nt.flags = 0, clobber nt.eff */
-        STOR(  REG2,   AT(HERE, WORD_OFF_STK_EFF))     /* nt.eff = nt.jump = -1 = nt.native_len = -1, clobber nt.code_n */
-        STORh( REG1h,  AT(HERE, WORD_OFF_CODE_N))      /* nt.code_n   = 0         */
-        STOR(  REG1,   AT(HERE, WORD_OFF_CODE_OFF))    /* nt.code_off = nt.data_n = 0 */
-        DPUSH( HERE)                                   /* ( nt _                ) */
+#define RFFF  REG2
+#endif
+        STOR(  R000,   AT(HERE, WORD_OFF_PREV_OFF))    /* nt.prev_off = nt.name_off = nt.flags = 0 */
+        STORh( DTOPh,  AT(HERE, WORD_OFF_NAME_OFF))    /* nt.name_off = dtop      */
+        STOR(  RFFF,   AT(HERE, WORD_OFF_STK_EFF))     /* nt.eff = nt.jump = nt.native_len = -1, clobber nt.code_n */
+        STORh( R000h,  AT(HERE, WORD_OFF_CODE_N))      /* nt.code_n   = 0         */
+        STOR(  R000,   AT(HERE, WORD_OFF_CODE_OFF))    /* nt.code_off = nt.data_n = 0 */
         LOAD(  DTOP,   AT(M4TH, M4TH_OFF_COMPILE_WID)) /* ( nt wid              ) */
-        ADD2(  IMM(WORD_OFF_DATA), HERE)               /* update HERE             */
-        JUMP(  FUNC(wordlist_last_store))
+        STOR(  HERE,   AT(M4TH, M4TH_OFF_LASTW))       /* m4th.lastw = nt         */
+        ADD2(  IMM(WORD_OFF_DATA), HERE)               /* here = nt.code.addr     */
+        /* we really should NOT be compiling right now, but in some tests we are  */
+        LOAD(  REG1,   AT(M4TH, M4TH_OFF_XT))          /* a = XT|0                */
+        JZ(    REG1,   TO(name_comma.done))
+        STOR(  HERE,   AT(M4TH, M4TH_OFF_XT))          /* m4th.xt = nt.code.addr  */
+LABEL(name_comma.done)                                 /* ( nt wid              ) */
+        JUMP(          FUNC(wordlist_add))             /* (                     ) */
 FUNC_RAWEND(name_comma)
 
 
@@ -187,19 +198,26 @@ FUNC_START(user_var)
 FUNC_RAWEND(user_var)
 
 
-FUNC_START(wordlist_last_store) /* ( nt wid -- ) */
-#if 0
-        LOAD(  DTOP,   AT(M4TH, M4TH_OFF_COMPILE_WID)) /* ( wid                 ) */
-        ASM_CALL(      FUNC(wordlist_last))            /* ( prevnt              ) */
-        JZ(    DTOP,   TO(name_comma.prevnt))
-        SUB2(  HERE,   DTOP)                           /* ( prevnt-nt           ) */
-#endif /* 0 */
-        DPOP(  REG1)                                        /* a    = nt              */
-        LOAD(  DTOP,       AT(DTOP, WORDLIST_OFF_DICT))     /* dtop = wid.dict        */
-        SUB2(  DTOP,       REG1)                            /* a    = nt-dict         */
-        STORw( REG1w,      AT(DTOP, DICT_OFF_LASTWORD_OFF)) /* dict.last_word_off = a */
+FUNC_START(wordlist_add) /* ( nt wid -- ) add name to wordlist */
+        DPUSH( DTOP)                                   /* ( nt wid wid          ) */
+        ASM_CALL(      FUNC(wordlist_last))            /* dtop = prevnt           */
+        LOAD(  REG1,   AT(DSTK, SZ))                   /* a = nt                  */
+        JZ(    DTOP,   TO(wordlist_add.prevnt))
+        SUB2(  REG1,   DTOP)                           /* dtop = prevnt-nt        */
+LABEL(wordlist_add.prevnt)
+        STORw( DTOPw,  AT(REG1, WORD_OFF_PREV_OFF))    /* nt.prev_off = dtop      */
+        LOAD(  REG2,   AT(DSTK))                       /* b = wid                 */
+        STOR(  REG1,   AT(REG2, WORDLIST_OFF_LASTW))   /* wid.lastw = a           */
+        LOAD(  DTOP,   AT(DSTK, SZ2))
+        ADD2( IMM(SZ3),DSTK)                           /* (                     ) */
+FUNC_END(wordlist_add)
+
+
+FUNC_START(wordlist_reset) /* ( wid -- ) */
+        ZERO(  REG1w)
+        STOR(  REG1,   AT(DTOP, WORDLIST_OFF_LASTW))   /* wid.lastw = 0            */
         DPOP(  DTOP)
-FUNC_END(wordlist_last_store)
+FUNC_END(wordlist_reset)
 
 
 FUNC_START(xt_to_name)     /* ( XT -- nt ) */

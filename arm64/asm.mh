@@ -143,6 +143,11 @@
 #define FTBL x26 /* pointer to table m4func[m4token] containing asm function addresses */
 #define IP x27   /* instruction pointer */
 
+#define R000 xzr  /* 64 bit, always 0 */
+#define R000b wzr /*  8 bit, always 0 */
+#define R000h wzr /* 16 bit, always 0 */
+#define R000w wzr /* 32 bit, always 0 */
+
 /* clang-format off */
 
 #define ADD2(src,dst)     add   dst, dst, src;      /* dst += src     */

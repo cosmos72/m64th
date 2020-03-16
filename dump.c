@@ -58,7 +58,7 @@ int main(int argc, char *argv[]) {
 
     fputs(license, stdout);
     for (i = 0; i < (m4cell)N_OF(dict); i++) {
-        m4dict_print(dict[i], stdout);
+        m4dict_print(dict[i], NULL, stdout);
     }
 
     /* suppress 'unused parameter' warning */
