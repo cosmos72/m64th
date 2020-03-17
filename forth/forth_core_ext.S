@@ -38,7 +38,7 @@ WORD_START(question_do, ne)
     WORD_DSTACK(2,0)   /* stack effect when jumping */
     WORD_RSTACK(0,0)
     WORD_NATIVE_NONE()
-    WORD_CODE(_compile_init_, _compile_unresolved_jump_, _q_do_, _q_do_, exit)
+    WORD_CODE(_compile_unresolved_jump_, _q_do_, _q_do_, exit)
 WORD_END(question_do)
 WORD_START(again,      question_do)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_JUMP | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
@@ -47,7 +47,6 @@ WORD_START(again,      question_do)
     WORD_RSTACK(0,0)
     WORD_NATIVE_NONE()
     WORD_CODE(
-        _compile_init_,
         _compile_unresolved_jump_, _again_, repeat,
         CALL(_resolve_begin_repeat_), /* resolve all jump offsets of begin.. */
         exit
@@ -60,15 +59,13 @@ WORD_START(compile_comma, again)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_CODE(
-        /* [compile-init]                              ( xt            )
-         * dup xt>name name-inline?                    ( xt t|f        )
+        /* dup xt>name name-inline?                    ( xt t|f        )
          * if0                                         ( xt            )
          *    ' (call-xt) compile,                     ( xt            )
          *    (compile-xt,) exit                       (               )
          * then                                        ( xt            )
          * xt>name [inline]
          */
-        _compile_init_,
         dup, xt_to_name, CALL(name_inline_query),
         _if0_, T(5),
             _compile_lit_, _call_xt_,  /* compile (call-xt) */

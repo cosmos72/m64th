@@ -55,7 +55,7 @@ WORD_START(q_if, eight_div)
     WORD_RSTACK(0,0)
     WORD_NATIVE_NONE()
     WORD_CODE(
-        _compile_init_, _compile_unresolved_jump_, _q_if_, _if_, exit
+        _compile_unresolved_jump_, _q_if_, _if_, exit
     )
 WORD_END(q_if)
 WORD_START(q_if_zero, q_if)
@@ -66,7 +66,7 @@ WORD_START(q_if_zero, q_if)
     WORD_RSTACK(0,0)
     WORD_NATIVE_NONE()
     WORD_CODE(
-        _compile_init_, _compile_unresolved_jump_, _q_if0_, _if_, exit
+        _compile_unresolved_jump_, _q_if0_, _if_, exit
     )
 WORD_END(q_if_zero)
 WORD(bounds,           q_if_zero,      DSTACK(2,2), RSTACK(0,0), M4FLAG_PURE)
@@ -77,7 +77,7 @@ WORD_START(break,      bounds)
     WORD_RSTACK(0,0)
     WORD_NATIVE_NONE()
     WORD_CODE(
-        _compile_init_, _compile_unresolved_jump_, _break_, _while_, exit
+        _compile_unresolved_jump_, _break_, _while_, exit
     )
 WORD_END(break)
 WORD_START(continue,   bounds)
@@ -87,7 +87,7 @@ WORD_START(continue,   bounds)
     WORD_RSTACK(0,0)
     WORD_NATIVE_NONE()
     WORD_CODE(
-        _compile_init_, _compile_resolved_jump_, _continue_, begin, exit
+        _compile_resolved_jump_, _continue_, begin, exit
     )
 WORD_END(_continue_)
 WORD(dup_to_r,         bounds,         DSTACK(1,1), RSTACK(0,1), WORD_R_PURE)
@@ -104,7 +104,7 @@ WORD_START(if_zero, i_prime)
     WORD_RSTACK(0,0)
     WORD_NATIVE_NONE()
     WORD_CODE(
-        _compile_init_, _compile_unresolved_jump_, _if0_, _if_, exit
+        _compile_unresolved_jump_, _if0_, _if_, exit
     )
 WORD_END(if_zero)
 /*

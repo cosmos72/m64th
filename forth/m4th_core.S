@@ -262,9 +262,8 @@ WORD(iobuf_max,        iobuf_func,     DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
 WORD(iobuf_pos,        iobuf_max,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(iobuf_size,       iobuf_pos,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(latest,           iobuf_size,     DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
-WORD(latest_store,     latest,         DSTACK(1,0), RSTACK(0,0), WORD_IMPURE)
 /* ( c-addr u -- nt ) create a new name. do NOT add it to compilation wordlist */
-WORD_START(name_comma,  latest_store)
+WORD_START(name_comma,  latest)
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_DSTACK(2,1)
     WORD_RSTACK(0,0)
@@ -476,11 +475,12 @@ WORD(out_to_obuf,   obuf_write_string, DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 WORD(searchorder_i,    out_to_obuf,    DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
 /* searchorder-n ( -- addr ) get address of searchorder count */
 WORD(searchorder_n,    searchorder_i,  DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
+WORD(set_latest,       searchorder_n,  DSTACK(1,0), RSTACK(0,0), WORD_IMPURE)
 /*
  * string>name ( c-addr u -- nt|0 -1|0|1 ) find name in current search order.
  * return 1 if name is immediate, else -1
  */
-WORD_START(string_to_name, searchorder_n)
+WORD_START(string_to_name, set_latest)
     WORD_FLAGS(0)
     WORD_DSTACK(2,2)
     WORD_RSTACK(0,0)

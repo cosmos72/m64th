@@ -183,9 +183,8 @@ FUNC_START(user_var)
 FUNC_RAWEND(user_var)
 
 
-FUNC_START(wordlist_add) /* ( wid nt -- ) add name to wordlist */
-        DPUSH( DTOP)                                   /* ( wid nt _            ) */
-        LOAD(  DTOP,   AT(DSTK, SZ))                   /* ( wid nt wid            */
+FUNC_START(wordlist_add) /* ( nt wid -- ) add name to wordlist */
+        DPUSH( DTOP)                                   /* ( nt wid wid            */
         ASM_CALL(      FUNC(wordlist_last))            /* ( dtop = prevnt         */
         LOAD(  REG1,   AT(DSTK, SZ))                   /* a = nt                  */
         JZ(    DTOP,   TO(wordlist_add.prevnt))

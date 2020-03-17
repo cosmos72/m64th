@@ -157,10 +157,10 @@
 #undef M4while /*127*/            /* while    */
 #undef M4word /*128*/             /* word     */
 #define M4xor 129                 /* xor      */
-#undef M4left_bracket /*130*/     /* [        */
+#define M4left_bracket 130        /* [        */
 #undef M4bracket_tick /*131*/     /* [']      */
 #undef M4bracket_char /*132*/     /* [char]   */
-#undef M4right_bracket /*133*/    /* ]        */
+#define M4right_bracket 133       /* ]        */
 
 /* 'forth' wordlist: 'core ext' word set */
 #undef M4dot_paren /*136*/       /* .(       */
@@ -194,7 +194,7 @@
 #undef M4of /*164*/              /* of       */
 #undef M4pad /*165*/             /* pad      */
 #undef M4parse /*166*/           /* parse    */
-#undef M4parse_name /*167*/      /* parse-name   */
+#undef M4parse_name /*167*/      /* parse-name   implemented in forth, no dedicated m4token */
 #define M4pick 168               /* pick     */
 #undef M4refill /*169*/          /* refill   */
 #undef M4restore_input /*170*/   /* restore-input    */

@@ -80,12 +80,12 @@
     /* X(5, "uint,", uint_comma)    */ /* alias of: int,                                */         \
     X(14, "countedstring,", countedstring_comma) /* countedstring, ( c-addr u -- )      */         \
     /*                             */ /*                                                */         \
-    X(7, "to-byte", to_byte)                                                                       \
-    X(7, "to-char", to_char)                                                                       \
-    X(8, "to-short", to_short)                                                                     \
-    X(9, "to-ushort", to_ushort)                                                                   \
-    X(6, "to-int", to_int)                                                                         \
-    X(7, "to-uint", to_uint)                                                                       \
+    X(5, ">byte", to_byte)                                                                         \
+    X(5, ">char", to_char)                                                                         \
+    X(6, ">short", to_short)                                                                       \
+    X(7, ">ushort", to_ushort)                                                                     \
+    X(4, ">int", to_int)                                                                           \
+    X(5, ">uint", to_uint)                                                                         \
     X(3, "u<=", u_less_equal)                                                                      \
     X(3, "u>=", u_more_equal)
 
@@ -179,7 +179,6 @@
     X(9, "iobuf>pos", iobuf_pos)         /* ( io -- addr ) get address of iobuf position     */    \
     X(10, "iobuf>size", iobuf_size)      /* ( io -- addr ) get address of iobuf size         */    \
     X(6, "latest", latest)               /* (    -- nt   ) get last defined word             */    \
-    X(7, "latest!", latest_store)        /* ( nt --      ) set last defined word to nt       */    \
     X(5, "name,", name_comma)            /* ( c-addr u -- nt ) create a new name             */    \
     X(9, "name>code", name_to_code)      /* ( nt  -- taddr n ) get code array from name      */    \
     X(11, "name>code>n", name_to_code_n) /* ( nt -- u        ) get code size from name       */    \
@@ -193,12 +192,13 @@
     X(8, "out>obuf", out_to_obuf) /*  (   -- io   ) get current output as iobuf              */    \
     /*                  searchorder-i ( u -- addr ) get address of searchorder i-th element  */    \
     X(13, "searchorder-i", searchorder_i)                                                          \
-    X(13, "searchorder-n", searchorder_n) /* (    -- addr    ) get address of searchorder count */ \
-    X(8, "user-var", user_var) /*        ( -- addr ) must be followed by index of user variable */ \
-    X(12, "wordlist-add", wordlist_add)   /*   ( wid nt -- ) add name to wordlist               */ \
-    X(13, "wordlist-last", wordlist_last) /*   ( wid -- nt ) get last name in wordlist          */ \
+    X(13, "searchorder-n", searchorder_n) /* (    -- addr ) get address of searchorder count */    \
+    X(10, "set-latest", set_latest)       /* ( nt --      ) set last defined word            */    \
+    X(8, "user-var", user_var) /*     ( -- addr ) must be followed by index of user variable */    \
+    X(12, "wordlist-add", wordlist_add)     /* ( nt wid -- ) add name to wordlist            */    \
+    X(13, "wordlist-last", wordlist_last)   /* ( wid -- nt ) get last name in wordlist       */    \
     X(14, "wordlist-reset", wordlist_reset) /* ( wid -- ) remove all user-defined names from wid*/ \
-    X(7, "xt>name", xt_to_name)             /* ( XT  -- nt ) convert XT to name                 */
+    X(7, "xt>name", xt_to_name)             /* ( XT  -- nt ) convert XT to name              */
 
 #define DICT_WORDS_M4TH_CORE(X)                                                                    \
     DICT_TOKENS_M4TH_CORE(X)                                                                       \
@@ -222,7 +222,7 @@
     X(15, "(obuf-overflow)", _obuf_overflow_)                                                      \
     X(11, "string>name", string_to_name) /*( c-addr u -- nt|0 -1|0|1 ) find name in search order*/ \
     X(6, "/token", div_token)            /* alias of _SZt_div,    no dedicated m4token */          \
-    X(8, "to-token", to_token)           /* alias of to_SZtu,     no dedicated m4token */          \
+    X(6, ">token", to_token)             /* alias of to_SZtu,     no dedicated m4token */          \
     X(6, "token!", token_store)          /* alias of _SZtu_store, no dedicated m4token */          \
     X(6, "token@", token_fetch)          /* alias of _SZtu_fetch, no dedicated m4token */          \
     X(6, "token+", token_plus)           /* alias of _SZt_plus,   no dedicated m4token */          \
@@ -268,7 +268,6 @@
     X(7, "(while)", _while_)                                                                       \
     X(8, "(while0)", _while0_)                                                                     \
     X(11, "[#compiled]", _num_compiled_)                                                           \
-    X(14, "[compile-init]", _compile_init_)                                                        \
     X(14, "[compile-lit,]", _compile_lit_)                                                         \
     X(23, "[compile-resolved-jump]", _compile_resolved_jump_)                                      \
     X(25, "[compile-unresolved-jump]", _compile_unresolved_jump_)                                  \

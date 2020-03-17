@@ -23,27 +23,6 @@
 /* clang-format off */
 
 
-/* latest ( -- nt ) get last defined word */
-FUNC_START(latest)
-        DPUSH( DTOP)
-        LOAD(  DTOP,       AT(M4TH, M4TH_OFF_LASTW))   /* nt = m4th.lastw       */
-FUNC_END(latest)
-
-
-/* latest! ( nt -- ) set last defined word */
-FUNC_START(latest_store)
-        STOR(  DTOP,       AT(M4TH, M4TH_OFF_LASTW))   /* m4th.lastw = nt       */
-        /* we really should NOT be compiling now, but in some tests we are      */
-        LOAD(  REG1,       AT(M4TH, M4TH_OFF_XT))      /* a = m4th.xt           */
-        JZ(    REG1,       TO(latest_store.done))
-        LD_uw( REG2_uw,    AT(DTOP, WORD_OFF_CODE_OFF))/* b = nt.code_off       */
-        ADD2(  REG2,       DTOP)                       /* dtop = nt.code.addr   */
-        STOR(  DTOP,       AT(M4TH, M4TH_OFF_XT))      /* m4th.xt = dtop        */
-LABEL(latest_store.done)
-        DPOP(  DTOP)
-FUNC_END(latest_store)
-
-
 /** [#compiled] ( -- u ) code size i.e. # of tokens in XT being compiled  */
 FUNC_START(_num_compiled_)
         DPUSH( DTOP)
@@ -57,47 +36,6 @@ FUNC_START(_num_compiled_)
         SHR2(  IMM(PSZt),  DTOP)
 FUNC_END(_num_compiled_)
 
-
-/**
- * Initialize m4th.lastw.code_off and update HERE.
- * Also initialize m4th.xt if it's null.
- * Must be called (at least) once per word, before calling any other m4func [compile*]
- */
-FUNC_START(_compile_init_)
-        /* TODO check if enough space */
-        LOAD(  REG1,       AT(M4TH, M4TH_OFF_LASTW))   /* a = m4th.lastw        */
-        LD_uh( REG2_uh,    AT(REG1, WORD_OFF_CODE_OFF))/* b = w.code_off        */
-        JNZ(   REG2,       TO(_compile_init_.finish))
-        LD_uh( REG2_uh,    AT(REG1, WORD_OFF_DATA_N))  /* b = w.data_n          */
-        JNZ(   REG2,       TO(_compile_init_.full))
-LABEL(_compile_init_.simple)
-        /* word.data_n == 0, simple initialization                              */
-        MOVE(  IMM(WORD_OFF_DATA),     REG2w)          /* b = w.code - w        */
-        STORh( REG2h,      AT(REG1, WORD_OFF_CODE_OFF))/* w.code_off = b        */
-        ADD4(  REG2,       REG1,   0,  HERE)           /* here = xt             */
-        JUMP(              TO(_compile_init_.finish))
-LABEL(_compile_init_.full)
-        /* word.data_n != 0, full initialization                                */
-        ADDI(  REG1,       WORD_OFF_DATA,  REG3)       /* c = w.data            */
-        ADD2(  REG2,       REG3)                       /* c = w.data + w.data_n */
-        ALIGN( 4,          REG3)               /* c = align@4(w.data + w.data_n)*/
-        ADDI(  REG3,       4,          HERE)           /* here = w.code = xt    */
-#ifdef SUB3
-        SUB3(  HERE,       REG1,       REG3)           /* c = code_off          */
-#else
-        MOVE(  HERE,       REG3)
-        SUB2(  REG1,       REG3)                       /* c = code_off          */
-#endif
-        STORh( REG3h,  AT(REG1, WORD_OFF_CODE_OFF))    /* w.code_off = code_off */
-
-        ADDI(  REG3,   -WORD_OFF_DATA, REG2) /* b = w.code_off - WORD_OFF_DATA  */
-        STORw( REG2w,      AT(HERE, -4))               /* xt[-1] = b            */
-LABEL(_compile_init_.finish)
-        LOAD(  REG1,       AT(M4TH, M4TH_OFF_XT))
-        JNZ(   REG1,       FUNC_NEXT(_compile_init_))
-        /* set m4th.xt only if it's NULL */
-        STOR(  HERE,       AT(M4TH, M4TH_OFF_XT))      /* m4th.xt = here = xt   */
-FUNC_END(_compile_init_)
 
 
 /** ( -- ) must be followed by m4token, append it to XT being compiled. */
@@ -188,6 +126,81 @@ LABEL(countedstring_comma.throw)
         MOVE(  IMM(M4ERR_DEFINITION_NAME_TOO_LONG),  DTOP)
         JUMP(  FUNC(throw))
 FUNC_RAWEND(countedstring_comma)
+
+
+/* latest ( -- nt ) get last defined word */
+FUNC_START(latest)
+        DPUSH( DTOP)
+        LOAD(  DTOP,       AT(M4TH, M4TH_OFF_LASTW))   /* nt = m4th.lastw       */
+FUNC_END(latest)
+
+
+/* set-latest ( nt -- ) set last defined word */
+FUNC_START(set_latest)
+        STOR(  DTOP,       AT(M4TH, M4TH_OFF_LASTW))   /* m4th.lastw = nt       */
+        /* we really should NOT be compiling now, but in some tests we are      */
+        LOAD(  REG1,       AT(M4TH, M4TH_OFF_XT))      /* a = m4th.xt           */
+        JZ(    REG1,       TO(set_latest.done))
+        LD_uw( REG2_uw,    AT(DTOP, WORD_OFF_CODE_OFF))/* b = nt.code_off       */
+        ADD2(  REG2,       DTOP)                       /* dtop = nt.code.addr   */
+        STOR(  DTOP,       AT(M4TH, M4TH_OFF_XT))      /* m4th.xt = dtop        */
+LABEL(set_latest.done)
+        DPOP(  DTOP)
+FUNC_END(set_latest)
+
+
+/**
+ * Temporarily switch from compiling to interpreting.
+ */
+FUNC_START(left_bracket)
+        initR000_w(REG1w)
+        STOR(  R000_r(REG1),   AT(M4TH, M4TH_OFF_XT))
+FUNC_END(left_bracket)
+
+
+/**
+ * If needed, initialize m4th.lastw.code_off and update HERE.
+ * Set state = m4th.xt to code address of m4th.lastw.
+ */
+FUNC_START(right_bracket)
+        /* TODO check if enough space */
+        LOAD(  REG3,       AT(M4TH, M4TH_OFF_XT))      /* c = m4th.xt           */
+        JZ(    REG3,       TO(right_bracket.nothrow))
+        DPUSH( DTOP)
+        MOVE(  IMM(M4ERR_COMPILER_NESTING), DTOP)      /* ( err )               */
+        JUMP(              FUNC(throw))
+LABEL(right_bracket.nothrow)
+        LOAD(  REG1,       AT(M4TH, M4TH_OFF_LASTW))   /* a = m4th.lastw        */
+        LD_uh( REG2_uh,    AT(REG1, WORD_OFF_CODE_OFF))/* b = w.code_off        */
+        JNZ(   REG2,       TO(right_bracket.finish))
+        LD_uh( REG2_uh,    AT(REG1, WORD_OFF_DATA_N))  /* b = w.data_n          */
+        JNZ(   REG2,       TO(right_bracket.full))
+LABEL(right_bracket.simple)
+        /* word.data_n == 0, simple initialization                              */
+        MOVE(  IMM(WORD_OFF_DATA),     REG2w)          /* b = w.code - w        */
+        STORh( REG2h,      AT(REG1, WORD_OFF_CODE_OFF))/* w.code_off = b        */
+        ADD4(  REG2,       REG1,   0,  HERE)           /* here = xt             */
+        JUMP(              TO(right_bracket.finish))
+LABEL(right_bracket.full)
+        /* word.data_n != 0, full initialization                                */
+        ADDI(  REG1,       WORD_OFF_DATA,  REG3)       /* c = w.data            */
+        ADD2(  REG2,       REG3)                       /* c = w.data + w.data_n */
+        ALIGN( 4,          REG3)               /* c = align@4(w.data + w.data_n)*/
+        ADDI(  REG3,       4,          HERE)           /* here = w.code = xt    */
+#ifdef SUB3
+        SUB3(  HERE,       REG1,       REG2)           /* b = code_off          */
+#else
+        MOVE(  HERE,       REG2)
+        SUB2(  REG1,       REG2)                       /* b = code_off          */
+#endif
+        STORh( REG2h,  AT(REG1, WORD_OFF_CODE_OFF))    /* w.code_off = code_off */
+
+        ADDI(  REG2,   -WORD_OFF_DATA, REG3) /* c = w.code_off - WORD_OFF_DATA  */
+        STORw( REG3w,      AT(HERE, -4))               /* xt[-1] = c            */
+LABEL(right_bracket.finish)
+        ADD2(  REG2,       REG1)                       /* a = w + w.code_off = xt */
+        STOR(  REG1,       AT(M4TH, M4TH_OFF_XT))      /* m4th.xt = xt          */
+FUNC_END(right_bracket)
 
 
 FUNC_START(state)

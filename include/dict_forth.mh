@@ -95,7 +95,9 @@
     X(4, "type", type)                                                                             \
     X(2, "u<", u_less)                                                                             \
     X(6, "unloop", unloop)                                                                         \
-    X(3, "xor", xor)
+    X(3, "xor", xor)                                                                               \
+    X(1, "[", left_bracket)                                                                        \
+    X(1, "]", right_bracket)
 
 #define DICT_WORDS_FORTH_CORE(X)                                                                   \
     DICT_TOKENS_FORTH_CORE(X)                                                                      \

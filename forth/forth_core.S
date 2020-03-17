@@ -78,9 +78,10 @@ WORD_START(colon,      two_swap)
          * then
          * parse-name                                  ( c-addr u      )
          * ?if0                                        ( c-addr u      )
-         *   2drop M4ERR_ZERO_LENGTH_NAME throw        (               )
+         *    M4ERR_ZERO_LENGTH_NAME throw             (               )
          * then                                        ( c-addr u      )
-         * dup c,                                      ( c-addr u      )
+         * name, get-current set-latest                ( nt            )
+         *
          */
         /* TODO */
         state, fetch,
@@ -88,9 +89,10 @@ WORD_START(colon,      two_swap)
             _lit_, T(M4ERR_COMPILER_NESTING), throw,
         then,
         CALL(parse_name),
-        _q_if0_, T(5),
-            two_drop, _lit_, T(M4ERR_ZERO_LENGTH_NAME), throw,
+        _q_if0_, T(4),
+            _lit_, T(M4ERR_ZERO_LENGTH_NAME), throw,
         then,
+        name_comma, get_current, set_latest,
         exit
     )
 WORD_END(colon)
@@ -159,7 +161,7 @@ WORD_START(begin, base)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_CODE(
-        _compile_init_, _compile_lit_, begin, _num_compiled_, _lit_, begin, exit
+        _compile_lit_, begin, _num_compiled_, _lit_, begin, exit
     )
 WORD_END(begin)
 WORD(bl,               begin,      DSTACK(0,1), RSTACK(0,0), WORD_PURE)
@@ -179,7 +181,7 @@ WORD_START(do, depth)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_CODE(
-        _compile_init_, _compile_lit_, do, _num_compiled_, _lit_, do, exit
+        _compile_lit_, do, _num_compiled_, _lit_, do, exit
     )
 WORD_END(do)
 WORD(drop,             do,         DSTACK(1,0), RSTACK(0,0), WORD_PURE)
@@ -249,7 +251,7 @@ WORD_START(if, i)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_CODE(
-        _compile_init_, _compile_unresolved_jump_, _if_, _if_, exit
+        _compile_unresolved_jump_, _if_, _if_, exit
     )
 WORD_END(if)
 WORD(invert,           if,         DSTACK(1,1), RSTACK(0,0), WORD_PURE)
@@ -261,7 +263,7 @@ WORD_START(leave, j)
     WORD_RSTACK(2,0)
     WORD_NATIVE_NONE()
     WORD_CODE(
-        _compile_init_, _compile_unresolved_jump_, _leave_, _leave_, exit
+        _compile_unresolved_jump_, _leave_, _leave_, exit
     )
 WORD_END(leave)
 WORD_START(literal, leave)
@@ -278,7 +280,6 @@ WORD_START(literal, leave)
       ),
       WORD_CODE_TOKENS(
         _ip_to_data_, div_token,         /* ( n taddr tn )             */
-        _compile_init_,
         CALL(_any_token_gives_cell_q_),
         _if_, T(3), token_comma,         /* if executing token gives n */
             exit,                        /* append token to XT, exit   */
@@ -307,7 +308,7 @@ WORD_START(loop, literal)
     WORD_RSTACK(2,0)
     WORD_NATIVE_NONE()
     WORD_CODE(
-        _compile_init_, _compile_unresolved_jump_, _loop_, _loop_,
+        _compile_unresolved_jump_, _loop_, _loop_,
         CALL(_resolve_loop_), exit
     )
 WORD_END(loop)
@@ -348,7 +349,7 @@ WORD_START(then, swap)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_CODE(
-        _compile_init_, _compile_lit_, then,
+        _compile_lit_, then,
         CALL(_resolve_jump_here_), exit
     )
 WORD_END(then)
@@ -363,6 +364,8 @@ WORD_END(type)
 WORD(u_less,           type,       DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(unloop,           u_less,     DSTACK(0,0), RSTACK(2,0), WORD_R_PURE)
 WORD(xor,              unloop,     DSTACK(2,1), RSTACK(0,0), WORD_PURE)
+WORD(left_bracket,     unloop,     DSTACK(0,0), RSTACK(0,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
+WORD(right_bracket,  left_bracket, DSTACK(0,0), RSTACK(0,0), WORD_IMPURE)
 
 #undef LASTWORD
-#define LASTWORD xor
+#define LASTWORD right_bracket
