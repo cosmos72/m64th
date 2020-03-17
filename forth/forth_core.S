@@ -81,9 +81,9 @@ WORD_START(colon,      two_swap)
          *    M4ERR_ZERO_LENGTH_NAME throw             (               )
          * then                                        ( c-addr u      )
          * name, get-current set-latest                ( nt            )
+         * postpone ]
          *
          */
-        /* TODO */
         state, fetch,
         _if_, T(4),
             _lit_, T(M4ERR_COMPILER_NESTING), throw,
@@ -93,7 +93,7 @@ WORD_START(colon,      two_swap)
             _lit_, T(M4ERR_ZERO_LENGTH_NAME), throw,
         then,
         name_comma, get_current, set_latest,
-        exit
+        right_bracket, exit
     )
 WORD_END(colon)
 WORD(less,             colon,      DSTACK(2,1), RSTACK(0,0), WORD_PURE)
