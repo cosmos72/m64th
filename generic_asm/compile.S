@@ -159,18 +159,18 @@ FUNC_END(left_bracket)
 
 
 /**
+ * Start or resume compiling.
  * If needed, initialize m4th.lastw.code_off and update HERE.
  * Set state = m4th.xt to code address of m4th.lastw.
  */
 FUNC_START(right_bracket)
         /* TODO check if enough space */
-        LOAD(  REG3,       AT(M4TH, M4TH_OFF_XT))      /* c = m4th.xt           */
-        JZ(    REG3,       TO(right_bracket.nothrow))
-        DPUSH( DTOP)
-        MOVE(  IMM(M4ERR_COMPILER_NESTING), DTOP)      /* ( err )               */
-        JUMP(              FUNC(throw))
-LABEL(right_bracket.nothrow)
+        MOVE(  IMM(M4ERR_ZERO_LENGTH_NAME), REG0)      /* ( err )               */
         LOAD(  REG1,       AT(M4TH, M4TH_OFF_LASTW))   /* a = m4th.lastw        */
+        JZ(    REG1,       FUNC(_throw_.reg0))         /* no latest word: throw */
+        MOVE(  IMM(M4ERR_COMPILER_NESTING), REG0)      /* ( err )               */
+        LOAD(  REG3,       AT(M4TH, M4TH_OFF_XT))      /* c = m4th.xt           */
+        JNZ(   REG3,       FUNC(_throw_.reg0))         /* compiling: throw      */
         LD_uh( REG2_uh,    AT(REG1, WORD_OFF_CODE_OFF))/* b = w.code_off        */
         JNZ(   REG2,       TO(right_bracket.finish))
         LD_uh( REG2_uh,    AT(REG1, WORD_OFF_DATA_N))  /* b = w.data_n          */

@@ -130,11 +130,11 @@ FUNC_END(_catch_end_)
 
 /* ( ex -- ) throw exception if ex != 0 */
 FUNC_START(throw)
-        MOVE(  DTOP,   REG1)
+        MOVE(  DTOP,   REG0)
         DPOP(  DTOP)
-        JZ(    REG1,   FUNC_NEXT(throw))             /* 0 means 'do not throw'             */
-
-        STOR(  REG1,   AT(M4TH, M4TH_OFF_EX))        /* save exception to m4th.ex          */
+        JZ(    REG0,   FUNC_NEXT(throw))             /* 0 means 'do not throw'             */
+FUNC_DEF(_throw_.reg0)
+        STOR(  REG0,   AT(M4TH, M4TH_OFF_EX))        /* save exception to m4th.ex          */
         LOAD(  REG2,   AT(M4TH, M4TH_OFF_HANDLER))   /* b = m4th.handler = rend - rstk     */
         JZ(    REG2,   FUNC(bye))                    /* no handler => jump to 'bye'        */
 
