@@ -88,9 +88,9 @@ FUNC_START(_catch_beg_)
         STOR(  REG1,   AT(M4TH, M4TH_OFF_HANDLER)) /* save rend - rstk   */
 
         /* clear m4th.ex and m4th.ex_string */
-        ZERO(  REG1)
-        STOR(  REG1,   AT(M4TH, M4TH_OFF_EX))
-        STOR(  REG1,   AT(M4TH, M4TH_OFF_EX_STRING_N))
+        initR000_w(    REG1w)
+        STOR(  R000_r(REG1),   AT(M4TH, M4TH_OFF_EX))
+        STOR(  R000_r(REG1),   AT(M4TH, M4TH_OFF_EX_STRING_N))
 
         /* execute IP */
         MOVE(  REG2,   IP)
@@ -117,8 +117,8 @@ LABEL(_catch_end_.thrown)
          * an exception was thrown. almost everything has already been restored by 'throw':
          * we only need to push exception to dstk then clear m4th.ex
          */
-        ZERO(  REG2)
-        STOR(  REG2,   AT(M4TH, M4TH_OFF_EX))        /* clear m4th.ex            */
+        initR000_w(    REG2w)
+        STOR(  R000_r(REG2),   AT(M4TH, M4TH_OFF_EX))        /* clear m4th.ex            */
         /* do NOT clear m4th.ex_string, caller may need it                       */
 
 LABEL(_catch_end_.push)

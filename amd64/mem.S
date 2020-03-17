@@ -96,7 +96,7 @@ LABEL(string_equal.cell)
         LOAD(  REG3,   AT(REG1, REG4, 1))
         JNE(   REG3,   AT(REG2, REG4, 1),  TO(string_equal.false)) /* x86 specific */
         ADD2(  IMM(8), REG4)
-        JB(    REG4,   DTOP,    TO(string_equal.cell))   /* > 8 bytes left ? */
+        JB(    REG4,   DTOP,    TO(string_equal.cell))      /* > 8 bytes left ? */
         LOAD(  REG3,   AT(REG1, DTOP, 1))                   /* compare last 8 bytes */
         LOAD(  REG4,   AT(REG2, DTOP, 1))
         JNE(   REG3,   REG4,    TO(string_equal.false))
@@ -112,4 +112,3 @@ LABEL(string_equal.true)
 LABEL(string_equal.false)
         ZERO(  DTOPw)
 FUNC_END(string_equal)
-

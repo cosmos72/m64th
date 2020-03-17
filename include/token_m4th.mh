@@ -151,7 +151,7 @@
 #define M4iobuf_data 621        /* iobuf>data   ( io -- c-addr u ) get data, from position to size*/
 #define M4iobuf_data_n 622      /* iobuf>data>n ( io -- u    ) get data length = size - position  */
 #define M4iobuf_free_data 623   /*              ( io -- c-addr u ) get free data, from size to max*/
-#define M4iobuf_empty_query 234 /* iobuf-empty? ( io -- t|f  ) true if iobuf data is empty */
+#define M4iobuf_empty_query 234 /* iobuf-empty? ( io -- t|f  ) true if iobuf data is empty      */
 #define M4iobuf_err 625         /* iobuf>err    ( io -- addr ) get address of iobuf.err           */
 #define M4iobuf_func 626        /* iobuf>func   ( io -- addr ) get address of iobuf I/O function  */
 #define M4iobuf_handle 627      /* iobuf>handle ( io -- addr ) get address of iobuf handle        */
@@ -159,10 +159,10 @@
 #define M4iobuf_pos 629         /* iobuf>pos    ( io -- addr ) get address of iobuf position      */
 #define M4iobuf_size 630        /* iobuf>size   ( io -- addr ) get address of iobuf size          */
 #define M4latest 631            /* latest       (    -- nt   ) get last defined word              */
-#undef M4____gap                /*                       */
-#define M4obuf_write_char 633   /* obuf-write-char   ( io c -- err ) write one char to iobuf */
-#define M4obuf_write_string 634 /* obuf-write-string ( io c -- err ) write string to iobuf   */
-#define M4out_to_obuf 635       /* out>obuf          (      -- io  ) get current output as iobuf */
+#define M4latest_store 632      /* latest!      ( nt --      ) set last defined word              */
+#define M4obuf_write_char 633   /* obuf-write-char   ( io c -- err ) write one char to iobuf      */
+#define M4obuf_write_string 634 /* obuf-write-string ( io c -- err ) write string to iobuf      */
+#define M4out_to_obuf 635       /* out>obuf          (      -- io  ) get current output as iobuf  */
 #undef M4____gap                /*                       */
 #define M4searchorder_i 637     /* ( u -- addr ) get address of searchorder i-th element  */
 #define M4searchorder_n 638     /* (   -- addr ) get address of searchorder count         */
@@ -176,7 +176,7 @@
 #undef M4____gap                /* name>string already defined in forth 'tools ext' word set */
 #define M4name_to_prev 647      /* name>prev   ( nt -- nt'|0   ) get previous name        */
 #define M4name_to_xt 648        /* name>xt     ( nt -- XT      ) get XT == code address from name */
-#undef M4____gap                /*                       */
+#define M4wordlist_add 649      /* ( wid nt -- ) add name to wordlist                     */
 #define M4wordlist_last 650     /* ( wid -- nt ) get last name in a wordlist              */
 #define M4wordlist_reset 651    /* ( wid --    ) remove all user-defined names from wid   */
 #undef M4____gap                /*                       */

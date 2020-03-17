@@ -179,6 +179,7 @@
     X(9, "iobuf>pos", iobuf_pos)         /* ( io -- addr ) get address of iobuf position     */    \
     X(10, "iobuf>size", iobuf_size)      /* ( io -- addr ) get address of iobuf size         */    \
     X(6, "latest", latest)               /* (    -- nt   ) get last defined word             */    \
+    X(7, "latest!", latest_store)        /* ( nt --      ) set last defined word to nt       */    \
     X(5, "name,", name_comma)            /* ( c-addr u -- nt ) create a new name             */    \
     X(9, "name>code", name_to_code)      /* ( nt  -- taddr n ) get code array from name      */    \
     X(11, "name>code>n", name_to_code_n) /* ( nt -- u        ) get code size from name       */    \
@@ -194,9 +195,10 @@
     X(13, "searchorder-i", searchorder_i)                                                          \
     X(13, "searchorder-n", searchorder_n) /* (    -- addr    ) get address of searchorder count */ \
     X(8, "user-var", user_var) /*        ( -- addr ) must be followed by index of user variable */ \
-    X(13, "wordlist-last", wordlist_last) /*   ( wid -- nt     ) get last name in wordlist      */ \
+    X(12, "wordlist-add", wordlist_add)   /*   ( wid nt -- ) add name to wordlist               */ \
+    X(13, "wordlist-last", wordlist_last) /*   ( wid -- nt ) get last name in wordlist          */ \
     X(14, "wordlist-reset", wordlist_reset) /* ( wid -- ) remove all user-defined names from wid*/ \
-    X(7, "xt>name", xt_to_name)             /* ( XT  -- nt     ) convert XT to name             */
+    X(7, "xt>name", xt_to_name)             /* ( XT  -- nt ) convert XT to name                 */
 
 #define DICT_WORDS_M4TH_CORE(X)                                                                    \
     DICT_TOKENS_M4TH_CORE(X)                                                                       \

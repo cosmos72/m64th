@@ -23,11 +23,25 @@
 /* clang-format off */
 
 
-/* latest ( -- nt ) push to dstack last defined word */
+/* latest ( -- nt ) get last defined word */
 FUNC_START(latest)
         DPUSH( DTOP)
-        LOAD(  DTOP,       AT(M4TH, M4TH_OFF_LASTW))   /* nt = word             */
+        LOAD(  DTOP,       AT(M4TH, M4TH_OFF_LASTW))   /* nt = m4th.lastw       */
 FUNC_END(latest)
+
+
+/* latest! ( nt -- ) set last defined word */
+FUNC_START(latest_store)
+        STOR(  DTOP,       AT(M4TH, M4TH_OFF_LASTW))   /* m4th.lastw = nt       */
+        /* we really should NOT be compiling now, but in some tests we are      */
+        LOAD(  REG1,       AT(M4TH, M4TH_OFF_XT))      /* a = m4th.xt           */
+        JZ(    REG1,       TO(latest_store.done))
+        LD_uw( REG2_uw,    AT(DTOP, WORD_OFF_CODE_OFF))/* b = nt.code_off       */
+        ADD2(  REG2,       DTOP)                       /* dtop = nt.code.addr   */
+        STOR(  DTOP,       AT(M4TH, M4TH_OFF_XT))      /* m4th.xt = dtop        */
+LABEL(latest_store.done)
+        DPOP(  DTOP)
+FUNC_END(latest_store)
 
 
 /** [#compiled] ( -- u ) code size i.e. # of tokens in XT being compiled  */

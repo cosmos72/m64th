@@ -262,10 +262,11 @@ WORD(iobuf_max,        iobuf_func,     DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
 WORD(iobuf_pos,        iobuf_max,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(iobuf_size,       iobuf_pos,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(latest,           iobuf_size,     DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
-/* ( c-addr u -- ) create a new name */
-WORD_START(name_comma,  iobuf_size)
+WORD(latest_store,     latest,         DSTACK(1,0), RSTACK(0,0), WORD_IMPURE)
+/* ( c-addr u -- nt ) create a new name. do NOT add it to compilation wordlist */
+WORD_START(name_comma,  latest_store)
     WORD_FLAGS(M4FLAG_INLINE)
-    WORD_DSTACK(2,0)
+    WORD_DSTACK(2,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE() /* uses IP-relative jump to m4func, cannot inline in native code */
@@ -566,7 +567,8 @@ WORD_START(wordlist_find, user_var)
         two_times, one_plus, exit
     )
 WORD_END(wordlist_find)
-WORD(wordlist_last,  wordlist_find,    DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(wordlist_add,   wordlist_find,    DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH | M4FLAG_MEM_STORE)
+WORD(wordlist_last,  wordlist_add,     DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 WORD(wordlist_reset, wordlist_last,    DSTACK(1,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE)
 WORD(xt_to_name,     wordlist_reset,   DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 

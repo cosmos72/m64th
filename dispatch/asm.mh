@@ -28,4 +28,32 @@
 #error "unsupported architecture: expecting amd64 or arm64"
 #endif
 
+#ifdef R000
+#define initR000_w(regw)
+#define R000_b(regb) R000b
+#define R000_h(regh) R000h
+#define R000_w(regw) R000w
+#define R000_r(reg) R000
+#else
+#define initR000_w(regw) ZERO(regw)
+#define R000_b(regb) regb
+#define R000_h(regh) regh
+#define R000_w(regw) regw
+#define R000_r(reg) reg
+#endif
+
+#ifdef RFFF
+#define initRFFF_r(reg)
+#define RFFF_b(regb) RFFFb
+#define RFFF_h(regh) RFFFh
+#define RFFF_w(regw) RFFFw
+#define RFFF_r(reg) RFFF
+#else
+#define initRFFF_r(reg) MOVE(IMM_1, reg)
+#define RFFF_b(regb) regb
+#define RFFF_h(regh) regh
+#define RFFF_w(regw) regw
+#define RFFF_r(reg) reg
+#endif
+
 #endif /* M4TH_DISPATCH_ASM_MH */

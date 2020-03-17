@@ -980,11 +980,6 @@ static m4testexecute testexecute_f[] = {
      {{2, {(m4cell) "foobarbaz", 9}}, {}},
      {{}, {}},
      {5, {P(9, 'f'), P('o', 'o'), P('b', 'a'), P('r', 'b'), P('a', 'z')}}},
-    {"\"\" 0 name,",
-     {m4name_comma, m4get_current, m4wordlist_reset, m4bye},
-     {{2, {(m4cell) "bar", 0}}, {}},
-     {{}, {}},
-     {}},
 #undef P
 #if SZ == 8
     {"0x08090a0b0c0d0e0f ,",
@@ -998,9 +993,14 @@ static m4testexecute testexecute_f[] = {
      {{1, {0x0c0d0e0f}}, {}},
      {{}, {}},
      {2, {0x0e0f, 0x0c0d}}},
-#endif /* __BYTE_ORDER__ */
-#endif /* SZt == 2 */
 #endif /* SZ */
+#endif /* SZt == 2 */
+#endif /* __BYTE_ORDER__ */
+    {"\"\" 0 name,",
+     {m4name_comma, m4here, m4minus, m4bye},
+     {{2, {(m4cell) "bar", 0}}, {}},
+     {{1, {-WORD_OFF_DATA}}, {}},
+     {}},
     /* ----------------------------- search order --------------------------- */
     {"get-current",
      {m4get_current, m4bye},

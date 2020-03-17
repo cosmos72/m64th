@@ -77,7 +77,7 @@
         x((one, lshift), (two_times))                        /* 1  lshift     => 2*             */ \
         x((one, mod), _)                                     /* 1  mod        => drop 0         */ \
         x((one, pick), over)                                 /* 1  pick       => over           */ \
-        x((one, roll), (swap))                               /* 0  roll       => swap           */ \
+        x((one, roll), (swap))                               /* 1  roll       => swap           */ \
         x((one_plus, two_minus), (one_minus))                /* 1+ 2-         => 1-             */ \
         x((one_plus, one_minus), _)                          /* 1+ 1-         =>                */ \
         x((one_plus, one_plus), (two_plus))                  /* 1+ 1+         => 2+             */ \
