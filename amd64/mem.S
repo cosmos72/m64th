@@ -103,7 +103,7 @@ LABEL(string_equal.cell)
         JUMP(                   TO(string_equal.true))
 LABEL(string_equal.byte)
         LD_ub( REG3,   AT(REG1, REG4, 1))
-        JNE(   REG3,   AT(REG2, REG4, 1),  TO(string_equal.false)) /* x86 specific */
+        JNE(   REG3b,  AT(REG2, REG4, 1),  TO(string_equal.false)) /* x86 specific */
         INC1(  REG4)
         JB(    REG4,   DTOP,    TO(string_equal.byte))
 LABEL(string_equal.true)
