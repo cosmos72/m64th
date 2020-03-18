@@ -186,7 +186,7 @@ struct m4word_s {
 
 struct m4wordlist_s {   /**< wordlist                                                 */
     const m4dict *dict; /**< pointer to read-only dictionary                          */
-    m4word *lastw;      /**< pointer to last word. if NULL, use m4dict_lastword(dict) */
+    m4word *last;       /**< pointer to last word. if NULL, use m4dict_lastword(dict) */
     /* TODO hash table of contained words */
 };
 

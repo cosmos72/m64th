@@ -846,8 +846,8 @@ m4wordlist m4wordlist_m4th_impl = {&m4dict_m4th_impl, NULL};
 const m4word *m4wordlist_lastword(const m4wordlist *wid) {
     if (wid == NULL) {
         return NULL;
-    } else if (wid->lastw) {
-        return wid->lastw;
+    } else if (wid->last) {
+        return wid->last;
     }
     return m4dict_lastword(wid->dict);
 }
@@ -864,7 +864,7 @@ void m4wordlist_print(const m4wordlist *wid, FILE *out) {
     if (out == NULL || wid == NULL) {
         return;
     }
-    m4dict_print(wid->dict, wid->lastw, out);
+    m4dict_print(wid->dict, wid->last, out);
 }
 
 /* ----------------------- m4th ----------------------- */

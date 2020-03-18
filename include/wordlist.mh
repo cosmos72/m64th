@@ -20,7 +20,7 @@
 #ifndef M4TH_INCLUDE_WORDLIST_MH
 #define M4TH_INCLUDE_WORDLIST_MH
 
-#define WORDLIST_OFF_DICT 0   /* offset of m4wordlist->dict     */
-#define WORDLIST_OFF_LASTW SZ /* offset of m4wordlist->lastw    */
+#define WORDLIST_OFF_DICT 0  /* offset of m4wordlist->dict     */
+#define WORDLIST_OFF_LAST SZ /* offset of m4wordlist->last     */
 
 #endif /* M4TH_INCLUDE_WORDLIST_MH */

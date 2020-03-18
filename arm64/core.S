@@ -42,7 +42,7 @@ FUNC_END(iobuf_empty_query)
 
 
 FUNC_START(wordlist_last) /* ( wid -- nt ) */
-        LOAD(  REG1,       AT(DTOP, WORDLIST_OFF_LASTW))    /* b = wid.lastw          */
+        LOAD(  REG1,       AT(DTOP, WORDLIST_OFF_LAST))     /* b = nt = wid.last      */
         cmp    REG1,       IMM(0);
         csel   DTOP,       REG1,   DTOP,   ne;              /* dtop = nt|wid          */
         b.ne               FUNC_NEXT(wordlist_last);

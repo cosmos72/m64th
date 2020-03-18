@@ -97,7 +97,6 @@ WORD_START(colon,      two_swap)
         zero, _lit_, right_bracket, exit
     )
 WORD_END(colon)
-/* WORD(semi,             colon,      DSTACK(2,0), RSTACK(0,0), M4FLAG_INLINE | M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE) */
 WORD_START(semi,       colon)
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE)
     WORD_DSTACK(2,0)
@@ -105,17 +104,21 @@ WORD_START(semi,       colon)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_CODE(
-        /* state @
+        /* state @                                     ( flag            )
          * if0
          *    M4ERR_INTERPRETING_COMPILE_ONLY_WORD throw
-         * then
-         * 2drop ' exit compile, [
+         * then                                        (                 )
+         * 2drop latest                                ( nt              )
+         * ' exit compile, [                           ( nt              )
+         * get-current wordlist-add ( name is now findable by parse-name )
          */
         state, fetch,
         _if0_, T(4),
             _lit_, T(M4ERR_INTERPRETING_COMPILE_ONLY_WORD), throw,
         then,
-        two_drop, _compile_lit_, exit, left_bracket, exit
+        two_drop, /* TODO latest, */
+        _compile_lit_, exit, left_bracket,
+        /* TODO get_current, wordlist_add, */ exit
     )
 WORD_END(semi)
 WORD(less,             semi,       DSTACK(2,1), RSTACK(0,0), WORD_PURE)

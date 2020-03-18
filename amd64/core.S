@@ -62,7 +62,7 @@ FUNC_END(name_to_prev)
 
 
 FUNC_START(wordlist_last) /* ( wid -- nt ) */
-        LOAD(  REG1,       AT(DTOP, WORDLIST_OFF_LASTW))    /* b = wid.lastw          */
+        LOAD(  REG1,       AT(DTOP, WORDLIST_OFF_LAST))     /* b = nt = wid.last      */
         test   REG1,       REG1;
         cmovnz REG1,       DTOP;                            /* dtop = nt|wid          */
         jnz                FUNC_NEXT(wordlist_last);

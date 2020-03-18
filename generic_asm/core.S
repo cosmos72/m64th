@@ -192,7 +192,7 @@ FUNC_START(wordlist_add) /* ( nt wid -- ) add name to wordlist */
 LABEL(wordlist_add.prevnt)
         STORw( DTOPw,  AT(REG1, WORD_OFF_PREV_OFF))    /* nt.prev_off = dtop      */
         LOAD(  REG2,   AT(DSTK))                       /* b = wid                 */
-        STOR(  REG1,   AT(REG2, WORDLIST_OFF_LASTW))   /* wid.lastw = a           */
+        STOR(  REG1,   AT(REG2, WORDLIST_OFF_LAST))    /* wid.last = a            */
         LOAD(  DTOP,   AT(DSTK, SZ2))
         ADD2( IMM(SZ3),DSTK)                           /* (                     ) */
 FUNC_END(wordlist_add)
@@ -200,7 +200,7 @@ FUNC_END(wordlist_add)
 
 FUNC_START(wordlist_reset) /* ( wid -- ) */
         initR000_w(    REG1w)
-        STOR(  R000_r(REG1),   AT(DTOP, WORDLIST_OFF_LASTW))   /* wid.lastw = 0            */
+        STOR(  R000_r(REG1),   AT(DTOP, WORDLIST_OFF_LAST)) /* wid.last = 0        */
         DPOP(  DTOP)
 FUNC_END(wordlist_reset)
 
