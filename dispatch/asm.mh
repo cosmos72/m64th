@@ -29,31 +29,35 @@
 #endif
 
 #ifdef R000
-#define initR000_w(regw)
-#define R000_b(regb) R000b
-#define R000_h(regh) R000h
-#define R000_w(regw) R000w
-#define R000_r(reg) R000
+#define init_R000_REG1()
+#define R000_REG1 R000
+#define R000_REG1b R000b
+#define R000_REG1h R000h
+#define R000_REG1w R000w
+#define R000_REG1t R000t
 #else
-#define initR000_w(regw) ZERO(regw)
-#define R000_b(regb) regb
-#define R000_h(regh) regh
-#define R000_w(regw) regw
-#define R000_r(reg) reg
+#define init_R000_REG1() ZERO(REG1w)
+#define R000_REG1 REG1
+#define R000_REG1b REG1b
+#define R000_REG1h REG1h
+#define R000_REG1w REG1w
+#define R000_REG1t REG1t
 #endif
 
 #ifdef RFFF
-#define initRFFF_r(reg)
-#define RFFF_b(regb) RFFFb
-#define RFFF_h(regh) RFFFh
-#define RFFF_w(regw) RFFFw
-#define RFFF_r(reg) RFFF
+#define init_RFFF_REG2()
+#define RFFF_REG2 RFFF
+#define RFFF_REG2b RFFFb
+#define RFFF_REG2h RFFFh
+#define RFFF_REG2w RFFFw
+#define RFFF_REG2t RFFFt
 #else
-#define initRFFF_r(reg) MOVE(IMM_1, reg)
-#define RFFF_b(regb) regb
-#define RFFF_h(regh) regh
-#define RFFF_w(regw) regw
-#define RFFF_r(reg) reg
+#define init_RFFF_REG2() MOVE(IMM_1, REG2)
+#define RFFF_REG2 REG2
+#define RFFF_REG2b REG2b
+#define RFFF_REG2h REG2h
+#define RFFF_REG2w REG2w
+#define RFFF_REG2t REG2t
 #endif
 
 #endif /* M4TH_DISPATCH_ASM_MH */

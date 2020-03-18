@@ -26,7 +26,7 @@ FUNC_START(_call_)
         RPUSH( RTOP)               /* save RTOP            */
         ADDI(  IP,     SZ, RTOP)   /* save return address = IP+SZ   */
         LOAD(  IP,     AT(IP))     /* load w from IP[0]             */
-        LD_uh( REG2_uh,AT(IP, WORD_OFF_CODE_OFF)) /* b = w.code_off */
+        LD_uh( REG2,   AT(IP, WORD_OFF_CODE_OFF)) /* b = w.code_off */
         ADD2(  REG2,   IP)         /* IP = XT              */
         NEXT0()                    /* jump to XT           */
 FUNC_RAWEND(_call_)
@@ -88,9 +88,9 @@ FUNC_START(_catch_beg_)
         STOR(  REG1,   AT(M4TH, M4TH_OFF_HANDLER)) /* save rend - rstk   */
 
         /* clear m4th.ex and m4th.ex_string */
-        initR000_w(    REG1w)
-        STOR(  R000_r(REG1),   AT(M4TH, M4TH_OFF_EX))
-        STOR(  R000_r(REG1),   AT(M4TH, M4TH_OFF_EX_STRING_N))
+        init_R000_REG1()
+        STOR(  R000_REG1,  AT(M4TH, M4TH_OFF_EX))
+        STOR(  R000_REG1,  AT(M4TH, M4TH_OFF_EX_STRING_N))
 
         /* execute IP */
         MOVE(  REG2,   IP)
@@ -102,8 +102,8 @@ FUNC_RAWEND(_catch_beg_)
 
 /* second part of 'catch'. invoked both if nothing was thrown, and if an exception was thrown */
 FUNC_START(_catch_end_)
-        LOAD(  REG1,   AT(M4TH, M4TH_OFF_EX))        /* a = exception | 0        */
-        JNZ(   REG1,   TO(_catch_end_.thrown))
+        LOAD(  REG2,   AT(M4TH, M4TH_OFF_EX))        /* a = exception | 0        */
+        JNZ(   REG2,   TO(_catch_end_.thrown))
 
         /* no exception was thrown. just restore m4th.handler and rstk,          */
         /* without restoring dstk                                                */
@@ -117,14 +117,14 @@ LABEL(_catch_end_.thrown)
          * an exception was thrown. almost everything has already been restored by 'throw':
          * we only need to push exception to dstk then clear m4th.ex
          */
-        initR000_w(    REG2w)
-        STOR(  R000_r(REG2),   AT(M4TH, M4TH_OFF_EX))        /* clear m4th.ex            */
+        init_R000_REG1()
+        STOR(  R000_REG1,  AT(M4TH, M4TH_OFF_EX))    /* clear m4th.ex            */
         /* do NOT clear m4th.ex_string, caller may need it                       */
 
 LABEL(_catch_end_.push)
-        /* final touch: push REG1 to dstk */
+        /* final touch: push REG2 to dstk */
         DPUSH( DTOP)
-        MOVE(  REG1,   DTOP)                         /* push exception | 0       */
+        MOVE(  REG2,   DTOP)                         /* ( exception | 0        ) */
 FUNC_END(_catch_end_)
 
 

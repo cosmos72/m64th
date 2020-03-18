@@ -130,7 +130,7 @@ FUNC_START(key)
         /* TODO refill input buffer */
         JAE(   REG2,   REG3,  FUNC_NEXT(key))
         ADDI(  REG1,   IOBUF_OFF_ADDR, REG4)
-        LD_ub( DTOP_ub,AT(REG4, REG2, 1))
+        LD_ub( DTOP,   AT(REG4, REG2, 1))
         INC1(  REG2)
         STOR(  REG2,   AT(REG1, IOBUF_OFF_POS))
 FUNC_END(key)
@@ -143,12 +143,12 @@ FUNC_START(obuf_write_char)
         /* check if enough space in iobuf, i.e. io.size < io.max */
 #ifdef __x86_64__
         JAE(   REG2,   AT(REG1, IOBUF_OFF_MAX), TO(obuf_write_char.slow))
-        STORb( DTOPb,  IOBUF_OFF_ADDR(REG1, REG2))     /* io.addr[io.size] = dtop */
+        STORb( DTOP,   IOBUF_OFF_ADDR(REG1, REG2))     /* io.addr[io.size] = dtop */
 #else
         LOAD(  REG3,   AT(REG1, IOBUF_OFF_MAX))        /* c = io.max             */
         JAE(   REG2,   REG3, TO(obuf_write_char.slow))
         ADDI(  REG1,   IOBUF_OFF_ADDR,  REG4)          /* d = io.addr            */
-        STORb( DTOPb,  AT(REG4, REG2, 1))              /* io.addr[io.size] = dtop */
+        STORb( DTOP,   AT(REG4, REG2, 1))              /* io.addr[io.size] = dtop */
 #endif
         INC1(  REG2)
         STOR(  REG2,   AT(REG1, IOBUF_OFF_SIZE))       /* io.size++              */
@@ -158,7 +158,7 @@ FUNC_START(obuf_write_char)
 LABEL(obuf_write_char.slow)
         /* not enough space, call forth word (obuf-flush-write-char) */
         ADDROF_4G( WORD_SYM(_obuf_flush_write_char_), REG2) /* b = word          */
-        LD_uw( REG3_uw,AT(REG2, WORD_OFF_CODE_OFF))    /* c = w.code_off         */
+        LD_uw( REG3,   AT(REG2, WORD_OFF_CODE_OFF))    /* c = w.code_off         */
         DPUSH( DTOP)                                   /* dstk ( io ch _       ) */
         ADD4(  REG2, REG3, 0, DTOP)                    /* dstk ( io ch xt      ) */
         JUMP(  FUNC(_exec_xt_from_native_))        /* dstk ( err           ) */
@@ -192,10 +192,10 @@ FUNC_START(obuf_write_string)
 LABEL(obuf_write_string.slow)
         /* not enough space, call forth word (obuf-flush-write-string) */
         ADDROF_4G( WORD_SYM(_obuf_flush_write_string_), REG2) /* b = word           */
-        LD_uw( REG3_uw,AT(REG2, WORD_OFF_CODE_OFF))    /* c = w.code_off            */
+        LD_uw( REG3,   AT(REG2, WORD_OFF_CODE_OFF))    /* c = w.code_off            */
         DPUSH( DTOP)                                   /* dstk ( io c-addr u _    ) */
-        ADD4(  REG2, REG3, 0, DTOP)                    /* dstk ( io c-addr u xt   ) */
-        JUMP(  FUNC(_exec_xt_from_native_))        /* dstk ( err              ) */
+        ADD4(  REG2,   REG3, 0, DTOP)                  /* dstk ( io c-addr u xt   ) */
+        JUMP(  FUNC(_exec_xt_from_native_))            /* dstk ( err              ) */
 FUNC_END(obuf_write_string)
 
 

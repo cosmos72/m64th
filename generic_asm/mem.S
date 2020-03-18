@@ -25,14 +25,14 @@
 #ifndef M4FC_STORE
 FUNC_START(c_store)        /* c! */
         DPOP(  REG1)
-        STORb( REG1b, AT(DTOP))
+        STORb( REG1,  AT(DTOP))
         DPOP(  DTOP)
 FUNC_END(c_store)
 #endif
 
 
 FUNC_START(count)          /* count */
-        LD_ub( REG1_ub,AT(DTOP))
+        LD_ub( REG1,   AT(DTOP))
         INC1(  DTOP)
         DPUSH( DTOP)
         MOVE(  REG1,   DTOP)
@@ -41,7 +41,7 @@ FUNC_END(count)
 #ifndef M4FSHORT_STORE
 FUNC_START(short_store)    /* short!   m4th-user */
         DPOP(  REG1)
-        STORh( REG1h, AT(DTOP))
+        STORh( REG1,  AT(DTOP))
         DPOP(  DTOP)
 FUNC_END(short_store)
 #endif
@@ -49,7 +49,7 @@ FUNC_END(short_store)
 #ifndef M4FINT_STORE
 FUNC_START(int_store)      /* int!     m4th-user */
         DPOP(  REG1)
-        STORw( REG1w, AT(DTOP))
+        STORw( REG1,   AT(DTOP))
         DPOP(  DTOP)
 FUNC_END(int_store)
 #endif
@@ -57,39 +57,39 @@ FUNC_END(int_store)
 #ifndef M4FSTORE
 FUNC_START(store)          /* ! */
         DPOP(  REG1)
-        STOR(  REG1, AT(DTOP))
+        STOR(  REG1,   AT(DTOP))
         DPOP(  DTOP)
 FUNC_END(store)
 #endif
 
 
 FUNC_START(byte_fetch)     /* byte@    m4th-user */
-        LD_sb(DTOP_sb, AT(DTOP))
+        LD_sb(DTOP,    AT(DTOP))
 FUNC_END(byte_fetch)
 
 
 FUNC_START(c_fetch)        /* c@ */
-        LD_ub(DTOP_ub, AT(DTOP))
+        LD_ub(DTOP,    AT(DTOP))
 FUNC_END(c_fetch)
 
 
 FUNC_START(short_fetch)    /* short@   m4th-user */
-        LD_sh(DTOP_sh, AT(DTOP))
+        LD_sh(DTOP,    AT(DTOP))
 FUNC_END(short_fetch)
 
 
 FUNC_START(ushort_fetch)   /* ushort@  m4th-user */
-        LD_uh(DTOP_uh, AT(DTOP))
+        LD_uh(DTOP,    AT(DTOP))
 FUNC_END(ushort_fetch)
 
 
 FUNC_START(int_fetch)      /* int@     m4th-user */
-        LD_sw(DTOP_sw, AT(DTOP))
+        LD_sw(DTOP,    AT(DTOP))
 FUNC_END(int_fetch)
 
 
 FUNC_START(uint_fetch)     /* uint@    m4th-user */
-        LD_uw(DTOP_uw, AT(DTOP))
+        LD_uw(DTOP,    AT(DTOP))
 FUNC_END(uint_fetch)
 
 
@@ -123,8 +123,8 @@ FUNC_START(string_ci_equal)
         JZ(    DTOP,            TO(string_ci_equal.true))   /* u == 0         */
         ZERO(  REG0w)
 LABEL(string_ci_equal.byte)
-        LD_ub( REG3_ub,AT(REG1, REG0, 1))
-        LD_ub( REG4_ub,AT(REG2, REG0, 1))
+        LD_ub( REG3,   AT(REG1, REG0, 1))
+        LD_ub( REG4,   AT(REG2, REG0, 1))
         JNE(   REG3w,  REG4w,   TO(string_ci_equal.cmp))
 LABEL(string_ci_equal.next)
         INC1(  REG0)
@@ -155,7 +155,7 @@ FUNC_START(string_first_blank)
         JZ(    DTOP,            TO(string_first_blank.ret)) /* u == 0   */
         ZERO(  REG1w)
 LABEL(string_first_blank.byte)
-        LD_ub( REG3_ub,AT(REG2, REG1, 1))
+        LD_ub( REG3,   AT(REG2, REG1, 1))
         JBE(   REG3w,  IMM(32), TO(string_first_blank.found))
         INC1(  REG1)
         JB(    REG1,   DTOP,    TO(string_first_blank.byte))

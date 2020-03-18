@@ -59,7 +59,7 @@ FUNC_START(_vm_)
         MOVE(  lr,     RTOP)
 LABEL(_vm_.loop)
         /* cannot use x0..x8 here: they are used by c-arg-[N] and c-ret-[N] */
-        LD_ut( w9,     AT(IP))             /* load m4token of current vm instruction */
+        ldrh   w9,     AT(IP);             /* load m4token of current vm instruction */
         ADD2(  IMM(SZt), IP)               /* pre-increment vm IP                    */
         LOAD(  x9,     AT(FTBL, x9, SZ))   /* load m4func of current vm instruction  */
         blr    x9;                         /* execute vm instruction                 */
@@ -201,4 +201,3 @@ FUNC_START(_return_to_native_)
         RPOP(  RTOP)
         ASM_RET()                  /* return to caller of _vm_ - usually _exec_xt_from_native_ */
 FUNC_RAWEND(_return_to_native_)
-

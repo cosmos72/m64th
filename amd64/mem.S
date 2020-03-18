@@ -32,7 +32,7 @@ FUNC_END(store)
 #define M4FC_STORE
 FUNC_START(c_store)        /* c! */
         LOAD(  REG1,  AT(DSTK))
-        STORb( REG1b, AT(DTOP))
+        STORb( REG1,  AT(DTOP))
         LOAD(  DTOP,  AT(DSTK, SZ))
         ADD2(  IMM(SZ2), DSTK)
 FUNC_END(c_store)
@@ -41,7 +41,7 @@ FUNC_END(c_store)
 #define M4FSHORT_STORE
 FUNC_START(short_store)    /* short! */
         LOAD(  REG1,  AT(DSTK))
-        STORh( REG1h, AT(DTOP))
+        STORh( REG1,  AT(DTOP))
         LOAD(  DTOP,  AT(DSTK, SZ))
         ADD2(  IMM(SZ2), DSTK)
 FUNC_END(short_store)
@@ -50,7 +50,7 @@ FUNC_END(short_store)
 #define M4FINT_STORE
 FUNC_START(int_store)      /* int! */
         LOAD(  REG1,  AT(DSTK))
-        STORw( REG1w, AT(DTOP))
+        STORw( REG1,  AT(DTOP))
         LOAD(  DTOP,  AT(DSTK, SZ))
         ADD2(  IMM(SZ2), DSTK)
 FUNC_END(int_store)
@@ -102,8 +102,8 @@ LABEL(string_equal.cell)
         JNE(   REG3,   REG4,    TO(string_equal.false))
         JUMP(                   TO(string_equal.true))
 LABEL(string_equal.byte)
-        LD_ub( REG3_ub,AT(REG1, REG4, 1))
-        JNE(   REG3b,  AT(REG2, REG4, 1),  TO(string_equal.false)) /* x86 specific */
+        LD_ub( REG3,   AT(REG1, REG4, 1))
+        JNE(   REG3,   AT(REG2, REG4, 1),  TO(string_equal.false)) /* x86 specific */
         INC1(  REG4)
         JB(    REG4,   DTOP,    TO(string_equal.byte))
 LABEL(string_equal.true)

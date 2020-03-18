@@ -44,8 +44,8 @@ LABEL(cmove_SZ)
         JUMP(  TO(cmove.done))
         /* copy 1 byte per iteration */
 LABEL(cmove_1)
-        LD_ub( REG3_ub,AT(REG1, REG0))     /* c = src[index] */
-        STORb( REG3b,  AT(REG2, REG0))     /* dst[index] = c */
+        LD_ub( REG3,   AT(REG1, REG0))     /* c = src[index] */
+        STORb( REG3,   AT(REG2, REG0))     /* dst[index] = c */
         ADD2(  IMM(1), REG0)               /* index++        */
 LABEL(cmove_1.test)
         JB(    REG0,   DTOP,   TO(cmove_1))/* loop if index < u */
@@ -74,8 +74,8 @@ LABEL(string_equal.cell)
         JNE(   REG3,   REG4,    TO(string_equal.false))
         JUMP(                   TO(string_equal.true))
 LABEL(string_equal.byte)
-        LD_ub( REG3_ub,AT(REG1, REG0, 1))
-        LD_ub( REG4_ub,AT(REG2, REG0, 1))
+        LD_ub( REG3,   AT(REG1, REG0, 1))
+        LD_ub( REG4,   AT(REG2, REG0, 1))
         JNE(   REG3,   REG4,    TO(string_equal.false))
         INC1(  REG0)
         JB(    REG0,   DTOP,    TO(string_equal.byte))
@@ -85,4 +85,3 @@ LABEL(string_equal.true)
 LABEL(string_equal.false)
         ZERO(  DTOP)
 FUNC_END(string_equal)
-

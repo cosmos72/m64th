@@ -57,7 +57,7 @@ FUNC_RAWEND(th_run)
  */
 FUNC_START(_vm_)
         /* cannot use REG1..REG4 or %r9: they are used by c-arg-[N] */
-        LD_ut(REG0_ut, AT(IP))         /* load m4token of current vm instruction */
+        LD_ut( REG0,   AT(IP))         /* load m4token of current vm instruction */
         ADD2(IMM(SZt), IP)             /* increment vm IP                        */
         call *(FTBL,   REG0,   SZ);    /* execute vm instruction                 */
         jmp    FUNC(_vm_);             /* loop                                   */
@@ -231,4 +231,3 @@ FUNC_START(_return_to_native_)
         ADD2(  IMM(SZ),%rsp)       /* skip return address, it's inside _vm_ */
         ASM_RET()                  /* return to caller of _vm_ - usually _exec_xt_from_native_ */
 FUNC_RAWEND(_return_to_native_)
-

@@ -40,8 +40,8 @@ FUNC_END(_num_compiled_)
 
 /** ( -- ) must be followed by m4token, append it to XT being compiled. */
 FUNC_START(_compile_lit_)    /* [compile-lit] */
-        LD_ut( REG3_ut,    AT(IP))                     /* c = m4token             */
-        STORt( REG3t,      AT(HERE))                   /* *here = c               */
+        LD_ut( REG3,       AT(IP))                     /* c = m4token             */
+        STORt( REG3,       AT(HERE))                   /* *here = c               */
         ADD2(  IMM(SZt),   HERE)                       /* here += SZt             */
         NEXTT()                                        /* skip m4token            */
 FUNC_RAWEND(_compile_lit_)
@@ -59,18 +59,18 @@ FUNC_RAWEND(_compile_resolved_jump_)
  */
 FUNC_START(_compile_unresolved_jump_)    /* [compile-unresolved-jump] */
         ASM_CALL(  FUNC(_num_compiled_))               /* dtop = w.code_n            */
-        LD_ut( REG3_ut,    AT(IP))                     /* c = jump_token             */
+        LD_ut( REG3,       AT(IP))                     /* c = jump_token             */
         ADD2(  IMM(2),     DTOP)                       /* dtop = jump_address        */
-        STORt( REG3t,      AT(HERE))                   /* here[0] = jump_token       */
+        STORt( REG3,       AT(HERE))                   /* here[0] = jump_token       */
 #ifdef RFFFt
-        STORt( RFFFt,      AT(HERE, SZt))              /* here[1] = -1               */
+        STORt( RFFF,       AT(HERE, SZt))              /* here[1] = -1               */
 #else
         MOVE(  IMM_1,      REG1)                       /* a = -1                     */
-        STORt( REG1t,      AT(HERE, SZt))              /* here[1] = a                */
+        STORt( REG1,       AT(HERE, SZt))              /* here[1] = a                */
 #endif
         DPUSH( DTOP)                                   /*                            */
         ADD2(  IMM(2*SZt), HERE)                       /* here += 2 * SZt            */
-        LD_ut( DTOP_ut,    AT(IP, SZt))                /* dtop = category            */
+        LD_ut( DTOP,       AT(IP, SZt))                /* dtop = category            */
         NEXTT2()                                       /* skip two m4token           */
 FUNC_RAWEND(_compile_unresolved_jump_)
 
@@ -87,21 +87,21 @@ FUNC_END(allot)
 
 
 FUNC_START(c_comma)        /* c,   */
-        STORb( DTOPb,      AT(HERE))
+        STORb( DTOP,       AT(HERE))
         INC1(  HERE)
         DPOP(  DTOP)
 FUNC_END(c_comma)
 
 
 FUNC_START(short_comma)    /* short,   m4th-user */
-        STORh( DTOPh,      AT(HERE))
+        STORh( DTOP,       AT(HERE))
         ADD2(  IMM(2),     HERE)
         DPOP(  DTOP)
 FUNC_END(short_comma)
 
 
 FUNC_START(int_comma)      /* int,     m4th-user */
-        STORw( DTOPw,      AT(HERE))
+        STORw( DTOP,       AT(HERE))
         ADD2(  IMM(4),     HERE)
         DPOP(  DTOP)
 FUNC_END(int_comma)
@@ -117,7 +117,7 @@ FUNC_END(comma)
 /* countedstring, ( c-addr u -- ) m4th-user */
 FUNC_START(countedstring_comma)
         JA(    DTOP,   IMM(0xff),  TO(countedstring_comma.throw))
-        STORb( DTOPb,  AT(HERE))
+        STORb( DTOP,   AT(HERE))
         INC1(  HERE)                                   /* here++            */
         DPUSH( HERE)                                   /* ( c-addr here u ) */
         ADD2(  DTOP,   HERE)                           /* here += u         */
@@ -131,19 +131,19 @@ FUNC_RAWEND(countedstring_comma)
 /* latest ( -- nt ) get last defined word */
 FUNC_START(latest)
         DPUSH( DTOP)
-        LOAD(  DTOP,       AT(M4TH, M4TH_OFF_LASTW))   /* nt = m4th.lastw       */
+        LOAD(  DTOP,   AT(M4TH, M4TH_OFF_LASTW))   /* nt = m4th.lastw       */
 FUNC_END(latest)
 
 
 /* set-latest ( nt -- ) set last defined word */
 FUNC_START(set_latest)
-        STOR(  DTOP,       AT(M4TH, M4TH_OFF_LASTW))   /* m4th.lastw = nt       */
+        STOR(  DTOP,   AT(M4TH, M4TH_OFF_LASTW))   /* m4th.lastw = nt       */
         /* we really should NOT be compiling now, but in some tests we are      */
-        LOAD(  REG1,       AT(M4TH, M4TH_OFF_XT))      /* a = m4th.xt           */
-        JZ(    REG1,       TO(set_latest.done))
-        LD_uw( REG2_uw,    AT(DTOP, WORD_OFF_CODE_OFF))/* b = nt.code_off       */
-        ADD2(  REG2,       DTOP)                       /* dtop = nt.code.addr   */
-        STOR(  DTOP,       AT(M4TH, M4TH_OFF_XT))      /* m4th.xt = dtop        */
+        LOAD(  REG1,   AT(M4TH, M4TH_OFF_XT))      /* a = m4th.xt           */
+        JZ(    REG1,   TO(set_latest.done))
+        LD_uw( REG2,   AT(DTOP, WORD_OFF_CODE_OFF))/* b = nt.code_off       */
+        ADD2(  REG2,   DTOP)                       /* dtop = nt.code.addr   */
+        STOR(  DTOP,   AT(M4TH, M4TH_OFF_XT))      /* m4th.xt = dtop        */
 LABEL(set_latest.done)
         DPOP(  DTOP)
 FUNC_END(set_latest)
@@ -160,10 +160,10 @@ FUNC_START(left_bracket)
         XSUB2( HERE,       REG2)                       /* b = here - m4th.xt    */
         LOAD(  REG1,       AT(M4TH, M4TH_OFF_LASTW))   /* a = m4th.lastw        */
         SHR2(  IMM(PSZt),  REG2)                       /* b = #compiled         */
-        STORh( REG2h,      AT(REG1, WORD_OFF_CODE_N))  /* lastw.code_n = b      */
+        STORh( REG2,       AT(REG1, WORD_OFF_CODE_N))  /* lastw.code_n = b      */
 
-        initR000_w(REG1w)
-        STOR( R000_r(REG1),AT(M4TH, M4TH_OFF_XT))      /* exit compile mode     */
+        init_R000_REG1()
+        STOR( R000_REG1,   AT(M4TH, M4TH_OFF_XT))      /* exit compile mode     */
 FUNC_END(left_bracket)
 
 
@@ -180,14 +180,14 @@ FUNC_START(right_bracket)
         MOVE(  IMM(M4ERR_COMPILER_NESTING), REG0)      /* ( err )               */
         LOAD(  REG3,       AT(M4TH, M4TH_OFF_XT))      /* c = m4th.xt           */
         JNZ(   REG3,       FUNC(_throw_.reg0))         /* compiling: throw      */
-        LD_uh( REG2_uh,    AT(REG1, WORD_OFF_CODE_OFF))/* b = w.code_off        */
+        LD_uh( REG2,       AT(REG1, WORD_OFF_CODE_OFF))/* b = w.code_off        */
         JNZ(   REG2,       TO(right_bracket.finish))
-        LD_uh( REG2_uh,    AT(REG1, WORD_OFF_DATA_N))  /* b = w.data_n          */
+        LD_uh( REG2,       AT(REG1, WORD_OFF_DATA_N))  /* b = w.data_n          */
         JNZ(   REG2,       TO(right_bracket.full))
 LABEL(right_bracket.simple)
         /* word.data_n == 0, simple initialization                              */
         MOVE(  IMM(WORD_OFF_DATA),     REG2w)          /* b = w.code - w        */
-        STORh( REG2h,      AT(REG1, WORD_OFF_CODE_OFF))/* w.code_off = b        */
+        STORh( REG2,       AT(REG1, WORD_OFF_CODE_OFF))/* w.code_off = b        */
         ADD4(  REG2,       REG1,   0,  HERE)           /* here = xt             */
         JUMP(              TO(right_bracket.finish))
 LABEL(right_bracket.full)
@@ -202,10 +202,10 @@ LABEL(right_bracket.full)
         MOVE(  HERE,       REG2)
         SUB2(  REG1,       REG2)                       /* b = code_off          */
 #endif
-        STORh( REG2h,  AT(REG1, WORD_OFF_CODE_OFF))    /* w.code_off = code_off */
+        STORh( REG2,   AT(REG1, WORD_OFF_CODE_OFF))    /* w.code_off = code_off */
 
         ADDI(  REG2,   -WORD_OFF_DATA, REG3) /* c = w.code_off - WORD_OFF_DATA  */
-        STORw( REG3w,      AT(HERE, -4))               /* xt[-1] = c            */
+        STORw( REG3,       AT(HERE, -4))               /* xt[-1] = c            */
 LABEL(right_bracket.finish)
         ADD2(  REG2,       REG1)                       /* a = w + w.code_off = xt */
         STOR(  REG1,       AT(M4TH, M4TH_OFF_XT))      /* m4th.xt = xt          */

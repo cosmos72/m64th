@@ -38,10 +38,10 @@ FUNC_END(_ip_)
 FUNC_START(_ip_to_data_)
         DPUSH( DTOP)
         ADDI(  IP, -SZt,   DTOP)       /* IP actually points to next instruction: fix it */
-        LD_uw( REG1_uw,    AT(DTOP, XT_OFF_DATA_OFF)) /* REG1 = xt.data_off        */
+        LD_uw( REG1,       AT(DTOP, XT_OFF_DATA_OFF)) /* REG1 = xt.data_off        */
         SUB2(  REG1,       DTOP)                      /* DTOP = w.data             */
         DPUSH( DTOP)
-        LD_uw( DTOP_uw,    AT(DTOP, WORD_OFF_DATA_N - WORD_OFF_DATA)) /* DTOP = w.data_n */
+        LD_uw( DTOP,       AT(DTOP, WORD_OFF_DATA_N - WORD_OFF_DATA)) /* DTOP = w.data_n */
 FUNC_END(_ip_to_data_)
 
 
@@ -52,7 +52,7 @@ FUNC_END(_ip_to_data_)
 FUNC_START(_ip_to_data_addr_)
         DPUSH( DTOP)
         ADDI(  IP, -SZt,   DTOP)       /* IP actually points to next instruction: fix it */
-        LD_uw( REG1_uw,    AT(DTOP, XT_OFF_DATA_OFF)) /* REG1 = xt.data_off        */
+        LD_uw( REG1,       AT(DTOP, XT_OFF_DATA_OFF)) /* REG1 = xt.data_off        */
         SUB2(  REG1,       DTOP)                      /* DTOP = w.data             */
 FUNC_END(_ip_to_data_addr_)
 
@@ -98,52 +98,52 @@ LABEL(name_comma.str)
         ALIGN( SZ,     HERE)                           /* here = nt               */
         SUB2(  HERE,   DTOP)                           /* dtop = addr-nt          */
 LABEL(name_comma.str_done)                             /* ( addr                ) */
-        initR000_w(    REG1w)                          /* a = 0                   */
-        initRFFF_r(    REG2)                           /* b = -1                  */
-        STOR(  R000_r(REG1),    AT(HERE, WORD_OFF_PREV_OFF))    /* nt.prev_off = nt.name_off = nt.flags = 0 */
-        STORh( DTOPh,           AT(HERE, WORD_OFF_NAME_OFF))    /* nt.name_off = dtop      */
-        STOR(  RFFF_r(REG2),    AT(HERE, WORD_OFF_STK_EFF))     /* nt.eff = nt.jump = nt.native_len = -1, clobber nt.code_n */
-        STORh( R000_h(REG1h),   AT(HERE, WORD_OFF_CODE_N))      /* nt.code_n   = 0         */
-        STOR(  R000_r(REG1),    AT(HERE, WORD_OFF_CODE_OFF))    /* nt.code_off = nt.data_n = 0 */
-        MOVE(  HERE,   DTOP)                           /* ( nt                  ) */
+        init_R000_REG1()                               /* a = 0                   */
+        init_RFFF_REG2()                               /* b = -1                  */
+        STOR(  R000_REG1,  AT(HERE, WORD_OFF_PREV_OFF))/* nt.prev_off = nt.name_off = nt.flags = 0 */
+        STORh( DTOP,       AT(HERE, WORD_OFF_NAME_OFF))/* nt.name_off = dtop      */
+        STOR(  RFFF_REG2,  AT(HERE, WORD_OFF_STK_EFF)) /* nt.eff = nt.jump = nt.native_len = -1, clobber nt.code_n */
+        STORh( R000_REG1,  AT(HERE, WORD_OFF_CODE_N))  /* nt.code_n   = 0         */
+        STOR(  R000_REG1,  AT(HERE, WORD_OFF_CODE_OFF))/* nt.code_off = nt.data_n = 0 */
+        MOVE(  HERE,       DTOP)                       /* ( nt                  ) */
         ADD2(  IMM(WORD_OFF_DATA), HERE)               /* here = nt.code.addr     */
 FUNC_END(name_comma)
 
 
 FUNC_START(name_to_code) /* ( w -- taddr n ) */
-        LD_uw( REG1_uw,    AT(DTOP, WORD_OFF_CODE_OFF)) /* REG1 = w.code_off  */
+        LD_uw( REG1,       AT(DTOP, WORD_OFF_CODE_OFF)) /* REG1 = w.code_off  */
         ADD2(  DTOP,       REG1)                        /* REG1 = w.code      */
-        LD_uh( DTOP_uh,    AT(DTOP, WORD_OFF_CODE_N))   /* DTOP = w.code_n    */
+        LD_uh( DTOP,       AT(DTOP, WORD_OFF_CODE_N))   /* DTOP = w.code_n    */
         DPUSH( REG1)                                    /*  d2  = w.code      */
 FUNC_END(name_to_code)
 
 
 FUNC_START(name_to_code_n) /* ( nt -- n ) */
-        LD_uh( DTOP_uh,    AT(DTOP, WORD_OFF_CODE_N)) /* DTOP = w.code_n    */
+        LD_uh( DTOP,       AT(DTOP, WORD_OFF_CODE_N)) /* DTOP = w.code_n    */
 FUNC_END(name_to_code_n)
 
 
 FUNC_START(name_to_flags) /* ( nt -- m4flags ) */
-        LD_uh( DTOP_uh,    AT(DTOP, WORD_OFF_FLAGS)) /* dtop = m4flags    */
+        LD_uh( DTOP,       AT(DTOP, WORD_OFF_FLAGS)) /* dtop = m4flags    */
 FUNC_END(name_to_flags)
 
 
 FUNC_START(name_to_string) /* ( nt -- addr n ) */
-        LD_uh( REG1_uh,    AT(DTOP, WORD_OFF_NAME_OFF)) /* a = w.name_off  */
+        LD_uh( REG1,       AT(DTOP, WORD_OFF_NAME_OFF)) /* a = w.name_off  */
         JNZ(   REG1,       TO(name_to_string.body))
         ZERO(  DTOPw)                  /* dtop = 0               */
         JUMP(              TO(name_to_string.push_reg1))
 LABEL(name_to_string.body)
         SUB2(  REG1,       DTOP)       /* dtop = m4countedstring* */
         ADDI(  DTOP,       1,  REG1)   /* a = addr                */
-        LD_ub( DTOP_ub,    AT(DTOP))   /* dtop = len              */
+        LD_ub( DTOP,       AT(DTOP))   /* dtop = len              */
 LABEL(name_to_string.push_reg1)
         DPUSH( REG1)                   /* d1 = a = addr           */
 FUNC_END(name_to_string)
 
 
 FUNC_START(name_to_xt)     /* ( nt -- xt ) */
-        LD_uw( REG1_uw,    AT(DTOP, WORD_OFF_CODE_OFF)) /* a = w.code_off     */
+        LD_uw( REG1,       AT(DTOP, WORD_OFF_CODE_OFF)) /* a = w.code_off     */
         ADD2(  REG1,       DTOP)                        /* dtop = w.code      */
 FUNC_END(name_to_xt)
 
@@ -174,7 +174,7 @@ FUNC_END(set_current)
 /* user-var ( -- addr ) must be followed by index. get address of i-th user variable  */
 FUNC_START(user_var)
         DPUSH( DTOP)
-        LD_ut( REG1_ut,    AT(IP)) /* a = index */
+        LD_ut( REG1,       AT(IP)) /* a = index */
 #if M4TH_OFF_USER != 0
         ADD2(  IMM(M4TH_OFF_USER/SZ), REG1)
 #endif
@@ -190,7 +190,7 @@ FUNC_START(wordlist_add) /* ( nt wid -- ) add name to wordlist */
         JZ(    DTOP,   TO(wordlist_add.prevnt))
         SUB2(  REG1,   DTOP)                           /* dtop = prevnt-nt        */
 LABEL(wordlist_add.prevnt)
-        STORw( DTOPw,  AT(REG1, WORD_OFF_PREV_OFF))    /* nt.prev_off = dtop      */
+        STORw( DTOP,   AT(REG1, WORD_OFF_PREV_OFF))    /* nt.prev_off = dtop      */
         LOAD(  REG2,   AT(DSTK))                       /* b = wid                 */
         STOR(  REG1,   AT(REG2, WORDLIST_OFF_LAST))    /* wid.last = a            */
         LOAD(  DTOP,   AT(DSTK, SZ2))
@@ -199,14 +199,14 @@ FUNC_END(wordlist_add)
 
 
 FUNC_START(wordlist_reset) /* ( wid -- ) */
-        initR000_w(    REG1w)
-        STOR(  R000_r(REG1),   AT(DTOP, WORDLIST_OFF_LAST)) /* wid.last = 0        */
+        init_R000_REG1()
+        STOR(  R000_REG1,  AT(DTOP, WORDLIST_OFF_LAST)) /* wid.last = 0        */
         DPOP(  DTOP)
 FUNC_END(wordlist_reset)
 
 
 FUNC_START(xt_to_name)     /* ( XT -- nt ) */
-        LD_uw( REG1_uw,    AT(DTOP, XT_OFF_DATA_OFF)) /* REG1 = xt.data_off */
+        LD_uw( REG1,       AT(DTOP, XT_OFF_DATA_OFF)) /* REG1 = xt.data_off */
         SUB2(  REG1,       DTOP)                      /* DTOP = w.data      */
         SUB2(  IMM(WORD_OFF_XT), DTOP)                /* DTOP = w           */
 FUNC_END(xt_to_name)

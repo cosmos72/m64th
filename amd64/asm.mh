@@ -171,21 +171,21 @@
 #define XSUB2(a,b)            sub  a, b;  neg b;   /* b    = a - b   */
 #define ZERO(dst)             xor  dst,     dst;   /* dst  = 0       */
 
-#define LD_sb(reg, at)        movsbq at,    reg;   /* reg = *(int8_t *)at  */
-#define LD_sh(reg, at)        movswq at,    reg;   /* reg = *(int16_t*)at  */
-#define LD_sw(reg, at)        movslq at,    reg;   /* reg = *(int32_t*)at  */
-#define LD_st(reg, at)        LD_sh(reg, at)       /* reg = *(signed m4token*)at */
+#define LD_sb(reg, at)        movsbq at, reg##_sb; /* reg = *(int8_t *)at  */
+#define LD_sh(reg, at)        movswq at, reg##_sh; /* reg = *(int16_t*)at  */
+#define LD_sw(reg, at)        movslq at, reg##_sw; /* reg = *(int32_t*)at  */
+#define LD_st(reg, at)        movswq at, reg##_st; /* reg = *(signed m4token*)at */
 
-#define LD_ub(reg, at)        movzbl at,    reg;   /* reg = *(uint8_t *)at  */
-#define LD_uh(reg, at)        movzwl at,    reg;   /* reg = *(uint16_t*)at  */
-#define LD_uw(reg, at)        movl   at,    reg;   /* reg = *(uint32_t*)at  */
-#define LD_ut(reg, at)        LD_uh(reg, at)       /* reg = *(unsigned m4token*)at */
+#define LD_ub(reg, at)        movzbl at, reg##_ub; /* reg = *(uint8_t *)at  */
+#define LD_uh(reg, at)        movzwl at, reg##_uh; /* reg = *(uint16_t*)at  */
+#define LD_uw(reg, at)        movl   at, reg##_uw; /* reg = *(uint32_t*)at  */
+#define LD_ut(reg, at)        movzwl at, reg##_ut; /* reg = *(unsigned m4token*)at */
 
 /* no difference between signed and unsigned STOR* */
-#define STORb(reg, at)        movb   reg,   at;    /* *(uint8_t *)at  = reg */
-#define STORh(reg, at)        movw   reg,   at;    /* *(uint16_t*)at  = reg */
-#define STORw(reg, at)        movl   reg,   at;    /* *(uint32_t*)at  = reg */
-#define STORt(reg, at)        STORh(reg, at)       /* *(m4token  *)at  = reg */
+#define STORb(reg, at)        movb   reg##b,   at; /* *(uint8_t *)at  = reg */
+#define STORh(reg, at)        movw   reg##h,   at; /* *(uint16_t*)at  = reg */
+#define STORw(reg, at)        movl   reg##w,   at; /* *(uint32_t*)at  = reg */
+#define STORt(reg, at)        movw   reg##t,   at; /* *(m4token *)at  = reg */
 
 /* clang-format on */
 
@@ -273,7 +273,7 @@
 #define NEXTCELL() CAT2(NEXT, SZ)() /* skip SZ bytes,    jump to following instruction */
 
 #define RELJUMP()               /* relative jump by number of instructions stored at next IP */    \
-    LD_st(REG3_st, AT(IP));     /* REG3 = IP jump offset */                                        \
+    LD_st(REG3, AT(IP));        /* REG3 = IP jump offset */                                        \
     lea SZt(IP, REG3, SZt), IP; /* IP = TARGET_IP        */                                        \
     NEXT0()                     /* jump to TARGET_IP     */
 

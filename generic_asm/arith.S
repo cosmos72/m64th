@@ -24,7 +24,7 @@
 #ifndef M4F_LIT2S_
 FUNC_START(_lit2s_)        /* (lit-2s) push to dstack the int16 at following IP */
         DPUSH( DTOP)
-        LD_sh( DTOP_sh,AT(IP))
+        LD_sh( DTOP,   AT(IP))
         NEXT2() /* skip 2 bytes */
 FUNC_RAWEND(_lit2s_)
 #endif
@@ -32,7 +32,7 @@ FUNC_RAWEND(_lit2s_)
 #ifndef M4F_LIT4S_
 FUNC_START(_lit4s_)        /* (lit-4s) push to dstack the int32 at following IP */
         DPUSH( DTOP)
-        LD_sw( DTOP_sw,AT(IP))
+        LD_sw( DTOP,   AT(IP))
         NEXT4() /* skip 4 bytes */
 FUNC_RAWEND(_lit4s_)
 #endif
@@ -48,11 +48,11 @@ FUNC_RAWEND(_lit8s_)
 #ifndef M4F_LIT_STRING_
 FUNC_START(_lit_string_)   /* (lit-string) push to dstack the SZt and ascii at following IP */
         DPUSH( DTOP)
-        LD_ut( DTOP_ut,AT(IP))         /* dtop = length                     */
+        LD_ut( DTOP,   AT(IP))         /* dtop = length                     */
         ADDI(  IP,     SZt,    REG1)   /* a  = c-addr                       */
         ADD4(  REG1,   DTOP,0, IP)     /* IP = c-addr + length              */
         DPUSH( REG1)
-        ALIGN( SZt,   IP)              /* IP = aligned@SZt(c-addr + length) */
+        ALIGN( SZt,    IP)             /* IP = aligned@SZt(c-addr + length) */
         NEXT0()                        /* jump to end of string             */
 FUNC_RAWEND(_lit_string_)
 #endif
