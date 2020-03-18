@@ -80,7 +80,7 @@ WORD_START(colon,      two_swap)
          * ?if0                                        ( c-addr u        )
          *    M4ERR_ZERO_LENGTH_NAME throw             (                 )
          * then                                        ( c-addr u        )
-         * name, get-current set-latest                ( nt              )
+         * name, set-latest                            (                 )
          * postpone ]
          * 0 M4right_bracket              ( colon-sys: 0 M4right_bracket )
          */
@@ -92,7 +92,7 @@ WORD_START(colon,      two_swap)
         _q_if0_, T(4),
             _lit_, T(M4ERR_ZERO_LENGTH_NAME), throw,
         then,
-        name_comma, get_current, set_latest,
+        name_comma, set_latest,
         right_bracket,
         zero, _lit_, right_bracket, exit
     )
