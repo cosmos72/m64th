@@ -1230,8 +1230,8 @@ static void m4th_testexecute_bunch(m4th *m, m4testexecute bunch[], m4cell n, m4t
         if (!m4testexecute_run(m, &bunch[i], &code_pair)) {
             fail++, m4testexecute_failed(m, &bunch[i], &code_pair, out);
         }
+        m4testexecute_cleanup(m);
     }
-    m4testexecute_cleanup(m);
 
     count->failed += fail;
     count->total += n;

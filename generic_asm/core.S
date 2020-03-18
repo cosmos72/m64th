@@ -96,7 +96,7 @@ LABEL(name_comma.str)
         DPUSH( REG1)                                   /* ( addr c-addr u       ) */
         ASM_CALL(      FUNC(countedstring_comma))      /* ( addr                ) */
         ALIGN( SZ,     HERE)                           /* here = nt               */
-        SUB2(  HERE,   DTOP)                           /* dtop = addr-nt          */
+        XSUB2( HERE,   DTOP)                           /* dtop = nt-addr          */
 LABEL(name_comma.str_done)                             /* ( addr                ) */
         init_R000_REG1()                               /* a = 0                   */
         init_RFFF_REG2()                               /* b = -1                  */
@@ -188,7 +188,7 @@ FUNC_START(wordlist_add) /* ( nt wid -- ) add name to wordlist */
         ASM_CALL(      FUNC(wordlist_last))            /* ( dtop = prevnt         */
         LOAD(  REG1,   AT(DSTK, SZ))                   /* a = nt                  */
         JZ(    DTOP,   TO(wordlist_add.prevnt))
-        SUB2(  REG1,   DTOP)                           /* dtop = prevnt-nt        */
+        XSUB2( REG1,   DTOP)                           /* dtop = nt-prevnt        */
 LABEL(wordlist_add.prevnt)
         STORw( DTOP,   AT(REG1, WORD_OFF_PREV_OFF))    /* nt.prev_off = dtop      */
         LOAD(  REG2,   AT(DSTK))                       /* b = wid                 */

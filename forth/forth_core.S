@@ -116,9 +116,9 @@ WORD_START(semi,       colon)
         _if0_, T(4),
             _lit_, T(M4ERR_INTERPRETING_COMPILE_ONLY_WORD), throw,
         then,
-        two_drop, /* TODO latest, */
+        two_drop, latest,
         _compile_lit_, exit, left_bracket,
-        /* TODO get_current, wordlist_add, */ exit
+        get_current, wordlist_add, exit
     )
 WORD_END(semi)
 WORD(less,             semi,       DSTACK(2,1), RSTACK(0,0), WORD_PURE)
