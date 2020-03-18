@@ -989,7 +989,7 @@ void m4th_sync_lastw(m4th *m) {
         m4char *here = m4_aligned_at(m->mem.curr, SZt);
         m->lastw->code_n = (m4token *)here - m->xt;
         m->mem.curr = here;
-    } else {
+    } else if (m->lastw->code_n == 0 && m->lastw->code_off == 0) {
         /* not compiling */
         m->lastw->data_n = m->mem.curr - m->lastw->data;
     }

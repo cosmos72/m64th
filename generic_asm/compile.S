@@ -160,7 +160,7 @@ FUNC_START(left_bracket)
         XSUB2( HERE,       REG2)                       /* b = here - m4th.xt    */
         LOAD(  REG1,       AT(M4TH, M4TH_OFF_LASTW))   /* a = m4th.lastw        */
         SHR2(  IMM(PSZt),  REG2)                       /* b = #compiled         */
-        STOR(  REG2h,      AT(REG1, WORD_OFF_CODE_N))  /* lastw.code_n = b      */
+        STORh( REG2h,      AT(REG1, WORD_OFF_CODE_N))  /* lastw.code_n = b      */
 
         initR000_w(REG1w)
         STOR( R000_r(REG1),AT(M4TH, M4TH_OFF_XT))      /* exit compile mode     */

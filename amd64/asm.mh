@@ -174,12 +174,12 @@
 #define LD_sb(reg, at)        movsbq at,    reg;   /* reg = *(int8_t *)at  */
 #define LD_sh(reg, at)        movswq at,    reg;   /* reg = *(int16_t*)at  */
 #define LD_sw(reg, at)        movslq at,    reg;   /* reg = *(int32_t*)at  */
-#define LD_st(reg, at)        LD_sh(reg, at)     /* reg = *(signed m4token*)at */
+#define LD_st(reg, at)        LD_sh(reg, at)       /* reg = *(signed m4token*)at */
 
 #define LD_ub(reg, at)        movzbl at,    reg;   /* reg = *(uint8_t *)at  */
 #define LD_uh(reg, at)        movzwl at,    reg;   /* reg = *(uint16_t*)at  */
 #define LD_uw(reg, at)        movl   at,    reg;   /* reg = *(uint32_t*)at  */
-#define LD_ut(reg, at)        LD_uh(reg, at)     /* reg = *(unsigned m4token*)at */
+#define LD_ut(reg, at)        LD_uh(reg, at)       /* reg = *(unsigned m4token*)at */
 
 /* no difference between signed and unsigned STOR* */
 #define STORb(reg, at)        movb   reg,   at;    /* *(uint8_t *)at  = reg */
