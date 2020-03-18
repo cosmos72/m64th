@@ -58,7 +58,7 @@ WORD_START(q_if, eight_div)
         _compile_unresolved_jump_, _q_if_, _if_, exit
     )
 WORD_END(q_if)
-WORD_START(q_if_zero, q_if)
+WORD_START(q_if0, q_if)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)
@@ -68,8 +68,8 @@ WORD_START(q_if_zero, q_if)
     WORD_CODE(
         _compile_unresolved_jump_, _q_if0_, _if_, exit
     )
-WORD_END(q_if_zero)
-WORD(bounds,           q_if_zero,      DSTACK(2,2), RSTACK(0,0), M4FLAG_PURE)
+WORD_END(q_if0)
+WORD(bounds,           q_if0,          DSTACK(2,2), RSTACK(0,0), M4FLAG_PURE)
 WORD_START(break,      bounds)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_JUMP | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_STACK_NONE()  /* stack effect if not jumping */
@@ -77,7 +77,7 @@ WORD_START(break,      bounds)
     WORD_RSTACK(0,0)
     WORD_NATIVE_NONE()
     WORD_CODE(
-        _compile_unresolved_jump_, _break_, _while_, exit
+        _compile_unresolved_jump_, _break_, _break_, exit
     )
 WORD_END(break)
 WORD_START(continue,   bounds)
@@ -87,7 +87,7 @@ WORD_START(continue,   bounds)
     WORD_RSTACK(0,0)
     WORD_NATIVE_NONE()
     WORD_CODE(
-        _compile_resolved_jump_, _continue_, begin, exit
+        _compile_unresolved_jump_, _continue_, _continue_, exit
     )
 WORD_END(_continue_)
 WORD(dup_to_r,         bounds,         DSTACK(1,1), RSTACK(0,1), WORD_R_PURE)
@@ -96,7 +96,7 @@ WORD(i_times,          flip,           DSTACK(1,1), RSTACK(1,1), WORD_R_PURE)
 WORD(i_plus,           i_times,        DSTACK(1,1), RSTACK(1,1), WORD_R_PURE)
 WORD(i_minus,          i_plus,         DSTACK(1,1), RSTACK(1,1), WORD_R_PURE)
 WORD(i_prime,          i_minus,        DSTACK(0,1), RSTACK(2,2), WORD_R_PURE)
-WORD_START(if_zero, i_prime)
+WORD_START(if0, i_prime)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_DSTACK(1,0)
     WORD_RSTACK(0,0)
@@ -106,7 +106,7 @@ WORD_START(if_zero, i_prime)
     WORD_CODE(
         _compile_unresolved_jump_, _if0_, _if_, exit
     )
-WORD_END(if_zero)
+WORD_END(if0)
 /*
  * classic forth interpreter/compiler iteration:
  *    read a name i.e. a non-blank string from IN,
@@ -121,7 +121,7 @@ WORD_END(if_zero)
  *         that when executed will place the number on the data stack
  *    otherwise, set an error condition
  */
-WORD_START(interpret,  if_zero)
+WORD_START(interpret,  if0)
     WORD_FLAGS(0)
     WORD_DSTACK(-1,-1)
     WORD_RSTACK(-1,-1)

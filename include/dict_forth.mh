@@ -104,6 +104,7 @@
     /* the following words are implemented in forth, thus no dedicated m4token value */            \
     X(1, ".", dot)                                                                                 \
     X(1, ":", colon)                                                                               \
+    X(1, ";", semi)                                                                                \
     X(3, ">in", to_in)                                                                             \
     X(7, ">number", to_number)                                                                     \
     X(8, "compile,", compile_comma)                                                                \

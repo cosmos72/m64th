@@ -63,14 +63,6 @@ uint32_t m4th_crcstring(m4string str) {
     return ~crc;
 }
 
-inline void dpush(m4th *m, m4cell val) {
-    *--m->dstack.curr = val;
-}
-
-inline m4cell dpop(m4th *m) {
-    return *m->dstack.curr++;
-}
-
 /** wrapper around REPL */
 m4cell m4th_repl(m4th *m) {
     return m4th_execute_word(m, &m4w_repl);

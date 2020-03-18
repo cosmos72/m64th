@@ -51,6 +51,14 @@ enum {
 typedef char m4th_assert_sizeof_m4token_equal_SZt[(sizeof(m4token) == SZt) ? 1 : -1];
 typedef char m4th_assert_sizeof_m4cell_equal_SZ[(sizeof(m4cell) == SZ) ? 1 : -1];
 
+static inline void dpush(m4th *m, m4cell val) {
+    *--m->dstack.curr = val;
+}
+
+static inline m4cell dpop(m4th *m) {
+    return *m->dstack.curr++;
+}
+
 /* -------------- m4char -------------- */
 
 static void m4char_print_escape(const m4char ch, FILE *out) {
@@ -949,6 +957,15 @@ void m4th_colon(m4th *m, m4string name) {
     w->code_off = WORD_OFF_XT;
     m->lastw = w;
     m->mem.curr = (m4char *)(m->xt = m4word_xt(w));
+    /*
+     * reproduce behaviour of forth word ':'
+     * also push to dstack colon-sys i.e. 0 m4right_bracket
+     *
+     * Note: most tests overwrite dstack at initialization,
+     * discarding these values.
+     */
+    dpush(m, 0);
+    dpush(m, m4right_bracket);
 }
 
 /* C implementation of ';' i.e. finish compiling a new word */

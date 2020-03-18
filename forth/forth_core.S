@@ -66,7 +66,7 @@ WORD(two_dup,          two_drop,   DSTACK(2,4), RSTACK(0,0), WORD_PURE)
 WORD(two_over,         two_dup,    DSTACK(4,6), RSTACK(0,0), WORD_PURE)
 WORD(two_swap,         two_over,   DSTACK(4,4), RSTACK(0,0), WORD_PURE)
 WORD_START(colon,      two_swap)
-    WORD_FLAGS(0)
+    WORD_FLAGS(M4FLAG_INLINE)
     WORD_DSTACK(0,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -76,13 +76,13 @@ WORD_START(colon,      two_swap)
          * if
          *    M4ERR_COMPILER_NESTING throw
          * then
-         * parse-name                                  ( c-addr u      )
-         * ?if0                                        ( c-addr u      )
-         *    M4ERR_ZERO_LENGTH_NAME throw             (               )
-         * then                                        ( c-addr u      )
-         * name, get-current set-latest                ( nt            )
+         * parse-name                                  ( c-addr u        )
+         * ?if0                                        ( c-addr u        )
+         *    M4ERR_ZERO_LENGTH_NAME throw             (                 )
+         * then                                        ( c-addr u        )
+         * name, get-current set-latest                ( nt              )
          * postpone ]
-         *
+         * 0 M4right_bracket              ( colon-sys: 0 M4right_bracket )
          */
         state, fetch,
         _if_, T(4),
@@ -93,10 +93,32 @@ WORD_START(colon,      two_swap)
             _lit_, T(M4ERR_ZERO_LENGTH_NAME), throw,
         then,
         name_comma, get_current, set_latest,
-        right_bracket, exit
+        right_bracket,
+        zero, _lit_, right_bracket, exit
     )
 WORD_END(colon)
-WORD(less,             colon,      DSTACK(2,1), RSTACK(0,0), WORD_PURE)
+/* WORD(semi,             colon,      DSTACK(2,0), RSTACK(0,0), M4FLAG_INLINE | M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE) */
+WORD_START(semi,       colon)
+    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE)
+    WORD_DSTACK(2,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_CODE(
+        /* state @
+         * if0
+         *    M4ERR_INTERPRETING_COMPILE_ONLY_WORD throw
+         * then
+         * 2drop ' exit compile, [
+         */
+        state, fetch,
+        _if0_, T(4),
+            _lit_, T(M4ERR_INTERPRETING_COMPILE_ONLY_WORD), throw,
+        then,
+        two_drop, _compile_lit_, exit, left_bracket, exit
+    )
+WORD_END(semi)
+WORD(less,             semi,       DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(equal,            less,       DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(more,             equal,      DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD_START(to_in,      more)

@@ -981,6 +981,7 @@ static m4testexecute testexecute_f[] = {
      {{2, {(m4cell) "bar", 0}}, {}},
      {{1, {-WORD_OFF_DATA}}, {}},
      {}},
+    {";", {CALL(semi), m4bye}, {{2, {0, m4right_bracket}}, {}}, {{}, {}}, {1, {m4exit}}},
     /* ----------------------------- search order --------------------------- */
     {"get-current",
      {m4get_current, m4bye},

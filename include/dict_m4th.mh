@@ -123,10 +123,10 @@
     /*X(5, "cells", cells)         */  /* already in forth 'core' word set               */        \
     /*                             */  /*                                                */        \
     X(3, "?if", q_if)                  /* alias of dup if                                */        \
-    X(4, "?if0", q_if_zero)            /* alias of dup 0= if                             */        \
+    X(4, "?if0", q_if0)            /* alias of dup 0= if                             */        \
     X(5, "break", break)               /* alias of 0 while                               */        \
     X(8, "continue", continue)         /* unconditional jump to 'begin'                  */        \
-    X(3, "if0", if_zero)               /* alias of 0= if                                 */        \
+    X(3, "if0", if0)                   /* alias of 0= if                                 */        \
     X(9, "interpret", interpret)       /* one iteration of forth interpret/compile loop  */        \
     X(4, "repl", repl)                 /* call INTERPRET repeatedly until IN I/O error   */        \
     X(8, "string<>", string_ne)        /* ( addr1 addr2 u -- addr1 addr2 u t|f )         */        \

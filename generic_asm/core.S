@@ -199,7 +199,7 @@ FUNC_END(wordlist_add)
 
 
 FUNC_START(wordlist_reset) /* ( wid -- ) */
-        initR000_w(  REG1w)
+        initR000_w(    REG1w)
         STOR(  R000_r(REG1),   AT(DTOP, WORDLIST_OFF_LASTW))   /* wid.lastw = 0            */
         DPOP(  DTOP)
 FUNC_END(wordlist_reset)

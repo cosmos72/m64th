@@ -151,10 +151,19 @@ FUNC_END(set_latest)
 
 /**
  * Temporarily switch from compiling to interpreting.
+ * Update m4th.lastw.code_n (needed by ';') then set m4th.xt to 0
  */
 FUNC_START(left_bracket)
+        LOAD(  REG2,       AT(M4TH, M4TH_OFF_XT))
+        JZ(    REG2,       FUNC_NEXT(left_bracket))    /* noop if interpreting  */
+
+        XSUB2( HERE,       REG2)                       /* b = here - m4th.xt    */
+        LOAD(  REG1,       AT(M4TH, M4TH_OFF_LASTW))   /* a = m4th.lastw        */
+        SHR2(  IMM(PSZt),  REG2)                       /* b = #compiled         */
+        STOR(  REG2h,      AT(REG1, WORD_OFF_CODE_N))  /* lastw.code_n = b      */
+
         initR000_w(REG1w)
-        STOR(  R000_r(REG1),   AT(M4TH, M4TH_OFF_XT))
+        STOR( R000_r(REG1),AT(M4TH, M4TH_OFF_XT))      /* exit compile mode     */
 FUNC_END(left_bracket)
 
 
