@@ -21,21 +21,29 @@
 
 DICT_WORDS_FORTH_EXCEPTION(WORDNAME)
 
-WORD_START(catch,      LASTWORD)
-    WORD_FLAGS(M4FLAG_INLINE)
+WORD_START(abort,      LASTWORD)
+    WORD_STACK_NONE()
+    WORD_DSTACK(0,-1) /* stack effect when throwing */
+    WORD_RSTACK(0,-1)
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_JUMP)
+    WORD_CODE(minus_one, throw, exit)
+WORD_END(abort)
+WORD_START(catch,      abort)
     WORD_DSTACK(-1,-1) /* stack effect of called word */
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(_catch_beg_, _catch_end_, exit)
 WORD_END(catch)
 WORD_START(throw,      catch)
-    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MAY_JUMP)
     WORD_DSTACK(1,0) /* stack effect when not throwing */
     WORD_RSTACK(0,0)
     WORD_DSTACK(1,-1) /* stack effect when throwing */
     WORD_RSTACK(0,-1)
     WORD_NATIVE_NONE() /* uses IP-relative jump to 'bye', cannot inline in native code */
+    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MAY_JUMP)
     WORD_CODE(throw, exit)
 WORD_END(throw)
 

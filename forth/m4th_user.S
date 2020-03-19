@@ -48,61 +48,86 @@ WORD(eight_times,      four_div,       DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(eight_plus,       eight_times,    DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(eight_div,        eight_plus,     DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD_START(q_if, eight_div)
-    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)
     WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)
     WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_CODE(
         _compile_unresolved_jump_, _q_if_, _if_, exit
     )
 WORD_END(q_if)
 WORD_START(q_if0, q_if)
-    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)
     WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)
     WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_CODE(
         _compile_unresolved_jump_, _q_if0_, _if_, exit
     )
 WORD_END(q_if0)
 WORD(bounds,           q_if0,          DSTACK(2,2), RSTACK(0,0), M4FLAG_PURE)
 WORD_START(break,      bounds)
-    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_JUMP | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_STACK_NONE()  /* stack effect if not jumping */
     WORD_DSTACK(0,0)   /* stack effect if jumping */
     WORD_RSTACK(0,0)
     WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_JUMP | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_CODE(
         _compile_unresolved_jump_, _break_, _break_, exit
     )
 WORD_END(break)
 WORD_START(continue,   bounds)
-    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_JUMP | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_STACK_NONE()  /* stack effect if not jumping */
     WORD_DSTACK(0,0)   /* stack effect if jumping */
     WORD_RSTACK(0,0)
     WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_JUMP | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_CODE(
         _compile_unresolved_jump_, _continue_, _continue_, exit
     )
 WORD_END(_continue_)
 WORD(dup_to_r,         bounds,         DSTACK(1,1), RSTACK(0,1), WORD_R_PURE)
-WORD(flip,             dup_to_r,       DSTACK(3,3), RSTACK(0,0), WORD_PURE)
+WORD(ex_message_store, dup_to_r,       DSTACK(2,0), RSTACK(0,0), WORD_IMPURE)
+WORD(ex_message_fetch,ex_message_store,DSTACK(0,2), RSTACK(0,0), WORD_IMPURE)
+/* ( ex -- c-addr u ) get exception name */
+WORD_START(ex_to_string, ex_message_fetch)
+    WORD_DSTACK(1,2)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(0)
+    WORD_CODE(
+        dup, zero_more_equal, _if_, T(5),              /* ( ex                 ) */
+            drop, zero, dup, exit,                     /* ( 0 0                ) */
+        then,                                          /* ( ex                 ) */
+        dup, two_plus, zero_more_equal,
+        _if_, T(4+nSTRt(5)),                           /* ( ex t|f             ) */
+            drop, LIT_STRING(5, "abort"), exit,        /* ( c-addr u           ) */
+        then,                                          /* ( ex                 ) */
+        dup, _lit_, T(-3), equal, _if_, T(4+nSTRt(14)),/* ( ex t|f             ) */
+            drop, LIT_STRING(14, "stack overflow"),    /* ( c-addr u           ) */
+            exit,
+        then,
+        /* TODO */
+        drop, LIT_STRING(9, "exception"), exit         /* ( c-addr u           ) */
+    )
+WORD_END(ex_to_string)
+WORD(flip,             ex_to_string,   DSTACK(3,3), RSTACK(0,0), WORD_PURE)
 WORD(i_times,          flip,           DSTACK(1,1), RSTACK(1,1), WORD_R_PURE)
 WORD(i_plus,           i_times,        DSTACK(1,1), RSTACK(1,1), WORD_R_PURE)
 WORD(i_minus,          i_plus,         DSTACK(1,1), RSTACK(1,1), WORD_R_PURE)
 WORD(i_prime,          i_minus,        DSTACK(0,1), RSTACK(2,2), WORD_R_PURE)
 WORD_START(if0, i_prime)
-    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_DSTACK(1,0)
     WORD_RSTACK(0,0)
     WORD_DSTACK(1,0)
     WORD_RSTACK(0,0)
     WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_CODE(
         _compile_unresolved_jump_, _if0_, _if_, exit
     )
@@ -110,23 +135,23 @@ WORD_END(if0)
 /*
  * classic forth interpreter/compiler iteration:
  *    read a name i.e. a non-blank string from IN,
- *    execute STRING>WORD which searches the current search order for name,
- *    and, if a word is found:
- *       if interpreting, perform the interpretation semantics of the word
- *       otherwise, perform the compilation semantics of the word
- *    otherwise, execute STRING>NUMBER which attempts to convert name to a number and,
+ *    execute STRING>NAME which searches the current search order for name,
+ *    and, if a name is found:
+ *       if interpreting, perform the interpretation semantics of the name
+ *       otherwise, perform the compilation semantics of the name
+ *    otherwise, execute STRING>NUMBER which attempts to convert string to a number and,
  *    if successful:
  *       place the number on the data stack
- *       if compiling, execute the word LITERAL, which pops the number and compiles code
+ *       if compiling, execute the name LITERAL, which pops the number and compiles code
  *         that when executed will place the number on the data stack
- *    otherwise, set an error condition
+ *    otherwise, throw
  */
 WORD_START(interpret,  if0)
-    WORD_FLAGS(0)
     WORD_DSTACK(-1,-1)
     WORD_RSTACK(-1,-1)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
+    WORD_FLAGS(0)
     WORD_CODE(
         /* parse-name                                   ( c-addr u                 )
          * ?if0                                         ( c-addr u                 )
@@ -141,7 +166,7 @@ WORD_START(interpret,  if0)
          * if                       ( is a number )     ( c-addr u x               )
          *    nip nip (eval-number) exit                (                          )
          * then                     ( neither )         ( c-addr u x               )
-         * drop ex-string!                              (                          )
+         * drop ex-message!                             (                          )
          * M4ERR_UNDEFINED_WORD throw                   (                          )
          */
         CALL(parse_name),
@@ -150,14 +175,14 @@ WORD_START(interpret,  if0)
         then,
         two_dup,
         CALL(string_to_name),
-        _q_if_, T(5+2*SZ/SZt),
+        _q_if_, T(5+2*nCALLt),
             two_nip, CALL(_eval_name_), CALL(_check_stacks_), exit,
         then,
         two_drop, two_dup, CALL(string_to_number),
-        _if_, T(5+SZ/SZt),
+        _if_, T(5+nCALLt),
             nip, nip, CALL(_eval_number_), exit,
         then,
-        drop, ex_string_store,
+        drop, ex_message_store,
         _lit_, T(M4ERR_UNDEFINED_WORD), throw, exit
     )
 WORD_END(interpret)
@@ -168,14 +193,14 @@ WORD(r_from_drop,      r_plus,         DSTACK(0,0), RSTACK(1,0), WORD_R_PURE)
 WORD(rdepth,           r_from_drop,    DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 /**
  * forth interpreter/compiler loop:
- *    call INTERPRET repeatedly until an exception is thrown.
+ *    call INTERPRET repeatedly until I/O error reading input
  */
 WORD_START(repl,  rdepth)
-    WORD_FLAGS(M4FLAG_INLINE)
     WORD_DSTACK(-1,-1)
     WORD_RSTACK(-1,-1)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
         /* begin                                       ( ...           )
          *    in>ibuf ibuf-refill-if-empty drop        ( ...           )
@@ -197,40 +222,40 @@ WORD_START(repl,  rdepth)
             _lit_cell_, XT(interpret), _catch_beg_, _catch_end_,
             dup, zero_equal,
             in_to_ibuf, CALL(ibuf_skip_blanks_until_cr), and,
-            _if_, T(4+SZ/SZt),
+            _if_, T(4+nCALLt),
                 drop, CALL(_repl_type_ack_),
-            _else_, T(2+SZ/SZt),
+            _else_, T(2+nCALLt),
                 CALL(type_exception),
             then,
             out_to_obuf, CALL(obuf_flush), drop,
             in_to_ibuf, iobuf_err, fetch,
-        _until_, T(-28-6*SZ/SZt),
+        _until_, T(-28-6*nCALLt),
         _lit_, T('\n'), emit, out_to_obuf, CALL(obuf_flush), drop, exit
     )
 WORD_END(repl)
 WORD(squared,          repl,           DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(sub,              squared,        DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(minus_rot,        sub,            DSTACK(3,3), RSTACK(0,0), WORD_PURE)
-/* ( ex|0 -- ) write cr exception and ex-string@ to current output */
+/* ( ex|0 -- ) write cr exception and ex-message@ to current output */
 WORD_START(type_exception,   minus_rot)
-    WORD_FLAGS(M4FLAG_INLINE)
     WORD_DSTACK(1,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
         /* ?if                                         ( ex|0          )
          *    s\" \n exception " type                  (               )
          *    .                                        (               )
-         *    ex-string@ type cr                       (               )
+         *    ex-message@ type cr                      (               )
          * else                                        ( 0             )
          *    drop                                     (               )
          * then                                        (               )
          */
-        _q_if_, T(11 + (11+SZt-1)/SZt + SZ/SZt),
+        _q_if_, T(10 + nSTRt(11) + nCALLt),
             LIT_STRING(11, "\nexception "), type,
             CALL(dot),
-            ex_string_fetch, type,
+            ex_message_fetch, type,
             _lit_, T('\n'), emit,
         _else_, T(2),
             drop,
@@ -273,11 +298,11 @@ WORD(uint_fetch,       int_fetch,      DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M
 WORD(short_comma,      uint_fetch,     DSTACK(1,0), RSTACK(0,0), WORD_IMPURE)
 WORD(int_comma,        short_comma,    DSTACK(1,0), RSTACK(0,0), WORD_IMPURE)
 WORD_START(countedstring_comma, int_comma)
-    WORD_FLAGS(M4FLAG_INLINE)
     WORD_DSTACK(2,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE() /* uses IP-relative JUMP, cannot inline in native code */
+    WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
         countedstring_comma, exit
     )
@@ -299,11 +324,11 @@ WORD(string_first_blank, to_uint,      DSTACK(2,1), RSTACK(0,0), WORD_IMPURE | M
  * Also convert any single-quoted char 'x' to ASCII code of x
  */
 WORD_START(string_to_number, string_first_blank)
-    WORD_FLAGS(0) /* multiple exits => cannot inline */
     WORD_DSTACK(2,4)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
+    WORD_FLAGS(0) /* multiple exits => cannot inline */
     WORD_CODE(
         /* ?if0
          *    nip false exit               ( 0 false             )
@@ -346,30 +371,30 @@ WORD(string_equal, string_to_number, DSTACK(3,4), RSTACK(0,0), M4FLAG_INLINE | M
 /* string-ci= ( addr1 addr2 u -- addr1 addr2 u t|f ) t if the two strings have the same content, ignoring case */
 WORD(string_ci_equal,  string_equal, DSTACK(3,4), RSTACK(0,0), M4FLAG_INLINE | M4FLAG_MEM_FETCH)
 WORD_START(string_ci_ne,  string_ci_equal)
-    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
     WORD_DSTACK(3,4)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
     WORD_CODE(string_ci_equal, invert, exit)
 WORD_END(string_ci_ne)
 WORD_START(string_ne,  string_ci_ne)
-    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
     WORD_DSTACK(3,4)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
     WORD_CODE(string_equal, invert, exit)
 WORD_END(string_ne)
 WORD(trail,            string_ne,      DSTACK(2,3), RSTACK(0,0), WORD_PURE)
 WORD(u_less_equal,     trail,          DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(u_more_equal,     u_less_equal,   DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD_START(valid_base_q, u_more_equal)
-    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
     WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
     WORD_CODE(
         two, _lit2s_, T(37),       /* base 2 37                   */
         within,                    /* caddr n base                */

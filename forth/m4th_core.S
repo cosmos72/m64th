@@ -36,24 +36,22 @@ DICT_WORDS_M4TH_CORE(WORDNAME)
 WORD(div_token,        div_token,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 /* always-eof ( handle c-addr u -- 0 M4ERR_UNEXPECTED_EOF ) always return EOF. usable for iobuf>func */
 WORD_START(always_eof, div_token)
-    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_PURE)
     WORD_DSTACK(3,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_PURE)
     WORD_CODE(two_drop, drop, zero, _lit_, T(M4ERR_UNEXPECTED_EOF), exit)
 WORD_END(always_eof)
-WORD(ex_string_store,  always_eof,     DSTACK(2,0), RSTACK(0,0), WORD_IMPURE)
-WORD(ex_string_fetch, ex_string_store, DSTACK(0,2), RSTACK(0,0), WORD_IMPURE)
 /* ( io -- c-addr u ) find blank-delimited string in current iobuf line,
    without refilling and stopping before any CR
  */
-WORD_START(ibuf_find_nonblanks, ex_string_fetch)
-    WORD_FLAGS(M4FLAG_INLINE)
+WORD_START(ibuf_find_nonblanks, always_eof)
     WORD_DSTACK(1,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
         /*
          * dup ibuf-line-skip-blanks-except-cr       ( io t|f        )
@@ -81,11 +79,11 @@ WORD_START(ibuf_find_nonblanks, ex_string_fetch)
 WORD_END(ibuf_find_nonblanks)
 /* ibuf-refill ( io -- err ) read some chars into iobuf */
 WORD_START(ibuf_refill, ibuf_find_nonblanks)
-    WORD_FLAGS(M4FLAG_INLINE)
     WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
         /* dup >r iobuf>pos @                       ( pos                ) (R: io )
          * ?if                                      ( pos                ) (R: io )
@@ -126,11 +124,11 @@ WORD_START(ibuf_refill, ibuf_find_nonblanks)
 WORD_END(ibuf_refill)
 /* ibuf-refill-if-empty ( io -- err ) read some chars into iobuf if it's empty */
 WORD_START(ibuf_refill_if_empty, ibuf_refill)
-    WORD_FLAGS(M4FLAG_INLINE)
     WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
         /* dup iobuf-empty?                         ( io t|f             )
          * if                                       ( io                 )
@@ -140,7 +138,7 @@ WORD_START(ibuf_refill_if_empty, ibuf_refill)
          * then                                     ( err | 0            )
          */
         dup, iobuf_empty_query,
-        _if_, T(3+SZ/SZt),
+        _if_, T(3+nCALLt),
             CALL(ibuf_refill),
         _else_, T(3),
             drop, zero,
@@ -149,11 +147,11 @@ WORD_START(ibuf_refill_if_empty, ibuf_refill)
 WORD_END(ibuf_refill_if_empty)
 /* ( io -- ) skip blanks i.e. chars <= ' ' from iobuf current data. does not refill. */
 WORD_START(ibuf_skip_blanks, ibuf_refill_if_empty)
-    WORD_FLAGS(M4FLAG_INLINE)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
         /* 0 over iobuf>data bounds                    ( io 0 end addr   )
          * ?do                                         ( io u            ) (R: end addr-i )
@@ -182,11 +180,11 @@ WORD_END(ibuf_skip_blanks)
    does not refill, and does not skip CR
  */
 WORD_START(ibuf_skip_blanks_except_cr, ibuf_skip_blanks)
-    WORD_FLAGS(M4FLAG_INLINE)
     WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
         /* 0 over trail iobuf>data bounds              ( io 0 0 end addr )
          * ?do                                         ( io u f          ) (R: end addr-i )
@@ -225,11 +223,11 @@ WORD_END(ibuf_skip_blanks_except_cr)
    does not refill. Also skips CR if found.
  */
 WORD_START(ibuf_skip_blanks_until_cr, ibuf_skip_blanks_except_cr)
-    WORD_FLAGS(M4FLAG_INLINE)
     WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
         /* dup ibuf-skip-blanks-except-cr              ( io t|f        )
          * ?if                                         ( io t          )
@@ -264,19 +262,19 @@ WORD(iobuf_size,       iobuf_pos,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(latest,           iobuf_size,     DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 /* ( c-addr u -- nt ) create a new name. do NOT add it to compilation wordlist */
 WORD_START(name_comma,  latest)
-    WORD_FLAGS(M4FLAG_INLINE)
     WORD_DSTACK(2,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE() /* uses IP-relative jump to m4func, cannot inline in native code */
+    WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(name_comma, exit)
 WORD_END(name_comma)
 WORD_START(name_inline_query,  name_comma)
-    WORD_FLAGS(M4FLAG_MEM_FETCH) /* multiple exits => cannot inline */
     WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_MEM_FETCH) /* multiple exits => cannot inline */
     WORD_CODE(
         dup, name_to_flags,
         dup, _lit2s_, SHORT(M4FLAG_INLINE_ALWAYS), and, _if_, T(4),
@@ -295,11 +293,11 @@ WORD(name_to_prev,     name_to_flags,  DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M
 WORD(name_to_xt,       name_to_prev,   DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 /* obuf-flush ( io -- err ) flush iobuf data */
 WORD_START(obuf_flush, name_to_xt)
-    WORD_FLAGS(0)
     WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
+    WORD_FLAGS(0)
     WORD_CODE(
         /* >r                                       (                    ) (R: io )
          * begin                                    (                    ) (R: io )
@@ -336,11 +334,11 @@ WORD_START(obuf_flush, name_to_xt)
 WORD_END(obuf_flush)
 /* (obuf-flush-write-char) ( io c -- err  ) flush iobuf, then write one char to it */
 WORD_START(_obuf_flush_write_char_, obuf_flush)
-    WORD_FLAGS(0)
     WORD_DSTACK(2,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
+    WORD_FLAGS(0)
     WORD_CODE(
         /* over iobuf-flush                            ( io c err     )
          * ?if                                         ( io c err     )
@@ -365,11 +363,11 @@ WORD_START(_obuf_flush_write_char_, obuf_flush)
 WORD_END(_obuf_flush_write_char_)
 /* (obuf-flush-write-string) ( io c-addr u -- err  ) flush iobuf, then write string to it */
 WORD_START(_obuf_flush_write_string_, _obuf_flush_write_char_)
-    WORD_FLAGS(0)
     WORD_DSTACK(3,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
+    WORD_FLAGS(0)
     WORD_CODE(
         /* rot dup obuf-flush                         ( c-addr u io err )
          * ?if                                         ( c-addr u io err )
@@ -396,7 +394,7 @@ WORD_START(_obuf_flush_write_string_, _obuf_flush_write_char_)
         iobuf_free_data, dup,
         two_over, drop,
         less,
-        _if_, T(8+SZ/SZt),
+        _if_, T(8+nCALLt),
             two_drop, r_from, minus_rot,
             CALL(_obuf_overflow_),
             nip, nip, exit,
@@ -411,11 +409,11 @@ WORD_END(_obuf_flush_write_string_)
  * ignoring current data. return string still to write - non-empty only on I/O error
  */
 WORD_START(_obuf_overflow_, _obuf_flush_write_string_)
-    WORD_FLAGS(0)
     WORD_DSTACK(3,3)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
+    WORD_FLAGS(0)
     WORD_CODE(
         /* rot >r                                   ( c-addr u                 ) (R: io )
          * begin                                    ( c-addr u                 ) (R: io )
@@ -452,20 +450,20 @@ WORD_START(_obuf_overflow_, _obuf_flush_write_string_)
 WORD_END(_obuf_overflow_)
 /* obuf-write-char ( io c-addr u -- err  ) write one char to iobuf */
 WORD_START(obuf_write_char, _obuf_overflow_)
-    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH | M4FLAG_MEM_STORE)
     WORD_DSTACK(3,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE() /* cannot inline in native code: has multiple returns + uses ip-relative JUMP */
+    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH | M4FLAG_MEM_STORE)
     WORD_CODE(obuf_write_char, exit)
 WORD_END(obuf_write_char)
 /* obuf-write-string ( io c-addr u -- err  ) write a string to iobuf */
 WORD_START(obuf_write_string, obuf_write_char)
-    WORD_FLAGS(0)
     WORD_DSTACK(3,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
+    WORD_FLAGS(0)
     WORD_CODE(
         obuf_write_string, exit
     )
@@ -481,11 +479,11 @@ WORD(set_latest,       searchorder_n,  DSTACK(1,0), RSTACK(0,0), WORD_IMPURE)
  * return 1 if name is immediate, else -1
  */
 WORD_START(string_to_name, set_latest)
-    WORD_FLAGS(0)
     WORD_DSTACK(2,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
+    WORD_FLAGS(0)
     WORD_CODE(
         /* searchorder-n @ 0                       ( c-addr u n 0              )
          * ?do                                     ( c-addr u                  ) (R: n i )
@@ -499,14 +497,14 @@ WORD_START(string_to_name, set_latest)
          * 2drop 0 0                               ( 0 0                       )
          */
         searchorder_n, fetch, zero,
-        _q_do_, T(14+SZ/SZt),
+        _q_do_, T(14+nCALLt),
             two_dup, i, searchorder_i, fetch,
             CALL(wordlist_find),
             _q_if_, T(4),
                 two_nip, unloop, exit,
             then,
             two_drop,
-        _loop_, T(-14-SZ/SZt),
+        _loop_, T(-14-nCALLt),
         two_drop, zero, zero, exit
     )
 WORD_END(string_to_name)
@@ -516,11 +514,11 @@ WORD(tokens,           token_plus,     DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(token_store,      tokens,         DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE)
 WORD(token_fetch,      token_store,    DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 WORD_START(user_var,   token_store)
-    WORD_FLAGS(M4FLAG_INLINE_ALWAYS | M4FLAG_CONSUMES_IP_2)
     WORD_DSTACK(0,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE_ALWAYS | M4FLAG_CONSUMES_IP_2)
     WORD_CODE(user_var, T(-1), exit)
 WORD_END(user_var)
 /**
@@ -528,11 +526,11 @@ WORD_END(user_var)
  * return 0 if not found. return 1 if word is immediate, otherwise return -1
  */
 WORD_START(wordlist_find, user_var)
-    WORD_FLAGS(M4FLAG_MEM_FETCH) /* multiple exits => cannot inline */
     WORD_DSTACK(3,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_MEM_FETCH) /* multiple exits => cannot inline */
     WORD_CODE(
         /* wordlist-last                                       ( addr u nt         )
          * begin

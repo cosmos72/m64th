@@ -182,7 +182,7 @@ FUNC_START(right_bracket)
         JNZ(   REG3,       FUNC(_throw_.reg0))         /* compiling: throw      */
         LD_uh( REG2,       AT(REG1, WORD_OFF_CODE_OFF))/* b = w.code_off        */
         JNZ(   REG2,       TO(right_bracket.finish))
-        LD_uh( REG2,       AT(REG1, WORD_OFF_DATA_N))  /* b = w.data_n          */
+        LOAD(  REG2,       AT(REG1, WORD_OFF_DATA_N))  /* b = w.data_n          */
         JNZ(   REG2,       TO(right_bracket.full))
 LABEL(right_bracket.simple)
         /* word.data_n == 0, simple initialization                              */

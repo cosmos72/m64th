@@ -50,10 +50,10 @@
 #define M4bounds 530                 /* ( c-addr u -- c-addr+u c-addr ) get string bounds */
 #undef M4____gap                     /*                       */
 #undef M4____gap                     /*                       */
-#define M4dup_to_r 533               /* dup>r                   equivalent to: dup  >r  */
-#undef M4____gap                     /*                       */
-#define M4flip 535                   /* flip ( a b c -- c b a ) equivalent to: swap rot */
-#undef M4____gap                     /*                       */
+#define M4dup_to_r 533               /* dup>r                   equivalent to: dup  >r    */
+#define M4ex_message_store 534       /* ( c-addr u -- ) save string as exception message  */
+#define M4ex_message_fetch 535       /* ( -- c-addr u ) fetch exception message string    */
+#define M4flip 536                   /* flip ( a b c -- c b a ) equivalent to: swap rot   */
 #undef M4____gap                     /*                       */
 #define M4i_times 538                /* i*                    */
 #define M4i_plus 539                 /* i+                    */
@@ -140,8 +140,8 @@
 #undef M4____gap                /*                       */
 #undef M4____gap                /*                       */
 #undef M4____gap                /*                       */
-#define M4ex_string_store 613   /* ( c-addr u -- ) save string addr&len as exception description  */
-#define M4ex_string_fetch 614   /* ( -- c-addr u ) fetch exception description string             */
+#undef M4____gap                /*                       */
+#undef M4____gap                /*                       */
 #undef M4____gap                /*                       */
 #undef M4____gap                /*                       */
 #undef M4____gap                /*                       */

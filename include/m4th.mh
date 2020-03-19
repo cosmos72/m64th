@@ -37,8 +37,8 @@
 #define M4TH_OFF_HERE SZ5           /* offset of m4th->mem.curr = HERE */
 #define M4TH_OFF_HANDLER SZ7        /* offset of m4th->handler         */
 #define M4TH_OFF_EX SZ8             /* offset of m4th->ex              */
-#define M4TH_OFF_EX_STRING_ADDR SZ9 /* offset of m4th->ex_string.addr  */
-#define M4TH_OFF_EX_STRING_N SZ10   /* offset of m4th->ex_string.n     */
+#define M4TH_OFF_EX_STRING_ADDR SZ9 /* offset of m4th->ex_message.addr  */
+#define M4TH_OFF_EX_STRING_N SZ10   /* offset of m4th->ex_message.n     */
 #define M4TH_OFF_COMPILE_WID SZ11   /* offset of m4th->compile_wid     */
 #define M4TH_OFF_SEARCHORDER SZ12   /* offset of m4th->searchorder     */
 

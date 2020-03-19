@@ -55,9 +55,11 @@ static inline void dpush(m4th *m, m4cell val) {
     *--m->dstack.curr = val;
 }
 
+#if 0  /* unused */
 static inline m4cell dpop(m4th *m) {
     return *m->dstack.curr++;
 }
+#endif /* 0 */
 
 /* -------------- m4char -------------- */
 
@@ -885,8 +887,8 @@ m4th *m4th_new() {
     m->mem = m4cbuf_alloc(dataspace_n);
     m->base = 10;
     m->handler = m->ex = 0;
-    m->ex_string.addr = NULL;
-    m->ex_string.n = 0;
+    m->ex_message.addr = NULL;
+    m->ex_message.n = 0;
     m->compile_wid = &m4wordlist_m4th_user;
     memset(&m->searchorder, '\0', sizeof(m->searchorder));
     m4th_also(m, &m4wordlist_forth);
@@ -917,8 +919,8 @@ void m4th_clear(m4th *m) {
     m->xt = NULL;
     m->mem.curr = m->mem.start;
     m->handler = m->ex = 0;
-    m->ex_string.addr = NULL;
-    m->ex_string.n = 0;
+    m->ex_message.addr = NULL;
+    m->ex_message.n = 0;
 }
 
 const m4cell *m4th_state(const m4th *m) {

@@ -32,20 +32,20 @@ WORD(two_r_fetch,      two_to_r,   DSTACK(0,2), RSTACK(2,2), WORD_R_PURE)
 WORD(two_r_from,      two_r_fetch, DSTACK(0,2), RSTACK(2,0), WORD_R_PURE)
 WORD(ne,               two_r_from, DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD_START(question_do, ne)
-    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_MAY_JUMP | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_DSTACK(2,0)   /* stack effect when not jumping */
     WORD_RSTACK(0,2)
     WORD_DSTACK(2,0)   /* stack effect when jumping */
     WORD_RSTACK(0,0)
     WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_MAY_JUMP | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_CODE(_compile_unresolved_jump_, _q_do_, _q_do_, exit)
 WORD_END(question_do)
 WORD_START(again,      question_do)
-    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_JUMP | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_STACK_NONE()  /* stack effect if not jumping */
     WORD_DSTACK(0,0)   /* stack effect if jumping */
     WORD_RSTACK(0,0)
     WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_JUMP | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_CODE(
         _compile_unresolved_jump_, _again_, repeat,
         CALL(_resolve_begin_repeat_), /* resolve all jump offsets of begin.. */
@@ -53,11 +53,11 @@ WORD_START(again,      question_do)
     )
 WORD_END(again)
 WORD_START(compile_comma, again)
-    WORD_FLAGS(M4FLAG_COMPILE_ONLY) /* multiple exits => cannot inline */
     WORD_DSTACK(1,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY) /* multiple exits => cannot inline */
     WORD_CODE(
         /* dup xt>name name-inline?                    ( xt t|f        )
          * if0                                         ( xt            )
@@ -77,11 +77,11 @@ WORD_END(compile_comma)
 WORD(false,        compile_comma,  DSTACK(0,1), RSTACK(0,0), WORD_PURE)
 WORD(nip,              false,      DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD_START(parse_name, nip)
-    WORD_FLAGS(M4FLAG_INLINE)
     WORD_DSTACK(0,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(in_to_ibuf, CALL(ibuf_find_nonblanks), exit)
 WORD_END(parse_name)
 WORD(pick,             parse_name, DSTACK(-1,-1),RSTACK(0,0), WORD_PURE)

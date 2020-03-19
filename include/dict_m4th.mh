@@ -38,12 +38,14 @@
     X(7, "2dup2>r", two_dup_two_to_r)                                                              \
     X(4, "2nip", two_nip)                                                                          \
     X(7, "2r>2drop", two_r_from_two_drop)                                                          \
-    X(6, "bounds", bounds)  /* ( c-addr u -- c-addr+u c-addr ) get string bounds */                \
-    X(5, "dup>r", dup_to_r) /*                    equivalent to: dup >r   */                       \
-    X(4, "flip", flip)      /* ( a b c -- c b a ) equivalent to: swap rot */                       \
-    X(2, "i*", i_times)     /* equivalent to: i *         */                                       \
-    X(2, "i+", i_plus)      /* equivalent to: i +         */                                       \
-    X(2, "i-", i_minus)     /* equivalent to: i -         */                                       \
+    X(6, "bounds", bounds)                 /* ( c-addr u -- c-addr+u c-addr ) get string bounds */ \
+    X(5, "dup>r", dup_to_r)                /*                    equivalent to: dup >r   */        \
+    X(11, "ex-message!", ex_message_store) /* ( c-addr u --    ) store exception message string */ \
+    X(11, "ex-message@", ex_message_fetch) /* (    -- c-addr u ) fetch exception message string */ \
+    X(4, "flip", flip)                     /* ( a b c -- c b a ) equivalent to: swap rot */        \
+    X(2, "i*", i_times)                    /* equivalent to: i *         */                        \
+    X(2, "i+", i_plus)                     /* equivalent to: i +         */                        \
+    X(2, "i-", i_minus)                    /* equivalent to: i -         */                        \
     X(2, "i'", i_prime)                                                                            \
     X(4, "noop", noop)                                                                             \
     X(2, "r!", r_store)                             /* ( a -- ) (R: b -- a   )         */          \
@@ -123,17 +125,18 @@
     /*X(5, "cells", cells)         */  /* already in forth 'core' word set               */        \
     /*                             */  /*                                                */        \
     X(3, "?if", q_if)                  /* alias of dup if                                */        \
-    X(4, "?if0", q_if0)            /* alias of dup 0= if                             */        \
+    X(4, "?if0", q_if0)                /* alias of dup 0= if                             */        \
     X(5, "break", break)               /* alias of 0 while                               */        \
     X(8, "continue", continue)         /* unconditional jump to 'begin'                  */        \
+    X(9, "ex>string", ex_to_string)    /* ( ex -- c-addr u ) get exception name          */        \
     X(3, "if0", if0)                   /* alias of 0= if                                 */        \
     X(9, "interpret", interpret)       /* one iteration of forth interpret/compile loop  */        \
     X(4, "repl", repl)                 /* call INTERPRET repeatedly until IN I/O error   */        \
     X(8, "string<>", string_ne)        /* ( addr1 addr2 u -- addr1 addr2 u t|f )         */        \
     X(11, "string-ci<>", string_ci_ne) /* ( addr1 addr2 u -- addr1 addr2 u t|f )         */        \
-    /* ( caddr n -- caddr' n' x t|f ) convert string to number, recognizing base, sign prefix */   \
+    /* ( caddr n -- caddr' n' x t|f ) convert string to number, recognizing base & sign  */        \
     X(13, "string>number", string_to_number)                                                       \
-    /*         ( ex|0 -- ) write cr exception and ex-string@ to current output           */        \
+    /*         ( ex|0 -- ) write cr exception and ex-message@ to current output          */        \
     X(14, "type-exception", type_exception)                                                        \
     X(11, "valid-base?", valid_base_q) /* ( base -- t|f ) true if 2 <= base <= 36        */
 
@@ -159,10 +162,8 @@
 
 /* ------- m4th-core ---------------------------------------------------------------------------- */
 #define DICT_TOKENS_M4TH_CORE(X)                                                                   \
-    X(10, "ex-string!", ex_string_store) /* ( c-addr u -- ) store exception description string */  \
-    X(10, "ex-string@", ex_string_fetch) /* ( -- c-addr u ) fetch exception description string */  \
-    X(7, "in>ibuf", in_to_ibuf)          /* (    -- io       ) get current input as iobuf     */   \
-    X(10, "iobuf>addr", iobuf_addr)      /* ( io -- c-addr   ) get start of iobuf data buffer */   \
+    X(7, "in>ibuf", in_to_ibuf)     /* (    -- io       ) get current input as iobuf     */        \
+    X(10, "iobuf>addr", iobuf_addr) /* ( io -- c-addr   ) get start of iobuf data buffer */        \
     /* ( io -- c-addr u ) get iobuf entire content i.e. from 0 to iobuf>size */                    \
     X(14, "iobuf>all-data", iobuf_all_data)                                                        \
     /* ( io -- c-addr u ) get iobuf content i.e. from iobuf>pos to iobuf>size */                   \

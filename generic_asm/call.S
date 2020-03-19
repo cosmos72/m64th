@@ -87,7 +87,7 @@ FUNC_START(_catch_beg_)
         SUB2(  RSTK,   REG1)                       /* a  = rend - rstk   */
         STOR(  REG1,   AT(M4TH, M4TH_OFF_HANDLER)) /* save rend - rstk   */
 
-        /* clear m4th.ex and m4th.ex_string */
+        /* clear m4th.ex and m4th.ex_message */
         init_R000_REG1()
         STOR(  R000_REG1,  AT(M4TH, M4TH_OFF_EX))
         STOR(  R000_REG1,  AT(M4TH, M4TH_OFF_EX_STRING_N))
@@ -119,7 +119,7 @@ LABEL(_catch_end_.thrown)
          */
         init_R000_REG1()
         STOR(  R000_REG1,  AT(M4TH, M4TH_OFF_EX))    /* clear m4th.ex            */
-        /* do NOT clear m4th.ex_string, caller may need it                       */
+        /* do NOT clear m4th.ex_message, caller may need it                       */
 
 LABEL(_catch_end_.push)
         /* final touch: push REG2 to dstk */

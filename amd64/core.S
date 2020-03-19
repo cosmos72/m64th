@@ -24,29 +24,29 @@
 /* clang-format off */
 
 #define M4FEX_STRING_STORE
-FUNC_START(ex_string_store)
+FUNC_START(ex_message_store)
         LOAD(  REG1,   AT(DSTK))
         STOR(  DTOP,   AT(M4TH, M4TH_OFF_EX_STRING_N))
         STOR(  REG1,   AT(M4TH, M4TH_OFF_EX_STRING_ADDR))
         LOAD(  DTOP,   AT(DSTK, SZ))
         ADD2(IMM(SZ2), DSTK)
-FUNC_END(ex_string_store)
+FUNC_END(ex_message_store)
 
 
 #define M4FEX_STRING_FETCH
-FUNC_START(ex_string_fetch)
+FUNC_START(ex_message_fetch)
         STOR(  DTOP,   AT(DSTK, -SZ))
         LOAD(  REG1,   AT(M4TH, M4TH_OFF_EX_STRING_ADDR))
         LOAD(  DTOP,   AT(M4TH, M4TH_OFF_EX_STRING_N))
         STOR(  REG1,   AT(DSTK, -SZ2))
         SUB2(IMM(SZ2), DSTK)
-FUNC_END(ex_string_fetch)
+FUNC_END(ex_message_fetch)
 
 
 /* iobuf-empty? ( io -- t|f ) true if iobuf is currently empty */
 FUNC_START(iobuf_empty_query)
-        LOAD(  REG1,   AT(DTOP, IOBUF_OFF_POS))    /* a = iobuf.pos     */
-        LOAD(  REG2,   AT(DTOP, IOBUF_OFF_SIZE))   /* b = iobuf.size    */
+        LOAD(  REG1,   AT(DTOP, IOBUF_OFF_POS))        /* a = iobuf.pos          */
+        LOAD(  REG2,   AT(DTOP, IOBUF_OFF_SIZE))       /* b = iobuf.size         */
         ZERO(  DTOPw)
         cmp    REG2,   REG1;
         cmovge RFFF,   DTOP;
@@ -54,21 +54,21 @@ FUNC_END(iobuf_empty_query)
 
 
 FUNC_START(name_to_prev) /* ( nt -- nt'|0 ) */
-        LD_uw( REG1,   AT(DTOP, WORD_OFF_PREV_OFF)) /* a = w.prev_off  */
-        SUB2(  REG1,   DTOP)       /* dtop = nt'               */
+        LOAD(  REG1,   AT(DTOP, WORD_OFF_PREV_OFF))    /* a = w.prev_off         */
+        SUB2(  REG1,   DTOP)                           /* dtop = nt'             */
         test   REG1,   REG1;
-        cmovz  REG1,   DTOP;       /* dtop = nt'|0             */
+        cmovz  REG1,   DTOP;                           /* dtop = nt'|0           */
 FUNC_END(name_to_prev)
 
 
 FUNC_START(wordlist_last) /* ( wid -- nt ) */
-        LOAD(  REG1,   AT(DTOP, WORDLIST_OFF_LAST))     /* b = nt = wid.last      */
+        LOAD(  REG1,   AT(DTOP, WORDLIST_OFF_LAST))    /* b = nt = wid.last      */
         test   REG1,   REG1;
-        cmovnz REG1,   DTOP;                            /* dtop = nt|wid          */
+        cmovnz REG1,   DTOP;                           /* dtop = nt|wid          */
         jnz            FUNC_NEXT(wordlist_last);
-        LOAD(  DTOP,   AT(DTOP, WORDLIST_OFF_DICT))     /* dtop = wid.dict        */
-        LD_uw( REG1,   AT(DTOP, DICT_OFF_LASTWORD_OFF)) /* a = dict.last_word_off */
-        SUB2(  REG1,   DTOP)                            /* dtop = nt              */
+        LOAD(  DTOP,   AT(DTOP, WORDLIST_OFF_DICT))    /* dtop = wid.dict        */
+        LD_uw( REG1,   AT(DTOP, DICT_OFF_LASTWORD_OFF))/* a = dict.last_word_off */
+        SUB2(  REG1,   DTOP)                           /* dtop = nt              */
         test   REG1,   REG1;
-        cmovz  REG1,   DTOP;                            /* dtop = nt|0            */
+        cmovz  REG1,   DTOP;                           /* dtop = nt|0            */
 FUNC_END(wordlist_last)

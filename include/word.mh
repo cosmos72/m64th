@@ -20,17 +20,17 @@
 #ifndef M4TH_INCLUDE_WORD_MH
 #define M4TH_INCLUDE_WORD_MH
 
-#define WORD_OFF_PREV_OFF 0    /* offset of m4word->prev_off   */
-#define WORD_OFF_NAME_OFF 4    /* offset of m4word->name_off   */
-#define WORD_OFF_FLAGS 6       /* offset of m4word->flags      */
-#define WORD_OFF_STK_EFF 8     /* offset of m4word->eff        */
-#define WORD_OFF_STK_JMP 10    /* offset of m4word->jump       */
-#define WORD_OFF_NATIVE_LEN 12 /* offset of m4word->native_len */
-#define WORD_OFF_CODE_N 14     /* offset of m4word->code_n     */
-#define WORD_OFF_CODE_OFF 16   /* offset of m4word->code_off   */
-#define WORD_OFF_DATA_N 20     /* offset of m4word->data_n     */
-#define WORD_OFF_DATA 24       /* offset of m4word->data       */
-#define WORD_OFF_XT 24         /* offset of m4word->code.addr valid only if m4word->data_n == 0 */
+#define WORD_OFF_PREV_OFF 0    /* offset of m4word.prev_off   */
+#define WORD_OFF_NAME_OFF 8    /* offset of m4word.name_off   */
+#define WORD_OFF_STK_EFF 10    /* offset of m4word.eff        */
+#define WORD_OFF_STK_JMP 12    /* offset of m4word.jump       */
+#define WORD_OFF_NATIVE_LEN 14 /* offset of m4word.native_len */
+#define WORD_OFF_FLAGS 16      /* offset of m4word.flags      */
+#define WORD_OFF_CODE_N 18     /* offset of m4word.code_n     */
+#define WORD_OFF_CODE_OFF 20   /* offset of m4word.code_off   */
+#define WORD_OFF_DATA_N 24     /* offset of m4word.data_n     */
+#define WORD_OFF_DATA 32       /* offset of m4word.data       */
+#define WORD_OFF_XT 32         /* offset of m4word.code.addr valid only if m4word.data_n = 0 */
 
 #define XT_OFF_DATA_OFF -4 /* offset of m4xt->data_off */
 
@@ -53,17 +53,15 @@
     WORD_PREV_OFF(name, prev)                                                                      \
     WORD_NAME_OFF(name)
 
-#define WORD_PREV_OFF(name, prev) /**/ .4byte WORD_SYM(name) - WORD_SYM(prev);
+#define WORD_PREV_OFF(name, prev) /**/ .8byte WORD_SYM(name) - WORD_SYM(prev);
 #define WORD_NAME_OFF(name) /*      */ .2byte WORD_SYM(name) - COUNTEDSTRING_SYM(name);
-#define WORD_FLAGS(flags) /*        */ .2byte flags;
 #define WORD_DSTACK(in, out) /*     */ .byte /**/ ((in)&0xF) | (((out)&0xF) << 4);
-#define WORD_DSTACK_UNKNOWN() /*    */ .byte 0xFF;
 #define WORD_RSTACK(in, out) /*     */ .byte /**/ ((in)&0xF) | (((out)&0xF) << 4);
-#define WORD_RSTACK_UNKNOWN() /*    */ .byte 0xFF;
 #define WORD_STACK_NONE() /*            */ WORD_DSTACK(0, 0) WORD_RSTACK(0, 0)
 #define WORD_NATIVE_LEN(name) /*    */ .2byte FUNC_NEXT(name) - FUNC(name);
 #define WORD_NATIVE_LEN_0() /*      */ .2byte 0;
 #define WORD_NATIVE_NONE() /*       */ .2byte 0xFFFF;
+#define WORD_FLAGS(flags) /*        */ .2byte flags;
 
 #define WORD_CODE_N(n_instr) /*     */ .2byte n_instr;
 #define WORD_CODE_N_AUTO(name) /*   */                                                             \
@@ -72,10 +70,10 @@
 #define WORD_CODE_OFF(n_bytes) /*   */ .4byte n_bytes;
 #define WORD_CODE_OFF_AUTO(name) /* */ .4byte /**/.L.WORD_SYM(name).code_start - WORD_SYM(name);
 
-#define WORD_DATA_N_BYTES(n_bytes) /**/ .4byte n_bytes;
-#define WORD_DATA_N(n_tokens) /*     */ .4byte SZt *(n_tokens);
+#define WORD_DATA_N_BYTES(n_bytes) /**/ .8byte n_bytes;
+#define WORD_DATA_N(n_tokens) /*     */ .8byte SZt *(n_tokens);
 #define WORD_DATA_N_AUTO(name) /*   */                                                             \
-    .4byte /**/.L.WORD_SYM(name).data_end - /**/.L.WORD_SYM(name).data_start;
+    .8byte /**/.L.WORD_SYM(name).data_end - /**/.L.WORD_SYM(name).data_start;
 
 #define WORD_CODE_ALIGN() /* align at 4 bytes: m4xt->data_off below is uint32_t                 */ \
     .p2align 2, 0;
@@ -120,11 +118,11 @@
     WORD_CODE_END(name)                                                                            \
 
 #define WORD_BODY_SIMPLE(name, flags, dstack, rstack)                                              \
-    WORD_FLAGS(flags)                                                                              \
     WORD_##dstack                                                                                  \
     WORD_##rstack                                                                                  \
     WORD_STACK_NONE()      /* simple words do not jump */                                              \
     WORD_NATIVE_LEN(name)                                                                          \
+    WORD_FLAGS(flags)                                                                              \
     WORD_CODE(name, exit)
 
 /* clang-format on */

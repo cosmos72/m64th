@@ -25,10 +25,10 @@
 
 
 FUNC_START(name_to_prev) /* ( nt -- nt'|0 ) */
-        LD_uw( REG1,   AT(DTOP, WORD_OFF_PREV_OFF)) /* a = nt.prev_off  */
-        SUB2(  REG1,   DTOP)               /* dtop = nt'               */
+        LOAD(  REG1,   AT(DTOP, WORD_OFF_PREV_OFF))    /* a = nt.prev_off  */
+        SUB2(  REG1,   DTOP)                           /* dtop = nt'       */
         cmp    REG1,   IMM(0);
-        csel   DTOP,   DTOP,   xzr,    ne; /* dtop = nt'|0             */
+        csel   DTOP,   DTOP,   xzr,    ne;             /* dtop = nt'|0     */
 FUNC_END(name_to_prev)
 
 

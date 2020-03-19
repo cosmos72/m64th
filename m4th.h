@@ -172,15 +172,15 @@ struct m4slice_s { /**< array of m4cell, with size */
 
 /** compiled forth word. Execution token i.e. XT is at word + code_off */
 struct m4word_s {
-    int32_t prev_off;    /**< offset of previous word,   in bytes. 0 = not present */
+    int64_t prev_off;    /**< offset of previous word,   in bytes. 0 = not present */
     int16_t name_off;    /**< offset of m4countedstring, in bytes. 0 = not present */
-    uint16_t flags;      /**< m4flags                                              */
     m4stackeffects eff;  /**< stack effects if not jumping                         */
     m4stackeffects jump; /**< stack effects if jumping                             */
     uint16_t native_len; /**< native code size, in bytes. 0xFFFF if not available  */
+    uint16_t flags;      /**< m4flags                                              */
     uint16_t code_n;     /**< forth code size, in m4token:s                        */
     uint32_t code_off;   /**< offset of code, in bytes. 0 = not present            */
-    uint32_t data_n;     /**< data size, in bytes                                  */
+    int64_t data_n;      /**< data size, in bytes                                  */
     m4char data[0];
 };
 
@@ -208,18 +208,18 @@ struct m4th_s {        /**< m4th forth interpreter and compiler          */
     const void *c_regs[1]; /**< m4th_run() may save C registers here     */
 
     /* USER variables, i.e. thread-local */
-    uint32_t user_size;        /**< # available cells in user variables         */
-    uint32_t user_next;        /**< next available cell in user variables       */
-    m4word *lastw;             /**< last defined forth word                     */
-    m4xt xt;                   /**< XT being compiled. also used for STATE      */
-    m4cell base;               /**< current BASE                                */
-    m4cbuf mem;                /**< start, HERE and end of data space           */
-    m4cell handler;            /**< exception handler installed by CATCH        */
-    m4cell ex;                 /**< exception set by THROW                      */
-    m4string ex_string;        /**< exception string, set manually before THROW */
-    m4wordlist *compile_wid;   /**< compilation wordlist                        */
-    m4searchorder searchorder; /**< wordlist search order                       */
-    m4cell user_var[0];        /**< further user variables                      */
+    uint32_t user_size;        /**< # available cells in user variables          */
+    uint32_t user_next;        /**< next available cell in user variables        */
+    m4word *lastw;             /**< last defined forth word                      */
+    m4xt xt;                   /**< XT being compiled. also used for STATE       */
+    m4cell base;               /**< current BASE                                 */
+    m4cbuf mem;                /**< start, HERE and end of data space            */
+    m4cell handler;            /**< exception handler installed by CATCH         */
+    m4cell ex;                 /**< exception set by THROW                       */
+    m4string ex_message;       /**< exception message, set manually before THROW */
+    m4wordlist *compile_wid;   /**< compilation wordlist                         */
+    m4searchorder searchorder; /**< wordlist search order                        */
+    m4cell user_var[0];        /**< further user variables                       */
 };
 
 #ifdef __cplusplus

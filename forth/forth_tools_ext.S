@@ -22,12 +22,12 @@
 DICT_WORDS_FORTH_TOOLS_EXT(WORDNAME)
 
 WORD_START(bye, LASTWORD)
-    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MAY_JUMP)
     WORD_DSTACK(0,-1)  /* data   stack may be altered from outside */
     WORD_RSTACK(0,-1)  /* return stack may be altered from outside */
     WORD_DSTACK(0,-1)
     WORD_RSTACK(0,-1)
     WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MAY_JUMP)
     WORD_CODE(bye, exit) /* exit is reachable by subsequent m4th_run() */
 WORD_END(bye)
 WORD(name_to_string,     bye,          DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)

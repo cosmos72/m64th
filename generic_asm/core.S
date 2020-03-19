@@ -41,7 +41,7 @@ FUNC_START(_ip_to_data_)
         LD_uw( REG1,       AT(DTOP, XT_OFF_DATA_OFF)) /* REG1 = xt.data_off        */
         SUB2(  REG1,       DTOP)                      /* DTOP = w.data             */
         DPUSH( DTOP)
-        LD_uw( DTOP,       AT(DTOP, WORD_OFF_DATA_N - WORD_OFF_DATA)) /* DTOP = w.data_n */
+        LOAD(  DTOP,       AT(DTOP, WORD_OFF_DATA_N - WORD_OFF_DATA)) /* DTOP = w.data_n */
 FUNC_END(_ip_to_data_)
 
 
@@ -58,22 +58,22 @@ FUNC_END(_ip_to_data_addr_)
 
 
 #ifndef M4FEX_STRING_STORE
-FUNC_START(ex_string_store)
+FUNC_START(ex_message_store)
         STOR(  DTOP,   AT(M4TH, M4TH_OFF_EX_STRING_N))
         DPOP(  DTOP)
         STOR(  DTOP,   AT(M4TH, M4TH_OFF_EX_STRING_ADDR))
         DPOP(  DTOP)
-FUNC_END(ex_string_store)
+FUNC_END(ex_message_store)
 #endif /* M4FEX_STRING_STORE */
 
 
 #ifndef M4FEX_STRING_FETCH
-FUNC_START(ex_string_fetch)
+FUNC_START(ex_message_fetch)
         DPUSH( DTOP)
         LOAD(  DTOP,   AT(M4TH, M4TH_OFF_EX_STRING_ADDR))
         DPUSH( DTOP)
         LOAD(  DTOP,   AT(M4TH, M4TH_OFF_EX_STRING_N))
-FUNC_END(ex_string_fetch)
+FUNC_END(ex_message_fetch)
 #endif /* M4FEX_STRING_FETCH */
 
 
@@ -100,11 +100,11 @@ LABEL(name_comma.str)
 LABEL(name_comma.str_done)                             /* ( addr                ) */
         init_R000_REG1()                               /* a = 0                   */
         init_RFFF_REG2()                               /* b = -1                  */
-        STOR(  R000_REG1,  AT(HERE, WORD_OFF_PREV_OFF))/* nt.prev_off = nt.name_off = nt.flags = 0 */
+        STOR(  R000_REG1,  AT(HERE, WORD_OFF_PREV_OFF))/* nt.prev_off = 0         */
+        STOR(  RFFF_REG2,  AT(HERE, WORD_OFF_NAME_OFF))/* nt.name_off = nt.eff = nt.jump = nt.native_len = -1 */
         STORh( DTOP,       AT(HERE, WORD_OFF_NAME_OFF))/* nt.name_off = dtop      */
-        STOR(  RFFF_REG2,  AT(HERE, WORD_OFF_STK_EFF)) /* nt.eff = nt.jump = nt.native_len = -1, clobber nt.code_n */
-        STORh( R000_REG1,  AT(HERE, WORD_OFF_CODE_N))  /* nt.code_n   = 0         */
-        STOR(  R000_REG1,  AT(HERE, WORD_OFF_CODE_OFF))/* nt.code_off = nt.data_n = 0 */
+        STOR(  R000_REG1,  AT(HERE, WORD_OFF_FLAGS))   /* nt.flags = nt.code_n = nt.code_off = 0 */
+        STOR(  R000_REG1,  AT(HERE, WORD_OFF_DATA_N))  /* nt.data_n = 0           */
         MOVE(  HERE,       DTOP)                       /* ( nt                  ) */
         ADD2(  IMM(WORD_OFF_DATA), HERE)               /* here = nt.code.addr     */
 FUNC_END(name_comma)
@@ -190,9 +190,9 @@ FUNC_START(wordlist_add) /* ( nt wid -- ) add name to wordlist */
         JZ(    DTOP,   TO(wordlist_add.prevnt))
         XSUB2( REG1,   DTOP)                           /* dtop = nt-prevnt        */
 LABEL(wordlist_add.prevnt)
-        STORw( DTOP,   AT(REG1, WORD_OFF_PREV_OFF))    /* nt.prev_off = dtop      */
+        STOR(  DTOP,   AT(REG1, WORD_OFF_PREV_OFF))    /* nt.prev_off = dtop      */
         LOAD(  REG2,   AT(DSTK))                       /* b = wid                 */
-        STOR(  REG1,   AT(REG2, WORDLIST_OFF_LAST))    /* wid.last = a            */
+        STOR(  REG1,   AT(REG2, WORDLIST_OFF_LAST))    /* wid.last = nt           */
         LOAD(  DTOP,   AT(DSTK, SZ2))
         ADD2( IMM(SZ3),DSTK)                           /* (                     ) */
 FUNC_END(wordlist_add)
