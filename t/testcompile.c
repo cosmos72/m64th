@@ -128,6 +128,17 @@ static const m4testcompile testcompile[] = {
     /* ------------------------------- words -------------------------------- */
     {"compile,", {}, {}, {callsz, {CALLXT(compile_comma)}}},
     {"valid-base?", {}, {}, {4, {/*inlined*/ m4two, m4_lit2s_, T(37), m4within}}},
+    /* ------------------------------- conditional jumps -------------------- */
+    {"if", {}, {2, {2, m4_if_}}, {2, {m4_if_, T(-1)}}},
+    {"if then", {}, {}, {3, {m4_if_, T(1), m4then}}},
+    {"if dup then", {}, {}, {4, {m4_if_, T(2), m4dup, m4then}}},
+    {"if + else - then", {}, {}, {7, {m4_if_, T(3), m4plus, m4_else_, T(2), m4minus, m4then}}},
+    {"if + if * else / then else - then",
+     {},
+     {},
+     {14,
+      {m4_if_, T(10), m4plus, m4_if_, T(3), m4times, m4_else_, T(2), m4div, m4then, m4_else_, T(2),
+       m4minus, m4then}}},
 };
 
 static m4code m4testcompile_init(const m4testcompile *t, m4countedcode *codegen_buf) {

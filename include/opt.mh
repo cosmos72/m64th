@@ -429,8 +429,9 @@
     x((drop, drop), (two_drop))    /* drop drop       => 2drop        */                           \
         x((over, over), (two_dup)) /* over over       => 2dup         */
 
-#define OPT3_BODY(x, _)                           /* note: '_' represents noop       */            \
+#define OPT3_BODY(x, _)                           /* note: '_' represents noop        */           \
     x((r_from, plus, to_r), (r_plus))             /* r>    +   >r      => r+          */           \
+        x((_if_, T(1), then), (drop))             /* if    then        => drop        */           \
         x((lit, T(0xff), and), (to_char))         /* 0xff  and         => to-char     */           \
         x((over, plus, swap), (bounds))           /* over  +     swap  => bounds      */           \
         x((over, trail, two_nip), (swap))         /* over  trail 2nip  => swap        */           \

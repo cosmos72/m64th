@@ -235,9 +235,8 @@ WORD_START(else, find)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE)
     WORD_CODE(
         _compile_unresolved_jump_, _else_, _else_, /* compile our unresolved jump */
-        two_to_r,                           /* move our jump_info out of the way  */
-        CALL(_resolve_jump_here_), /* resolve jump of previous 'if'      */
-        two_r_from,                         /* restore our jump_info              */
+        two_swap,                           /* move our jump_info out of the way  */
+        CALL(_resolve_jump_here_),          /* resolve jump of previous 'if'      */
         exit
     )
 WORD_END(else)
