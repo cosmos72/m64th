@@ -532,6 +532,7 @@ WORD_END(_resolve_begin_repeat_)
 /**
  * Resolve the most recent unresolved jump, setting its destination to 'here'.
  * Called by 'else' and 'then' to resolve the jump offset of a preceding 'if' or 'else'.
+ * Called by '[resolve-loop]' to resolve the jump offset of a preceding 'leave'.
  * ( jump_address jump_category -- )
  */
 WORD_START(_resolve_jump_here_, _resolve_begin_repeat_)
@@ -549,8 +550,9 @@ WORD_START(_resolve_jump_here_, _resolve_begin_repeat_)
     )
 WORD_END(_resolve_jump_here_)
 /**
- * called by 'loop': resolve the jump offsets of one 'loop', zero or more 'leave' and one 'do'
- * ( ctrl-loop -- )
+ * called by 'loop': resolve the jump offsets of a single 'loop' or '+loop',
+ * zero or more 'leave' and one 'do' or '?do'
+ * ( do-sys leave-sys* loop-sys -- )
  */
 WORD_START(_resolve_loop_, _resolve_jump_here_)
     WORD_DSTACK(-1,0)
@@ -559,7 +561,14 @@ WORD_START(_resolve_loop_, _resolve_jump_here_)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE)
     WORD_CODE(
-        /* TODO */ exit
+        /* 2>r                                         ( do-sys leave-sys*     ) (R: loop-sys )
+         * begin
+         *    dup ' (leave) =                          ( do-sys leave-sys* t|f ) (R: loop-sys )
+         * while                                       ( do-sys leave-sys*     ) (R: loop-sys )
+         *    [resolve-jump-here]                      ( do-sys leave-sys*     ) (R: loop-sys )
+         * repeat                                      ( do-sys                ) (R: loop-sys )
+         */
+        exit
     )
 WORD_END(_resolve_loop_)
 /**
