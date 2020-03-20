@@ -943,8 +943,16 @@ static m4testexecute testexecute_f[] = {
      {}},
     /* ----------------------------- comma... ------------------------------- */
     {"0x123 token,", {m4token_comma, m4bye}, {{1, {0x123}}, {}}, {{}, {}}, {1, {0x123}}},
-    {"[compile-lit,] T(500)", {m4_compile_lit_, T(500), m4bye}, {{}, {}}, {{}, {}}, {1, {500}}},
-    {"0xcdef short,", {m4short_comma, m4bye}, {{1, {0xcdef}}, {}}, {{}, {}}, {1, {0xcdef}}},
+    {"[compile-lit,] T(500) [#compiled]",
+     {m4_num_compiled_, m4_compile_lit_, T(500), m4_num_compiled_, m4bye},
+     {{}, {}},
+     {{2, {0, 1}}, {}},
+     {1, {500}}},
+    {"0xcdef short,",
+     {m4_num_compiled_, m4swap, m4short_comma, m4_num_compiled_, m4bye},
+     {{1, {0xcdef}}, {}},
+     {{2, {0, 1}}, {}},
+     {1, {0xcdef}}},
 #if defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
     {"1 c, 2 c,", {m4c_comma, m4c_comma, m4bye}, {{2, {2, 1}}, {}}, {{}, {}}, {1, {0x0201}}},
 #if SZt == 2
@@ -967,9 +975,9 @@ static m4testexecute testexecute_f[] = {
 #undef P
 #if SZ == 8
     {"0x08090a0b0c0d0e0f ,",
-     {m4comma, m4bye},
+     {m4comma, m4_num_compiled_, m4bye},
      {{1, {0x08090a0b0c0d0e0f}}, {}},
-     {{}, {}},
+     {{1, {SZ / SZt}}, {}},
      {4, {0x0e0f, 0x0c0d, 0x0a0b, 0x0809}}},
 #elif SZ == 4
     {"0x0c0d0e0f ,", {m4comma, m4bye}, {{1, {0x0c0d0e0f}}, {}}, {{}, {}}, {2, {0x0e0f, 0x0c0d}}},

@@ -28,10 +28,10 @@ FUNC_START(_num_compiled_)
         DPUSH( DTOP)
 #ifdef __x86_64__
         MOVE(  HERE,       DTOP)                       /* dtop = here           */
-        SUB2(  AT(M4TH, M4TH_OFF_XT),  DTOP)           /* dtop = here - [xt]    */
+        SUB2(  AT(M4TH, M4TH_OFF_XT),  DTOP)           /* dtop = here - m4th.xt */
 #else
-        LOAD(  DTOP,       AT(M4TH, M4TH_OFF_XT))      /* dtop = [xt]           */
-        SUB3(  HERE,       DTOP,   DTOP)               /* dtop = here - [xt]    */
+        LOAD(  DTOP,       AT(M4TH, M4TH_OFF_XT))      /* dtop = m4th.xt        */
+        XSUB2( HERE,       DTOP)                       /* dtop = here - m4th.xt */
 #endif
         SHR2(  IMM(PSZt),  DTOP)
 FUNC_END(_num_compiled_)
