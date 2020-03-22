@@ -128,19 +128,6 @@ FUNC_START(to_r)               /* >r */
 FUNC_END(to_r)
 
 
-#ifndef M4FCS_PICK
-/* cs-pick ( jump_u ... jump_1 jump_0 u -- jump_u ... jump_1 jump_0 jumpu ) tools-ext */
-FUNC_START(cs_pick)
-        SHL2(  IMM(1), DTOP)
-        LOAD(  REG1,   AT(DSTK, DTOP, SZ))
-        INC1(  DTOP)
-        LOAD(  REG2,   AT(DSTK, DTOP, SZ))
-        MOVE(  REG1,   DTOP)
-        DPUSH( REG2)
-FUNC_END(cs_pick)
-#endif
-
-
 FUNC_START(cs_roll)
         /* TODO */
 FUNC_END(cs_roll)

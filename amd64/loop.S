@@ -123,7 +123,7 @@ FUNC_END(two_dup_two_to_r)
 /* cs-pick ( jump_u ... jump_1 jump_0 u -- jump_u ... jump_1 jump_0 jumpu ) tools-ext */
 FUNC_START(cs_pick)
         shl    DTOP;
-        mov    SZ(DSTK, DTOP, SZ), REG2;
+        mov    SZ(DSTK, DTOP, SZ), REG1;
         mov      (DSTK, DTOP, SZ), DTOP;
-        DPUSH( REG2)
+        DPUSH( REG1)
 FUNC_END(cs_pick)
