@@ -28,12 +28,15 @@
     X(3, "0>=", zero_more_equal)                                                                   \
     X(2, "2+", two_plus)                                                                           \
     X(2, "2-", two_minus)                                                                          \
+    X(4, "2sm/", two_sm_div) /* symmetric divide by 2 */                                           \
     X(2, "4*", four_times)                                                                         \
     X(2, "4+", four_plus)                                                                          \
-    X(2, "4/", four_div)                                                                           \
+    X(2, "4/", four_div)      /* floored divide by 4 */                                            \
+    X(4, "4sm/", four_sm_div) /* symmetric divide by 4 */                                          \
     X(2, "8*", eight_times)                                                                        \
     X(2, "8+", eight_plus)                                                                         \
-    X(2, "8/", eight_div)                                                                          \
+    X(2, "8/", eight_div)             /* floored divide by 4 */                                    \
+    X(4, "8sm/", eight_sm_div)        /* symmetric divide by 8 */                                  \
     /*                             */ /*                                                */         \
     X(7, "2dup2>r", two_dup_two_to_r)                                                              \
     X(4, "2nip", two_nip)                                                                          \

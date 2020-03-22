@@ -115,12 +115,17 @@ FUNC_START(two_times)      /* 2*   */
 FUNC_END(two_times)
 
 
-FUNC_START(two_div)        /* 2/   */
+FUNC_START(two_div)        /* 2/   floored divide by 2 */
+        sar    DTOP;       /* sar rounds toward -infinity */
+FUNC_END(two_div)
+
+
+FUNC_START(two_sm_div)     /* 2sm/   m4th-user symmetric divide by 2 */
         MOVE(  DTOP, REG1)
         shr    IMM(63), REG1;
         ADD2(  REG1, DTOP) /* add 1 if negative */
         sar    DTOP;       /* because sar rounds toward -infinity */
-FUNC_END(two_div)
+FUNC_END(two_sm_div)
 
 
 #define M4FTWO_TO_R
@@ -161,12 +166,17 @@ FUNC_START(four)           /* 4    m4th-impl */
 FUNC_END(four)
 
 
-FUNC_START(four_div)       /* 4/   m4th-user */
+FUNC_START(four_div)       /* 4/   m4th-user floored divide by 4 */
+        sar    IMM(2), DTOP;  /* sar rounds toward -infinity */
+FUNC_END(four_div)
+
+
+FUNC_START(four_sm_div)    /* 4sm/ m4th-user symmetric divide by 4 */
         test   DTOP,   DTOP
         lea    3(DTOP),REG1;  /* add 3 if negative */
         cmovs  REG1,   DTOP;
         sar    IMM(2), DTOP;  /* because sar rounds toward -infinity */
-FUNC_END(four_div)
+FUNC_END(four_sm_div)
 
 
 #define M4FEIGHT
@@ -176,12 +186,17 @@ FUNC_START(eight)          /* 8   m4th-impl */
 FUNC_END(eight)
 
 
-FUNC_START(eight_div)      /* 8/   m4th-user */
+FUNC_START(eight_div)      /* 8/   m4th-user floored divide by 8 */
+        sar    IMM(3), DTOP;  /* sar rounds toward -infinity */
+FUNC_END(eight_div)
+
+
+FUNC_START(eight_sm_div)   /* 8sm/ m4th-user symmetric divide by 8 */
         test   DTOP,   DTOP
         lea    7(DTOP),REG1;  /* add 7 if negative */
         cmovs  REG1,   DTOP;
         sar    IMM(3), DTOP;  /* because sar rounds toward -infinity */
-FUNC_END(eight_div)
+FUNC_END(eight_sm_div)
 
 
 FUNC_START(less)           /* <   */
