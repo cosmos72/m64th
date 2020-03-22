@@ -542,6 +542,10 @@ WORD_START(_resolve_jump_here_, _resolve_begin_repeat_)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE)
     WORD_CODE(
+        /*
+         * FIXME also support 'if leave then' i.e. one or more leave-sys
+         * present in the control stack before the jump to resolve
+         */
                                         /* ( #tokens jump_category ) */
         drop, dup, _num_compiled_, sub, /* ( #tokens IP-offset )     */
         swap, one_minus, tokens,        /* ( IP-offset toffset ) toffset of token after (if) or (else) */
@@ -550,18 +554,40 @@ WORD_START(_resolve_jump_here_, _resolve_begin_repeat_)
     )
 WORD_END(_resolve_jump_here_)
 /**
+ * Resolve a jump from here[-1] to topmost jump-sys on control stack.
+ * Called by [resolve-loop]
+ * ( jump_address jump_category -- )
+ */
+WORD_START(_resolve_jump_there_, _resolve_jump_here_)
+    WORD_DSTACK(2,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE)
+    WORD_CODE(
+                                          /* ( #tokens jump_category ) */
+        drop, _num_compiled_, minus,      /* ( IP-offset )             */
+        here, minus_one, tokens, plus,    /* ( IP-offset taddr ) taddr of here-1 */
+        token_store, exit
+    )
+WORD_END(_resolve_jump_there_)
+/**
  * called by 'loop': resolve the jump offsets of a single 'loop' or '+loop',
  * zero or more 'leave' and one 'do' or '?do'
  * ( do-sys leave-sys* loop-sys -- )
  */
-WORD_START(_resolve_loop_, _resolve_jump_here_)
+WORD_START(_resolve_loop_, _resolve_jump_there_)
     WORD_DSTACK(-1,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE)
     WORD_CODE(
-        /* 2drop                                         ( do-sys leave-sys*     )
+        /*
+         * FIXME see [resolve-jump-here] above:
+         * we must also support 'if leave then' i.e. 'leave' inside a conditional
+         */
+        /* 2drop                                       ( do-sys leave-sys*     )
          * begin
          *    dup ' (leave) =                          ( do-sys leave-sys* t|f )
          * while                                       ( do-sys leave-sys*     )
@@ -583,7 +609,7 @@ WORD_START(_resolve_loop_, _resolve_jump_here_)
         _if_, T(3+nCALLt),
             two_dup, CALL(_resolve_jump_here_),
         then,
-        CALL(_resolve_jump_here_), exit
+        CALL(_resolve_jump_there_), exit
     )
 WORD_END(_resolve_loop_)
 /**
