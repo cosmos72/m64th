@@ -94,7 +94,7 @@ FUNC_START(move)
         cld;                           /* forward direction */
         JAE(   %rsi,   %rdi,    TO(move.loop))
         lea    -SZ(%rsi, %rcx, SZ),    %r8; /* src top      */
-        JB(    %r8,    %rdi,    TO(move.loop))
+        JB(    %r8,    %rdi,    TO(move.loop)) /* overlapping? */
 
         std;                           /* backward direction*/
         MOVE(  %r8,    %rsi)                /* copy from top*/

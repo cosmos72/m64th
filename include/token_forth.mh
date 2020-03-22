@@ -198,7 +198,7 @@
 #define M4pick 168               /* pick     */
 #undef M4refill /*169*/          /* refill   */
 #undef M4restore_input /*170*/   /* restore-input    */
-#undef M4roll /*171*/            /* roll     */
+#define M4roll 171               /* roll     */
 #undef M4s_equote /*172*/        /* s\"      */
 #undef M4save_input /*173*/      /* save-input   */
 #undef M4source_id /*174*/       /* source-id    */

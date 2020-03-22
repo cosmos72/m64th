@@ -84,8 +84,16 @@ WORD_START(parse_name, nip)
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(in_to_ibuf, CALL(ibuf_find_nonblanks), exit)
 WORD_END(parse_name)
-WORD(pick,             parse_name, DSTACK(1,1), RSTACK(0,0), WORD_PURE) /* DSTACK(x+1,x+1) */
-WORD(true,             pick,       DSTACK(0,1), RSTACK(0,0), WORD_PURE)
+WORD(pick,             parse_name, DSTACK(1,1), RSTACK(0,0), WORD_IMPURE) /* DSTACK(x+1,x+1) */
+WORD_START(roll,       pick)
+    WORD_DSTACK(1,0) /* DSTACK(x+1,x)   */
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE() /* uses %rip-relative ASM_CALL, cannot inline in native code */
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(roll, exit)
+WORD_END(roll)
+WORD(true,             roll,       DSTACK(0,1), RSTACK(0,0), WORD_PURE)
 WORD(tuck,             true,       DSTACK(2,3), RSTACK(0,0), WORD_PURE)
 WORD(u_more,           tuck,       DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 /*

@@ -68,11 +68,6 @@ static const m4token testdata_any[] = {
 void m4ftest_crc_plus_native_forth(m4arg _); /* implemented in generic_asm/test.S */
 void m4ftest_exec_xt_from_native(m4arg _);   /* implemented in generic_asm/test.S */
 
-static m4cell testbuf1[4] = {1, 2, 3, 4}, testbuf2[4] = {0, 0, 0, 0};
-static m4testexecute testexecute_move[] = {
-    {"1 move", {m4move, m4bye}, {{3, {(m4cell)testbuf1, (m4cell)testbuf2, 4}}, {}}, {{}, {}}, {}},
-};
-
 static m4testexecute testexecute_a[] = {
 #if 0
     {"1e9 0 do loop", {m4do, m4_loop_, T(-2), m4bye}, {{2, {1e9, 0}}, {}}, {{}, {}}, {}},
@@ -180,6 +175,10 @@ static m4testexecute testexecute_a[] = {
     {"0 pick", {m4pick, m4bye}, {{2, {-1, 0}}, {}}, {{2, {-1, -1}}, {}}, {}},
     {"1 pick", {m4pick, m4bye}, {{3, {-2, -1, 1}}, {}}, {{3, {-2, -1, -2}}, {}}, {}},
     {"2 pick", {m4pick, m4bye}, {{4, {-3, -2, -1, 2}}, {}}, {{4, {-3, -2, -1, -3}}, {}}, {}},
+    {"0 roll", {m4roll, m4bye}, {{2, {-1, 0}}, {}}, {{1, {-1}}, {}}, {}},
+    {"1 roll", {m4roll, m4bye}, {{3, {-2, -1, 1}}, {}}, {{2, {-1, -2}}, {}}, {}},
+    {"2 roll", {m4roll, m4bye}, {{4, {-3, -2, -1, 2}}, {}}, {{3, {-2, -1, -3}}, {}}, {}},
+    {"3 roll", {m4roll, m4bye}, {{5, {-4, -3, -2, -1, 3}}, {}}, {{4, {-3, -2, -1, -4}}, {}}, {}},
     {"rot", {m4rot, m4bye}, {{3, {1, 2, 3}}, {}}, {{3, {2, 3, 1}}, {}}, {}},
     {"-rot", {m4minus_rot, m4bye}, {{3, {1, 2, 3}}, {}}, {{3, {3, 1, 2}}, {}}, {}},
     {"rshift", {m4rshift, m4bye}, {{2, {99, 3}}, {}}, {{1, {99 >> 3}}, {}}, {}},
@@ -1291,12 +1290,11 @@ void m4th_testbench_crc_c(FILE *out) {
 
 m4cell m4th_testexecute(m4th *m, FILE *out) {
     m4testexecute *t[] = {
-        testexecute_move, testexecute_a, testexecute_b, testexecute_c,
-        testexecute_d,    testexecute_e, testexecute_f,
+        testexecute_a, testexecute_b, testexecute_c, testexecute_d, testexecute_e, testexecute_f,
     };
     const m4cell n[] = {
-        N_OF(testexecute_move), N_OF(testexecute_a), N_OF(testexecute_b), N_OF(testexecute_c),
-        N_OF(testexecute_d),    N_OF(testexecute_e), N_OF(testexecute_f),
+        N_OF(testexecute_a), N_OF(testexecute_b), N_OF(testexecute_c),
+        N_OF(testexecute_d), N_OF(testexecute_e), N_OF(testexecute_f),
     };
     m4testcount count = {};
     m4cell i;

@@ -111,6 +111,19 @@ FUNC_END(div_string)
 #endif /* M4FDIV_STRING */
 
 
+/* ( xu xu_1 ... x1 x0 u -- xu_1 ... x1 x0 xu ) */
+FUNC_START(roll)
+        LOAD(  REG1,   AT(DSTK, DTOP, SZ)) /* a = xu              */
+        ADDI(  DSTK,   SZ,   REG2)         /* b = address of x1   */
+        STOR(  REG1,   AT(DSTK, -SZ))      /* ( xu xu_1 ... x1 x0 xu u         ) */
+        STOR(  DSTK,   AT(DSTK, -SZ2))     /* ( xu xu_1 ... x1 x0 xu &x0 u     ) */
+        STOR(  REG2,   AT(DSTK, -SZ3))     /* ( xu xu_1 ... x1 x0 xu &x0 &x1 u ) */
+        SUB2(IMM(SZ3), DSTK)
+        ASM_CALL(      FUNC(move))         /* ( xu_1 ... x1 x0 x0 xu )           */
+        ADD2(IMM(SZ),  DSTK)               /* ( xu_1 ... x1 x0 xu    )           */
+FUNC_END(roll)
+
+
 /**
  * string-ci=  ( c-addr1 c-addr2 u -- c-addr1 c-addr2 u t|f ) m4th-user
  * compare two strings, ignoring case
