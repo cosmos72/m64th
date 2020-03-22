@@ -561,14 +561,29 @@ WORD_START(_resolve_loop_, _resolve_jump_here_)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE)
     WORD_CODE(
-        /* 2>r                                         ( do-sys leave-sys*     ) (R: loop-sys )
+        /* 2drop                                         ( do-sys leave-sys*     )
          * begin
-         *    dup ' (leave) =                          ( do-sys leave-sys* t|f ) (R: loop-sys )
-         * while                                       ( do-sys leave-sys*     ) (R: loop-sys )
-         *    [resolve-jump-here]                      ( do-sys leave-sys*     ) (R: loop-sys )
-         * repeat                                      ( do-sys                ) (R: loop-sys )
+         *    dup ' (leave) =                          ( do-sys leave-sys* t|f )
+         * while                                       ( do-sys leave-sys*     )
+         *    [resolve-jump-here]                      ( do-sys leave-sys*     )
+         * repeat                                      ( do-sys                )
+         * dup ' (?do) =
+         * if
+         *    2dup [resolve-jump-here]
+         * then
+         * [resolve-jump-there]
          */
-        exit
+        two_drop,
+        begin,
+            dup, _lit_, _leave_, equal,
+        _while_, T(3+nCALLt),
+            CALL(_resolve_jump_here_),
+        _repeat_, T(-9-nCALLt),
+        dup, _lit_, _q_do_, equal,
+        _if_, T(3+nCALLt),
+            two_dup, CALL(_resolve_jump_here_),
+        then,
+        CALL(_resolve_jump_here_), exit
     )
 WORD_END(_resolve_loop_)
 /**
