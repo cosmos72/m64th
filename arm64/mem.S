@@ -21,7 +21,7 @@
 
 /* clang-format off */
 
-/* cmove ( addr-src addr-dst u -- ) 'string' word set */
+/* cmove ( src-c-addr dst-c-addr u -- ) 'string' word set */
 FUNC_START(cmove)
         DPOP(  REG2)                       /* b = dst        */
         DPOP(  REG1)                       /* a = src        */
@@ -52,6 +52,12 @@ LABEL(cmove_1.test)
 LABEL(cmove.done)
         DPOP(  DTOP)
 FUNC_END(cmove)
+
+
+/* move ( src-addr dst-addr u -- ) */
+FUNC_START(move)
+        /* TODO */
+FUNC_END(move)
 
 
 FUNC_START(string_equal)   /* string=  ( addr1 addr2 u -- addr1 addr2 u t|f ) m4th-user */

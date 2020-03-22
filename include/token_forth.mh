@@ -124,7 +124,7 @@
 #define M4max 94                  /* max      */
 #define M4min 95                  /* min      */
 #define M4mod 96                  /* mod      */
-#undef M4move /*97*/              /* move     */
+#define M4move 97                 /* move     */
 #define M4negate 98               /* negate   */
 #define M4or 99                   /* or       */
 #define M4over 100                /* over     */

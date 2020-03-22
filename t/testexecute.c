@@ -65,19 +65,13 @@ static const m4token testdata_any[] = {
 
 /* -------------- m4test -------------- */
 
-#if 0
-static m4char testbuf1[16] = "foobar", testbuf2[16] = "###############";
-static m4testexecute testexecute_cmove[] = {
-    {"cmove",
-     {m4cmove, m4bye},
-     {{3, {(m4cell)testbuf_in, (m4cell)testbuf_out, 6}}, {}},
-     {{}, {}},
-     {}},
-};
-#endif /* 0 */
-
 void m4ftest_crc_plus_native_forth(m4arg _); /* implemented in generic_asm/test.S */
 void m4ftest_exec_xt_from_native(m4arg _);   /* implemented in generic_asm/test.S */
+
+static m4cell testbuf1[4] = {1, 2, 3, 4}, testbuf2[4] = {0, 0, 0, 0};
+static m4testexecute testexecute_move[] = {
+    {"1 move", {m4move, m4bye}, {{3, {(m4cell)testbuf1, (m4cell)testbuf2, 4}}, {}}, {{}, {}}, {}},
+};
 
 static m4testexecute testexecute_a[] = {
 #if 0
@@ -1296,16 +1290,22 @@ void m4th_testbench_crc_c(FILE *out) {
 }
 
 m4cell m4th_testexecute(m4th *m, FILE *out) {
+    m4testexecute *t[] = {
+        testexecute_move, testexecute_a, testexecute_b, testexecute_c,
+        testexecute_d,    testexecute_e, testexecute_f,
+    };
+    const m4cell n[] = {
+        N_OF(testexecute_move), N_OF(testexecute_a), N_OF(testexecute_b), N_OF(testexecute_c),
+        N_OF(testexecute_d),    N_OF(testexecute_e), N_OF(testexecute_f),
+    };
     m4testcount count = {};
+    m4cell i;
     m4array_copy_to_tarray(crc1byte_array, crc1byte_code);
     /* printf("crc('t') = %u\n", (unsigned)m4th_crc1byte(0xffffffff, 't')); */
 
-    m4th_testexecute_bunch(m, testexecute_a, N_OF(testexecute_a), &count, out);
-    m4th_testexecute_bunch(m, testexecute_b, N_OF(testexecute_b), &count, out);
-    m4th_testexecute_bunch(m, testexecute_c, N_OF(testexecute_c), &count, out);
-    m4th_testexecute_bunch(m, testexecute_d, N_OF(testexecute_d), &count, out);
-    m4th_testexecute_bunch(m, testexecute_e, N_OF(testexecute_e), &count, out);
-    m4th_testexecute_bunch(m, testexecute_f, N_OF(testexecute_f), &count, out);
+    for (i = 0; i < (m4cell)N_OF(t); i++) {
+        m4th_testexecute_bunch(m, t[i], n[i], &count, out);
+    }
 
     if (out != NULL) {
         if (count.failed == 0) {

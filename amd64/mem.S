@@ -66,13 +66,13 @@ FUNC_START(div_string)
 FUNC_END(div_string)
 
 
-/* cmove ( addr-src addr-dst u -- ) 'string' word set */
+/* cmove ( src-c-addr dst-c-addr u -- ) 'string' word set */
 FUNC_START(cmove)
-        MOVE(  %rdi,  %rax)            /* save DSTK == %rdi */
-        MOVE(  %rsi,  %rdx)            /* save RSTK == %rsi */
-        LOAD(  %rdi,  AT(%rax))        /* src               */
-        LOAD(  %rsi,  AT(%rax, SZ))    /* dst               */
-        MOVE(  DTOP,  %rcx)            /* n                 */
+        MOVE(  %rdi,   %rax)           /* save DSTK == %rdi */
+        MOVE(  %rsi,   %rdx)           /* save RSTK == %rsi */
+        LOAD(  %rdi,   AT(%rax))       /* dst               */
+        LOAD(  %rsi,   AT(%rax, SZ))   /* src               */
+        MOVE(  DTOP,   %rcx)           /* n                 */
 
         cld;                           /* forward direction */
         rep    movsb (%rsi), (%rdi);   /* copy string       */
@@ -81,6 +81,32 @@ FUNC_START(cmove)
         MOVE(  AT(%rax,SZ2), DTOP)     /* load dstack top   */
         MOVE(  %rdx,   %rsi)           /* load RSTK         */
 FUNC_END(cmove)
+
+
+/* move ( src-addr dst-addr u -- ) */
+FUNC_START(move)
+        MOVE(  %rdi,   %rax)           /* save DSTK == %rdi */
+        MOVE(  %rsi,   %rdx)           /* save RSTK == %rsi */
+        LOAD(  %rdi,   AT(%rax))       /* dst               */
+        LOAD(  %rsi,   AT(%rax, SZ))   /* src               */
+        MOVE(  DTOP,   %rcx)           /* n                 */
+
+        cld;                           /* forward direction */
+        JAE(   %rsi,   %rdi,    TO(move.loop))
+        lea    -SZ(%rsi, %rcx, SZ),    %r8; /* src top      */
+        JB(    %r8,    %rdi,    TO(move.loop))
+
+        std;                           /* backward direction*/
+        MOVE(  %r8,    %rsi)                /* copy from top*/
+        lea    -SZ(%rdi, %rcx, SZ),    %rdi;/* copy to top  */
+
+LABEL(move.loop)
+        rep    movsq (%rsi), (%rdi);   /* copy 8 bytes per iteration */
+        cld;
+        lea    AT(%rax,SZ3), DSTK;     /* load DSTK         */
+        MOVE(  AT(%rax,SZ2), DTOP)     /* load dstack top   */
+        MOVE(  %rdx,   %rsi)           /* load RSTK         */
+FUNC_END(move)
 
 
 FUNC_START(string_equal)   /* string=  ( addr1 addr2 u -- addr1 addr2 u t|f ) m4th-user */
