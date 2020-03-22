@@ -63,14 +63,14 @@ FUNC_START(move)
         JAE(   REG1,   REG2,   TO(move.fwd))   /* copying to lower address => forward */
         JBE(   REG3,   REG2,   TO(move.fwd))   /* not overlapping => forward */
         ADD4(  REG2,   DTOP,   PSZ,  REG2)     /* b = dst_end    */
-LABEL(move.rev_loop)
+LABEL(move.rev)
         ldr    x4,     [REG3, -SZ]!;
         str    x4,     [REG2, -SZ]!;
-        JA(    REG3,   REG1,   TO(move.rev_loop))
+        JA(    REG3,   REG1,   TO(move.rev))
         JUMP(  TO(move.done))
 LABEL(move.fwd)
-        SUB2(IMM(SZ8), REG3)                   /* src_end -= 8 * SZ */
         JA(    REG1,   REG3,   TO(move1.fwd))  /* < 8 cells => slow */
+        SUB2(IMM(SZ8), REG3)                   /* src_end -= 8 * SZ */
 LABEL(move8.fwd_loop)
         ldp    x5, x6, AT(REG1, IMM(0));
         ldp    x7, x8, AT(REG1, IMM(SZ2));
@@ -83,10 +83,8 @@ LABEL(move8.fwd_loop)
         ADD2(IMM(SZ8), REG1)
         ADD2(IMM(SZ8), REG2)
         JBE(   REG1,   REG3,   TO(move8.fwd_loop))
-LABEL(move1.fwd)
         ADD2(IMM(SZ8), REG3)                   /* src_end += 8 * SZ */
-        JAE(   REG1,   REG3,   TO(move.done))
-LABEL(move1.fwd_loop)
+LABEL(move1.fwd)
         ldr    x4,     [REG1], SZ;
         str    x4,     [REG2], SZ;
         JB(    REG1,   REG3,  TO(move1.fwd_loop))
