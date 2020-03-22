@@ -175,6 +175,15 @@ FUNC_START(abs)
 FUNC_END(abs)
 
 
+/* cs-pick ( jump_u ... jump_1 jump_0 u -- jump_u ... jump_1 jump_0 jumpu ) tools-ext */
+FUNC_START(cs_pick)
+        ADD4(  DSTK,   DTOP,   IMM(PSZ+1), REG1)
+        LOAD(  REG2,   AT(REG1, SZ))
+        LOAD(  DTOP,   AT(REG1))
+        DPUSH( REG2)
+FUNC_END(cs_pick)
+
+
 FUNC_START(lshift)
         DPOP(  REG1)
         lsl    DTOP,   REG1,   DTOP;

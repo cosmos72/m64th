@@ -268,6 +268,15 @@ FUNC_START(bl)             /* bl   */
 FUNC_END(bl)
 
 
+/* cs-pick ( jump_u ... jump_1 jump_0 u -- jump_u ... jump_1 jump_0 jumpu ) tools-ext */
+FUNC_START(cs_pick)
+        shl    DTOP;
+        mov    SZ(DSTK, DTOP, SZ), REG1;
+        mov      (DSTK, DTOP, SZ), DTOP;
+        DPUSH( REG1)
+FUNC_END(cs_pick)
+
+
 FUNC_START(lshift)         /* lshift */
         MOVE(  DTOP, %rcx)
         DPOP(  DTOP)
