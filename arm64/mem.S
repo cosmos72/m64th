@@ -87,7 +87,7 @@ LABEL(move8.fwd_loop)
 LABEL(move1.fwd)
         ldr    x4,     [REG1], SZ;
         str    x4,     [REG2], SZ;
-        JB(    REG1,   REG3,  TO(move1.fwd_loop))
+        JB(    REG1,   REG3,  TO(move1.fwd))
 LABEL(move.done)
         DPOP(  DTOP)
 FUNC_END(move)
