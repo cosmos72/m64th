@@ -117,3 +117,13 @@ FUNC_START(two_dup_two_to_r)   /* 2dup 2>r  m4th-user */
         STOR(  REG1,       AT(RSTK, -SZ2))
         SUB2(  IMM(SZ2),   RSTK)
 FUNC_END(two_dup_two_to_r)
+
+
+#define M4FCS_PICK
+/* cs-pick ( jump_u ... jump_1 jump_0 u -- jump_u ... jump_1 jump_0 jumpu ) tools-ext */
+FUNC_START(cs_pick)
+        shl    DTOP;
+        mov    SZ(DSTK, DTOP, SZ), REG2;
+        mov      (DSTK, DTOP, SZ), DTOP;
+        DPUSH( REG2)
+FUNC_END(cs_pick)

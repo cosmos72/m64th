@@ -148,6 +148,8 @@
 /* ------- forth 2012: tools ext ---------------------------------------------------------------- */
 #define DICT_TOKENS_FORTH_TOOLS_EXT(X)                                                             \
     X(3, "bye", bye)                                                                               \
+    X(7, "cs-pick", cs_pick)                                                                       \
+    X(7, "cs-roll", cs_roll)                                                                       \
     X(11, "name>string", name_to_string) /* ( nt -- addr n  ) convert name to string           */
 
 #define DICT_WORDS_FORTH_TOOLS_EXT(X) DICT_TOKENS_FORTH_TOOLS_EXT(X)

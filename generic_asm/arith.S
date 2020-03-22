@@ -351,7 +351,7 @@ FUNC_START(pick)
 FUNC_END(pick)
 
 
-FUNC_START(rdepth)          /* ( -- n ) get return stack depth */
+FUNC_START(rdepth)          /* ( -- n ) m4th-user get return stack depth */
         DPUSH( DTOP)
         LOAD(  DTOP,   AT(M4TH, M4TH_OFF_REND))
         SUB2(  RSTK,   DTOP)

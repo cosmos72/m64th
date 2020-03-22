@@ -30,7 +30,9 @@ WORD_START(bye, LASTWORD)
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MAY_JUMP)
     WORD_CODE(bye, exit) /* exit is reachable by subsequent m4th_run() */
 WORD_END(bye)
-WORD(name_to_string,     bye,          DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(cs_pick,            bye,          DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY) /* DSTACK(x+1,x+1) */
+WORD(cs_roll,            cs_pick,      DSTACK(1,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY) /* DSTACK(x+1,x)   */
+WORD(name_to_string,     cs_roll,      DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 
 #undef LASTWORD
 #define LASTWORD name_to_string
