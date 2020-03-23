@@ -114,6 +114,9 @@
 #define m4_to_4u m4to_uint
 #define m4_to_8u m4noop
 
+#define m4cs_pick m4two_pick
+#define m4cs_roll m4two_roll
+
 /* -------------------------------------------------------------------------- */
 /* M4* numeric values have uppercase prefix 'M4'                              */
 /* -------------------------------------------------------------------------- */
@@ -204,5 +207,8 @@
 #define M4_to_2u M4to_ushort
 #define M4_to_4u M4to_uint
 #define M4_to_8u M4noop
+
+#define M4cs_pick M4two_pick
+#define M4cs_roll M4two_roll
 
 #endif /* M4TH_INCLUDE_TOKEN_ALIAS_MH */

@@ -128,11 +128,6 @@ FUNC_START(to_r)               /* >r */
 FUNC_END(to_r)
 
 
-FUNC_START(cs_roll)
-        /* TODO */
-FUNC_END(cs_roll)
-
-
 FUNC_START(dup_to_r)           /* dup>r    m4th-user */
         RPUSH( RTOP)
         MOVE(  DTOP, RTOP)

@@ -38,9 +38,11 @@
     X(2, "8/", eight_div)             /* floored divide by 4 */                                    \
     X(4, "8sm/", eight_sm_div)        /* symmetric divide by 8 */                                  \
     /*                             */ /*                                                */         \
-    X(7, "2dup2>r", two_dup_two_to_r)                                                              \
+    X(8, "2dup_2>r", two_dup_two_to_r)                                                             \
     X(4, "2nip", two_nip)                                                                          \
-    X(7, "2r>2drop", two_r_from_two_drop)                                                          \
+    X(5, "2pick", two_pick)                                                                        \
+    X(8, "2r>2drop", two_r_from_two_drop)                                                          \
+    X(5, "2roll", two_roll)                                                                        \
     X(6, "bounds", bounds)                 /* ( c-addr u -- c-addr+u c-addr ) get string bounds */ \
     X(5, "dup>r", dup_to_r)                /*                    equivalent to: dup >r   */        \
     X(11, "ex-message!", ex_message_store) /* ( c-addr u --    ) store exception message string */ \
@@ -55,6 +57,7 @@
     X(2, "r+", r_plus)                              /* ( a -- ) (R: b -- a+b )         */          \
     X(6, "r>drop", r_from_drop)                     /* equivalent to: r> drop          */          \
     X(6, "rdepth", rdepth)                          /* ( -- n ) get return stack depth */          \
+    X(5, "-roll", minus_roll)                       /* rotate in opposite direction than "roll" */ \
     X(4, "-rot", minus_rot)                         /* equivalent to: rot rot          */          \
     X(7, "squared", squared)                        /* equivalent to: dup *            */          \
     X(7, "string=", string_equal)                   /* ( addr1 addr2 u -- addr1 addr2 u t|f ) */   \

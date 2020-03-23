@@ -111,10 +111,27 @@ FUNC_END(div_string)
 #endif /* M4FDIV_STRING */
 
 
+/* ( yu xu yu_1 xu_1 ... y1 x1 y0 x0 u -- yu_1 xu_1 ... y1 x1 y0 x0 yu xu ) */
+FUNC_START(two_roll)
+        SHL2(IMM(1),   DTOP)               /* dtop <<= 1                          */
+        ADDI(  DSTK,   SZ2,  REG1)         /* a = address of x1                   */
+        ADD4(  DSTK,   DTOP, PSZ, REG2)    /* b = address of xu                   */
+        LOAD(  REG4,   AT(REG2, SZ))       /* d = yu                              */
+        LOAD(  REG3,   AT(REG2))           /* c = xu                              */
+        STOR(  REG4,   AT(DSTK, -SZ))      /* ( yu xu ... y0 x0 yu u            ) */
+        STOR(  REG3,   AT(DSTK, -SZ2))     /* ( yu xu ... y0 x0 yu xu u         ) */
+        STOR(  DSTK,   AT(DSTK, -SZ3))     /* ( yu xu ... y0 x0 yu xu &x0 u     ) */
+        STOR(  REG1,   AT(DSTK, -SZ4))     /* ( yu xu ... y0 x0 yu xu &x0 &x1 u ) */
+        SUB2(IMM(SZ4), DSTK)
+        ASM_CALL(      FUNC(move))         /* ( yu_1 xu_1 ... y0 x0 y0 x0 yu xu ) */
+        JUMP(          FUNC(two_nip))      /* ( yu_1 xu_1 ... y0 x0 yu xu       ) */
+FUNC_RAWEND(two_roll)
+
+
 /* ( xu xu_1 ... x1 x0 u -- xu_1 ... x1 x0 xu ) */
 FUNC_START(roll)
-        LOAD(  REG1,   AT(DSTK, DTOP, SZ)) /* a = xu              */
-        ADDI(  DSTK,   SZ,   REG2)         /* b = address of x1   */
+        LOAD(  REG1,   AT(DSTK, DTOP, SZ)) /* a = xu                             */
+        ADDI(  DSTK,   SZ,   REG2)         /* b = address of x1                  */
         STOR(  REG1,   AT(DSTK, -SZ))      /* ( xu xu_1 ... x1 x0 xu u         ) */
         STOR(  DSTK,   AT(DSTK, -SZ2))     /* ( xu xu_1 ... x1 x0 xu &x0 u     ) */
         STOR(  REG2,   AT(DSTK, -SZ3))     /* ( xu xu_1 ... x1 x0 xu &x0 &x1 u ) */
@@ -123,6 +140,20 @@ FUNC_START(roll)
         ADD2(IMM(SZ),  DSTK)               /* ( xu_1 ... x1 x0 xu    )           */
 FUNC_END(roll)
 
+
+/* ( xu xu_1 ... x1 x0 u -- x0 xu xu_1 ... x1 ) */
+FUNC_START(minus_roll)
+        ADD4(  DSTK,   DTOP, PSZ, REG0)    /* @ = address of xu   */
+        LOAD(  REG1,   AT(DSTK))           /* a = x0              */
+        ADDI(  DSTK,   SZ,   REG2)         /* b = address of x1   */
+        STOR(  REG1,   AT(DSTK, -SZ))      /* ( xu xu_1 ... x1 x0 x0 u             ) */
+        STOR(  REG0,   AT(DSTK, -SZ2))     /* ( xu xu_1 ... x1 x0 x0 &xu u         ) */
+        STOR(  REG2,   AT(DSTK, -SZ3))     /* ( xu xu_1 ... x1 x0 x0 &xu &x1 u     ) */
+        STOR(  DSTK,   AT(DSTK, -SZ4))     /* ( xu xu_1 ... x1 x0 x0 &xu &x1 &x0 u ) */
+        SUB2(IMM(SZ4), DSTK)
+        ASM_CALL(      FUNC(move))         /* ( xu xu xu_1 ... x1 x0 &xu           ) */
+        JUMP(  FUNC(store))                /* ( x0 xu xu_1 ... x1                  ) */
+FUNC_RAWEND(minus_roll)
 
 /**
  * string-ci=  ( c-addr1 c-addr2 u -- c-addr1 c-addr2 u t|f ) m4th-user

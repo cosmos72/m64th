@@ -30,8 +30,22 @@ WORD_START(bye, LASTWORD)
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MAY_JUMP)
     WORD_CODE(bye, exit) /* exit is reachable by subsequent m4th_run() */
 WORD_END(bye)
-WORD(cs_pick,            bye,          DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY) /* DSTACK(x+1,x+1) */
-WORD(cs_roll,            cs_pick,      DSTACK(1,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY) /* DSTACK(x+1,x)   */
+WORD_START(cs_pick,      bye)
+    WORD_DSTACK(1,2) /* DSTACK(x+1,x+2) */
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_LEN(two_pick)
+    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_COMPILE_ONLY)
+    WORD_CODE(two_pick, exit)
+WORD_END(cs_pick)
+WORD_START(cs_roll,      cs_pick)
+    WORD_DSTACK(1,0) /* DSTACK(x+1,x) */
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE() /* uses %rip-relative ASM_CALL */
+    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_COMPILE_ONLY)
+    WORD_CODE(two_roll, exit)
+WORD_END(cs_roll)
 WORD(name_to_string,     cs_roll,      DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 
 #undef LASTWORD

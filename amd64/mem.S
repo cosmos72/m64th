@@ -103,8 +103,8 @@ FUNC_START(move)
 LABEL(move.loop)
         rep    movsq (%rsi), (%rdi);   /* copy 8 bytes per iteration */
         cld;
-        lea    AT(%rax,SZ3), DSTK;     /* load DSTK         */
-        MOVE(  AT(%rax,SZ2), DTOP)     /* load dstack top   */
+        ADDI(  %rax,   SZ3,    DSTK)   /* load DSTK         */
+        LOAD(  DTOP,   AT(%rax,SZ2))   /* load dstack top   */
         MOVE(  %rdx,   %rsi)           /* load RSTK         */
 FUNC_END(move)
 

@@ -56,40 +56,52 @@ FUNC_END(cmove)
 
 /* move ( src-addr dst-addr u -- ) */
 FUNC_START(move)
-        DPOP(  REG2)                           /* b = dst        */
-        DPOP(  REG1)                           /* a = src        */
+        DPOP(  REG2)                           /* b = dst              */
+        DPOP(  REG1)                           /* a = src              */
         JEQ(   DTOP,   IMM(0), TO(move.done))
-        ADD4(  REG1,   DTOP,   PSZ,  REG3)     /* c = src_end    */
-        JAE(   REG1,   REG2,   TO(move.fwd))   /* copying to lower address => forward */
-        JBE(   REG3,   REG2,   TO(move.fwd))   /* not overlapping => forward */
-        ADD4(  REG2,   DTOP,   PSZ,  REG2)     /* b = dst_end    */
-LABEL(move.rev_loop)
-        ldr    x4,     [REG3, -SZ]!;
-        str    x4,     [REG2, -SZ]!;
-        JA(    REG3,   REG1,   TO(move.rev_loop))
-        JUMP(  TO(move.done))
-LABEL(move.fwd)
-        SUB2(IMM(SZ8), REG3)                   /* src_end -= 8 * SZ */
-        JA(    REG1,   REG3,   TO(move1.fwd))  /* < 8 cells => slow */
-LABEL(move8.fwd_loop)
+
+        ADD4(  REG1,   DTOP,   PSZ,  REG3)     /* c = src_end          */
+        MOVE(IMM(SZ8), REG0)                   /* @ = 8*SZ = step_fwd  */
+        JAE(   REG1,   REG2,   TO(move.work))  /* copying to lower address => forward */
+        JBE(   REG3,   REG2,   TO(move.work))  /* not overlapping          => forward */
+
+        /* reverse copy, from top to bottom */
+        MOVE(IMM(-SZ8),REG0)                   /* @ = -8*SZ = step_rev */
+        ADD4(  REG1,   DTOP,   PSZ,  REG1)     /* a = src_end          */
+        ADD4(  REG2,   DTOP,   PSZ,  REG2)     /* b = dst_end          */
+        SUB2(IMM(SZ8), REG1)                   /* a = src_end - 8*SZ   */
+        SUB2(IMM(SZ8), REG2)                   /* b = dst_end - 8*SZ   */
+
+LABEL(move.work)
+        JB(    DTOP,   IMM(8), TO(move.by1))   /* < 8 cells => slow    */
+LABEL(move.by8)
         ldp    x5, x6, AT(REG1, IMM(0));
         ldp    x7, x8, AT(REG1, IMM(SZ2));
         ldp    x9, x10,AT(REG1, IMM(SZ4));
         ldp    x11,x12,AT(REG1, IMM(SZ6));
+        SUB2(IMM(8),   DTOP)
         stp    x5, x6, AT(REG2, IMM(0));
         stp    x7, x8, AT(REG2, IMM(SZ2));
         stp    x9, x10,AT(REG2, IMM(SZ4));
         stp    x11,x12,AT(REG2, IMM(SZ6));
-        ADD2(IMM(SZ8), REG1)
-        ADD2(IMM(SZ8), REG2)
-        JBE(   REG1,   REG3,   TO(move8.fwd_loop))
-LABEL(move1.fwd)
-        ADD2(IMM(SZ8), REG3)                   /* src_end += 8 * SZ */
-        JAE(   REG1,   REG3,   TO(move.done))
-LABEL(move1.fwd_loop)
-        ldr    x4,     [REG1], SZ;
-        str    x4,     [REG2], SZ;
-        JB(    REG1,   REG3,  TO(move1.fwd_loop))
+        ADD2(  REG0,   REG1)
+        ADD2(  REG0,   REG2)
+        JAE(   DTOP,   IMM(8),  TO(move.by8))
+
+LABEL(move.by1)
+        JEQ(   DTOP,   IMM(0),  TO(move.done))
+        SAR2(IMM(3),   REG0)                   /* @ = +/- SZ           */
+        JG(    REG0,   IMM(0),  TO(move.by1.loop))
+        ADD2(IMM(SZ7), REG1)                   /* a += 7*SZ            */
+        ADD2(IMM(SZ7), REG2)                   /* b += 7*SZ            */
+LABEL(move.by1.loop)
+        LOAD(  REG4,   AT(REG1))
+        SUB2(IMM(1),   DTOP)
+        STOR(  REG4,   AT(REG2))
+        ADD2(  REG0,   REG1)
+        ADD2(  REG0,   REG2)
+        JNE(   DTOP,   IMM(0),  TO(move.by1.loop))
+
 LABEL(move.done)
         DPOP(  DTOP)
 FUNC_END(move)

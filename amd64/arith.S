@@ -140,6 +140,15 @@ FUNC_START(two_to_r)       /* 2>r      */
 FUNC_END(two_to_r)
 
 
+/* 2pick ( du ... d1 d0 u -- du_1 ... d1 d0 du ) m4th-user */
+FUNC_START(two_pick)
+        shl    DTOP;
+        mov    SZ(DSTK, DTOP, SZ), REG1;
+        mov      (DSTK, DTOP, SZ), DTOP;
+        DPUSH( REG1)
+FUNC_END(two_pick)
+
+
 #define M4FTWO_R_FROM
 FUNC_START(two_r_from)     /* 2r>      */
         LOAD(  REG1,   AT(RSTK))
@@ -266,15 +275,6 @@ FUNC_START(bl)             /* bl   */
         DPUSH( DTOP)
         MOVE(  IMM(32), DTOPw)
 FUNC_END(bl)
-
-
-/* cs-pick ( jump_u ... jump_1 jump_0 u -- jump_u ... jump_1 jump_0 jumpu ) tools-ext */
-FUNC_START(cs_pick)
-        shl    DTOP;
-        mov    SZ(DSTK, DTOP, SZ), REG1;
-        mov      (DSTK, DTOP, SZ), DTOP;
-        DPUSH( REG1)
-FUNC_END(cs_pick)
 
 
 FUNC_START(lshift)         /* lshift */

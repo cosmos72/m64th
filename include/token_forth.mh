@@ -457,8 +457,8 @@
 #undef M4assembler /*427*/         /* assembler    */
 #define M4bye 428                  /* bye      */
 #undef M4code /*429*/              /* code     */
-#define M4cs_pick 430              /* cs-pick  */
-#define M4cs_roll 431              /* cs-roll  */
+#undef M4cs_pick /*430*/           /* cs-pick  alias of 2pick */
+#undef M4cs_roll /*431*/           /* cs-roll  alias of 2roll */
 #undef M4editor /*432*/            /* editor   */
 #undef M4forget /*433*/            /* forget   (obsolescent) */
 #undef M4n_to_r /*434*/            /* n>r      */
