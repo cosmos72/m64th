@@ -126,6 +126,9 @@ FUNC_END(eight_div)
 
 
 FUNC_START(eight_sm_div)      /* 8/   m4th-user symmetric divide by 8 */
+        cmp    DTOP,   IMM(0);
+        add    REG1,   DTOP,   IMM(7);     /* add 7 if negative */
+        csel   DTOP,   REG1,   DTOP,   lt;
         asr    DTOP,   DTOP,   IMM(3);     /* asr rounds toward -infinity */
 FUNC_END(eight_sm_div)
 
