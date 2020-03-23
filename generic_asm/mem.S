@@ -63,6 +63,16 @@ FUNC_END(store)
 #endif
 
 
+FUNC_START(two_store)          /* 2!  ( y x addr -- ) */
+        LOAD(  REG1,   AT(DSTK))
+        LOAD(  REG2,   AT(DSTK, SZ))
+        STOR(  REG1,   AT(DTOP))
+        STOR(  REG2,   AT(DTOP, SZ))
+        LOAD(  DTOP,   AT(DSTK, SZ2))
+        ADD2(IMM(SZ3), DSTK)
+FUNC_END(two_store)
+
+
 FUNC_START(byte_fetch)     /* byte@    m4th-user */
         LD_sb(DTOP,    AT(DTOP))
 FUNC_END(byte_fetch)
@@ -111,23 +121,6 @@ FUNC_END(div_string)
 #endif /* M4FDIV_STRING */
 
 
-/* ( yu xu yu_1 xu_1 ... y1 x1 y0 x0 u -- yu_1 xu_1 ... y1 x1 y0 x0 yu xu ) */
-FUNC_START(two_roll)
-        SHL2(IMM(1),   DTOP)               /* dtop <<= 1                          */
-        ADDI(  DSTK,   SZ2,  REG1)         /* a = address of x1                   */
-        ADD4(  DSTK,   DTOP, PSZ, REG2)    /* b = address of xu                   */
-        LOAD(  REG4,   AT(REG2, SZ))       /* d = yu                              */
-        LOAD(  REG3,   AT(REG2))           /* c = xu                              */
-        STOR(  REG4,   AT(DSTK, -SZ))      /* ( yu xu ... y0 x0 yu u            ) */
-        STOR(  REG3,   AT(DSTK, -SZ2))     /* ( yu xu ... y0 x0 yu xu u         ) */
-        STOR(  DSTK,   AT(DSTK, -SZ3))     /* ( yu xu ... y0 x0 yu xu &x0 u     ) */
-        STOR(  REG1,   AT(DSTK, -SZ4))     /* ( yu xu ... y0 x0 yu xu &x0 &x1 u ) */
-        SUB2(IMM(SZ4), DSTK)
-        ASM_CALL(      FUNC(move))         /* ( yu_1 xu_1 ... y0 x0 y0 x0 yu xu ) */
-        JUMP(          FUNC(two_nip))      /* ( yu_1 xu_1 ... y0 x0 yu xu       ) */
-FUNC_RAWEND(two_roll)
-
-
 /* ( xu xu_1 ... x1 x0 u -- xu_1 ... x1 x0 xu ) */
 FUNC_START(roll)
         LOAD(  REG1,   AT(DSTK, DTOP, SZ)) /* a = xu                             */
@@ -154,6 +147,41 @@ FUNC_START(minus_roll)
         ASM_CALL(      FUNC(move))         /* ( xu xu xu_1 ... x1 x0 &xu           ) */
         JUMP(  FUNC(store))                /* ( x0 xu xu_1 ... x1                  ) */
 FUNC_RAWEND(minus_roll)
+
+
+/* ( du du_1 ... d1 d0 u -- du_1 ... d1 d0 du ) */
+FUNC_START(two_roll)
+        SHL2(IMM(1),   DTOP)               /* dtop <<= 1                         */
+        ADDI(  DSTK,   SZ2,  REG1)         /* a = address of d1                  */
+        ADD4(  DSTK,   DTOP, PSZ, REG2)    /* b = address of du                  */
+        LOAD(  REG3,   AT(REG2))           /* c = xu  \ du = ( yu xu )           */
+        LOAD(  REG4,   AT(REG2, SZ))       /* d = yu  /                          */
+        STOR(  REG4,   AT(DSTK, -SZ))      /* ( du ... d0 yu u                 ) */
+        STOR(  REG3,   AT(DSTK, -SZ2))     /* ( du ... d0 du u                 ) */
+        STOR(  DSTK,   AT(DSTK, -SZ3))     /* ( du ... d0 du &d0 u             ) */
+        STOR(  REG1,   AT(DSTK, -SZ4))     /* ( du ... d0 du &d0 &d1 u         ) */
+        SUB2(IMM(SZ4), DSTK)
+        ASM_CALL(      FUNC(move))         /* ( du_1 ... d0 d0 du              ) */
+        JUMP(          FUNC(two_nip))      /* ( du_1 ... d0 du                 ) */
+FUNC_RAWEND(two_roll)
+
+
+/* ( du du_1 ... d1 d0 u -- d0 du du_1 ... d1 ) */
+FUNC_START(minus_two_roll)
+        SHL2(IMM(1),   DTOP)               /* dtop <<= 1                         */
+        ADD4(  DSTK,   DTOP, PSZ, REG0)    /* @ = address of du                  */
+        LOAD(  REG1,   AT(DSTK))           /* a = x0  \ d0 = ( y0 x0 )           */
+        LOAD(  REG2,   AT(DSTK, SZ))       /* b = y0  /                          */
+        ADDI(  DSTK,   SZ2,   REG3)        /* c = address of x1                  */
+        STOR(  REG2,   AT(DSTK, -SZ))      /* ( du ... d0 y0 u                 ) */
+        STOR(  REG1,   AT(DSTK, -SZ2))     /* ( du ... d0 d0 u                 ) */
+        STOR(  REG0,   AT(DSTK, -SZ3))     /* ( du ... d0 d0 &du u             ) */
+        STOR(  REG3,   AT(DSTK, -SZ4))     /* ( du ... d0 d0 &du &d1 u         ) */
+        STOR(  DSTK,   AT(DSTK, -SZ5))     /* ( du ... d0 d0 &du &d1 &d0 u     ) */
+        SUB2(IMM(SZ5), DSTK)
+        ASM_CALL(      FUNC(move))         /* ( du du ... d1 d0 &du            ) */
+        JUMP(          FUNC(two_store))    /* ( d0 du ... d1                   ) */
+FUNC_RAWEND(minus_two_roll)
 
 /**
  * string-ci=  ( c-addr1 c-addr2 u -- c-addr1 c-addr2 u t|f ) m4th-user

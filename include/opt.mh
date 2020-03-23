@@ -60,6 +60,7 @@
         x((zero, more_equal), (zero_more_equal))             /* 0  >=         => 0>=            */ \
         x((zero, and), (drop, zero))                         /* 0  and        => drop 0         */ \
         x((zero, two_roll), _)                               /* 0  2roll      =>                */ \
+        x((zero, minus_two_roll), _)                         /* 0  -2roll     =>                */ \
         x((zero, lshift), _)                                 /* 0  lshift     =>                */ \
         x((zero, or), _)                                     /* 0  or         =>                */ \
         x((zero, pick), dup)                                 /* 0  pick       => dup            */ \
@@ -77,6 +78,7 @@
         x((one, div), _)                                     /* 1  /          =>                */ \
         x((one, div_mod), (drop, zero))                      /* 1  /mod       => drop 0         */ \
         x((one, two_roll), (two_swap))                       /* 1  2roll      => 2swap          */ \
+        x((one, minus_two_roll), (two_swap))                 /* 1  -2roll     => 2swap          */ \
         x((one, lshift), (two_times))                        /* 1  lshift     => 2*             */ \
         x((one, mod), _)                                     /* 1  mod        => drop 0         */ \
         x((one, pick), over)                                 /* 1  pick       => over           */ \
@@ -99,6 +101,8 @@
         x((two, plus), (two_plus))                           /* 2  +          => 2+             */ \
         x((two, minus), (two_minus))                         /* 2  -          => 2-             */ \
         x((two, div), (two_sm_div))                          /* 2  /          => 2sm/           */ \
+        x((two, two_roll), (two_rot))                        /* 2  2roll      => 2rot           */ \
+        x((two, minus_two_roll), (minus_two_rot))            /* 2  -2roll     => -2rot          */ \
         x((two, lshift), (four_times))                       /* 2  lshift     => 4*             */ \
         x((two, roll), (rot))                                /* 2  roll       => rot            */ \
         x((two, minus_roll), (minus_rot))                    /* 2  -roll      => -rot           */ \
@@ -273,6 +277,10 @@
         x((two_over, two_nip), (two_drop, two_dup))          /* 2over 2nip    => 2drop 2dup     */ \
         x((two_from_r, two_to_r), _)                         /* 2r>   2>r     =>                */ \
         x((two_r_from, two_drop), (two_r_from_two_drop))     /* 2r>   2drop   => 2r>2drop       */ \
+        x((two_rot, two_rot), (minus_two_rot))               /* 2rot 2rot     => -2rot          */ \
+        x((two_rot, minus_two_rot), _)                       /* 2rot -2rot    =>                */ \
+        x((minus_two_rot, two_rot), _)                       /* -2rot 2rot    =>                */ \
+        x((minus_two_rot, minus_two_rot), (two_rot))         /* -2rot -2rot   => 2rot           */ \
         x((two_swap, two_drop), (two_nip))                   /* 2swap 2drop   => 2nip           */ \
         x((two_swap, two_nip), (two_drop))                   /* 2swap 2nip    => 2drop          */ \
         x((two_swap, two_swap), _)                           /* 2swap 2swap   =>                */ \
