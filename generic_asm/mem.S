@@ -63,7 +63,7 @@ FUNC_END(store)
 #endif
 
 
-FUNC_START(two_store)          /* 2!  ( y x addr -- ) */
+FUNC_START(two_store)      /* 2!  ( y x addr -- ) */
         LOAD(  REG1,   AT(DSTK))
         LOAD(  REG2,   AT(DSTK, SZ))
         STOR(  REG1,   AT(DTOP))
