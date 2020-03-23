@@ -108,6 +108,13 @@ FUNC_START(fetch)          /* @ */
 FUNC_END(fetch)
 
 
+FUNC_START(two_fetch)      /* 2@ */
+        LOAD(  REG1, AT(DTOP, SZ))
+        LOAD(  DTOP, AT(DTOP))
+        DPUSH( REG1)
+FUNC_END(two_fetch)
+
+
 #ifndef M4FDIV_STRING
 /* /string ( c-addr u n -- c-addr' u' )  'string' word set */
 FUNC_START(div_string)

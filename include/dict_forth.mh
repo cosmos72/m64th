@@ -39,6 +39,7 @@
     X(2, "2*", two_times)                                                                          \
     X(2, "2/", two_div)                                                                            \
     X(3, "2>r", two_to_r)                                                                          \
+    X(2, "2@", two_fetch)                                                                          \
     X(5, "2drop", two_drop)                                                                        \
     X(4, "2dup", two_dup)                                                                          \
     X(5, "2over", two_over)                                                                        \
