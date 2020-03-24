@@ -115,6 +115,28 @@ FUNC_START(two_fetch)      /* 2@ */
 FUNC_END(two_fetch)
 
 
+FUNC_START(line_find_char) /* ( c-addr u ch -- u' ) get index of char or CR */
+        ZERO(  REG1)                   /* a = index = 0 */
+#ifdef DPOP2
+        DPOP2( REG2,   REG3)           /* b = max = u,  c = c-addr    */
+#else
+        LOAD(  REG2,   AT(DSTK))       /* b = max = u   */
+        LOAD(  REG3,   AT(DSTK, SZ))   /* c = c-addr    */
+        ADD2(IMM(SZ2), DSTK)
+#endif
+        JZ(    REG2,   TO(line_find_char.done))
+LABEL(line_find_char.loop)
+        LD_ub( REG4,   AT(REG3, REG1, 1)) /* d = c-addr[index] */
+        JEQ(   REG4,   DTOP,   TO(line_find_char.done))
+        JEQ(   REG4,   IMM(10),TO(line_find_char.done))
+        JEQ(   REG4,   IMM(13),TO(line_find_char.done))
+        INC1(  REG1)
+        JB(    REG1,   REG2,   TO(line_find_char.loop))
+LABEL(line_find_char.done)
+        MOVE(  REG1,   DTOP)
+FUNC_END(line_find_char)
+
+
 #ifndef M4FDIV_STRING
 /* /string ( c-addr u n -- c-addr' u' )  'string' word set */
 FUNC_START(div_string)

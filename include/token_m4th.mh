@@ -59,7 +59,7 @@
 #define M4i_plus 539                 /* i+                    */
 #define M4i_minus 540                /* i-                    */
 #define M4i_prime 541                /* i'                    */
-#undef M4____gap                     /*                       */
+#define M4line_find_char 542         /* ( c-addr u ch -- u' ) get index of char or CR */
 #define M4noop 543                   /* noop                  */
 #undef M4____gap                     /*                       */
 #undef M4____gap                     /*                       */

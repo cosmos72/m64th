@@ -54,7 +54,7 @@ WORD_START(ibuf_find_nonblanks, always_eof)
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
         /*
-         * dup ibuf-line-skip-blanks-except-cr       ( io t|f        )
+         * dup ibuf-skip-blanks-except-cr            ( io t|f        )
          * if                                        ( io            )
          *    drop 0 0                               ( 0 0           )
          * else                                      ( io            )

@@ -207,7 +207,9 @@ WORD_START(interpret,  if0)
         _lit_, T(M4ERR_UNDEFINED_WORD), throw, exit
     )
 WORD_END(interpret)
-WORD(noop,             interpret,      DSTACK(0,0), RSTACK(0,0), WORD_PURE)
+/* ( c-addr u ch -- u' ) get position of given char or CR/LF in string, whatever comes first */
+WORD(line_find_char,   interpret,      DSTACK(3,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(noop,             line_find_char, DSTACK(0,0), RSTACK(0,0), WORD_PURE)
 WORD(r_store,          noop,           DSTACK(1,0), RSTACK(1,1), WORD_R_PURE)
 WORD(r_plus,           r_store,        DSTACK(1,0), RSTACK(1,1), WORD_R_PURE)
 WORD(r_from_drop,      r_plus,         DSTACK(0,0), RSTACK(1,0), WORD_R_PURE)
