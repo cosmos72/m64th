@@ -101,14 +101,14 @@ FUNC_END(two_nip)
 /* 2pick ( du ... d1 d0 u -- du ... d1 d0 du ) m4th-user */
 FUNC_START(two_pick)
         ADD4(  DSTK,   DTOP,   IMM(PSZ+1), REG1)
-        LOAD(  REG2,   AT(REG1, SZ))
-        LOAD(  DTOP,   AT(REG1))
+        ldp    DTOP,   REG2,   AT(REG1);
         DPUSH( REG2)
 FUNC_END(two_pick)
 
 
+/* 2rot  ( a b c d e f -- c d e f a b ) */
 #define M4FTWO_ROT
-FUNC_START(two_rot)       /* 2rot      ( a b c d e f -- c d e f a b ) */
+FUNC_START(two_rot)
         ldp    REG2,   REG1,   AT(DSTK, SZ3);  /* b, a            */
         ldp    REG4,   REG3,   AT(DSTK, SZ);   /* d, c            */
         ldr    REG0,           AT(DSTK);       /* e               */
@@ -119,8 +119,9 @@ FUNC_START(two_rot)       /* 2rot      ( a b c d e f -- c d e f a b ) */
 FUNC_END(two_rot)
 
 
+/* -2rot  ( a b c d e f -- e f a b c d ) m4th-user */
 #define M4FMINUS_TWO_ROT
-FUNC_START(minus_two_rot)  /* -2rot    ( a b c d e f -- e f a b c d ) */
+FUNC_START(minus_two_rot)
         ldp    REG0,   REG4,   AT(DSTK);       /* e, d            */
         ldp    REG3,   REG2,   AT(DSTK, SZ2);  /* c, b            */
         ldr    REG1,           AT(DSTK, SZ4);  /* a               */
@@ -244,27 +245,27 @@ FUNC_START(rshift)
 FUNC_END(rshift)
 
 
-FUNC_START(to_byte)    /* to-byte */
+FUNC_START(to_byte)        /* to-byte      m4th-user */
         sbfx   DTOP,   DTOP, 0, 8;
 FUNC_END(to_byte)
 
-FUNC_START(to_short)   /* to-short */
+FUNC_START(to_short)       /* to-short     m4th-user */
         sbfx   DTOP,   DTOP, 0, 16;
 FUNC_END(to_short)
 
-FUNC_START(to_int)     /* to-int */
+FUNC_START(to_int)         /* to-int       m4th-user */
         sbfx   DTOP,   DTOP, 0, 32;
 FUNC_END(to_int)
 
-FUNC_START(to_char)    /* to-char */
+FUNC_START(to_char)        /* to-char      m4th-user */
         ubfx   DTOPw,  DTOPw, 0, 8;
 FUNC_END(to_char)
 
-FUNC_START(to_ushort)  /* to-ushort */
+FUNC_START(to_ushort)      /* to-ushort    m4th-user */
         ubfx   DTOPw,  DTOPw, 0, 16;
 FUNC_END(to_ushort)
 
-FUNC_START(to_uint)    /* to-uint */
+FUNC_START(to_uint)        /* to-uint      m4th-user */
         ubfx   DTOPw,  DTOPw, 0, 32;
 FUNC_END(to_uint)
 
@@ -276,21 +277,21 @@ FUNC_START(u_less)         /* u<   */
 FUNC_END(u_less)
 
 
-FUNC_START(u_less_equal)   /* u<=  m4th-user */
+FUNC_START(u_less_equal)   /* u<=      m4th-user */
         DPOP(  REG2)
         cmp    REG2,   DTOP;
         csetm  DTOP,   ls;
 FUNC_END(u_less_equal)
 
 
-FUNC_START(u_more)         /* u>   core ext */
+FUNC_START(u_more)         /* u>       core ext */
         DPOP(  REG2)
         cmp    REG2,   DTOP;
         csetm  DTOP,   hi;
 FUNC_END(u_more)
 
 
-FUNC_START(u_more_equal)   /* u>=  m4th-user */
+FUNC_START(u_more_equal)   /* u>=      m4th-user */
         DPOP(  REG2)
         cmp    REG2,   DTOP;
         csetm  DTOP,   hs;
@@ -299,8 +300,7 @@ FUNC_END(u_more_equal)
 
 /* ( x lo hi -- flag ) true if lo <= x < hi \ signed or unsigned */
 FUNC_START(within)         /* within   core ext */
-        DPOP(  REG2)                   /* REG2 = lo                 */
-        DPOP(  REG1)                   /* REG1 = x                  */
+        DPOP2( REG2,   REG1)           /* REG2 = lo, REG1 = x       */
         SUB2(  REG2,   DTOP)           /* DTOP = hi-lo              */
         SUB2(  REG2,   REG1)           /* REG1 = x-lo               */
         cmp    REG1,   DTOP;

@@ -23,9 +23,8 @@
 
 /* cmove ( src-c-addr dst-c-addr u -- ) 'string' word set */
 FUNC_START(cmove)
-        DPOP(  REG2)                       /* b = dst        */
-        DPOP(  REG1)                       /* a = src        */
-        ZERO(  REG0)                       /* @ = index      */
+        DPOP2( REG2,   REG1)               /* b = dst, a = src        */
+        ZERO(  REG0)                       /* @ = index               */
         JB(    DTOP,   IMM(SZ),TO(cmove_1.test))  /* copying < SZ bytes => slow       */
         JAE(   REG1,   REG2,   TO(cmove_SZ.init)) /* copying to lower address => fast */
         SUB3(  REG2,   REG1,   REG3)              /* c = dst - src                    */
@@ -56,8 +55,7 @@ FUNC_END(cmove)
 
 /* move ( src-addr dst-addr u -- ) */
 FUNC_START(move)
-        DPOP(  REG2)                           /* b = dst              */
-        DPOP(  REG1)                           /* a = src              */
+        DPOP2( REG2,   REG1)                   /* b = dst, a = src     */
         JEQ(   DTOP,   IMM(0), TO(move.done))
 
         ADD4(  REG1,   DTOP,   PSZ,  REG3)     /* c = src_end          */
@@ -108,8 +106,7 @@ FUNC_END(move)
 
 
 FUNC_START(string_equal)   /* string=  ( addr1 addr2 u -- addr1 addr2 u t|f ) m4th-user */
-        LOAD(  REG2,   AT(DSTK))       /* b = addr2 */
-        LOAD(  REG1,   AT(DSTK, SZ))   /* a = addr1 */
+        ldp    REG2,   REG1,    AT(DSTK);                /* b = addr2, a = addr1 */
         DPUSH( DTOP)
         JEQ(   REG1,   REG2,    TO(string_equal.true))   /* addr1 == addr2 */
         JZ(    DTOP,            TO(string_equal.true))   /* u == 0         */
