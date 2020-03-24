@@ -140,6 +140,13 @@
     X(5, "again", again)                                                                           \
     X(10, "parse-name", parse_name)
 
+/* ------- forth 2012: double ext --------------------------------------------------------------- */
+#define DICT_TOKENS_FORTH_DOUBLE_EXT(X) /*                                                      */ \
+    X(4, "2rot", two_rot)
+
+#define DICT_WORDS_FORTH_DOUBLE_EXT(X) /*                                                       */ \
+    DICT_TOKENS_FORTH_DOUBLE_EXT(X)    /*                                                       */
+
 /* ------- forth 2012: exception ---------------------------------------------------------------- */
 #define DICT_TOKENS_FORTH_EXCEPTION(X) /*                                                       */ \
     X(5, "throw", throw)
@@ -181,6 +188,7 @@
 #define DICT_TOKENS_FORTH(X)                                                                       \
     DICT_TOKENS_FORTH_CORE(X)                                                                      \
     DICT_TOKENS_FORTH_CORE_EXT(X)                                                                  \
+    DICT_TOKENS_FORTH_DOUBLE_EXT(X)                                                                \
     DICT_TOKENS_FORTH_EXCEPTION(X)                                                                 \
     DICT_TOKENS_FORTH_TOOLS_EXT(X)                                                                 \
     DICT_TOKENS_FORTH_SEARCH_ORDER(X)                                                              \
@@ -189,6 +197,7 @@
 #define DICT_WORDS_FORTH(X)                                                                        \
     DICT_WORDS_FORTH_CORE(X)                                                                       \
     DICT_WORDS_FORTH_CORE_EXT(X)                                                                   \
+    DICT_WORDS_FORTH_DOUBLE_EXT(X)                                                                 \
     DICT_WORDS_FORTH_EXCEPTION(X)                                                                  \
     DICT_WORDS_FORTH_TOOLS_EXT(X)                                                                  \
     DICT_WORDS_FORTH_SEARCH_ORDER(X)                                                               \

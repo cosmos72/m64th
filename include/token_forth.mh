@@ -260,7 +260,7 @@
 #undef M4m_plus /*230*/       /* m+       */
 
 /* 'forth' wordlist: 'double ext' word set */
-#undef M4two_rot /*233*/   /* 2rot     */
+#define M4two_rot 233      /* 2rot     */
 #undef M4two_value /*234*/ /* 2value   */
 #undef M4d_u_less /*235*/  /* du<      */
 

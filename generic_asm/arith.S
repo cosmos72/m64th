@@ -96,8 +96,43 @@ FUNC_START(two_over)       /* 2over    ( a b c d -- a b c d a b ) */
 FUNC_END(two_over)
 
 
+#ifndef M4FTWO_ROT
+FUNC_START(two_rot)       /* 2rot      ( a b c d e f -- c d e f a b ) */
+        LOAD(  REG1,   AT(DSTK, SZ4))  /* a        */
+        LOAD(  REG2,   AT(DSTK, SZ3))  /* b        */
+        LOAD(  REG3,   AT(DSTK, SZ2))  /* c        */
+        LOAD(  REG4,   AT(DSTK, SZ))   /* d        */
+        LOAD(  REG0,   AT(DSTK))       /* e        */
+        STOR(  REG3,   AT(DSTK, SZ4))  /* ( c _ _ _ _ _ ) */
+        STOR(  REG4,   AT(DSTK, SZ3))  /* ( c d _ _ _ _ ) */
+        STOR(  REG0,   AT(DSTK, SZ2))  /* ( c d e _ _ _ ) */
+        STOR(  DTOP,   AT(DSTK, SZ))   /* ( c d e f _ _ ) */
+        STOR(  REG1,   AT(DSTK))       /* ( c d e f a _ ) */
+        MOVE(  REG2,   DTOP)           /* ( c d e f a b ) */
+FUNC_END(two_rot)
+#endif
+
+
+#ifndef M4FMINUS_TWO_ROT
+FUNC_START(minus_two_rot)  /* -2rot    ( a b c d e f -- e f a b c d ) */
+        LOAD(  REG0,   AT(DSTK))       /* e        */
+        LOAD(  REG4,   AT(DSTK, SZ))   /* d        */
+        LOAD(  REG3,   AT(DSTK, SZ2))  /* c        */
+        LOAD(  REG2,   AT(DSTK, SZ3))  /* b        */
+        LOAD(  REG1,   AT(DSTK, SZ4))  /* a        */
+        STOR(  REG3,   AT(DSTK))       /* ( _ _ _ _ c _ ) */
+        STOR(  REG2,   AT(DSTK, SZ))   /* ( _ _ _ b c _ ) */
+        STOR(  REG1,   AT(DSTK, SZ2))  /* ( _ _ a b c _ ) */
+        STOR(  DTOP,   AT(DSTK, SZ3))  /* ( _ f a b c _ ) */
+        STOR(  REG0,   AT(DSTK, SZ4))  /* ( e f a b c _ ) */
+        MOVE(  REG4,   DTOP)           /* ( e f a b c d ) */
+FUNC_END(minus_two_rot)
+#endif
+
+
 #ifndef M4FTWO_SWAP
-FUNC_START(two_swap)       /* 2swap     remember: x86 instruction 'xchg' is SLOW */
+/* remember: x86 instruction 'xchg' is SLOW */
+FUNC_START(two_swap)       /* 2swap    ( a b c d -- c d a b ) */
         LOAD(  REG1,   AT(DSTK))
         LOAD(  REG2,   AT(DSTK, SZ))
         LOAD(  REG3,   AT(DSTK, SZ2))

@@ -17,31 +17,11 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "../include/asm.mh"
-#include "../include/dict.mh"
-#include "../include/dict_forth.mh"
-
 /* clang-format off */
 
-/* ---------------------------------------------------------------------------------------------- */
-DICT_START(forth)
+DICT_WORDS_FORTH_DOUBLE_EXT(WORDNAME)
 
-DICTNAME(5, "forth", forth)
+WORD(two_rot, LASTWORD, DSTACK(6,6), RSTACK(0,0), WORD_PURE)
 
-#include "forth_core.S"
-
-#include "forth_core_ext.S"
-
-#include "forth_double_ext.S"
-
-#include "forth_exception.S"
-
-#include "forth_tools_ext.S"
-
-#include "forth_search_order.S"
-
-#include "forth_string.S"
-
-
-DICT_BODY(forth, LASTWORD)
-DICT_END(forth)
+#undef LASTWORD
+#define LASTWORD two_rot
