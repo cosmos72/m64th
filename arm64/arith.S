@@ -107,6 +107,30 @@ FUNC_START(two_pick)
 FUNC_END(two_pick)
 
 
+#define M4FTWO_ROT
+FUNC_START(two_rot)       /* 2rot      ( a b c d e f -- c d e f a b ) */
+        ldp    REG2,   REG1,   AT(DSTK, SZ3);  /* b, a            */
+        ldp    REG4,   REG3,   AT(DSTK, SZ);   /* d, c            */
+        ldr    REG0,           AT(DSTK);       /* e               */
+        stp    REG4,   REG3,   AT(DSTK, SZ3);  /* ( c d _ _ _ _ ) */
+        stp    DTOP,   REG0,   AT(DSTK, SZ);   /* ( c d e f _ _ ) */
+        str    REG1,           AT(DSTK);       /* ( c d e f a _ ) */
+        MOVE(  REG2,   DTOP)                   /* ( c d e f a b ) */
+FUNC_END(two_rot)
+
+
+#define M4FMINUS_TWO_ROT
+FUNC_START(minus_two_rot)  /* -2rot    ( a b c d e f -- e f a b c d ) */
+        ldp    REG0,   REG4,   AT(DSTK);       /* e, d            */
+        ldp    REG3,   REG2,   AT(DSTK, SZ2);  /* c, b            */
+        ldr    REG1,           AT(DSTK, SZ4);  /* a               */
+        stp    REG3,   REG2,   AT(DSTK);       /* ( _ _ _ b c _ ) */
+        stp    REG1,   DTOP,   AT(DSTK, SZ2);  /* ( _ f a b c _ ) */
+        str    REG0,           AT(DSTK, SZ4);  /* ( e f a b c _ ) */
+        MOVE(  REG4,   DTOP)                   /* ( e f a b c d ) */
+FUNC_END(minus_two_rot)
+
+
 FUNC_START(four_div)       /* 4/   m4th-user floored divide by 4 */
         asr    DTOP,   DTOP,   IMM(2);     /* asr rounds toward -infinity */
 FUNC_END(four_div)
