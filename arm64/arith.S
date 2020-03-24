@@ -200,12 +200,6 @@ FUNC_START(more_equal)     /* >=   m4th-user */
 FUNC_END(more_equal)
 
 
-FUNC_START(question_dup)   /* ?dup */
-        cbz    DTOP,   FUNC_NEXT(question_dup);
-        DPUSH( DTOP)
-FUNC_END(question_dup)
-
-
 FUNC_START(abs)
         cmp    DTOP,   IMM(0);
         cneg   DTOP,   DTOP,   lt;
@@ -230,6 +224,7 @@ FUNC_START(min)
         cmp    REG2,   DTOP;
         csel   DTOP,   REG2,   DTOP,   lt;
 FUNC_END(min)
+
 
 /* signed remainder */
 FUNC_START(mod)

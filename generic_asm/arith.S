@@ -272,6 +272,12 @@ FUNC_START(eight_plus)     /* 8+  m4th-user */
 FUNC_END(eight_plus)
 
 
+FUNC_START(question_dup)   /* ?dup */
+        JZ(    DTOP,   FUNC_NEXT(question_dup))
+        DPUSH( DTOP)
+FUNC_END(question_dup)
+
+
 FUNC_START(aligned)
         ALIGN( SZ,     DTOP)
 FUNC_END(aligned)

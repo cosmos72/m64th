@@ -256,13 +256,6 @@ FUNC_START(more_equal)     /* >=   m4th-user */
 FUNC_END(more_equal)
 
 
-FUNC_START(question_dup)   /* ?dup */
-        test   DTOP, DTOP;
-        jz     FUNC_NEXT(question_dup);
-        DPUSH( DTOP)
-FUNC_END(question_dup)
-
-
 FUNC_START(abs)            /* abs */
         MOVE(  DTOP, REG1)
         NEG1(  REG1)
