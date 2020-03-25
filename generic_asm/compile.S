@@ -86,35 +86,48 @@ FUNC_START(allot)          /* allot */
 FUNC_END(allot)
 
 
+#ifndef M4FC_COMMA
 FUNC_START(c_comma)        /* c,   */
         STORb( DTOP,       AT(HERE))
         INC1(  HERE)
         DPOP(  DTOP)
 FUNC_END(c_comma)
+#endif
 
 
+#ifndef M4FSHORT_COMMA
 FUNC_START(short_comma)    /* short,   m4th-user */
         STORh( DTOP,       AT(HERE))
         ADD2(  IMM(2),     HERE)
         DPOP(  DTOP)
 FUNC_END(short_comma)
+#endif
 
 
+#ifndef M4FINT_COMMA
 FUNC_START(int_comma)      /* int,     m4th-user */
         STORw( DTOP,       AT(HERE))
         ADD2(  IMM(4),     HERE)
         DPOP(  DTOP)
 FUNC_END(int_comma)
+#endif
 
 
+#ifndef M4FCOMMA
 FUNC_START(comma)          /* ,    */
         STOR(  DTOP,       AT(HERE))
         ADD2(  IMM(SZ),    HERE)
         DPOP(  DTOP)
 FUNC_END(comma)
+#endif
 
 
-/* countedstring, ( c-addr u -- ) m4th-user */
+/**
+ * countedstring, ( c-addr u -- ) m4th-user
+ * implemented in assembly because 'name,' needs it,
+ * and we want 'name,' to be assembly too,
+ * because it needs to know m4word internals
+ */
 FUNC_START(countedstring_comma)
         JA(    DTOP,   IMM(0xff),  TO(countedstring_comma.throw))
         STORb( DTOP,   AT(HERE))

@@ -43,11 +43,33 @@ WORD_START(always_eof, div_token)
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_PURE)
     WORD_CODE(two_drop, drop, zero, _lit_, T(M4ERR_UNEXPECTED_EOF), exit)
 WORD_END(always_eof)
+/* compile-string, ( c-addr u -- ) runtime effect: ( -- c-addr' u ) */
+WORD_START(compile_string_comma, always_eof)
+    WORD_DSTACK(2,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        /* dup dup >token <>                           ( c-addr u t|f       )
+         * if                                          ( c-addr u           )
+         *   M4ERR_DEFINITION_NAME_TOO_LONG throw      (                    )
+         * then                                        ( c-addr u           )
+         * ' (lit-string) token,                       ( c-addr u           )
+         * dup token,                                  ( c-addr u           )
+         * here swap                                   ( c-addr here u      )
+         * cmove                                       (                    )
+         * token-aligned                               (                    )
+         */
+        /* TODO */
+        exit
+    )
+WORD_END(compile_string_comma)
 /**
  * ibuf-delimited-line ( io ch -- c-addr u ) get string before ch in current iobuf line,
  * without refilling and stopping before any CR
  */
-WORD_START(ibuf_delimited_line, always_eof)
+WORD_START(ibuf_delimited_line, compile_string_comma)
     WORD_DSTACK(2,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
