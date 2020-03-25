@@ -251,12 +251,12 @@
 #define ADDROF_1M(sym, dst) /* load symbol address into dst. symbol must be within +/- 1MB */ \
     adr   dst,  sym;             /* low 21 bits */
 
-#define DPUSH(val)       str   val, [DSTK, -SZ]!; /* push val to second data stack element */
-#define DPOP(val)        ldr   val, [DSTK], SZ;   /* pop second data stack element into val */
-#define DPOP2(val1,val2) ldp   val1, val2, [DSTK], SZ2; /* pop 2nd, 3rd data stack elements into val1, val2 */
+#define DPUSH(reg)       str   reg, [DSTK, -SZ]!; /* push reg to second data stack element */
+#define DPOP(reg)        ldr   reg, [DSTK], SZ;   /* pop second data stack element into reg */
+#define DPOP2(reg1,reg2) ldp   reg1, reg2, [DSTK], SZ2; /* pop 2nd, 3rd data stack elements into reg1, reg2 */
 
-#define RPUSH(val)       str   val, [RSTK, -SZ]!; /* push val to second return stack element */
-#define RPOP(val)        ldr   val, [RSTK], SZ;   /* pop second return stack element into val */
+#define RPUSH(reg)       str   reg, [RSTK, -SZ]!; /* push val to second return stack element */
+#define RPOP(reg)        ldr   reg, [RSTK], SZ;   /* pop second return stack element into val */
 
 /* clang-format on */
 

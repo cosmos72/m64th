@@ -66,9 +66,10 @@
     X(7, "squared", squared)                        /* equivalent to: dup *            */          \
     X(7, "string=", string_equal)                   /* ( addr1 addr2 u -- addr1 addr2 u t|f ) */   \
     X(10, "string-ci=", string_ci_equal)            /* ( addr1 addr2 u -- addr1 addr2 u t|f ) */   \
-    X(18, "string-first-blank", string_first_blank) /* ( c-addr u -- u' )               */         \
-    X(3, "sub", sub)                                /* equivalent to: swap -            */         \
-    X(5, "trail", trail)                            /* equivalent to: over swap         */         \
+    X(18, "string-first-blank", string_first_blank) /* ( c-addr u -- u' )                     */   \
+    X(21, "string-first-nonblank", string_first_nonblank) /* ( c-addr u -- u' )               */   \
+    X(3, "sub", sub)                                      /* equivalent to: swap -            */   \
+    X(5, "trail", trail)                                  /* equivalent to: over swap         */   \
     /*                              */ /*                                               */         \
     X(5, "byte@", byte_fetch)                                                                      \
     /* X(5, "char@", char_fetch)    */ /* alias of: c@                                  */         \
@@ -215,10 +216,10 @@
     DICT_TOKENS_M4TH_CORE(X)                                                                       \
     /* ( handle c-addr u -- 0 M4ERR_UNEXPECTED_EOF ) always return EOF. usable for iobuf>func */   \
     X(10, "always-eof", always_eof)                                                                \
-    /*   ( io -- c-addr u ) find blank-delimited string in current iobuf line (no refilling) */    \
-    X(19, "ibuf-find-nonblanks", ibuf_find_nonblanks)                                              \
     /*   ( io ch -- c-addr u ) get string before ch in current iobuf line (no refilling) */        \
-    X(20, "ibuf-find-until-char", ibuf_find_until_char)                                            \
+    X(19, "ibuf-delimited-line", ibuf_delimited_line)                                              \
+    /*   ( io -- c-addr u ) find non-blank string in current iobuf line (no refilling) */          \
+    X(18, "ibuf-nonblank-line", ibuf_nonblank_line)                                                \
     X(11, "ibuf-refill", ibuf_refill) /*   ( io -- err  ) read some data into iobuf   */           \
     X(20, "ibuf-refill-if-empty", ibuf_refill_if_empty) /* ( io -- err ) */                        \
     X(16, "ibuf-skip-blanks", ibuf_skip_blanks) /* ( io -- ) skip blanks from iobuf current data*/ \

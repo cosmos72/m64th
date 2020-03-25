@@ -43,10 +43,48 @@ WORD_START(always_eof, div_token)
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_PURE)
     WORD_CODE(two_drop, drop, zero, _lit_, T(M4ERR_UNEXPECTED_EOF), exit)
 WORD_END(always_eof)
-/* ( io -- c-addr u ) find blank-delimited string in current iobuf line,
-   without refilling and stopping before any CR
+/**
+ * ibuf-delimited-line ( io ch -- c-addr u ) get string before ch in current iobuf line,
+ * without refilling and stopping before any CR
  */
-WORD_START(ibuf_find_nonblanks, always_eof)
+WORD_START(ibuf_delimited_line, always_eof)
+    WORD_DSTACK(2,2)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        /*
+         * 2dup 2>r drop iobuf>data r@ line-find-char  ( u            ) (R: io ch  )
+         * i' iobuf>data rot tuck                      ( addr u u' u  ) (R: io ch  )
+         * >                                           ( addr u t|f   ) (R: io ch  )
+         * if                                          ( addr u       ) (R: io ch  )
+         *    2dup chars + c@                          ( addr u ch'   ) (R: io ch  )
+         *    trail r> =                               ( addr u u t|f ) (R: io     )
+         *    negate +                                 ( addr u u'    ) (R: io     )
+         * else                                        ( addr u u     ) (R: io ch  )
+         *    dup r> drop                              ( addr u u     ) (R: io     )
+         * then                                        ( addr u u     ) (R: io     )
+         * r> iobuf>pos +!                             ( addr u       )
+         */
+        two_dup_two_to_r, drop, iobuf_data, r_fetch, line_find_char,
+        i_prime, iobuf_data, rot, tuck,
+        more,
+        _if_, T(11),
+            two_dup, chars, plus, c_fetch,
+            trail, r_from, equal,
+            negate, plus,
+        _else_, T(3),
+            dup, r_from_drop,
+        then,
+        r_from, iobuf_pos, plus_store, exit
+    )
+WORD_END(ibuf_delimited_line)
+/**
+ * ibuf-nonblank-line ( io -- c-addr u ) find first non-blank string in current iobuf line,
+ * without refilling and stopping before any CR
+ */
+WORD_START(ibuf_nonblank_line, ibuf_delimited_line)
     WORD_DSTACK(1,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -76,9 +114,9 @@ WORD_START(ibuf_find_nonblanks, always_eof)
             r_from_drop,
         then, exit
     )
-WORD_END(ibuf_find_nonblanks)
+WORD_END(ibuf_nonblank_line)
 /* ibuf-refill ( io -- err ) read some chars into iobuf */
-WORD_START(ibuf_refill, ibuf_find_nonblanks)
+WORD_START(ibuf_refill, ibuf_nonblank_line)
     WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()

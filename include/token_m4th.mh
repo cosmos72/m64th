@@ -74,10 +74,10 @@
 #define M4string_equal 554           /* string=    ( c-addr1 c-addr2 u -- t|f ) */
 #define M4string_ci_equal 555        /* string-ci= ( c-addr1 c-addr2 u -- t|f ) */
 #define M4string_first_blank 556     /* string-first-blank ( c-addr u -- u' )   */
-#define M4sub 557                    /* sub       equivalent to: swap -         */
+#define M4string_first_nonblank 557  /* string-first-nonblank ( c-addr u -- u' )*/
+#define M4sub 558                    /* sub       equivalent to: swap -         */
 #undef M4____gap                     /*                       */
-#define M4trail 559                  /* trail     equivalent to: over swap    */
-#undef M4____gap                     /*                       */
+#define M4trail 560                  /* trail     equivalent to: over swap    */
 #define M4u_less_equal 561           /* u<=                   */
 #define M4u_more_equal 562           /* u>=                   */
 #undef M4____gap                     /*                       */

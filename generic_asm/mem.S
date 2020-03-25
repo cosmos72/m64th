@@ -115,28 +115,6 @@ FUNC_START(two_fetch)      /* 2@ */
 FUNC_END(two_fetch)
 
 
-FUNC_START(line_find_char) /* ( c-addr u ch -- u' ) get index of char or CR */
-        ZERO(  REG1)                   /* a = index = 0 */
-#ifdef DPOP2
-        DPOP2( REG2,   REG3)           /* b = max = u,  c = c-addr    */
-#else
-        LOAD(  REG2,   AT(DSTK))       /* b = max = u   */
-        LOAD(  REG3,   AT(DSTK, SZ))   /* c = c-addr    */
-        ADD2(IMM(SZ2), DSTK)
-#endif
-        JZ(    REG2,   TO(line_find_char.done))
-LABEL(line_find_char.loop)
-        LD_ub( REG4,   AT(REG3, REG1, 1)) /* d = c-addr[index] */
-        JEQ(   REG4,   DTOP,   TO(line_find_char.done))
-        JEQ(   REG4,   IMM(10),TO(line_find_char.done))
-        JEQ(   REG4,   IMM(13),TO(line_find_char.done))
-        INC1(  REG1)
-        JB(    REG1,   REG2,   TO(line_find_char.loop))
-LABEL(line_find_char.done)
-        MOVE(  REG1,   DTOP)
-FUNC_END(line_find_char)
-
-
 #ifndef M4FDIV_STRING
 /* /string ( c-addr u n -- c-addr' u' )  'string' word set */
 FUNC_START(div_string)
@@ -148,6 +126,22 @@ FUNC_START(div_string)
         STOR(  REG2,   AT(DSTK))
 FUNC_END(div_string)
 #endif /* M4FDIV_STRING */
+
+
+FUNC_START(line_find_char) /* ( c-addr u ch -- u' ) get index of char or CR */
+        ZERO(  REG1)                   /* a = index = 0 */
+        DPOP2( REG2,   REG3)           /* b = max = u,  c = c-addr    */
+        JZ(    REG2,   TO(line_find_char.done))
+LABEL(line_find_char.loop)
+        LD_ub( REG4,   AT(REG3, REG1, 1)) /* d = c-addr[index] */
+        JEQ(   REG4,   DTOP,   TO(line_find_char.done))
+        JEQ(   REG4,   IMM(10),TO(line_find_char.done))
+        JEQ(   REG4,   IMM(13),TO(line_find_char.done))
+        INC1(  REG1)
+        JB(    REG1,   REG2,   TO(line_find_char.loop))
+LABEL(line_find_char.done)
+        MOVE(  REG1,   DTOP)
+FUNC_END(line_find_char)
 
 
 /* ( xu xu_1 ... x1 x0 u -- xu_1 ... x1 x0 xu ) */
@@ -248,19 +242,36 @@ FUNC_END(string_ci_equal)
 
 
 /**
- * string-first-blank ( c-addr u -- u' ) return index of first blank (i.e. char <= 32) in string,
+ * string-first-blank ( c-addr u -- u' ) return index of first blank (i.e. char <= 32) in string.
  * return string length if not found.
  */
 FUNC_START(string_first_blank)
-        DPOP(  REG2)                                               /* b = addr */
-        JZ(    DTOP,            TO(string_first_blank.ret)) /* u == 0   */
+        DPOP(  REG2)                                   /* b = addr */
+        JZ(    DTOP,   FUNC_NEXT(string_first_blank))  /* u == 0   */
         ZERO(  REG1w)
-LABEL(string_first_blank.byte)
+LABEL(string_first_blank.loop)
         LD_ub( REG3,   AT(REG2, REG1, 1))
-        JBE(   REG3w,  IMM(32), TO(string_first_blank.found))
+        JBE(   REG3w,  IMM(32),TO(string_first_blank.found))
         INC1(  REG1)
-        JB(    REG1,   DTOP,    TO(string_first_blank.byte))
+        JB(    REG1,   DTOP,   TO(string_first_blank.loop))
 LABEL(string_first_blank.found)
         MOVE(  REG1,   DTOP)
-LABEL(string_first_blank.ret)
 FUNC_END(string_first_blank)
+
+
+/*
+ * string-first-nonblank ( c-addr u -- u' ) get index of first non-blank (i.e. char > 32) in string.
+ * return string length if not found.
+ */
+FUNC_START(string_first_nonblank)
+        DPOP(  REG2)                                   /* b = addr      */
+        JZ(    DTOP,   FUNC_NEXT(string_first_nonblank))/* u == 0       */
+        ZERO(  REG1w)                                  /* a = index = 0 */
+LABEL(string_first_nonblank.loop)
+        LD_ub( REG3,   AT(REG2, REG1, 1))              /* c = addr[index] */
+        JA(    REG3w,  IMM(32),TO(string_first_nonblank.found))
+        INC1(  REG1)
+        JB(    REG1,   DTOP,   TO(string_first_nonblank.loop))
+LABEL(string_first_nonblank.found)
+        MOVE(  REG1,   DTOP)
+FUNC_END(string_first_nonblank)

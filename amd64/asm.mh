@@ -234,20 +234,25 @@
 #define ADDROF_4G(sym, dst) lea sym(RIP), dst; /* load symbol address into dst */
 #define ADDROF_1M(sym, dst) lea sym(RIP), dst; /* load symbol address into dst */
 
-#define DPUSH(val) /* push val to second data stack element */                                     \
-    STOR(val, AT(DSTK, -SZ))                                                                       \
+#define DPUSH(reg) /* push reg to second data stack element */                                     \
+    STOR(reg, AT(DSTK, -SZ))                                                                       \
     SUB2(IMM(SZ), DSTK)
 
-#define DPOP(val) /* pop second data stack element into val */                                     \
-    LOAD(val, AT(DSTK))                                                                            \
+#define DPOP(reg) /* pop second data stack element into reg */                                     \
+    LOAD(reg, AT(DSTK))                                                                            \
     ADD2(IMM(SZ), DSTK)
 
-#define RPUSH(val) /* push val to second return stack element */                                   \
-    STOR(val, AT(RSTK, -SZ))                                                                       \
+#define DPOP2(reg1, reg2) /* pop 2nd, 3rd data stack elements into reg1, reg2 */                   \
+    LOAD(reg1, AT(DSTK))                                                                           \
+    LOAD(reg2, AT(DSTK, SZ))                                                                       \
+    ADD2(IMM(SZ2), DSTK)
+
+#define RPUSH(reg) /* push reg to second return stack element */                                   \
+    STOR(reg, AT(RSTK, -SZ))                                                                       \
     SUB2(IMM(SZ), RSTK)
 
-#define RPOP(val) /* pop second return stack element into val */                                   \
-    LOAD(val, AT(RSTK))                                                                            \
+#define RPOP(reg) /* pop second return stack element into reg */                                   \
+    LOAD(reg, AT(RSTK))                                                                            \
     ADD2(IMM(SZ), RSTK)
 
 #define NEXT0() /* jump to current instruction. useful after manually updating IP              */  \

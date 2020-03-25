@@ -82,7 +82,7 @@ WORD_START(parse_name, nip)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
-    WORD_CODE(in_to_ibuf, CALL(ibuf_find_nonblanks), exit)
+    WORD_CODE(in_to_ibuf, CALL(ibuf_nonblank_line), exit)
 WORD_END(parse_name)
 WORD(pick,             parse_name, DSTACK(1,1), RSTACK(0,0), WORD_IMPURE) /* DSTACK(x+1,x+1) */
 WORD_START(roll,       pick)
