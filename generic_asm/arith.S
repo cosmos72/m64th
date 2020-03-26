@@ -278,6 +278,16 @@ FUNC_START(question_dup)   /* ?dup */
 FUNC_END(question_dup)
 
 
+FUNC_START(short_aligned)    /* short-aligned m4th-user */
+        ALIGN( 2,      DTOP)
+FUNC_END(short_aligned)
+
+
+FUNC_START(int_aligned)      /* int-aligned   m4th-user */
+        ALIGN( 4,      DTOP)
+FUNC_END(int_aligned)
+
+
 FUNC_START(aligned)
         ALIGN( SZ,     DTOP)
 FUNC_END(aligned)

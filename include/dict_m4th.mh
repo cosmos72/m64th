@@ -71,34 +71,28 @@
     X(3, "sub", sub)                                      /* equivalent to: swap -            */   \
     X(5, "trail", trail)                                  /* equivalent to: over swap         */   \
     /*                              */ /*                                               */         \
-    X(5, "byte@", byte_fetch)                                                                      \
-    /* X(5, "char@", char_fetch)    */ /* alias of: c@                                  */         \
-    X(6, "short@", short_fetch)                                                                    \
-    X(7, "ushort@", ushort_fetch)                                                                  \
-    X(4, "int@", int_fetch)                                                                        \
-    X(5, "uint@", uint_fetch)                                                                      \
-    /*                              */ /*                                               */         \
-    /* X(5, "byte!", byte_store)    */ /* alias of: c!                                  */         \
-    /* X(5, "char!", char_store)    */ /* alias of: c!                                  */         \
-    X(6, "short!", short_store)                                                                    \
-    /* X(7, "ushort!", ushort_store)*/ /* alias of: short!                              */         \
-    X(4, "int!", int_store)                                                                        \
-    /* X(5, "uint!", uint_store)    */ /* alias of: int!                                */         \
-    /*                              */ /*                                               */         \
-    /* X(5, "byte,", byte_comma)    */ /* alias of: c,                                  */         \
-    /* X(5, "char,", char_comma)    */ /* alias of: c,                                  */         \
-    X(6, "short,", short_comma)                                                                    \
-    /* X(7, "ushort,", ushort_comma)*/ /* alias of: short,                              */         \
-    X(4, "int,", int_comma)                                                                        \
-    /* X(5, "uint,", uint_comma)    */ /* alias of: int,                                */         \
-    X(14, "countedstring,", countedstring_comma) /* countedstring, ( c-addr u -- )      */         \
-    /*                             */ /*                                                */         \
     X(5, ">byte", to_byte)                                                                         \
     X(5, ">char", to_char)                                                                         \
     X(6, ">short", to_short)                                                                       \
     X(7, ">ushort", to_ushort)                                                                     \
     X(4, ">int", to_int)                                                                           \
     X(5, ">uint", to_uint)                                                                         \
+    X(5, "byte@", byte_fetch)                                                                      \
+    /* X(5, "char@", char_fetch)    */ /* alias of: c@                                  */         \
+    X(6, "short@", short_fetch)                                                                    \
+    X(7, "ushort@", ushort_fetch)                                                                  \
+    X(4, "int@", int_fetch)                                                                        \
+    X(5, "uint@", uint_fetch)                                                                      \
+    X(6, "short!", short_store)                                                                    \
+    X(4, "int!", int_store)                                                                        \
+    X(6, "short,", short_comma)                                                                    \
+    X(4, "int,", int_comma)                                                                        \
+    X(14, "countedstring,", countedstring_comma) /* countedstring, ( c-addr u -- )      */         \
+    X(11, "short-align", short_align)                                                              \
+    X(9, "int-align", int_align)                                                                   \
+    X(13, "short-aligned", short_aligned)                                                          \
+    X(11, "int-aligned", int_aligned)                                                              \
+    /*                             */ /*                                                */         \
     X(3, "u<=", u_less_equal)                                                                      \
     X(3, "u>=", u_more_equal)
 
@@ -237,12 +231,14 @@
     /* return string still to write - non-empty only on I/O error                               */ \
     X(15, "(obuf-overflow)", _obuf_overflow_)                                                      \
     X(11, "string>name", string_to_name) /*( c-addr u -- nt|0 -1|0|1 ) find name in search order*/ \
-    X(6, "/token", div_token)            /* alias of _SZt_div,    no dedicated m4token */          \
-    X(6, ">token", to_token)             /* alias of to_SZtu,     no dedicated m4token */          \
-    X(6, "token!", token_store)          /* alias of _SZtu_store, no dedicated m4token */          \
-    X(6, "token@", token_fetch)          /* alias of _SZtu_fetch, no dedicated m4token */          \
-    X(6, "token+", token_plus)           /* alias of _SZt_plus,   no dedicated m4token */          \
-    X(6, "tokens", tokens)               /* alias of _SZt_times,  no dedicated m4token */          \
+    X(6, "/token", div_token)            /* alias of _SZt_div,      no dedicated m4token */        \
+    X(6, ">token", to_token)             /* alias of to_SZtu,       no dedicated m4token */        \
+    X(6, "token!", token_store)          /* alias of _SZtu_store,   no dedicated m4token */        \
+    X(6, "token@", token_fetch)          /* alias of _SZtu_fetch,   no dedicated m4token */        \
+    X(6, "token+", token_plus)           /* alias of _SZt_plus,     no dedicated m4token */        \
+    X(6, "tokens", tokens)               /* alias of _SZt_times,    no dedicated m4token */        \
+    X(11, "token-align", token_align)    /* alias of _SZt_align,    no dedicated m4token */        \
+    X(13, "token-aligned", token_aligned) /* alias of _SZt_aligned, no dedicated m4token */        \
     X(13, "wordlist-find", wordlist_find) /* ( c-addr u wid -- w|0 -1|0|1 ) search in wordlist */
 
 /* ------- m4th-impl ---------------------------------------------------------------------------- */

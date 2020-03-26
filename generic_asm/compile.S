@@ -75,6 +75,16 @@ FUNC_START(_compile_unresolved_jump_)    /* [compile-unresolved-jump] */
 FUNC_RAWEND(_compile_unresolved_jump_)
 
 
+FUNC_START(short_align)    /* short-align */
+        ALIGN( 2,          HERE)
+FUNC_END(short_align)
+
+
+FUNC_START(int_align)      /* int-align */
+        ALIGN( 4,          HERE)
+FUNC_END(int_align)
+
+
 FUNC_START(align)          /* align */
         ALIGN( SZ,         HERE)
 FUNC_END(align)
@@ -124,6 +134,7 @@ FUNC_END(comma)
 
 /**
  * countedstring, ( c-addr u -- ) m4th-user
+
  * implemented in assembly because 'name,' needs it,
  * and we want 'name,' to be assembly too,
  * because it needs to know m4word internals

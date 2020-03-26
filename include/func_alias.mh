@@ -23,20 +23,20 @@
 #include "../dispatch/sz.mh" /* SZ */
 #include "macro.mh"          /* CAT3() */
 
-#define m4fbegin m4fnoop                 /* begin      noop, used as compile marker   */
-#define m4f_again_ m4f_jump_             /* (again)    unconditional jump             */
-#define m4f_break_ m4f_jump_             /* (break)    unconditional jump             */
-#define m4f_continue_ m4f_jump_          /* (continue) unconditional jump             */
-#define m4f_else_ m4f_jump_              /* (else)     unconditional jump             */
-#define m4fthen m4fnoop                  /* then       noop, used as compile marker   */
-#define m4f_repeat_ m4f_jump_            /* (repeat)   unconditional jump             */
-#define m4f_until_ m4f_if_               /* (until)    conditional jump if dtop == 0  */
+#define m4fbegin m4fnoop         /* begin      noop, used as compile marker   */
+#define m4f_again_ m4f_jump_     /* (again)    unconditional jump             */
+#define m4f_break_ m4f_jump_     /* (break)    unconditional jump             */
+#define m4f_continue_ m4f_jump_  /* (continue) unconditional jump             */
+#define m4f_else_ m4f_jump_      /* (else)     unconditional jump             */
+#define m4fthen m4fnoop          /* then       noop, used as compile marker   */
+#define m4f_repeat_ m4f_jump_    /* (repeat)   unconditional jump             */
+#define m4f_until_ m4f_if_       /* (until)    conditional jump if dtop == 0  */
 #define m4f_until0_ m4f_if0_     /* (until0)   conditional jump if dtop <> 0  */
-#define m4f_q_until_ m4f_q_if_           /* (?until)   conditional jump if dtop == 0  */
+#define m4f_q_until_ m4f_q_if_   /* (?until)   conditional jump if dtop == 0  */
 #define m4f_q_until0_ m4f_q_if0_ /* (?until0)  conditional jump if dtop <> 0  */
-#define m4f_while_ m4f_if_               /* (while)    conditional jump if dtop == 0  */
+#define m4f_while_ m4f_if_       /* (while)    conditional jump if dtop == 0  */
 #define m4f_while0_ m4f_if0_     /* (while0)   conditional jump if dtop <> 0  */
-#define m4f_q_while_ m4f_q_if_           /* (?while)   conditional jump if dtop == 0  */
+#define m4f_q_while_ m4f_q_if_   /* (?while)   conditional jump if dtop == 0  */
 #define m4f_q_while0_ m4f_q_if0_ /* (?while0)  conditional jump if dtop <> 0  */
 
 /** these are implemented in forth - thus no corresponding assembly function */
@@ -73,10 +73,12 @@
 #define m4fcell_plus CAT3(m4f_, SZ, _plus) /* cell+    */
 #define m4fcells CAT3(m4f_, SZ, _times)    /* cells    */
 
-#define m4ftoken_plus CAT3(m4f_, SZt, _plus)    /* token+    */
-#define m4ftoken_store CAT3(m4f_, SZt, u_store) /* token!    */
-#define m4ftoken_fetch CAT3(m4f_, SZt, u_fetch) /* token@    */
-#define m4ftokens CAT3(m4f_, SZt, _times)       /* tokens    */
+#define m4ftoken_plus CAT3(m4f_, SZt, _plus)       /* token+        */
+#define m4ftoken_store CAT3(m4f_, SZt, u_store)    /* token!        */
+#define m4ftoken_fetch CAT3(m4f_, SZt, u_fetch)    /* token@        */
+#define m4ftokens CAT3(m4f_, SZt, _times)          /* tokens        */
+#define m4ftoken_align CAT3(m4f_, SZt, _align)     /* token-align   */
+#define m4ftoken_aligned CAT3(m4f_, SZt, _aligned) /* token-aligned */
 
 #define m4fdiv_byte m4fnoop                /* /byte    =>      */
 #define m4fdiv_char m4fnoop                /* /char    =>      */
@@ -109,6 +111,12 @@
 #define m4f_8_plus m4feight_plus   /* 8+       */
 #define m4f_8_div m4feight_div     /* 8/       */
 
+/* needed by m4fto_token above */
+#define m4f_to_1u m4fto_char
+#define m4f_to_2u m4fto_ushort
+#define m4f_to_4u m4fto_uint
+#define m4f_to_8u m4fnoop
+
 /* needed by m4ftoken_store above */
 #define m4f_1u_store m4fchar_store
 #define m4f_2u_store m4fushort_store
@@ -121,10 +129,16 @@
 #define m4f_4u_fetch m4fuint_fetch
 #define m4f_8u_fetch m4ffetch
 
-/* needed by m4fto_token above */
-#define m4f_to_1u m4fto_char
-#define m4f_to_2u m4fto_ushort
-#define m4f_to_4u m4fto_uint
-#define m4f_to_8u m4fnoop
+/* needed by m4ftoken_align */
+#define m4f_1_align m4fnoop
+#define m4f_2_align m4fshort_align
+#define m4f_4_align m4fint_align
+#define m4f_8_align m4falign
+
+/* needed by m4ftoken_aligned */
+#define m4f_1_aligned m4fnoop
+#define m4f_2_aligned m4fshort_aligned
+#define m4f_4_aligned m4fint_aligned
+#define m4f_8_aligned m4faligned
 
 #endif /* M4TH_INCLUDE_FUNC_ALIAS_MH */

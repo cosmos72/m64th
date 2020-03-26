@@ -288,8 +288,28 @@
         x((to_r, from_r), _)                                 /* >r   r>       =>                */ \
         x((plus, negate), (negate, sub))                     /* +    negate   => negate sub     */ \
         x((minus, negate), (sub))                            /* -    negate   => sub            */ \
-        x((sub, negate), (negate))                           /* sub  negate   => -              */ \
         x((fetch, drop), (drop))                             /* @    drop     => drop           */ \
+        /*________________________________________________*/ /*                                 */ \
+        x((align, align), (align))                   /* align             align =>       align  */ \
+        x((align, int_align), (align))               /* align         int-align =>       align  */ \
+        x((align, short_align), (align))             /* align       short-align =>       align  */ \
+        x((int_align, align), (align))               /* int-align         align =>       align  */ \
+        x((int_align, int_align), (int_align))       /* int-align     int-align =>   int-align  */ \
+        x((int_align, short_align), (int_align))     /* int-align   short-align =>   int-align  */ \
+        x((short_align, align), (align))             /* short-align       align =>       align  */ \
+        x((short_align, int_align), (int_align))     /* short-align   int-align =>   int-align  */ \
+        x((short_align, short_align), (short_align)) /* short-align short-align => short-align  */ \
+        /*________________________________________________*/ /*                                 */ \
+        x((aligned, aligned), (aligned))                     /*   aligned   aligned =>  aligned */ \
+        x((aligned, int_aligned), (aligned))                 /*   aligned   int-a.. =>  aligned */ \
+        x((aligned, short_aligned), (aligned))               /*   aligned short-a.. =>  aligned */ \
+        x((int_aligned, aligned), (aligned))                 /*   int-a..   aligned =>  aligned */ \
+        x((int_aligned, int_aligned), (int_aligned))         /*   int-a..   int-a.. =>  int-a.. */ \
+        x((int_aligned, short_aligned), (int_aligned))       /*   int-a.. short-a.. =>  int-a.. */ \
+        x((short_aligned, aligned), (aligned))               /* short-a..   aligned =>  aligned */ \
+        x((short_aligned, int_aligned), (int_aligned))       /* short-a..   int-a.. =>  int-a.. */ \
+        x((short_aligned, short_aligned), (short_aligned))   /* short-a.. short-a.. => short-a..*/ \
+        /*________________________________________________*/ /*                                 */ \
         x((abs, zero_neq), (zero_ne))                        /* abs  0<>      => 0<>            */ \
         x((abs, zero_equal), (zero_equal))                   /* abs  0=       => 0=             */ \
         x((abs, abs), (abs))                                 /* abs  abs      => abs            */ \
@@ -383,6 +403,7 @@
         x((minus_rot, rot), _)                               /* -rot   rot    =>                */ \
         x((minus_rot, minus_rot), (rot))                     /* -rot   -rot   => rot            */ \
         x((minus_rot, flip), (swap, minus_rot))              /* -rot   flip   => swap -rot      */ \
+        x((sub, negate), (negate))                           /* sub  negate   => -              */ \
         x((swap, times), (times))                            /* swap   *      => *              */ \
         x((swap, plus), (plus))                              /* swap   +      => +              */ \
         x((swap, minus), (sub))                              /* swap   -      => sub            */ \

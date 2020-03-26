@@ -68,13 +68,15 @@
 #define m4_SZ_times CAT3(m4_, SZ, _times) /* _SZ*      needed by cells   */
 #define m4_SZ_plus CAT3(m4_, SZ, _plus)   /* _SZ+      needed by cell+   */
 
-#define m4div_cell CAT3(m4_, SZ, _div)        /* /cell    => _SZ/        */
-#define m4div_token CAT3(m4_, SZt, _div)      /* /token   => _SZt/       */
-#define m4token_store CAT3(m4_, SZt, u_store) /* token!   => _SZtu_store */
-#define m4token_fetch CAT3(m4_, SZt, u_fetch) /* token@   => _SZtu_fetch */
-#define m4token_plus CAT3(m4_, SZt, _plus)    /* token+   => _SZt_plus   */
-#define m4tokens CAT3(m4_, SZt, _times)       /* tokens   => _SZt_times  */
-#define m4to_token CAT3(m4_to_, SZt, u)       /* to-token => to-SZt      */
+#define m4div_cell CAT3(m4_, SZ, _div)           /* /cell         => _SZ/         */
+#define m4div_token CAT3(m4_, SZt, _div)         /* /token        => _SZt/        */
+#define m4to_token CAT3(m4_to_, SZt, u)          /* >token        => >SZt         */
+#define m4token_store CAT3(m4_, SZt, u_store)    /* token!        => _SZtu_store  */
+#define m4token_fetch CAT3(m4_, SZt, u_fetch)    /* token@        => _SZtu_fetch  */
+#define m4token_plus CAT3(m4_, SZt, _plus)       /* token+        => _SZt_plus    */
+#define m4tokens CAT3(m4_, SZt, _times)          /* tokens        => _SZt_times   */
+#define m4token_align CAT3(m4_, SZt, _align)     /* token-align   => _SZt_align   */
+#define m4token_aligned CAT3(m4_, SZt, _aligned) /* token-aligned => _SZt_aligned */
 
 /* needed by m4cells, m4cell_plus, m4div_cell, m4tokens, m4token_plus, m4div_token above */
 #define m4_0 m4zero              /* 0        */
@@ -96,6 +98,12 @@
 #define m4_8_plus m4eight_plus   /* 8+       */
 #define m4_8_div m4eight_div     /* 8/       */
 
+/* needed by m4to_token */
+#define m4_to_1u m4to_char
+#define m4_to_2u m4to_ushort
+#define m4_to_4u m4to_uint
+#define m4_to_8u m4noop
+
 /* needed by m4token_store */
 #define m4_1u_store m4c_store
 #define m4_2u_store m4short_store
@@ -108,11 +116,17 @@
 #define m4_4u_fetch m4uint_fetch
 #define m4_8u_fetch m4fetch
 
-/* needed by m4to_token */
-#define m4_to_1u m4to_char
-#define m4_to_2u m4to_ushort
-#define m4_to_4u m4to_uint
-#define m4_to_8u m4noop
+/* needed by m4token_align */
+#define m4_1_align m4noop
+#define m4_2_align m4short_align
+#define m4_4_align m4int_align
+#define m4_8_align m4align
+
+/* needed by m4token_aligned */
+#define m4_1_aligned m4noop
+#define m4_2_aligned m4short_aligned
+#define m4_4_aligned m4int_aligned
+#define m4_8_aligned m4aligned
 
 #define m4cs_pick m4two_pick
 #define m4cs_roll m4two_roll
@@ -162,13 +176,15 @@
 #define M4_SZ_times CAT3(M4_, SZ, _times) /* _SZ*      needed by cells   */
 #define M4_SZ_plus CAT3(M4_, SZ, _plus)   /* _SZ+      needed by cell+   */
 
-#define M4div_cell CAT3(M4_, SZ, _div)        /* /cell    => _SZ/        */
-#define M4div_token CAT3(M4_, SZt, _div)      /* /token   => _SZt/       */
-#define M4token_store CAT3(M4_, SZt, u_store) /* token!   => _SZtu_store */
-#define M4token_fetch CAT3(M4_, SZt, u_fetch) /* token@   => _SZtu_fetch */
-#define M4token_plus CAT3(M4_, SZt, _plus)    /* token+   => _SZt_plus   */
-#define M4tokens CAT3(M4_, SZt, _times)       /* tokens   => _SZt_times  */
-#define M4to_token CAT3(M4_to_, SZt, u)       /* to-token => to-SZt      */
+#define M4div_cell CAT3(M4_, SZ, _div)           /* /cell         => _SZ/         */
+#define M4div_token CAT3(M4_, SZt, _div)         /* /token        => _SZt/        */
+#define M4to_token CAT3(M4_to_, SZt, u)          /* >token        => >SZt         */
+#define M4token_store CAT3(M4_, SZt, u_store)    /* token!        => _SZtu_store  */
+#define M4token_fetch CAT3(M4_, SZt, u_fetch)    /* token@        => _SZtu_fetch  */
+#define M4token_plus CAT3(M4_, SZt, _plus)       /* token+        => _SZt_plus    */
+#define M4tokens CAT3(M4_, SZt, _times)          /* tokens        => _SZt_times   */
+#define M4token_align CAT3(M4_, SZt, _align)     /* token-align   => _SZt_align   */
+#define M4token_aligned CAT3(M4_, SZt, _aligned) /* token-aligned => _SZt_aligned */
 
 /* needed by M4cells, M4cell_plus, M4div_cell, M4tokens, M4token_plus, M4div_token above */
 #define M4_0 M4zero              /* 0        */
@@ -190,6 +206,12 @@
 #define M4_8_plus M4eight_plus   /* 8+       */
 #define M4_8_div M4eight_div     /* 8/       */
 
+/* needed by M4to_token */
+#define M4_to_1u M4to_char
+#define M4_to_2u M4to_ushort
+#define M4_to_4u M4to_uint
+#define M4_to_8u M4noop
+
 /* needed by M4token_store */
 #define M4_1u_store M4c_store
 #define M4_2u_store M4short_store
@@ -202,11 +224,17 @@
 #define M4_4u_fetch M4uint_fetch
 #define M4_8u_fetch M4fetch
 
-/* needed by M4to_token */
-#define M4_to_1u M4to_char
-#define M4_to_2u M4to_ushort
-#define M4_to_4u M4to_uint
-#define M4_to_8u M4noop
+/* needed by M4token_align */
+#define M4_1_align M4noop
+#define M4_2_align M4short_align
+#define M4_4_align M4int_align
+#define M4_8_align M4align
+
+/* needed by M4token_aligned */
+#define M4_1_aligned M4noop
+#define M4_2_aligned M4short_aligned
+#define M4_4_aligned M4int_aligned
+#define M4_8_aligned M4aligned
 
 #define M4cs_pick M4two_pick
 #define M4cs_roll M4two_roll
