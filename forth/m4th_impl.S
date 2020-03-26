@@ -167,7 +167,7 @@ WORD_START(_check_stacks_, _catch_end_)
          */
         depth, zero_less,
             _lit_, T(M4ERR_STACK_UNDERFLOW), and, throw,
-        rdepth, zero_less, _if_, T(4),
+        rdepth, zero_less,
             _lit_, T(M4ERR_RETURN_STACK_UNDERFLOW), and, throw,
         exit
     )

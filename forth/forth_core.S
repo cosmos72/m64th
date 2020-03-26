@@ -71,7 +71,7 @@ WORD_START(colon,      two_swap)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
-        /* state @ 0=                                  ( t|f             )
+        /* state @ 0<>                                 ( t|f             )
          *    M4ERR_COMPILER_NESTING and throw         (                 )
          * parse-name                                  ( c-addr u        )
          * dup 0=                                      ( c-addr u t|f    )
@@ -80,7 +80,7 @@ WORD_START(colon,      two_swap)
          * postpone ]
          * 0 M4right_bracket              ( colon-sys: 0 M4right_bracket )
          */
-        state, fetch, zero_equal,
+        state, fetch, zero_ne,
             _lit_, T(M4ERR_COMPILER_NESTING), and, throw,
         CALL(parse_name),
         dup, zero_equal,
