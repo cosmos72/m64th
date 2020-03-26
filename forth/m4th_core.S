@@ -49,20 +49,23 @@ WORD_START(compile_string_comma, always_eof)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
-    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_COMPILE_ONLY)
     WORD_CODE(
         /* dup dup >token <>                           ( c-addr u t|f       )
-         * if                                          ( c-addr u           )
-         *   M4ERR_DEFINITION_NAME_TOO_LONG throw      (                    )
-         * then                                        ( c-addr u           )
+         * M4ERR_DEFINITION_NAME_TOO_LONG and throw    ( c-addr u           )
          * ' (lit-string) token,                       ( c-addr u           )
          * dup token,                                  ( c-addr u           )
          * here swap                                   ( c-addr here u      )
+         * dup allot token-align       ( update HERE ) ( c-addr here u      )
          * cmove                                       (                    )
-         * token-aligned                               (                    )
          */
-        /* TODO */
-        exit
+        dup, dup, to_token, ne,
+        _lit_, T(M4ERR_DEFINITION_NAME_TOO_LONG), and, throw,
+        _lit_, _lit_string_, token_comma,
+        dup, token_comma,
+        here, swap,
+        dup, allot, token_align,
+        cmove, exit
     )
 WORD_END(compile_string_comma)
 /**

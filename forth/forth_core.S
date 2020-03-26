@@ -38,16 +38,13 @@ WORD_START(dot,        minus)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
-        /* depth 0=
-         * if
-         *   M4ERR_STACK_UNDERFLOW throw
-         * then
+        /* depth 0<=
+         * M4ERR_STACK_UNDERFLOW and throw
          * out>obuf dup obuf-flush drop     ( ensure enough space )  ( n io          )
          * (c-arg-2) (c-call) m4th_dot (c-ret-0)                     (               )
          */
-        depth, _if0_, T(4),
-            _lit_, T(M4ERR_STACK_UNDERFLOW), throw,
-        then,
+        depth, zero_less_equal,
+        _lit_, T(M4ERR_STACK_UNDERFLOW), and, throw,
         out_to_obuf, dup, CALL(obuf_flush), drop,
         _c_arg_2_, _c_call_, CELL(m4th_dot), _c_ret_0_,
         exit
@@ -74,26 +71,20 @@ WORD_START(colon,      two_swap)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
-        /* state @
-         * if
-         *    M4ERR_COMPILER_NESTING throw
-         * then
+        /* state @ 0=                                  ( t|f             )
+         *    M4ERR_COMPILER_NESTING and throw         (                 )
          * parse-name                                  ( c-addr u        )
-         * ?if0                                        ( c-addr u        )
-         *    M4ERR_ZERO_LENGTH_NAME throw             (                 )
-         * then                                        ( c-addr u        )
+         * dup 0=                                      ( c-addr u t|f    )
+         *    M4ERR_ZERO_LENGTH_NAME and throw         ( c-addr u        )
          * name, set-latest                            (                 )
          * postpone ]
          * 0 M4right_bracket              ( colon-sys: 0 M4right_bracket )
          */
-        state, fetch,
-        _if_, T(4),
-            _lit_, T(M4ERR_COMPILER_NESTING), throw,
-        then,
+        state, fetch, zero_equal,
+            _lit_, T(M4ERR_COMPILER_NESTING), and, throw,
         CALL(parse_name),
-        _q_if0_, T(4),
-            _lit_, T(M4ERR_ZERO_LENGTH_NAME), throw,
-        then,
+        dup, zero_equal,
+            _lit_, T(M4ERR_ZERO_LENGTH_NAME), and, throw,
         name_comma, set_latest,
         right_bracket,
         zero, _lit_, right_bracket, exit
@@ -106,17 +97,14 @@ WORD_START(semi,       colon)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE)
     WORD_CODE(
-        /* state @                                     ( flag            )
-         * if0
-         *    M4ERR_INTERPRETING_COMPILE_ONLY_WORD throw
-         * then                                        (                 )
+        /* state @ 0=                                  ( t|f             )
+         *    M4ERR_INTERPRETING_COMPILE_ONLY_WORD and throw (           )
          * 2drop latest                                ( nt              )
          * ' exit compile, [                           ( nt              )
          * get-current wordlist-add ( name is now findable by parse-name )
          */
-        state, fetch,
-        _if0_, T(4),
-            _lit_, T(M4ERR_INTERPRETING_COMPILE_ONLY_WORD), throw,
+        state, fetch, zero_equal,
+            _lit_, T(M4ERR_INTERPRETING_COMPILE_ONLY_WORD), and, throw,
         then,
         two_drop, latest,
         _compile_lit_, exit, left_bracket,
@@ -307,8 +295,8 @@ WORD_START(literal, leave)
       WORD_CODE_TOKENS(
         _ip_to_data_, div_token,         /* ( n taddr tn )             */
         CALL(_any_token_gives_cell_q_),
-        _if_, T(3), token_comma,         /* if executing token gives n */
-            exit,                        /* append token to XT, exit   */
+        _if_, T(3),                      /* if executing token gives n */
+            token_comma, exit,           /* append token to XT, exit   */
         then,
         dup, dup, to_short,
         equal, _if_, T(5),               /* if n == to_short(n)        */

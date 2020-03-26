@@ -159,19 +159,17 @@ WORD_START(_check_stacks_, _catch_end_)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
-        /* depth 0< if                                 (               )
-         *    M4ERR_STACK_UNDERFLOW throw              (               )
-         * then
-         * rdepth 0< if                                (               )
-         *    M4ERR_RETURN_STACK_UNDERFLOW throw       (               )
+        /* depth 0<                                    ( t|f           )
+         *    M4ERR_STACK_UNDERFLOW and throw          (               )
+         * rdepth 0<                                   ( t|f           )
+         *    M4ERR_RETURN_STACK_UNDERFLOW and throw   (               )
          * then
          */
-        depth, zero_less, _if_, T(4),
-            _lit_, T(M4ERR_STACK_UNDERFLOW), throw,
-        then,
+        depth, zero_less,
+            _lit_, T(M4ERR_STACK_UNDERFLOW), and, throw,
         rdepth, zero_less, _if_, T(4),
-            _lit_, T(M4ERR_RETURN_STACK_UNDERFLOW), throw,
-        then, exit
+            _lit_, T(M4ERR_RETURN_STACK_UNDERFLOW), and, throw,
+        exit
     )
 WORD_END(_check_stacks_)
 WORD_START(_continue_, _catch_end_)

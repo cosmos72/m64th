@@ -555,7 +555,7 @@ static m4testexecute testexecute_d[] = {
      {}},
 #endif
     {"(lit-string)",
-     {m4_ip_, m4_lit_string_, T(3), (m4cell) "abc", m4minus_rot, m4minus, m4bye},
+     {m4_ip_, LIT_STRING(3, "abc"), m4minus_rot, m4minus, m4bye},
      {{}, {}},
      {{2, {3, -3 * SZt /*distance between the tokens (ip) and "abc"*/}}, {}},
      {}},
@@ -1069,6 +1069,11 @@ static m4testexecute testexecute_f[] = {
      {{2, {(m4cell) "foobarbaz", 9}}, {}},
      {{}, {}},
      {5, {P(9, 'f'), P('o', 'o'), P('b', 'a'), P('r', 'b'), P('a', 'z')}}},
+    {"\"foobar\" 6 compile-string,",
+     {CALL(compile_string_comma), m4bye},
+     {{2, {(m4cell) "foobarbaz", 6}}, {}},
+     {{}, {}},
+     {3, {LIT_STRING(6, "foobar")}}},
 #undef P
 #if SZ == 8
     {"0x08090a0b0c0d0e0f ,",

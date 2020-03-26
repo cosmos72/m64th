@@ -46,6 +46,9 @@ enum {
 /* store m4_call_xt_ and XT in a m4countedwcode. correct only if word->data_len == 0 */
 #define CALLXT(name) m4_call_xt_, CELL(WORD_SYM(name).data)
 
+/* store m4_lit_string_ length and chars in a m4countedwcode. */
+#define LIT_STRING(len, chars) m4_lit_string_, T(len), (m4cell)(chars)
+
 /* -------------- m4testcompile --------------------------------------------- */
 
 typedef struct m4testcompile_s {
