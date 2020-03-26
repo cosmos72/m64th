@@ -136,7 +136,7 @@
 #define M4repeat 106              /* repeat   */
 #define M4rot 107                 /* rot      ( a b c -- b c a ) */
 #define M4rshift 108              /* rshift   */
-#undef M4s_quote /*109*/          /* s"       */
+#undef M4s_quote /*109*/          /* s"       implemented in forth, no dedicated m4token */
 #undef M4s_to_d /*110*/           /* s>d      */
 #undef M4sign /*111*/             /* sign     */
 #undef M4s_m_div_rem /*112*/      /* sm/rem   */

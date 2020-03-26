@@ -338,7 +338,23 @@ WORD(r_from,           over,       DSTACK(0,1), RSTACK(1,0), WORD_R_PURE)
 WORD(r_fetch,          r_from,     DSTACK(0,1), RSTACK(1,1), WORD_R_PURE)
 WORD(rot,              r_fetch,    DSTACK(3,3), RSTACK(0,0), WORD_PURE)
 WORD(rshift,           rot,        DSTACK(2,1), RSTACK(0,0), WORD_PURE)
-WORD_START(space, rshift)
+WORD_START(s_quote, rshift)
+    WORD_DSTACK(0,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE)
+    WORD_CODE(
+        /* in>ibuf ibuf-skip-1blank-except-cr drop     (               )
+         * in>ibuf '"' ibuf-delimited-line             ( c-addr u      )
+         * compile-string,                             (               )
+         */
+        in_to_ibuf, CALL(ibuf_skip_1blank_except_cr), drop,
+        in_to_ibuf, _lit_, T('"'), CALL(ibuf_delimited_line),
+        CALL(compile_string_comma), exit
+    )
+WORD_END(s_quote)
+WORD_START(space, s_quote)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()

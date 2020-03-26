@@ -125,6 +125,7 @@ static const m4testcompile testcompile[] = {
     {"?do", {}, {2, {2, m4_q_do_}}, {2, {m4_q_do_, T(-1)}}},
     {"do", {}, {2, {1, m4do}}, {1, {m4do}}},
     {"leave", {}, {2, {2, m4_leave_}}, {2, {m4_leave_, T(-1)}}},
+    {"s\"  fubar\"", {}, {}, {3, {LIT_STRING(6, " fubar")}}},
     /* ------------------------------- words -------------------------------- */
     {"compile,", {}, {}, {callsz, {CALLXT(compile_comma)}}},
     {"valid-base?", {}, {}, {4, {/*inlined*/ m4two, m4_lit2s_, T(37), m4within}}},

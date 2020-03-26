@@ -118,6 +118,7 @@
     X(5, "leave", leave)                                                                           \
     X(7, "literal", literal)                                                                       \
     X(4, "loop", loop)                                                                             \
+    X(2, "s\"", s_quote)                                                                           \
     X(6, "source", source)                                                                         \
     X(5, "space", space)
 

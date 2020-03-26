@@ -234,6 +234,8 @@ static const m4testio testio_b[] = {
      {{}, {}},
      {" foobarbaz qwertyuiop", ""},
      {" qwertyuiop", "foobarbaz"}},
+    /* ------------------------- s" ----------------------------------------- */
+    {"s\"", {CALL(s_quote), m4bye}, {{}, {}}, {{}, {}}, {" fubar\"", ""}, {"", ""}},
 };
 
 static const m4testio testio_c[] = {
