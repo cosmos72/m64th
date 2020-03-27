@@ -276,25 +276,6 @@ LABEL(string_find_char.found)
         MOVE(  REG1,   DTOP)
 FUNC_END(string_find_char)
 
-/**
- * string-find-eol ( c-addr u -- u' ) return index of first CR or LF in string.
- * return string length if not found.
- */
-FUNC_START(string_find_eol)
-        DPOP(  REG2)                                   /* b = addr */
-        JZ(    DTOP,   FUNC_NEXT(string_find_eol))     /* u == 0   */
-        ZERO(  REG1w)
-LABEL(string_find_eol.loop)
-        LD_ub( REG3,   AT(REG2, REG1, 1))
-        JEQ(   REG3w,  IMM(10),TO(string_find_eol.found))
-        JEQ(   REG3w,  IMM(13),TO(string_find_eol.found))
-        INC1(  REG1)
-        JB(    REG1,   DTOP,   TO(string_find_eol.loop))
-LABEL(string_find_eol.found)
-        MOVE(  REG1,   DTOP)
-FUNC_END(string_find_eol)
-
-
 /*
  * string-find-nonblank ( c-addr u -- u' ) get index of first non-blank (i.e. char > 32) in string.
  * return string length if not found.

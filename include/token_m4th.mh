@@ -74,8 +74,8 @@
 #define M4string_ci_equal 554      /* string-ci= ( c-addr1 c-addr2 u -- t|f ) */
 #define M4string_find_blank 555    /* ( c-addr u -- u' ) get index of first char <= ' ' */
 #define M4string_find_char 556     /* ( c-addr u ch -- u' ) get index of first ch       */
-#define M4string_find_eol 557      /* ( c-addr u -- u' ) get index of first CR or LF    */
-#define M4string_find_nonblank 558 /* ( c-addr u -- u' ) get index of first char > ' '  */
+#define M4string_find_nonblank 557 /* ( c-addr u -- u' ) get index of first char > ' '  */
+#undef M4____gap                   /*                       */
 #undef M4____gap                   /*                       */
 #define M4sub 560                  /* sub       equivalent to: swap -         */
 #define M4trail 561                /* trail     equivalent to: over swap      */

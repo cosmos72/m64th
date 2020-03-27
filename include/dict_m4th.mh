@@ -68,7 +68,6 @@
     X(10, "string-ci=", string_ci_equal)          /* ( addr1 addr2 u -- addr1 addr2 u t|f ) */     \
     X(17, "string-find-blank", string_find_blank) /* ( c-addr u -- u' )                     */     \
     X(16, "string-find-char", string_find_char)   /* ( c-addr u -- u' )                     */     \
-    X(15, "string-find-eol", string_find_eol)     /* ( c-addr u -- u' )                     */     \
     X(20, "string-find-nonblank", string_find_nonblank) /* ( c-addr u -- u' )               */     \
     X(3, "sub", sub)                                    /* equivalent to: swap -            */     \
     X(5, "trail", trail)                                /* equivalent to: over swap         */     \
