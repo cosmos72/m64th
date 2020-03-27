@@ -240,25 +240,13 @@ WORD_START(ibuf_skip_blanks, ibuf_skip_1blank)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
-        /* 0 over iobuf>data bounds                    ( io 0 end addr   )
-         * ?do                                         ( io u            ) (R: end addr-i )
-         *    i c@ bl >                                ( io u t|f        ) (R: end addr-i )
-         *    if                                       ( io u            ) (R: end addr-i )
-         *       leave                                 ( io u            )
-         *    then                                     ( io u            ) (R: end addr-i )
-         *    1+                                       ( io u'           ) (R: end addr-i )
-         * loop              ( better: 1 chars +loop ) ( io u            )
+        /* dup iobuf>data                              ( io c-addr u     )
+         * string-find-nonblank                        ( io u'           )
          * swap iobuf>pos                              ( u pos           )
          * +!
          */
-        zero, over, iobuf_data, bounds,
-        _q_do_, T(12),
-            i, c_fetch, bl, more,
-            _if_, T(2),
-                _leave_, T(4),
-            then,
-            one_plus,
-        _loop_, T(-12),
+        dup, iobuf_data,
+        string_find_nonblank,
         swap, iobuf_pos,
         plus_store, exit
     )
