@@ -114,12 +114,6 @@ FUNC_START(iobuf_pos)
 FUNC_END(iobuf_pos)
 
 
-/* iobuf>eol ( io -- addr ) get address of iobuf.eol */
-FUNC_START(iobuf_eol)
-        ADD2(  IMM(IOBUF_OFF_EOL), DTOP)
-FUNC_END(iobuf_eol)
-
-
 /* iobuf>end ( io -- addr ) get address of iobuf.end */
 FUNC_START(iobuf_end)
         ADD2(  IMM(IOBUF_OFF_END), DTOP)

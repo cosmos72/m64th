@@ -185,7 +185,6 @@
     X(12, "iobuf>handle", iobuf_handle)  /* ( io -- addr ) get address of iobuf handle       */    \
     X(9, "iobuf>max", iobuf_max)         /* ( io -- u    ) get iobuf max size i.e. capacity  */    \
     X(9, "iobuf>pos", iobuf_pos)         /* ( io -- addr ) get address of iobuf position     */    \
-    X(9, "iobuf>eol", iobuf_eol)         /* ( io -- addr ) get address of iobuf eol position */    \
     X(9, "iobuf>end", iobuf_end)         /* ( io -- addr ) get address of iobuf end position */    \
     X(6, "latest", latest)               /* (    -- nt   ) get last defined word             */    \
     X(5, "name,", name_comma)            /* ( c-addr u -- nt ) create a new name             */    \

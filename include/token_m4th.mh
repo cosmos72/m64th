@@ -175,10 +175,10 @@
 #define M4iobuf_handle 645      /* iobuf>handle ( io -- addr ) get address of iobuf handle        */
 #define M4iobuf_max 646         /* iobuf>max    ( io -- u    ) get iobuf max size i.e. capacity   */
 #define M4iobuf_pos 647         /* iobuf>pos    ( io -- addr ) get address of iobuf position      */
-#define M4iobuf_eol 648         /* iobuf>eol    ( io -- addr ) get address of iobuf eol position  */
-#define M4iobuf_end 649         /* iobuf>end    ( io -- addr ) get address of iobuf end position  */
+#define M4iobuf_end 648         /* iobuf>end    ( io -- addr ) get address of iobuf end position  */
 #undef M4____gap                /*                       */
-#define M4latest 651            /* latest       (    -- nt   ) get last defined word              */
+#define M4latest 650            /* latest       (    -- nt   ) get last defined word              */
+#undef M4____gap                /*                       */
 #undef M4____gap                /*                       */
 #define M4obuf_write_char 653   /* obuf-write-char   ( io c -- err ) write one char to iobuf      */
 #define M4obuf_write_string 654 /* obuf-write-string ( io c -- err ) write string to iobuf */

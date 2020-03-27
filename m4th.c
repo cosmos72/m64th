@@ -913,8 +913,8 @@ void m4th_clear(m4th *m) {
     m->dstack.curr = m->dstack.end;
     m->rstack.curr = m->rstack.end;
     memset(m->c_regs, '\0', sizeof(m->c_regs));
-    m->in->err = m->in->pos = m->in->eol = m->in->end = 0;
-    m->out->err = m->out->pos = m->out->eol = m->out->end = 0;
+    m->in->err = m->in->pos = m->in->end = 0;
+    m->out->err = m->out->pos = m->out->end = 0;
     m->ip = NULL;
     m->lastw = NULL;
     m->xt = NULL;

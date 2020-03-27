@@ -163,11 +163,8 @@ WORD_START(ibuf_refill, ibuf_nonblank_line)
          * r@ iobuf>func @ execute                  ( u' err             ) (R: io )
          * tuck                                     ( err u' err         ) (R: io )
          * r@ iobuf>err !                           ( err u'             ) (R: io )
-         * r@ iobuf>end                             ( err u' size-addr   ) (R: io )
-         * +!                                       ( err                ) (R: io )
-         * r@ iobuf>data                            ( err c-addr u       ) (R: io )
-         * string-find-eol                          ( err u'             ) (R: io )
-         * r> iobuf>eol !                           ( err                )
+         * r> iobuf>end                             ( err u' size-addr   )
+         * +!                                       ( err                )
          */
         dup_to_r, iobuf_pos, fetch,
         _q_if_, T(16),
@@ -184,11 +181,8 @@ WORD_START(ibuf_refill, ibuf_nonblank_line)
         r_fetch, iobuf_func, fetch, execute,
         tuck,
         r_fetch, iobuf_err, store,
-        r_fetch, iobuf_end,
-        plus_store,
-        r_fetch, iobuf_data,
-        string_find_eol,
-        r_from, iobuf_eol, store, exit
+        r_from, iobuf_end,
+        plus_store, exit
     )
 WORD_END(ibuf_refill)
 /* ibuf-refill-if-empty ( io -- err ) read some chars into iobuf if it's empty */
@@ -370,8 +364,7 @@ WORD(iobuf_func,       iobuf_err,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(iobuf_handle,     iobuf_handle,   DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(iobuf_max,        iobuf_func,     DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
 WORD(iobuf_pos,        iobuf_max,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(iobuf_eol,        iobuf_pos,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(iobuf_end,        iobuf_eol,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD(iobuf_end,        iobuf_pos,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(latest,           iobuf_end,      DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 /* ( c-addr u -- nt ) create a new name. do NOT add it to compilation wordlist */
 WORD_START(name_comma,  latest)

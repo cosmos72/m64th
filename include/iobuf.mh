@@ -24,9 +24,8 @@
 #define IOBUF_OFF_HANDLE SZ /* offset of iobuf->handle */
 #define IOBUF_OFF_ERR SZ2   /* offset of iobuf->err    */
 #define IOBUF_OFF_POS SZ3   /* offset of iobuf->pos    */
-#define IOBUF_OFF_EOL SZ4   /* offset of iobuf->eol    */
-#define IOBUF_OFF_END SZ5   /* offset of iobuf->end    */
-#define IOBUF_OFF_MAX SZ6   /* offset of iobuf->max    */
-#define IOBUF_OFF_ADDR SZ7  /* offset of iobuf->addr   */
+#define IOBUF_OFF_END SZ4   /* offset of iobuf->end    */
+#define IOBUF_OFF_MAX SZ5   /* offset of iobuf->max    */
+#define IOBUF_OFF_ADDR SZ6  /* offset of iobuf->addr   */
 
 #endif /* M4TH_INCLUDE_IOBUF_MH */
