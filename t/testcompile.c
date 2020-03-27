@@ -176,7 +176,7 @@ static m4cell m4testcompile_run(m4th *m, const m4testcompile *t, m4code t_codege
 
     assert(input_n <= m->in->max);
     m->in->pos = 0;
-    m->in->size = input_n;
+    m->in->eol = m->in->end = input_n;
     memcpy(m->in->addr, t->input, input_n);
 
     m->mem.curr = (m4char *)(w + 1);

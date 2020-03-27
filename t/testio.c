@@ -301,7 +301,7 @@ static m4cell m4ibuf_with_counteddata_equal(const m4iobuf *io, const char *cstr)
     const m4counteddata *d = (m4counteddata *)io->handle;
     const m4cell_u n = m4cstr_len(cstr);
     const m4cell_u nd = d ? d->n : 0;
-    const m4cell_u nio = io->size - io->pos;
+    const m4cell_u nio = io->end - io->pos;
     return nio + nd == n && (nio == 0 || !memcmp(io->addr + io->pos, cstr, nio)) &&
            (nd == 0 || !memcmp(d->addr, cstr + nio, nd));
 }
@@ -313,13 +313,13 @@ static void m4ibuf_with_counteddata_fill(m4iobuf *io, const char *cstr) {
     io->pos = 0;
     if (max >= n) {
         memcpy(io->addr, cstr, n);
-        io->size = n;
+        io->end = n;
         d->n = 0;
     } else {
         n -= max;
         memcpy(io->addr, cstr, max);
         memcpy(d->addr, cstr + max, n);
-        io->size = max;
+        io->end = max;
         d->n = n;
     }
 }
@@ -327,7 +327,7 @@ static void m4ibuf_with_counteddata_fill(m4iobuf *io, const char *cstr) {
 static void m4ibuf_with_counteddata_print(const m4iobuf *io, FILE *out) {
     const m4counteddata *d = (m4counteddata *)io->handle;
     const m4cell_u nd = d ? d->n : 0;
-    const m4cell_u nio = io->size - io->pos;
+    const m4cell_u nio = io->end - io->pos;
     fprintf(out, "<%lu> [", (unsigned long)(nd + nio));
     if (nio) {
         m4string2_print_escape(io->addr + io->pos, nio, out);
@@ -367,7 +367,7 @@ static m4cell m4obuf_with_counteddata_equal(const m4iobuf *io, const char *cstr)
     const m4counteddata *d = (m4counteddata *)io->handle;
     const m4cell_u n = m4cstr_len(cstr);
     const m4cell_u nd = d ? d->n : 0;
-    const m4cell_u nio = io->size - io->pos;
+    const m4cell_u nio = io->end - io->pos;
     return nd + nio == n && (nd == 0 || !memcmp(d->addr, cstr, nd)) &&
            (nio == 0 || !memcmp(io->addr + io->pos, cstr + nd, nio));
 }
@@ -379,7 +379,7 @@ static void m4obuf_with_counteddata_fill(m4iobuf *io, const char *cstr) {
     io->pos = 0;
     if (max >= n) {
         memcpy(io->addr, cstr, n);
-        io->size = n;
+        io->end = n;
         if (d) {
             d->n = 0;
         }
@@ -390,14 +390,14 @@ static void m4obuf_with_counteddata_fill(m4iobuf *io, const char *cstr) {
             d->n = n;
         }
         memcpy(io->addr, cstr + n, max);
-        io->size = max;
+        io->end = max;
     }
 }
 
 static void m4obuf_with_counteddata_print(const m4iobuf *io, FILE *out) {
     const m4counteddata *d = (m4counteddata *)io->handle;
     const m4cell_u nd = d ? d->n : 0;
-    const m4cell_u nio = io->size - io->pos;
+    const m4cell_u nio = io->end - io->pos;
     fprintf(out, "<%lu> [", (unsigned long)(nd + nio));
     if (nd) {
         m4string2_print_escape(d->addr, nd, out);

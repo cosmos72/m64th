@@ -122,7 +122,7 @@ WORD_START(ibuf_nonblank_line, ibuf_delimited_line)
          *    drop 0 0                               ( 0 0           )
          * else                                      ( io            )
          *    dup >r iobuf>data                      ( addr u        ) (R: io     )
-         *    trail string-first-blank               ( addr u'       ) (R: io     )
+         *    trail string-find-blank                ( addr u'       ) (R: io     )
          *    dup r@ iobuf>pos                       ( addr u u pos  ) (R: io     )
          *    +!                                     ( addr u        ) (R: io     )
          *    r> drop                                ( addr u        )
@@ -133,7 +133,7 @@ WORD_START(ibuf_nonblank_line, ibuf_delimited_line)
             drop, zero, zero,
         _else_, T(10),
             dup_to_r, iobuf_data,
-            trail, string_first_blank,
+            trail, string_find_blank,
             dup, r_fetch, iobuf_pos,
             plus_store,
             r_from_drop,
@@ -153,7 +153,7 @@ WORD_START(ibuf_refill, ibuf_nonblank_line)
          *    r@ iobuf>data                         ( pos c-addr u       ) (R: io )
          *    r@ iobuf>addr swap                    ( pos c-addr addr0 u ) (R: io )
          *    cmove                                 ( pos                ) (R: io )
-         *    negate r@ iobuf>size +!               (                    ) (R: io )
+         *    negate r@ iobuf>end +!                (                    ) (R: io )
          *    0 r@ iobuf>pos !                      (                    ) (R: io )
          * else
          *    drop                                  (                    ) (R: io )
@@ -163,15 +163,18 @@ WORD_START(ibuf_refill, ibuf_nonblank_line)
          * r@ iobuf>func @ execute                  ( u' err             ) (R: io )
          * tuck                                     ( err u' err         ) (R: io )
          * r@ iobuf>err !                           ( err u'             ) (R: io )
-         * r> iobuf>size                            ( err u' size-addr   )
-         * +!                                       ( err                )
+         * r@ iobuf>end                             ( err u' size-addr   ) (R: io )
+         * +!                                       ( err                ) (R: io )
+         * r@ iobuf>data                            ( err c-addr u       ) (R: io )
+         * string-find-eol                          ( err u'             ) (R: io )
+         * r> iobuf>eol !                           ( err                )
          */
         dup_to_r, iobuf_pos, fetch,
         _q_if_, T(16),
             r_fetch, iobuf_data,
             r_fetch, iobuf_addr, swap,
             cmove,
-            negate, r_fetch, iobuf_size, plus_store,
+            negate, r_fetch, iobuf_end, plus_store,
             zero, r_fetch, iobuf_pos, store,
         _else_, T(2),
             drop,
@@ -181,8 +184,11 @@ WORD_START(ibuf_refill, ibuf_nonblank_line)
         r_fetch, iobuf_func, fetch, execute,
         tuck,
         r_fetch, iobuf_err, store,
-        r_from, iobuf_size,
-        plus_store, exit
+        r_fetch, iobuf_end,
+        plus_store,
+        r_fetch, iobuf_data,
+        string_find_eol,
+        r_from, iobuf_eol, store, exit
     )
 WORD_END(ibuf_refill)
 /* ibuf-refill-if-empty ( io -- err ) read some chars into iobuf if it's empty */
@@ -364,8 +370,9 @@ WORD(iobuf_func,       iobuf_err,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(iobuf_handle,     iobuf_handle,   DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(iobuf_max,        iobuf_func,     DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
 WORD(iobuf_pos,        iobuf_max,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(iobuf_size,       iobuf_pos,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(latest,           iobuf_size,     DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
+WORD(iobuf_eol,        iobuf_pos,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD(iobuf_end,        iobuf_eol,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD(latest,           iobuf_end,      DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 /* ( c-addr u -- nt ) create a new name. do NOT add it to compilation wordlist */
 WORD_START(name_comma,  latest)
     WORD_DSTACK(2,1)
@@ -410,7 +417,7 @@ WORD_START(obuf_flush, name_to_xt)
          *    r@ iobuf>data                         ( c-addr u           ) (R: io )
          *    ?if0                                  ( c-addr u           ) (R: io )
          *       0 r@ iobuf>pos !                   ( c-addr 0           ) (R: io )
-         *       0 r@ iobuf>size !                  ( c-addr 0           ) (R: io )
+         *       0 r@ iobuf>end !                  ( c-addr 0           ) (R: io )
          *       nip r> drop exit                   ( 0                  )
          *    then                                  ( c-addr u           ) (R: io )
          *    r@ iobuf>handle @ -rot                ( handle c-addr u    ) (R: io )
@@ -426,7 +433,7 @@ WORD_START(obuf_flush, name_to_xt)
             r_fetch, iobuf_data,
             _q_if0_, T(12),
                 zero, r_fetch, iobuf_pos, store,
-                zero, r_fetch, iobuf_size, store,
+                zero, r_fetch, iobuf_end, store,
                 nip, r_from_drop, exit,
             then,
             r_fetch, iobuf_handle, fetch, minus_rot,
@@ -453,7 +460,7 @@ WORD_START(_obuf_flush_write_char_, obuf_flush)
          * drop                                        ( io c         )
          * over iobuf>free-data drop                   ( io c c-addr  )
          * c!                                          ( io           )
-         * 1 swap iobuf>size                           ( 1 size-addr  )
+         * 1 swap iobuf>end                           ( 1 size-addr  )
          * +! 0                                        ( 0            )
          */
         over, CALL(obuf_flush),
@@ -463,7 +470,7 @@ WORD_START(_obuf_flush_write_char_, obuf_flush)
         drop,
         over, iobuf_free_data, drop,
         c_store,
-        one, swap, iobuf_size,
+        one, swap, iobuf_end,
         plus_store, zero, exit
     )
 WORD_END(_obuf_flush_write_char_)
@@ -490,7 +497,7 @@ WORD_START(_obuf_flush_write_string_, _obuf_flush_write_char_)
          * then      ( string fits free data )         ( c-addr u c-addr' u'      ) (R: io )
          * drop swap dup >r                            ( c-addr c-addr' u         ) (R: io u )
          * cmove r> r>                                 ( u io                     )
-         * iobuf>size +! 0                             ( 0                        )
+         * iobuf>end +! 0                             ( 0                        )
          */
         rot, dup, CALL(obuf_flush),
         _q_if_, T(4),
@@ -507,7 +514,7 @@ WORD_START(_obuf_flush_write_string_, _obuf_flush_write_char_)
         then,
         drop, swap, dup, to_r,
         cmove, r_from, r_from,
-        iobuf_size, plus_store, zero, exit
+        iobuf_end, plus_store, zero, exit
     )
 WORD_END(_obuf_flush_write_string_)
 /*

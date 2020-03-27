@@ -40,44 +40,44 @@ FUNC_END(in_to_ibuf)
 
 /* iobuf>addr ( io -- c-addr ) get start of iobuf data */
 FUNC_START(iobuf_addr)
-        ADD2(  IMM(IOBUF_OFF_ADDR), DTOP)
+        LOAD(  DTOP,   AT(DTOP, IOBUF_OFF_ADDR))
 FUNC_END(iobuf_addr)
 
 
-/* iobuf>all-data ( io -- c-addr u ) get iobuf entire content, i.e. from 0 to iobuf>size */
+/* iobuf>all-data ( io -- c-addr u ) get iobuf entire content, i.e. from 0 to iobuf>end */
 FUNC_START(iobuf_all_data)
-        ADDI(  DTOP,   IOBUF_OFF_ADDR, REG1)       /* a = iobuf.addr    */
-        LOAD(  DTOP,   AT(DTOP, IOBUF_OFF_SIZE))   /* dtop = iobuf.size */
+        LOAD(  REG1,   AT(DTOP, IOBUF_OFF_ADDR))   /* a = iobuf.addr    */
+        LOAD(  DTOP,   AT(DTOP, IOBUF_OFF_END))    /* dtop = iobuf.end */
         DPUSH( REG1)
 FUNC_END(iobuf_all_data)
 
 
-/* iobuf>data ( io -- c-addr u ) get iobuf current content, i.e. from iobuf>pos to iobuf>size */
+/* iobuf>data ( io -- c-addr u ) get iobuf current content, i.e. from iobuf>pos to iobuf>end */
 FUNC_START(iobuf_data)
-        ADDI(  DTOP,   IOBUF_OFF_ADDR, REG1)       /* a = iobuf.addr    */
+        LOAD(  REG1,   AT(DTOP, IOBUF_OFF_ADDR))   /* a = iobuf.addr    */
         LOAD(  REG2,   AT(DTOP, IOBUF_OFF_POS))    /* b = iobuf.pos     */
-        LOAD(  DTOP,   AT(DTOP, IOBUF_OFF_SIZE))   /* dtop = iobuf.size */
+        LOAD(  DTOP,   AT(DTOP, IOBUF_OFF_END))    /* dtop = iobuf.end */
         ADD2(  REG2,   REG1)     /* a = c-addr = iobuf.addr + iobuf.pos */
-        SUB2(  REG2,   DTOP)     /* dtop =  u  = iobuf.size - iobuf.pos */
+        SUB2(  REG2,   DTOP)     /* dtop =  u  = iobuf.end - iobuf.pos */
         DPUSH( REG1)
 FUNC_END(iobuf_data)
 
 
-/* iobuf>data>n ( io -- u ) get iobuf current length, i.e. the distance iobuf>size - iobuf>pos */
+/* iobuf>data>n ( io -- u ) get iobuf current length, i.e. the distance iobuf>end - iobuf>pos */
 FUNC_START(iobuf_data_n)
         LOAD(  REG2,   AT(DTOP, IOBUF_OFF_POS))    /* b = iobuf.pos     */
-        LOAD(  DTOP,   AT(DTOP, IOBUF_OFF_SIZE))   /* dtop = iobuf.size */
-        SUB2(  REG2,   DTOP)     /* dtop =  u  = iobuf.size - iobuf.pos */
+        LOAD(  DTOP,   AT(DTOP, IOBUF_OFF_END))    /* dtop = iobuf.end  */
+        SUB2(  REG2,   DTOP)     /* dtop =  u  = iobuf.end - iobuf.pos  */
 FUNC_END(iobuf_data_n)
 
 
-/* iobuf>free-data ( io -- c-addr u ) get iobuf free space, i.e. from iobuf>size to iobuf>max */
+/* iobuf>free-data ( io -- c-addr u ) get iobuf free space, i.e. from iobuf>end to iobuf>max */
 FUNC_START(iobuf_free_data)
-        ADDI(  DTOP,   IOBUF_OFF_ADDR, REG1)       /* a = iobuf.addr     */
-        LOAD(  REG2,   AT(DTOP, IOBUF_OFF_SIZE))   /* b = iobuf.size     */
-        LOAD(  DTOP,   AT(DTOP, IOBUF_OFF_MAX))    /* dtop = iobuf.max   */
-        ADD2(  REG2,   REG1)     /* a = c-addr = iobuf.addr + iobuf.size */
-        SUB2(  REG2,   DTOP)     /* dtop =  u  = iobuf.max  - iobuf.size */
+        LOAD(  REG1,   AT(DTOP, IOBUF_OFF_ADDR))   /* a = iobuf.addr    */
+        LOAD(  REG2,   AT(DTOP, IOBUF_OFF_END))    /* b = iobuf.end     */
+        LOAD(  DTOP,   AT(DTOP, IOBUF_OFF_MAX))    /* dtop = iobuf.max  */
+        ADD2(  REG2,   REG1)     /* a = c-addr = iobuf.addr + iobuf.end */
+        SUB2(  REG2,   DTOP)     /* dtop =  u  = iobuf.max  - iobuf.end */
         DPUSH( REG1)
 FUNC_END(iobuf_free_data)
 
@@ -114,10 +114,16 @@ FUNC_START(iobuf_pos)
 FUNC_END(iobuf_pos)
 
 
-/* iobuf>size ( io -- addr ) get address of iobuf.size */
-FUNC_START(iobuf_size)
-        ADD2(  IMM(IOBUF_OFF_SIZE), DTOP)
-FUNC_END(iobuf_size)
+/* iobuf>eol ( io -- addr ) get address of iobuf.eol */
+FUNC_START(iobuf_eol)
+        ADD2(  IMM(IOBUF_OFF_EOL), DTOP)
+FUNC_END(iobuf_eol)
+
+
+/* iobuf>end ( io -- addr ) get address of iobuf.end */
+FUNC_START(iobuf_end)
+        ADD2(  IMM(IOBUF_OFF_END), DTOP)
+FUNC_END(iobuf_end)
 
 
 /* ( -- char ) receive one character */
@@ -125,11 +131,11 @@ FUNC_START(key)
         DPUSH( DTOP)
         LOAD(  REG1,   AT(M4TH, M4TH_OFF_IN))
         LOAD(  REG2,   AT(REG1, IOBUF_OFF_POS))
-        LOAD(  REG3,   AT(REG1, IOBUF_OFF_SIZE))
+        LOAD(  REG3,   AT(REG1, IOBUF_OFF_END))
         MOVE(  IMM_1,  DTOP)
         /* TODO refill input buffer */
         JAE(   REG2,   REG3,  FUNC_NEXT(key))
-        ADDI(  REG1,   IOBUF_OFF_ADDR, REG4)
+        LOAD(  REG4,   AT(REG1, IOBUF_OFF_ADDR))   /* d = iobuf.addr    */
         LD_ub( DTOP,   AT(REG4, REG2, 1))
         INC1(  REG2)
         STOR(  REG2,   AT(REG1, IOBUF_OFF_POS))
@@ -139,55 +145,52 @@ FUNC_END(key)
 /* obuf-write-char ( io ch -- ) write one char iobuf */
 FUNC_START(obuf_write_char)
         LOAD(  REG1,   AT(DSTK))                       /* a = io                 */
-        LOAD(  REG2,   AT(REG1, IOBUF_OFF_SIZE))       /* b = io.size            */
-        /* check if enough space in iobuf, i.e. io.size < io.max */
+        LOAD(  REG2,   AT(REG1, IOBUF_OFF_END))        /* b = io.end             */
+        /* check if enough space in iobuf, i.e. io.end < io.max */
 #ifdef __x86_64__
         JAE(   REG2,   AT(REG1, IOBUF_OFF_MAX), TO(obuf_write_char.slow))
-        STORb( DTOP,   IOBUF_OFF_ADDR(REG1, REG2))     /* io.addr[io.size] = dtop */
 #else
-        LOAD(  REG3,   AT(REG1, IOBUF_OFF_MAX))        /* c = io.max             */
+        LOAD(  REG3,   AT(REG1, IOBUF_OFF_MAX))        /* c = io.max              */
         JAE(   REG2,   REG3, TO(obuf_write_char.slow))
-        ADDI(  REG1,   IOBUF_OFF_ADDR,  REG4)          /* d = io.addr            */
-        STORb( DTOP,   AT(REG4, REG2, 1))              /* io.addr[io.size] = dtop */
 #endif
+        LOAD(  REG4,   AT(REG1, IOBUF_OFF_ADDR))       /* d = io.addr             */
+        STORb( DTOP,   AT(REG4, REG2, 1))              /* io.addr[io.end] = dtop  */
         INC1(  REG2)
-        STOR(  REG2,   AT(REG1, IOBUF_OFF_SIZE))       /* io.size++              */
-        ZERO(  DTOPw)                                  /* dtop = 0               */
-        ADD2(  IMM(SZ), DSTK)                          /* dstk ( 0             ) */
+        STOR(  REG2,   AT(REG1, IOBUF_OFF_END))        /* io.end++                */
+        ZERO(  DTOPw)                                  /* dtop = 0                */
+        ADD2(  IMM(SZ), DSTK)                          /* dstk ( 0              ) */
         NEXT0()
 LABEL(obuf_write_char.slow)
         /* not enough space, call forth word (obuf-flush-write-char) */
-        ADDROF_4G( WORD_SYM(_obuf_flush_write_char_), REG2) /* b = word          */
-        LD_uw( REG3,   AT(REG2, WORD_OFF_CODE_OFF))    /* c = w.code_off         */
-        DPUSH( DTOP)                                   /* dstk ( io ch _       ) */
-        ADD4(  REG2, REG3, 0, DTOP)                    /* dstk ( io ch xt      ) */
-        JUMP(  FUNC(_exec_xt_from_native_))        /* dstk ( err           ) */
+        ADDROF_4G( WORD_SYM(_obuf_flush_write_char_), REG2) /* b = word           */
+        LD_uw( REG3,   AT(REG2, WORD_OFF_CODE_OFF))    /* c = w.code_off          */
+        DPUSH( DTOP)                                   /* dstk ( io ch _        ) */
+        ADD4(  REG2, REG3, 0, DTOP)                    /* dstk ( io ch xt       ) */
+        JUMP(  FUNC(_exec_xt_from_native_))            /* dstk ( err            ) */
 FUNC_RAWEND(obuf_write_char)
 
 
 /* obuf-write-string ( io c-addr u -- ) write string to iobuf */
 FUNC_START(obuf_write_string)
-        LOAD(  REG1,   AT(DSTK, SZ))                   /* a = io                 */
-        LOAD(  REG2,   AT(REG1, IOBUF_OFF_SIZE))       /* b = io.size            */
-        ADD4(  DTOP,   REG2, 0, REG3)                  /* c = io.size + u        */
-        /* check if enough space in iobuf, i.e. io.size + u <= io.max */
+        LOAD(  REG1,   AT(DSTK, SZ))                   /* a = io                  */
+        LOAD(  REG2,   AT(REG1, IOBUF_OFF_END))        /* b = io.end              */
+        ADD4(  DTOP,   REG2, 0, REG3)                  /* c = io.end + u          */
+        /* check if enough space in iobuf, i.e. io.end + u <= io.max */
 #ifdef __x86_64__
         JA(    REG3,   AT(REG1, IOBUF_OFF_MAX), TO(obuf_write_string.slow))
-        STOR(  REG3,   AT(REG1, IOBUF_OFF_SIZE))       /* io.size += u           */
-        lea    IOBUF_OFF_ADDR(REG1, REG2), REG1;       /* a = io.dst             */
 #else
-        LOAD(  REG4,   AT(REG1, IOBUF_OFF_MAX))        /* d = io.max             */
+        LOAD(  REG4,   AT(REG1, IOBUF_OFF_MAX))        /* d = io.max              */
         JA(    REG3,   REG4, TO(obuf_write_string.slow))
-        STOR(  REG3,   AT(REG1, IOBUF_OFF_SIZE))       /* io.size += u           */
-        ADD2(  IMM(IOBUF_OFF_ADDR), REG1)              /* a = io.addr            */
-        ADD2(  REG2,   REG1)                           /* a = io.dst             */
 #endif
-        LOAD(  REG2,   AT(DSTK))                       /* b = c-addr             */
-        STOR(  REG1,   AT(DSTK))                       /* dstk ( io io.dst u )   */
-        STOR(  REG2,   AT(DSTK, SZ))                   /* dstk ( c-addr io.dst u  ) */
-        ASM_CALL(FUNC(cmove))                          /* dstk (                  ) */
-        DPUSH( DTOP)                                   /* dstk ( _                ) */
-        ZERO(  DTOPw)                                  /* dstk ( 0                ) */
+        STOR(  REG3,   AT(REG1, IOBUF_OFF_END))        /* io.end += u             */
+        LOAD(  REG1,   AT(REG1, IOBUF_OFF_ADDR))       /* a = io.addr             */
+        ADD2(  REG2,   REG1)                           /* a = dst = io.addr + end */
+        LOAD(  REG2,   AT(DSTK))                       /* b = c-addr              */
+        STOR(  REG1,   AT(DSTK))                       /* ( io dst u            ) */
+        STOR(  REG2,   AT(DSTK, SZ))                   /* ( c-addr dst u        ) */
+        ASM_CALL(FUNC(cmove))                          /* (                     ) */
+        DPUSH( DTOP)                                   /* ( _                   ) */
+        ZERO(  DTOPw)                                  /* ( 0                   ) */
         NEXT0()
 LABEL(obuf_write_string.slow)
         /* not enough space, call forth word (obuf-flush-write-string) */

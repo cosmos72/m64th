@@ -57,19 +57,21 @@
     /* ( c-addr u ch -- u' ) get position of given char or CR/LF in string  */                     \
     X(14, "line-find-char", line_find_char)                                                        \
     X(4, "noop", noop)                                                                             \
-    X(2, "r!", r_store)                             /* ( a -- ) (R: b -- a   )         */          \
-    X(2, "r+", r_plus)                              /* ( a -- ) (R: b -- a+b )         */          \
-    X(6, "r>drop", r_from_drop)                     /* equivalent to: r> drop          */          \
-    X(6, "rdepth", rdepth)                          /* ( -- n ) get return stack depth */          \
-    X(5, "-roll", minus_roll)                       /* rotate in opposite direction than "roll" */ \
-    X(4, "-rot", minus_rot)                         /* equivalent to: rot rot          */          \
-    X(7, "squared", squared)                        /* equivalent to: dup *            */          \
-    X(7, "string=", string_equal)                   /* ( addr1 addr2 u -- addr1 addr2 u t|f ) */   \
-    X(10, "string-ci=", string_ci_equal)            /* ( addr1 addr2 u -- addr1 addr2 u t|f ) */   \
-    X(18, "string-first-blank", string_first_blank) /* ( c-addr u -- u' )                     */   \
-    X(21, "string-first-nonblank", string_first_nonblank) /* ( c-addr u -- u' )               */   \
-    X(3, "sub", sub)                                      /* equivalent to: swap -            */   \
-    X(5, "trail", trail)                                  /* equivalent to: over swap         */   \
+    X(2, "r!", r_store)                           /* ( a -- ) (R: b -- a   )         */            \
+    X(2, "r+", r_plus)                            /* ( a -- ) (R: b -- a+b )         */            \
+    X(6, "r>drop", r_from_drop)                   /* equivalent to: r> drop          */            \
+    X(6, "rdepth", rdepth)                        /* ( -- n ) get return stack depth */            \
+    X(5, "-roll", minus_roll)                     /* rotate in opposite direction than "roll" */   \
+    X(4, "-rot", minus_rot)                       /* equivalent to: rot rot          */            \
+    X(7, "squared", squared)                      /* equivalent to: dup *            */            \
+    X(7, "string=", string_equal)                 /* ( addr1 addr2 u -- addr1 addr2 u t|f ) */     \
+    X(10, "string-ci=", string_ci_equal)          /* ( addr1 addr2 u -- addr1 addr2 u t|f ) */     \
+    X(17, "string-find-blank", string_find_blank) /* ( c-addr u -- u' )                     */     \
+    X(16, "string-find-char", string_find_char)   /* ( c-addr u -- u' )                     */     \
+    X(15, "string-find-eol", string_find_eol)     /* ( c-addr u -- u' )                     */     \
+    X(20, "string-find-nonblank", string_find_nonblank) /* ( c-addr u -- u' )               */     \
+    X(3, "sub", sub)                                    /* equivalent to: swap -            */     \
+    X(5, "trail", trail)                                /* equivalent to: over swap         */     \
     /*                              */ /*                                               */         \
     X(5, ">byte", to_byte)                                                                         \
     X(5, ">char", to_char)                                                                         \
@@ -169,13 +171,13 @@
 #define DICT_TOKENS_M4TH_CORE(X)                                                                   \
     X(7, "in>ibuf", in_to_ibuf)     /* (    -- io       ) get current input as iobuf     */        \
     X(10, "iobuf>addr", iobuf_addr) /* ( io -- c-addr   ) get start of iobuf data buffer */        \
-    /* ( io -- c-addr u ) get iobuf entire content i.e. from 0 to iobuf>size */                    \
+    /* ( io -- c-addr u ) get iobuf entire content i.e. from 0 to iobuf>end */                     \
     X(14, "iobuf>all-data", iobuf_all_data)                                                        \
-    /* ( io -- c-addr u ) get iobuf content i.e. from iobuf>pos to iobuf>size */                   \
+    /* ( io -- c-addr u ) get iobuf content i.e. from iobuf>pos to iobuf>end */                    \
     X(10, "iobuf>data", iobuf_data)                                                                \
-    /* ( io -- u ) get iobuf content length i.e. the distance iobuf>size - iobuf>pos */            \
+    /* ( io -- u ) get iobuf content length i.e. the distance iobuf>end - iobuf>pos */             \
     X(12, "iobuf>data>n", iobuf_data_n)                                                            \
-    /* ( io -- c-addr u ) get iobuf free space i.e. from iobuf>size to iobuf>max */                \
+    /* ( io -- c-addr u ) get iobuf free space i.e. from iobuf>end to iobuf>max */                 \
     X(15, "iobuf>free-data", iobuf_free_data)                                                      \
     X(12, "iobuf-empty?", iobuf_empty_query) /* ( io -- t|f ) true if iobuf is currently empty */  \
     X(9, "iobuf>err", iobuf_err)         /* ( io -- addr ) get address of iobuf err          */    \
@@ -183,7 +185,8 @@
     X(12, "iobuf>handle", iobuf_handle)  /* ( io -- addr ) get address of iobuf handle       */    \
     X(9, "iobuf>max", iobuf_max)         /* ( io -- u    ) get iobuf max size i.e. capacity  */    \
     X(9, "iobuf>pos", iobuf_pos)         /* ( io -- addr ) get address of iobuf position     */    \
-    X(10, "iobuf>size", iobuf_size)      /* ( io -- addr ) get address of iobuf size         */    \
+    X(9, "iobuf>eol", iobuf_eol)         /* ( io -- addr ) get address of iobuf eol position */    \
+    X(9, "iobuf>end", iobuf_end)         /* ( io -- addr ) get address of iobuf end position */    \
     X(6, "latest", latest)               /* (    -- nt   ) get last defined word             */    \
     X(5, "name,", name_comma)            /* ( c-addr u -- nt ) create a new name             */    \
     X(9, "name>code", name_to_code)      /* ( nt  -- taddr n ) get code array from name      */    \

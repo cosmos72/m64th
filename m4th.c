@@ -632,11 +632,12 @@ fail:
 /* ----------------------- m4iobuf ----------------------- */
 
 static m4iobuf *m4iobuf_new(m4cell_u capacity) {
-    m4iobuf *p = (m4iobuf *)m4mem_allocate(sizeof(m4iobuf) + capacity * sizeof(m4char));
-    p->func = (m4xt)WORD_SYM(always_eof).data;
-    p->handle = p->err = p->pos = p->size = 0;
-    p->max = capacity;
-    return p;
+    m4iobuf *io = (m4iobuf *)m4mem_allocate(sizeof(m4iobuf) + capacity * sizeof(m4char));
+    memset(io, '\0', sizeof(m4iobuf));
+    io->func = (m4xt)WORD_SYM(always_eof).data;
+    io->max = capacity;
+    io->addr = ((m4char *)io) + sizeof(m4iobuf);
+    return io;
 }
 
 static void m4iobuf_del(m4iobuf *arg) {
@@ -912,8 +913,8 @@ void m4th_clear(m4th *m) {
     m->dstack.curr = m->dstack.end;
     m->rstack.curr = m->rstack.end;
     memset(m->c_regs, '\0', sizeof(m->c_regs));
-    m->in->err = m->in->pos = m->in->size = 0;
-    m->out->err = m->out->pos = m->out->size = 0;
+    m->in->err = m->in->pos = m->in->eol = m->in->end = 0;
+    m->out->err = m->out->pos = m->out->eol = m->out->end = 0;
     m->ip = NULL;
     m->lastw = NULL;
     m->xt = NULL;

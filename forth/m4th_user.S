@@ -349,21 +349,31 @@ WORD(to_ushort,        to_short,       DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(to_int,           to_ushort,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(to_uint,          to_int,         DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 /**
- * string-first-blank ( c-addr u -- u' ) return index of first blank (i.e. char <= 32) in string.
+ * string-find-blank ( c-addr u -- u' ) return index of first blank (i.e. char <= 32) in string.
  * return string length if not found.
  */
-WORD(string_first_blank, to_uint,      DSTACK(2,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(string_find_blank, to_uint,      DSTACK(2,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 /**
- * string-first-nonblank ( c-addr u -- u' ) return index of first non-blank (i.e. char > 32) in string.
+ * string-find-char ( c-addr u ch -- u' ) return index of first ch in string.
  * return string length if not found.
  */
-WORD(string_first_nonblank, string_first_blank, DSTACK(2,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(string_find_char,  to_uint,      DSTACK(3,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+/**
+ * string-find-eol ( c-addr u -- u' ) return index of first CR or LR in string.
+ * return string length if not found.
+ */
+WORD(string_find_eol,   to_uint,      DSTACK(2,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+/**
+ * string-find-nonblank ( c-addr u -- u' ) return index of first non-blank (i.e. char > 32) in string.
+ * return string length if not found.
+ */
+WORD(string_find_nonblank, string_find_eol, DSTACK(2,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 /**
  * string>number ( c-addr u -- x t|f )
  * convert string to number, recognizing base prefixes # $ % and sign prefix '-'
  * Also convert any single-quoted char 'x' to ASCII code of x
  */
-WORD_START(string_to_number, string_first_nonblank)
+WORD_START(string_to_number, string_find_nonblank)
     WORD_DSTACK(2,4)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()

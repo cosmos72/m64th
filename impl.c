@@ -92,9 +92,9 @@ void m4th_dot(m4cell n, m4iobuf *io) {
         }
     }
     len = buf + N - addr;
-    if (io->max - io->size >= len) {
-        memcpy(io->addr + io->size, addr, len);
-        io->size += len;
+    if (io->max - io->end >= len) {
+        memcpy(io->addr + io->end, addr, len);
+        io->end += len;
         return;
     }
 }

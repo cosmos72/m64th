@@ -242,36 +242,72 @@ FUNC_END(string_ci_equal)
 
 
 /**
- * string-first-blank ( c-addr u -- u' ) return index of first blank (i.e. char <= 32) in string.
+ * string-find-blank ( c-addr u -- u' ) return index of first blank (i.e. char <= 32) in string.
  * return string length if not found.
  */
-FUNC_START(string_first_blank)
+FUNC_START(string_find_blank)
         DPOP(  REG2)                                   /* b = addr */
-        JZ(    DTOP,   FUNC_NEXT(string_first_blank))  /* u == 0   */
+        JZ(    DTOP,   FUNC_NEXT(string_find_blank))   /* u == 0   */
         ZERO(  REG1w)
-LABEL(string_first_blank.loop)
+LABEL(string_find_blank.loop)
         LD_ub( REG3,   AT(REG2, REG1, 1))
-        JBE(   REG3w,  IMM(32),TO(string_first_blank.found))
+        JBE(   REG3w,  IMM(32),TO(string_find_blank.found))
         INC1(  REG1)
-        JB(    REG1,   DTOP,   TO(string_first_blank.loop))
-LABEL(string_first_blank.found)
+        JB(    REG1,   DTOP,   TO(string_find_blank.loop))
+LABEL(string_find_blank.found)
         MOVE(  REG1,   DTOP)
-FUNC_END(string_first_blank)
+FUNC_END(string_find_blank)
+
+
+/**
+ * string-find-char ( c-addr u ch -- u' ) return index of first ch in string.
+ * return string length if not found.
+ */
+FUNC_START(string_find_char)
+        DPOP2( REG4,   REG2)                            /* @ = u,  b = addr */
+        ZERO(  REG1w)
+        JZ(    REG4,   TO(string_find_char.found))      /* u == 0           */
+LABEL(string_find_char.loop)
+        LD_ub( REG3,   AT(REG2, REG1, 1))
+        JEQ(   REG3w,  DTOPw,  TO(string_find_char.found))
+        INC1(  REG1)
+        JB(    REG1,   REG4,   TO(string_find_char.loop))
+LABEL(string_find_char.found)
+        MOVE(  REG1,   DTOP)
+FUNC_END(string_find_char)
+
+/**
+ * string-find-eol ( c-addr u -- u' ) return index of first CR or LF in string.
+ * return string length if not found.
+ */
+FUNC_START(string_find_eol)
+        DPOP(  REG2)                                   /* b = addr */
+        JZ(    DTOP,   FUNC_NEXT(string_find_eol))     /* u == 0   */
+        ZERO(  REG1w)
+LABEL(string_find_eol.loop)
+        LD_ub( REG3,   AT(REG2, REG1, 1))
+        JEQ(   REG3w,  IMM(10),TO(string_find_eol.found))
+        JEQ(   REG3w,  IMM(13),TO(string_find_eol.found))
+        INC1(  REG1)
+        JB(    REG1,   DTOP,   TO(string_find_eol.loop))
+LABEL(string_find_eol.found)
+        MOVE(  REG1,   DTOP)
+FUNC_END(string_find_eol)
 
 
 /*
- * string-first-nonblank ( c-addr u -- u' ) get index of first non-blank (i.e. char > 32) in string.
+ * string-find-nonblank ( c-addr u -- u' ) get index of first non-blank (i.e. char > 32) in string.
  * return string length if not found.
  */
-FUNC_START(string_first_nonblank)
+FUNC_START(string_find_nonblank)
         DPOP(  REG2)                                   /* b = addr      */
-        JZ(    DTOP,   FUNC_NEXT(string_first_nonblank))/* u == 0       */
+        JZ(    DTOP,   FUNC_NEXT(string_find_nonblank))/* u == 0       */
         ZERO(  REG1w)                                  /* a = index = 0 */
-LABEL(string_first_nonblank.loop)
+LABEL(string_find_nonblank.loop)
         LD_ub( REG3,   AT(REG2, REG1, 1))              /* c = addr[index] */
-        JA(    REG3w,  IMM(32),TO(string_first_nonblank.found))
+        JA(    REG3w,  IMM(32),TO(string_find_nonblank.found))
         INC1(  REG1)
-        JB(    REG1,   DTOP,   TO(string_first_nonblank.loop))
-LABEL(string_first_nonblank.found)
+        JB(    REG1,   DTOP,   TO(string_find_nonblank.loop))
+LABEL(string_find_nonblank.found)
         MOVE(  REG1,   DTOP)
-FUNC_END(string_first_nonblank)
+FUNC_END(string_find_nonblank)

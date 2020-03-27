@@ -34,8 +34,8 @@ FUNC_END(name_to_prev)
 
 /* iobuf-empty? ( io -- t|f ) true if iobuf is currently empty */
 FUNC_START(iobuf_empty_query)
-        LOAD(  REG1,   AT(DTOP, IOBUF_OFF_POS))    /* a = iobuf.pos     */
-        LOAD(  REG2,   AT(DTOP, IOBUF_OFF_SIZE))   /* b = iobuf.size    */
+        LOAD(  REG1,   AT(DTOP, IOBUF_OFF_POS))        /* a = iobuf.pos     */
+        LOAD(  REG2,   AT(DTOP, IOBUF_OFF_END))        /* b = iobuf.end    */
         cmp    REG1,   REG2;
         csetm  DTOP,   ge;
 FUNC_END(iobuf_empty_query)

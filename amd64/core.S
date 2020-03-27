@@ -46,7 +46,7 @@ FUNC_END(ex_message_fetch)
 /* iobuf-empty? ( io -- t|f ) true if iobuf is currently empty */
 FUNC_START(iobuf_empty_query)
         LOAD(  REG1,   AT(DTOP, IOBUF_OFF_POS))        /* a = iobuf.pos          */
-        LOAD(  REG2,   AT(DTOP, IOBUF_OFF_SIZE))       /* b = iobuf.size         */
+        LOAD(  REG2,   AT(DTOP, IOBUF_OFF_END))        /* b = iobuf.end         */
         ZERO(  DTOPw)
         cmp    REG2,   REG1;
         cmovge RFFF,   DTOP;
