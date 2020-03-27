@@ -251,7 +251,7 @@ WORD_START(ibuf_skip_1blank_except_cr, ibuf_refill_if_empty)
         iobuf_pos, plus_store, false, exit
     )
 WORD_END(ibuf_skip_1blank_except_cr)
-/* ( io -- ) skip blanks i.e. chars <= ' ' from iobuf current data. does not refill. */
+/* ( io -- ) skip blanks i.e. chars <= ' ' from iobuf. does not refill. */
 WORD_START(ibuf_skip_blanks, ibuf_skip_1blank_except_cr)
     WORD_DSTACK(1,0)
     WORD_RSTACK(0,0)

@@ -30,21 +30,17 @@ m4pair m4th_c_linenoise(const char *prompt, char *addr, size_t len) {
     m4pair ret = {};
     linenoiseSetMultiLine(1);
     int n = linenoise(addr, len, prompt);
-    if (n > 0) {
+    if (n >= 0) {
         ret.num = n;
-        if (addr[n - 1] == '\n') {
 #ifdef __unix__
-            /* forth expects a space to be printed instead of newline */
-            (void)write(1, " ", 1);
+        /* forth expects a space to be printed instead of newline */
+        (void)write(1, " ", 1);
 #endif
-            addr[n - 1] = '\0';
-            linenoiseHistoryAdd(addr);
-            addr[n - 1] = '\n';
-        }
-    } else if (n == 0) {
-        ret.err = m4err_unexpected_eof;
-    } else {
+        linenoiseHistoryAdd(addr);
+    } else if (errno) {
         ret.err = m4err_c_errno - errno;
+    } else {
+        ret.err = m4err_unexpected_eof;
     }
     return ret;
 }

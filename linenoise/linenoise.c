@@ -814,8 +814,9 @@ static int linenoiseEdit(int stdin_fd, int stdout_fd, char *buf, size_t buflen,
      * initially is just an empty string. */
     linenoiseHistoryAdd("");
 
-    if (write(l.ofd, prompt, l.plen) == -1)
+    if (write(l.ofd, prompt, l.plen) == -1) {
         return -1;
+    }
     while (1) {
         int nread;
         char seq[3];
@@ -853,7 +854,6 @@ static int linenoiseEdit(int stdin_fd, int stdout_fd, char *buf, size_t buflen,
                 refreshLine(&l);
                 hintsCallback = hc;
             }
-            l.buf[l.len++] = '\n';
             return (int)l.len;
         case CTRL_C: /* ctrl-c */
             errno = EAGAIN;
@@ -869,7 +869,8 @@ static int linenoiseEdit(int stdin_fd, int stdout_fd, char *buf, size_t buflen,
             } else {
                 history_len--;
                 free(history[history_len]);
-                return 0;
+                errno = 0;
+                return -1; /* EOF */
             }
             break;
         case CTRL_T: /* ctrl-t, swaps current character with previous. */

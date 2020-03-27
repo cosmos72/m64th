@@ -229,10 +229,11 @@ WORD_START(repl,  rdepth)
          *    in>ibuf ibuf-refill-if-empty drop        ( ...           )
          *    ' interpret catch                        ( ...' ex|0     )
          *    dup 0=                                   ( ... ex|0 t|f  )
-         *    in>ibuf ibuf-skip-blanks-until-cr and    ( ... ex|0 t|f  )
+         *    in>ibuf ibuf-skip-blanks                 ( ... ex|0 t|f  )
+         *    in>ibuf iobuf-empty? and                 ( ... ex|0 t|f  )
          *    if                                       ( ... 0         )
          *       drop (repl-type-ack)                  ( ...           )
-         *    else                                     ( ... ex        )
+         *    else                                     ( ... ex|0      )
          *       type-exception                        ( ...           )
          *    then                                     ( ...           )
          *    out>obuf obuf-flush drop                 ( ...           )
@@ -244,7 +245,8 @@ WORD_START(repl,  rdepth)
             in_to_ibuf, CALL(ibuf_refill_if_empty), drop,
             _lit_cell_, XT(interpret), _catch_beg_, _catch_end_,
             dup, zero_equal,
-            in_to_ibuf, CALL(ibuf_skip_blanks_until_cr), and,
+            in_to_ibuf, CALL(ibuf_skip_blanks),
+            in_to_ibuf, iobuf_empty_query, and,
             _if_, T(4+nCALLt),
                 drop, CALL(_repl_type_ack_),
             _else_, T(2+nCALLt),
@@ -252,7 +254,7 @@ WORD_START(repl,  rdepth)
             then,
             out_to_obuf, CALL(obuf_flush), drop,
             in_to_ibuf, iobuf_err, fetch,
-        _until_, T(-28-6*nCALLt),
+        _until_, T(-29-6*nCALLt),
         _lit_, T('\n'), emit, out_to_obuf, CALL(obuf_flush), drop, exit
     )
 WORD_END(repl)
@@ -267,30 +269,28 @@ WORD_START(minus_roll, sub)
     WORD_CODE(minus_roll, exit)
 WORD_END(minus_roll)
 WORD(minus_rot,        minus_roll,     DSTACK(3,3), RSTACK(0,0), WORD_PURE)
-/* ( ex|0 -- ) write cr exception and ex-message@ to current output */
+/* ( ex|0 -- ) write '\n' exception and ex-message@ to current output */
 WORD_START(type_exception,   minus_rot)
     WORD_DSTACK(1,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
-    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_FLAGS(0)
     WORD_CODE(
-        /* ?if                                         ( ex|0          )
-         *    s\" \n exception " type                  (               )
-         *    .                                        (               )
-         *    ex-message@ type cr                      (               )
-         * else                                        ( 0             )
-         *    drop                                     (               )
-         * then                                        (               )
+        /* ?if0                                        ( 0             )
+         *    drop exit                                (               )
+         * then                                        ( ex            )
+         * s\" \n exception " type                     (               )
+         * .                                           (               )
+         * ex-message@ type cr                         (               )
          */
-        _q_if_, T(10 + nSTRt(11) + nCALLt),
-            LIT_STRING(11, "\nexception "), type,
-            CALL(dot),
-            ex_message_fetch, type,
-            _lit_, T('\n'), emit,
-        _else_, T(2),
-            drop,
-        then, exit
+        _q_if0_, T(3),
+            drop, exit,
+        then,
+        LIT_STRING(11, "\nexception "), type,
+        CALL(dot),
+        ex_message_fetch, type,
+        _lit_, T('\n'), emit, exit
     )
 WORD_END(type_exception)
 WORD(div_byte,         type_exception, DSTACK(1,1), RSTACK(0,0), WORD_PURE)
