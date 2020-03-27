@@ -226,6 +226,7 @@ WORD_START(repl,  rdepth)
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
         /* begin                                       ( ...           )
+         *    out>obuf obuf-flush drop                 ( ...           )
          *    in>ibuf ibuf-refill-if-empty             ( ... err|0     )
          * while0                                      ( ...           )
          *    ' interpret catch                        ( ...' ex|0     )
@@ -237,13 +238,12 @@ WORD_START(repl,  rdepth)
          *    else                                     ( ... ex|0      )
          *       type-exception                        ( ...           )
          *    then                                     ( ...           )
-         *    out>obuf obuf-flush drop                 ( ...           )
          * repeat                                      ( ...           )
-         * cr out>obuf obuf-flush drop                 ( ...           )
          */
         begin,
+            out_to_obuf, CALL(obuf_flush), drop,
             in_to_ibuf, CALL(ibuf_refill_if_empty),
-        _while0_, T(23+5*nCALLt),
+        _while0_, T(20+4*nCALLt),
             _lit_cell_, XT(interpret), _catch_beg_, _catch_end_,
             dup, zero_equal,
             in_to_ibuf, CALL(ibuf_skip_blanks),
@@ -253,9 +253,7 @@ WORD_START(repl,  rdepth)
             _else_, T(2+nCALLt),
                 CALL(type_exception),
             then,
-            out_to_obuf, CALL(obuf_flush), drop,
-        _repeat_, T(-27-6*nCALLt),
-        _lit_, T('\n'), emit, out_to_obuf, CALL(obuf_flush), drop, exit
+        _repeat_, T(-27-6*nCALLt), exit
     )
 WORD_END(repl)
 WORD(squared,          repl,           DSTACK(1,1), RSTACK(0,0), WORD_PURE)

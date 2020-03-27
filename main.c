@@ -37,8 +37,9 @@ int main(int argc, char *argv[]) {
     m->out->handle = (m4cell)stdout;
 
     ret = m4th_repl(m);
-
     m4th_del(m);
+
+    putchar('\n');
 
     /* suppress 'unused parameter' warning */
     return ret | (0 & argc & (m4cell)argv);
