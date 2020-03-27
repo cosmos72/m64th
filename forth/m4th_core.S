@@ -104,7 +104,7 @@ WORD_START(ibuf_find_char, compile_string_comma)
     )
 WORD_END(ibuf_find_char)
 /**
- * ibuf-nonblank-line ( io -- c-addr u ) find first non-blank string in current iobuf,
+ * ibuf-find-nonblanks ( io -- c-addr u ) get first non-blank string in current iobuf,
  * without refilling.
  */
 WORD_START(ibuf_find_nonblanks, ibuf_find_char)
@@ -198,8 +198,7 @@ WORD_START(ibuf_refill_if_empty, ibuf_refill)
         then, exit
     )
 WORD_END(ibuf_refill_if_empty)
-/* ( io -- ) skip one blank from ibuf. does not refill.
- */
+/* ( io -- ) skip one blank from ibuf. does not refill. */
 WORD_START(ibuf_skip_1blank, ibuf_refill_if_empty)
     WORD_DSTACK(1,0)
     WORD_RSTACK(0,0)
