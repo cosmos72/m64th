@@ -80,7 +80,7 @@ static const m4testio testio_a[] = {
      {{1, {'z'}}, {}},
      {{}, {}},
      {"  x y \n", ""},
-     {"\n", "  x y "}},
+     {"", "  x y \n"}},
     /* ------------------------- obuf --------------------------------------- */
     {"obuf-flush",
      {m4out_to_obuf, CALL(obuf_flush), m4bye},

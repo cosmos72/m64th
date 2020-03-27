@@ -69,39 +69,37 @@ WORD_START(compile_string_comma, always_eof)
     )
 WORD_END(compile_string_comma)
 /**
- * ibuf-find-char ( io ch -- c-addr u ) get string before ch in current iobuf line,
- * without refilling and stopping before any CR
+ * ibuf-find-char ( io ch -- c-addr u ) get string before ch in iobuf.
+ * if ch is present, consume it. does not refill.
  */
 WORD_START(ibuf_find_char, compile_string_comma)
     WORD_DSTACK(2,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
-    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_FLAGS(0)
     WORD_CODE(
         /*
-         * 2dup 2>r drop iobuf>data r@ line-find-char  ( u            ) (R: io ch  )
-         * i' iobuf>data rot tuck                      ( addr u u' u  ) (R: io ch  )
-         * >                                           ( addr u t|f   ) (R: io ch  )
-         * if                                          ( addr u       ) (R: io ch  )
-         *    2dup chars + c@                          ( addr u ch'   ) (R: io ch  )
-         *    trail r> =                               ( addr u u t|f ) (R: io     )
-         *    negate +                                 ( addr u u'    ) (R: io     )
-         * else                                        ( addr u u     ) (R: io ch  )
-         *    dup r> drop                              ( addr u u     ) (R: io     )
-         * then                                        ( addr u u     ) (R: io     )
-         * r> iobuf>pos +!                             ( addr u       )
+         * 2dup 2>r drop iobuf>data trail r@           ( addr addr u ch   ) (R: io ch  )
+         * string-find-char dup                        ( addr u' u'       ) (R: io ch  )
+         * i' iobuf>pos +!                             ( addr u           ) (R: io ch  )
+         * i' iobuf>data                               ( addr u addr' u'  ) (R: io ch  )
+         * if0                                         ( addr u addr'     ) (R: io ch  )
+         *    drop 2r> 2drop exit                      ( addr u           )
+         * then                                        ( addr u addr'     ) (R: io ch  )
+         * c@ r> =                                     ( addr u t|f       ) (R: io     )
+         * negate                                      ( addr u 1|0       ) (R: io     )
+         * r> iobuf>pos +!                             ( addr u           )
          */
-        two_dup_two_to_r, drop, iobuf_data, r_fetch, line_find_char,
-        i_prime, iobuf_data, rot, tuck,
-        more,
-        _if_, T(11),
-            two_dup, chars, plus, c_fetch,
-            trail, r_from, equal,
-            negate, plus,
-        _else_, T(3),
-            dup, r_from_drop,
+        two_dup_two_to_r, drop, iobuf_data, trail, r_fetch,
+        string_find_char, dup,
+        i_prime, iobuf_pos, plus_store,
+        i_prime, iobuf_data,
+        _if0_, T(4),
+            drop, two_r_from_two_drop, exit,
         then,
+        c_fetch, r_from, equal,
+        negate,
         r_from, iobuf_pos, plus_store, exit
     )
 WORD_END(ibuf_find_char)
