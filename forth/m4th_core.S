@@ -117,27 +117,19 @@ WORD_START(ibuf_find_nonblanks, ibuf_find_char)
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
         /*
-         * dup ibuf-skip-blanks-except-cr            ( io t|f        )
-         * if                                        ( io            )
-         *    drop 0 0                               ( 0 0           )
-         * else                                      ( io            )
-         *    dup >r iobuf>data                      ( addr u        ) (R: io     )
-         *    trail string-find-blank                ( addr u'       ) (R: io     )
-         *    dup r@ iobuf>pos                       ( addr u u pos  ) (R: io     )
-         *    +!                                     ( addr u        ) (R: io     )
-         *    r> drop                                ( addr u        )
-         * then                                      ( addr u        )
+         * dup >r ibuf-skip-blanks                   (               ) (R: io     )
+         * r@ iobuf>data                             ( addr u        ) (R: io     )
+         * trail string-find-blank                   ( addr u'       ) (R: io     )
+         * dup r@ iobuf>pos                          ( addr u u pos  ) (R: io     )
+         * +!                                        ( addr u        ) (R: io     )
+         * r> drop                                   ( addr u        )
          */
-        dup, CALL(ibuf_skip_blanks_except_cr),
-        _if_, T(5),
-            drop, zero, zero,
-        _else_, T(10),
-            dup_to_r, iobuf_data,
-            trail, string_find_blank,
-            dup, r_fetch, iobuf_pos,
-            plus_store,
-            r_from_drop,
-        then, exit
+        dup_to_r, CALL(ibuf_skip_blanks),
+        r_fetch, iobuf_data,
+        trail, string_find_blank,
+        dup, r_fetch, iobuf_pos,
+        plus_store,
+        r_from_drop, exit
     )
 WORD_END(ibuf_find_nonblanks)
 /* ibuf-refill ( io -- err ) read some chars into iobuf */
@@ -271,77 +263,7 @@ WORD_START(ibuf_skip_blanks, ibuf_skip_1blank)
         plus_store, exit
     )
 WORD_END(ibuf_skip_blanks)
-/* ( io -- t|f ) skip blanks until end of line. true if found end of line.
-   does not refill, and does not skip CR
- */
-WORD_START(ibuf_skip_blanks_except_cr, ibuf_skip_blanks)
-    WORD_DSTACK(1,1)
-    WORD_RSTACK(0,0)
-    WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
-    WORD_FLAGS(M4FLAG_INLINE)
-    WORD_CODE(
-        /* 0 over trail iobuf>data bounds              ( io 0 0 end addr )
-         * ?do                                         ( io u f          ) (R: end addr-i )
-         *    drop i c@ bl >                           ( io u t|f        ) (R: end addr-i )
-         *    if                                       ( io u            ) (R: end addr-i )
-         *       false leave                           ( io u f          )
-         *    then                                     ( io u            ) (R: end addr-i )
-         *    i c@ 10 =                   ( LF is 10 ) ( io u t|f        ) (R: end addr-i )
-         *    i c@ 13 = or                ( CR ir 13 ) ( io u t|f        ) (R: end addr-i )
-         *    if                                       ( io u            ) (R: end addr-i )
-         *       true leave                            ( io u t          )
-         *    then                                     ( io u            ) (R: end addr-i )
-         *    1+ false                                 ( io u' f         ) (R: end addr-i )
-         * loop              ( better: 1 chars +loop ) ( io u t|f        )
-         * flip iobuf>pos                              ( t|f u pos       )
-         * +!                                          ( t|f             )
-         */
-        zero, over, trail, iobuf_data, bounds,
-        _q_do_, T(32),
-            drop, i, c_fetch, bl, more,
-            _if_, T(4),
-                false, _leave_, T(22),
-            then,
-            i, c_fetch, _lit_, T(10), equal,
-            i, c_fetch, _lit_, T(13), equal, or,
-            _if_, T(4),
-                true, _leave_, T(5),
-            then,
-            one_plus, false,
-        _loop_, T(-32),
-        flip, iobuf_pos,
-        plus_store, exit
-    )
-WORD_END(ibuf_skip_blanks_except_cr)
-/* ( io -- t|f ) skip blanks until end of line. true if found end of line.
-   does not refill. Also skips CR if found.
- */
-WORD_START(ibuf_skip_blanks_until_cr, ibuf_skip_blanks_except_cr)
-    WORD_DSTACK(1,1)
-    WORD_RSTACK(0,0)
-    WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
-    WORD_FLAGS(M4FLAG_INLINE)
-    WORD_CODE(
-        /* dup ibuf-skip-blanks-except-cr              ( io t|f        )
-         * ?if                                         ( io t          )
-         *    1 rot iobuf-pos                          ( t 1 addr      )
-         *    +!                                       ( t             )
-         * else                                        ( io f          )
-         *    nip                                      ( f             )
-         * then
-         */
-        dup, CALL(ibuf_skip_blanks_except_cr),
-        _q_if_, T(6),
-            one, rot, iobuf_pos,
-            plus_store,
-        _else_, T(2),
-            nip,
-        then, exit
-    )
-WORD_END(ibuf_skip_blanks_until_cr)
-WORD(in_to_ibuf,ibuf_skip_blanks_until_cr,DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
+WORD(in_to_ibuf,     ibuf_skip_blanks, DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 WORD(iobuf_addr,       in_to_ibuf,     DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
 WORD(iobuf_all_data,   iobuf_addr,     DSTACK(1,2), RSTACK(0,0), WORD_IMPURE)
 WORD(iobuf_data,       iobuf_all_data, DSTACK(1,2), RSTACK(0,0), WORD_IMPURE)
