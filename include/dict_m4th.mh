@@ -220,7 +220,7 @@
     X(19, "ibuf-find-nonblanks", ibuf_find_nonblanks)                                              \
     X(11, "ibuf-refill", ibuf_refill) /*   ( io -- err  ) read some data into iobuf   */           \
     X(20, "ibuf-refill-if-empty", ibuf_refill_if_empty)             /* ( io -- err ) */            \
-    X(26, "ibuf-skip-1blank-except-cr", ibuf_skip_1blank_except_cr) /* ( io -- t|f ) */            \
+    X(26, "ibuf-skip-1blank-except-cr", ibuf_skip_1blank) /* ( io -- t|f ) */            \
     X(16, "ibuf-skip-blanks", ibuf_skip_blanks) /* ( io -- ) skip blanks from iobuf current data*/ \
     X(26, "ibuf-skip-blanks-except-cr", ibuf_skip_blanks_except_cr) /* ( io -- t|f ) */            \
     X(25, "ibuf-skip-blanks-until-cr", ibuf_skip_blanks_until_cr) /* ( io -- t|f ) consumes CR  */ \

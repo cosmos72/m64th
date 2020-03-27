@@ -345,11 +345,11 @@ WORD_START(s_quote, rshift)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE)
     WORD_CODE(
-        /* in>ibuf ibuf-skip-1blank-except-cr drop     (               )
-         * in>ibuf '"' ibuf-find-char             ( c-addr u      )
+        /* in>ibuf ibuf-skip-1blank                    (               )
+         * in>ibuf '"' ibuf-find-char                  ( c-addr u      )
          * compile-string,                             (               )
          */
-        in_to_ibuf, CALL(ibuf_skip_1blank_except_cr), drop,
+        in_to_ibuf, CALL(ibuf_skip_1blank),
         in_to_ibuf, _lit_, T('"'), CALL(ibuf_find_char),
         CALL(compile_string_comma), exit
     )
