@@ -69,10 +69,10 @@ WORD_START(compile_string_comma, always_eof)
     )
 WORD_END(compile_string_comma)
 /**
- * ibuf-delimited-line ( io ch -- c-addr u ) get string before ch in current iobuf line,
+ * ibuf-find-char ( io ch -- c-addr u ) get string before ch in current iobuf line,
  * without refilling and stopping before any CR
  */
-WORD_START(ibuf_delimited_line, compile_string_comma)
+WORD_START(ibuf_find_char, compile_string_comma)
     WORD_DSTACK(2,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -104,12 +104,12 @@ WORD_START(ibuf_delimited_line, compile_string_comma)
         then,
         r_from, iobuf_pos, plus_store, exit
     )
-WORD_END(ibuf_delimited_line)
+WORD_END(ibuf_find_char)
 /**
- * ibuf-nonblank-line ( io -- c-addr u ) find first non-blank string in current iobuf line,
- * without refilling and stopping before any CR
+ * ibuf-nonblank-line ( io -- c-addr u ) find first non-blank string in current iobuf,
+ * without refilling.
  */
-WORD_START(ibuf_nonblank_line, ibuf_delimited_line)
+WORD_START(ibuf_find_nonblanks, ibuf_find_char)
     WORD_DSTACK(1,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -139,9 +139,9 @@ WORD_START(ibuf_nonblank_line, ibuf_delimited_line)
             r_from_drop,
         then, exit
     )
-WORD_END(ibuf_nonblank_line)
+WORD_END(ibuf_find_nonblanks)
 /* ibuf-refill ( io -- err ) read some chars into iobuf */
-WORD_START(ibuf_refill, ibuf_nonblank_line)
+WORD_START(ibuf_refill, ibuf_find_nonblanks)
     WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()

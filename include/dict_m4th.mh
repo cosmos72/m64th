@@ -214,10 +214,10 @@
     X(10, "always-eof", always_eof)                                                                \
     /* compile-string, ( c-addr u -- ) runtime effect: ( -- c-addr' u ) */                         \
     X(15, "compile-string,", compile_string_comma)                                                 \
-    /*   ( io ch -- c-addr u ) get string before ch in current iobuf line (no refilling) */        \
-    X(19, "ibuf-delimited-line", ibuf_delimited_line)                                              \
-    /*   ( io -- c-addr u ) find non-blank string in current iobuf line (no refilling) */          \
-    X(18, "ibuf-nonblank-line", ibuf_nonblank_line)                                                \
+    /*   ( io ch -- c-addr u ) get string before ch in iobuf (no refilling) */                     \
+    X(14, "ibuf-find-char", ibuf_find_char)                                                        \
+    /*   ( io -- c-addr u ) find non-blank string in iobuf (no refilling) */                       \
+    X(19, "ibuf-find-nonblanks", ibuf_find_nonblanks)                                              \
     X(11, "ibuf-refill", ibuf_refill) /*   ( io -- err  ) read some data into iobuf   */           \
     X(20, "ibuf-refill-if-empty", ibuf_refill_if_empty)             /* ( io -- err ) */            \
     X(26, "ibuf-skip-1blank-except-cr", ibuf_skip_1blank_except_cr) /* ( io -- t|f ) */            \

@@ -486,7 +486,7 @@ static m4testexecute testexecute_c[] = {
      {{1, {m4err_unexpected_eof}}, {}},
      {}},
     {"iobuf-find-nonblanks",
-     {m4in_to_ibuf, CALL(ibuf_nonblank_line), m4zero_equal, m4swap, m4in_to_ibuf, m4iobuf_addr,
+     {m4in_to_ibuf, CALL(ibuf_find_nonblanks), m4zero_equal, m4swap, m4in_to_ibuf, m4iobuf_addr,
       m4equal, m4bye},
      {{}, {}},
      {{2, {ttrue, ttrue}}, {}},
