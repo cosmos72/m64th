@@ -501,7 +501,20 @@ WORD_START(_compile_unresolved_jump_, _compile_resolved_jump_)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt2 | M4FLAG_INLINE_ALWAYS)
     WORD_CODE(_compile_unresolved_jump_, T(-1), T(-1), exit)
 WORD_END(_compile_unresolved_jump_)
-WORD_START(_inline_, _compile_unresolved_jump_)
+/*
+ * ( -- cs-depth ) must be followed by category.
+ * find category in control stack and return its cs-depth.
+ * Stops at colon-sys, throws if not found.
+ */
+WORD_START(_cs_find_, _compile_unresolved_jump_)
+    WORD_DSTACK(0,1)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE() /* consumes IP and uses IP-relative JUMP(), cannot inline in native code */
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_INLINE_ALWAYS)
+    WORD_CODE(_cs_find_, T(-1),  exit)
+WORD_END(_cs_find_)
+WORD_START(_inline_, _cs_find_)
     WORD_DSTACK(1,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()

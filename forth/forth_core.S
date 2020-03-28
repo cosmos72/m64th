@@ -282,13 +282,16 @@ WORD_END(if)
 WORD(invert,           if,         DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(j,                invert,     DSTACK(0,1), RSTACK(3,3), WORD_R_PURE)
 WORD_START(leave, j)
-    WORD_STACK_NONE() /* dummy, token always jumps */
-    WORD_DSTACK(0,0)   /* stack effect when jumping */
-    WORD_RSTACK(2,0)
+    WORD_DSTACK(0,2)   /* stack effect when compiling */
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
     WORD_NATIVE_NONE()
-    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_JUMP | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_CODE(
-        _compile_unresolved_jump_, _leave_, _leave_, exit
+        _compile_unresolved_jump_, _leave_, _leave_,
+        /* TODO: we must check for both 'do and '(?do) */
+        /* _cs_find_, do, one_minus, minus_cs_roll, */
+        exit
     )
 WORD_END(leave)
 WORD_START(literal, leave)

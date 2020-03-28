@@ -75,6 +75,34 @@ FUNC_START(_compile_unresolved_jump_)    /* [compile-unresolved-jump] */
 FUNC_RAWEND(_compile_unresolved_jump_)
 
 
+/**
+ * ( -- cs-depth ) must be followed by jump category.
+ * find jump category in control stack and return its cs-depth.
+ * Stops at colon-sys, throws if not found.
+ */
+FUNC_START(_cs_find_)    /* [cs-find] */
+        DPUSH( DTOP)
+        LOAD(  REG2,       AT(M4TH, M4TH_OFF_DEND))    /* b = dstack_end              */
+        LD_ut( REG1,       AT(IP))                     /* a = category                */
+        SUB2(  DSTK,       REG2)                       /* b = dstack depth in bytes   */
+        ZERO(  DTOPw)                                  /* dtop = 0                    */
+        JB(    REG2,       IMM(SZ2), TO(_cs_find_.throw))
+        SUB2(  IMM(SZ2-1), REG2)                       /* b = dstack depth in bytes - SZ2 + 1 */
+LABEL(_cs_find_.loop)
+        LOAD(  REG3,       AT(DSTK, DTOP, 1))
+        JEQ(   REG1,       REG3,   TO(_cs_find_.done))
+        JEQ(   REG3,  IMM(M4colon),TO(_cs_find_.throw))
+        ADD2(  IMM(SZ2),   DTOP)
+        JB(    DTOP,       REG2,   TO(_cs_find_.loop))
+LABEL(_cs_find_.throw)
+        MOVE(  IMM(M4ERR_CONTROL_STRUCTURE_MISMATCH), REG0)
+        JUMP(  FUNC(_throw_.reg0))
+LABEL(_cs_find_.done)
+        SHR2(  IMM(PSZ+1), DTOP)
+        NEXTT()                                        /* skip m4token                */
+FUNC_RAWEND(_cs_find_)
+
+
 FUNC_START(short_align)    /* short-align */
         ALIGN( 2,          HERE)
 FUNC_END(short_align)

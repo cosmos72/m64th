@@ -69,10 +69,9 @@ WORD(eight_plus,       eight_times,    DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(eight_div,        eight_plus,     DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(eight_sm_div,     eight_div,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD_START(q_if, eight_sm_div)
-    WORD_DSTACK(1,1)
+    WORD_DSTACK(0,2) /* stack effect when compiling */
     WORD_RSTACK(0,0)
-    WORD_DSTACK(1,1)
-    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_CODE(

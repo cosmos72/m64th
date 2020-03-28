@@ -285,6 +285,7 @@
     X(14, "[compile-lit,]", _compile_lit_)                                                         \
     X(23, "[compile-resolved-jump]", _compile_resolved_jump_)                                      \
     X(25, "[compile-unresolved-jump]", _compile_unresolved_jump_)                                  \
+    X(9, "[cs-find]", _cs_find_)                                                                   \
     X(2, "-1", minus_one)                                                                          \
     X(1, "0", zero)                                                                                \
     X(1, "1", one)                                                                                 \

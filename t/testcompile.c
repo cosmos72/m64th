@@ -124,7 +124,6 @@ static const m4testcompile testcompile[] = {
     /* ------------------------------- immediate words ---------------------- */
     {"?do", {}, {2, {2, m4_q_do_}}, {2, {m4_q_do_, T(-1)}}},
     {"do", {}, {2, {1, m4do}}, {1, {m4do}}},
-    {"leave", {}, {2, {2, m4_leave_}}, {2, {m4_leave_, T(-1)}}},
     {"s\"  fubar\"", {}, {}, {3, {LIT_STRING(6, " fubar")}}},
     /* ------------------------------- words -------------------------------- */
     {"compile,", {}, {}, {callsz, {CALLXT(compile_comma)}}},
@@ -149,6 +148,7 @@ static const m4testcompile testcompile[] = {
      {},
      {},
      {6 + nCALLt, {m4_q_do_, T(4 + nCALLt), m4i, CALLXT(dot), m4_loop_, T(-4 - nCALLt)}}},
+    {"do leave", {}, {4, {1, m4do, 3, m4_leave_}}, {3, {m4do, m4_leave_, T(-1)}}},
     {"do leave loop", {}, {}, {5, {m4do, m4_leave_, T(2), m4_loop_, T(-4)}}},
     {"?do leave loop", {}, {}, {6, {m4_q_do_, T(4), m4_leave_, T(2), m4_loop_, T(-4)}}},
     /* TODO fix {"do if leave then loop", {}, {}, {5, {m4do, m4_leave_, T(2), m4_loop_, T(-4)}}}, */
