@@ -110,7 +110,15 @@ WORD_START(continue,   bounds)
     WORD_CODE(
         _compile_unresolved_jump_, _continue_, _continue_, exit
     )
-WORD_END(_continue_)
+WORD_END(continue)
+WORD_START(minus_cs_roll,   continue)
+    WORD_DSTACK(1,0) /* DSTACK(x+1,x) */
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE() /* uses %rip-relative ASM_CALL */
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(minus_cs_roll, exit)
+WORD_END(minus_cs_roll)
 WORD(dup_to_r,         bounds,         DSTACK(1,1), RSTACK(0,1), WORD_R_PURE)
 WORD(ex_message_store, dup_to_r,       DSTACK(2,0), RSTACK(0,0), WORD_IMPURE)
 WORD(ex_message_fetch,ex_message_store,DSTACK(0,2), RSTACK(0,0), WORD_IMPURE)
