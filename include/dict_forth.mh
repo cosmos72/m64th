@@ -46,6 +46,7 @@
     X(3, "2r>", two_r_from)                                                                        \
     X(3, "2r@", two_r_fetch)                                                                       \
     X(5, "2swap", two_swap)                                                                        \
+    X(1, ":", colon)                                                                               \
     X(1, "<", less)                                                                                \
     X(1, "=", equal)                                                                               \
     X(1, ">", more)                                                                                \
@@ -107,7 +108,6 @@
     /* the following words are implemented in forth, thus no dedicated m4token value */            \
     X(5, "+loop", plus_loop)                                                                       \
     X(1, ".", dot)                                                                                 \
-    X(1, ":", colon)                                                                               \
     X(1, ";", semi)                                                                                \
     X(3, ">in", to_in)                                                                             \
     X(7, ">number", to_number)                                                                     \

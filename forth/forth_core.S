@@ -89,7 +89,7 @@ WORD_START(colon,      two_swap)
          *    M4ERR_ZERO_LENGTH_NAME and throw         ( c-addr u        )
          * name, set-latest                            (                 )
          * postpone ]
-         * 0 M4right_bracket              ( colon-sys: 0 M4right_bracket )
+         * 0 colon                                  ( colon-sys: 0 colon )
          */
         state, fetch, zero_ne,
             _lit_, T(M4ERR_COMPILER_NESTING), and, throw,
@@ -98,7 +98,7 @@ WORD_START(colon,      two_swap)
             _lit_, T(M4ERR_ZERO_LENGTH_NAME), and, throw,
         name_comma, set_latest,
         right_bracket,
-        zero, _lit_, right_bracket, exit
+        zero, _lit_, colon, exit
     )
 WORD_END(colon)
 WORD_START(semi,       colon)

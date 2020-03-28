@@ -58,7 +58,7 @@
 #define M4two_dup 28              /* 2dup     */
 #define M4two_over 29             /* 2over    */
 #define M4two_swap 30             /* 2swap    */
-#undef M4colon /*31*/             /* :         implemented in forth, no dedicated m4token */
+#define M4colon 31                /* :        implemented in forth, this is just a marker */
 #undef M4semi /*32*/              /* ;        implemented in forth, no dedicated m4token */
 #define M4less 33                 /* <        */
 #undef M4num_start /*34*/         /* <#       */

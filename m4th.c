@@ -962,13 +962,13 @@ void m4th_colon(m4th *m, m4string name) {
     m->mem.curr = (m4char *)(m->xt = m4word_xt(w));
     /*
      * reproduce behaviour of forth word ':'
-     * also push to dstack colon-sys i.e. 0 m4right_bracket
+     * also push to dstack colon-sys i.e. 0 m4colon
      *
      * Note: most tests overwrite dstack at initialization,
      * discarding these values.
      */
     dpush(m, 0);
-    dpush(m, m4right_bracket);
+    dpush(m, m4colon);
 }
 
 /* C implementation of ';' i.e. finish compiling a new word */

@@ -42,6 +42,7 @@
 /** these are implemented in forth - thus no corresponding assembly function */
 #define m4f_inline_ m4f_missing_
 #define m4f_optimize_ m4f_missing_
+#define m4fcolon m4f_missing_
 
 /** forth 'core ext' word set aliases */
 #define m4ffalse m4fzero     /* false */
