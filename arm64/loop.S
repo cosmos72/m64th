@@ -26,6 +26,24 @@
  * IP offset = 0 means first instruction after (+loop) itself
  */
 FUNC_START(_plus_loop_)
+        LOAD(  REG2,   AT(RSTK))                       /* b = i'                      */
+        MOVE(  IMM(1<<63), REG1)                       /* a = mincell                 */
+        SUB3(  RTOP,   REG2,  REG2)                    /* b = old i - i'              */
+        ADD2(  DTOP,   RTOP)                           /* i += delta                  */
+        /*
+         * leave if i crosses the boundary between i'-1 and i'
+         * implementation: leave if updating (i - i' + mincell)
+         * causes signed overflow or underflow, detected by the arm64 VS flag
+         */
+        ADD2(  REG2,   REG1)                           /* a = old i - i' + mincell    */
+        adds   REG1,   REG1,   DTOP;                   /* a += delta, update flags    */
+        DPOP(  DTOP)                                   /* arm64: does not alter flags */
+        b.vs           TO(_plus_loop_.leave);          /* jump if overflow            */
+        RELJUMP()
+LABEL(_plus_loop_.leave)
+        LOAD(  RTOP,   AT(RSTK, SZ))                   /* load new top of rstack      */
+        ADD2(  IMM(SZ2),   RSTK)                       /* drop i' i from return stack */
+        NEXTT()                                        /* skip IP offset              */
 FUNC_RAWEND(_plus_loop_)
 
 /**
@@ -73,9 +91,9 @@ FUNC_RAWEND(_if_)
 FUNC_START(_if0_)
         cmp    DTOP, IMM(0);
         DPOP(  DTOP)
-        b.eq   .L_if0_.enter;
+        b.eq   TO(_if0_.enter)
         RELJUMP()
-.L_if0_.enter:
+LABEL(_if0_.enter)
         NEXTT()                      /* skip IP offset          */
 FUNC_RAWEND(_if0_)
 
@@ -95,12 +113,12 @@ FUNC_RAWEND(_leave_)
  * IP offset = 0 means first instruction after (loop) itself
  */
 FUNC_START(_loop_)
-        INC1(  RTOP)                /* increment i                 */
-        LOAD(  REG1, AT(RSTK))      /* REG1 = i'                   */
+        INC1(  RTOP)               /* increment i                 */
+        LOAD(  REG1, AT(RSTK))     /* REG1 = i'                   */
         cmp    REG1, RTOP;
-        b.eq   .L_loop_.break;        /* break if i == i'            */
+        b.eq   TO(_loop_.leave)    /* leave if i == i'            */
         RELJUMP()
-.L_loop_.break:
+LABEL(_loop_.leave)
         LOAD(  RTOP, AT(RSTK, SZ)) /* load new top of rstack      */
         ADD2(  IMM(SZ2), RSTK)     /* drop i' i from return stack */
         NEXTT();                   /* skip IP offset, execute next instruction */
