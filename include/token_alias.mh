@@ -130,6 +130,7 @@
 
 #define m4cs_pick m4two_pick
 #define m4cs_roll m4two_roll
+#define m4minus_cs_roll m4minus_two_roll
 
 /* -------------------------------------------------------------------------- */
 /* M4* numeric values have uppercase prefix 'M4'                              */
@@ -238,5 +239,6 @@
 
 #define M4cs_pick M4two_pick
 #define M4cs_roll M4two_roll
+#define M4minus_cs_roll M4minus_two_roll
 
 #endif /* M4TH_INCLUDE_TOKEN_ALIAS_MH */

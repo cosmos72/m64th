@@ -36,7 +36,7 @@ WORD_START(cs_pick,      bye)
     WORD_STACK_NONE()
     WORD_NATIVE_LEN(two_pick)
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_COMPILE_ONLY)
-    WORD_CODE(two_pick, exit)
+    WORD_CODE(cs_pick, exit)
 WORD_END(cs_pick)
 WORD_START(cs_roll,      cs_pick)
     WORD_DSTACK(1,0) /* DSTACK(x+1,x) */
@@ -44,7 +44,7 @@ WORD_START(cs_roll,      cs_pick)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE() /* uses %rip-relative ASM_CALL */
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_COMPILE_ONLY)
-    WORD_CODE(two_roll, exit)
+    WORD_CODE(cs_roll, exit)
 WORD_END(cs_roll)
 WORD(name_to_string,     cs_roll,      DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 
