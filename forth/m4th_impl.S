@@ -598,7 +598,7 @@ WORD_START(_resolve_loop_, _resolve_jump_there_)
         /* 2drop                                       ( do-sys leave-sys*     )
          * begin
          *    dup ' (leave) =                          ( do-sys leave-sys* t|f )
-         * while                                       ( do-sys leave-sys*     )
+         * while                                       ( do-sys leave-sys+     )
          *    [resolve-jump-here]                      ( do-sys leave-sys*     )
          * repeat                                      ( do-sys                )
          * dup ' (?do) =                               ( do-sys t|f            )

@@ -26,16 +26,20 @@
  * IP offset = 0 means first instruction after (+loop) itself
  */
 FUNC_START(_plus_loop_)
-        MOVE(  RTOP,   REG3)                           /* c = old i                   */
-        LOAD(  REG4,   AT(RSTK))                       /* d = i'                      */
-        ADD2(  DTOP,   RTOP)                           /* increment i                 */
-        /* leave if i crossed the boundary between i'-1 and i' */
-        cmp    REG4,   REG3;
-        setb   REG1b;                                  /* a = (old i < i')            */
-        cmp    REG4,   RTOP;
-        setb   REG2b;                                  /* b = (new i < i')            */
+        MOVE(  RFFF,   REG1)                           /* a = -1                      */
+        MOVE(  DTOP,   REG2)                           /* b = delta                   */
+        SHL2( IMM(63), REG1)                           /* a = mincell                 */
+        ADD2(  RTOP,   REG1)                           /* a = old i + mincell         */
+        ADD2(  DTOP,   RTOP)                           /* i += delta                  */
+        /*
+         * leave if i crosses the boundary between i'-1 and i'
+         * implementation: leave if updating (i - i' + mincell)
+         * causes signed overflow or underflow, detected by the x86-64 OF flag
+         */
+        SUB2( AT(RSTK),REG1)                           /* a = old i - i' + mincell    */
         DPOP(  DTOP)
-        JNE(   REG2b,  REG3b,   TO(_plus_loop_.leave))
+        ADD2(  REG2,   REG1)                           /* a += delta                  */
+        jo             TO(_plus_loop_.leave);          /* jump if overflow            */
         RELJUMP()
 LABEL(_plus_loop_.leave)
         LOAD(  RTOP,   AT(RSTK, SZ))                   /* load new top of rstack      */

@@ -22,6 +22,13 @@
 /* clang-format off */
 
 /**
+ * must be followed by IP offset of first instruction after (do) - usually < 0
+ * IP offset = 0 means first instruction after (+loop) itself
+ */
+FUNC_START(_plus_loop_)
+FUNC_RAWEND(_plus_loop_)
+
+/**
  * pop dstack top, enter a do ... (loop) if <> 0.
  * must be followed by IP offset of first instruction after (loop)
  * IP offset = 0 means first instruction after (?do) itself
