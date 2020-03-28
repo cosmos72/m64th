@@ -34,7 +34,16 @@ DICTNAME(9, "m4th-impl", m4th_impl)
 
 DICT_WORDS_M4TH_IMPL(WORDNAME)
 
-WORD_START(_q_do_, _q_do_)
+WORD_START(_plus_loop_, _plus_loop_)
+    WORD_DSTACK(1,0) /* stack effect when not jumping */
+    WORD_RSTACK(2,0)
+    WORD_DSTACK(1,0) /* stack effect when jumping */
+    WORD_RSTACK(2,2)
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_MAY_JUMP | M4FLAG_IMMEDIATE)
+    WORD_CODE(CALL(plus_loop), exit)
+WORD_END(_plus_loop_)
+WORD_START(_q_do_, _plus_loop_)
     WORD_DSTACK(2,0) /* stack effect when not jumping */
     WORD_RSTACK(0,2)
     WORD_DSTACK(2,0) /* stack effect when jumping */
@@ -367,7 +376,7 @@ WORD_START(_loop_, _lit_string_)
     WORD_RSTACK(2,2)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_MAY_JUMP | M4FLAG_IMMEDIATE)
-    WORD_CODE(exit) /* TODO */
+    WORD_CODE(CALL(loop), exit)
 WORD_END(_loop_)
 WORD(_missing_,        _loop_,         DSTACK(0,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_JUMP)
 WORD_START(_repeat_, _missing_)
@@ -479,8 +488,13 @@ WORD_START(_compile_resolved_jump_, _compile_lit_)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt2 | M4FLAG_INLINE_ALWAYS)
     WORD_CODE(_compile_resolved_jump_, T(-1), T(-1), exit)
 WORD_END(_compile_resolved_jump_)
+/*
+ * ( -- jump_address jump_category ) must be followed by m4token and its category.
+ * append m4token and T(-1) to XT being compiled,
+ * then push to dstack jump_address (= # of tokens of XT being compiled) and category.
+ */
 WORD_START(_compile_unresolved_jump_, _compile_resolved_jump_)
-    WORD_DSTACK(0,1)
+    WORD_DSTACK(0,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE() /* consumes IP and uses IP-relative ASM_CALL(), cannot inline in native code */
@@ -570,8 +584,8 @@ WORD_START(_resolve_jump_there_, _resolve_jump_here_)
     )
 WORD_END(_resolve_jump_there_)
 /**
- * called by 'loop': resolve the jump offsets of a single 'loop' or '+loop',
- * zero or more 'leave' and one 'do' or '?do'
+ * called by 'loop': resolve the jump offsets of a single 'do' or '?do',
+ * zero or more 'leave' and one 'loop' or '+loop'
  * ( do-sys leave-sys* loop-sys -- )
  */
 WORD_START(_resolve_loop_, _resolve_jump_there_)
@@ -581,21 +595,17 @@ WORD_START(_resolve_loop_, _resolve_jump_there_)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE)
     WORD_CODE(
-        /*
-         * FIXME see [resolve-jump-here] above:
-         * we must also support 'if leave then' i.e. 'leave' inside a conditional
-         */
         /* 2drop                                       ( do-sys leave-sys*     )
          * begin
          *    dup ' (leave) =                          ( do-sys leave-sys* t|f )
          * while                                       ( do-sys leave-sys*     )
          *    [resolve-jump-here]                      ( do-sys leave-sys*     )
          * repeat                                      ( do-sys                )
-         * dup ' (?do) =
-         * if
-         *    2dup [resolve-jump-here]
-         * then
-         * [resolve-jump-there]
+         * dup ' (?do) =                               ( do-sys t|f            )
+         * if                                          ( do-sys                )
+         *    2dup [resolve-jump-here]                 ( do-sys                )
+         * then                                        ( do-sys                )
+         * [resolve-jump-there]                        (                       )
          */
         two_drop,
         begin,

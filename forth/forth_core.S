@@ -29,7 +29,18 @@ WORD(store,            LASTWORD,   DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLA
 WORD(times,            store,      DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(plus,             times,      DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(plus_store,       plus,       DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE)
-WORD(comma,            plus_store, DSTACK(1,0), RSTACK(0,0), WORD_IMPURE)
+WORD_START(plus_loop, plus_store)
+    WORD_DSTACK(-1,-1)  /* stack effect when compiling */
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
+    WORD_CODE(
+        _compile_unresolved_jump_, _plus_loop_, _loop_,
+        CALL(_resolve_loop_), exit
+    )
+WORD_END(plus_loop)
+WORD(comma,            plus_loop,  DSTACK(1,0), RSTACK(0,0), WORD_IMPURE)
 WORD(minus,            comma,      DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD_START(dot,        minus)
     WORD_DSTACK(1,0)
@@ -218,7 +229,7 @@ WORD_START(find, dup)
     )
 WORD_END(find)
 WORD_START(else, find)
-    WORD_DSTACK(1,1)
+    WORD_DSTACK(2,2)  /* stack effect when compiling */
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
@@ -259,7 +270,7 @@ WORD_END(exit)
 WORD(here,             exit,       DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 WORD(i,                here,       DSTACK(0,1), RSTACK(1,1), WORD_R_PURE)
 WORD_START(if, i)
-    WORD_DSTACK(0,1)
+    WORD_DSTACK(0,2)  /* stack effect when compiling */
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
@@ -315,12 +326,11 @@ WORD_START(literal, leave)
     )
 WORD_END(literal)
 WORD_START(loop, literal)
-    WORD_DSTACK(0,0)  /* stack effect if not jumping */
-    WORD_RSTACK(2,2)
-    WORD_DSTACK(0,0)  /* stack effect if jumping */
-    WORD_RSTACK(2,0)
+    WORD_DSTACK(-1,-1)  /* stack effect when compiling */
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
     WORD_NATIVE_NONE()
-    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_MAY_JUMP | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_CODE(
         _compile_unresolved_jump_, _loop_, _loop_,
         CALL(_resolve_loop_), exit
@@ -374,7 +384,7 @@ WORD_START(source,     state)
 WORD_END(source)
 WORD(swap,             source,     DSTACK(2,2), RSTACK(0,0), WORD_PURE)
 WORD_START(then, swap)
-    WORD_DSTACK(1,0)
+    WORD_DSTACK(2,0)  /* stack effect when compiling */
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()

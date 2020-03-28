@@ -21,6 +21,29 @@
 
 /* clang-format off */
 
+/**
+ * must be followed by IP offset of first instruction after (do) - usually < 0
+ * IP offset = 0 means first instruction after (+loop) itself
+ */
+FUNC_START(_plus_loop_)
+        MOVE(  RTOP,   REG3)                           /* c = old i                   */
+        LOAD(  REG4,   AT(RSTK))                       /* d = i'                      */
+        ADD2(  DTOP,   RTOP)                           /* increment i                 */
+        /* leave if i crossed the boundary between i'-1 and i' */
+        cmp    REG4,   REG3;
+        setb   REG1b;                                  /* a = (old i < i')            */
+        cmp    REG4,   RTOP;
+        setb   REG2b;                                  /* b = (new i < i')            */
+        DPOP(  DTOP)
+        JNE(   REG2b,  REG3b,   TO(_plus_loop_.leave))
+        RELJUMP()
+LABEL(_plus_loop_.leave)
+        LOAD(  RTOP,   AT(RSTK, SZ))                   /* load new top of rstack      */
+        ADD2(  IMM(SZ2),   RSTK)                       /* drop i' i from return stack */
+        NEXTT()                                        /* skip IP offset              */
+FUNC_RAWEND(_plus_loop_)
+
+
 /*
  * must be followed by IP offset of first instruction after (loop)
  * IP offset = 0 means first instruction after (?do) itself
@@ -99,13 +122,13 @@ FUNC_RAWEND(_leave_)
  * IP offset = 0 means first instruction after (loop) itself
  */
 FUNC_START(_loop_)
-        INC1(  RTOP)               /* increment i                 */
-        JEQ(   RTOP,   (RSTK), TO(_loop_.leave))     /* leave if i == i'            */
+        INC1(  RTOP)                               /* increment i                 */
+        JEQ(   RTOP,   AT(RSTK), TO(_loop_.leave)) /* leave if i == i'            */
         RELJUMP()
 LABEL(_loop_.leave)
-        LOAD(  RTOP,   AT(RSTK, SZ)) /* load new top of rstack      */
-        ADD2(  IMM(SZ2),   RSTK)   /* drop i' i from return stack */
-        NEXTT()                    /* skip IP offset              */
+        LOAD(  RTOP,   AT(RSTK, SZ))               /* load new top of rstack      */
+        ADD2(  IMM(SZ2),   RSTK)                   /* drop i' i from return stack */
+        NEXTT()                                    /* skip IP offset              */
 FUNC_RAWEND(_loop_)
 
 

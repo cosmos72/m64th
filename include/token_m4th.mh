@@ -238,7 +238,7 @@
 #define M4eight 708                 /* 8                     */
 #undef M4____gap                    /*                       */
 #undef M4____gap                    /*                       */
-#undef M4____gap                    /*                       */
+#define M4_plus_loop_ 711           /* (+loop)  followed by IP offset to jump          */
 #define M4_q_break_if_ 712          /* (?break-if)     followed by IP offset to jump if dtop <> 0 */
 #define M4_q_break_if0_ 713         /* (?break-if0)    followed by IP offset to jump if dtop == 0 */
 #define M4_q_continue_if_ 714       /* (?continue-if)  followed by IP offset to jump if dtop <> 0 */

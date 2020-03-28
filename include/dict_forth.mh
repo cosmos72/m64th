@@ -105,6 +105,7 @@
 #define DICT_WORDS_FORTH_CORE(X)                                                                   \
     DICT_TOKENS_FORTH_CORE(X)                                                                      \
     /* the following words are implemented in forth, thus no dedicated m4token value */            \
+    X(5, "+loop", plus_loop)                                                                       \
     X(1, ".", dot)                                                                                 \
     X(1, ":", colon)                                                                               \
     X(1, ";", semi)                                                                                \

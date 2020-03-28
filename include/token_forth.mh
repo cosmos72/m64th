@@ -39,7 +39,7 @@
 #define M4times_div_mod 9         /* * /mod   */
 #define M4plus 10                 /* +        */
 #define M4plus_store 11           /* +!       */
-#undef M4plus_loop /*12*/         /* +loop    */
+#define M4plus_loop 12            /* +loop    */
 #define M4comma 13                /* ,        */
 #define M4minus 14                /* -        */
 #undef M4dot /*15*/               /* .        implemented in forth, no dedicated m4token */
