@@ -62,16 +62,6 @@ static const m4testcompile testcompile[] = {
 #if SZ == 8
     {"$ffffffffffffffff", {}, {}, {1, {m4minus_one}}},
 #endif
-    /* ------------------------------- if else then ------------------------- */
-    {"?if", {}, {2, {2, m4_if_}}, {2, {m4_q_if_, T(-1)}}},
-    {"?if0", {}, {2, {2, m4_if_}}, {2, {m4_q_if0_, T(-1)}}},
-    {"if", {}, {2, {2, m4_if_}}, {2, {m4_if_, T(-1)}}},
-    {"if0", {}, {2, {2, m4_if_}}, {2, {m4_if0_, T(-1)}}},
-    {"if then", {}, {}, {3, {m4_if_, T(1), m4then}}},
-    {"if 1 then", {}, {}, {4, {m4_if_, T(2), m4one, m4then}}},
-    {"if else", {}, {2, {4, m4_else_}}, {4, {m4_if_, T(2), m4_else_, T(-1)}}},
-    {"if else then", {}, {}, {5, {m4_if_, T(2), m4_else_, T(1), m4then}}},
-    {"if 1 else 2 then", {}, {}, {7, {m4_if_, T(3), m4one, m4_else_, T(2), m4two, m4then}}},
     /* ------------------------------- literal ------------------------------ */
     {"LITERAL", {1, {0}}, {}, {1, {m4zero}}},
     {"LiTeRaL", {1, {0}}, {}, {1, {m4zero}}},
@@ -128,10 +118,17 @@ static const m4testcompile testcompile[] = {
     /* ------------------------------- words -------------------------------- */
     {"compile,", {}, {}, {callsz, {CALLXT(compile_comma)}}},
     {"valid-base?", {}, {}, {4, {/*inlined*/ m4two, m4_lit2s_, T(37), m4within}}},
-    /* ------------------------------- conditional jumps -------------------- */
+    /* ------------------------------- if else then ------------------------- */
+    {"?if", {}, {2, {2, m4_if_}}, {2, {m4_q_if_, T(-1)}}},
+    {"?if0", {}, {2, {2, m4_if_}}, {2, {m4_q_if0_, T(-1)}}},
     {"if", {}, {2, {2, m4_if_}}, {2, {m4_if_, T(-1)}}},
+    {"if0", {}, {2, {2, m4_if_}}, {2, {m4_if0_, T(-1)}}},
     {"if then", {}, {}, {3, {m4_if_, T(1), m4then}}},
+    {"if 1 then", {}, {}, {4, {m4_if_, T(2), m4one, m4then}}},
     {"if dup then", {}, {}, {4, {m4_if_, T(2), m4dup, m4then}}},
+    {"if else", {}, {2, {4, m4_else_}}, {4, {m4_if_, T(2), m4_else_, T(-1)}}},
+    {"if else then", {}, {}, {5, {m4_if_, T(2), m4_else_, T(1), m4then}}},
+    {"if 1 else 2 then", {}, {}, {7, {m4_if_, T(3), m4one, m4_else_, T(2), m4two, m4then}}},
     {"if + else - then", {}, {}, {7, {m4_if_, T(3), m4plus, m4_else_, T(2), m4minus, m4then}}},
     {"if + if * else / then else - then",
      {},
@@ -151,9 +148,18 @@ static const m4testcompile testcompile[] = {
      {},
      {},
      {6 + nCALLt, {m4_q_do_, T(4 + nCALLt), m4i, CALLXT(dot), m4_loop_, T(-4 - nCALLt)}}},
-    {"do leave", {}, {4, {2, m4_do_, 4, m4_leave_}}, {4, {m4_do_, T(-1), m4_leave_, T(-1)}}},
+    {"do leave", {}, {4, {2, m4_do_, 4, m4_leave_}}, {4, {m4_do_, -1, m4_leave_, T(-1)}}},
     {"do leave loop", {}, {}, {6, {m4_do_, T(4), m4_leave_, T(2), m4_loop_, T(-4)}}},
     {"?do leave loop", {}, {}, {6, {m4_q_do_, T(4), m4_leave_, T(2), m4_loop_, T(-4)}}},
+    {"do if ", {}, {4, {2, m4_do_, 4, m4_if_}}, {4, {m4_do_, T(-1), m4_if_, T(-1), T(-1)}}},
+    {"do if leave",
+     {},
+     {6, {2, m4_do_, 6, m4_leave_, 4, m4_if_}},
+     {6, {m4_do_, T(-1), m4_if_, T(-1), m4_leave_, T(-1)}}},
+    {"do if leave then",
+     {},
+     {4, {2, m4_do_, 6, m4_leave_}},
+     {7, {m4_do_, T(-1), m4_if_, T(3), m4_leave_, T(-1), m4then}}},
     {"do if leave then loop",
      {},
      {},
@@ -215,7 +221,8 @@ static void m4testcompile_failed(m4th *m, const m4testcompile *t, m4code t_codeg
     m4code_print(t_codegen, out);
     fputs("\n      actual    codegen   ", out);
     m4word_code_print(m->lastw, out);
-    if (m->dstack.curr == m->dstack.end && m->rstack.curr == m->rstack.end) {
+    if (t->dafter.len == 0 && m->dstack.curr == m->dstack.end /*__________*/ &&
+        m->rstack.curr == m->rstack.end) {
         fputc('\n', out);
         return;
     }
