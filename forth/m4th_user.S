@@ -75,7 +75,7 @@ WORD_START(q_if, eight_sm_div)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_CODE(
-        _compile_unresolved_jump_, _q_if_, _if_, exit
+        _compile_jump_lit_, _q_if_, _if_, exit
     )
 WORD_END(q_if)
 WORD_START(q_if0, q_if)
@@ -86,7 +86,7 @@ WORD_START(q_if0, q_if)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_CODE(
-        _compile_unresolved_jump_, _q_if0_, _if_, exit
+        _compile_jump_lit_, _q_if0_, _if_, exit
     )
 WORD_END(q_if0)
 WORD(bounds,           q_if0,          DSTACK(2,2), RSTACK(0,0), M4FLAG_PURE)
@@ -97,7 +97,7 @@ WORD_START(break,      bounds)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_JUMP | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_CODE(
-        _compile_unresolved_jump_, _break_, _break_, exit
+        _compile_jump_lit_, _break_, _break_, exit
     )
 WORD_END(break)
 WORD_START(continue,   bounds)
@@ -107,7 +107,7 @@ WORD_START(continue,   bounds)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_JUMP | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_CODE(
-        _compile_unresolved_jump_, _continue_, _continue_, exit
+        _compile_jump_lit_, _continue_, _continue_, exit
     )
 WORD_END(continue)
 WORD_START(minus_cs_roll,   continue)
@@ -157,7 +157,7 @@ WORD_START(if0, i_prime)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_CODE(
-        _compile_unresolved_jump_, _if0_, _if_, exit
+        _compile_jump_lit_, _if0_, _if_, exit
     )
 WORD_END(if0)
 /*

@@ -36,7 +36,7 @@ WORD_START(plus_loop, plus_store)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_CODE(
-        _compile_unresolved_jump_, _plus_loop_, _loop_,
+        _compile_jump_lit_, _plus_loop_, _loop_,
         CALL(_resolve_loop_), exit
     )
 WORD_END(plus_loop)
@@ -207,7 +207,7 @@ WORD_START(do, depth)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS | M4FLAG_IMMEDIATE)
     WORD_CODE(
-        _compile_unresolved_jump_, _do_, _do_, exit
+        _compile_jump_lit_, _do_, _do_, exit
     )
 WORD_END(do)
 WORD(drop,             do,         DSTACK(1,0), RSTACK(0,0), WORD_PURE)
@@ -235,7 +235,7 @@ WORD_START(else, find)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE)
     WORD_CODE(
-        _compile_unresolved_jump_, _else_, _else_, /* compile our unresolved jump */
+        _compile_jump_lit_, _else_, _else_, /* compile our unresolved jump */
         cs_swap,                            /* move our jump_info out of the way  */
         CALL(_resolve_jump_here_),          /* resolve jump of previous 'if'      */
         exit
@@ -276,7 +276,7 @@ WORD_START(if, i)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_CODE(
-        _compile_unresolved_jump_, _if_, _if_, exit
+        _compile_jump_lit_, _if_, _if_, exit
     )
 WORD_END(if)
 WORD(invert,           if,         DSTACK(1,1), RSTACK(0,0), WORD_PURE)
@@ -288,8 +288,8 @@ WORD_START(leave, j)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_CODE(
-        _compile_unresolved_jump_, _leave_, _leave_,
-        _cs_find_, _do_, one_minus, minus_cs_roll,
+        _compile_jump_lit_, _leave_, _leave_,
+        _cs_find_lit_, _do_, one_minus, minus_cs_roll,
         exit
     )
 WORD_END(leave)
@@ -334,7 +334,7 @@ WORD_START(loop, literal)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_CODE(
-        _compile_unresolved_jump_, _loop_, _loop_,
+        _compile_jump_lit_, _loop_, _loop_,
         CALL(_resolve_loop_), exit
     )
 WORD_END(loop)
@@ -406,8 +406,23 @@ WORD_START(type, then)
 WORD_END(type)
 WORD(u_less,           type,       DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(unloop,           u_less,     DSTACK(0,0), RSTACK(2,0), WORD_R_PURE)
-WORD(xor,              unloop,     DSTACK(2,1), RSTACK(0,0), WORD_PURE)
-WORD(left_bracket,     unloop,     DSTACK(0,0), RSTACK(0,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
+WORD_START(until,      unloop)
+    WORD_DSTACK(1,0)   /* stack effect if not jumping */
+    WORD_RSTACK(0,0)
+    WORD_DSTACK(1,0)   /* stack effect if jumping */
+    WORD_RSTACK(0,0)
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_MAY_JUMP | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
+    WORD_CODE(
+        _check_, begin,             /* ( sys ) must be 'begin' */
+        _compile_jump_lit_, _until_, _until_,
+        cs_drop,                    /* we only need the compiled '(until)' not the cs data */
+        CALL(_resolve_jump_there_), /* resolve jump offset from '(until)' to 'begin'       */
+        exit
+    )
+WORD_END(until)
+WORD(xor,              until,      DSTACK(2,1), RSTACK(0,0), WORD_PURE)
+WORD(left_bracket,     xor,        DSTACK(0,0), RSTACK(0,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
 WORD(right_bracket,  left_bracket, DSTACK(0,0), RSTACK(0,0), WORD_IMPURE)
 
 #undef LASTWORD

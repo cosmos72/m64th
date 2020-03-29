@@ -427,7 +427,7 @@ m4cell m4token_print_consumed_ip(m4token tok, const m4token *code, m4cell maxn, 
         fputc('\'', out);
         m4token_print(code[0], out);
         return 1;
-    } else if (tok == m4_compile_unresolved_jump_ && nbytes == 2 * SZt) {
+    } else if (tok == m4_compile_jump_lit_ && nbytes == 2 * SZt) {
         fputc('\'', out);
         m4token_print(code[0], out);
         fputc('\'', out);

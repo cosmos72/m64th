@@ -47,17 +47,12 @@ FUNC_START(_compile_lit_)    /* [compile-lit] */
 FUNC_RAWEND(_compile_lit_)
 
 
-FUNC_START(_compile_resolved_jump_)    /* [compile-resolved-jump] */
-        /* TODO */
-        NEXTT2()                                       /* skip two m4token           */
-FUNC_RAWEND(_compile_resolved_jump_)
-
 /**
  * ( -- jump_address jump_category ) must be followed by m4token and its category.
  * append m4token and T(-1) to XT being compiled,
  * then push to dstack jump_address (= # of tokens of XT being compiled) and category.
  */
-FUNC_START(_compile_unresolved_jump_)    /* [compile-unresolved-jump] */
+FUNC_START(_compile_jump_lit_)    /* [compile-unresolved-jump] */
         ASM_CALL(  FUNC(_num_compiled_))               /* dtop = w.code_n            */
         LD_ut( REG3,       AT(IP))                     /* c = jump_token             */
         ADD2(  IMM(2),     DTOP)                       /* dtop = jump_address        */
@@ -72,7 +67,7 @@ FUNC_START(_compile_unresolved_jump_)    /* [compile-unresolved-jump] */
         ADD2(  IMM(2*SZt), HERE)                       /* here += 2 * SZt            */
         LD_ut( DTOP,       AT(IP, SZt))                /* dtop = category            */
         NEXTT2()                                       /* skip two m4token           */
-FUNC_RAWEND(_compile_unresolved_jump_)
+FUNC_RAWEND(_compile_jump_lit_)
 
 
 /**
@@ -80,27 +75,27 @@ FUNC_RAWEND(_compile_unresolved_jump_)
  * find jump category in control stack and return its cs-depth.
  * Stops at colon-sys, throws if not found.
  */
-FUNC_START(_cs_find_)    /* [cs-find] */
+FUNC_START(_cs_find_lit_)    /* [cs-find] */
         DPUSH( DTOP)               /* push dtop now: avoid special case cs-depth == 0 */
         LOAD(  REG2,       AT(M4TH, M4TH_OFF_DEND))    /* b = dstack_end              */
         LD_ut( REG1,       AT(IP))                     /* a = category                */
         SUB2(  DSTK,       REG2)                       /* b = dstack depth in bytes   */
         ZERO(  DTOPw)                                  /* dtop = 0                    */
-        JB(    REG2,       IMM(SZ2), TO(_cs_find_.throw))
+        JB(    REG2,       IMM(SZ2), TO(_cs_find_lit_.throw))
         SUB2(  IMM(SZ2-1), REG2)                       /* b = dstack depth in bytes - SZ2 + 1 */
-LABEL(_cs_find_.loop)
+LABEL(_cs_find_lit_.loop)
         LOAD(  REG3,       AT(DSTK, DTOP, 1))
-        JEQ(   REG1,       REG3,   TO(_cs_find_.done))
-        JEQ(   REG3,  IMM(M4colon),TO(_cs_find_.throw))
+        JEQ(   REG1,       REG3,   TO(_cs_find_lit_.done))
+        JEQ(   REG3,  IMM(M4colon),TO(_cs_find_lit_.throw))
         ADD2(  IMM(SZ2),   DTOP)
-        JB(    DTOP,       REG2,   TO(_cs_find_.loop))
-LABEL(_cs_find_.throw)
+        JB(    DTOP,       REG2,   TO(_cs_find_lit_.loop))
+LABEL(_cs_find_lit_.throw)
         MOVE(  IMM(M4ERR_CONTROL_STRUCTURE_MISMATCH), REG0)
         JUMP(  FUNC(_throw_.reg0))
-LABEL(_cs_find_.done)
+LABEL(_cs_find_lit_.done)
         SHR2(  IMM(PSZ+1), DTOP)
         NEXTT()                                        /* skip m4token                */
-FUNC_RAWEND(_cs_find_)
+FUNC_RAWEND(_cs_find_lit_)
 
 
 FUNC_START(short_align)    /* short-align */

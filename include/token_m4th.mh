@@ -309,11 +309,10 @@
 #undef M4____gap                    /*                                         */
 #undef M4____gap                    /*                                         */
 #define M4_num_compiled_ 781 /* [#compiled]  code size i.e. # of tokens in word being compiled  */
-#define M4_compile_init_ 782 /* [compile-init] must be called once x word before any [compile*] */
+#undef M4____gap             /*                                         */
 #define M4_compile_lit_ 783  /* followed by m4token, append it to compiled code  */
-#define M4_compile_resolved_jump_ 784   /* followed by m4token and label to jump to */
-#define M4_compile_unresolved_jump_ 785 /* followed by m4token and its category */
-#define M4_cs_find_ 786                 /* followed by category, get its depth in control stack */
+#define M4_compile_jump_lit_ 785 /* followed by m4token and its category         */
+#define M4_cs_find_lit_ 786      /* followed by category. get its depth in control stack */
 #define M4____end 787
 
 #endif /* M4TH_INCLUDE_TOKEN_M4TH_MH */
