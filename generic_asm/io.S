@@ -182,7 +182,7 @@ FUNC_START(obuf_write_string)
         LOAD(  REG2,   AT(DSTK))                       /* b = c-addr              */
         STOR(  REG1,   AT(DSTK))                       /* ( io dst u            ) */
         STOR(  REG2,   AT(DSTK, SZ))                   /* ( c-addr dst u        ) */
-        ASM_CALL(FUNC(cmove))                          /* (                     ) */
+        ASM_CALL(      FUNC(cmove))                    /* (                     ) */
         DPUSH( DTOP)                                   /* ( _                   ) */
         ZERO(  DTOPw)                                  /* ( 0                   ) */
         NEXT0()

@@ -81,19 +81,7 @@ FUNC_START(_compile_jump_lit_)
  */
 FUNC_DEF(_compile_jump_)
 /* FUNC_START(_compile_jump_) */
-#if 1
-        ASM_CALL(          FUNC(_num_compiled_))       /* ( token category #code_n ) */
-        LOAD(  REG1,       AT(DSTK, SZ))               /* a = token                  */
-        DPOP(  REG3)                                   /* c = category               */
-                                                       /* ( token #code_n          ) */
-        ADD2(  IMM(2),     DTOP)                       /* dtop = jump_address        */
-        init_RFFF_REG2()                               /* b = -1                     */
-        STORt( REG1,       AT(HERE))                   /* here[0] = token            */
-        STORt( RFFF_REG2,  AT(HERE, SZt))              /* here[1] = -1               */
-        ADD2(  IMM(SZt2),  HERE)                       /* here += 2 * SZt            */
-        STOR(  DTOP,       AT(DSTK))                   /* ( jump_address _ )         */
-        MOVE(  REG3,       DTOP)                       /* ( jump_address category )  */
-#else
+                                                       /* ( token category         ) */
         ASM_CALL(          FUNC(_num_compiled_reg0_))  /* @ = #code_n                */
         LOAD(  REG1,       AT(DSTK))                   /* a = token                  */
         ADD2(  IMM(2),     REG0)                       /* @ = jump_address           */
@@ -101,9 +89,7 @@ FUNC_DEF(_compile_jump_)
         STORt( REG1,       AT(HERE))                   /* here[0] = token            */
         STORt( RFFF_REG2,  AT(HERE, SZt))              /* here[1] = -1               */
         ADD2(  IMM(SZt2),  HERE)                       /* here += 2 * SZt            */
-        STOR(  REG0,       AT(DSTK))                   /* ( jump_address _ )         */
-        MOVE(  REG3,       DTOP)                       /* ( jump_address category )  */
-#endif /* 0 */
+        STOR(  REG0,       AT(DSTK))                   /* ( jump_address category )  */
 FUNC_END(_compile_jump_)
 FUNC_SIZE(_compile_jump_lit_)
 

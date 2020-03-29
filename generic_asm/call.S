@@ -43,13 +43,11 @@ FUNC_RAWEND(_call_xt_)
 
 /** pop XT from dstack and call it from native code. */
 FUNC_START(_exec_xt_from_native_)
-        RPUSH( RTOP)               /* save rtop                       */
-        MOVE(  IP,     RTOP)       /* rtop = IP                       */
+        RPUSH( IP)                 /* save IP. reorders rstack...     */
         /*                          let token 'execute' pop dtop = xt */
         ADDROF_1M(TO(_exec_xt_from_native_.vm_code), IP)
         ASM_CALL(      FUNC(_vm_))
-        MOVE(  RTOP,   IP)         /* IP   = rtop                     */
-        RPOP(  RTOP)               /* load rtop                       */
+        RPOP(  IP)                 /* load IP. reorders rstack...     */
         ASM_RET()
 	WORD_CODE_ALIGN()
 LABEL(_exec_xt_from_native_.vm_code)

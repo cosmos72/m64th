@@ -199,18 +199,9 @@
 #define STORt(reg, at) strh reg##t, at; /* *(m4token *)at  = reg */
 
 #define ASM_CALL(func) /* raw/native assembly: call native code  */                                \
-    RPUSH(RTOP)                                                                                    \
-    MOVE(lr, RTOP)                                                                                 \
+    RPUSH(lr)          /* cheat slightly to reduce code size: reorder rstack */                    \
     bl func;                                                                                       \
-    MOVE(RTOP, lr)                                                                                 \
-    RPOP(RTOP)
-
-#if 0                  /* broken */
-#define ASM_CALL(func) /* raw/native assembly: call native code  */                                \
-    str lr, [ sp, IMM(-SZ) ] !;                                                                    \
-    bl func;                                                                                       \
-    ldr lr, [sp], IMM(SZ);
-#endif /* 0 */
+    RPOP(lr) /* acceptable because called functions must not access caller's rstack */
 
 #define ASM_RET() ret; /* raw/native assembly: return */
 
