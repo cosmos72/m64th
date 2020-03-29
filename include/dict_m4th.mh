@@ -259,6 +259,7 @@
     X(11, "(catch-beg)", _catch_beg_)                                                              \
     X(11, "(catch-end)", _catch_end_)                                                              \
     X(10, "(continue)", _continue_)                                                                \
+    X(4, "(do)", _do_)                                                                             \
     X(6, "(else)", _else_)                                                                         \
     X(13, "(exec-native)", _exec_native_)                                                          \
     X(12, "(exec-token)", _exec_token_)                                                            \

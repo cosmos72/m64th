@@ -53,30 +53,34 @@ FUNC_RAWEND(_plus_loop_)
  * IP offset = 0 means first instruction after (?do) itself
  */
 FUNC_START(_q_do_)
-        cmp    DTOP, AT(DSTK);
-        jne     .L_q_do_.enter;
-                                           /* skip the loop:        */
-        LOAD(  DTOP,      AT(DSTK, SZ))    /* reload dstack top     */
-        ADD2(  IMM(SZ2),  DSTK)            /* drop i' i from dstack */
+        JNE(  AT(DSTK),DTOP,   FUNC(_do_))
+        /* skip the loop        */
+        LOAD(  DTOP,   AT(DSTK, SZ))   /* reload dstack top     */
+        ADD2( IMM(SZ2),DSTK)           /* drop i' i from dstack */
         RELJUMP()
-.L_q_do_.enter:                     /* enter the loop:       */
-        ADD2(  IMM(SZt), IP)               /* skip jump offset      */
+
+FUNC_DEF(_do_)
+/* FUNC_START(_do_) */
+        /* enter the loop       */
+        ADD2( IMM(SZt),IP)             /* skip jump offset      */
         /* FALLTHROUGH */
 /* FUNC_RAWEND(_q_do_) */
+/* FUNC_RAWEND(_do_)   */
 
 
 #define M4FDO
 FUNC_DEF(do)
 /* FUNC_START(do) */
-        SUB2(  IMM(SZ2),   RSTK)       /* update rstack pointer */
-        LOAD(  REG1, AT(DSTK))         /* REG1 = i'             */
-        STOR(  RTOP, AT(RSTK, SZ))     /* save RTOP             */
-        MOVE(  DTOP, RTOP)             /* RTOP = i              */
-        STOR(  REG1, AT(RSTK))         /* save i' to rstack     */
-        LOAD(  DTOP, AT(DSTK, SZ))     /* reload dstack top     */
-        ADD2(  IMM(SZ2),   DSTK)       /* update dstack pointer */
+        SUB2( IMM(SZ2),RSTK)           /* update rstack pointer */
+        LOAD(  REG1,   AT(DSTK))       /* REG1 = i'             */
+        STOR(  RTOP,   AT(RSTK, SZ))   /* save RTOP             */
+        MOVE(  DTOP,   RTOP)           /* RTOP = i              */
+        STOR(  REG1,   AT(RSTK))       /* save i' to rstack     */
+        LOAD(  DTOP,   AT(DSTK, SZ))   /* reload dstack top     */
+        ADD2( IMM(SZ2),DSTK)           /* update dstack pointer */
 FUNC_END(do)
 FUNC_SIZE(_q_do_)
+FUNC_SIZE(_do_)
 
 
 /**

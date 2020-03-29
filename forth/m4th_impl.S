@@ -191,7 +191,16 @@ WORD_START(_continue_, _catch_end_)
        CALL(continue), exit
     )
 WORD_END(_continue_)
-WORD_START(_else_, _continue_)
+WORD_START(_do_, _continue_)
+    WORD_DSTACK(2,0) /* stack effect when not jumping */
+    WORD_RSTACK(0,2)
+    WORD_DSTACK(2,0) /* stack effect when jumping */
+    WORD_RSTACK(0,0)
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
+    WORD_CODE(CALL(do), exit)
+WORD_END(_do_)
+WORD_START(_else_, _do_)
     WORD_STACK_NONE()  /* dummy, token always jumps */
     WORD_DSTACK(0,0)   /* stack effect when jumping */
     WORD_RSTACK(0,0)

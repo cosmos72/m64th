@@ -54,16 +54,27 @@ FUNC_RAWEND(_plus_loop_)
 FUNC_START(_q_do_)
         LOAD(  REG2, AT(DSTK))
         cmp    REG2, DTOP;
-        b.eq   .L_q_do_.skip;
-        ADD2(  IMM(SZt), IP)           /* skip jump offset      */
-        b      FUNC(do);
-.L_q_do_.skip:                  /* skip the loop:        */
+        b.ne   FUNC(_do_)
+        /* skip the loop        */
         LOAD(  DTOP,   AT(DSTK, SZ))   /* reload dstack top     */
         ADD2(  IMM(SZ2), DSTK)         /* drop i' i from dstack */
         RELJUMP()                      /* jump to TARGET_IP     */
-FUNC_RAWEND(_q_do_)
+FUNC_DEF(_do_)
+        ADD2(  IMM(SZt), IP)           /* skip jump offset      */
+        /* FALLTHROUGH */
+/* FUNC_RAWEND(_q_do_) */
+/* FUNC_RAWEND(_do_)   */
 
 
+#define M4FDO
+FUNC_DEF(do) /* FUNC_START(do) */
+        RPUSH( RTOP)                 /* save rtop             */
+        MOVE(  DTOP,   RTOP)         /* rtop = i              */
+        DPOP2( REG1,   DTOP)         /* a = i', reload dtop   */
+        RPUSH( REG1)                 /* rpush i'              */
+FUNC_END(do)
+FUNC_SIZE(_q_do_)
+FUNC_SIZE(_do_)
 
 
 /**

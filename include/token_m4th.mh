@@ -266,7 +266,7 @@
 #define M4_continue_if0_ 736        /* (continue-if0)  followed by IP offset to jump if dtop == 0 */
 #undef M4____gap                    /*                                                            */
 #undef M4____gap                    /*                                                            */
-#undef M4____gap                    /*                                                            */
+#define M4_do_ 739                  /* (do)            followed by IP offset (ignored)            */
 #define M4_else_ 740                /* (else)          followed by IP offset to jump              */
 #undef M4____gap                    /*                                                            */
 #undef M4____gap                    /*                                                            */
