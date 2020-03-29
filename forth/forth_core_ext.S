@@ -47,9 +47,10 @@ WORD_START(again,      question_do)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_JUMP | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_CODE(
+        _check_, begin,             /* ( sys ) must be 'begin' */
         _compile_unresolved_jump_, _again_, _again_,
-        cs_drop,                    /* we only need the compiled code, not the cs data */
-        CALL(_resolve_jump_there_), /* resolve jump offset from 'again' to 'begin'     */
+        cs_drop,                    /* we only need the compiled '(again)', not the cs data */
+        CALL(_resolve_jump_there_), /* resolve jump offset from '(again)' to 'begin'        */
         exit
     )
 WORD_END(again)
@@ -97,11 +98,26 @@ WORD_END(roll)
 WORD(true,             roll,       DSTACK(0,1), RSTACK(0,0), WORD_PURE)
 WORD(tuck,             true,       DSTACK(2,3), RSTACK(0,0), WORD_PURE)
 WORD(u_more,           tuck,       DSTACK(2,1), RSTACK(0,0), WORD_PURE)
+WORD_START(until,      u_more)
+    WORD_DSTACK(1,0)   /* stack effect if not jumping */
+    WORD_RSTACK(0,0)
+    WORD_DSTACK(1,0)   /* stack effect if jumping */
+    WORD_RSTACK(0,0)
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_MAY_JUMP | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
+    WORD_CODE(
+        _check_, begin,             /* ( sys ) must be 'begin' */
+        _compile_unresolved_jump_, _until_, _until_,
+        cs_drop,                    /* we only need the compiled '(until)' not the cs data */
+        CALL(_resolve_jump_there_), /* resolve jump offset from '(until)' to 'begin'       */
+        exit
+    )
+WORD_END(until)
 /*
  * within ( x lo hi -- flag )   \ true if lo <= x < hi, either signed or unsigned
  * : within over - -rot - u> ;
  */
-WORD(within,           u_more,     DSTACK(3,1), RSTACK(0,0), WORD_PURE)
+WORD(within,           until,      DSTACK(3,1), RSTACK(0,0), WORD_PURE)
 
 #undef LASTWORD
 #define LASTWORD within

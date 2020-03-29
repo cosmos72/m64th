@@ -140,6 +140,8 @@ static const m4testcompile testcompile[] = {
     {"do", {}, {2, {2, m4_do_}}, {2, {m4_do_, T(-1)}}},
     {"?do", {}, {2, {2, m4_do_}}, {2, {m4_q_do_, T(-1)}}},
     {"do loop", {}, {}, {4, {m4_do_, T(2), m4_loop_, T(-2)}}},
+    {"do 1 +loop", {}, {}, {5, {m4_do_, T(3), m4one, m4_plus_loop_, T(-3)}}},
+    {"do i +loop", {}, {}, {5, {m4_do_, T(3), m4i, m4_plus_loop_, T(-3)}}},
     {"do i . loop",
      {},
      {},
@@ -171,6 +173,7 @@ static const m4testcompile testcompile[] = {
     {"begin if", {}, {4, {1, m4begin, 3, m4_if_}}, {3, {m4begin, m4_if_, T(-1)}}},
     {"begin if then", {}, {2, {1, m4begin}}, {4, {m4begin, m4_if_, T(1), m4then}}},
     {"begin if then again", {}, {}, {6, {m4begin, m4_if_, T(1), m4then, m4_again_, T(-5)}}},
+    {"begin 1 until", {}, {}, {4, {m4begin, m4one, m4_until_, T(-3)}}},
 };
 
 static m4code m4testcompile_init(const m4testcompile *t, m4countedcode *codegen_buf) {

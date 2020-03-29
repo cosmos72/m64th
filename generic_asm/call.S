@@ -118,14 +118,23 @@ LABEL(_catch_end_.thrown)
          * we only need to push exception to dstk then clear m4th.ex
          */
         init_R000_REG1()
-        STOR(  R000_REG1,  AT(M4TH, M4TH_OFF_EX))    /* clear m4th.ex            */
-        /* do NOT clear m4th.ex_message, caller may need it                       */
+        STOR(  R000_REG1,  AT(M4TH, M4TH_OFF_EX))    /* clear m4th.ex              */
+        /* do NOT clear m4th.ex_message, caller may need it                        */
 
 LABEL(_catch_end_.push)
         /* final touch: push REG2 to dstk */
         DPUSH( DTOP)
-        MOVE(  REG2,   DTOP)                         /* ( exception | 0        ) */
+        MOVE(  REG2,   DTOP)                         /* ( exception | 0          ) */
 FUNC_END(_catch_end_)
+
+
+/* ( x -- x ) must be followed by e = expected x. throws x <> e */
+FUNC_START(_check_)    /* [check] */
+        LD_ut( REG1,   AT(IP))                       /* a = expected               */
+        MOVE(  IMM(M4ERR_CONTROL_STRUCTURE_MISMATCH),  REG0)
+        JNE(   REG1,   DTOP,   FUNC(_throw_.reg0))
+        NEXTT()                                      /* skip m4token               */
+FUNC_RAWEND(_check_)
 
 
 /* ( ex -- ) throw exception if ex != 0 */

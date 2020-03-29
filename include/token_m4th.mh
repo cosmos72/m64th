@@ -252,15 +252,15 @@
 #define M4_q_while0_ 722            /* (?while0)       followed by IP offset to jump if dtop <> 0 */
 #undef M4____gap                    /*                                                            */
 #undef M4____gap                    /*                                                            */
-#undef M4____gap                    /*                                                            */
-#define M4_again_ 726               /* (again)         followed by IP offset to jump              */
-#define M4_break_ 727               /* (break)         followed by IP offset to jump              */
-#define M4_break_if_ 728            /* (break-if)      followed by IP offset to jump if dtop <> 0 */
-#define M4_break_if0_ 729           /* (break-if0)     followed by IP offset to jump if dtop == 0 */
-#define M4_call_ 730                /* (call)          followed by word. calls it.                */
-#define M4_call_xt_ 731             /* (call-xt)       followed by XT. calls it.                  */
-#define M4_catch_beg_ 732           /* (catch-beg)     first  half of 'catch'                     */
-#define M4_catch_end_ 733           /* (catch-end)     second half of 'catch'                     */
+#define M4_again_ 725               /* (again)         followed by IP offset to jump              */
+#define M4_break_ 726               /* (break)         followed by IP offset to jump              */
+#define M4_break_if_ 727            /* (break-if)      followed by IP offset to jump if dtop <> 0 */
+#define M4_break_if0_ 728           /* (break-if0)     followed by IP offset to jump if dtop == 0 */
+#define M4_call_ 729                /* (call)          followed by word. calls it.                */
+#define M4_call_xt_ 730             /* (call-xt)       followed by XT. calls it.                  */
+#define M4_catch_beg_ 731           /* (catch-beg)     first  half of 'catch'                     */
+#define M4_catch_end_ 732           /* (catch-end)     second half of 'catch'                     */
+#define M4_check_ 733               /* (check)         ( x -- x ) followed by e. throws if e <> x */
 #define M4_continue_ 734            /* (continue)      followed by IP offset to jump              */
 #define M4_continue_if_ 734         /* (continue-if)   followed by IP offset to jump if dtop <> 0 */
 #define M4_continue_if0_ 736        /* (continue-if0)  followed by IP offset to jump if dtop == 0 */

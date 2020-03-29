@@ -88,7 +88,7 @@
     X(4, "int!", int_store)                                                                        \
     X(6, "short,", short_comma)                                                                    \
     X(4, "int,", int_comma)                                                                        \
-    X(14, "countedstring,", countedstring_comma) /* countedstring, ( c-addr u -- )      */         \
+    X(14, "countedstring,", countedstring_comma) /* ( c-addr u -- )                    */          \
     X(11, "short-align", short_align)                                                              \
     X(9, "int-align", int_align)                                                                   \
     X(13, "short-aligned", short_aligned)                                                          \
@@ -261,6 +261,7 @@
     X(9, "(call-xt)", _call_xt_)                                                                   \
     X(11, "(catch-beg)", _catch_beg_)                                                              \
     X(11, "(catch-end)", _catch_end_)                                                              \
+    X(7, "(check)", _check_) /* ( x -- x ) followed by expected x */                               \
     X(10, "(continue)", _continue_)                                                                \
     X(4, "(do)", _do_)                                                                             \
     X(6, "(else)", _else_)                                                                         \
@@ -289,7 +290,7 @@
     X(14, "[compile-lit,]", _compile_lit_)                                                         \
     X(23, "[compile-resolved-jump]", _compile_resolved_jump_)                                      \
     X(25, "[compile-unresolved-jump]", _compile_unresolved_jump_)                                  \
-    X(9, "[cs-find]", _cs_find_)                                                                   \
+    X(9, "[cs-find]", _cs_find_) /* ( sys+ -- sys+ cs-depth ) followed by category */              \
     X(2, "-1", minus_one)                                                                          \
     X(1, "0", zero)                                                                                \
     X(1, "1", one)                                                                                 \

@@ -481,7 +481,16 @@ WORD_START(_any_token_gives_cell_q_, _while0_)
     )
 WORD_END(_any_token_gives_cell_q_)
 WORD(_num_compiled_,_any_token_gives_cell_q_,DSTACK(0,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
-WORD_START(_compile_lit_, _num_compiled_)
+/* ( x -- x ) followed by e = expected x. throws if x <> e */
+WORD_START(_check_, _num_compiled_)
+    WORD_DSTACK(2,2)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE() /* consumes IP and uses IP-relative JUMP(), cannot inline in native code */
+    WORD_FLAGS(M4FLAG_CONSUMES_IP_SZt | M4FLAG_INLINE_ALWAYS)
+    WORD_CODE(_check_, T(-1),  exit)
+WORD_END(_check_)
+WORD_START(_compile_lit_, _check_)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -511,7 +520,7 @@ WORD_START(_compile_unresolved_jump_, _compile_resolved_jump_)
     WORD_CODE(_compile_unresolved_jump_, T(-1), T(-1), exit)
 WORD_END(_compile_unresolved_jump_)
 /*
- * ( -- cs-depth ) must be followed by category.
+ * ( sys+ -- sys+ cs-depth ) must be followed by category.
  * find category in control stack and return its cs-depth.
  * Stops at colon-sys, throws if not found.
  */
@@ -612,21 +621,25 @@ WORD_START(_resolve_loop_, _resolve_jump_there_)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE)
     WORD_CODE(
-        /* cs-drop                                     ( do-sys leave-sys*     )
-         * begin
-         *    dup ' (leave) =                          ( do-sys leave-sys* t|f )
-         * while                                       ( do-sys leave-sys+     )
-         *    [resolve-jump-here]                      ( do-sys leave-sys*     )
-         * repeat                                      ( do-sys                )
-         * cs-dup [resolve-jump-here]                  ( do-sys                )
-         * [resolve-jump-there]                        (                       )
+        /* ' (loop) check                              ( do-sys leave-sys* loop-sys )
+         * cs-drop                                     ( do-sys leave-sys*          )
+         * begin                                       ( do-sys leave-sys*          )
+         *    dup ' (leave) =                          ( do-sys leave-sys* t|f      )
+         * while                                       ( do-sys leave-sys+          )
+         *    [resolve-jump-here]                      ( do-sys leave-sys*          )
+         * repeat                                      ( do-sys                     )
+         * ' (do) check                                ( do-sys                     )
+         * cs-dup [resolve-jump-here]                  ( do-sys                     )
+         * [resolve-jump-there]                        (                            )
          */
+        _check_, _loop_,
         cs_drop,
         begin,
             dup, _lit_, _leave_, equal,
         _while_, T(3+nCALLt),
             CALL(_resolve_jump_here_),
         _repeat_, T(-9-nCALLt),
+        _check_, _do_,
         cs_dup, CALL(_resolve_jump_here_),
         CALL(_resolve_jump_there_), exit
     )

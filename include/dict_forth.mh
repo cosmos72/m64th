@@ -121,7 +121,8 @@
     X(4, "loop", loop)                                                                             \
     X(2, "s\"", s_quote)                                                                           \
     X(6, "source", source)                                                                         \
-    X(5, "space", space)
+    X(5, "space", space)                                                                           \
+    X(5, "until", until)
 
 /* ------- forth 2012: core ext ----------------------------------------------------------------- */
 #define DICT_TOKENS_FORTH_CORE_EXT(X)                                                              \

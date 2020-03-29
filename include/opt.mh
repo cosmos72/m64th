@@ -37,10 +37,7 @@
         x((true), (minus_one))     /* true     => -1            */
 
 #define OPT2_BODY(x, _)                                      /* note: '_' represents noop       */ \
-    x((_ip_, drop), _)                                       /* (ip)           drop  =>         */ \
-        x((_ip_data_, two_drop), _)                          /* (ip>data)     2drop  =>         */ \
-        x((_ip_data_addr_, drop), _)                         /* (ip>data>addr) drop  =>         */ \
-        x((minus_one, times), (negate))                      /* -1 *          => negate         */ \
+    x((minus_one, times), (negate))                          /* -1 *          => negate         */ \
         x((minus_one, plus), (one_minus))                    /* -1 +          => 1-             */ \
         x((minus_one, minus), (one_plus))                    /* -1 -          => 1+             */ \
         x((minus_one, div), (negate))                        /* -1 /          => negate         */ \
@@ -48,6 +45,7 @@
         x((minus_one, and), _)                               /* -1 and        =>                */ \
         x((minus_one, mod), (div))                           /* -1 mod        => drop 0         */ \
         x((minus_one, or), (drop, minus_one))                /* -1 or         => drop -1        */ \
+        x((minus_one, _until0_), (_again_))                  /* -1 (until0)   => (again)        */ \
         x((minus_one, xor), (invert))                        /* -1 xor        => invert         */ \
         x((zero, times), (drop, drop, zero))                 /* 0  *          => drop 0         */ \
         x((zero, minus), _)                                  /* 0  -          =>                */ \
@@ -71,6 +69,7 @@
         x((zero, u_less_equal), (zero_equal))                /* 0  u<=        => 0=             */ \
         x((zero, u_more), (zero_ne))                         /* 0  u>         => 0<>            */ \
         x((zero, u_more_equal), (drop, true))                /* 0  u>=        => drop true      */ \
+        x((zero, _until_), (_again_))                        /* 0  (until)    => (again)        */ \
         x((zero, xor), _)                                    /* 0  xor        =>                */ \
         x((one, times), _)                                   /* 1  *          =>                */ \
         x((one, plus), (one_plus))                           /* 1  +          => 1+             */ \
@@ -85,6 +84,7 @@
         x((one, roll), (swap))                               /* 1  roll       => swap           */ \
         x((one, minus_roll), (swap))                         /* 1  -roll      => swap           */ \
         x((one, rshift), (two_div))                          /* 1  rshift     => 2/             */ \
+        x((one, _until0_), (_again_))                        /* 1  (until0)   => (again)        */ \
         x((one_plus, two_minus), (one_minus))                /* 1+ 2-         => 1-             */ \
         x((one_plus, one_minus), _)                          /* 1+ 1-         =>                */ \
         x((one_plus, one_plus), (two_plus))                  /* 1+ 1+         => 2+             */ \
@@ -369,6 +369,9 @@
         x((invert, _if0_), (_if_))                           /* invert (if0)    => (if)         */ \
         x((invert, _while_), (_while0_))                     /* invert (while)  => (while0)     */ \
         x((invert, _while0_), (_while_))                     /* invert (while0) => (while)      */ \
+        x((_ip_, drop), _)                                   /* (ip)           drop  =>         */ \
+        x((_ip_data_, two_drop), _)                          /* (ip>data)     2drop  =>         */ \
+        x((_ip_data_addr_, drop), _)                         /* (ip>data>addr) drop  =>         */ \
         x((negate, _if_), (_if_))                            /* negate (if)     => (if)         */ \
         x((negate, _if0_), (_if0_))                          /* negate (if0)    => (if0)        */ \
         x((negate, _while_), (_while_))                      /* negate (while)  => (while)      */ \
