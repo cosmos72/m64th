@@ -499,11 +499,24 @@ WORD_START(_compile_lit_, _check_)
     WORD_CODE(_compile_lit_, T(-1), exit)
 WORD_END(_compile_lit_)
 /*
- * ( -- jump_address jump_category ) must be followed by m4token and its category.
- * append m4token and T(-1) to XT being compiled,
- * then push to dstack jump_address (= # of tokens of XT being compiled) and category.
+ * ( token category -- sys )
+ * append unresolved jump to XT being compiled i.e. token and T(-1),
+ * then push sys to dstack i.e. jump_address (= # of tokens of XT being compiled) and category.
  */
-WORD_START(_compile_jump_lit_, _compile_lit_)
+WORD_START(_compile_jump_, _compile_lit_)
+    WORD_DSTACK(2,2)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE() /* uses IP-relative ASM_CALL(), cannot inline in native code */
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE)
+    WORD_CODE(_compile_jump_, exit)
+WORD_END(_compile_jump_)
+/*
+ * ( -- sys ) must be followed by m4token and its category.
+ * append unresolved jump to XT being compiled i.e. m4token and T(-1),
+ * then push sys to dstack i.e. jump_address (= # of tokens of XT being compiled) and category.
+ */
+WORD_START(_compile_jump_lit_, _compile_jump_)
     WORD_DSTACK(0,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()

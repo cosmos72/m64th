@@ -288,7 +288,9 @@
     X(8, "(while0)", _while0_)                                                                     \
     X(11, "[#compiled]", _num_compiled_)                                                           \
     X(14, "[compile-lit,]", _compile_lit_)                                                         \
-    /* ( -- sys ) followed by jump token and its category */                                       \
+    /* ( token category -- sys ) compile an unresolved jump. */                                    \
+    X(14, "[compile-jump]", _compile_jump_)                                                        \
+    /* ( -- sys ) compile an unresolved jump. must be followed by jump token and its category */   \
     X(18, "[compile-jump-lit]", _compile_jump_lit_)                                                \
     X(13, "[cs-find-lit]", _cs_find_lit_) /* ( sys+ -- sys+ cs-depth ) followed by category */     \
     X(2, "-1", minus_one)                                                                          \
