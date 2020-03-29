@@ -205,6 +205,13 @@
     MOVE(RTOP, lr)                                                                                 \
     RPOP(RTOP)
 
+#if 0                  /* broken */
+#define ASM_CALL(func) /* raw/native assembly: call native code  */                                \
+    str lr, [ sp, IMM(-SZ) ] !;                                                                    \
+    bl func;                                                                                       \
+    ldr lr, [sp], IMM(SZ);
+#endif /* 0 */
+
 #define ASM_RET() ret; /* raw/native assembly: return */
 
 #define JA(reg, val, label) /*  if reg u>  val jump to label */                                    \

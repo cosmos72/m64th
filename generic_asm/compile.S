@@ -37,6 +37,18 @@ FUNC_START(_num_compiled_)
 FUNC_END(_num_compiled_)
 
 
+/** [#compiled.reg0] ( -- ) set reg0 = code size i.e. # of tokens in XT being compiled  */
+FUNC_START(_num_compiled_reg0_)
+#ifdef __x86_64__
+        MOVE(  HERE,       REG0)                       /* @ = here           */
+        SUB2(  AT(M4TH, M4TH_OFF_XT),  REG0)           /* @ = here - m4th.xt */
+#else
+        LOAD(  REG0,       AT(M4TH, M4TH_OFF_XT))      /* @ = m4th.xt        */
+        XSUB2( HERE,       REG0)                       /* @ = here - m4th.xt */
+#endif
+        SHR2(  IMM(PSZt),  REG0)
+FUNC_END(_num_compiled_reg0_)
+
 
 /** ( -- ) must be followed by m4token, append it to XT being compiled. */
 FUNC_START(_compile_lit_)    /* [compile-lit] */
@@ -69,7 +81,8 @@ FUNC_START(_compile_jump_lit_)
  */
 FUNC_DEF(_compile_jump_)
 /* FUNC_START(_compile_jump_) */
-        ASM_CALL(  FUNC(_num_compiled_))               /* ( token category #code_n ) */
+#if 1
+        ASM_CALL(          FUNC(_num_compiled_))       /* ( token category #code_n ) */
         LOAD(  REG1,       AT(DSTK, SZ))               /* a = token                  */
         DPOP(  REG3)                                   /* c = category               */
                                                        /* ( token #code_n          ) */
@@ -77,9 +90,20 @@ FUNC_DEF(_compile_jump_)
         init_RFFF_REG2()                               /* b = -1                     */
         STORt( REG1,       AT(HERE))                   /* here[0] = token            */
         STORt( RFFF_REG2,  AT(HERE, SZt))              /* here[1] = -1               */
-        ADD2(  IMM(SZt2), HERE)                        /* here += 2 * SZt            */
+        ADD2(  IMM(SZt2),  HERE)                       /* here += 2 * SZt            */
         STOR(  DTOP,       AT(DSTK))                   /* ( jump_address _ )         */
         MOVE(  REG3,       DTOP)                       /* ( jump_address category )  */
+#else
+        ASM_CALL(          FUNC(_num_compiled_reg0_))  /* @ = #code_n                */
+        LOAD(  REG1,       AT(DSTK))                   /* a = token                  */
+        ADD2(  IMM(2),     REG0)                       /* @ = jump_address           */
+        init_RFFF_REG2()                               /* b = -1                     */
+        STORt( REG1,       AT(HERE))                   /* here[0] = token            */
+        STORt( RFFF_REG2,  AT(HERE, SZt))              /* here[1] = -1               */
+        ADD2(  IMM(SZt2),  HERE)                       /* here += 2 * SZt            */
+        STOR(  REG0,       AT(DSTK))                   /* ( jump_address _ )         */
+        MOVE(  REG3,       DTOP)                       /* ( jump_address category )  */
+#endif /* 0 */
 FUNC_END(_compile_jump_)
 FUNC_SIZE(_compile_jump_lit_)
 
@@ -104,7 +128,7 @@ LABEL(_cs_find_lit_.loop)
         JB(    DTOP,       REG2,   TO(_cs_find_lit_.loop))
 LABEL(_cs_find_lit_.throw)
         MOVE(  IMM(M4ERR_CONTROL_STRUCTURE_MISMATCH), REG0)
-        JUMP(  FUNC(_throw_.reg0))
+        JUMP(  FUNC(_throw_reg0_))
 LABEL(_cs_find_lit_.done)
         SHR2(  IMM(PSZ+1), DTOP)
         NEXTT()                                        /* skip m4token                */
@@ -236,10 +260,10 @@ FUNC_START(right_bracket)
         /* TODO check if enough space */
         MOVE(  IMM(M4ERR_ZERO_LENGTH_NAME), REG0)      /* ( err )               */
         LOAD(  REG1,       AT(M4TH, M4TH_OFF_LASTW))   /* a = m4th.lastw        */
-        JZ(    REG1,       FUNC(_throw_.reg0))         /* no latest word: throw */
+        JZ(    REG1,       FUNC(_throw_reg0_))         /* no latest word: throw */
         MOVE(  IMM(M4ERR_COMPILER_NESTING), REG0)      /* ( err )               */
         LOAD(  REG3,       AT(M4TH, M4TH_OFF_XT))      /* c = m4th.xt           */
-        JNZ(   REG3,       FUNC(_throw_.reg0))         /* compiling: throw      */
+        JNZ(   REG3,       FUNC(_throw_reg0_))         /* compiling: throw      */
         LD_uh( REG2,       AT(REG1, WORD_OFF_CODE_OFF))/* b = w.code_off        */
         JNZ(   REG2,       TO(right_bracket.finish))
         LOAD(  REG2,       AT(REG1, WORD_OFF_DATA_N))  /* b = w.data_n          */

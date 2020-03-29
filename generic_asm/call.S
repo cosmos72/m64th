@@ -132,7 +132,7 @@ FUNC_END(_catch_end_)
 FUNC_START(_check_)    /* [check] */
         LD_ut( REG1,   AT(IP))                       /* a = expected               */
         MOVE(  IMM(M4ERR_CONTROL_STRUCTURE_MISMATCH),  REG0)
-        JNE(   REG1,   DTOP,   FUNC(_throw_.reg0))
+        JNE(   REG1,   DTOP,   FUNC(_throw_reg0_))
         NEXTT()                                      /* skip m4token               */
 FUNC_RAWEND(_check_)
 
@@ -142,7 +142,7 @@ FUNC_START(throw)
         MOVE(  DTOP,   REG0)
         DPOP(  DTOP)
         JZ(    REG0,   FUNC_NEXT(throw))             /* 0 means 'do not throw'             */
-FUNC_DEF(_throw_.reg0)
+FUNC_DEF(_throw_reg0_)
         STOR(  REG0,   AT(M4TH, M4TH_OFF_EX))        /* save exception to m4th.ex          */
         LOAD(  REG2,   AT(M4TH, M4TH_OFF_HANDLER))   /* b = m4th.handler = rend - rstk     */
         JZ(    REG2,   FUNC(bye))                    /* no handler => jump to 'bye'        */
