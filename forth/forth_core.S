@@ -289,8 +289,7 @@ WORD_START(leave, j)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_CODE(
         _compile_unresolved_jump_, _leave_, _leave_,
-        /* TODO: we must check for both 'do and '(?do) */
-        /* _cs_find_, do, one_minus, minus_cs_roll, */
+        _cs_find_, _do_, one_minus, minus_cs_roll,
         exit
     )
 WORD_END(leave)

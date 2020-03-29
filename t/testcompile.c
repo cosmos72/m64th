@@ -154,7 +154,10 @@ static const m4testcompile testcompile[] = {
     {"do leave", {}, {4, {2, m4_do_, 4, m4_leave_}}, {4, {m4_do_, T(-1), m4_leave_, T(-1)}}},
     {"do leave loop", {}, {}, {6, {m4_do_, T(4), m4_leave_, T(2), m4_loop_, T(-4)}}},
     {"?do leave loop", {}, {}, {6, {m4_q_do_, T(4), m4_leave_, T(2), m4_loop_, T(-4)}}},
-    /* TODO fix {"do if leave then loop", {}, {}, {5, {m4do, m4_leave_, T(2), m4_loop_, T(-4)}}}, */
+    {"do if leave then loop",
+     {},
+     {},
+     {9, {m4_do_, T(7), m4_if_, T(3), m4_leave_, T(3), m4then, m4_loop_, T(-7)}}},
 };
 
 static m4code m4testcompile_init(const m4testcompile *t, m4countedcode *codegen_buf) {

@@ -81,7 +81,7 @@ FUNC_RAWEND(_compile_unresolved_jump_)
  * Stops at colon-sys, throws if not found.
  */
 FUNC_START(_cs_find_)    /* [cs-find] */
-        DPUSH( DTOP)
+        DPUSH( DTOP)               /* push dtop now: avoid special case cs-depth == 0 */
         LOAD(  REG2,       AT(M4TH, M4TH_OFF_DEND))    /* b = dstack_end              */
         LD_ut( REG1,       AT(IP))                     /* a = category                */
         SUB2(  DSTK,       REG2)                       /* b = dstack depth in bytes   */
