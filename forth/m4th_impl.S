@@ -50,7 +50,7 @@ WORD_START(_q_do_, _plus_loop_)
     WORD_RSTACK(0,0)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_MAY_JUMP | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
-    WORD_CODE(_compile_unresolved_jump_, _q_do_, _q_do_, exit)
+    WORD_CODE(_compile_unresolved_jump_, _q_do_, _do_, exit)
 WORD_END(_q_do_)
 WORD_START(_q_if_, _q_do_)
     WORD_DSTACK(1,1) /* token stack effect when not jumping */
@@ -198,7 +198,7 @@ WORD_START(_do_, _continue_)
     WORD_RSTACK(0,0)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
-    WORD_CODE(CALL(do), exit)
+    WORD_CODE(_compile_unresolved_jump_, _do_, _do_, exit)
 WORD_END(_do_)
 WORD_START(_else_, _do_)
     WORD_STACK_NONE()  /* dummy, token always jumps */
@@ -617,28 +617,22 @@ WORD_START(_resolve_loop_, _resolve_jump_there_)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE)
     WORD_CODE(
-        /* 2drop                                       ( do-sys leave-sys*     )
+        /* cs-drop                                     ( do-sys leave-sys*     )
          * begin
          *    dup ' (leave) =                          ( do-sys leave-sys* t|f )
          * while                                       ( do-sys leave-sys+     )
          *    [resolve-jump-here]                      ( do-sys leave-sys*     )
          * repeat                                      ( do-sys                )
-         * dup ' (?do) =                               ( do-sys t|f            )
-         * if                                          ( do-sys                )
-         *    2dup [resolve-jump-here]                 ( do-sys                )
-         * then                                        ( do-sys                )
+         * cs-dup [resolve-jump-here]                  ( do-sys                )
          * [resolve-jump-there]                        (                       )
          */
-        two_drop,
+        cs_drop,
         begin,
             dup, _lit_, _leave_, equal,
         _while_, T(3+nCALLt),
             CALL(_resolve_jump_here_),
         _repeat_, T(-9-nCALLt),
-        dup, _lit_, _q_do_, equal,
-        _if_, T(3+nCALLt),
-            two_dup, CALL(_resolve_jump_here_),
-        then,
+        cs_dup, CALL(_resolve_jump_here_),
         CALL(_resolve_jump_there_), exit
     )
 WORD_END(_resolve_loop_)

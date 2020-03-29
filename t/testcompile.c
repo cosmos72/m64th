@@ -122,8 +122,8 @@ static const m4testcompile testcompile[] = {
     {"sTrInG-CI<>", {}, {}, {2, {m4string_ci_equal, m4invert}}},
     {"c, short, int, ,", {}, {}, {4, {m4c_comma, m4short_comma, m4int_comma, m4comma}}},
     /* ------------------------------- immediate words ---------------------- */
-    {"?do", {}, {2, {2, m4_q_do_}}, {2, {m4_q_do_, T(-1)}}},
-    {"do", {}, {2, {1, m4do}}, {1, {m4do}}},
+    {"?do", {}, {2, {2, m4_do_}}, {2, {m4_q_do_, T(-1)}}},
+    {"do", {}, {2, {2, m4_do_}}, {2, {m4_do_, T(-1)}}},
     {"s\"  fubar\"", {}, {}, {3, {LIT_STRING(6, " fubar")}}},
     /* ------------------------------- words -------------------------------- */
     {"compile,", {}, {}, {callsz, {CALLXT(compile_comma)}}},
@@ -140,16 +140,19 @@ static const m4testcompile testcompile[] = {
       {m4_if_, T(10), m4plus, m4_if_, T(3), m4times, m4_else_, T(2), m4div, m4then, m4_else_, T(2),
        m4minus, m4then}}},
     /* ------------------------------- loops -------------------------------- */
-    {"do", {}, {2, {1, m4do}}, {1, {m4do}}},
-    {"?do", {}, {2, {2, m4_q_do_}}, {2, {m4_q_do_, T(-1)}}},
-    {"do loop", {}, {}, {3, {m4do, m4_loop_, T(-2)}}},
-    {"do i . loop", {}, {}, {5 + nCALLt, {m4do, m4i, CALLXT(dot), m4_loop_, T(-4 - nCALLt)}}},
+    {"do", {}, {2, {2, m4_do_}}, {2, {m4_do_, T(-1)}}},
+    {"?do", {}, {2, {2, m4_do_}}, {2, {m4_q_do_, T(-1)}}},
+    {"do loop", {}, {}, {4, {m4_do_, T(2), m4_loop_, T(-2)}}},
+    {"do i . loop",
+     {},
+     {},
+     {6 + nCALLt, {m4_do_, T(4 + nCALLt), m4i, CALLXT(dot), m4_loop_, T(-4 - nCALLt)}}},
     {"?do i . loop",
      {},
      {},
      {6 + nCALLt, {m4_q_do_, T(4 + nCALLt), m4i, CALLXT(dot), m4_loop_, T(-4 - nCALLt)}}},
-    {"do leave", {}, {4, {1, m4do, 3, m4_leave_}}, {3, {m4do, m4_leave_, T(-1)}}},
-    {"do leave loop", {}, {}, {5, {m4do, m4_leave_, T(2), m4_loop_, T(-4)}}},
+    {"do leave", {}, {4, {2, m4_do_, 4, m4_leave_}}, {4, {m4_do_, T(-1), m4_leave_, T(-1)}}},
+    {"do leave loop", {}, {}, {6, {m4_do_, T(4), m4_leave_, T(2), m4_loop_, T(-4)}}},
     {"?do leave loop", {}, {}, {6, {m4_q_do_, T(4), m4_leave_, T(2), m4_loop_, T(-4)}}},
     /* TODO fix {"do if leave then loop", {}, {}, {5, {m4do, m4_leave_, T(2), m4_loop_, T(-4)}}}, */
 };

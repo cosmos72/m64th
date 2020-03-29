@@ -134,7 +134,10 @@
     X(4, "?if0", q_if0)                /* alias of dup 0= if                             */        \
     X(5, "break", break)               /* TODO jump after 'loop', 'repeat'...            */        \
     X(8, "continue", continue)         /* TODO jump to 'loop', 'repeat'...               */        \
+    X(7, "cs-drop", cs_drop)           /* ( sys -- )                                     */        \
+    X(6, "cs-dup", cs_dup)             /* ( sys -- sys sys )                             */        \
     X(8, "-cs-roll", minus_cs_roll)    /* ( ... cs-depth -- ... )                        */        \
+    X(7, "cs-swap", cs_swap)           /* ( a_sys b_sys -- b_sys a_sys )                 */        \
     X(9, "ex>string", ex_to_string)    /* ( ex -- c-addr u ) get exception name          */        \
     X(3, "if0", if0)                   /* alias of 0= if                                 */        \
     X(9, "interpret", interpret)       /* one iteration of forth interpret/compile loop  */        \

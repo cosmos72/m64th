@@ -38,7 +38,7 @@ WORD_START(question_do, ne)
     WORD_RSTACK(0,0)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_MAY_JUMP | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
-    WORD_CODE(_compile_unresolved_jump_, _q_do_, _q_do_, exit)
+    WORD_CODE(_compile_unresolved_jump_, _q_do_, _do_, exit)
 WORD_END(question_do)
 WORD_START(again,      question_do)
     WORD_STACK_NONE()  /* stack effect if not jumping */

@@ -207,7 +207,7 @@ WORD_START(do, depth)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS | M4FLAG_IMMEDIATE)
     WORD_CODE(
-        _compile_lit_, do, _num_compiled_, _lit_, do, exit
+        _compile_unresolved_jump_, _do_, _do_, exit
     )
 WORD_END(do)
 WORD(drop,             do,         DSTACK(1,0), RSTACK(0,0), WORD_PURE)
@@ -236,7 +236,7 @@ WORD_START(else, find)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE)
     WORD_CODE(
         _compile_unresolved_jump_, _else_, _else_, /* compile our unresolved jump */
-        two_swap,                           /* move our jump_info out of the way  */
+        cs_swap,                            /* move our jump_info out of the way  */
         CALL(_resolve_jump_here_),          /* resolve jump of previous 'if'      */
         exit
     )

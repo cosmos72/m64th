@@ -128,9 +128,12 @@
 #define m4_4_aligned m4int_aligned
 #define m4_8_aligned m4aligned
 
+#define m4cs_drop m4two_drop
+#define m4cs_dup m4two_dup
 #define m4cs_pick m4two_pick
 #define m4cs_roll m4two_roll
 #define m4minus_cs_roll m4minus_two_roll
+#define m4cs_swap m4two_swap
 
 /* -------------------------------------------------------------------------- */
 /* M4* numeric values have uppercase prefix 'M4'                              */
@@ -237,8 +240,11 @@
 #define M4_4_aligned M4int_aligned
 #define M4_8_aligned M4aligned
 
+#define M4cs_drop M4two_drop
+#define M4cs_dup M4two_dup
 #define M4cs_pick M4two_pick
 #define M4cs_roll M4two_roll
 #define M4minus_cs_roll M4minus_two_roll
+#define M4cs_swap M4two_swap
 
 #endif /* M4TH_INCLUDE_TOKEN_ALIAS_MH */
