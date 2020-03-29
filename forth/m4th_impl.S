@@ -566,7 +566,7 @@ WORD_END(_resolve_begin_repeat_)
 /**
  * Resolve the most recent unresolved jump, setting its destination to 'here'.
  * Called by 'else' and 'then' to resolve the jump offset of a preceding 'if' or 'else'.
- * Called by '[resolve-loop]' to resolve the jump offset of a preceding 'leave'.
+ * Called by '[resolve-loop]' to resolve the jump offset of a preceding 'leave' or '?do'
  * ( jump_address jump_category -- )
  */
 WORD_START(_resolve_jump_here_, _resolve_begin_repeat_)
@@ -575,12 +575,7 @@ WORD_START(_resolve_jump_here_, _resolve_begin_repeat_)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE)
-    WORD_CODE(
-        /*
-         * FIXME also support 'if leave then' i.e. one or more leave-sys
-         * present in the control stack before the jump to resolve
-         */
-                                        /* ( #tokens jump_category ) */
+    WORD_CODE(                          /* ( #tokens jump_category ) */
         drop, dup, _num_compiled_, sub, /* ( #tokens IP-offset )     */
         swap, one_minus, tokens,        /* ( IP-offset toffset ) toffset of token after (if) or (else) */
         latest, name_to_xt, plus,       /* ( IP-offset taddr   ) taddr   of token after (if) or (else) */
@@ -589,7 +584,7 @@ WORD_START(_resolve_jump_here_, _resolve_begin_repeat_)
 WORD_END(_resolve_jump_here_)
 /**
  * Resolve a jump from here[-1] to topmost jump-sys on control stack.
- * Called by [resolve-loop]
+ * Called by 'again' and '[resolve-loop]'
  * ( jump_address jump_category -- )
  */
 WORD_START(_resolve_jump_there_, _resolve_jump_here_)

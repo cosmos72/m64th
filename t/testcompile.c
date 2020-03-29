@@ -136,7 +136,7 @@ static const m4testcompile testcompile[] = {
      {14,
       {m4_if_, T(10), m4plus, m4_if_, T(3), m4times, m4_else_, T(2), m4div, m4then, m4_else_, T(2),
        m4minus, m4then}}},
-    /* ------------------------------- loops -------------------------------- */
+    /* ------------------------------- do loop ------------------------------ */
     {"do", {}, {2, {2, m4_do_}}, {2, {m4_do_, T(-1)}}},
     {"?do", {}, {2, {2, m4_do_}}, {2, {m4_q_do_, T(-1)}}},
     {"do loop", {}, {}, {4, {m4_do_, T(2), m4_loop_, T(-2)}}},
@@ -164,6 +164,13 @@ static const m4testcompile testcompile[] = {
      {},
      {},
      {9, {m4_do_, T(7), m4_if_, T(3), m4_leave_, T(3), m4then, m4_loop_, T(-7)}}},
+    /* ------------------------------- begin ... ---------------------------- */
+    {"begin", {}, {2, {1, m4begin}}, {1, {m4begin}}},
+    {"begin again", {}, {}, {3, {m4begin, m4_again_, T(-2)}}},
+    {"begin 1+ again", {}, {}, {4, {m4begin, m4one_plus, m4_again_, T(-3)}}},
+    {"begin if", {}, {4, {1, m4begin, 3, m4_if_}}, {3, {m4begin, m4_if_, T(-1)}}},
+    {"begin if then", {}, {2, {1, m4begin}}, {4, {m4begin, m4_if_, T(1), m4then}}},
+    {"begin if then again", {}, {}, {6, {m4begin, m4_if_, T(1), m4then, m4_again_, T(-5)}}},
 };
 
 static m4code m4testcompile_init(const m4testcompile *t, m4countedcode *codegen_buf) {

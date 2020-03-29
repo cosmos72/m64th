@@ -47,8 +47,9 @@ WORD_START(again,      question_do)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_JUMP | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_CODE(
-        _compile_unresolved_jump_, _again_, repeat,
-        CALL(_resolve_begin_repeat_), /* resolve all jump offsets of begin.. */
+        _compile_unresolved_jump_, _again_, _again_,
+        cs_drop,                    /* we only need the compiled code, not the cs data */
+        CALL(_resolve_jump_there_), /* resolve jump offset from 'again' to 'begin'     */
         exit
     )
 WORD_END(again)
