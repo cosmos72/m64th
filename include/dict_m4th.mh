@@ -258,7 +258,7 @@
     X(9, "(call-xt)", _call_xt_)                                                                   \
     X(11, "(catch-beg)", _catch_beg_)                                                              \
     X(11, "(catch-end)", _catch_end_)                                                              \
-    X(7, "(check)", _check_) /* ( x -- x ) followed by expected x */                               \
+    X(11, "(check-lit)", _check_lit_) /* ( x -- x ) followed by expected x */                      \
     X(10, "(continue)", _continue_)                                                                \
     X(4, "(do)", _do_)                                                                             \
     X(6, "(else)", _else_)                                                                         \
@@ -301,13 +301,16 @@
 #define DICT_WORDS_M4TH_IMPL(X)                                                                    \
     DICT_TOKENS_M4TH_IMPL(X)                                                                       \
     X(14, "(check-stacks)", _check_stacks_) /* throw on stack underflow */                         \
+    /* ( -- ) read non-blanks string, create new word for it. set LATEST */                        \
+    X(8, "(create)", _create_)                                                                     \
     /* ( nt -1|1 -- ) interpret or compile name. dtop == -1 if name is immediate */                \
     X(11, "(eval-name)", _eval_name_)                                                              \
     X(13, "(eval-number)", _eval_number_) /* ( x -- ) interpret or compile number */               \
     X(15, "(repl-type-ack)", _repl_type_ack_)                                                      \
     X(23, "[any-token-gives-cell?]", _any_token_gives_cell_q_)                                     \
-    X(8, "[inline]", _inline_)      /* ( w -- ) inline a call to w into word being compiled */     \
-    X(10, "[optimize]", _optimize_) /* optimize word being compiled  */                            \
+    X(8, "[finish]", _finish_)      /* ( -- ) finish compiling a word, make it findable     */     \
+    X(8, "[inline]", _inline_)      /* ( nt -- ) inline a call to word into XT being compiled */   \
+    X(10, "[optimize]", _optimize_) /* optimize XT being compiled  */                              \
     X(22, "[resolve-begin-repeat]", _resolve_begin_repeat_) /* common back-end of 'begin..' */     \
     X(19, "[resolve-jump-here]", _resolve_jump_here_)       /* resolve a jump to here       */     \
     X(20, "[resolve-jump-there]", _resolve_jump_there_)     /* resolve a jump from here     */     \

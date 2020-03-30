@@ -112,12 +112,15 @@ static const m4testcompile testcompile[] = {
     {"sTrInG-CI<>", {}, {}, {2, {m4string_ci_equal, m4invert}}},
     {"c, short, int, ,", {}, {}, {4, {m4c_comma, m4short_comma, m4int_comma, m4comma}}},
     /* ------------------------------- immediate words ---------------------- */
-    {"?do", {}, {2, {2, m4_do_}}, {2, {m4_q_do_, T(-1)}}},
-    {"do", {}, {2, {2, m4_do_}}, {2, {m4_do_, T(-1)}}},
     {"s\"  fubar\"", {}, {}, {3, {LIT_STRING(6, " fubar")}}},
     /* ------------------------------- words -------------------------------- */
     {"compile,", {}, {}, {callsz, {CALLXT(compile_comma)}}},
     {"valid-base?", {}, {}, {4, {/*inlined*/ m4two, m4_lit2s_, T(37), m4within}}},
+    /* ------------------------------- defining words ----------------------- */
+    /* we must exit compilation state first... hence '[' */
+    {"[ 0 constant zero", {}, {}, {2, {m4zero, m4exit}}},
+    {"[ 4 constant four", {}, {}, {2, {m4four, m4exit}}},
+    {"[ $7eef constant my-number", {}, {}, {3, {m4_lit2s_, T(0x7eef), m4exit}}},
     /* ------------------------------- if else then ------------------------- */
     {"if", {}, {2, {2, m4_if_}}, {2, {m4_if_, T(-1)}}},
     {"if then", {}, {}, {3, {m4_if_, T(1), m4then}}},
@@ -267,6 +270,7 @@ m4cell m4th_testcompile(m4th *m, FILE *out) {
         if (!m4testcompile_run(m, t, t_codegen)) {
             fail++, m4testcompile_failed(m, t, t_codegen, out);
         }
+        m4test_forget_all(m);
     }
     if (out != NULL) {
         if (fail == 0) {

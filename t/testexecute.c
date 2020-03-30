@@ -1118,7 +1118,7 @@ static m4testexecute testexecute_f[] = {
      {{2, {(m4cell) "bar", 0}}, {}},
      {{1, {-WORD_OFF_DATA}}, {}},
      {}},
-    {";", {CALL(semi), m4bye}, {{2, {0, m4right_bracket}}, {}}, {{}, {}}, {1, {m4exit}}},
+    {";", {CALL(semi), m4bye}, {{2, {0, m4colon}}, {}}, {{}, {}}, {1, {m4exit}}},
     /* ----------------------------- search order --------------------------- */
     {"get-current",
      {m4get_current, m4bye},
@@ -1297,15 +1297,6 @@ static m4code_pair m4testexecute_init(m4testexecute *t, m4countedcode_pair *code
     return pair;
 }
 
-static void m4testexecute_cleanup(m4th *m) {
-    /* the test may have defined some new words:
-     * remove them before executing the following test */
-    m4wordlist *wid = m->compile_wid;
-    if (wid && wid->last) {
-        wid->last = NULL;
-    }
-}
-
 static m4cell m4testexecute_run(m4th *m, m4testexecute *t, const m4code_pair *pair) {
     m4th_clear(m);
     if (t->codegen.n != 0) {
@@ -1367,9 +1358,8 @@ static void m4th_testexecute_bunch(m4th *m, m4testexecute bunch[], m4cell n, m4t
         if (!m4testexecute_run(m, &bunch[i], &code_pair)) {
             fail++, m4testexecute_failed(m, &bunch[i], &code_pair, out);
         }
-        m4testexecute_cleanup(m);
+        m4test_forget_all(m);
     }
-
     count->failed += fail;
     count->total += n;
 }

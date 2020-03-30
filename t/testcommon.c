@@ -64,4 +64,17 @@ void m4countedstack_print(const m4countedstack *src, FILE *out) {
     }
 }
 
+/* -------------- m4countedstack -------------- */
+
+/**
+ * remove all user-defined words, for example defined by a test.
+ * needed before executing the following test
+ */
+void m4test_forget_all(m4th *m) {
+    m4wordlist *wid = m->compile_wid;
+    if (wid && wid->last) {
+        wid->last = NULL;
+    }
+}
+
 #endif /* M4TH_T_TESTCOMMON_C */

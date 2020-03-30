@@ -96,4 +96,12 @@ typedef struct m4testcount_s {
 void m4array_n_copy_to_tarray_n(const m4cell array[], const m4cell array_n /*               */,
                                 m4token tarray[], const m4cell tarray_n);
 
+/* -------------- m4cell[] -> m4token[] conversion -------------------------- */
+
+/**
+ * remove all user-defined words, for example defined by a test.
+ * needed before executing the following test
+ */
+void m4test_forget_all(m4th *m);
+
 #endif /* M4TH_T_TEST_IMPL_H */

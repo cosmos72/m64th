@@ -89,7 +89,7 @@
 #define M4char 59                 /* char     */
 #define M4char_plus 60            /* char+    */
 #define M4chars 61                /* chars    */
-#undef M4constant /*62*/          /* constant */
+#undef M4constant /*62*/          /* constant implemented in forth, no dedicated m4token */
 #define M4count 63                /* count    */
 #undef M4cr /*64*/                /* cr       implemented in forth, no dedicated m4token */
 #undef M4create /*65*/            /* create   */

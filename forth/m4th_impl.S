@@ -191,7 +191,21 @@ WORD_START(_continue_, _catch_end_)
        CALL(continue), exit
     )
 WORD_END(_continue_)
-WORD_START(_do_, _continue_)
+/* ( -- ) read non-blanks string, create a new word for it. set LATEST */
+WORD_START(_create_, _continue_)
+    WORD_DSTACK(0,0)   /* stack effect if not jumping */
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()  /* stack effect if jumping */
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        CALL(parse_name),
+        dup, zero_equal,
+            _lit_, T(M4ERR_ZERO_LENGTH_NAME), and, throw,
+        name_comma, set_latest, exit
+    )
+WORD_END(_create_)
+WORD_START(_do_, _create_)
     WORD_DSTACK(2,0) /* stack effect when not jumping */
     WORD_RSTACK(0,2)
     WORD_DSTACK(2,0) /* stack effect when jumping */
@@ -482,15 +496,15 @@ WORD_START(_any_token_gives_cell_q_, _while0_)
 WORD_END(_any_token_gives_cell_q_)
 WORD(_num_compiled_,_any_token_gives_cell_q_,DSTACK(0,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
 /* ( x -- x ) followed by e = expected x. throws if x <> e */
-WORD_START(_check_, _num_compiled_)
+WORD_START(_check_lit_, _num_compiled_)
     WORD_DSTACK(2,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE() /* consumes IP and uses IP-relative JUMP(), cannot inline in native code */
     WORD_FLAGS(M4FLAG_CONSUMES_IP_SZt | M4FLAG_INLINE_ALWAYS)
-    WORD_CODE(_check_, T(-1),  exit)
-WORD_END(_check_)
-WORD_START(_compile_lit_, _check_)
+    WORD_CODE(_check_lit_, T(-1),  exit)
+WORD_END(_check_lit_)
+WORD_START(_compile_lit_, _check_lit_)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -537,7 +551,20 @@ WORD_START(_cs_find_lit_, _compile_jump_lit_)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_INLINE_ALWAYS)
     WORD_CODE(_cs_find_lit_, T(-1),  exit)
 WORD_END(_cs_find_lit_)
-WORD_START(_inline_, _cs_find_lit_)
+/* ( -- ) finish compiling a word, make it findable */
+WORD_START(_finish_, _cs_find_lit_)
+    WORD_DSTACK(0,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE)
+    WORD_CODE(
+        _compile_lit_, exit,
+        CALL(_optimize_), left_bracket,
+        latest, get_current, wordlist_add, exit
+    )
+WORD_END(_finish_)
+WORD_START(_inline_, _finish_)
     WORD_DSTACK(1,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -637,14 +664,14 @@ WORD_START(_resolve_loop_, _resolve_jump_there_)
          * cs-dup [resolve-jump-here]                  ( do-sys                     )
          * [resolve-jump-there]                        (                            )
          */
-        _check_, _loop_,
+        _check_lit_, _loop_,
         cs_drop,
         begin,
             dup, _lit_, _leave_, equal,
         _while_, T(3+nCALLt),
             CALL(_resolve_jump_here_),
         _repeat_, T(-9-nCALLt),
-        _check_, _do_,
+        _check_lit_, _do_,
         cs_dup, CALL(_resolve_jump_here_),
         CALL(_resolve_jump_there_), exit
     )

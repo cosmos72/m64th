@@ -84,19 +84,13 @@ WORD_START(colon,      two_swap)
     WORD_CODE(
         /* state @ 0<>                                 ( t|f             )
          *    M4ERR_COMPILER_NESTING and throw         (                 )
-         * parse-name                                  ( c-addr u        )
-         * dup 0=                                      ( c-addr u t|f    )
-         *    M4ERR_ZERO_LENGTH_NAME and throw         ( c-addr u        )
-         * name, set-latest                            (                 )
+         * (create)
          * postpone ]
          * 0 colon                                  ( colon-sys: 0 colon )
          */
         state, fetch, zero_ne,
             _lit_, T(M4ERR_COMPILER_NESTING), and, throw,
-        CALL(parse_name),
-        dup, zero_equal,
-            _lit_, T(M4ERR_ZERO_LENGTH_NAME), and, throw,
-        name_comma, set_latest,
+        CALL(_create_),
         right_bracket,
         zero, _lit_, colon, exit
     )
@@ -108,18 +102,15 @@ WORD_START(semi,       colon)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE)
     WORD_CODE(
-        /* state @ 0=                                  ( t|f             )
+        /* state @ 0=                                  ( colon-sys t|f   )
          *    M4ERR_INTERPRETING_COMPILE_ONLY_WORD and throw (           )
-         * 2drop latest                                ( nt              )
-         * ' exit compile, [                           ( nt              )
-         * get-current wordlist-add ( name is now findable by parse-name )
+         * ' : check cs-drop        ( check that colon-sys is present    )
+         * [finish]                 ( name is now findable by parse-name )
          */
         state, fetch, zero_equal,
             _lit_, T(M4ERR_INTERPRETING_COMPILE_ONLY_WORD), and, throw,
-        then,
-        two_drop, latest,
-        _compile_lit_, exit, left_bracket,
-        get_current, wordlist_add, exit
+        _check_lit_, colon, cs_drop,
+        CALL(_finish_), exit
     )
 WORD_END(semi)
 WORD(less,             semi,       DSTACK(2,1), RSTACK(0,0), WORD_PURE)
@@ -199,7 +190,19 @@ WORD(cells,            cell_plus,  DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(char_plus,        cells,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(chars,            char_plus,  DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(count,            chars,      DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD(depth,            count,      DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
+WORD_START(constant,   count)
+    WORD_DSTACK(1,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        CALL(_create_), right_bracket,         /* create word, start compiling         */
+        CALL(literal),                         /* compile number                       */
+        CALL(_finish_), exit                   /* finish compiling, make word findable */
+    )
+WORD_END(constant)
+WORD(depth,            constant,   DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 WORD_START(do, depth)
     WORD_DSTACK(2,0)
     WORD_RSTACK(0,2)
@@ -356,11 +359,11 @@ WORD_START(repeat,     r_fetch)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_CODE(
-        _check_, begin,             /* ( while-sys begin-sys ) topmost must be 'begin' */
+        _check_lit_, begin,             /* ( while-sys begin-sys ) topmost must be 'begin' */
         _compile_jump_lit_, _repeat_, _repeat_,
         cs_drop,                    /* we only need the compiled '(repeat)' not the cs data */
         CALL(_resolve_jump_there_), /* resolve jump from '(repeat)' to 'begin'              */
-        _check_, _while_,           /* ( while-sys ) must be '(while)'                      */
+        _check_lit_, _while_,           /* ( while-sys ) must be '(while)'                      */
         CALL(_resolve_jump_here_),  /* resolve jump from '(while)' to here                  */
         exit
     )
@@ -430,7 +433,7 @@ WORD_START(until,      unloop)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_CODE(
-        _check_, begin,             /* ( sys ) must be 'begin' */
+        _check_lit_, begin,             /* ( sys ) must be 'begin' */
         _compile_jump_lit_, _until_, _until_,
         cs_drop,                    /* we only need the compiled '(until)' not the cs data */
         CALL(_resolve_jump_there_), /* resolve jump offset from '(until)' to 'begin'       */
@@ -444,7 +447,7 @@ WORD_START(while,     until)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_CODE(
-        _check_, begin,             /* ( sys ) topmost must be 'begin' */
+        _check_lit_, begin,             /* ( sys ) topmost must be 'begin' */
         _compile_jump_lit_, _while_, _while_,
         cs_swap, exit               /* ( while-sys begin-sys )         */
     )
