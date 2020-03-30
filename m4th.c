@@ -787,6 +787,11 @@ void m4word_data_print(const m4word *w, m4cell data_start_n, FILE *out) {
     }
 }
 
+void m4word_print_stdout(const m4word *w) {
+    putchar('\n');
+    m4word_print(w, stdout);
+}
+
 void m4word_print(const m4word *w, FILE *out) {
     m4flags jump_flags = (m4flags)(w->flags & m4flag_jump_mask);
     if (w == NULL || out == NULL) {

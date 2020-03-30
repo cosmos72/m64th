@@ -36,6 +36,8 @@ DICTNAME(5, "forth", forth)
 
 #include "forth_exception.S"
 
+#include "forth_tools.S"
+
 #include "forth_tools_ext.S"
 
 #include "forth_search_order.S"

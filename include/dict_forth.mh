@@ -158,10 +158,17 @@
 #define DICT_TOKENS_FORTH_EXCEPTION(X) /*                                                       */ \
     X(5, "throw", throw)
 
-#define DICT_WORDS_FORTH_EXCEPTION(X) /*                                                        */ \
-    DICT_TOKENS_FORTH_EXCEPTION(X)    /*                                                        */ \
+#define DICT_WORDS_FORTH_EXCEPTION(X)                                                              \
+    DICT_TOKENS_FORTH_EXCEPTION(X)                                                                 \
     X(5, "abort", abort)                                                                           \
     X(5, "catch", catch)
+
+/* ------- forth 2012: tools -------------------------------------------------------------------- */
+#define DICT_TOKENS_FORTH_TOOLS(X)
+
+#define DICT_WORDS_FORTH_TOOLS(X)                                                                  \
+    DICT_TOKENS_FORTH_TOOLS(X)                                                                     \
+    X(3, "see", see)
 
 /* ------- forth 2012: tools ext ---------------------------------------------------------------- */
 #define DICT_TOKENS_FORTH_TOOLS_EXT(X)                                                             \
