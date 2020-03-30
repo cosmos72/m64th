@@ -21,3 +21,10 @@
 #include "asm.mh"
 
 /* clang-format off */
+
+#define M4FIMMEDIATE
+/* immediate ( -- ) mark last defined word as 'immediate' */
+FUNC_START(immediate)
+        LOAD(  REG1,   AT(M4TH, M4TH_OFF_LASTW))                 /* a = w = m4th.lastw    */
+        orw    IMM(M4FLAG_IMMEDIATE),  AT(REG1, WORD_OFF_FLAGS); /* w.flags |= m4flag_immediate */
+FUNC_END(immediate)

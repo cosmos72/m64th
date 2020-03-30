@@ -78,6 +78,7 @@
     X(4, "exit", exit)                                                                             \
     X(4, "here", here)                                                                             \
     X(1, "i", i)                                                                                   \
+    X(9, "immediate", immediate)                                                                   \
     X(6, "invert", invert)                                                                         \
     X(1, "j", j)                                                                                   \
     X(6, "lshift", lshift)                                                                         \

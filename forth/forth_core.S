@@ -279,7 +279,8 @@ WORD_START(if, i)
         _compile_jump_lit_, _if_, _if_, exit
     )
 WORD_END(if)
-WORD(invert,           if,         DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD(immediate,        if,         DSTACK(0,0), RSTACK(0,0), WORD_IMPURE)
+WORD(invert,           immediate,  DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(j,                invert,     DSTACK(0,1), RSTACK(3,3), WORD_R_PURE)
 WORD_START(leave, j)
     WORD_DSTACK(0,2)   /* stack effect when compiling */

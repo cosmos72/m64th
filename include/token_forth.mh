@@ -112,7 +112,7 @@
 #undef M4hold /*82*/              /* hold     */
 #define M4i 83                    /* i        */
 #undef M4if /*84*/                /* if       implemented in forth, no dedicated m4token */
-#undef M4immediate /*85*/         /* immediate    */
+#define M4immediate 85            /* immediate*/
 #define M4invert 86               /* invert   */
 #define M4j 87                    /* j        */
 #undef M4key /*88*/               /* key      */

@@ -198,6 +198,17 @@ LABEL(countedstring_comma.throw)
 FUNC_RAWEND(countedstring_comma)
 
 
+#ifndef M4FIMMEDIATE
+/* immediate ( -- ) mark last defined word as 'immediate' */
+FUNC_START(immediate)
+        LOAD(  REG1,   AT(M4TH, M4TH_OFF_LASTW))   /* a = w = m4th.lastw    */
+        LD_uh( REG2,   AT(REG1, WORD_OFF_FLAGS))   /* b = w.flags           */
+        ORR2(  IMM(M4FLAG_IMMEDIATE), REG2)        /* b |= m4flag_immediate */
+        STORh( REG2,   AT(REG1, WORD_OFF_FLAGS))   /* w.flags = b           */
+FUNC_END(immediate)
+#endif
+
+
 /* latest ( -- nt ) get last defined word */
 FUNC_START(latest)
         DPUSH( DTOP)
@@ -208,7 +219,7 @@ FUNC_END(latest)
 /* set-latest ( nt -- ) set last defined word */
 FUNC_START(set_latest)
         STOR(  DTOP,   AT(M4TH, M4TH_OFF_LASTW))   /* m4th.lastw = nt       */
-        /* we really should NOT be compiling now, but in some tests we are      */
+        /* we really should NOT be compiling now, but in some tests we are  */
         LOAD(  REG1,   AT(M4TH, M4TH_OFF_XT))      /* a = m4th.xt           */
         JZ(    REG1,   TO(set_latest.done))
         LD_uw( REG2,   AT(DTOP, WORD_OFF_CODE_OFF))/* b = nt.code_off       */
@@ -218,6 +229,11 @@ LABEL(set_latest.done)
         DPOP(  DTOP)
 FUNC_END(set_latest)
 
+
+FUNC_START(state)
+        DPUSH( DTOP)
+        ADDI(  M4TH, M4TH_OFF_XT, DTOP)                /* &m4th.xt is also used as STATE */
+FUNC_END(state)
 
 /**
  * Temporarily switch from compiling to interpreting.
@@ -280,9 +296,3 @@ LABEL(right_bracket.finish)
         ADD2(  REG2,       REG1)                       /* a = w + w.code_off = xt */
         STOR(  REG1,       AT(M4TH, M4TH_OFF_XT))      /* m4th.xt = xt          */
 FUNC_END(right_bracket)
-
-
-FUNC_START(state)
-        DPUSH( DTOP)
-        ADDI(  M4TH, M4TH_OFF_XT, DTOP)                /* &m4th.xt is also used as STATE */
-FUNC_END(state)
