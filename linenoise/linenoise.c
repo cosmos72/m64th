@@ -1020,9 +1020,14 @@ static int linenoiseFgets(char *buf, size_t buflen, const char *prompt) {
         fputs(prompt, stdout);
         fflush(stdout);
     }
-    if (fgets(buf, buflen, stdin) == NULL)
-        return -1;
-    return strlen(buf);
+    int ret;
+    if (fgets(buf, buflen, stdin) == NULL) {
+        ret = -1;
+    } else if ((ret = strlen(buf)) == 0) {
+        errno = 0;
+        ret = -1;
+    }
+    return ret;
 }
 
 /* This function calls the line editing function linenoiseEdit() using
@@ -1036,34 +1041,25 @@ static int linenoiseRaw(char *buf, size_t buflen, const char *prompt) {
     return linenoiseFgets(buf, buflen, prompt);
 }
 
-static int linenoiseFread(char *buf, size_t buflen) {
-    size_t len = fread(buf, 1, buflen, stdin);
-    if (len == 0 && ferror(stdin)) {
-        return -1;
-    }
-    return (int)len;
-}
-
 /* The high level function that is the main API of the linenoise library.
  * This function checks if the terminal has basic capabilities, just checking
  * for a blacklist of stupid terminals, and later either calls the line
  * editing function or uses dummy fgets() so that you will be able to type
  * something even in the most desperate of the conditions. */
 int linenoise(char *buf, size_t buflen, const char *prompt) {
+    int tty;
     if (buflen == 0) {
         errno = EINVAL;
         return -1;
     }
-    if (!prompt)
+    tty = isatty(STDIN_FILENO);
+    if (!tty || !prompt) {
         prompt = "";
-    if (!isatty(STDIN_FILENO)) {
-        /* Not a tty: read from file / pipe. */
-        return linenoiseFread(buf, buflen);
-    } else if (isUnsupportedTerm()) {
-        return linenoiseFgets(buf, buflen, prompt);
-    } else {
-        return linenoiseRaw(buf, buflen, prompt);
     }
+    if (!tty || isUnsupportedTerm()) {
+        return linenoiseFgets(buf, buflen, prompt);
+    }
+    return linenoiseRaw(buf, buflen, prompt);
 }
 
 /* This is just a wrapper the user may want to call in order to make sure
