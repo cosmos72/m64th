@@ -348,7 +348,23 @@ WORD(or,               negate,     DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(over,             or,         DSTACK(2,3), RSTACK(0,0), WORD_PURE)
 WORD(r_from,           over,       DSTACK(0,1), RSTACK(1,0), WORD_R_PURE)
 WORD(r_fetch,          r_from,     DSTACK(0,1), RSTACK(1,1), WORD_R_PURE)
-WORD(rot,              r_fetch,    DSTACK(3,3), RSTACK(0,0), WORD_PURE)
+WORD_START(repeat,     r_fetch)
+    WORD_DSTACK(4,0)   /* stack effect when compiling */
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
+    WORD_CODE(
+        _check_, begin,             /* ( while-sys begin-sys ) topmost must be 'begin' */
+        _compile_jump_lit_, _repeat_, _repeat_,
+        cs_drop,                    /* we only need the compiled '(repeat)' not the cs data */
+        CALL(_resolve_jump_there_), /* resolve jump from '(repeat)' to 'begin'              */
+        _check_, _while_,           /* ( while-sys ) must be '(while)'                      */
+        CALL(_resolve_jump_here_),  /* resolve jump from '(while)' to here                  */
+        exit
+    )
+WORD_END(repeat)
+WORD(rot,              repeat,     DSTACK(3,3), RSTACK(0,0), WORD_PURE)
 WORD(rshift,           rot,        DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD_START(s_quote, rshift)
     WORD_DSTACK(0,0)
@@ -407,12 +423,11 @@ WORD_END(type)
 WORD(u_less,           type,       DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(unloop,           u_less,     DSTACK(0,0), RSTACK(2,0), WORD_R_PURE)
 WORD_START(until,      unloop)
-    WORD_DSTACK(1,0)   /* stack effect if not jumping */
+    WORD_DSTACK(2,0)   /* stack effect when compiling */
     WORD_RSTACK(0,0)
-    WORD_DSTACK(1,0)   /* stack effect if jumping */
-    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
     WORD_NATIVE_NONE()
-    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_MAY_JUMP | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_CODE(
         _check_, begin,             /* ( sys ) must be 'begin' */
         _compile_jump_lit_, _until_, _until_,
@@ -421,7 +436,18 @@ WORD_START(until,      unloop)
         exit
     )
 WORD_END(until)
-WORD(xor,              until,      DSTACK(2,1), RSTACK(0,0), WORD_PURE)
+WORD_START(while,     until)
+    WORD_DSTACK(4,0)   /* stack effect when compiling */
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
+    WORD_CODE(
+        _check_, begin,             /* ( sys ) topmost must be 'begin' */
+        _compile_jump_lit_, _while_, _while_,
+        cs_swap, exit               /* ( while-sys begin-sys )         */
+    )
+WORD(xor,              while,      DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(left_bracket,     xor,        DSTACK(0,0), RSTACK(0,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
 WORD(right_bracket,  left_bracket, DSTACK(0,0), RSTACK(0,0), WORD_IMPURE)
 

@@ -133,7 +133,7 @@
 #define M4r_from 103              /* r>       */
 #define M4r_fetch 104             /* r@       */
 #undef M4recurse /*105*/          /* recurse  */
-#define M4repeat 106              /* repeat   */
+#undef M4repeat /*106*/           /* repeat   implemented in forth, no dedicated m4token */
 #define M4rot 107                 /* rot      ( a b c -- b c a ) */
 #define M4rshift 108              /* rshift   */
 #undef M4s_quote /*109*/          /* s"       implemented in forth, no dedicated m4token */
@@ -152,9 +152,9 @@
 #undef M4u_m_times /*122*/        /* um*      */
 #undef M4u_m_div_mod /*123*/      /* um/mod   */
 #define M4unloop 124              /* unloop   */
-#undef M4until /*125*/            /* until    */
+#undef M4until /*125*/            /* until    implemented in forth, no dedicated m4token */
 #undef M4variable /*126*/         /* variable */
-#undef M4while /*127*/            /* while    */
+#undef M4while /*127*/            /* while    implemented in forth, no dedicated m4token */
 #undef M4word /*128*/             /* word     */
 #define M4xor 129                 /* xor      */
 #define M4left_bracket 130        /* [        */

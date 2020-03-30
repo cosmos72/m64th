@@ -68,28 +68,7 @@ WORD(eight_times,      four_sm_div,    DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(eight_plus,       eight_times,    DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(eight_div,        eight_plus,     DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(eight_sm_div,     eight_div,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD_START(q_if, eight_sm_div)
-    WORD_DSTACK(0,2) /* stack effect when compiling */
-    WORD_RSTACK(0,0)
-    WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
-    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
-    WORD_CODE(
-        _compile_jump_lit_, _q_if_, _if_, exit
-    )
-WORD_END(q_if)
-WORD_START(q_if0, q_if)
-    WORD_DSTACK(1,1)
-    WORD_RSTACK(0,0)
-    WORD_DSTACK(1,1)
-    WORD_RSTACK(0,0)
-    WORD_NATIVE_NONE()
-    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
-    WORD_CODE(
-        _compile_jump_lit_, _q_if0_, _if_, exit
-    )
-WORD_END(q_if0)
-WORD(bounds,           q_if0,          DSTACK(2,2), RSTACK(0,0), M4FLAG_PURE)
+WORD(bounds,           eight_sm_div,   DSTACK(2,2), RSTACK(0,0), M4FLAG_PURE)
 WORD_START(break,      bounds)
     WORD_STACK_NONE()  /* stack effect if not jumping */
     WORD_DSTACK(0,0)   /* stack effect if jumping */
@@ -149,17 +128,6 @@ WORD(i_times,          flip,           DSTACK(1,1), RSTACK(1,1), WORD_R_PURE)
 WORD(i_plus,           i_times,        DSTACK(1,1), RSTACK(1,1), WORD_R_PURE)
 WORD(i_minus,          i_plus,         DSTACK(1,1), RSTACK(1,1), WORD_R_PURE)
 WORD(i_prime,          i_minus,        DSTACK(0,1), RSTACK(2,2), WORD_R_PURE)
-WORD_START(if0, i_prime)
-    WORD_DSTACK(1,0)
-    WORD_RSTACK(0,0)
-    WORD_DSTACK(1,0)
-    WORD_RSTACK(0,0)
-    WORD_NATIVE_NONE()
-    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
-    WORD_CODE(
-        _compile_jump_lit_, _if0_, _if_, exit
-    )
-WORD_END(if0)
 /*
  * classic forth interpreter/compiler iteration:
  *    read a name i.e. a non-blank string from IN,
@@ -174,7 +142,7 @@ WORD_END(if0)
  *         that when executed will place the number on the data stack
  *    otherwise, throw
  */
-WORD_START(interpret,  if0)
+WORD_START(interpret,  i_minus)
     WORD_DSTACK(-1,-1)
     WORD_RSTACK(-1,-1)
     WORD_STACK_NONE()

@@ -119,10 +119,12 @@
     X(5, "leave", leave)                                                                           \
     X(7, "literal", literal)                                                                       \
     X(4, "loop", loop)                                                                             \
+    X(6, "repeat", repeat)                                                                         \
     X(2, "s\"", s_quote)                                                                           \
     X(6, "source", source)                                                                         \
     X(5, "space", space)                                                                           \
-    X(5, "until", until)
+    X(5, "until", until)                                                                           \
+    X(5, "while", while)
 
 /* ------- forth 2012: core ext ----------------------------------------------------------------- */
 #define DICT_TOKENS_FORTH_CORE_EXT(X)                                                              \

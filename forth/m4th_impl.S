@@ -389,12 +389,12 @@ WORD_START(_loop_, _lit_string_)
 WORD_END(_loop_)
 WORD(_missing_,        _loop_,         DSTACK(0,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_JUMP)
 WORD_START(_repeat_, _missing_)
-    WORD_STACK_NONE() /* stack effect when not jumping */
+    WORD_STACK_NONE() /* dummy, always jumps       */
     WORD_DSTACK(0,0)  /* stack effect when jumping */
     WORD_RSTACK(0,0)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_JUMP | M4FLAG_IMMEDIATE)
-    WORD_CODE(/* TODO CALL(repeat), */ exit)
+    WORD_CODE(CALL(repeat), exit)
 WORD_END(_repeat_)
 /* ( -- ) if interpreting type " ok\n", otherwise type " compiled\n" */
 WORD_START(_repl_type_ack_, _repeat_)

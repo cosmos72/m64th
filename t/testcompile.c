@@ -119,10 +119,7 @@ static const m4testcompile testcompile[] = {
     {"compile,", {}, {}, {callsz, {CALLXT(compile_comma)}}},
     {"valid-base?", {}, {}, {4, {/*inlined*/ m4two, m4_lit2s_, T(37), m4within}}},
     /* ------------------------------- if else then ------------------------- */
-    {"?if", {}, {2, {2, m4_if_}}, {2, {m4_q_if_, T(-1)}}},
-    {"?if0", {}, {2, {2, m4_if_}}, {2, {m4_q_if0_, T(-1)}}},
     {"if", {}, {2, {2, m4_if_}}, {2, {m4_if_, T(-1)}}},
-    {"if0", {}, {2, {2, m4_if_}}, {2, {m4_if0_, T(-1)}}},
     {"if then", {}, {}, {3, {m4_if_, T(1), m4then}}},
     {"if 1 then", {}, {}, {4, {m4_if_, T(2), m4one, m4then}}},
     {"if dup then", {}, {}, {4, {m4_if_, T(2), m4dup, m4then}}},
@@ -174,6 +171,13 @@ static const m4testcompile testcompile[] = {
     {"begin if then", {}, {2, {1, m4begin}}, {4, {m4begin, m4_if_, T(1), m4then}}},
     {"begin if then again", {}, {}, {6, {m4begin, m4_if_, T(1), m4then, m4_again_, T(-5)}}},
     {"begin 1 until", {}, {}, {4, {m4begin, m4one, m4_until_, T(-3)}}},
+    {"begin while", {}, {4, {3, m4_while_, 1, m4begin}}, {3, {m4begin, m4_while_, T(-1)}}},
+    {"begin while again",
+     {},
+     {2, {3, m4_while_}},
+     {5, {m4begin, m4_while_, T(-1), m4_again_, T(-4)}}},
+    {"begin while again then", {}, {}, {6, {m4begin, m4_while_, T(3), m4_again_, T(-4), m4then}}},
+    {"begin while repeat", {}, {}, {5, {m4begin, m4_while_, T(2), m4_repeat_, T(-4)}}},
 };
 
 static m4code m4testcompile_init(const m4testcompile *t, m4countedcode *codegen_buf) {

@@ -419,7 +419,7 @@ WORD_START(_obuf_overflow_, _obuf_flush_write_string_)
     WORD_CODE(
         /* rot >r                                   ( c-addr u                 ) (R: io )
          * begin                                    ( c-addr u                 ) (R: io )
-         *    ?while                                ( c-addr u                 ) (R: io )
+         * ?while                                   ( c-addr u                 ) (R: io )
          *    2dup                                  ( c-addr u c-addr u        ) (R: io )
          *    r@ iobuf>handle @ -rot                ( c-addr u handle c-addr u ) (R: io )
          *    r@ iobuf>func @ execute               ( c-addr u u' err          ) (R: io )
@@ -435,7 +435,7 @@ WORD_START(_obuf_overflow_, _obuf_flush_write_string_)
          */
         rot, to_r,
         begin,
-            _q_while_, T(23),
+        _q_while_, T(23),
             two_dup,
             r_fetch, iobuf_handle, fetch, minus_rot,
             r_fetch, iobuf_func, fetch, execute,
