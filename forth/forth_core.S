@@ -84,15 +84,13 @@ WORD_START(colon,      two_swap)
     WORD_CODE(
         /* state @ 0<>                                 ( t|f             )
          *    M4ERR_COMPILER_NESTING and throw         (                 )
-         * (create)
+         * 0 (create)                               ( colon-sys: 0 colon )
          * postpone ]
-         * 0 colon                                  ( colon-sys: 0 colon )
          */
         state, fetch, zero_ne,
             _lit_, T(M4ERR_COMPILER_NESTING), and, throw,
-        CALL(_create_),
-        right_bracket,
-        zero, _lit_, colon, exit
+        zero, CALL(_create_),
+        right_bracket, exit
     )
 WORD_END(colon)
 WORD_START(semi,       colon)
@@ -109,7 +107,6 @@ WORD_START(semi,       colon)
          */
         state, fetch, zero_equal,
             _lit_, T(M4ERR_INTERPRETING_COMPILE_ONLY_WORD), and, throw,
-        _check_lit_, colon, cs_drop,
         CALL(_finish_), exit
     )
 WORD_END(semi)
@@ -197,8 +194,8 @@ WORD_START(constant,   count)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
-        CALL(_create_), right_bracket,         /* create word, start compiling         */
-        CALL(literal),                         /* compile number                       */
+        zero, CALL(_create_), right_bracket,   /* create word, start compiling         */
+        rot, CALL(literal),                    /* compile number                       */
         CALL(_finish_), exit                   /* finish compiling, make word findable */
     )
 WORD_END(constant)
@@ -457,7 +454,8 @@ WORD_START(variable,   until)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
-        CALL(_create_), one, cells, allot,     /* create word, allocate one cell       */
+        zero, CALL(_create_),                  /* create word                          */
+        one, cells, allot,                     /* allocate one cell                    */
         right_bracket,                         /* start compiling                      */
         _compile_lit_, _ip_to_data_addr_,      /* compile (ip>data>addr)               */
         CALL(_finish_), exit                   /* finish compiling, make word findable */

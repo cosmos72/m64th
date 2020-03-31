@@ -301,14 +301,14 @@
 #define DICT_WORDS_M4TH_IMPL(X)                                                                    \
     DICT_TOKENS_M4TH_IMPL(X)                                                                       \
     X(14, "(check-stacks)", _check_stacks_) /* throw on stack underflow */                         \
-    /* ( -- ) read non-blanks string, create new word for it. set LATEST */                        \
+    /* ( word_kind -- sys ) read non-blanks string, create new word for it. set LATEST */          \
     X(8, "(create)", _create_)                                                                     \
     /* ( nt -1|1 -- ) interpret or compile name. dtop == -1 if name is immediate */                \
     X(11, "(eval-name)", _eval_name_)                                                              \
     X(13, "(eval-number)", _eval_number_) /* ( x -- ) interpret or compile number */               \
     X(15, "(repl-type-ack)", _repl_type_ack_)                                                      \
     X(23, "[any-token-gives-cell?]", _any_token_gives_cell_q_)                                     \
-    X(8, "[finish]", _finish_)      /* ( -- ) finish compiling a word, make it findable     */     \
+    X(8, "[finish]", _finish_)      /* ( sys -- ) finish compiling a word, make it findable   */   \
     X(8, "[inline]", _inline_)      /* ( nt -- ) inline a call to word into XT being compiled */   \
     X(10, "[optimize]", _optimize_) /* optimize XT being compiled  */                              \
     X(22, "[resolve-begin-repeat]", _resolve_begin_repeat_) /* common back-end of 'begin..' */     \

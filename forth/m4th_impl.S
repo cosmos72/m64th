@@ -191,9 +191,9 @@ WORD_START(_continue_, _catch_end_)
        CALL(continue), exit
     )
 WORD_END(_continue_)
-/* ( -- ) read non-blanks string, create a new word for it. set LATEST */
+/* ( word-kind -- sys ) read non-blanks string, create a new word for it. set LATEST */
 WORD_START(_create_, _continue_)
-    WORD_DSTACK(0,0)   /* stack effect if not jumping */
+    WORD_DSTACK(1,2)   /* stack effect if not jumping */
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()  /* stack effect if jumping */
     WORD_NATIVE_NONE()
@@ -202,7 +202,8 @@ WORD_START(_create_, _continue_)
         CALL(parse_name),
         dup, zero_equal,
             _lit_, T(M4ERR_ZERO_LENGTH_NAME), and, throw,
-        name_comma, set_latest, exit
+        name_comma, set_latest,
+        _lit_, colon, exit                             /* ( sys        ) */
     )
 WORD_END(_create_)
 WORD_START(_do_, _create_)
@@ -551,14 +552,15 @@ WORD_START(_cs_find_lit_, _compile_jump_lit_)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_INLINE_ALWAYS)
     WORD_CODE(_cs_find_lit_, T(-1),  exit)
 WORD_END(_cs_find_lit_)
-/* ( -- ) finish compiling a word, make it findable */
+/* ( sys -- ) finish compiling a word, make it findable */
 WORD_START(_finish_, _cs_find_lit_)
-    WORD_DSTACK(0,0)
+    WORD_DSTACK(2,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE)
     WORD_CODE(
+        _check_lit_, colon, cs_drop,
         _compile_lit_, exit,
         CALL(_optimize_), left_bracket,
         latest, get_current, wordlist_add, exit
