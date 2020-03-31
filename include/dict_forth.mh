@@ -115,6 +115,7 @@
     X(8, "compile,", compile_comma)                                                                \
     X(8, "constant", constant)                                                                     \
     X(2, "cr", cr)                                                                                 \
+    X(7, "decimal", decimal)                                                                       \
     X(4, "else,", else)                                                                            \
     X(4, "find", find)                                                                             \
     X(2, "if,", if)                                                                                \
@@ -146,6 +147,7 @@
     /* the following words are implemented in forth, thus no dedicated m4token value */            \
     X(3, "?do", question_do)                                                                       \
     X(5, "again", again)                                                                           \
+    X(3, "hex", hex)                                                                               \
     X(10, "parse-name", parse_name)
 
 /* ------- forth 2012: double ext --------------------------------------------------------------- */

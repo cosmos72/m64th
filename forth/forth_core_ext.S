@@ -54,7 +54,17 @@ WORD_START(again,      question_do)
         exit
     )
 WORD_END(again)
-WORD_START(compile_comma, again)
+WORD_START(hex,      again)
+    WORD_DSTACK(0,0)   /* stack effect if not jumping */
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()  /* stack effect if jumping */
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        _lit_, T(16), base, store, exit
+    )
+WORD_END(hex)
+WORD_START(compile_comma, hex)
     WORD_DSTACK(1,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()

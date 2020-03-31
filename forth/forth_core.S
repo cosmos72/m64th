@@ -202,7 +202,17 @@ WORD_START(constant,   count)
         CALL(_finish_), exit                   /* finish compiling, make word findable */
     )
 WORD_END(constant)
-WORD(depth,            constant,   DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
+WORD_START(decimal,    constant)
+    WORD_DSTACK(0,0)   /* stack effect if not jumping */
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()  /* stack effect if jumping */
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        _lit_, T(10), base, store, exit
+    )
+WORD_END(decimal)
+WORD(depth,            decimal,    DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 WORD_START(do, depth)
     WORD_DSTACK(2,0)
     WORD_RSTACK(0,2)
@@ -231,7 +241,7 @@ WORD_START(find, dup)
         exit
     )
 WORD_END(find)
-WORD_START(else, find)
+WORD_START(else,       find)
     WORD_DSTACK(2,2)  /* stack effect when compiling */
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()

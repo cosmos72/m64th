@@ -186,7 +186,7 @@
 #undef M4endof /*156*/           /* endof    */
 #undef M4erase /*157*/           /* erase    */
 #define M4false 158              /* false    */
-#undef M4hex /*159*/             /* hex      */
+#undef M4hex /*159*/             /* hex      implemented in forth, no dedicated m4token */
 #undef M4holds /*160*/           /* holds    */
 #undef M4is /*161*/              /* is       */
 #undef M4marker /*162*/          /* marker   */
