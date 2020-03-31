@@ -189,8 +189,15 @@
 
 /* clang-format on */
 
-#define ASM_CALL(func) call func; /* raw/native assembly: call native code */
-#define ASM_RET() ret;            /* raw/native assembly: return */
+#define ASM_CALL_PREPARE()             /* no preparation needed */
+#define ASM_CALL_CLEANUP()             /* no cleanup needed */
+#define ASM_CALL_BODY(func) call func; /* raw/native assembly: call native code */
+#define ASM_CALL(func)                 /* raw/native assembly: call native code */                 \
+    ASM_CALL_PREPARE()                 /*                                       */                 \
+    ASM_CALL_BODY(func)                /*                                       */                 \
+    ASM_CALL_CLEANUP()
+
+#define ASM_RET() ret; /* raw/native assembly: return */
 
 #define JA(reg, val, label) /*  if reg u> val jump to label */                                     \
     cmp val, reg;                                                                                  \

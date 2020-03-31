@@ -440,7 +440,20 @@ WORD_START(until,      unloop)
         exit
     )
 WORD_END(until)
-WORD_START(while,     until)
+WORD_START(variable,   until)
+    WORD_DSTACK(0,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        CALL(_create_), one, cells, allot,     /* create word, allocate one cell       */
+        right_bracket,                         /* start compiling                      */
+        _compile_lit_, _ip_to_data_addr_,      /* compile (ip>data>addr)               */
+        CALL(_finish_), exit                   /* finish compiling, make word findable */
+    )
+WORD_END(variable)
+WORD_START(while,     variable)
     WORD_DSTACK(4,0)   /* stack effect when compiling */
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -453,7 +466,14 @@ WORD_START(while,     until)
     )
 WORD(xor,              while,      DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(left_bracket,     xor,        DSTACK(0,0), RSTACK(0,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
-WORD(right_bracket,  left_bracket, DSTACK(0,0), RSTACK(0,0), WORD_IMPURE)
+WORD_START(right_bracket,  left_bracket)
+    WORD_DSTACK(0,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE() /* uses %ip-relative ASM_CALL, cannot inline in native code */
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(right_bracket, exit)
+WORD_END(right_bracket)
 
 #undef LASTWORD
 #define LASTWORD right_bracket

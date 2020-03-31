@@ -370,8 +370,8 @@
         x((invert, _while_), (_while0_))                     /* invert (while)  => (while0)     */ \
         x((invert, _while0_), (_while_))                     /* invert (while0) => (while)      */ \
         x((_ip_, drop), _)                                   /* (ip)           drop  =>         */ \
-        x((_ip_data_, two_drop), _)                          /* (ip>data)     2drop  =>         */ \
-        x((_ip_data_addr_, drop), _)                         /* (ip>data>addr) drop  =>         */ \
+        x((_ip_to_data_, two_drop), _)                       /* (ip>data)     2drop  =>         */ \
+        x((_ip_to_data_addr_, drop), _)                      /* (ip>data>addr) drop  =>         */ \
         x((negate, _if_), (_if_))                            /* negate (if)     => (if)         */ \
         x((negate, _if0_), (_if0_))                          /* negate (if0)    => (if0)        */ \
         x((negate, _while_), (_while_))                      /* negate (while)  => (while)      */ \

@@ -126,6 +126,7 @@
     X(6, "source", source)                                                                         \
     X(5, "space", space)                                                                           \
     X(5, "until", until)                                                                           \
+    X(8, "variable", variable)                                                                     \
     X(5, "while", while)
 
 /* ------- forth 2012: core ext ----------------------------------------------------------------- */

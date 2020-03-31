@@ -253,31 +253,27 @@ FUNC_START(left_bracket)
 FUNC_END(left_bracket)
 
 
-/**
- * Start or resume compiling.
- * If needed, initialize m4th.lastw.code_off and update HERE.
- * Set state = m4th.xt to code address of m4th.lastw.
- */
-FUNC_START(right_bracket)
-        /* TODO check if enough space */
-        MOVE(  IMM(M4ERR_ZERO_LENGTH_NAME), REG0)      /* ( err )               */
-        LOAD(  REG1,       AT(M4TH, M4TH_OFF_LASTW))   /* a = m4th.lastw        */
-        JZ(    REG1,       FUNC(_throw_reg0_))         /* no latest word: throw */
-        MOVE(  IMM(M4ERR_COMPILER_NESTING), REG0)      /* ( err )               */
-        LOAD(  REG3,       AT(M4TH, M4TH_OFF_XT))      /* c = m4th.xt           */
-        JNZ(   REG3,       FUNC(_throw_reg0_))         /* compiling: throw      */
-        LD_uh( REG2,       AT(REG1, WORD_OFF_CODE_OFF))/* b = w.code_off        */
-        JNZ(   REG2,       TO(right_bracket.finish))
+FUNC_START(_latest_sync_data_n_)
+        LOAD(  REG1,       AT(M4TH, M4TH_OFF_LASTW))   /* a = w = m4th.lastw    */
+        ADDI(  REG1,       WORD_OFF_DATA, REG2)        /* b = w.data            */
+        XSUB2( HERE,       REG2)                       /* b = data_n            */
+        STOR(  REG2,       AT(REG1, WORD_OFF_DATA_N))  /* w.data_n = data_n     */
+FUNC_END(_latest_sync_data_n_)
+
+
+FUNC_START(_latest_sync_code_off_)
+        LOAD(  REG1,       AT(M4TH, M4TH_OFF_LASTW))   /* a = w = m4th.lastw    */
         LOAD(  REG2,       AT(REG1, WORD_OFF_DATA_N))  /* b = w.data_n          */
-        JNZ(   REG2,       TO(right_bracket.full))
-LABEL(right_bracket.simple)
+        JNZ(   REG2,       TO(_latest_sync_code_off_.full))
+
         /* word.data_n == 0, simple initialization                              */
         MOVE(  IMM(WORD_OFF_DATA),     REG2w)          /* b = w.code - w        */
         STORh( REG2,       AT(REG1, WORD_OFF_CODE_OFF))/* w.code_off = b        */
         ADD4(  REG2,       REG1,   0,  HERE)           /* here = xt             */
-        JUMP(              TO(right_bracket.finish))
-LABEL(right_bracket.full)
+        JUMP(              FUNC_NEXT(_latest_sync_code_off_))
+
         /* word.data_n != 0, full initialization                                */
+LABEL(_latest_sync_code_off_.full)
         ADDI(  REG1,       WORD_OFF_DATA,  REG3)       /* c = w.data            */
         ADD2(  REG2,       REG3)                       /* c = w.data + w.data_n */
         ALIGN( 4,          REG3)               /* c = align@4(w.data + w.data_n)*/
@@ -292,7 +288,26 @@ LABEL(right_bracket.full)
 
         ADDI(  REG2,   -WORD_OFF_DATA, REG3) /* c = w.code_off - WORD_OFF_DATA  */
         STORw( REG3,       AT(HERE, -4))               /* xt[-1] = c            */
-LABEL(right_bracket.finish)
-        ADD2(  REG2,       REG1)                       /* a = w + w.code_off = xt */
-        STOR(  REG1,       AT(M4TH, M4TH_OFF_XT))      /* m4th.xt = xt          */
+FUNC_END(_latest_sync_code_off_)
+
+/**
+ * Start or resume compiling.
+ * If needed, initialize m4th.lastw.code_off and update HERE.
+ * Set state = m4th.xt to code address of m4th.lastw.
+ */
+FUNC_START(right_bracket)
+        /* TODO check if enough space */
+        MOVE(  IMM(M4ERR_ZERO_LENGTH_NAME), REG0)      /* ( err )               */
+        LOAD(  REG1,       AT(M4TH, M4TH_OFF_LASTW))   /* a = m4th.lastw        */
+        JZ(    REG1,       FUNC(_throw_reg0_))         /* no latest word: throw */
+        MOVE(  IMM(M4ERR_COMPILER_NESTING), REG0)      /* ( err )               */
+        LOAD(  REG3,       AT(M4TH, M4TH_OFF_XT))      /* c = m4th.xt           */
+        JNZ(   REG3,       FUNC(_throw_reg0_))         /* compiling: throw      */
+        LD_uh( REG2,       AT(REG1, WORD_OFF_CODE_OFF))/* b = w.code_off        */
+        JNZ(   REG2,       FUNC_NEXT(right_bracket))
+        ASM_CALL_PREPARE()
+        ASM_CALL_BODY(     FUNC(_latest_sync_data_n_))
+        ASM_CALL_BODY(     FUNC(_latest_sync_code_off_))
+        ASM_CALL_CLEANUP()
+        STOR(  HERE,       AT(M4TH, M4TH_OFF_XT))      /* m4th.xt = xt          */
 FUNC_END(right_bracket)
