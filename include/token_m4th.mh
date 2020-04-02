@@ -119,7 +119,7 @@
 #undef M4____gap                         /*                       */
 #undef M4____gap                         /*                       */
 #undef M4____gap                         /*                       */
-#undef M4____gap                         /*                       */
+#define M4do_i_plus_loop 592             /* do i + loop           */
 #undef M4____gap                         /*                       */
 #undef M4____gap                         /*                       */
 

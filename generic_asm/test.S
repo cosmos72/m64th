@@ -26,6 +26,41 @@
 /**
  * manually-compiled native forth code. forth source would be
  *
+ * : do-i+-loop ( u -- u' )
+ *    do i + loop
+ * ;
+ *
+ * forth bytecode would be, after optimizing 'i +' => 'i+'
+ *
+ * WORD_CODE(do, i_plus, loop, exit)
+ */
+FUNC_START(do_i_plus_loop)
+        /* do */
+        SUB2( IMM(SZ2),RSTK)           /* update rstack pointer */
+        LOAD(  REG1,   AT(DSTK))       /* REG1 = i'             */
+        STOR(  RTOP,   AT(RSTK, SZ))   /* save RTOP             */
+        MOVE(  DTOP,   RTOP)           /* RTOP = i              */
+        STOR(  REG1,   AT(RSTK))       /* save i' to rstack     */
+        LOAD(  DTOP,   AT(DSTK, SZ))   /* reload dstack top     */
+        ADD2( IMM(SZ2),DSTK)           /* update dstack pointer */
+LABEL(test_sum_forth.iter)
+        /* i_plus */
+        ADD2(  RTOP, DTOP)
+        /* loop */
+        INC1(  RTOP)                               /* increment i          */
+#ifdef __x86_64__
+        JNE(   RTOP,   AT(RSTK), TO(test_sum_forth.iter)) /* repeat if i != i'    */
+#else
+        LOAD(  REG1, AT(RSTK))                     /* a = i'               */
+        JNE(   REG1, RTOP, TO(test_sum_forth.iter))/* repeat if i != i'    */
+#endif
+        LOAD(  RTOP,   AT(RSTK, SZ))               /* load new top of rstack      */
+        ADD2(  IMM(SZ2),   RSTK)                   /* drop i' i from return stack */
+FUNC_END(do_i_plus_loop)
+
+/**
+ * manually-compiled native forth code. forth source would be
+ *
  * : crc+ ( crc char -- crc' )
  *    over xor 0xff and cells m4th_crctable + @ swap 8 rshift xor
  * ;

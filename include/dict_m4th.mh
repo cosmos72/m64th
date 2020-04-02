@@ -46,6 +46,7 @@
     X(6, "-2roll", minus_two_roll)                                                                 \
     X(5, "-2rot", minus_two_rot)           /* ( a b c d e f -- e f a b c d )                    */ \
     X(6, "bounds", bounds)                 /* ( c-addr u -- c-addr+u c-addr ) get string bounds */ \
+    X(10, "do-i+-loop", do_i_plus_loop)    /* do i + loop                                       */ \
     X(5, "dup>r", dup_to_r)                /*                    equivalent to: dup >r          */ \
     X(11, "ex-message!", ex_message_store) /* ( c-addr u --    ) store exception message string */ \
     X(11, "ex-message@", ex_message_fetch) /* (    -- c-addr u ) fetch exception message string */ \

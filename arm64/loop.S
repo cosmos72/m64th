@@ -126,8 +126,7 @@ FUNC_RAWEND(_leave_)
 FUNC_START(_loop_)
         INC1(  RTOP)               /* increment i                 */
         LOAD(  REG1, AT(RSTK))     /* REG1 = i'                   */
-        cmp    REG1, RTOP;
-        b.eq   TO(_loop_.leave)    /* leave if i == i'            */
+        JEQ(   REG1, RTOP, TO(_loop_.leave))  /* leave if i == i' */
         RELJUMP()
 LABEL(_loop_.leave)
         LOAD(  RTOP, AT(RSTK, SZ)) /* load new top of rstack      */
