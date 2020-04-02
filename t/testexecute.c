@@ -1120,7 +1120,7 @@ static m4testexecute testexecute_f[] = {
     {"\"\" 0 name,",
      {m4name_comma, m4here, m4minus, m4bye},
      {{2, {(m4cell) "bar", 0}}, {}},
-     {{1, {-WORD_OFF_DATA}}, {}},
+     {{1, {-WORD_OFF_XT}}, {}},
      {}},
     {";", {CALL(semi), m4bye}, {{2, {0, m4colon}}, {}}, {{}, {}}, {1, {m4exit}}},
     /* ----------------------------- search order --------------------------- */

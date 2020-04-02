@@ -157,9 +157,8 @@ FUNC_START(obuf_write_char)
 LABEL(obuf_write_char.slow)
         /* not enough space, call forth word (obuf-flush-write-char) */
         ADDROF_4G( WORD_SYM(_obuf_flush_write_char_), REG2) /* b = word           */
-        LD_uw( REG3,   AT(REG2, WORD_OFF_CODE_OFF))    /* c = w.code_off          */
         DPUSH( DTOP)                                   /* dstk ( io ch _        ) */
-        ADD4(  REG2, REG3, 0, DTOP)                    /* dstk ( io ch xt       ) */
+        ADDI(  REG2,   WORD_OFF_XT, DTOP)              /* dstk ( io ch xt       ) */
         JUMP(  FUNC(_exec_xt_from_native_))            /* dstk ( err            ) */
 FUNC_RAWEND(obuf_write_char)
 
@@ -189,9 +188,8 @@ FUNC_START(obuf_write_string)
 LABEL(obuf_write_string.slow)
         /* not enough space, call forth word (obuf-flush-write-string) */
         ADDROF_4G( WORD_SYM(_obuf_flush_write_string_), REG2) /* b = word           */
-        LD_uw( REG3,   AT(REG2, WORD_OFF_CODE_OFF))    /* c = w.code_off            */
         DPUSH( DTOP)                                   /* dstk ( io c-addr u _    ) */
-        ADD4(  REG2,   REG3, 0, DTOP)                  /* dstk ( io c-addr u xt   ) */
+        ADDI(  REG2,   WORD_OFF_XT, DTOP)              /* dstk ( io c-addr u xt   ) */
         JUMP(  FUNC(_exec_xt_from_native_))            /* dstk ( err              ) */
 FUNC_END(obuf_write_string)
 

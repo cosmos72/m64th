@@ -113,6 +113,10 @@ static void m4char_print_escape(const m4char ch, FILE *out) {
 
 /* ----------------------- m4mem ----------------------- */
 
+static inline m4char *m4_aligned_at(const void *addr, m4cell_u power_of_two) {
+    return (m4char *)(((m4cell)addr + power_of_two - 1) & ~(m4cell)(power_of_two - 1));
+}
+
 static void m4mem_oom(size_t bytes) {
     fprintf(stderr, "failed to allocate %lu bytes: %s\n", (unsigned long)bytes, strerror(errno));
     exit(1);
@@ -634,7 +638,7 @@ fail:
 static m4iobuf *m4iobuf_new(m4cell_u capacity) {
     m4iobuf *io = (m4iobuf *)m4mem_allocate(sizeof(m4iobuf) + capacity * sizeof(m4char));
     memset(io, '\0', sizeof(m4iobuf));
-    io->func = (m4xt)WORD_SYM(always_eof).data;
+    io->func = WORD_SYM(always_eof).code;
     io->max = capacity;
     io->addr = ((m4char *)io) + sizeof(m4iobuf);
     return io;
@@ -738,7 +742,7 @@ m4cell m4string_equals(m4string a, m4string b) {
 m4code m4word_code(const m4word *w) {
     m4code ret = {};
     if (w != NULL) {
-        ret.addr = (m4token *)((m4cell)w + w->code_off);
+        ret.addr = (m4token *)w->code;
         ret.n = w->code_n;
     }
     return ret;
@@ -747,7 +751,7 @@ m4code m4word_code(const m4word *w) {
 m4string m4word_data(const m4word *w, m4cell data_start_n) {
     m4string ret = {};
     if (w->data_n != 0 && w->data_n >= data_start_n) {
-        ret.addr = w->data + data_start_n;
+        ret.addr = m4_aligned_at(w->code + w->code_n, SZ) + data_start_n;
         ret.n = (m4cell)w->data_n - data_start_n;
     }
     return ret;
@@ -756,14 +760,13 @@ m4string m4word_data(const m4word *w, m4cell data_start_n) {
 m4xt m4word_xt(const m4word *w) {
     m4xt ret = NULL;
     if (w != NULL) {
-        ret = (m4xt)((m4cell)w + w->code_off);
+        ret = (m4token *)w->code;
     }
     return ret;
 }
 
 const m4word *m4xt_word(m4xt xt) {
-    const uint32_t data_off = *(const uint32_t *)((m4cell)xt - sizeof(uint32_t));
-    return (const m4word *)((m4cell)xt - data_off - WORD_OFF_XT);
+    return (const m4word *)((m4cell)xt - WORD_OFF_XT);
 }
 
 void m4word_code_print(const m4word *w, FILE *out) {
@@ -940,10 +943,6 @@ void m4th_also(m4th *m, m4wordlist *wid) {
     }
 }
 
-static inline m4char *m4_aligned_at(void *addr, m4cell_u power_of_two) {
-    return (m4char *)(((m4cell)addr + power_of_two - 1) & ~(m4cell)(power_of_two - 1));
-}
-
 /* C implementation of ':' i.e. start compiling a new word */
 void m4th_colon(m4th *m, m4string name) {
     m4char *here = m->mem.curr;
@@ -962,7 +961,6 @@ void m4th_colon(m4th *m, m4string name) {
     w = (m4word *)here;
     memset(w, '\0', sizeof(m4word));
     w->name_off = name.n ? here - m->mem.start : 0;
-    w->code_off = WORD_OFF_XT;
     m->lastw = w;
     m->mem.curr = (m4char *)(m->xt = m4word_xt(w));
     /*
@@ -990,16 +988,16 @@ void m4th_semi(m4th *m) {
 
 /* compute m->lastw->data_n (if not compiling) or m->lastw->code_n (if compiling) from HERE */
 void m4th_sync_lastw(m4th *m) {
-    if (m->lastw == NULL) {
+    m4word *w = m->lastw;
+    if (w == NULL) {
         ;
     } else if (m->xt) {
         /* compiling */
-        m4char *here = m4_aligned_at(m->mem.curr, SZt);
-        m->lastw->code_n = (m4token *)here - m->xt;
-        m->mem.curr = here;
-    } else if (m->lastw->code_n == 0 && m->lastw->code_off == 0) {
+        m4char *here = m->mem.curr = m4_aligned_at(m->mem.curr, SZt);
+        w->code_n = (m4token *)here - w->code;
+    } else {
         /* not compiling */
-        m->lastw->data_n = m->mem.curr - m->lastw->data;
+        w->data_n = m->mem.curr - m4_aligned_at(w->code + w->code_n, SZ);
     }
 }
 

@@ -201,7 +201,6 @@ static m4cell m4testcompile_run(m4th *m, const m4testcompile *t, m4code t_codege
 
     w = m->lastw = (m4word *)m->mem.start;
     memset(w, '\0', sizeof(m4word));
-    w->code_off = WORD_OFF_XT;
     m->xt = m4word_xt(w);
 
     assert(input_n <= m->in->max);

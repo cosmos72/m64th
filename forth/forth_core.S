@@ -311,11 +311,8 @@ WORD_START(literal, leave)
     WORD_NATIVE_NONE()
     /* multiple exits & uses (ip) to access its body => cannot inline */
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE | M4FLAG_DATA_TOKENS)
-    WORD_DATA_AND_CODE(
+    WORD_CODE_AND_DATA(
       literal,
-      WORD_DATA_TOKENS(
-        zero, one, minus_one, two, three, four, eight
-      ),
       WORD_CODE_TOKENS(
         _ip_to_data_, div_token,         /* ( n taddr tn )             */
         CALL(_any_token_gives_cell_q_),
@@ -335,6 +332,9 @@ WORD_START(literal, leave)
         _compile_lit_, _lit_cell_,       /* append _lit_cell_  to XT   */
         comma,                           /* append dtop        to XT   */
         exit
+      ),
+      WORD_DATA_TOKENS(
+        zero, one, minus_one, two, three, four, eight
       )
     )
 WORD_END(literal)
@@ -455,10 +455,10 @@ WORD_START(variable,   until)
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
         zero, CALL(_create_),                  /* create word                          */
-        one, cells, allot,                     /* allocate one cell                    */
         right_bracket,                         /* start compiling                      */
         _compile_lit_, _ip_to_data_addr_,      /* compile (ip>data>addr)               */
-        CALL(_finish_), exit                   /* finish compiling, make word findable */
+        CALL(_finish_),                        /* finish compiling, make word findable */
+        zero, cell_plus, allot, exit           /* allocate one cell                    */
     )
 WORD_END(variable)
 WORD_START(while,     variable)
@@ -474,14 +474,7 @@ WORD_START(while,     variable)
     )
 WORD(xor,              while,      DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(left_bracket,     xor,        DSTACK(0,0), RSTACK(0,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
-WORD_START(right_bracket,  left_bracket)
-    WORD_DSTACK(0,0)
-    WORD_RSTACK(0,0)
-    WORD_STACK_NONE()
-    WORD_NATIVE_NONE() /* uses %ip-relative ASM_CALL, cannot inline in native code */
-    WORD_FLAGS(M4FLAG_INLINE)
-    WORD_CODE(right_bracket, exit)
-WORD_END(right_bracket)
+WORD(right_bracket,  left_bracket, DSTACK(0,0), RSTACK(0,0), WORD_IMPURE)
 
 #undef LASTWORD
 #define LASTWORD right_bracket

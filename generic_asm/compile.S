@@ -222,8 +222,7 @@ FUNC_START(set_latest)
         /* we really should NOT be compiling now, but in some tests we are  */
         LOAD(  REG1,   AT(M4TH, M4TH_OFF_XT))      /* a = m4th.xt           */
         JZ(    REG1,   TO(set_latest.done))
-        LD_uw( REG2,   AT(DTOP, WORD_OFF_CODE_OFF))/* b = nt.code_off       */
-        ADD2(  REG2,   DTOP)                       /* dtop = nt.code.addr   */
+        ADD2(  IMM(WORD_OFF_XT),   DTOP)           /* dtop = nt.code        */
         STOR(  DTOP,   AT(M4TH, M4TH_OFF_XT))      /* m4th.xt = dtop        */
 LABEL(set_latest.done)
         DPOP(  DTOP)
@@ -253,61 +252,18 @@ FUNC_START(left_bracket)
 FUNC_END(left_bracket)
 
 
-FUNC_START(_latest_sync_data_n_)
-        LOAD(  REG1,       AT(M4TH, M4TH_OFF_LASTW))   /* a = w = m4th.lastw    */
-        ADDI(  REG1,       WORD_OFF_DATA, REG2)        /* b = w.data            */
-        XSUB2( HERE,       REG2)                       /* b = data_n            */
-        STOR(  REG2,       AT(REG1, WORD_OFF_DATA_N))  /* w.data_n = data_n     */
-FUNC_END(_latest_sync_data_n_)
-
-
-FUNC_START(_latest_sync_code_off_)
-        LOAD(  REG1,       AT(M4TH, M4TH_OFF_LASTW))   /* a = w = m4th.lastw    */
-        LOAD(  REG2,       AT(REG1, WORD_OFF_DATA_N))  /* b = w.data_n          */
-        JNZ(   REG2,       TO(_latest_sync_code_off_.full))
-
-        /* word.data_n == 0, simple initialization                              */
-        MOVE(  IMM(WORD_OFF_DATA),     REG2w)          /* b = w.code - w        */
-        STORh( REG2,       AT(REG1, WORD_OFF_CODE_OFF))/* w.code_off = b        */
-        ADD4(  REG2,       REG1,   0,  HERE)           /* here = xt             */
-        JUMP(              FUNC_NEXT(_latest_sync_code_off_))
-
-        /* word.data_n != 0, full initialization                                */
-LABEL(_latest_sync_code_off_.full)
-        ADDI(  REG1,       WORD_OFF_DATA,  REG3)       /* c = w.data            */
-        ADD2(  REG2,       REG3)                       /* c = w.data + w.data_n */
-        ALIGN( 4,          REG3)               /* c = align@4(w.data + w.data_n)*/
-        ADDI(  REG3,       4,          HERE)           /* here = w.code = xt    */
-#ifdef SUB3
-        SUB3(  HERE,       REG1,       REG2)           /* b = code_off          */
-#else
-        MOVE(  HERE,       REG2)
-        SUB2(  REG1,       REG2)                       /* b = code_off          */
-#endif
-        STORh( REG2,   AT(REG1, WORD_OFF_CODE_OFF))    /* w.code_off = code_off */
-
-        ADDI(  REG2,   -WORD_OFF_DATA, REG3) /* c = w.code_off - WORD_OFF_DATA  */
-        STORw( REG3,       AT(HERE, -4))               /* xt[-1] = c            */
-FUNC_END(_latest_sync_code_off_)
-
 /**
  * Start or resume compiling.
- * If needed, initialize m4th.lastw.code_off and update HERE.
  * Set state = m4th.xt to code address of m4th.lastw.
  */
 FUNC_START(right_bracket)
         /* TODO check if enough space */
-        MOVE(  IMM(M4ERR_ZERO_LENGTH_NAME), REG0)      /* ( err )               */
-        LOAD(  REG1,       AT(M4TH, M4TH_OFF_LASTW))   /* a = m4th.lastw        */
+        MOVE(  IMM(M4ERR_ZERO_LENGTH_NAME), REG0)      /* @ = err               */
+        LOAD(  REG1,       AT(M4TH, M4TH_OFF_LASTW))   /* a = w = m4th.lastw    */
         JZ(    REG1,       FUNC(_throw_reg0_))         /* no latest word: throw */
-        MOVE(  IMM(M4ERR_COMPILER_NESTING), REG0)      /* ( err )               */
+        MOVE(  IMM(M4ERR_COMPILER_NESTING), REG0)      /* @ = err               */
         LOAD(  REG3,       AT(M4TH, M4TH_OFF_XT))      /* c = m4th.xt           */
+        ADD2(  IMM(WORD_OFF_XT),   REG1)               /* a = xt = w.code       */
         JNZ(   REG3,       FUNC(_throw_reg0_))         /* compiling: throw      */
-        LD_uh( REG2,       AT(REG1, WORD_OFF_CODE_OFF))/* b = w.code_off        */
-        JNZ(   REG2,       FUNC_NEXT(right_bracket))
-        ASM_CALL_PREPARE()
-        ASM_CALL_BODY(     FUNC(_latest_sync_data_n_))
-        ASM_CALL_BODY(     FUNC(_latest_sync_code_off_))
-        ASM_CALL_CLEANUP()
-        STOR(  HERE,       AT(M4TH, M4TH_OFF_XT))      /* m4th.xt = xt          */
+        STOR(  REG1,       AT(M4TH, M4TH_OFF_XT))      /* m4th.xt = w.code      */
 FUNC_END(right_bracket)

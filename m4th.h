@@ -179,9 +179,8 @@ struct m4word_s {
     uint16_t native_len; /**< native code size, in bytes. 0xFFFF if not available  */
     uint16_t flags;      /**< m4flags                                              */
     uint16_t code_n;     /**< forth code size, in m4token:s                        */
-    uint32_t code_off;   /**< offset of code, in bytes. 0 = not present            */
-    int64_t data_n;      /**< data size, in bytes                                  */
-    m4char data[0];
+    int32_t data_n;      /**< data size, in bytes                                  */
+    m4token code[0];
 };
 
 struct m4wordlist_s {   /**< wordlist                                                 */

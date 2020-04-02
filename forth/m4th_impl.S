@@ -726,9 +726,8 @@ WORD_START(char_to_base, eight)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_PURE) /* multiple exits & uses (ip) to access its body => cannot inline */
-    WORD_DATA_AND_CODE(
+    WORD_CODE_AND_DATA(
       char_to_base,
-      WORD_DATA_BYTES(10, 16, 2),
       WORD_CODE_TOKENS(
         /* (ip>data>addr) swap to-char '#' - dup 2 <= if
          *    chars + c@ exit
@@ -740,7 +739,8 @@ WORD_START(char_to_base, eight)
             chars, plus, c_fetch, exit,
         then,                                  /* ( body ch-'#' )           */
         two_drop, zero, exit
-      )
+      ),
+      WORD_DATA_BYTES(10, 16, 2)
     )
 WORD_END(char_to_base)
 /* ( ch -- n )  convert one digit in base 2..36 from char to unsigned number, else -1 */

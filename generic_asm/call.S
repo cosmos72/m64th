@@ -26,9 +26,8 @@ FUNC_START(_call_)
         RPUSH( RTOP)               /* save RTOP            */
         ADDI(  IP,     SZ, RTOP)   /* save return address = IP+SZ   */
         LOAD(  IP,     AT(IP))     /* load w from IP[0]             */
-        LD_uh( REG2,   AT(IP, WORD_OFF_CODE_OFF)) /* b = w.code_off */
-        ADD2(  REG2,   IP)         /* IP = XT              */
-        NEXT0()                    /* jump to XT           */
+        ADD2(  IMM(WORD_OFF_XT),   IP) /* IP = xt          */
+        NEXT0()                    /* jump to xt           */
 FUNC_RAWEND(_call_)
 
 
@@ -36,8 +35,8 @@ FUNC_RAWEND(_call_)
 FUNC_START(_call_xt_)
         RPUSH( RTOP)               /* save RTOP            */
         ADDI(  IP,     SZ, RTOP)   /* save return address = IP+SZ   */
-        LOAD(  IP,     AT(IP))     /* load XT from IP[0]   */
-        NEXT0()                    /* jump to XT           */
+        LOAD(  IP,     AT(IP))     /* load xr from IP[0]   */
+        NEXT0()                    /* jump to xt           */
 FUNC_RAWEND(_call_xt_)
 
 

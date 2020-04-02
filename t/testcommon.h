@@ -37,14 +37,14 @@ enum {
 #define INT(n) (int32_t)(n), 0
 /** store m4cell numeric constant in a m4countedwcode */
 #define CELL(n) (m4cell)(n), 0, 0, 0
-/** store XT address in a sequence of m4cell. correct only if word->data_len == 0 */
-#define DXT(name) ((m4cell)(WORD_SYM(name).data))
+/** store XT address in a sequence of m4cell */
+#define DXT(name) ((m4cell)(WORD_SYM(name).code))
 
 /* store m4_call_ and word in a m4countedwcode. */
 #define CALL(name) m4_call_, CELL(&WORD_SYM(name))
 
-/* store m4_call_xt_ and XT in a m4countedwcode. correct only if word->data_len == 0 */
-#define CALLXT(name) m4_call_xt_, CELL(WORD_SYM(name).data)
+/* store m4_call_xt_ and XT in a m4countedwcode. */
+#define CALLXT(name) m4_call_xt_, CELL(WORD_SYM(name).code)
 
 /* store m4_lit_string_ length and chars in a m4countedwcode. */
 #define LIT_STRING(len, chars) m4_lit_string_, T(len), (m4cell)(chars)

@@ -292,7 +292,7 @@ WORD(name_to_code,  name_inline_query, DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M
 WORD(name_to_code_n,   name_to_code,   DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 WORD(name_to_flags,    name_to_code_n, DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 WORD(name_to_prev,     name_to_flags,  DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD(name_to_xt,       name_to_prev,   DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(name_to_xt,       name_to_prev,   DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 /* obuf-flush ( io -- err ) flush iobuf data */
 WORD_START(obuf_flush, name_to_xt)
     WORD_DSTACK(1,1)
@@ -572,7 +572,7 @@ WORD_END(wordlist_find)
 WORD(wordlist_add,   wordlist_find,    DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH | M4FLAG_MEM_STORE)
 WORD(wordlist_last,  wordlist_add,     DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 WORD(wordlist_reset, wordlist_last,    DSTACK(1,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE)
-WORD(xt_to_name,     wordlist_reset,   DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(xt_to_name,     wordlist_reset,   DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 
 DICT_BODY(m4th_core, xt_to_name)
 DICT_END(m4th_core)
