@@ -21,16 +21,6 @@
 
 /* clang-format off */
 
-/** must be followed by a word address. calls it. */
-FUNC_START(_call_)
-        RPUSH( RTOP)               /* save RTOP            */
-        ADDI(  IP,     SZ, RTOP)   /* save return address = IP+SZ   */
-        LOAD(  IP,     AT(IP))     /* load w from IP[0]             */
-        ADD2(  IMM(WORD_OFF_XT),   IP) /* IP = xt          */
-        NEXT0()                    /* jump to xt           */
-FUNC_RAWEND(_call_)
-
-
 /** must be followed by an XT. calls it. */
 FUNC_START(_call_xt_)
         RPUSH( RTOP)               /* save RTOP            */

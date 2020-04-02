@@ -254,7 +254,6 @@
     X(9, "(?while0)", _q_while0_)                                                                  \
     X(7, "(again)", _again_)                                                                       \
     X(7, "(break)", _break_)                                                                       \
-    X(6, "(call)", _call_)                                                                         \
     X(9, "(call-xt)", _call_xt_)                                                                   \
     X(11, "(catch-beg)", _catch_beg_)                                                              \
     X(11, "(catch-end)", _catch_end_)                                                              \
