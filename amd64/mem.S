@@ -17,7 +17,7 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "asm.mh"
+#include "../dispatch/asm.mh"
 
 /* clang-format off */
 

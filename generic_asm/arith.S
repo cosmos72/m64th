@@ -192,12 +192,10 @@ FUNC_START(zero_less)      /* 0< */
 FUNC_END(zero_less)
 
 
-#ifndef M4FONE
 FUNC_START(one)            /* 1    m4th-impl */
         DPUSH( DTOP)
-        MOVE(  IMM(1), DTOP)
+        MOVI(  1,      DTOP)
 FUNC_END(one)
-#endif
 
 
 FUNC_START(one_plus)       /* 1+   */
@@ -210,12 +208,15 @@ FUNC_START(one_minus)      /* 1-   */
 FUNC_END(one_minus)
 
 
-#ifndef M4FTWO
 FUNC_START(two)            /* 2   m4th-impl */
         DPUSH( DTOP)
-        MOVE(  IMM(2), DTOP)
+        MOVI(  2,      DTOP)
 FUNC_END(two)
-#endif
+
+
+FUNC_START(two_times)      /* 2*   */
+        SHL2(  IMM(1), DTOP)
+FUNC_END(two_times)
 
 
 FUNC_START(two_plus)       /* 2+  m4th-user */
@@ -228,20 +229,21 @@ FUNC_START(two_minus)      /* 2-  m4th-user */
 FUNC_END(two_minus)
 
 
-#ifndef M4FTHREE
+FUNC_START(two_div)        /* 2/   floored divide by 2 */
+        SAR2(  IMM(1), DTOP)       /* SAR2 rounds toward -infinity */
+FUNC_END(two_div)
+
+
 FUNC_START(three)          /* 3   m4th-impl */
         DPUSH( DTOP)
-        MOVE(  IMM(3), DTOP)
+        MOVI(  3,      DTOP)
 FUNC_END(three)
-#endif
 
 
-#ifndef M4FFOUR
 FUNC_START(four)           /* 4   m4th-impl */
         DPUSH( DTOP)
-        MOVE(  IMM(4), DTOP)
+        MOVI(  4,      DTOP)
 FUNC_END(four)
-#endif
 
 
 FUNC_START(four_times)     /* 4*  m4th-user */
@@ -254,12 +256,15 @@ FUNC_START(four_plus)      /* 4+  m4th-user */
 FUNC_END(four_plus)
 
 
-#ifndef M4FEIGHT
+FUNC_START(four_div)       /* 4/   m4th-user floored divide by 4 */
+        SAR2(  IMM(2), DTOP)  /* SAR2 rounds toward -infinity */
+FUNC_END(four_div)
+
+
 FUNC_START(eight)          /* 8   m4th-impl */
         DPUSH( DTOP)
-        MOVE(  IMM(8), DTOP)
+        MOVI(  8,      DTOP)
 FUNC_END(eight)
-#endif
 
 
 FUNC_START(eight_times)    /* 8*  m4th-user */
@@ -270,6 +275,11 @@ FUNC_END(eight_times)
 FUNC_START(eight_plus)     /* 8+  m4th-user */
         ADD2(  IMM(8), DTOP)
 FUNC_END(eight_plus)
+
+
+FUNC_START(eight_div)      /* 8/   m4th-user floored divide by 8 */
+        SAR2(  IMM(3), DTOP)  /* SAR2 rounds toward -infinity */
+FUNC_END(eight_div)
 
 
 FUNC_START(question_dup)   /* ?dup */

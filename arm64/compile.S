@@ -18,7 +18,7 @@
  */
 
 #include "../include/err.mh"
-#include "asm.mh"
+#include "../dispatch/asm.mh"
 
 /* clang-format off */
 

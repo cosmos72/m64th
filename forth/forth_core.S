@@ -474,7 +474,14 @@ WORD_START(while,     variable)
     )
 WORD(xor,              while,      DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(left_bracket,     xor,        DSTACK(0,0), RSTACK(0,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
-WORD(right_bracket,  left_bracket, DSTACK(0,0), RSTACK(0,0), WORD_IMPURE)
+WORD_START(right_bracket,  left_bracket)
+    WORD_DSTACK(0,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE() /* used %ip-relative JUMP(), cannot inline into native code */
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(right_bracket, exit)
+WORD_END(right_bracket)
 
 #undef LASTWORD
 #define LASTWORD right_bracket

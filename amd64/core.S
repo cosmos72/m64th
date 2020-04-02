@@ -19,7 +19,7 @@
 
 #include "../include/dict.mh"
 #include "../include/wordlist.mh"
-#include "asm.mh"
+#include "../dispatch/asm.mh"
 
 /* clang-format off */
 

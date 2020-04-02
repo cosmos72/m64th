@@ -45,6 +45,8 @@
 #endif
 
 #ifdef RFFF
+#define IMM_1 RFFF /* immediate constant -1 */
+#define MOVI(val, reg) ADDI(RFFF, (val) + 1, reg)
 #define init_RFFF_REG2()
 #define RFFF_REG2 RFFF
 #define RFFF_REG2b RFFFb
@@ -52,6 +54,8 @@
 #define RFFF_REG2w RFFFw
 #define RFFF_REG2t RFFFt
 #else
+#define IMM_1 IMM(-1) /* immediate constant -1 */
+#define MOVI(val, reg) MOVE(IMM(val), reg)
 #define init_RFFF_REG2() MOVE(IMM_1, REG2)
 #define RFFF_REG2 REG2
 #define RFFF_REG2b REG2b

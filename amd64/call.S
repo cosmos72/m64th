@@ -18,7 +18,7 @@
  */
 
 #include "../include/word.mh" /* WORD_CODE_ALIGN(), WORD_CODE_TOKENS() */
-#include "asm.mh"
+#include "../dispatch/asm.mh"
 
 #define m4fth_run m4th_run
 

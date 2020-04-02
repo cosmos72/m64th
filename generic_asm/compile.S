@@ -258,10 +258,10 @@ FUNC_END(left_bracket)
  */
 FUNC_START(right_bracket)
         /* TODO check if enough space */
-        MOVE(  IMM(M4ERR_ZERO_LENGTH_NAME), REG0)      /* @ = err               */
+        MOVI(  M4ERR_ZERO_LENGTH_NAME, REG0)           /* @ = err               */
         LOAD(  REG1,       AT(M4TH, M4TH_OFF_LASTW))   /* a = w = m4th.lastw    */
         JZ(    REG1,       FUNC(_throw_reg0_))         /* no latest word: throw */
-        MOVE(  IMM(M4ERR_COMPILER_NESTING), REG0)      /* @ = err               */
+        MOVI(  M4ERR_COMPILER_NESTING, REG0)           /* @ = err               */
         LOAD(  REG3,       AT(M4TH, M4TH_OFF_XT))      /* c = m4th.xt           */
         ADD2(  IMM(WORD_OFF_XT),   REG1)               /* a = xt = w.code       */
         JNZ(   REG3,       FUNC(_throw_reg0_))         /* compiling: throw      */

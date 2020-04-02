@@ -17,7 +17,7 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "asm.mh"
+#include "../dispatch/asm.mh"
 
 /* clang-format off */
 
@@ -96,30 +96,6 @@ FUNC_START(zero_more_equal)/* 0>=  m4th-user */
 FUNC_END(zero_more_equal)
 
 
-#define M4FONE
-FUNC_START(one)            /* 1    m4th-impl */
-        DPUSH( DTOP)
-        MOVE(  IMM(1), DTOPw)
-FUNC_END(one)
-
-
-#define M4FTWO
-FUNC_START(two)            /* 2    m4th-impl */
-        DPUSH( DTOP)
-        MOVE(  IMM(2), DTOPw)
-FUNC_END(two)
-
-
-FUNC_START(two_times)      /* 2*   */
-        sal    DTOP;
-FUNC_END(two_times)
-
-
-FUNC_START(two_div)        /* 2/   floored divide by 2 */
-        sar    DTOP;       /* sar rounds toward -infinity */
-FUNC_END(two_div)
-
-
 FUNC_START(two_sm_div)     /* 2sm/   m4th-user symmetric divide by 2 */
         MOVE(  DTOP, REG1)
         shr    IMM(63), REG1;
@@ -161,43 +137,12 @@ FUNC_START(two_r_from)     /* 2r>      */
 FUNC_END(two_r_from)
 
 
-#define M4FTHREE
-FUNC_START(three)          /* 3   m4th-impl */
-        DPUSH( DTOP)
-        MOVE(  IMM(3), DTOPw)
-FUNC_END(three)
-
-
-#define M4FFOUR
-FUNC_START(four)           /* 4    m4th-impl */
-        DPUSH( DTOP)
-        MOVE(  IMM(4), DTOPw)
-FUNC_END(four)
-
-
-FUNC_START(four_div)       /* 4/   m4th-user floored divide by 4 */
-        sar    IMM(2), DTOP;  /* sar rounds toward -infinity */
-FUNC_END(four_div)
-
-
 FUNC_START(four_sm_div)    /* 4sm/ m4th-user symmetric divide by 4 */
         test   DTOP,   DTOP
         lea    3(DTOP),REG1;  /* add 3 if negative */
         cmovs  REG1,   DTOP;
         sar    IMM(2), DTOP;  /* because sar rounds toward -infinity */
 FUNC_END(four_sm_div)
-
-
-#define M4FEIGHT
-FUNC_START(eight)          /* 8   m4th-impl */
-        DPUSH( DTOP)
-        MOVE(  IMM(8), DTOPw)
-FUNC_END(eight)
-
-
-FUNC_START(eight_div)      /* 8/   m4th-user floored divide by 8 */
-        sar    IMM(3), DTOP;  /* sar rounds toward -infinity */
-FUNC_END(eight_div)
 
 
 FUNC_START(eight_sm_div)   /* 8sm/ m4th-user symmetric divide by 8 */

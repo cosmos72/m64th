@@ -17,7 +17,7 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "asm.mh"
+#include "../dispatch/asm.mh"
 
 #define m4fth_run m4th_run
 
