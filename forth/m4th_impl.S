@@ -474,13 +474,13 @@ WORD_START(_any_token_gives_cell_q_, _while0_)
     WORD_CODE(
         zero, _q_do_, T(14+nCALLt),          /* loop if tn != 0          */
                                              /* ( x taddr )              */
-            dup_to_r, token_fetch,           /* ( x token ) (R taddr )   */
-            CALL(_token_gives_cell_q_),/* ( token true | x false ) (R taddr ) */
+            dup_to_r, token_fetch,           /* ( x token ) (R: taddr )  */
+            CALL(_token_gives_cell_q_),      /* ( token true | x false ) (R: taddr ) */
             _if_, T(5),
                 r_from_drop, true,           /* ( token true )           */
                 unloop, exit,                /* exit                     */
             then,
-            r_from, token_plus,              /* ( x taddr )              */
+            r_from, token_plus,              /* ( x taddr' )             */
         _loop_, T(-14-nCALLt),
         drop, false, exit                    /* ( x false )              */
     )
@@ -680,10 +680,11 @@ WORD_START(_token_gives_cell_q_, _resolve_loop_)
     WORD_FLAGS(0) /* multiple exits => cannot inline */
     WORD_CODE(
         two_dup,                           /* ( x token x token ) */
-        _exec_token_, equal, _if_, T(4),   /* ( x token )         */
-            nip, true, exit,               /* ( token true )      */
-        then,
-        drop, false, exit                  /* ( x false )         */
+        _exec_token_, equal,               /* ( x token t|f     ) */
+        _if_, T(4),                        /* ( x token         ) */
+            nip, true, exit,               /* ( token true      ) */
+        then,                              /* ( x token         ) */
+        drop, false, exit                  /* ( x false         ) */
     )
 WORD_END(_token_gives_cell_q_)
 /* ( xt -- ) always throws */

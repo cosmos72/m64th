@@ -794,12 +794,14 @@ void m4word_print(const m4word *w, FILE *out) {
     if (w->native_len != (uint16_t)-1) {
         fprintf(out, "\n\tnative_len:  \t%d", (int)w->native_len);
     }
+    if (w->code_n != 0) {
+        fputs("\n\tcode:        \t", out);
+        m4word_code_print(w, out);
+    }
     if (w->data_n != 0) {
         fputs((w->flags & m4flag_data_tokens) ? "\n\tdata_tokens: \t" : "\n\tdata:        \t", out);
         m4word_data_print(w, 0, out);
     }
-    fputs("\n\tcode:        \t", out);
-    m4word_code_print(w, out);
     fputs("\n}\n", out);
 }
 
