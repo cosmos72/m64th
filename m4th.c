@@ -377,7 +377,7 @@ static m4cell m4token_print_call(const m4token *code, FILE *out) {
     memcpy(&val, code, sizeof(val));
     fputs("CALL(", out);
     if (val > 4096) {
-        const m4word *w = (const m4word *)val;
+        const m4word *w = (const m4word *)(val - WORD_OFF_XT);
         const m4string name = m4word_name(w);
         if (name.addr && name.n > 0) {
             m4string_print(name, out);
@@ -391,6 +391,7 @@ static m4cell m4token_print_call(const m4token *code, FILE *out) {
     return ret;
 }
 
+#if 0 /* unused */
 static m4cell m4token_print_word(const m4token *code, FILE *out) {
     m4cell val;
     memcpy(&val, code, sizeof(val));
@@ -406,22 +407,7 @@ static m4cell m4token_print_word(const m4token *code, FILE *out) {
     }
     return m4token_print_int64(code, out);
 }
-
-static m4cell m4token_print_xt(const m4token *code, FILE *out) {
-    m4cell val;
-    memcpy(&val, code, sizeof(val));
-    if (val > 4096) {
-        const m4word *w = m4xt_word((m4xt)val);
-        const m4string name = m4word_name(w);
-        if (name.addr && name.n > 0) {
-            fputs("XT(", out);
-            m4string_print(name, out);
-            fputs(") ", out);
-            return sizeof(val) / SZt;
-        }
-    }
-    return m4token_print_int64(code, out);
-}
+#endif
 
 m4cell m4token_print_consumed_ip(m4token tok, const m4token *code, m4cell maxn, FILE *out) {
     const m4cell nbytes = m4token_consumes_ip(tok);
@@ -437,10 +423,6 @@ m4cell m4token_print_consumed_ip(m4token tok, const m4token *code, m4cell maxn, 
         fputc('\'', out);
         m4token_print(code[1], out);
         return 2;
-    } else if (tok == m4_call_ && nbytes == SZ) {
-        return m4token_print_word(code, out);
-    } else if (tok == m4_call_xt_ && nbytes == SZ) {
-        return m4token_print_xt(code, out);
     }
     switch (nbytes) {
     case 2:
@@ -507,7 +489,7 @@ void m4code_print(m4code src, FILE *out) {
     fprintf(out, "<%ld> ", (long)n);
     for (i = 0; i < n;) {
         const m4token tok = code[i++];
-        if (tok == m4_call_ && n - i >= SZ / SZt) {
+        if (tok == m4_call_xt_ && n - i >= SZ / SZt) {
             i += m4token_print_call(code + i, out);
         } else if (tok == m4_lit_string_ && n - i >= 2 + (m4cell_u)(code[i] + SZt - 1) / SZt) {
             i += m4token_print_lit_string((const m4char *)&code[i + 1], code[i], out);

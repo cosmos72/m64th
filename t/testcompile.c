@@ -114,7 +114,7 @@ static const m4testcompile testcompile[] = {
     /* ------------------------------- immediate words ---------------------- */
     {"s\"  fubar\"", {}, {}, {3, {LIT_STRING(6, " fubar")}}},
     /* ------------------------------- words -------------------------------- */
-    {"compile,", {}, {}, {callsz, {CALLXT(compile_comma)}}},
+    {"compile,", {}, {}, {callsz, {CALL(compile_comma)}}},
     {"valid-base?", {}, {}, {4, {/*inlined*/ m4two, m4_lit2s_, T(37), m4within}}},
     /* ------------------------------- defining words ----------------------- */
     /* we must exit compilation state first... hence '[' */
@@ -146,11 +146,11 @@ static const m4testcompile testcompile[] = {
     {"do i . loop",
      {},
      {},
-     {6 + nCALLt, {m4_do_, T(4 + nCALLt), m4i, CALLXT(dot), m4_loop_, T(-4 - nCALLt)}}},
+     {6 + nCALLt, {m4_do_, T(4 + nCALLt), m4i, CALL(dot), m4_loop_, T(-4 - nCALLt)}}},
     {"?do i . loop",
      {},
      {},
-     {6 + nCALLt, {m4_q_do_, T(4 + nCALLt), m4i, CALLXT(dot), m4_loop_, T(-4 - nCALLt)}}},
+     {6 + nCALLt, {m4_q_do_, T(4 + nCALLt), m4i, CALL(dot), m4_loop_, T(-4 - nCALLt)}}},
     {"do leave", {}, {4, {2, m4_do_, 4, m4_leave_}}, {4, {m4_do_, -1, m4_leave_, T(-1)}}},
     {"do leave loop", {}, {}, {6, {m4_do_, T(4), m4_leave_, T(2), m4_loop_, T(-4)}}},
     {"?do leave loop", {}, {}, {6, {m4_q_do_, T(4), m4_leave_, T(2), m4_loop_, T(-4)}}},

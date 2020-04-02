@@ -26,7 +26,7 @@
 enum {
     tfalse = (m4cell)0,
     ttrue = (m4cell)-1,
-    callsz = 1 + SZ / SZt, /* # of m4token needed to store a CALL(...) or CALLXT(...) */
+    callsz = 1 + SZ / SZt, /* # of m4token needed to store a CALL(...) */
 };
 
 /* store m4token numeric constant in a m4countedwcode */
@@ -40,11 +40,8 @@ enum {
 /** store XT address in a sequence of m4cell */
 #define DXT(name) ((m4cell)(WORD_SYM(name).code))
 
-/* store m4_call_ and word in a m4countedwcode. */
-#define CALL(name) m4_call_, CELL(&WORD_SYM(name))
-
-/* store m4_call_xt_ and XT in a m4countedwcode. */
-#define CALLXT(name) m4_call_xt_, CELL(WORD_SYM(name).code)
+/* store m4_call_xt_ and WORD_SYM(name).code in a m4countedwcode. */
+#define CALL(name) m4_call_xt_, CELL(WORD_SYM(name).code)
 
 /* store m4_lit_string_ length and chars in a m4countedwcode. */
 #define LIT_STRING(len, chars) m4_lit_string_, T(len), (m4cell)(chars)

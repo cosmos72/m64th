@@ -202,11 +202,11 @@
 #define M4ASM_BYTES_LIT_STRING(token) M4TOKEN_VAL(token) /* expands to M4LIT_STRING(len, str) */
 
 /*
- * assembler macro: insert M4_call_, WORD_SYM(word) in a sequence of m4token.
+ * assembler macro: insert M4_call_xt_, WORD_SYM(word).code in a sequence of m4token.
  */
 #define M4CALL(word)                                                                               \
-    CAT3(., SZt, byte) M4_call_;                                                                   \
-    CAT3(., SZ, byte) WORD_SYM(word);
+    CAT3(., SZt, byte) M4_call_xt_;                                                                \
+    CAT3(., SZ, byte) WORD_SYM(word) + WORD_OFF_XT;
 
 /* assembler macro: number of extra m4tokens needed by M4CALL(...) */
 #define nCALLt (SZ / SZt)
