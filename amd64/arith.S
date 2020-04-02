@@ -208,13 +208,6 @@ FUNC_START(abs)            /* abs */
 FUNC_END(abs)
 
 
-#define M4FBL
-FUNC_START(bl)             /* bl   */
-        DPUSH( DTOP)
-        MOVE(  IMM(32), DTOPw)
-FUNC_END(bl)
-
-
 FUNC_START(lshift)         /* lshift */
         MOVE(  DTOP, %rcx)
         DPOP(  DTOP)

@@ -59,12 +59,12 @@ FUNC_START(move)
         JEQ(   DTOP,   IMM(0), TO(move.done))
 
         ADD4(  REG1,   DTOP,   PSZ,  REG3)     /* c = src_end          */
-        MOVE(IMM(SZ8), REG0)                   /* @ = 8*SZ = step_fwd  */
+        MOVI(  SZ8,    REG0)                   /* @ = 8*SZ = step_fwd  */
         JAE(   REG1,   REG2,   TO(move.work))  /* copying to lower address => forward */
         JBE(   REG3,   REG2,   TO(move.work))  /* not overlapping          => forward */
 
         /* reverse copy, from top to bottom */
-        MOVE(IMM(-SZ8),REG0)                   /* @ = -8*SZ = step_rev */
+        MOVI(  -SZ8,   REG0)                   /* @ = -8*SZ = step_rev */
         ADD4(  REG1,   DTOP,   PSZ,  REG1)     /* a = src_end          */
         ADD4(  REG2,   DTOP,   PSZ,  REG2)     /* b = dst_end          */
         SUB2(IMM(SZ8), REG1)                   /* a = src_end - 8*SZ   */

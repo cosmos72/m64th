@@ -27,7 +27,7 @@
  */
 FUNC_START(_plus_loop_)
         LOAD(  REG2,   AT(RSTK))                       /* b = i'                      */
-        MOVE(  IMM(1<<63), REG1)                       /* a = mincell                 */
+        MOVI(  1<<63,  REG1)                           /* a = mincell                 */
         SUB3(  RTOP,   REG2,  REG2)                    /* b = old i - i'              */
         ADD2(  DTOP,   RTOP)                           /* i += delta                  */
         /*

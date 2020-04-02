@@ -113,7 +113,7 @@ LABEL(_cs_find_lit_.loop)
         ADD2(  IMM(SZ2),   DTOP)
         JB(    DTOP,       REG2,   TO(_cs_find_lit_.loop))
 LABEL(_cs_find_lit_.throw)
-        MOVE(  IMM(M4ERR_CONTROL_STRUCTURE_MISMATCH), REG0)
+        MOVI(  M4ERR_CONTROL_STRUCTURE_MISMATCH,   REG0)
         JUMP(  FUNC(_throw_reg0_))
 LABEL(_cs_find_lit_.done)
         SHR2(  IMM(PSZ+1), DTOP)
@@ -186,15 +186,13 @@ FUNC_END(comma)
  * because it needs to know m4word internals
  */
 FUNC_START(countedstring_comma)
-        JA(    DTOP,   IMM(0xff),  TO(countedstring_comma.throw))
+        MOVI(  M4ERR_DEFINITION_NAME_TOO_LONG,  REG0)
+        JA(    DTOP,   IMM(0xff),  FUNC(_throw_reg0_))
         STORb( DTOP,   AT(HERE))
         INC1(  HERE)                                   /* here++            */
         DPUSH( HERE)                                   /* ( c-addr here u ) */
         ADD2(  DTOP,   HERE)                           /* here += u         */
         JUMP(  FUNC(cmove))
-LABEL(countedstring_comma.throw)
-        MOVE(  IMM(M4ERR_DEFINITION_NAME_TOO_LONG),  DTOP)
-        JUMP(  FUNC(throw))
 FUNC_RAWEND(countedstring_comma)
 
 

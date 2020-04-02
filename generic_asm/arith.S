@@ -315,12 +315,10 @@ FUNC_START(base)
 FUNC_END(base)
 
 
-#ifndef M4FBL
 FUNC_START(bl)
         DPUSH( DTOP)
-        MOVE(  IMM(32),DTOP)
+        MOVI(  32,     DTOP)
 FUNC_END(bl)
-#endif
 
 
 FUNC_START(bounds) /* bounds m4th-user ( c-addr u -- c-addr+u c-addr ) get string bounds */
