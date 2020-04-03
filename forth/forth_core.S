@@ -199,7 +199,22 @@ WORD_START(constant,   count)
         CALL(_finish_), exit                   /* finish compiling, make word findable */
     )
 WORD_END(constant)
-WORD_START(decimal,    constant)
+WORD_START(create,     constant)
+    WORD_DSTACK(0,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        _lit_, T(M4FLAG_CREATE), CALL(_create_),/* create word, mark it M4FLAG_CREATE  */
+        right_bracket,                         /* start compiling                      */
+        _lit_comma_, _ip_to_data_addr_,        /* compile (ip>data>addr)               */
+        _lit_comma_, _call_xt_,                /* compile (call-xt)                    */
+        _lit_xt_, XT(noop), xt_comma,          /* compile XT(noop). placeholder set by DOES> */
+        CALL(_finish_), exit                   /* finish compiling, make word findable */
+    )
+WORD_END(create)
+WORD_START(decimal,    create)
     WORD_DSTACK(0,0)   /* stack effect if not jumping */
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()  /* stack effect if jumping */

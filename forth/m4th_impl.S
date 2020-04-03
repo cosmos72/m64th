@@ -553,7 +553,7 @@ WORD_START(_finish_, _cs_find_lit_)
     WORD_CODE(
         _check_lit_, colon, cs_drop,
         _lit_comma_, exit,
-        CALL(_optimize_), left_bracket,
+        CALL(_optimize_), left_bracket, align, /* also align HERE to current word's data */
         latest, get_current, wordlist_add, exit
     )
 WORD_END(_finish_)
