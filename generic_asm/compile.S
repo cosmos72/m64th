@@ -51,12 +51,12 @@ FUNC_END(_num_compiled_reg0_)
 
 
 /** ( -- ) must be followed by m4token, append it to XT being compiled. */
-FUNC_START(_compile_lit_)    /* [compile-lit] */
+FUNC_START(_lit_comma_)    /* [compile-lit] */
         LD_ut( REG3,       AT(IP))                     /* c = m4token             */
         STORt( REG3,       AT(HERE))                   /* *here = c               */
         ADD2(  IMM(SZt),   HERE)                       /* here += SZt             */
         NEXTT()                                        /* skip m4token            */
-FUNC_RAWEND(_compile_lit_)
+FUNC_RAWEND(_lit_comma_)
 
 
 /**

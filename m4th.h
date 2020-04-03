@@ -51,22 +51,24 @@ typedef char
 
 /** m4word flags */
 typedef enum m4flags_e {
-    m4flag_mem_fetch = M4FLAG_MEM_FETCH,
-    m4flag_mem_store = M4FLAG_MEM_STORE,
     m4flag_compile_only = M4FLAG_COMPILE_ONLY,
+    m4flag_consumes_ip_mask = M4FLAG_CONSUMES_IP_MASK,
+    m4flag_consumes_ip_2 = M4FLAG_CONSUMES_IP_2,
+    m4flag_consumes_ip_4 = M4FLAG_CONSUMES_IP_4,
+    m4flag_consumes_ip_8 = M4FLAG_CONSUMES_IP_8,
+    m4flag_create = M4FLAG_CREATE,
+    m4flag_data_tokens = M4FLAG_DATA_TOKENS,
+    m4flag_defer = M4FLAG_DEFER,
     m4flag_immediate = M4FLAG_IMMEDIATE,
     m4flag_inline = M4FLAG_INLINE,
     m4flag_inline_always = M4FLAG_INLINE_ALWAYS,
     m4flag_jump_mask = M4FLAG_JUMP_MASK,
     m4flag_jump = M4FLAG_JUMP,
     m4flag_may_jump = M4FLAG_MAY_JUMP,
+    m4flag_mem_fetch = M4FLAG_MEM_FETCH,
+    m4flag_mem_store = M4FLAG_MEM_STORE,
     m4flag_pure_mask = M4FLAG_PURE_MASK,
     m4flag_pure = M4FLAG_PURE,
-    m4flag_consumes_ip_mask = M4FLAG_CONSUMES_IP_MASK,
-    m4flag_consumes_ip_2 = M4FLAG_CONSUMES_IP_2,
-    m4flag_consumes_ip_4 = M4FLAG_CONSUMES_IP_4,
-    m4flag_consumes_ip_8 = M4FLAG_CONSUMES_IP_8,
-    m4flag_data_tokens = M4FLAG_DATA_TOKENS,
 } m4flags;
 
 /** m4th state */

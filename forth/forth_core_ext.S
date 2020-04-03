@@ -47,7 +47,7 @@ WORD_START(again,      question_do)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_JUMP | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_CODE(
-        _check_lit_, begin,             /* ( sys ) must be 'begin' */
+        _check_lit_, begin,         /* ( sys ) must be 'begin' */
         _compile_jump_lit_, _again_, _again_,
         cs_drop,                    /* we only need the compiled '(again)', not the cs data */
         CALL(_resolve_jump_there_), /* resolve jump offset from '(again)' to 'begin'        */
@@ -73,15 +73,15 @@ WORD_START(compile_comma, hex)
     WORD_CODE(
         /* dup xt>name name-inline?                    ( xt t|f        )
          * if0                                         ( xt            )
-         *    ' (call-xt) compile,                     ( xt            )
-         *    (compile-xt,) exit                       (               )
+         *    ' (call-xt) token,                       ( xt            )
+         *    xt, exit                                 (               )
          * then                                        ( xt            )
          * xt>name [inline]
          */
         dup, xt_to_name, CALL(name_inline_query),
         _if0_, T(5),
-            _compile_lit_, _call_xt_,  /* compile (call-xt) */
-            xt_comma, exit,        /* compile XT        */
+            _lit_comma_, _call_xt_,    /* compile (call-xt) */
+            xt_comma, exit,            /* compile XT        */
         then,
         xt_to_name, CALL(_inline_), exit
    )

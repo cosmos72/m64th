@@ -273,6 +273,12 @@ void m4flags_print(m4flags fl, FILE *out) {
     if (fl & m4flag_data_tokens) {
         fputs(printed++ ? "|data_tokens" : "data_tokens", out);
     }
+    if (fl & m4flag_create) {
+        fputs(printed++ ? "|create" : "create", out);
+    }
+    if (fl & m4flag_defer) {
+        fputs(printed++ ? "|defer" : "defer", out);
+    }
 }
 
 /* ----------------------- m4string ---------------------- */

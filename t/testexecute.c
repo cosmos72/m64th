@@ -1071,8 +1071,8 @@ static m4testexecute testexecute_f[] = {
      {}},
     /* ----------------------------- comma... ------------------------------- */
     {"0x123 token,", {m4token_comma, m4bye}, {{1, {0x123}}, {}}, {{}, {}}, {1, {0x123}}},
-    {"[compile-lit,] T(500) [#compiled]",
-     {m4_num_compiled_, m4_compile_lit_, T(500), m4_num_compiled_, m4bye},
+    {"(lit,) T(500) [#compiled]",
+     {m4_num_compiled_, m4_lit_comma_, T(500), m4_num_compiled_, m4bye},
      {{}, {}},
      {{2, {0, 1}}, {}},
      {1, {500}}},

@@ -67,12 +67,11 @@
 #define M4FLAG_CONSUMES_IP_4 ((2 << 6) | M4FLAG_INLINE_ALWAYS)
 #define M4FLAG_CONSUMES_IP_8 ((3 << 6) | M4FLAG_INLINE_ALWAYS)
 
-/** word dereferences pointer argument(s) and reads from it */
-#define M4FLAG_MEM_FETCH (1 << 8)
-/** word dereferences pointer arguments(s) and writes to it */
-#define M4FLAG_MEM_STORE (1 << 9)
-
-/** word data contains m4tokens */
-#define M4FLAG_DATA_TOKENS (1 << 10)
+#define M4FLAG_MEM_FETCH (1 << 8)    /** word dereferences pointer argument(s) and reads from it */
+#define M4FLAG_MEM_STORE (1 << 9)    /** word dereferences pointer arguments(s) and writes to it */
+#define M4FLAG_DATA_TOKENS (1 << 10) /** word data contains m4tokens */
+#define M4FLAG_CREATE (1 << 11) /**< word defined with CREATE - do not optimize away CALL(noop) */
+/**< word defined with DEFER - do not optimize/inline CALL((defer-uninitialized)) */
+#define M4FLAG_DEFER (1 << 12)
 
 #endif /* M4TH_M4TH_MH */

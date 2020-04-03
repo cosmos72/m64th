@@ -193,30 +193,30 @@
 #define M4name_to_code 663      /* name>code   ( nt -- addr u  ) get code array from name */
 #define M4name_to_code_n 664    /* name>code>n ( nt -- u       ) get code size from name  */
 #define M4name_to_flags 665     /* name>flags  ( nt -- m4flags ) get m4flags from name    */
-#undef M4____gap                /* name>string already defined in forth 'tools ext' word set */
-#define M4name_to_prev 667      /* name>prev   ( nt -- nt'|0   ) get previous name        */
-#define M4name_to_xt 668        /* name>xt     ( nt -- XT      ) get XT == code address from name */
-#define M4wordlist_add 669      /* ( wid nt -- ) add name to wordlist                     */
-#define M4wordlist_last 670     /* ( wid -- nt ) get last name in a wordlist              */
-#define M4wordlist_reset 671    /* ( wid --    ) remove all user-defined names from wid   */
-#undef M4____gap                /*                       */
-#define M4xt_to_name 673        /* xt>name       ( XT -- nt ) get name from XT */
-#undef M4____gap                /*                       */
-#undef M4____gap                /*                       */
-#undef M4____gap                /*                       */
-#undef M4____gap                /*                       */
-#undef M4____gap                /*                       */
-#undef M4____gap                /*                       */
-#undef M4____gap                /*                       */
-#undef M4____gap                /*                       */
-#undef M4____gap                /*                       */
-#undef M4____gap                /*                       */
-#undef M4____gap                /*                       */
-#undef M4____gap                /*                       */
-#undef M4____gap                /*                       */
-#undef M4____gap                /*                       */
-#undef M4____gap                /*                       */
-#undef M4____gap                /*                       */
+#define M4name_to_flags_store 666 /* name>flags!  ( m4flags nt -- ) set m4flags of name   */
+#define M4name_to_prev 667        /* name>prev   ( nt -- nt'|0   ) get previous name      */
+#define M4name_to_xt 668     /* name>xt     ( nt -- XT      ) get XT == code address from name */
+#define M4wordlist_add 669   /* ( wid nt -- ) add name to wordlist                     */
+#define M4wordlist_last 670  /* ( wid -- nt ) get last name in a wordlist              */
+#define M4wordlist_reset 671 /* ( wid --    ) remove all user-defined names from wid   */
+#undef M4____gap             /*                       */
+#define M4xt_to_name 673     /* xt>name       ( XT -- nt ) get name from XT */
+#undef M4____gap             /*                       */
+#undef M4____gap             /*                       */
+#undef M4____gap             /*                       */
+#undef M4____gap             /*                       */
+#undef M4____gap             /*                       */
+#undef M4____gap             /*                       */
+#undef M4____gap             /*                       */
+#undef M4____gap             /*                       */
+#undef M4____gap             /*                       */
+#undef M4____gap             /*                       */
+#undef M4____gap             /*                       */
+#undef M4____gap             /*                       */
+#undef M4____gap             /*                       */
+#undef M4____gap             /*                       */
+#undef M4____gap             /*                       */
+#undef M4____gap             /*                       */
 
 /* 'm4th-impl' wordlist */
 #undef M4____gap                    /*                       */
@@ -286,8 +286,8 @@
 #define M4_ip_to_data_addr_ 756     /* must be 1st instr in word. return word's data>addr      */
 #undef M4____gap                    /*                                         */
 #undef M4____gap                    /*                                         */
-#undef M4____gap                    /*                                         */
-#define M4_leave_ 760               /* (leave)  followed by IP offset to jump          */
+#define M4_leave_ 759               /* (leave)  followed by IP offset to jump          */
+#define M4_lit_comma_ 760           /* followed by m4token, append it to current word's code/data */
 #define M4_lit2s_ 761               /* (lit-2s) followed by int16, push it to dstack   */
 #define M4_lit4s_ 762               /* (lit-4s) followed by int32, push it to dstack   */
 #define M4_lit8s_ 763               /* (lit-8s) followed by int64, push it to dstack   */
@@ -310,10 +310,10 @@
 #undef M4____gap                    /*                                         */
 #define M4_num_compiled_ 781 /* [#compiled]  code size i.e. # of tokens in word being compiled  */
 #undef M4____gap             /*                                         */
-#define M4_compile_lit_ 783  /* followed by m4token, append it to compiled code   */
-#define M4_compile_jump_ 784 /* ( token category -- sys ) compile unresolved jump */
+#undef M4____gap             /*                                         */
+#define M4_compile_jump_ 784 /* ( token category -- sys ) compile unresolved jump           */
 #define M4_compile_jump_lit_ 785 /* ( -- sys ) must be followed by m4token and its category */
-#define M4_cs_find_lit_ 786      /* followed by category. get its depth in control stack */
+#define M4_cs_find_lit_ 786      /* followed by category. get its depth in control stack    */
 #define M4____end 787
 
 #endif /* M4TH_INCLUDE_TOKEN_M4TH_MH */

@@ -114,7 +114,7 @@ FUNC_END(name_comma)
 
 
 FUNC_START(name_to_code) /* ( nt -- xt u ) */
-        ADDI(  DTOP,  WORD_OFF_XT,   REG1)            /* a = w.code         */
+        ADDI(  DTOP,  WORD_OFF_XT,   REG1)              /* a = w.code         */
         LD_uh( DTOP,       AT(DTOP, WORD_OFF_CODE_N))   /* dtop = w.code_n    */
         DPUSH( REG1)                                    /* d2   = w.code      */
 FUNC_END(name_to_code)
@@ -130,10 +130,17 @@ FUNC_START(name_to_flags) /* ( nt -- m4flags ) */
 FUNC_END(name_to_flags)
 
 
+FUNC_START(name_to_flags_store) /* ( m4flags nt -- ) */
+        DPOP(  REG1)                                 /* a = m4flags          */
+        STORh( REG1,       AT(DTOP, WORD_OFF_FLAGS)) /* w.flags = m4flags    */
+        DPOP(  DTOP)
+FUNC_END(name_to_flags_store)
+
+
 FUNC_START(name_to_string) /* ( nt -- c-addr u ) */
         LD_uh( REG1,       AT(DTOP, WORD_OFF_NAME_OFF)) /* a = w.name_off  */
         JNZ(   REG1,       TO(name_to_string.body))
-        ZERO(  DTOPw)                  /* dtop = 0               */
+        ZERO(  DTOPw)                  /* dtop = 0                */
         JUMP(              TO(name_to_string.push_reg1))
 LABEL(name_to_string.body)
         SUB2(  REG1,       DTOP)       /* dtop = m4countedstring* */

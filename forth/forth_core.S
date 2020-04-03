@@ -175,7 +175,7 @@ WORD_START(begin, base)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE)
     WORD_CODE(
-        _compile_lit_, begin, _num_compiled_, _lit_, begin, exit
+        _lit_comma_, begin, _num_compiled_, _lit_, begin, exit
     )
 WORD_END(begin)
 WORD(bl,               begin,      DSTACK(0,1), RSTACK(0,0), WORD_PURE)
@@ -321,15 +321,15 @@ WORD_START(literal, leave)
         then,
         dup, dup, to_short,
         equal, _if_, T(5),               /* if n == to_short(n)        */
-            _compile_lit_, _lit_short_,  /* append _lit_short_ to XT   */
+            _lit_comma_, _lit_short_,    /* append _lit_short_ to XT   */
             short_comma, exit,           /* append (int16)n    to XT   */
         then,
         dup, dup, to_int,
         equal, _if_, T(5),               /* if n == to_int(n)          */
-            _compile_lit_, _lit_int_,    /* append _lit_int_   to XT   */
+            _lit_comma_, _lit_int_,      /* append _lit_int_   to XT   */
             int_comma, exit,             /* append (int32)n    to XT   */
         then,
-        _compile_lit_, _lit_cell_,       /* append _lit_cell_  to XT   */
+        _lit_comma_, _lit_cell_,         /* append _lit_cell_  to XT   */
         comma,                           /* append dtop        to XT   */
         exit
       ),
@@ -419,7 +419,7 @@ WORD_START(then, swap)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_CODE(
-        _compile_lit_, then,
+        _lit_comma_, then,
         CALL(_resolve_jump_here_), exit
     )
 WORD_END(then)
@@ -456,7 +456,7 @@ WORD_START(variable,   until)
     WORD_CODE(
         zero, CALL(_create_),                  /* create word                          */
         right_bracket,                         /* start compiling                      */
-        _compile_lit_, _ip_to_data_addr_,      /* compile (ip>data>addr)               */
+        _lit_comma_, _ip_to_data_addr_,        /* compile (ip>data>addr)               */
         CALL(_finish_),                        /* finish compiling, make word findable */
         zero, cell_plus, allot, exit           /* allocate one cell                    */
     )

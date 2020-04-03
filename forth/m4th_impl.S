@@ -181,7 +181,7 @@ WORD_START(_continue_, _catch_end_)
        CALL(continue), exit
     )
 WORD_END(_continue_)
-/* ( word-kind -- sys ) read non-blanks string, create a new word for it. set LATEST */
+/* ( m4flags -- sys ) read non-blanks string, create a new word for it. set LATEST */
 WORD_START(_create_, _continue_)
     WORD_DSTACK(1,2)   /* stack effect if not jumping */
     WORD_RSTACK(0,0)
@@ -189,11 +189,12 @@ WORD_START(_create_, _continue_)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
-        CALL(parse_name),
-        dup, zero_equal,
+        dup, CALL(parse_name),                         /* ( m4flags m4flags c-addr u     ) */
+        dup, zero_equal,                               /* ( m4flags m4flags c-addr u t|f ) */
             _lit_, T(M4ERR_ZERO_LENGTH_NAME), and, throw,
-        name_comma, set_latest,
-        _lit_, colon, exit                             /* ( sys        ) */
+        name_comma, dup, set_latest,                   /* ( m4flags m4flags nt           ) */
+        name_to_flags_store,                           /* ( m4flags                      ) */
+        _lit_, colon, exit                             /* ( colon-sys                    ) */
     )
 WORD_END(_create_)
 WORD_START(_do_, _create_)
@@ -351,7 +352,15 @@ WORD_START(_leave_, _ip_to_data_addr_)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_JUMP | M4FLAG_IMMEDIATE)
     WORD_CODE(CALL(leave), exit)
 WORD_END(_leave_)
-WORD_START(_lit2s_, _leave_)
+WORD_START(_lit_comma_, _leave_)
+    WORD_DSTACK(0,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_INLINE_ALWAYS)
+    WORD_CODE(_lit_comma_, T(-1), exit)
+WORD_END(_lit_comma_)
+WORD_START(_lit2s_, _lit_comma_)
     WORD_DSTACK(0,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -495,20 +504,12 @@ WORD_START(_check_lit_, _num_compiled_)
     WORD_FLAGS(M4FLAG_CONSUMES_IP_SZt | M4FLAG_INLINE_ALWAYS)
     WORD_CODE(_check_lit_, T(-1),  exit)
 WORD_END(_check_lit_)
-WORD_START(_compile_lit_, _check_lit_)
-    WORD_DSTACK(0,0)
-    WORD_RSTACK(0,0)
-    WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
-    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_INLINE_ALWAYS)
-    WORD_CODE(_compile_lit_, T(-1), exit)
-WORD_END(_compile_lit_)
 /*
  * ( token category -- sys )
  * append unresolved jump to XT being compiled i.e. token and T(-1),
  * then push sys to dstack i.e. jump_address (= # of tokens of XT being compiled) and category.
  */
-WORD_START(_compile_jump_, _compile_lit_)
+WORD_START(_compile_jump_, _check_lit_)
     WORD_DSTACK(2,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -551,7 +552,7 @@ WORD_START(_finish_, _cs_find_lit_)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE)
     WORD_CODE(
         _check_lit_, colon, cs_drop,
-        _compile_lit_, exit,
+        _lit_comma_, exit,
         CALL(_optimize_), left_bracket,
         latest, get_current, wordlist_add, exit
     )
