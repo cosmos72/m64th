@@ -304,6 +304,7 @@
     X(14, "(check-stacks)", _check_stacks_) /* throw on stack underflow */                         \
     /* ( m4flags -- sys ) read non-blanks string, create new word for it. set LATEST */            \
     X(8, "(create)", _create_)                                                                     \
+    X(21, "(defer-uninitialized)", _defer_uninitialized_) /* throw M4ERR_DEFER_UNINITIALIZED */    \
     /* ( nt -1|1 -- ) interpret or compile name. dtop == -1 if name is immediate */                \
     X(11, "(eval-name)", _eval_name_)                                                              \
     X(13, "(eval-number)", _eval_number_) /* ( x -- ) interpret or compile number */               \

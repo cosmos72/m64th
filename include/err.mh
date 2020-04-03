@@ -58,7 +58,9 @@
 #define M4ERR_QUIT -56
 #define M4ERR_EXCEPTION_IN_SEND_OR_RECV_CHAR -57
 /* ... */
-#define M4ERR_IS_WORD -999  /* special case, not an error */
-#define M4ERR_C_ERRNO -1000 /* error is M4ERR_C_ERRNO - errno */
+
+#define M4ERR_DEFER_UNINITIALIZED -256 /* word created with DEFER is not initialized */
+/* ... */
+#define M4ERR_C_ERRNO -3500 /* error is M4ERR_C_ERRNO - errno */
 
 #endif /* M4TH_INCLUDE_ERR_MH */

@@ -206,7 +206,8 @@ WORD_START(create,     constant)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
-        _lit_, T(M4FLAG_CREATE), CALL(_create_),/* create word, mark it M4FLAG_CREATE  */
+        _lit2s_, SHORT(M4FLAG_CREATE),
+        CALL(_create_),                        /* create word, mark it M4FLAG_CREATE  */
         right_bracket,                         /* start compiling                      */
         _lit_comma_, _ip_to_data_addr_,        /* compile (ip>data>addr)               */
         _lit_comma_, _call_xt_,                /* compile (call-xt)                    */

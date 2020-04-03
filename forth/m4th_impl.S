@@ -242,7 +242,7 @@ WORD_START(_eval_name_, _else_)
         state, fetch,
         _if0_, T(12+nCALLt),
             drop, name_to_flags,
-            _lit_, T(M4FLAG_COMPILE_ONLY), and,
+            _lit2s_, SHORT(M4FLAG_COMPILE_ONLY), and,
             _if_, T(2+nCALLt),
                 CALL(_throw_compile_only_xt_),
             then,
@@ -543,8 +543,17 @@ WORD_START(_cs_find_lit_, _compile_jump_lit_)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_INLINE_ALWAYS)
     WORD_CODE(_cs_find_lit_, T(-1),  exit)
 WORD_END(_cs_find_lit_)
+/* throw M4ERR_DEFER_UNINITIALIZED */
+WORD_START(_defer_uninitialized_, _num_compiled_)
+    WORD_DSTACK(2,2)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(0)
+    WORD_CODE(_lit2s_, SHORT(M4ERR_DEFER_UNINITIALIZED), throw, exit)
+WORD_END(_defer_uninitialized_)
 /* ( sys -- ) finish compiling a word, make it findable */
-WORD_START(_finish_, _cs_find_lit_)
+WORD_START(_finish_, _defer_uninitialized_)
     WORD_DSTACK(2,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
