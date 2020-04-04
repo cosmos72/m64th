@@ -325,33 +325,25 @@ WORD_START(literal, leave)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
-    /* multiple exits & uses (ip) to access its body => cannot inline */
-    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE | M4FLAG_DATA_TOKENS)
-    WORD_CODE_AND_DATA(
-      literal,
-      WORD_CODE_TOKENS(
-        _ip_to_data_, div_token,         /* ( n taddr tn )             */
-        CALL(_any_token_gives_cell_q_),
-        _if_, T(3),                      /* if executing token gives n */
+    /* multiple exits => cannot inline */
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE)
+    WORD_CODE(
+        CALL(_optimize_literal_),        /* ( token t | n f          ) */
+        _if_, T(3),                      /* optimized token, use it    */
             token_comma, exit,           /* append token to XT, exit   */
-        then,
-        dup, dup, to_short,
+        then,                            /* ( n                      ) */
+        dup, dup, to_short,              /* ( n n to_short(n)        ) */
         equal, _if_, T(5),               /* if n == to_short(n)        */
             _lit_comma_, _lit_short_,    /* append _lit_short_ to XT   */
             short_comma, exit,           /* append (int16)n    to XT   */
-        then,
-        dup, dup, to_int,
+        then,                            /* ( n                      ) */
+        dup, dup, to_int,                /* ( n n to_int(n)          ) */
         equal, _if_, T(5),               /* if n == to_int(n)          */
             _lit_comma_, _lit_int_,      /* append _lit_int_   to XT   */
             int_comma, exit,             /* append (int32)n    to XT   */
-        then,
+        then,                            /* ( n                      ) */
         _lit_comma_, _lit_cell_,         /* append _lit_cell_  to XT   */
-        comma,                           /* append dtop        to XT   */
-        exit
-      ),
-      WORD_DATA_TOKENS(
-        zero, one, minus_one, two, three, four, eight
-      )
+        comma, exit                      /* append dtop        to XT   */
     )
 WORD_END(literal)
 WORD_START(loop, literal)

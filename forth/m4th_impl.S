@@ -470,32 +470,8 @@ WORD_START(_while0_, _while_)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_MAY_JUMP | M4FLAG_IMMEDIATE)
     WORD_CODE(_compile_jump_lit_, _while0_, _while_, exit)
 WORD_END(_while0_)
-/**
- * test whether executing one of the tokens taddr[0...tn-1] produces the given cell value
- * ( x taddr tn -- token true | x false )
- */
-WORD_START(_any_token_gives_cell_q_, _while0_)
-    WORD_DSTACK(3,2)
-    WORD_RSTACK(0,0)
-    WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
-    WORD_FLAGS(0) /* multiple exits => cannot inline */
-    WORD_CODE(
-        zero, _q_do_, T(14+nCALLt),          /* loop if tn != 0          */
-                                             /* ( x taddr )              */
-            dup_to_r, token_fetch,           /* ( x token ) (R: taddr )  */
-            CALL(_token_gives_cell_q_),      /* ( token true | x false ) (R: taddr ) */
-            _if_, T(5),
-                r_from_drop, true,           /* ( token true )           */
-                unloop, exit,                /* exit                     */
-            then,
-            r_from, token_plus,              /* ( x taddr' )             */
-        _loop_, T(-14-nCALLt),
-        drop, false, exit                    /* ( x false )              */
-    )
-WORD_END(_any_token_gives_cell_q_)
 /* ( x -- token t | x f ) try to optimize '[ x ] literal' */
-WORD_START(_optimize_literal_, _any_token_gives_cell_q_)
+WORD_START(_optimize_literal_, _while0_)
     WORD_DSTACK(1,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -703,27 +679,8 @@ WORD_START(_resolve_loop_, _resolve_jump_there_)
         CALL(_resolve_jump_there_), exit
     )
 WORD_END(_resolve_loop_)
-/**
- * test whether executing a token produces the given cell value
- * ( x token -- token true | x false )
- */
-WORD_START(_token_gives_cell_q_, _resolve_loop_)
-    WORD_DSTACK(2,2)
-    WORD_RSTACK(0,0)
-    WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
-    WORD_FLAGS(0) /* multiple exits => cannot inline */
-    WORD_CODE(
-        two_dup,                           /* ( x token x token ) */
-        _exec_token_, equal,               /* ( x token t|f     ) */
-        _if_, T(4),                        /* ( x token         ) */
-            nip, true, exit,               /* ( token true      ) */
-        then,                              /* ( x token         ) */
-        drop, false, exit                  /* ( x false         ) */
-    )
-WORD_END(_token_gives_cell_q_)
-/* ( xt -- ) always throws */
-WORD_START(_throw_compile_only_xt_, _token_gives_cell_q_)
+/* ( xt -- ) always throws M4ERR_INTERPRETING_COMPILE_ONLY_WORD */
+WORD_START(_throw_compile_only_xt_, _resolve_loop_)
     WORD_STACK_NONE() /* stack effect when not jumping */
     WORD_DSTACK(1,0)  /* stack effect when jumping */
     WORD_RSTACK(0,0)
