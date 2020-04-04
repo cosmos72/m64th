@@ -86,9 +86,9 @@ FUNC_SIZE(_do_)
 FUNC_START(_if_)
         cmp    DTOP, IMM(0);
         DPOP(  DTOP)
-        b.ne   .L_if_.enter;
+        b.ne   TO(_if_.enter);
         RELJUMP()
-.L_if_.enter:
+LABEL(_if_.enter)
         NEXTT()                      /* skip IP offset          */
 FUNC_RAWEND(_if_)
 
