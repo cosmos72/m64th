@@ -484,7 +484,7 @@ WORD_START(_optimize1_, _while0_)
         /* (ip>data) 2>r                               ( src dst             ) (R: data u        )
          * over token+                                 ( src dst src'        ) (R: data u        )
          * flip token@                                 ( src' dst tok        ) (R: data u        )
-         * 2r> 1 tokens sub bounds                     ( src dst tok data-end data )
+         * 2r> 1token sub bounds                       ( src dst tok data-end data )
          * do                                          ( src dst tok         ) (R: data-end data )
          *    dup i token@ =                           ( src dst tok t|f     ) (R: data-end data )
          *    if                                       ( src dst tok         ) (R: data-end data )
@@ -493,14 +493,15 @@ WORD_START(_optimize1_, _while0_)
          *       (optimize-copy)                       ( src dst'            )
          *       true exit                             ( src dst true        )
          *    then                                     ( src dst tok         ) (R: data-end data )
-         * 3 tokens +loop                              ( src dst tok         )
+         *    3 tokens                                 ( src dst tok 3*SZt   )
+         * +loop                                       ( src dst tok         )
          * over token!                                 ( src dst             )
          * token+ false                                ( src dst' false      )
          */
         _ip_to_data_, two_to_r,
         over, token_plus,
         flip, token_fetch,
-        two_r_from, one, tokens, sub, bounds,
+        two_r_from, one_token, sub, bounds,
         do,
             dup, i, token_fetch, equal,
             _if_, T(8+nCALLt),
@@ -509,7 +510,8 @@ WORD_START(_optimize1_, _while0_)
                 CALL(_optimize_copy_),
                 true, exit,
             then,
-        three, tokens, _plus_loop_, T(-18-nCALLt),
+            three, tokens,
+        _plus_loop_, T(-18-nCALLt),
         over, token_store,
         token_plus, false, exit
       ),
@@ -532,18 +534,18 @@ WORD_START(_optimize_copy_, _optimize1_)
          * while                                       ( dst tok       ) (R: src  )
          *    over token!                              ( dst           ) (R: src  )
          *    token+                                   ( dst'          ) (R: src  )
-         *    1 tokens r+                              ( dst'          ) (R: src' )
+         *    1token r+                                ( dst'          ) (R: src' )
          * repeat                                      ( dst tok       ) (R: src  )
          * r> drop drop                                ( dst           )
          */
         swap, to_r,
         begin,
             r_fetch, token_fetch, dup, _lit_, noop, ne,
-        _while_, T(8),
+        _while_, T(7),
             over, token_store,
             token_plus,
-            one, tokens, r_plus,
-        _repeat_, T(-16),
+            one_token, r_plus,
+        _repeat_, T(-15),
         r_from_drop, drop, exit
     )
 WORD_END(_optimize_copy_)
@@ -557,14 +559,14 @@ WORD_START(_optimize_literal_, _optimize_copy_)
     WORD_CODE_AND_DATA(
       _optimize_literal_,
       WORD_CODE_TOKENS(
-        _ip_to_data_, bounds, _do_, T(18),             /* loop on this word's data   */
+        _ip_to_data_, bounds, _do_, T(17),             /* loop on this word's data   */
             dup, i, short_fetch, equal,                /* ( x t|f   ) (R: end addr ) */
             _if_, T(8),                                /* ( x       ) (R: end addr ) */
                 drop, i, token_plus, token_fetch,      /* ( token   ) (R: end addr ) */
                 true, unloop, exit,                    /* ( token true )             */
             then,                                      /* ( x       ) (R: end addr ) */
-            one, tokens,                               /* ( x SZt   ) (R: end addr ) */
-        _plus_loop_, T(-18),                           /* ( x       )                */
+            one_token,                                 /* ( x SZt   ) (R: end addr ) */
+        _plus_loop_, T(-17),                           /* ( x       )                */
         false, exit                                    /* ( x false )                */
       ),
       WORD_DATA_TOKENS(

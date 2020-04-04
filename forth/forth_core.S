@@ -466,7 +466,7 @@ WORD_START(variable,   until)
         right_bracket,                         /* start compiling                      */
         _lit_comma_, _ip_to_data_addr_,        /* compile (ip>data>addr)               */
         CALL(_finish_),                        /* finish compiling, make word findable */
-        zero, cell_plus, allot, exit           /* allocate one cell                    */
+        one_cell, allot, exit                  /* allocate one cell                    */
     )
 WORD_END(variable)
 WORD_START(while,     variable)
@@ -478,7 +478,7 @@ WORD_START(while,     variable)
     WORD_CODE(
         _check_lit_, begin,             /* ( sys ) topmost must be 'begin' */
         _compile_jump_lit_, _while_, _while_,
-        cs_swap, exit               /* ( while-sys begin-sys )         */
+        cs_swap, exit                   /* ( while-sys begin-sys )         */
     )
 WORD(xor,              while,      DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(left_bracket,     xor,        DSTACK(0,0), RSTACK(0,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)

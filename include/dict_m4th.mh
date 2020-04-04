@@ -115,6 +115,14 @@
     X(5, "uint!", uint_store)         /* alias of int!                                  */         \
     /*X(5, "cell!", cell_store)    */ /* alias of !                                     */         \
     /*                             */ /*                                                */         \
+    X(5, "1byte", one_byte)           /* alias of 1 i.e. sizeof(byte)                   */         \
+    X(5, "1char", one_char)           /* alias of 1 i.e. sizeof(char)                   */         \
+    X(6, "1short", one_short)         /* alias of 2 i.e. sizeof(short)                  */         \
+    X(7, "1ushort", one_ushort)       /* alias of 2 i.e. sizeof(ushort)                 */         \
+    X(4, "1int", one_int)             /* alias of 4 i.e. sizeof(int)                    */         \
+    X(5, "1uint", one_uint)           /* alias of 4 i.e. sizeof(uint)                   */         \
+    X(5, "1cell", one_cell)           /* alias of SZ i.e. sizeof(cell)                  */         \
+    /*                             */ /*                                                */         \
     X(5, "byte+", byte_plus)          /* alias of 1+                                    */         \
     /* X(5, "char+", char_plus)    */ /* already in forth 'core' word set               */         \
     X(6, "short+", short_plus)        /* alias of 2+                                    */         \
@@ -239,6 +247,7 @@
     X(6, ">token", to_token)             /* alias of to_SZtu,       no dedicated m4token */        \
     X(6, "token!", token_store)          /* alias of _SZtu_store,   no dedicated m4token */        \
     X(6, "token@", token_fetch)          /* alias of _SZtu_fetch,   no dedicated m4token */        \
+    X(6, "1token", one_token)            /* alias of _SZt,          no dedicated m4token */        \
     X(6, "token+", token_plus)           /* alias of _SZt_plus,     no dedicated m4token */        \
     X(6, "tokens", tokens)               /* alias of _SZt_times,    no dedicated m4token */        \
     X(11, "token-align", token_align)    /* alias of _SZt_align,    no dedicated m4token */        \

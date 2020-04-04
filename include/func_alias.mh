@@ -52,34 +52,41 @@
 /** m4th-user aliases */
 #define m4fr2nd_fetch m4fi_prime /* r2nd@ */
 
-#define m4fchar_fetch m4fc_fetch       /* char@   alias for c@     - no dedicated m4func */
-#define m4fbyte_store m4fc_store       /* byte!   alias for c!     - no dedicated m4func */
-#define m4fchar_store m4fc_store       /* char!   alias for c!     - no dedicated m4func */
-#define m4fushort_store m4fshort_store /* ushort! alias for short! - no dedicated m4func */
-#define m4fuint_store m4fint_store     /* uint!   alias for int!   - no dedicated m4func */
+#define m4fchar_fetch m4fc_fetch                /* char@   alias for c@     - no dedicated m4func */
+#define m4fbyte_store m4fc_store                /* byte!   alias for c!     - no dedicated m4func */
+#define m4fchar_store m4fc_store                /* char!   alias for c!     - no dedicated m4func */
+#define m4fushort_store m4fshort_store          /* ushort! alias for short! - no dedicated m4func */
+#define m4fuint_store m4fint_store              /* uint!   alias for int!   - no dedicated m4func */
+#define m4ftoken_store CAT3(m4f_, SZt, u_store) /* token!        */
 
-#define m4fbytes m4fnoop         /* bytes */
-#define m4fbyte_plus m4fone_plus /* byte+ */
-#define m4fchars m4fnoop         /* chars */
-#define m4fchar_plus m4fone_plus /* char+ */
+#define m4fone_byte m4fone           /* 1byte   */
+#define m4fone_char m4fone           /* 1char   */
+#define m4fone_short m4ftwo          /* 1short  */
+#define m4fone_ushort m4ftwo         /* 1ushort */
+#define m4fone_int m4ffour           /* 1int    */
+#define m4fone_uint m4ffour          /* 1uint   */
+#define m4fone_cell CAT2(m4f_, SZ)   /* 1cell   */
+#define m4fone_token CAT2(m4f_, SZt) /* 1token  */
 
-#define m4fshorts m4ftwo_times     /* shorts */
-#define m4fshort_plus m4ftwo_plus  /* short+ */
-#define m4fushorts m4ftwo_times    /* ushorts */
-#define m4fushort_plus m4ftwo_plus /* ushort+ */
+#define m4fbyte_plus m4fone_plus             /* byte+   */
+#define m4fchar_plus m4fone_plus             /* char+   */
+#define m4fshort_plus m4ftwo_plus            /* short+  */
+#define m4fushort_plus m4ftwo_plus           /* ushort+ */
+#define m4fint_plus m4ffour_plus             /* int+    */
+#define m4fuint_plus m4ffour_plus            /* uint+   */
+#define m4fcell_plus CAT3(m4f_, SZ, _plus)   /* cell+   */
+#define m4ftoken_plus CAT3(m4f_, SZt, _plus) /* token+  */
 
-#define m4fint_plus m4ffour_plus  /* int+ */
-#define m4fints m4ffour_times     /* ints */
-#define m4fuint_plus m4ffour_plus /* uint+ */
-#define m4fuints m4ffour_times    /* uints */
+#define m4fbytes m4fnoop                  /* bytes   */
+#define m4fchars m4fnoop                  /* chars   */
+#define m4fshorts m4ftwo_times            /* shorts  */
+#define m4fushorts m4ftwo_times           /* ushorts */
+#define m4fints m4ffour_times             /* ints    */
+#define m4fuints m4ffour_times            /* uints   */
+#define m4fcells CAT3(m4f_, SZ, _times)   /* cells   */
+#define m4ftokens CAT3(m4f_, SZt, _times) /* tokens  */
 
-#define m4fcell_plus CAT3(m4f_, SZ, _plus) /* cell+    */
-#define m4fcells CAT3(m4f_, SZ, _times)    /* cells    */
-
-#define m4ftoken_plus CAT3(m4f_, SZt, _plus)       /* token+        */
-#define m4ftoken_store CAT3(m4f_, SZt, u_store)    /* token!        */
 #define m4ftoken_fetch CAT3(m4f_, SZt, u_fetch)    /* token@        */
-#define m4ftokens CAT3(m4f_, SZt, _times)          /* tokens        */
 #define m4ftoken_align CAT3(m4f_, SZt, _align)     /* token-align   */
 #define m4ftoken_aligned CAT3(m4f_, SZt, _aligned) /* token-aligned */
 
@@ -92,26 +99,26 @@
 #define m4fdiv_cell CAT3(m4f_, SZ, _div)   /* /cell    => SZ/  */
 #define m4fdiv_token CAT3(m4f_, SZt, _div) /* /token   => SZt/ */
 
-#define m4fto_token CAT3(m4f_to_, SZt, u) /* to-token => to-SZt   */
+#define m4fto_token CAT3(m4f_to_, SZt, u) /* >token => >SZt   */
 
 /* needed by m4fcell_plus, m4fcells, m4fdiv_cell, m4ftoken_plus, m4ftokens, m4fdiv_token above */
 #define m4f_0 m4fzero              /* 0        */
 #define m4f_1 m4fone               /* 1        */
-#define m4f_1_times m4fnoop        /* 1*       */
-#define m4f_1_div m4fnoop          /* 1/       */
 #define m4f_2 m4ftwo               /* 2        */
-#define m4f_2_times m4ftwo_times   /* 2*       */
-#define m4f_2_plus m4ftwo_plus     /* 2+       */
-#define m4f_2_minus m4ftwo_minus   /* 2-       */
-#define m4f_2_div m4ftwo_div       /* 2/       */
 #define m4f_3 m4fthree             /* 3        */
 #define m4f_4 m4ffour              /* 4        */
-#define m4f_4_times m4ffour_times  /* 4*       */
-#define m4f_4_plus m4ffour_plus    /* 4+       */
-#define m4f_4_div m4ffour_div      /* 4/       */
 #define m4f_8 m4feight             /* 8        */
+#define m4f_1_times m4fnoop        /* 1*       */
+#define m4f_2_times m4ftwo_times   /* 2*       */
+#define m4f_4_times m4ffour_times  /* 4*       */
 #define m4f_8_times m4feight_times /* 8*       */
+#define m4f_2_plus m4ftwo_plus     /* 2+       */
+#define m4f_4_plus m4ffour_plus    /* 4+       */
 #define m4f_8_plus m4feight_plus   /* 8+       */
+#define m4f_2_minus m4ftwo_minus   /* 2-       */
+#define m4f_1_div m4fnoop          /* 1/       */
+#define m4f_2_div m4ftwo_div       /* 2/       */
+#define m4f_4_div m4ffour_div      /* 4/       */
 #define m4f_8_div m4feight_div     /* 8/       */
 
 /* needed by m4fto_token above */

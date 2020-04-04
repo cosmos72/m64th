@@ -53,6 +53,14 @@
 #define m4div_int m4four_div     /* /int      divide dtop by sizeof(short)  */
 #define m4div_uint m4four_div    /* /uint     divide dtop by sizeof(ushort) */
 #undef m4____gap                 /*                       */
+#define m4one_byte m4one         /* 1byte     => 1        */
+#define m4one_char m4one         /* 1char     => 1        */
+#define m4one_short m4two        /* 1short    => 2        */
+#define m4one_ushort m4two       /* 1ushort   => 2        */
+#define m4one_int m4four         /* 1int      => 4        */
+#define m4one_uint m4four        /* 1uint     => 4        */
+#define m4one_cell CAT2(m4_, SZ) /* 1cell     => SZ       */
+#undef m4____gap                 /*                       */
 #define m4byte_plus m4one_plus   /* byte+     => 1+       */
 #define m4short_plus m4two_plus  /* short+    => 2+       */
 #define m4ushort_plus m4two_plus /* ushort+   => 2+       */
@@ -74,12 +82,16 @@
 #define m4to_token CAT3(m4_to_, SZt, u)          /* >token        => >SZt         */
 #define m4token_store CAT3(m4_, SZt, u_store)    /* token!        => _SZtu_store  */
 #define m4token_fetch CAT3(m4_, SZt, u_fetch)    /* token@        => _SZtu_fetch  */
+#define m4one_token CAT(m4_, SZt)                /* 1token        => _SZt         */
 #define m4token_plus CAT3(m4_, SZt, _plus)       /* token+        => _SZt_plus    */
 #define m4tokens CAT3(m4_, SZt, _times)          /* tokens        => _SZt_times   */
 #define m4token_align CAT3(m4_, SZt, _align)     /* token-align   => _SZt_align   */
 #define m4token_aligned CAT3(m4_, SZt, _aligned) /* token-aligned => _SZt_aligned */
 
-/* needed by m4cells, m4cell_plus, m4div_cell, m4tokens, m4token_plus, m4div_token above */
+/*
+ * needed by m4one_cell, m4cells, m4cell_plus, m4div_cell
+ * and by m4one_token, m4tokens, m4token_plus, m4div_token above
+ */
 #define m4_0 m4zero              /* 0        */
 #define m4_1 m4one               /* 1        */
 #define m4_1_times m4noop        /* 1*       */
@@ -167,6 +179,14 @@
 #define M4div_int M4four_div     /* /int      divide dtop by sizeof(short)  */
 #define M4div_uint M4four_div    /* /uint     divide dtop by sizeof(ushort) */
 #undef M4____gap                 /*                       */
+#define M4one_byte M4one         /* 1byte     => 1        */
+#define M4one_char M4one         /* 1char     => 1        */
+#define M4one_short M4two        /* 1short    => 2        */
+#define M4one_ushort M4two       /* 1ushort   => 2        */
+#define M4one_int M4four         /* 1int      => 4        */
+#define M4one_uint M4four        /* 1uint     => 4        */
+#define M4one_cell CAT2(M4_, SZ) /* 1cell     => SZ       */
+#undef M4____gap                 /*                       */
 #define M4byte_plus M4one_plus   /* byte+     => 1+       */
 #define M4short_plus M4two_plus  /* short+    => 2+       */
 #define M4ushort_plus M4two_plus /* ushort+   => 2+       */
@@ -188,12 +208,16 @@
 #define M4to_token CAT3(M4_to_, SZt, u)          /* >token        => >SZt         */
 #define M4token_store CAT3(M4_, SZt, u_store)    /* token!        => _SZtu_store  */
 #define M4token_fetch CAT3(M4_, SZt, u_fetch)    /* token@        => _SZtu_fetch  */
+#define M4one_token CAT2(M4_, SZt)               /* 1token        => _SZt         */
 #define M4token_plus CAT3(M4_, SZt, _plus)       /* token+        => _SZt_plus    */
 #define M4tokens CAT3(M4_, SZt, _times)          /* tokens        => _SZt_times   */
 #define M4token_align CAT3(M4_, SZt, _align)     /* token-align   => _SZt_align   */
 #define M4token_aligned CAT3(M4_, SZt, _aligned) /* token-aligned => _SZt_aligned */
 
-/* needed by M4cells, M4cell_plus, M4div_cell, M4tokens, M4token_plus, M4div_token above */
+/*
+ * needed by M4one_cell, M4cells, M4cell_plus, M4div_cell
+ * and by M4one_token, M4tokens, M4token_plus, M4div_token above
+ */
 #define M4_0 M4zero              /* 0        */
 #define M4_1 M4one               /* 1        */
 #define M4_1_times M4noop        /* 1*       */
