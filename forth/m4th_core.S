@@ -82,8 +82,8 @@ WORD_START(ibuf_find_char, compile_string_comma)
         /*
          * 2dup 2>r drop iobuf>data trail r@           ( addr addr u ch   ) (R: io ch  )
          * string-find-char dup                        ( addr u' u'       ) (R: io ch  )
-         * i' iobuf>pos +!                             ( addr u           ) (R: io ch  )
-         * i' iobuf>data                               ( addr u addr' u'  ) (R: io ch  )
+         * r2nd@ iobuf>pos +!                          ( addr u           ) (R: io ch  )
+         * r2nd@ iobuf>data                            ( addr u addr' u'  ) (R: io ch  )
          * if0                                         ( addr u addr'     ) (R: io ch  )
          *    drop 2r> 2drop exit                      ( addr u           )
          * then                                        ( addr u addr'     ) (R: io ch  )
@@ -93,8 +93,8 @@ WORD_START(ibuf_find_char, compile_string_comma)
          */
         two_dup_two_to_r, drop, iobuf_data, trail, r_fetch,
         string_find_char, dup,
-        i_prime, iobuf_pos, plus_store,
-        i_prime, iobuf_data,
+        r2nd_fetch, iobuf_pos, plus_store,
+        r2nd_fetch, iobuf_data,
         _if0_, T(4),
             drop, two_r_from_two_drop, exit,
         then,

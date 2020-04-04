@@ -232,7 +232,8 @@ WORD_START(repl,  rdepth)
         _repeat_, T(-27-6*nCALLt), exit
     )
 WORD_END(repl)
-WORD(squared,          repl,           DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD(r2nd_fetch,      repl,           DSTACK(0,1), RSTACK(2,2), WORD_R_PURE)
+WORD(squared,          r2nd_fetch,    DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(sub,              squared,        DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD_START(minus_roll, sub)
     WORD_DSTACK(1,0) /* DSTACK(x+1,x)   */

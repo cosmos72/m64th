@@ -134,6 +134,7 @@
 #define m4cs_roll m4two_roll
 #define m4minus_cs_roll m4minus_two_roll
 #define m4cs_swap m4two_swap
+#define m4r2nd_fetch m4i_prime
 
 /* -------------------------------------------------------------------------- */
 /* M4* numeric values have uppercase prefix 'M4'                              */
@@ -246,5 +247,6 @@
 #define M4cs_roll M4two_roll
 #define M4minus_cs_roll M4minus_two_roll
 #define M4cs_swap M4two_swap
+#define M4r2nd_fetch M4i_prime
 
 #endif /* M4TH_INCLUDE_TOKEN_ALIAS_MH */

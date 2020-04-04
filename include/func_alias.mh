@@ -45,11 +45,13 @@
 #define m4fcolon m4f_missing_
 
 /** forth 'core ext' word set aliases */
-#define m4ffalse m4fzero     /* false */
-#define m4ftrue m4fminus_one /* true  */
-#define m4fr_fetch m4fi      /* r@    */
+#define m4ffalse m4fzero     /* false  */
+#define m4ftrue m4fminus_one /* true   */
+#define m4fr_fetch m4fi      /* r@     */
 
 /** m4th-user aliases */
+#define m4fr2nd_fetch m4fi_prime /* r2nd@ */
+
 #define m4fchar_fetch m4fc_fetch       /* char@   alias for c@     - no dedicated m4func */
 #define m4fbyte_store m4fc_store       /* byte!   alias for c!     - no dedicated m4func */
 #define m4fchar_store m4fc_store       /* char!   alias for c!     - no dedicated m4func */

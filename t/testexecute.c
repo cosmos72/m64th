@@ -511,8 +511,8 @@ static m4testexecute testexecute_c[] = {
 };
 
 static m4testexecute testexecute_d[] = {
-    /* ----------------------------- literal, (call) ------------------------ */
-    {"(lit-token) T(7)", {m4_lit_, T(7), m4bye}, {{}, {}}, {{1, {7}}, {}}, {}},
+    /* ----------------------------- literal -------------------------------- */
+    {"(lit-short) SHORT(7)", {m4_lit_short_, SHORT(7), m4bye}, {{}, {}}, {{1, {7}}, {}}, {}},
     {"(lit-int) INT(0x10000)",
      {m4_lit_int_, INT(0x10000), m4bye},
      {{}, {}},

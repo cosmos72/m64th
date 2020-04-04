@@ -155,7 +155,7 @@ FUNC_START(i_minus)            /* i-  m4th-user */
 FUNC_END(i_minus)
 
 
-FUNC_START(i_prime)            /* i' m4th-user */
+FUNC_START(i_prime)            /* i' and r2nd@ m4th-user */
         DPUSH( DTOP)
         LOAD(  DTOP, AT(RSTK))
 FUNC_END(i_prime)

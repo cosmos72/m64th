@@ -100,47 +100,48 @@
 
 #define DICT_WORDS_M4TH_USER(X)                                                                    \
     DICT_TOKENS_M4TH_USER(X)                                                                       \
-    X(5, "/byte", div_byte)            /* alias of noop                                  */        \
-    X(5, "/char", div_char)            /* alias of noop                                  */        \
-    X(6, "/short", div_short)          /* alias of 2/                                    */        \
-    X(7, "/ushort", div_ushort)        /* alias of 2/                                    */        \
-    X(4, "/int", div_int)              /* alias of 4/                                    */        \
-    X(5, "/uint", div_uint)            /* alias of 4/                                    */        \
-    X(5, "/cell", div_cell)            /* alias of SZ/                                   */        \
-    /*                             */  /*                                                */        \
-    X(5, "char@", char_fetch)          /* alias of c@                                    */        \
-    X(5, "byte!", byte_store)          /* alias of c!                                    */        \
-    X(5, "char!", char_store)          /* alias of c!                                    */        \
-    X(7, "ushort!", ushort_store)      /* alias of short!                                */        \
-    X(5, "uint!", uint_store)          /* alias of int!                                  */        \
-    /*X(5, "cell!", cell_store)    */  /* alias of !                                     */        \
-    /*                             */  /*                                                */        \
-    X(5, "byte+", byte_plus)           /* alias of 1+                                    */        \
-    /* X(5, "char+", char_plus)    */  /* already in forth 'core' word set               */        \
-    X(6, "short+", short_plus)         /* alias of 2+                                    */        \
-    X(7, "ushort+", ushort_plus)       /* alias of 2+                                    */        \
-    X(4, "int+", int_plus)             /* alias of 4+                                    */        \
-    X(5, "uint+", uint_plus)           /* alias of 4+                                    */        \
-    /*X(5, "cell+", cell_plus)     */  /* already in forth 'core' word set               */        \
-    /*                             */  /*                                                */        \
-    X(5, "bytes", bytes)               /*                                                */        \
-    /* X(5, "chars", chars) */         /* already in forth 'core' word set               */        \
-    X(6, "shorts", shorts)             /* alias of 2*                                    */        \
-    X(7, "ushorts", ushorts)           /* alias of 2*                                    */        \
-    X(4, "ints", ints)                 /* alias of 4*                                    */        \
-    X(5, "uints", uints)               /* alias of 4*                                    */        \
-    /*X(5, "cells", cells)         */  /* already in forth 'core' word set               */        \
-    /*                             */  /*                                                */        \
-    X(5, "break", break)               /* TODO jump after 'loop', 'repeat'...            */        \
-    X(8, "continue", continue)         /* TODO jump to 'loop', 'repeat'...               */        \
-    X(7, "cs-drop", cs_drop)           /* ( sys -- )                                     */        \
-    X(6, "cs-dup", cs_dup)             /* ( sys -- sys sys )                             */        \
-    X(8, "-cs-roll", minus_cs_roll)    /* ( ... cs-depth -- ... )                        */        \
-    X(7, "cs-swap", cs_swap)           /* ( a_sys b_sys -- b_sys a_sys )                 */        \
-    X(9, "ex>string", ex_to_string)    /* ( ex -- c-addr u ) get exception name          */        \
-    X(9, "interpret", interpret)       /* one iteration of forth interpret/compile loop  */        \
-    X(4, "repl", repl)                 /* call INTERPRET repeatedly until IN I/O error   */        \
-    X(8, "string<>", string_ne)        /* ( addr1 addr2 u -- addr1 addr2 u t|f )         */        \
+    X(5, "/byte", div_byte)           /* alias of noop                                  */         \
+    X(5, "/char", div_char)           /* alias of noop                                  */         \
+    X(6, "/short", div_short)         /* alias of 2/                                    */         \
+    X(7, "/ushort", div_ushort)       /* alias of 2/                                    */         \
+    X(4, "/int", div_int)             /* alias of 4/                                    */         \
+    X(5, "/uint", div_uint)           /* alias of 4/                                    */         \
+    X(5, "/cell", div_cell)           /* alias of SZ/                                   */         \
+    /*                             */ /*                                                */         \
+    X(5, "char@", char_fetch)         /* alias of c@                                    */         \
+    X(5, "byte!", byte_store)         /* alias of c!                                    */         \
+    X(5, "char!", char_store)         /* alias of c!                                    */         \
+    X(7, "ushort!", ushort_store)     /* alias of short!                                */         \
+    X(5, "uint!", uint_store)         /* alias of int!                                  */         \
+    /*X(5, "cell!", cell_store)    */ /* alias of !                                     */         \
+    /*                             */ /*                                                */         \
+    X(5, "byte+", byte_plus)          /* alias of 1+                                    */         \
+    /* X(5, "char+", char_plus)    */ /* already in forth 'core' word set               */         \
+    X(6, "short+", short_plus)        /* alias of 2+                                    */         \
+    X(7, "ushort+", ushort_plus)      /* alias of 2+                                    */         \
+    X(4, "int+", int_plus)            /* alias of 4+                                    */         \
+    X(5, "uint+", uint_plus)          /* alias of 4+                                    */         \
+    /*X(5, "cell+", cell_plus)     */ /* already in forth 'core' word set               */         \
+    /*                             */ /*                                                */         \
+    X(5, "bytes", bytes)              /*                                                */         \
+    /* X(5, "chars", chars) */        /* already in forth 'core' word set               */         \
+    X(6, "shorts", shorts)            /* alias of 2*                                    */         \
+    X(7, "ushorts", ushorts)          /* alias of 2*                                    */         \
+    X(4, "ints", ints)                /* alias of 4*                                    */         \
+    X(5, "uints", uints)              /* alias of 4*                                    */         \
+    /*X(5, "cells", cells)         */ /* already in forth 'core' word set               */         \
+    /*                             */ /*                                                */         \
+    X(5, "break", break)              /* TODO jump after 'loop', 'repeat'...            */         \
+    X(8, "continue", continue)        /* TODO jump to 'loop', 'repeat'...               */         \
+    X(7, "cs-drop", cs_drop)          /* ( sys -- )                                     */         \
+    X(6, "cs-dup", cs_dup)            /* ( sys -- sys sys )                             */         \
+    X(8, "-cs-roll", minus_cs_roll)   /* ( ... cs-depth -- ... )                        */         \
+    X(7, "cs-swap", cs_swap)          /* ( a_sys b_sys -- b_sys a_sys )                 */         \
+    X(9, "ex>string", ex_to_string)   /* ( ex -- c-addr u ) get exception name          */         \
+    X(9, "interpret", interpret)      /* one iteration of forth interpret/compile loop  */         \
+    X(4, "repl", repl)                /* call INTERPRET repeatedly until IN I/O error   */         \
+    X(5, "r2nd@", r2nd_fetch)   /* alias of '2r@ drop' i.e. fetch second item from return stack */ \
+    X(8, "string<>", string_ne) /* ( addr1 addr2 u -- addr1 addr2 u t|f )         */               \
     X(11, "string-ci<>", string_ci_ne) /* ( addr1 addr2 u -- addr1 addr2 u t|f )         */        \
     /* ( caddr n -- caddr' n' x t|f ) convert string to number, recognizing base & sign  */        \
     X(13, "string>number", string_to_number)                                                       \
