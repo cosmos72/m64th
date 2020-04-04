@@ -67,6 +67,7 @@
 
 #define m4_SZ_times CAT3(m4_, SZ, _times) /* _SZ*      needed by cells   */
 #define m4_SZ_plus CAT3(m4_, SZ, _plus)   /* _SZ+      needed by cell+   */
+#define m4_SZ_div CAT3(m4_, SZ, _div)     /* _SZ/      needed by /cell   */
 
 #define m4div_cell CAT3(m4_, SZ, _div)           /* /cell         => _SZ/         */
 #define m4div_token CAT3(m4_, SZt, _div)         /* /token        => _SZt/        */
@@ -180,6 +181,7 @@
 
 #define M4_SZ_times CAT3(M4_, SZ, _times) /* _SZ*      needed by cells   */
 #define M4_SZ_plus CAT3(M4_, SZ, _plus)   /* _SZ+      needed by cell+   */
+#define M4_SZ_div CAT3(M4_, SZ, _div)     /* _SZ/      needed by /cell   */
 
 #define M4div_cell CAT3(M4_, SZ, _div)           /* /cell         => _SZ/         */
 #define M4div_token CAT3(M4_, SZt, _div)         /* /token        => _SZt/        */

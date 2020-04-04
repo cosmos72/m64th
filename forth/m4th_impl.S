@@ -22,6 +22,7 @@
 #include "../include/dict.mh"
 #include "../include/dict_m4th.mh"
 #include "../include/err.mh"
+#include "../include/opt.mh"
 
 /* clang-format off */
 
@@ -470,8 +471,84 @@ WORD_START(_while0_, _while_)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_MAY_JUMP | M4FLAG_IMMEDIATE)
     WORD_CODE(_compile_jump_lit_, _while0_, _while_, exit)
 WORD_END(_while0_)
+/* ( src-addr dst-addr -- src-addr' dst-addr' t|f ) optimize a single token being compiled  */
+WORD_START(_optimize1_, _while0_)
+    WORD_DSTACK(2,3)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_DATA_TOKENS)
+    WORD_CODE_AND_DATA(
+      _optimize1_,
+      WORD_CODE_TOKENS(
+        /* (ip>data) 2>r                               ( src dst             ) (R: data u        )
+         * over token+                                 ( src dst src'        ) (R: data u        )
+         * flip token@                                 ( src' dst tok        ) (R: data u        )
+         * 2r> 1 tokens sub bounds                     ( src dst tok data-end data )
+         * do                                          ( src dst tok         ) (R: data-end data )
+         *    dup i token@ =                           ( src dst tok t|f     ) (R: data-end data )
+         *    if                                       ( src dst tok         ) (R: data-end data )
+         *       drop i unloop                         ( src dst data        )
+         *       swap                                  ( src data dst        )
+         *       (optimize-copy)                       ( src dst'            )
+         *       true exit                             ( src dst true        )
+         *    then                                     ( src dst tok         ) (R: data-end data )
+         * 3 tokens +loop                              ( src dst tok         )
+         * over token!                                 ( src dst             )
+         * token+ false                                ( src dst' false      )
+         */
+        _ip_to_data_, two_to_r,
+        over, token_plus,
+        flip, token_fetch,
+        two_r_from, one, tokens, sub, bounds,
+        do,
+            dup, i, token_fetch, equal,
+            _if_, T(8+nCALLt),
+                drop, i, unloop,
+                swap,
+                CALL(_optimize_copy_),
+                true, exit,
+            then,
+        three, tokens, _plus_loop_, T(-18-nCALLt),
+        over, token_store,
+        token_plus, false, exit
+      ),
+      WORD_DATA_TOKENS(
+        OPT1_BODY(OPT1_TO_TOKENS, noop) _missing_
+      )
+    )
+WORD_END(_optimize1_)
+/* ( src dst -- dst' ) copy tokens from src to dst until 'noop' */
+WORD_START(_optimize_copy_, _optimize1_)
+    WORD_DSTACK(2,1)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        /* swap >r                                     ( dst           ) (R: src  )
+         * begin                                       ( dst           ) (R: src  )
+         *    r@ token@ dup ' noop <>                  ( dst tok t|f   ) (R: src  )
+         * while                                       ( dst tok       ) (R: src  )
+         *    over token!                              ( dst           ) (R: src  )
+         *    token+                                   ( dst'          ) (R: src  )
+         *    1 tokens r+                              ( dst'          ) (R: src' )
+         * repeat                                      ( dst tok       ) (R: src  )
+         * r> drop drop                                ( dst           )
+         */
+        swap, to_r,
+        begin,
+            r_fetch, token_fetch, dup, _lit_, noop, ne,
+        _while_, T(8),
+            over, token_store,
+            token_plus,
+            one, tokens, r_plus,
+        _repeat_, T(-16),
+        r_from_drop, drop, exit
+    )
+WORD_END(_optimize_copy_)
 /* ( x -- token t | x f ) try to optimize '[ x ] literal' */
-WORD_START(_optimize_literal_, _while0_)
+WORD_START(_optimize_literal_, _optimize_copy_)
     WORD_DSTACK(1,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()

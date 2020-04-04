@@ -20,12 +20,13 @@
 #ifndef M4TH_INCLUDE_OPT_MH
 #define M4TH_INCLUDE_OPT_MH
 
+#include "macro.mh"
+
 /* optimize a single token. right hand side must be at most two tokens */
-#define OPT1_BODY(x, _)               /* '_' means noop                  */                        \
+#define OPT1_BODY(x, _)               /* '_' means noop            */                              \
     x(two_drop, /*=>*/ drop, drop)    /* 2drop    => drop drop (allows further optimizations) */   \
-        x(div_cell, /*=>*/ SZ_div)    /* /cell    => SZ/           */                              \
-        x(cell_plus, /*=>*/ SZ_plus)  /* cell+    => SZ+           */                              \
-        x(cells, /*=>*/ SZ_times)     /* cells    => SZ*           */                              \
+        x(cell_plus, /*=>*/ _SZ_plus) /* cell+    => SZ+           */                              \
+        x(cells, /*=>*/ _SZ_times)    /* cells    => SZ*           */                              \
         x(char_plus, /*=>*/ one_plus) /* char+    => 1+            */                              \
         x(chars, /*=>*/ _)            /* chars    =>               */                              \
         x(false, /*=>*/ zero)         /* false    => 0             */                              \
@@ -488,13 +489,12 @@
         x(swap, over, plus, /*=>*/ bounds)           /* swap   over  +     => bounds      */       \
         x(trail, plus, swap, /*=>*/ bounds)          /* trail  +     swap  => bounds      */
 
-#define FIRST_2_ARGS(a, b, ...) a, b
-#define FIRST_3_ARGS(a, b, c, ...) a, b, c
+#define OPT1_TO_TOKENS(a, ...) a, FIRST_2_ARGS(__VA_ARGS__, noop),
 #define OPT2_TO_TOKENS(a, b, ...) a, b, FIRST_2_ARGS(__VA_ARGS__, noop),
 #define OPT3_TO_TOKENS(a, b, c, ...) a, b, c, FIRST_3_ARGS(__VA_ARGS__, noop, noop),
 
+/* OPT1_BODY(OPT1_TO_TOKENS, noop) */
 /* OPT2_BODY(OPT2_TO_TOKENS, noop) */
-
-OPT3_BODY(OPT3_TO_TOKENS, noop)
+/* OPT3_BODY(OPT3_TO_TOKENS, noop) */
 
 #endif /* M4TH_INCLUDE_OPT_MH */

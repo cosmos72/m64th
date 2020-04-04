@@ -635,6 +635,29 @@ static m4testexecute testexecute_d[] = {
      {}},
 };
 
+static const m4token testoptimize_noop[] = {m4noop};
+static const m4token testoptimize_zero[] = {m4zero, m4noop};
+static const m4token testoptimize_nip_dup[] = {m4nip, m4dup, m4noop};
+
+static m4testexecute testexecute_e[] = {
+    /* ----------------------------- (optimize-...) ------------------------- */
+    {"noop (optimize-copy)",
+     {m4here, CALL(_optimize_copy_), m4here, m4minus, m4allot, m4bye},
+     {{1, {(m4cell)testoptimize_noop}}, {}},
+     {{}, {}},
+     {}},
+    {"zero (optimize-copy)",
+     {m4here, CALL(_optimize_copy_), m4here, m4minus, m4allot, m4bye},
+     {{1, {(m4cell)testoptimize_zero}}, {}},
+     {{}, {}},
+     {1, {m4zero}}},
+    {"nip dup (optimize-copy)",
+     {m4here, CALL(_optimize_copy_), m4here, m4minus, m4allot, m4bye},
+     {{1, {(m4cell)testoptimize_nip_dup}}, {}},
+     {{}, {}},
+     {2, {m4nip, m4dup}}},
+};
+
 static const char teststr_empty[] = "";
 static const char teststr_hash[] = "#";
 static const char teststr_dollar[] = "$";
@@ -662,7 +685,7 @@ static const char teststr_dollar_ffffffffffffffff[] = "$ffffffffffffffff";
 #define TESTSTR_n(name, n, ...) ((m4cell)(teststr##name + n)), (sizeof(teststr##name) - n - 1)
 #define TESTSTR(...) TESTSTR_n(__VA_ARGS__, 0)
 
-static m4testexecute testexecute_e[] = {
+static m4testexecute testexecute_f[] = {
     /* ----------------------------- base ----------------------------------- */
     {"base @", {m4base, m4fetch, m4bye}, {{}, {}}, {{1, {10}}, {}}, {}},
     {"hex", {CALL(hex), m4base, m4fetch, m4bye}, {{}, {}}, {{1, {16}}, {}}, {}},
@@ -1001,7 +1024,7 @@ static sum_triplets_ret test_sum_triplets(m4cell a, m4cell b, m4cell c, m4cell d
     return ret;
 }
 
-static m4testexecute testexecute_f[] = {
+static m4testexecute testexecute_g[] = {
     /* ----------------------------- (c-call) --------------------------------- */
     {"(c-call) test_noop",
      {m4_c_arg_0_, m4_c_call_, CELL(test_noop), m4_c_ret_0_, m4bye},
@@ -1358,11 +1381,12 @@ void m4th_testbench_crc_c(FILE *out) {
 
 m4cell m4th_testexecute(m4th *m, FILE *out) {
     m4testexecute *t[] = {
-        testexecute_a, testexecute_b, testexecute_c, testexecute_d, testexecute_e, testexecute_f,
+        testexecute_a, testexecute_b, testexecute_c, testexecute_d,
+        testexecute_e, testexecute_f, testexecute_g,
     };
     const m4cell n[] = {
-        N_OF(testexecute_a), N_OF(testexecute_b), N_OF(testexecute_c),
-        N_OF(testexecute_d), N_OF(testexecute_e), N_OF(testexecute_f),
+        N_OF(testexecute_a), N_OF(testexecute_b), N_OF(testexecute_c), N_OF(testexecute_d),
+        N_OF(testexecute_e), N_OF(testexecute_f), N_OF(testexecute_g),
     };
     m4testcount count = {};
     m4cell i;
