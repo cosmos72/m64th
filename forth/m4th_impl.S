@@ -494,7 +494,32 @@ WORD_START(_any_token_gives_cell_q_, _while0_)
         drop, false, exit                    /* ( x false )              */
     )
 WORD_END(_any_token_gives_cell_q_)
-WORD(_num_compiled_,_any_token_gives_cell_q_,DSTACK(0,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
+/* ( x -- token t | x f ) try to optimize '[ x ] literal' */
+WORD_START(_optimize_literal_, _any_token_gives_cell_q_)
+    WORD_DSTACK(1,2)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_DATA_TOKENS) /* multiple exits => cannot inline */
+    WORD_CODE_AND_DATA(
+      _optimize_literal_,
+      WORD_CODE_TOKENS(
+        _ip_to_data_, bounds, _do_, T(18),             /* loop on this word's data   */
+            dup, i, short_fetch, equal,                /* ( x t|f   ) (R: end addr ) */
+            _if_, T(8),                                /* ( x       ) (R: end addr ) */
+                drop, i, token_plus, token_fetch,      /* ( token   ) (R: end addr ) */
+                true, unloop, exit,                    /* ( token true )             */
+            then,                                      /* ( x       ) (R: end addr ) */
+            one, tokens,                               /* ( x SZt   ) (R: end addr ) */
+        _plus_loop_, T(-18),                           /* ( x       )                */
+        false, exit                                    /* ( x false )                */
+      ),
+      WORD_DATA_TOKENS(
+        T(-1), minus_one, T(0), zero, T(1), one, T(2), two, T(3), three, T(4), four, T(8), eight
+      )
+    )
+WORD_END(_optimize_literal_)
+WORD(_num_compiled_,_optimize_literal_,DSTACK(0,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
 /* ( x -- x ) followed by e = expected x. throws if x <> e */
 WORD_START(_check_lit_, _num_compiled_)
     WORD_DSTACK(2,2)
