@@ -110,7 +110,7 @@ FUNC_START(_if0_)
         jz     TO(_if0_.enter);
         DPOP(  DTOP)               /* affects EFLAGS          */
         RELJUMP()
-LABEL(_if0_.enter):
+LABEL(_if0_.enter)
         DPOP(  DTOP)               /* affects EFLAGS          */
         NEXTT()                    /* skip IP offset          */
 FUNC_RAWEND(_if0_)
