@@ -45,7 +45,7 @@ class PrintDataStack(gdb.Command):
         regs = ()
         arch_name = inf.architecture().name()
         if arch_name == "i386:x86-64":
-            regs = ("rbx", "rbp", "rdi", "rsi", "r13", "r15")
+            regs = ("rax", "rbp", "rsi", "rdi", "r13", "r15")
         elif arch_name == "aarch64":
             regs = ("x20", "x22", "x21", "x23", "x24", "x27")
         return (

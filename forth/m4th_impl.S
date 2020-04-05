@@ -484,34 +484,40 @@ WORD_START(_optimize1_, _while0_)
         /* (ip>data) 2>r                               ( src dst             ) (R: data u        )
          * over token+                                 ( src dst src'        ) (R: data u        )
          * flip token@                                 ( src' dst tok        ) (R: data u        )
-         * 2r> 1token sub bounds                       ( src dst tok data-end data )
+         * 2r> 1token - bounds                         ( src dst tok data-end data )
          * do                                          ( src dst tok         ) (R: data-end data )
          *    dup i token@ =                           ( src dst tok t|f     ) (R: data-end data )
          *    if                                       ( src dst tok         ) (R: data-end data )
-         *       drop i unloop                         ( src dst data        )
-         *       swap                                  ( src data dst        )
+         *       drop i token+ unloop                  ( src dst data        )
+         *       swap 2                                ( src data dst 2      )
          *       (optimize-copy)                       ( src dst'            )
          *       true exit                             ( src dst true        )
          *    then                                     ( src dst tok         ) (R: data-end data )
          *    3 tokens                                 ( src dst tok 3*SZt   )
          * +loop                                       ( src dst tok         )
+         *             \ no optimization available,
+         *             \ just copy one token from src to dst
          * over token!                                 ( src dst             )
          * token+ false                                ( src dst' false      )
          */
+        over, token_fetch, over, token_store,       /* ( src dst             ) */
+        token_plus, swap, token_plus, swap, false,  /* ( src' dst'           ) */
+        exit,
+        /* TODO */
         _ip_to_data_, two_to_r,
         over, token_plus,
         flip, token_fetch,
-        two_r_from, one_token, sub, bounds,
+        two_r_from, one_token, minus, bounds,
         do,
             dup, i, token_fetch, equal,
-            _if_, T(8+nCALLt),
-                drop, i, unloop,
-                swap,
-                CALL(_optimize_copy_),
+            _if_, T(10+nCALLt),
+                drop, i, token_plus, unloop,
+                swap, two,
+                CALL(noop /*_optimize_copy_*/),
                 true, exit,
             then,
             three, tokens,
-        _plus_loop_, T(-18-nCALLt),
+        _plus_loop_, T(-20-nCALLt),
         over, token_store,
         token_plus, false, exit
       ),
@@ -520,37 +526,8 @@ WORD_START(_optimize1_, _while0_)
       )
     )
 WORD_END(_optimize1_)
-/* ( src dst -- dst' ) copy tokens from src to dst until 'noop' */
-WORD_START(_optimize_copy_, _optimize1_)
-    WORD_DSTACK(2,1)
-    WORD_RSTACK(0,0)
-    WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
-    WORD_FLAGS(M4FLAG_INLINE)
-    WORD_CODE(
-        /* swap >r                                     ( dst           ) (R: src  )
-         * begin                                       ( dst           ) (R: src  )
-         *    r@ token@ dup ' noop <>                  ( dst tok t|f   ) (R: src  )
-         * while                                       ( dst tok       ) (R: src  )
-         *    over token!                              ( dst           ) (R: src  )
-         *    token+                                   ( dst'          ) (R: src  )
-         *    1token r+                                ( dst'          ) (R: src' )
-         * repeat                                      ( dst tok       ) (R: src  )
-         * r> drop drop                                ( dst           )
-         */
-        swap, to_r,
-        begin,
-            r_fetch, token_fetch, dup, _lit_, noop, ne,
-        _while_, T(7),
-            over, token_store,
-            token_plus,
-            one_token, r_plus,
-        _repeat_, T(-15),
-        r_from_drop, drop, exit
-    )
-WORD_END(_optimize_copy_)
 /* ( x -- token t | x f ) try to optimize '[ x ] literal' */
-WORD_START(_optimize_literal_, _optimize_copy_)
+WORD_START(_optimize_literal_, _optimize1_)
     WORD_DSTACK(1,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -670,7 +647,25 @@ WORD_START(_optimize_, _inline_)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE)
-    WORD_CODE(exit) /* currently does nothing */
+    WORD_CODE(
+        /* state @ here #compiled tokens               ( xt here u    )
+         * cmove                                       (              )
+         * here state @ #compiled 0                    ( here xt u' 0 )
+         * ?do                                         ( here xt      ) (R: u i )
+         *    (optimize-1) drop                        ( here' xt'    ) (R: u i )
+         * loop                                        ( here' xt'    )
+         * nip here                                    ( xt' here     )
+         * - allot        \ update HERE, set it to xt'
+         */
+        state, fetch, here, _num_compiled_, tokens,
+        cmove,
+        here, state, fetch, _num_compiled_, zero,
+        _q_do_, T(4+nCALLt),
+            CALL(_optimize1_), drop,
+        _loop_, T(-4-nCALLt),
+        nip, here,
+        minus, allot, exit
+    )
 WORD_END(_optimize_)
 /**
  * Resolve all jumps in 'begin..again' 'begin..repeat' and 'begin..until'

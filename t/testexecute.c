@@ -640,22 +640,19 @@ static const m4token testoptimize_zero[] = {m4zero, m4noop};
 static const m4token testoptimize_nip_dup[] = {m4nip, m4dup, m4noop};
 
 static m4testexecute testexecute_e[] = {
-    /* ----------------------------- (optimize-...) ------------------------- */
-    {"noop (optimize-copy)",
-     {m4here, CALL(_optimize_copy_), m4here, m4minus, m4allot, m4bye},
-     {{1, {(m4cell)testoptimize_noop}}, {}},
+#if 0
+    {"2drop (optimize-1)",
+     {m4here, m4dup, m4_lit_comma_, m4two_drop, CALL(_optimize1_), m4minus_rot, m4sub, m4allot,
+      m4bye},
      {{}, {}},
-     {}},
-    {"zero (optimize-copy)",
-     {m4here, CALL(_optimize_copy_), m4here, m4minus, m4allot, m4bye},
-     {{1, {(m4cell)testoptimize_zero}}, {}},
+     {{1, {ttrue}}, {}},
+     {2, {m4drop, m4drop}}},
+    {"false (optimize-1)",
+     {m4here, m4dup, m4_lit_comma_, m4false, CALL(_optimize1_), m4minus_rot, m4sub, m4bye},
      {{}, {}},
+     {{2, {ttrue, 0}}, {}},
      {1, {m4zero}}},
-    {"nip dup (optimize-copy)",
-     {m4here, CALL(_optimize_copy_), m4here, m4minus, m4allot, m4bye},
-     {{1, {(m4cell)testoptimize_nip_dup}}, {}},
-     {{}, {}},
-     {2, {m4nip, m4dup}}},
+#endif /* 0 */
 };
 
 static const char teststr_empty[] = "";
