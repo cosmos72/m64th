@@ -70,8 +70,8 @@ FUNC_END(div_string)
 FUNC_START(cmove)
         MOVE(  DSTK,   %rbx)           /* save DSTK == %rsi */
         MOVE(  RSTK,   %rdx)           /* save RSTK == %rdi */
-        LOAD(  %rdi,   AT(%rbx))       /* dst               */
         LOAD(  %rsi,   AT(%rbx, SZ))   /* src               */
+        LOAD(  %rdi,   AT(%rbx))       /* dst               */
         MOVE(  DTOP,   %rcx)           /* n                 */
 
         cld;                           /* forward direction */
@@ -87,8 +87,8 @@ FUNC_END(cmove)
 FUNC_START(move)
         MOVE(  DSTK,   %rbx)           /* save DSTK == %rsi */
         MOVE(  RSTK,   %rdx)           /* save RSTK == %rdi */
-        LOAD(  %rdi,   AT(%rbx))       /* dst               */
         LOAD(  %rsi,   AT(%rbx, SZ))   /* src               */
+        LOAD(  %rdi,   AT(%rbx))       /* dst               */
         MOVE(  DTOP,   %rcx)           /* n                 */
 
         cld;                           /* forward direction */
