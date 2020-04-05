@@ -42,12 +42,12 @@
 #define SECOND_ARG_(a, b, ...) b
 #define SECOND_ARG(a, b, ...) SECOND_ARG_(a, b)
 
-#define FIRST_2_ARGS_(a, b, ...) a, b
-#define FIRST_2_ARGS(a, b, ...) FIRST_2_ARGS_(a, b)
-
 #define FIRST_3_ARGS_(a, b, c, ...) a, b, c
 #define FIRST_3_ARGS(a, b, c, ...) FIRST_3_ARGS_(a, b, c)
-
+#define FIRST_4_ARGS_(a, b, c, d, ...) a, b, c, d
+#define FIRST_4_ARGS(a, b, c, d, ...) FIRST_4_ARGS_(a, b, c, d)
+#define FIRST_5_ARGS_(a, b, c, d, e, ...) a, b, c, d, e
+#define FIRST_5_ARGS(a, b, c, d, e, ...) FIRST_5_ARGS_(a, b, c, d, e)
 #define WRAP_ARGS_1(x, _1) x(_1)
 #define WRAP_ARGS_2(x, _1, _2) x(_1) x(_2)
 #define WRAP_ARGS_3(x, _1, _2, _3) x(_1) x(_2) x(_3)
