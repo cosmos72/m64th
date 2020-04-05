@@ -68,8 +68,8 @@ FUNC_END(div_string)
 
 /* cmove ( src-c-addr dst-c-addr u -- ) 'string' word set */
 FUNC_START(cmove)
-        MOVE(  %rdi,   %rax)           /* save DSTK == %rdi */
-        MOVE(  %rsi,   %rdx)           /* save RSTK == %rsi */
+        MOVE(  DSTK,   %rax)           /* save DSTK == %rsi */
+        MOVE(  RSTK,   %rdx)           /* save RSTK == %rdi */
         LOAD(  %rdi,   AT(%rax))       /* dst               */
         LOAD(  %rsi,   AT(%rax, SZ))   /* src               */
         MOVE(  DTOP,   %rcx)           /* n                 */
@@ -77,16 +77,16 @@ FUNC_START(cmove)
         cld;                           /* forward direction */
         rep    movsb (%rsi), (%rdi);   /* copy string       */
 
-        lea    AT(%rax,SZ3), DSTK;     /* load DSTK         */
-        MOVE(  AT(%rax,SZ2), DTOP)     /* load dstack top   */
-        MOVE(  %rdx,   %rsi)           /* load RSTK         */
+        ADDI(  %rax,   SZ3,    DSTK)   /* reload DSTK       */
+        LOAD(  DTOP,   AT(%rax,SZ2))   /* reload dstack top */
+        MOVE(  %rdx,   RSTK)           /* reload RSTK       */
 FUNC_END(cmove)
 
 
 /* move ( src-addr dst-addr u -- ) */
 FUNC_START(move)
-        MOVE(  %rdi,   %rax)           /* save DSTK == %rdi */
-        MOVE(  %rsi,   %rdx)           /* save RSTK == %rsi */
+        MOVE(  DSTK,   %rax)           /* save DSTK == %rsi */
+        MOVE(  RSTK,   %rdx)           /* save RSTK == %rdi */
         LOAD(  %rdi,   AT(%rax))       /* dst               */
         LOAD(  %rsi,   AT(%rax, SZ))   /* src               */
         MOVE(  DTOP,   %rcx)           /* n                 */
@@ -103,9 +103,9 @@ FUNC_START(move)
 LABEL(move.loop)
         rep    movsq (%rsi), (%rdi);   /* copy 8 bytes per iteration */
         cld;
-        ADDI(  %rax,   SZ3,    DSTK)   /* load DSTK         */
-        LOAD(  DTOP,   AT(%rax,SZ2))   /* load dstack top   */
-        MOVE(  %rdx,   %rsi)           /* load RSTK         */
+        ADDI(  %rax,   SZ3,    DSTK)   /* reload DSTK       */
+        LOAD(  DTOP,   AT(%rax,SZ2))   /* reload dstack top */
+        MOVE(  %rdx,   RSTK)           /* reload RSTK       */
 FUNC_END(move)
 
 

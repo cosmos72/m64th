@@ -17,8 +17,8 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "../include/word.mh" /* WORD_CODE_ALIGN(), WORD_CODE_TOKENS() */
 #include "../dispatch/asm.mh"
+#include "../include/word.mh" /* WORD_CODE_ALIGN(), WORD_CODE_TOKENS() */
 
 #define m4fth_run m4th_run
 
@@ -105,8 +105,8 @@ FUNC_END(_c_arg_0_)
 
 /* pop 1 arg, prepare it for C function call */
 FUNC_START(_c_arg_1_)
-        STOR(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))   /* save rstk = %rsi (clobbered) */
-        STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))   /* save dstk = %rdi = C arg1 */
+        STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))   /* save dstk = %rsi (clobbered) */
+        STOR(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))   /* save rstk = %rdi = C arg1 */
         MOVE(  DTOP,   %rdi)                      /* %rdi = C arg 1 */
 FUNC_END(_c_arg_1_)
 
@@ -114,60 +114,60 @@ FUNC_END(_c_arg_1_)
 /* pop 2 args, prepare them for C function call */
 FUNC_START(_c_arg_2_)
         ADD2(  IMM(SZ), DSTK)
-        STOR(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))   /* save rstk = %rsi = C arg2 */
-        STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))   /* save dstk = %rdi = C arg1 */
-        MOVE(  DTOP,   %rsi)                      /* %rsi = C arg 2 */
+        STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))   /* save dstk = %rsi = C arg2 */
+        STOR(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))   /* save rstk = %rdi = C arg1 */
         LOAD(  %rdi,   AT(DSTK, -SZ))             /* %rdi = C arg 1 */
+        MOVE(  DTOP,   %rsi)                      /* %rsi = C arg 2 (clobbers DSTK) */
 FUNC_END(_c_arg_2_)
 
 
 /* pop 3 args, prepare them for C function call */
 FUNC_START(_c_arg_3_)
         ADD2(  IMM(SZ2), DSTK)
-        STOR(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))   /* save rstk = %rsi = C arg2 */
-        STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))   /* save dstk = %rdi = C arg1 */
+        STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))   /* save dstk = %rsi = C arg2 */
+        STOR(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))   /* save rstk = %rdi = C arg1 */
         MOVE(  DTOP,   %rdx)                      /* %rdx = C arg 3 */
-        LOAD(  %rsi,   AT(DSTK, -SZ2))            /* %rsi = C arg 2 */
         LOAD(  %rdi,   AT(DSTK, -SZ))             /* %rdi = C arg 1 */
+        LOAD(  %rsi,   AT(DSTK, -SZ2))            /* %rsi = C arg 2 (clobbers DSTK) */
 FUNC_END(_c_arg_3_)
 
 
 /* pop 4 args, prepare them for C function call */
 FUNC_START(_c_arg_4_)
         ADD2(  IMM(SZ3), DSTK)
-        STOR(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))   /* save rstk = %rsi = C arg2 */
-        STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))   /* save dstk = %rdi = C arg1 */
+        STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))   /* save dstk = %rsi = C arg2 */
+        STOR(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))   /* save rstk = %rdi = C arg1 */
         MOVE(  DTOP,   %rcx)                      /* %rcx = C arg 4 */
         LOAD(  %rdx,   AT(DSTK, -SZ3))            /* %rdx = C arg 3 */
-        LOAD(  %rsi,   AT(DSTK, -SZ2))            /* %rsi = C arg 2 */
         LOAD(  %rdi,   AT(DSTK, -SZ))             /* %rdi = C arg 1 */
+        LOAD(  %rsi,   AT(DSTK, -SZ2))            /* %rsi = C arg 2 (clobbers DSTK) */
 FUNC_END(_c_arg_4_)
 
 
 /* pop 5 args, prepare them for C function call */
 FUNC_START(_c_arg_5_)
         ADD2(  IMM(SZ4), DSTK)
-        STOR(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))    /* save rstk = %rsi = C arg2 */
-        STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))    /* save dstk = %rdi = C arg1 */
+        STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))    /* save dstk = %rsi = C arg2 */
+        STOR(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))    /* save rstk = %rdi = C arg1 */
         MOVE(  DTOP,   %r8)                        /* %r8  = C arg 5 */
         LOAD(  %rcx,   AT(DSTK, -SZ4))             /* %rcx = C arg 4 */
         LOAD(  %rdx,   AT(DSTK, -SZ3))             /* %rdx = C arg 3 */
-        LOAD(  %rsi,   AT(DSTK, -SZ2))             /* %rsi = C arg 2 */
         LOAD(  %rdi,   AT(DSTK, -SZ))              /* %rdi = C arg 1 */
+        LOAD(  %rsi,   AT(DSTK, -SZ2))             /* %rsi = C arg 2 (clobbers DSTK) */
 FUNC_END(_c_arg_5_)
 
 
 /* pop 6 args, prepare them for C function call */
 FUNC_START(_c_arg_6_)
         ADD2(  IMM(SZ5), DSTK)
-        STOR(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))    /* save rstk = %rsi = C arg2 */
-        STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))    /* save dstk = %rdi = C arg1 */
+        STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))    /* save dstk = %rsi = C arg2 */
+        STOR(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))    /* save rstk = %rdi = C arg1 */
         MOVE(  DTOP,   %r9)                        /* %r9  = C arg 6 */
         LOAD(  %r8,    AT(DSTK, -SZ5))             /* %r8  = C arg 5 */
         LOAD(  %rcx,   AT(DSTK, -SZ4))             /* %rcx = C arg 4 */
         LOAD(  %rdx,   AT(DSTK, -SZ3))             /* %rdx = C arg 3 */
-        LOAD(  %rsi,   AT(DSTK, -SZ2))             /* %rsi = C arg 2 */
         LOAD(  %rdi,   AT(DSTK, -SZ))              /* %rdi = C arg 1 */
+        LOAD(  %rsi,   AT(DSTK, -SZ2))             /* %rsi = C arg 2 (clobbers DSTK) */
 FUNC_END(_c_arg_6_)
 
 
@@ -178,14 +178,14 @@ FUNC_START(_c_call_)
         ADD2(  IMM(SZ),IP)                         /* skip C function address */
         /*
          * C functions can clobber %rdi %rsi %rdx %rcx %r8 %r9 %r10 %r11
-         * i.e our DSTK RSTK REG3 REG2 REG4 (unused %r9) REG0 RFFF
+         * i.e our RSTK DSTK REG3 REG2 REG4 (unused %r9) REG0 RFFF
          * and write their results in %rax %rdx
          * i.e. our REG1 REG3
          * we need to restore only: DSTK RSTK RFFF
          */
-        LOAD(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))    /* %rdi = DSTK */
-        LOAD(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))    /* %rsi = RSTK */
-        MOVE(  IMM(-1),RFFF)                       /* %r10 = RFFF */
+        LOAD(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))    /* reload DSTK = %rsi */
+        LOAD(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))    /* reload RSTK = %rdi */
+        MOVE(  IMM(-1),RFFF)                       /* reload RFFF = %r10 */
 FUNC_END(_c_call_)
 
 
