@@ -36,21 +36,24 @@ FUNC_START(plus_store)     /* +!   */
 FUNC_END(plus_store)
 
 
-/* signed divide */
-FUNC_START(div)            /* / */
+/* / ( a b -- a/b ) signed divide */
+FUNC_START(div)
+        MOVE(  DTOP,   %rcx)       /* DTOP is %rax, we will clobber it */
         DPOP(  %rax)
-        cqto;  /* sign-extend %rax into %rdx */
-        idiv   DTOP;
-        MOVE(  %rax, DTOP)
+        cqto;                      /* sign-extend %rax into %rdx       */
+        idiv   %rcx;
+        /*MOVE(%rax,   DTOP)*/     /* result is already in DTOP = %rax */
 FUNC_END(div)
 
 
-FUNC_START(div_mod)        /* /mod signed divide & remainder */
-        LOAD(  %rax, AT(DSTK))
-        cqto;  /* sign-extend %rax into %rdx */
-        idiv   DTOP;
-        STOR(  %rdx, AT(DSTK)) /* remainder */
-        MOVE(  %rax, DTOP)     /* quotient */
+/* /mod ( a b -- a%b a/b ) signed remainder & divide */
+FUNC_START(div_mod)
+        MOVE(  DTOP,   %rcx)       /* DTOP is %rax, we will clobber it */
+        LOAD(  %rax,   AT(DSTK))
+        cqto;                      /* sign-extend %rax into %rdx */
+        idiv   %rcx;
+        STOR(  %rdx,   AT(DSTK))   /* remainder */
+        /*MOVE(%rax, DTOP)*/       /* result is already in DTOP = %rax */
 FUNC_END(div_mod)
 
 
@@ -229,10 +232,11 @@ FUNC_START(min)            /* min */
 FUNC_END(min)
 
 FUNC_START(mod)            /* mod  i.e. signed remainder */
+        MOVE(  DTOP,   %rcx)       /* DTOP is %rax, we will clobber it */
         DPOP(  %rax)
-        cqto;  /* sign-extend %rax into %rdx */
-        idiv   DTOP;
-        MOVE(  %rdx, DTOP) /* remainder */
+        cqto;                      /* sign-extend %rax into %rdx */
+        idiv   %rcx;
+        MOVE(  %rdx,   DTOP)       /* remainder */
 FUNC_END(mod)
 
 

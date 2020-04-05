@@ -180,7 +180,7 @@ FUNC_START(_c_call_)
          * C functions can clobber %rdi %rsi %rdx %rcx %r8 %r9 %r10 %r11
          * i.e our RSTK DSTK REG3 REG2 REG4 (unused %r9) REG0 RFFF
          * and write their results in %rax %rdx
-         * i.e. our REG1 REG3
+         * i.e. our DTOP REG3
          * we need to restore only: DSTK RSTK RFFF
          */
         LOAD(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))    /* reload DSTK = %rsi */
@@ -198,7 +198,7 @@ FUNC_END(_c_ret_0_)
 
 /* push 1 value  returned by C function call */
 FUNC_START(_c_ret_1_)
-        MOVE(  %rax,   DTOP)
+        /*MOVE(  %rax,   DTOP)*/   /* result is already in DTOP = %rax */
 FUNC_END(_c_ret_1_)
 
 

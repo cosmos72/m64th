@@ -36,7 +36,7 @@
  * callee-saved registers: %rbx %rbp %rsp %r12 %r13 %r14 %r15
  */
 #define REG0  %r10  /* scratch register 0 */
-#define REG1  %rax  /* scratch register 1 */
+#define REG1  %rbx  /* scratch register 1 */
 #define REG2  %rcx  /* scratch register 2 */
 #define REG3  %rdx  /* scratch register 3 */
 #define REG4  %r8   /* scratch register 4 */
@@ -55,18 +55,18 @@
 #define REG0_uw %r10d /* zero-extend 32 bits into REG0 */
 #define REG0_ut %r10d /* zero-extend m4token into REG0 */
 
-#define REG1b   %al  /* low  8 bits of REG1 */
-#define REG1h   %ax  /* low 16 bits of REG1 */
-#define REG1w   %eax /* low 32 bits of REG1 */
-#define REG1t   %ax  /* (m4token)REG1       */
-#define REG1_sb %rax /* sign-extend  8 bits into REG1 */
-#define REG1_sh %rax /* sign-extend 16 bits into REG1 */
-#define REG1_sw %rax /* sign-extend 32 bits into REG1 */
-#define REG1_st %rax /* sign-extend m4token into REG1 */
-#define REG1_ub %eax /* zero-extend  8 bits into REG1 */
-#define REG1_uh %eax /* zero-extend 16 bits into REG1 */
-#define REG1_uw %eax /* zero-extend 32 bits into REG1 */
-#define REG1_ut %eax /* zero-extend m4token into REG1 */
+#define REG1b   %bl  /* low  8 bits of REG1 */
+#define REG1h   %bx  /* low 16 bits of REG1 */
+#define REG1w   %ebx /* low 32 bits of REG1 */
+#define REG1t   %bx  /* (m4token)REG1       */
+#define REG1_sb %rbx /* sign-extend  8 bits into REG1 */
+#define REG1_sh %rbx /* sign-extend 16 bits into REG1 */
+#define REG1_sw %rbx /* sign-extend 32 bits into REG1 */
+#define REG1_st %rbx /* sign-extend m4token into REG1 */
+#define REG1_ub %ebx /* zero-extend  8 bits into REG1 */
+#define REG1_uh %ebx /* zero-extend 16 bits into REG1 */
+#define REG1_uw %ebx /* zero-extend 32 bits into REG1 */
+#define REG1_ut %ebx /* zero-extend m4token into REG1 */
 
 #define REG2b   %cl  /* low  8 bits of REG2 */
 #define REG2h   %cx  /* low 16 bits of REG2 */
@@ -107,19 +107,19 @@
 #define REG4_uw %r8d /* zero-extend 32 bits into REG4 */
 #define REG4_ut %r8d /* zero-extend m4token into REG4 */
 
-#define DTOP    %rbx  /* value of first data stack element */
-#define DTOPb   %bl   /* low  8 bits of DTOP */
-#define DTOPh   %bx   /* low 16 bits of DTOP */
-#define DTOPw   %ebx  /* low 32 bits of DTOP */
-#define DTOPt   %bx   /* (m4token)DTOP        */
-#define DTOP_sb %rbx  /* sign-extend  8 bits into DTOP */
-#define DTOP_sh %rbx  /* sign-extend 16 bits into DTOP */
-#define DTOP_sw %rbx  /* sign-extend 32 bits into DTOP */
-#define DTOP_st %rbx  /* sign-extend m4token into DTOP */
-#define DTOP_ub %ebx  /* zero-extend  8 bits into DTOP */
-#define DTOP_uh %ebx  /* zero-extend 16 bits into DTOP */
-#define DTOP_uw %ebx  /* zero-extend 32 bits into DTOP */
-#define DTOP_ut %ebx  /* zero-extend m4token into DTOP */
+#define DTOP    %rax  /* value of first data stack element */
+#define DTOPb   %al   /* low  8 bits of DTOP */
+#define DTOPh   %ax   /* low 16 bits of DTOP */
+#define DTOPw   %eax  /* low 32 bits of DTOP */
+#define DTOPt   %ax   /* (m4token)DTOP        */
+#define DTOP_sb %rax  /* sign-extend  8 bits into DTOP */
+#define DTOP_sh %rax  /* sign-extend 16 bits into DTOP */
+#define DTOP_sw %rax  /* sign-extend 32 bits into DTOP */
+#define DTOP_st %rax  /* sign-extend m4token into DTOP */
+#define DTOP_ub %eax  /* zero-extend  8 bits into DTOP */
+#define DTOP_uh %eax  /* zero-extend 16 bits into DTOP */
+#define DTOP_uw %eax  /* zero-extend 32 bits into DTOP */
+#define DTOP_ut %eax  /* zero-extend m4token into DTOP */
 
 #define RTOP    %rbp  /* value of first data stack element */
 #define RTOPb   %bpl  /* low  8 bits of RTOP */
