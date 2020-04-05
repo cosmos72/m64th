@@ -65,36 +65,36 @@ FUNC_END(zero)
 
 
 FUNC_START(zero_less_equal)/* 0<=  m4th-user */
-        test   DTOP, DTOP;
-        mov    IMM(0), DTOPw;       /* xor would affect EFLAGS */
+        test   DTOP,   DTOP;
+        MOVI(  0,      DTOP)       /* xor would affect EFLAGS */
         cmovle RFFF,   DTOP;
 FUNC_END(zero_less_equal)
 
 
 FUNC_START(zero_ne)        /* 0<>  core ext */
-        test   DTOP, DTOP;
-        mov    IMM(0), DTOPw;      /* xor would affect EFLAGS */
+        test   DTOP,   DTOP;
+        MOVI(  0,      DTOP)      /* xor would affect EFLAGS */
         cmovne RFFF,   DTOP;
 FUNC_END(zero_ne)
 
 
 FUNC_START(zero_equal)     /* 0=   */
-        test   DTOP, DTOP;
-        mov    IMM(0), DTOPw;      /* xor would affect EFLAGS */
+        test   DTOP,   DTOP;
+        MOVI(  0,      DTOP)      /* xor would affect EFLAGS */
         cmove  RFFF,   DTOP;
 FUNC_END(zero_equal)
 
 
 FUNC_START(zero_more)      /* 0>   */
         test   DTOP,   DTOP;
-        mov    IMM(0), DTOPw;      /* xor would affect EFLAGS */
+        MOVI(  0,      DTOP)      /* xor would affect EFLAGS */
         cmovg  RFFF,   DTOP;
 FUNC_END(zero_more)
 
 
 FUNC_START(zero_more_equal)/* 0>=  m4th-user */
         test   DTOP,   DTOP;
-        mov    IMM(0), DTOPw;      /* xor would affect EFLAGS */
+        MOVI(  0,      DTOP)      /* xor would affect EFLAGS */
         cmovge RFFF,   DTOP;
 FUNC_END(zero_more_equal)
 
@@ -159,7 +159,7 @@ FUNC_END(eight_sm_div)
 FUNC_START(less)           /* <   */
         DPOP(  REG2)
         cmp    DTOP, REG2;
-        mov    IMM(0), DTOPw;      /* xor would affect EFLAGS */
+        MOVI(  0,      DTOP)      /* xor would affect EFLAGS */
         cmovl  RFFF,   DTOP;
 FUNC_END(less)
 
@@ -167,7 +167,7 @@ FUNC_END(less)
 FUNC_START(less_equal)     /* <=   m4th-user */
         DPOP(  REG2)
         cmp    DTOP, REG2;
-        mov    IMM(0), DTOPw;      /* xor would affect EFLAGS */
+        MOVI(  0,      DTOP)      /* xor would affect EFLAGS */
         cmovle RFFF,   DTOP;
 FUNC_END(less_equal)
 
@@ -175,7 +175,7 @@ FUNC_END(less_equal)
 FUNC_START(ne)             /* <>   core ext */
         DPOP(  REG2)
         cmp    REG2,   DTOP;
-        mov    IMM(0), DTOPw;      /* xor would affect EFLAGS */
+        MOVI(  0,      DTOP)      /* xor would affect EFLAGS */
         cmovne RFFF,   DTOP;
 FUNC_END(ne)
 
@@ -183,7 +183,7 @@ FUNC_END(ne)
 FUNC_START(equal)          /* = */
         DPOP(  REG2)
         cmp    REG2,   DTOP;
-        mov    IMM(0), DTOPw;      /* xor would affect EFLAGS */
+        MOVI(  0,      DTOP)      /* xor would affect EFLAGS */
         cmove  RFFF,   DTOP;
 FUNC_END(equal)
 
@@ -191,7 +191,7 @@ FUNC_END(equal)
 FUNC_START(more)           /* > */
         DPOP(  REG2)
         cmp    DTOP,   REG2;
-        mov    IMM(0), DTOPw;      /* xor would affect EFLAGS */
+        MOVI(  0,      DTOP)      /* xor would affect EFLAGS */
         cmovg  RFFF,   DTOP;
 FUNC_END(more)
 
@@ -199,7 +199,7 @@ FUNC_END(more)
 FUNC_START(more_equal)     /* >=   m4th-user */
         DPOP(  REG2)
         cmp    DTOP,   REG2;
-        mov    IMM(0), DTOPw;      /* xor would affect EFLAGS */
+        MOVI(  0,      DTOP)      /* xor would affect EFLAGS */
         cmovge RFFF,   DTOP;
 FUNC_END(more_equal)
 
@@ -283,7 +283,7 @@ FUNC_END(to_uint)
 FUNC_START(u_less)         /* u<   */
         DPOP(  REG2)
         cmp    DTOP, REG2;
-        mov    IMM(0), DTOPw;      /* xor would affect EFLAGS */
+        MOVI(  0,      DTOP)      /* xor would affect EFLAGS */
         cmovb  RFFF,   DTOP;
 FUNC_END(u_less)
 
@@ -291,7 +291,7 @@ FUNC_END(u_less)
 FUNC_START(u_less_equal)   /* u<=  m4th-user */
         DPOP(  REG2)
         cmp    DTOP, REG2;
-        mov    IMM(0), DTOPw;      /* xor would affect EFLAGS */
+        MOVI(  0,      DTOP)      /* xor would affect EFLAGS */
         cmovbe RFFF,   DTOP;
 FUNC_END(u_less_equal)
 
@@ -299,7 +299,7 @@ FUNC_END(u_less_equal)
 FUNC_START(u_more)         /* u>   core ext */
         DPOP(  REG2)
         cmp    DTOP, REG2;
-        mov    IMM(0), DTOPw;      /* xor would affect EFLAGS */
+        MOVI(  0,      DTOP)      /* xor would affect EFLAGS */
         cmova  RFFF,   DTOP;
 FUNC_END(u_more)
 
@@ -307,7 +307,7 @@ FUNC_END(u_more)
 FUNC_START(u_more_equal)   /* u>=  m4th-user */
         DPOP(  REG2)
         cmp    DTOP, REG2;
-        mov    IMM(0), DTOPw;      /* xor would affect EFLAGS */
+        MOVI(  0,      DTOP)      /* xor would affect EFLAGS */
         cmovae RFFF,   DTOP;
 FUNC_END(u_more_equal)
 
@@ -320,7 +320,7 @@ FUNC_START(within)         /* within   core ext */
         SUB2(  REG2,   REG1)           /* REG1 = x-lo               */
         ADD2(  IMM(SZ2), DSTK)         /* update dstack pointer     */
         cmp    DTOP,   REG1;
-        mov    IMM(0), DTOPw;          /* xor would affect EFLAGS   */
+        MOVI(  0,      DTOP)          /* xor would affect EFLAGS   */
         cmovb  RFFF,   DTOP;
 FUNC_END(within)
 
