@@ -64,9 +64,9 @@ FUNC_END(_ip_to_data_addr_)
 #ifndef M4FEX_STRING_STORE
 FUNC_START(ex_message_store)
         STOR(  DTOP,   AT(M4TH, M4TH_OFF_EX_STRING_N))
-        DPOP(  DTOP)
+        DPOP___DTOP()
         STOR(  DTOP,   AT(M4TH, M4TH_OFF_EX_STRING_ADDR))
-        DPOP(  DTOP)
+        DPOP___DTOP()
 FUNC_END(ex_message_store)
 #endif /* M4FEX_STRING_STORE */
 
@@ -133,7 +133,7 @@ FUNC_END(name_to_flags)
 FUNC_START(name_to_flags_store) /* ( m4flags nt -- ) */
         DPOP(  REG1)                                 /* a = m4flags          */
         STORh( REG1,       AT(DTOP, WORD_OFF_FLAGS)) /* w.flags = m4flags    */
-        DPOP(  DTOP)
+        DPOP___DTOP()
 FUNC_END(name_to_flags_store)
 
 
@@ -175,7 +175,7 @@ FUNC_END(searchorder_n)
 /* set-current ( wid -- ) forth 'search order' word set */
 FUNC_START(set_current)
         STOR(  DTOP,   AT(M4TH, M4TH_OFF_COMPILE_WID))
-        DPOP(  DTOP)
+        DPOP___DTOP()
 FUNC_END(set_current)
 
 
@@ -209,7 +209,7 @@ FUNC_END(wordlist_add)
 FUNC_START(wordlist_reset) /* ( wid -- ) */
         init_R000_REG1()
         STOR(  R000_REG1,  AT(DTOP, WORDLIST_OFF_LAST)) /* wid.last = 0        */
-        DPOP(  DTOP)
+        DPOP___DTOP()
 FUNC_END(wordlist_reset)
 
 

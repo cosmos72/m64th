@@ -37,7 +37,7 @@ FUNC_START(_plus_loop_)
          * causes signed overflow or underflow, detected by the x86-64 OF flag
          */
         SUB2( AT(RSTK),REG1)                           /* a = old i - i' + mincell    */
-        DPOP(  DTOP)
+        DPOP___DTOP()
         ADD2(  REG2,   REG1)                           /* a += delta                  */
         jo             TO(_plus_loop_.leave);          /* jump if overflow            */
         RELJUMP()
@@ -92,10 +92,10 @@ FUNC_SIZE(_do_)
 FUNC_START(_if_)
         test   DTOP, DTOP;
         jnz    TO(_if_.enter);
-        DPOP(  DTOP)               /* affects EFLAGS          */
+        DPOP___DTOP()              /* affects EFLAGS          */
         RELJUMP()
 LABEL(_if_.enter)
-        DPOP(  DTOP)               /* affects EFLAGS          */
+        DPOP___DTOP()              /* affects EFLAGS          */
         NEXTT()                    /* skip IP offset          */
 FUNC_RAWEND(_if_)
 
@@ -108,10 +108,10 @@ FUNC_RAWEND(_if_)
 FUNC_START(_if0_)
         test   DTOP, DTOP;
         jz     TO(_if0_.enter);
-        DPOP(  DTOP)               /* affects EFLAGS          */
+        DPOP___DTOP()              /* affects EFLAGS          */
         RELJUMP()
 LABEL(_if0_.enter)
-        DPOP(  DTOP)               /* affects EFLAGS          */
+        DPOP___DTOP()              /* affects EFLAGS          */
         NEXTT()                    /* skip IP offset          */
 FUNC_RAWEND(_if0_)
 

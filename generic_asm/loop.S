@@ -67,7 +67,7 @@ FUNC_START(do)
         DPOP(  REG1)                 /* REG1 = i'             */
         MOVE(  DTOP, RTOP)           /* RTOP = i              */
         RPUSH( REG1)                 /* push i' on rstack     */
-        DPOP(  DTOP)                 /* reload dstack top     */
+        DPOP___DTOP()                /* reload dstack top     */
 FUNC_END(do)
 #endif
 
@@ -88,7 +88,7 @@ FUNC_START(two_to_r)           /* 2>r      */
         RPUSH( RTOP)
         MOVE(  DTOP,       RTOP)
         RPUSH( REG1)
-        DPOP(  DTOP)
+        DPOP___DTOP()
 FUNC_END(two_to_r)
 #endif
 
@@ -124,7 +124,7 @@ FUNC_END(two_r_fetch)
 FUNC_START(to_r)               /* >r */
         RPUSH( RTOP)
         MOVE(  DTOP, RTOP)
-        DPOP(  DTOP)
+        DPOP___DTOP()
 FUNC_END(to_r)
 
 
@@ -163,13 +163,13 @@ FUNC_END(i_prime)
 
 FUNC_START(r_store)            /* r!   m4th-user */
         MOVE(  DTOP, RTOP)
-        DPOP(  DTOP)
+        DPOP___DTOP()
 FUNC_END(r_store)
 
 
 FUNC_START(r_plus)             /* r+   m4th-user */
         ADD2(  DTOP, RTOP)
-        DPOP(  DTOP)
+        DPOP___DTOP()
 FUNC_END(r_plus)
 
 

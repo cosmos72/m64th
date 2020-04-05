@@ -248,6 +248,9 @@
     LOAD(reg, AT(DSTK))                                                                            \
     ADD2(IMM(SZ), DSTK)
 
+#define DPOP___DTOP()        /* pop second data stack element into DTOP */                         \
+    lodsq /**/ (DSTK), DTOP; /* requires DSTK = %rsi, DTOP = %rax */
+
 #define DPOP2(reg1, reg2) /* pop 2nd, 3rd data stack elements into reg1, reg2 */                   \
     LOAD(reg1, AT(DSTK))                                                                           \
     LOAD(reg2, AT(DSTK, SZ))                                                                       \

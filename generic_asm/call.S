@@ -55,7 +55,7 @@ FUNC_START(_catch_beg_)
 
         /* pop XT */
         MOVE(  DTOP,   REG2)                       /* b = XT to execute  */
-        DPOP(  DTOP)
+        DPOP___DTOP()
 
         /* save dstk depth to rstk */
         LOAD(  REG1,   AT(M4TH, M4TH_OFF_DEND))
@@ -127,7 +127,7 @@ FUNC_RAWEND(_check_lit_)
 /* ( ex -- ) throw exception if ex != 0 */
 FUNC_START(throw)
         MOVE(  DTOP,   REG0)
-        DPOP(  DTOP)
+        DPOP___DTOP()
         JZ(    REG0,   FUNC_NEXT(throw))             /* 0 means 'do not throw'             */
 FUNC_DEF(_throw_reg0_)
         STOR(  REG0,   AT(M4TH, M4TH_OFF_EX))        /* save exception to m4th.ex          */
@@ -187,7 +187,7 @@ FUNC_START(execute)
         RPUSH( RTOP)               /* save RTOP                */
         MOVE(  IP,     RTOP)       /* save return address = IP */
         MOVE(  DTOP,   IP)         /* set IP = XT              */
-        DPOP(  DTOP)               /* reload dstack top        */
+        DPOP___DTOP()              /* reload dstack top        */
         NEXT0()
 FUNC_RAWEND(execute)
 

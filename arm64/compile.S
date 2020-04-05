@@ -17,34 +17,34 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "../include/err.mh"
 #include "../dispatch/asm.mh"
+#include "../include/err.mh"
 
 /* clang-format off */
 
 #define M4FC_COMMA
 FUNC_START(c_comma)        /* c,   */
         strb   DTOPb,      [HERE], 1;
-        DPOP(  DTOP)
+        DPOP___DTOP()
 FUNC_END(c_comma)
 
 
 #define M4FSHORT_COMMA
 FUNC_START(short_comma)    /* short,   m4th-user */
         strh   DTOPh,      [HERE], 2;
-        DPOP(  DTOP)
+        DPOP___DTOP()
 FUNC_END(short_comma)
 
 
 #define M4FINT_COMMA
 FUNC_START(int_comma)      /* int,     m4th-user */
         str    DTOPw,      [HERE], 4;
-        DPOP(  DTOP)
+        DPOP___DTOP()
 FUNC_END(int_comma)
 
 
 #define M4FCOMMA
 FUNC_START(comma)          /* ,    */
         str    DTOP,       [HERE], SZ;
-        DPOP(  DTOP)
+        DPOP___DTOP()
 FUNC_END(comma)

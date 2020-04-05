@@ -46,7 +46,7 @@ FUNC_START(th_run)
         LOAD(  IP,   AT(M4TH, M4TH_OFF_IP))     /* load instruction  pointer       */
         LOAD(  FTBL, AT(M4TH, M4TH_OFF_FTABLE)) /* load table m4token -> m4func    */
         LOAD(  HERE, AT(M4TH, M4TH_OFF_HERE))   /* load HERE pointer               */
-        DPOP(  DTOP)                            /* load first data   stack element */
+        DPOP___DTOP()                           /* load first data   stack element */
         RPOP(  RTOP)                            /* load first return stack element */
         b      TO(_vm_.loop)             /* enter vm loop, without saving LR again */
 FUNC_RAWEND(th_run)
@@ -159,7 +159,7 @@ FUNC_RAWEND(_c_call_)
 /* push 0 values returned by C function call */
 FUNC_START(_c_ret_0_)
         /* reload DTOP because c_arg_* above moved DSTK */
-        DPOP(  DTOP)
+        DPOP___DTOP()
 FUNC_END(_c_ret_0_)
 
 
@@ -180,7 +180,7 @@ FUNC_END(_c_ret_2_)
 /** pop address of native code from dstack and call it. */
 FUNC_START(_exec_native_)
         MOVE(  DTOP,   REG0)       /* REG1 = address                */
-        DPOP(  DTOP)               /* reload dstack top             */
+        DPOP___DTOP()              /* reload dstack top             */
         br     REG0;               /* tail-call optimization: jump to native code */
 FUNC_RAWEND(_exec_native_)
 
@@ -189,7 +189,7 @@ FUNC_RAWEND(_exec_native_)
 FUNC_START(_exec_token_)
         ubfx   REG0t,  DTOP_ut, 0, SZt*8;  /* REG0 = m4token                */
         LOAD(  REG0,   AT(FTBL, REG0, SZ)) /* REG0 = m4func                 */
-        DPOP(  DTOP)                       /* reload dstack top             */
+        DPOP___DTOP()                      /* reload dstack top             */
         br     REG0;                       /* tail-call optimization: jump to token */
 FUNC_RAWEND(_exec_token_)
 

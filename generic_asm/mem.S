@@ -26,7 +26,7 @@
 FUNC_START(c_store)        /* c! */
         DPOP(  REG1)
         STORb( REG1,  AT(DTOP))
-        DPOP(  DTOP)
+        DPOP___DTOP()
 FUNC_END(c_store)
 #endif
 
@@ -42,7 +42,7 @@ FUNC_END(count)
 FUNC_START(short_store)    /* short!   m4th-user */
         DPOP(  REG1)
         STORh( REG1,  AT(DTOP))
-        DPOP(  DTOP)
+        DPOP___DTOP()
 FUNC_END(short_store)
 #endif
 
@@ -50,7 +50,7 @@ FUNC_END(short_store)
 FUNC_START(int_store)      /* int!     m4th-user */
         DPOP(  REG1)
         STORw( REG1,   AT(DTOP))
-        DPOP(  DTOP)
+        DPOP___DTOP()
 FUNC_END(int_store)
 #endif
 
@@ -58,7 +58,7 @@ FUNC_END(int_store)
 FUNC_START(store)          /* ! */
         DPOP(  REG1)
         STOR(  REG1,   AT(DTOP))
-        DPOP(  DTOP)
+        DPOP___DTOP()
 FUNC_END(store)
 #endif
 
@@ -119,7 +119,7 @@ FUNC_END(two_fetch)
 /* /string ( c-addr u n -- c-addr' u' )  'string' word set */
 FUNC_START(div_string)
         MOVE(  DTOP,   REG1)           /* a = n       */
-        DPOP(  DTOP)                   /* dtop = u    */
+        DPOP___DTOP()                  /* dtop = u    */
         LOAD(  REG2,   AT(DSTK))       /* b = c-addr  */
         SUB2(  REG1,   DTOP)           /* dtop -= n   */
         ADD2(  REG1,   REG2)           /* c-addr += n */

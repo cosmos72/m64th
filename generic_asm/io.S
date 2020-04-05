@@ -27,7 +27,7 @@ FUNC_START(emit)
         LOAD(  REG1,   AT(M4TH, M4TH_OFF_OUT))         /* a = io                 */
         DPUSH( REG1)                                   /* dstk ( io ch         ) */
         ASM_CALL(      FUNC(obuf_write_char))          /* dstk ( err           ) */
-        DPOP(DTOP)                                     /* dstk (               ) */
+        DPOP___DTOP()                                    /* dstk (               ) */
 FUNC_END(emit)
 
 
@@ -208,5 +208,5 @@ FUNC_START(type)
         STOR(  REG1,   AT(DSTK))                       /* dstk ( io u          ) */
         DPUSH( REG2)                                   /* dstk ( io c-addr u   ) */
         ASM_CALL(      FUNC(obuf_write_string))        /* dstk ( err           ) */
-        DPOP(DTOP)                                     /* dstk (               ) */
+        DPOP___DTOP()                                    /* dstk (               ) */
 FUNC_END(type)

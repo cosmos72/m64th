@@ -162,7 +162,7 @@ FUNC_START(plus_store)     /* +!   */
         LOAD(  REG2,   AT(DTOP))
         ADD2(  REG1,   REG2)
         STOR(  REG2,   AT(DTOP))
-        DPOP(  DTOP)
+        DPOP___DTOP()
 FUNC_END(plus_store)
 #endif
 
@@ -331,7 +331,7 @@ FUNC_END(bounds)
 
 
 FUNC_START(drop)
-        DPOP(  DTOP)
+        DPOP___DTOP()
 FUNC_END(drop)
 
 

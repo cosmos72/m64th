@@ -60,7 +60,7 @@ FUNC_END(int_store)
 /* /string ( c-addr u n -- c-addr' u' )  'string' word set */
 FUNC_START(div_string)
         MOVE(  DTOP,   REG1)           /* a = n       */
-        DPOP(  DTOP)                   /* dtop = u    */
+        DPOP___DTOP()                  /* dtop = u    */
         SUB2(  REG1,   DTOP)           /* dtop -= n   */
         ADD2(  REG1,   AT(DSTK))       /* c-addr += n */
 FUNC_END(div_string)

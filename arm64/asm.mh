@@ -254,6 +254,7 @@
 #define DPUSH(reg)       str   reg, [DSTK, -SZ]!; /* push reg to second data stack element */
 #define DPOP(reg)        ldr   reg, [DSTK], SZ;   /* pop second data stack element into reg */
 #define DPOP2(reg1,reg2) ldp   reg1, reg2, [DSTK], SZ2; /* pop 2nd, 3rd data stack elements into reg1, reg2 */
+#define DPOP___DTOP()   DPOP(DTOP)
 
 #define RPUSH(reg)       str   reg, [RSTK, -SZ]!; /* push val to second return stack element */
 #define RPOP(reg)        ldr   reg, [RSTK], SZ;   /* pop second return stack element into val */

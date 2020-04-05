@@ -213,7 +213,7 @@ FUNC_END(abs)
 
 FUNC_START(lshift)         /* lshift */
         MOVE(  DTOP, %rcx)
-        DPOP(  DTOP)
+        DPOP___DTOP()
         shl    %cl,  DTOP;
 FUNC_END(lshift)
 
@@ -250,7 +250,7 @@ FUNC_END(over)
 
 FUNC_START(rshift)         /* rshift */
         MOVE(  DTOP,   %rcx)
-        DPOP(  DTOP)
+        DPOP___DTOP()
         shr    %cl,    DTOP;
 FUNC_END(rshift)
 

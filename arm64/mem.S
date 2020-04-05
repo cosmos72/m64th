@@ -49,7 +49,7 @@ LABEL(cmove_1)
 LABEL(cmove_1.test)
         JB(    REG0,   DTOP,   TO(cmove_1))/* loop if index < u */
 LABEL(cmove.done)
-        DPOP(  DTOP)
+        DPOP___DTOP()
 FUNC_END(cmove)
 
 
@@ -101,7 +101,7 @@ LABEL(move.by1.loop)
         JNE(   DTOP,   IMM(0),  TO(move.by1.loop))
 
 LABEL(move.done)
-        DPOP(  DTOP)
+        DPOP___DTOP()
 FUNC_END(move)
 
 

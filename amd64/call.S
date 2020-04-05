@@ -45,7 +45,7 @@ FUNC_START(th_run)
         LOAD(  IP,     AT(M4TH, M4TH_OFF_IP))     /* load instruction  pointer       */
         LOAD(  FTBL,   AT(M4TH, M4TH_OFF_FTABLE)) /* load table m4token -> m4func    */
         LOAD(  HERE,   AT(M4TH, M4TH_OFF_HERE))   /* load HERE pointer               */
-        DPOP(  DTOP)                              /* load first data   stack element */
+        DPOP___DTOP()                             /* load first data   stack element */
         RPOP(  RTOP)                              /* load first return stack element */
         MOVE(  IMM(-1),RFFF)                      /* set RFFF to -1                  */
         jmp    FUNC(_vm_)                         /* enter vm loop                   */
@@ -192,7 +192,7 @@ FUNC_END(_c_call_)
 /* push 0 values returned by C function call */
 FUNC_START(_c_ret_0_)
         /* reload DTOP because c-arg-[N] above moved DSTK */
-        DPOP(  DTOP)
+        DPOP___DTOP()
 FUNC_END(_c_ret_0_)
 
 
@@ -212,7 +212,7 @@ FUNC_END(_c_ret_2_)
 /** pop address of native code from dstack and call it. */
 FUNC_START(_exec_native_)
         MOVE(  DTOP, REG1)         /* REG1 = address                */
-        DPOP(  DTOP)               /* reload dstack top             */
+        DPOP___DTOP()              /* reload dstack top             */
         jmp    *REG1;              /* tail-call optimization: jump to native code */
 FUNC_RAWEND(_exec_native_)
 
@@ -221,7 +221,7 @@ FUNC_RAWEND(_exec_native_)
 FUNC_START(_exec_token_)
         /* FIXME this assumes SZt = 2 */
         movzwl DTOPt,  REG3_ut;    /* a = m4token                   */
-        DPOP(  DTOP)               /* reload dstack top             */
+        DPOP___DTOP()              /* reload dstack top             */
         jmp    *(FTBL, REG3, SZ);  /* tail-call optimization: jump to token */
 FUNC_RAWEND(_exec_token_)
 

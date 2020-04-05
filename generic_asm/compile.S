@@ -138,7 +138,7 @@ FUNC_END(align)
 
 FUNC_START(allot)          /* allot */
         ADD2(  DTOP,       HERE)
-        DPOP(  DTOP)
+        DPOP___DTOP()
 FUNC_END(allot)
 
 
@@ -146,7 +146,7 @@ FUNC_END(allot)
 FUNC_START(c_comma)        /* c,   */
         STORb( DTOP,       AT(HERE))
         INC1(  HERE)
-        DPOP(  DTOP)
+        DPOP___DTOP()
 FUNC_END(c_comma)
 #endif
 
@@ -155,7 +155,7 @@ FUNC_END(c_comma)
 FUNC_START(short_comma)    /* short,   m4th-user */
         STORh( DTOP,       AT(HERE))
         ADD2(  IMM(2),     HERE)
-        DPOP(  DTOP)
+        DPOP___DTOP()
 FUNC_END(short_comma)
 #endif
 
@@ -164,7 +164,7 @@ FUNC_END(short_comma)
 FUNC_START(int_comma)      /* int,     m4th-user */
         STORw( DTOP,       AT(HERE))
         ADD2(  IMM(4),     HERE)
-        DPOP(  DTOP)
+        DPOP___DTOP()
 FUNC_END(int_comma)
 #endif
 
@@ -173,7 +173,7 @@ FUNC_END(int_comma)
 FUNC_START(comma)          /* ,    */
         STOR(  DTOP,       AT(HERE))
         ADD2(  IMM(SZ),    HERE)
-        DPOP(  DTOP)
+        DPOP___DTOP()
 FUNC_END(comma)
 #endif
 
@@ -223,7 +223,7 @@ FUNC_START(set_latest)
         ADD2(  IMM(WORD_OFF_XT),   DTOP)           /* dtop = nt.code        */
         STOR(  DTOP,   AT(M4TH, M4TH_OFF_XT))      /* m4th.xt = dtop        */
 LABEL(set_latest.done)
-        DPOP(  DTOP)
+        DPOP___DTOP()
 FUNC_END(set_latest)
 
 
