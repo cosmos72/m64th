@@ -17,19 +17,19 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/* clang-format off */
+#ifndef M4TH_INCLUDE_ALIGN_MH
+#define M4TH_INCLUDE_ALIGN_MH
 
-DICT_WORDS_FORTH_STRING(WORDNAME)
+#define ASM_ALIGN(... /* psz, padding */) .p2align __VA_ARGS__;
 
-WORD(div_string,       LASTWORD,   DSTACK(3,2), RSTACK(0,0), WORD_PURE)
-WORD_START(cmove,      div_string)
-    WORD_DSTACK(3,0)
-    WORD_RSTACK(0,0)
-    WORD_STACK_NONE()
-    WORD_NATIVE_NONE() /* uses %ip-relative ASM_CALL(), cannot inline in native code */
-    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH | M4FLAG_MEM_STORE)
-    WORD_CODE(cmove, exit)
-WORD_END(cmove)
+/* align general data at 1 << 3 = 8 bytes: it may contain uint64_t or pointers */
+#define DATA_ALIGN() ASM_ALIGN(3, 0)
 
-#undef LASTWORD
-#define LASTWORD cmove
+/*
+ * align functions at 1 << 3 = 8 bytes.
+ * on amd64, aligning at 16 bytes should be faster, but wastes more memory.
+ * and we manually align our generated code anyway, bypassing this value
+ */
+#define FUNC_ALIGN() ASM_ALIGN(3)
+
+#endif /* M4TH_INCLUDE_ASM_MH */

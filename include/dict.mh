@@ -20,6 +20,8 @@
 #ifndef M4TH_INCLUDE_DICT_MH
 #define M4TH_INCLUDE_DICT_MH
 
+#include "align.mh" /* DATA_ALIGN() */
+
 #define DICT_OFF_LASTWORD_OFF 0 /**< offset of last m4word*,     in bytes. 0 = not present */
 #define DICT_OFF_NAME_OFF 4     /**< offset of m4countedstring*, in bytes. 0 = not present */
 

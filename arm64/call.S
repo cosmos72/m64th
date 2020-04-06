@@ -51,19 +51,19 @@ FUNC_START(th_run)
         b      TO(_vm_.loop)             /* enter vm loop, without saving LR again */
 FUNC_RAWEND(th_run)
 
-/**
- * forth vm main loop: fetch m4token instructions and execute them
- */
+
+/** forth vm main loop: fetch m4token instructions and execute them */
 FUNC_START(_vm_)
         RPUSH( RTOP)                       /* save LR. needed by (return-from-native) */
         MOVE(  lr,     RTOP)
+FUNC_ALIGN()
 LABEL(_vm_.loop)
         /* cannot use x0..x8 here: they are used by c-arg-[N] and c-ret-[N] */
         ldrh   w9,     AT(IP);             /* load m4token of current vm instruction */
         ADD2(  IMM(SZt), IP)               /* pre-increment vm IP                    */
         LOAD(  x9,     AT(FTBL, x9, SZ))   /* load m4func of current vm instruction  */
         blr    x9;                         /* execute vm instruction                 */
-        b      TO(_vm_.loop);       /* loop                                   */
+        JUMP(          TO(_vm_.loop))      /* loop                                   */
 FUNC_RAWEND(_vm_)
 
 /**

@@ -216,7 +216,7 @@ FUNC_START(string_ci_equal)
         DPUSH( DTOP)
         JEQ(   REG1,   REG2,    TO(string_ci_equal.true))   /* addr1 == addr2 */
         JZ(    DTOP,            TO(string_ci_equal.true))   /* u == 0         */
-        ZERO(  REG0w)
+        ZERO(  REG0)
 LABEL(string_ci_equal.byte)
         LD_ub( REG3,   AT(REG1, REG0, 1))
         LD_ub( REG4,   AT(REG2, REG0, 1))
@@ -237,7 +237,7 @@ LABEL(string_ci_equal.cmp)
         JA(    REG4w,  IMM('z'),TO(string_ci_equal.false))
         JUMP(  TO(string_ci_equal.next))
 LABEL(string_ci_equal.false)
-        ZERO(  DTOPw)
+        ZERO(  DTOP)
 FUNC_END(string_ci_equal)
 
 
@@ -248,7 +248,7 @@ FUNC_END(string_ci_equal)
 FUNC_START(string_find_blank)
         DPOP(  REG2)                                   /* b = addr */
         JZ(    DTOP,   FUNC_NEXT(string_find_blank))   /* u == 0   */
-        ZERO(  REG1w)
+        ZERO(  REG1)
 LABEL(string_find_blank.loop)
         LD_ub( REG3,   AT(REG2, REG1, 1))
         JBE(   REG3w,  IMM(32),TO(string_find_blank.found))
@@ -265,7 +265,7 @@ FUNC_END(string_find_blank)
  */
 FUNC_START(string_find_char)
         DPOP2( REG4,   REG2)                            /* @ = u,  b = addr */
-        ZERO(  REG1w)
+        ZERO(  REG1)
         JZ(    REG4,   TO(string_find_char.found))      /* u == 0           */
 LABEL(string_find_char.loop)
         LD_ub( REG3,   AT(REG2, REG1, 1))
@@ -283,7 +283,7 @@ FUNC_END(string_find_char)
 FUNC_START(string_find_nonblank)
         DPOP(  REG2)                                   /* b = addr      */
         JZ(    DTOP,   FUNC_NEXT(string_find_nonblank))/* u == 0       */
-        ZERO(  REG1w)                                  /* a = index = 0 */
+        ZERO(  REG1)                                   /* a = index = 0 */
 LABEL(string_find_nonblank.loop)
         LD_ub( REG3,   AT(REG2, REG1, 1))              /* c = addr[index] */
         JA(    REG3w,  IMM(32),TO(string_find_nonblank.found))

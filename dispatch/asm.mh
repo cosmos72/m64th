@@ -36,7 +36,7 @@
 #define R000_REG1w R000w
 #define R000_REG1t R000t
 #else
-#define init_R000_REG1() ZERO(REG1w)
+#define init_R000_REG1() ZERO(REG1)
 #define R000_REG1 REG1
 #define R000_REG1b REG1b
 #define R000_REG1h REG1h

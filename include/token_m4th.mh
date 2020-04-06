@@ -21,35 +21,35 @@
 #define M4TH_INCLUDE_TOKEN_M4TH_MH
 
 /* 'm4th-user' wordlist */
+#define M4less_equal 504                 /* <=                    */
+#define M4more_equal 505                 /* >=                    */
+#define M4zero_less_equal 506            /* 0<=                   */
+#define M4zero_more_equal 507            /* 0>=                   */
 #undef M4____gap                         /*                       */
-#define M4less_equal 505                 /* <=                    */
-#define M4more_equal 506                 /* >=                    */
+#define M4two_plus 509                   /* 2+                    */
+#define M4two_minus 510                  /* 2-                    */
+#define M4two_sm_div 511                 /* 2sm/ symmetric divide by 2            */
 #undef M4____gap                         /*                       */
-#define M4zero_less_equal 507            /* 0<=                   */
-#define M4zero_more_equal 508            /* 0>=                   */
+#define M4four_times 513                 /* 4*                    */
+#define M4four_plus 514                  /* 4+                    */
+#define M4four_div 515                   /* 4/   floored divide by 4              */
+#define M4four_sm_div 516                /* 4sm/ symmetric divide by 4            */
 #undef M4____gap                         /*                       */
-#define M4two_plus 511                   /* 2+                    */
-#define M4two_minus 512                  /* 2-                    */
-#define M4two_sm_div 513                 /* 2sm/ symmetric divide by 2            */
-#undef M4____gap                         /*                       */
-#define M4four_times 515                 /* 4*                    */
-#define M4four_plus 516                  /* 4+                    */
-#define M4four_div 517                   /* 4/   floored divide by 4              */
-#define M4four_sm_div 518                /* 4sm/ symmetric divide by 4            */
-#undef M4____gap                         /*                       */
-#define M4eight_times 520                /* 8*                    */
-#define M4eight_plus 521                 /* 8+                    */
-#define M4eight_div 522                  /* 8/   floored divide by 8              */
-#define M4eight_sm_div 523               /* 8/sm symmetric divide by 8            */
+#define M4eight_times 518                /* 8*                    */
+#define M4eight_plus 519                 /* 8+                    */
+#define M4eight_div 520                  /* 8/   floored divide by 8              */
+#define M4eight_sm_div 521               /* 8/sm symmetric divide by 8            */
 #define M4minus_cs_roll M4minus_two_roll /* -cs-roll  equivalent to: -2roll       */
-#define M4two_dup_two_to_r 525           /* 2dup_2>r  equivalent to: 2dup 2>r     */
-#define M4two_nip 526                    /* 2nip      equivalent to: 2swap 2drop  */
-#define M4two_pick 527                   /* 2pick                 */
-#define M4two_roll 528                   /* 2roll     roll double-width cells     */
-#define M4minus_two_roll 529             /* -2roll    2roll in opposite direction */
-#define M4minus_two_rot 530              /* -2rot     equivalent to: 2rot 2rot    */
-#define M4two_r_from_two_drop 531        /* 2r>2drop  equivalent to: 2r>  2drop   */
-#define M4bounds 532                     /* ( c-addr u -- c-addr+u c-addr ) get string bounds */
+#define M4two_dup_two_to_r 523           /* 2dup_2>r  equivalent to: 2dup 2>r     */
+#define M4two_nip 524                    /* 2nip      equivalent to: 2swap 2drop  */
+#define M4two_pick 525                   /* 2pick                 */
+#define M4two_roll 526                   /* 2roll     roll double-width cells     */
+#define M4minus_two_roll 527             /* -2roll    2roll in opposite direction */
+#define M4minus_two_rot 528              /* -2rot     equivalent to: 2rot 2rot    */
+#define M4two_r_from_two_drop 529        /* 2r>2drop  equivalent to: 2r>  2drop   */
+#undef M4____gap                         /*                       */
+#define M4bounds 531                     /* ( c-addr u -- c-addr+u c-addr ) get string bounds */
+#define M4cmove_star 532                 /* ( src-addr dst-addr u -- src-addr+u dst-addr+u )  */
 #define M4dup_to_r 533                   /* dup>r                   equivalent to: dup  >r    */
 #define M4ex_message_store 534           /* ( c-addr u -- ) save string as exception message  */
 #define M4ex_message_fetch 535           /* ( -- c-addr u ) fetch exception message string    */

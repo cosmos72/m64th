@@ -52,9 +52,7 @@ FUNC_START(th_run)
 FUNC_RAWEND(th_run)
 
 
-/**
- * forth vm main loop: fetch m4token instructions and execute them
- */
+/** forth vm main loop: fetch m4token instructions and execute them */
 FUNC_START(_vm_)
         /* cannot use REG1..REG4 or %r9: they are used by c-arg-[N] */
         LD_ut( REG0,   AT(IP))         /* load m4token of current vm instruction */
@@ -65,10 +63,10 @@ FUNC_RAWEND(_vm_)
 
 
 /**
- * exit m4th interpreter and return to C:
- * save m4th registers into struct (m4th*)
- * load C registers
- * return to C
+ * exit m4th interpreter and return to C.
+ * 1. save m4th registers into struct (m4th*)
+ * 2. load C registers
+ * 3. return to C
  */
 FUNC_START(bye)
         RPUSH( RTOP)                              /* save first return stack element */

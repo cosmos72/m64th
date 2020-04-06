@@ -66,8 +66,16 @@ FUNC_START(div_string)
 FUNC_END(div_string)
 
 
-/* cmove ( src-c-addr dst-c-addr u -- ) 'string' word set */
+/* cmove ( src_addr dst_addr u -- ) 'string' word set */
 FUNC_START(cmove)
+        ASM_CALL(      FUNC(cmove_star))   /* ( src' dst'    ) */
+        LOAD(  DTOP,   AT(DSTK, SZ))
+        ADD2(IMM(SZ2), DSTK)
+FUNC_END(cmove)
+
+
+/* cmove* ( src_addr dst_addr u -- src_addr+u dst_addr+u ) m4th-user */
+FUNC_START(cmove_star)
         MOVE(  DSTK,   %rbx)           /* save DSTK == %rsi */
         MOVE(  RSTK,   %rdx)           /* save RSTK == %rdi */
         LOAD(  %rsi,   AT(%rbx, SZ))   /* src               */
@@ -77,13 +85,14 @@ FUNC_START(cmove)
         cld;                           /* forward direction */
         rep    movsb (%rsi), (%rdi);   /* copy string       */
 
-        ADDI(  %rbx,   SZ3,    DSTK)   /* reload DSTK       */
-        LOAD(  DTOP,   AT(%rbx,SZ2))   /* reload dstack top */
+        STOR(  %rsi,   AT(%rbx, SZ))   /* ( src' dst u    ) */
+        MOVE(  %rdi,   DTOP)           /* ( src' _ dst'   ) */
+        ADDI(  %rbx,   SZ,     DSTK)   /* reload DSTK       */
         MOVE(  %rdx,   RSTK)           /* reload RSTK       */
-FUNC_END(cmove)
+FUNC_END(cmove_star)
 
 
-/* move ( src-addr dst-addr u -- ) */
+/* move ( src_addr dst_addr u -- ) */
 FUNC_START(move)
         MOVE(  DSTK,   %rbx)           /* save DSTK == %rsi */
         MOVE(  RSTK,   %rdx)           /* save RSTK == %rdi */
@@ -115,7 +124,7 @@ FUNC_START(string_equal)   /* string=  ( addr1 addr2 u -- addr1 addr2 u t|f ) m4
         DPUSH( DTOP)
         JEQ(   REG1,   REG2,    TO(string_equal.true))   /* addr1 == addr2 */
         JZ(    DTOP,            TO(string_equal.true))   /* u == 0         */
-        ZERO(  REG4w)
+        ZERO(  REG4)
         JB(    DTOP,   IMM(8),  TO(string_equal.byte))   /* < 8 bytes */
         SUB2(  IMM(8), DTOP)
 LABEL(string_equal.cell)
@@ -136,5 +145,5 @@ LABEL(string_equal.true)
         MOVE(  RFFF,   DTOP)
         NEXT()
 LABEL(string_equal.false)
-        ZERO(  DTOPw)
+        ZERO(  DTOP)
 FUNC_END(string_equal)

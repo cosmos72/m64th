@@ -43,6 +43,7 @@ FUNC_START(do_i_plus_loop)
         STOR(  REG1,   AT(RSTK))       /* save i' to rstack     */
         LOAD(  DTOP,   AT(DSTK, SZ))   /* reload dstack top     */
         ADD2( IMM(SZ2),DSTK)           /* update dstack pointer */
+ASM_ALIGN(3) /* *much* faster at least on x86-64 */
 LABEL(test_sum_forth.iter)
         /* i_plus */
         ADD2(  RTOP, DTOP)

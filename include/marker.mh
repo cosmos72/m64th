@@ -20,10 +20,12 @@
 #ifndef M4TH_INCLUDE_MARKER_MH
 #define M4TH_INCLUDE_MARKER_MH
 
+#include "align.mh"
+
 /* clang-format off */
 
 #define MARKER_ALIGN()                                                                             \
-    .p2align 0 /*P_MARKER_ALIGN*/;
+    ASM_ALIGN(0 /*P_MARKER_ALIGN*/)
 
 #define MARKER_SYM(name)                                                                           \
     m4marker_##name

@@ -168,7 +168,7 @@
 #define STOR(reg, at)         mov  reg,     at;    /* *at  = reg     */
 #define XOR2(src, dst)        xor  src,     dst;   /* dst ^= src     */
 #define XSUB2(a,b)            sub  a, b;  neg b;   /* b    = a - b   */
-#define ZERO(dst)             xor  dst,     dst;   /* dst  = 0       */
+#define ZERO(dst)             xor  dst##w, dst##w; /* dst  = 0       */
 
 #define LD_sb(reg, at)        movsbq at, reg##_sb; /* reg = *(int8_t *)at  */
 #define LD_sh(reg, at)        movswq at, reg##_sh; /* reg = *(int16_t*)at  */

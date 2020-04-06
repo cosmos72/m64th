@@ -23,7 +23,15 @@
 
 /* cmove ( src-c-addr dst-c-addr u -- ) 'string' word set */
 FUNC_START(cmove)
-        DPOP2( REG2,   REG1)               /* b = dst, a = src        */
+        ASM_CALL(      FUNC(cmove_star))
+        LOAD(  DTOP,   AT(DSTK, SZ))
+        ADD2(IMM(SZ2), DSTK)
+FUNC_END(cmove)
+
+/* cmove* ( src-addr dst-addr u -- src-addr+u dst-addr+u ) m4th-user */
+FUNC_START(cmove_star)
+        LOAD(  REG1,   AT(DSTK, SZ))       /* a = src                 */
+        DPOP(  REG2)                       /* b = dst                 */
         ZERO(  REG0)                       /* @ = index               */
         JB(    DTOP,   IMM(SZ),TO(cmove_1.test))  /* copying < SZ bytes => slow       */
         JAE(   REG1,   REG2,   TO(cmove_SZ.init)) /* copying to lower address => fast */
@@ -32,6 +40,7 @@ FUNC_START(cmove)
 LABEL(cmove_SZ.init)
         SUB2(  IMM(SZ),DTOP)               /* u -= SZ        */
         /* copy SZ bytes per iteration */
+FUNC_ALIGN()
 LABEL(cmove_SZ)
         LOAD(  REG3,   AT(REG1, REG0))     /* c = src[index] */
         STOR(  REG3,   AT(REG2, REG0))     /* dst[index] = c */
@@ -40,6 +49,7 @@ LABEL(cmove_SZ)
         /* copy last SZ bytes */
         LOAD(  REG3,   AT(REG1, DTOP))     /* c = src[u-SZ] */
         STOR(  REG3,   AT(REG2, DTOP))     /* dst[u-SZ] = c */
+        ADD2(  IMM(SZ),DTOP)               /* u += SZ       */
         JUMP(  TO(cmove.done))
         /* copy 1 byte per iteration */
 LABEL(cmove_1)
@@ -49,8 +59,10 @@ LABEL(cmove_1)
 LABEL(cmove_1.test)
         JB(    REG0,   DTOP,   TO(cmove_1))/* loop if index < u */
 LABEL(cmove.done)
-        DPOP___DTOP()
-FUNC_END(cmove)
+        ADD2(  DTOP,   REG1)               /* src += u       */
+        ADD2(  REG2,   DTOP)               /* dtop = dst + u */
+        STOR(  REG1,   AT(DSTK))           /* ( src+u dst+u )*/
+FUNC_END(cmove_star)
 
 
 /* move ( src-addr dst-addr u -- ) */

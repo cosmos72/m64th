@@ -486,12 +486,12 @@ WORD_START(_optimize1_, _while0_)
          * flip token@                                 ( src' dst tok        ) (R: data u        )
          * 2r> 1token - bounds                         ( src dst tok data-end data )
          * do                                          ( src dst tok         ) (R: data-end data )
-         *    dup i token@ =                           ( src dst tok t|f     ) (R: data-end data )
+         *    dup i token+ token@ =                    ( src dst tok t|f     ) (R: data-end data )
          *    if                                       ( src dst tok         ) (R: data-end data )
-         *       drop i token+ unloop                  ( src dst data        )
-         *       swap 2                                ( src data dst 2      )
-         *       (optimize-copy)                       ( src dst'            )
-         *       true exit                             ( src dst true        )
+         *       drop i token+ token+ swap             ( src opt-toks dst    ) (R: data-end data )
+         *       i token@ unloop                       ( src opt-toks dst u  )
+         *       cmove*                                ( src opt-toks' dst'  )
+         *       nip true exit                         ( src dst' true       )
          *    then                                     ( src dst tok         ) (R: data-end data )
          *    3 tokens                                 ( src dst tok 3*SZt   )
          * +loop                                       ( src dst tok         )
@@ -500,24 +500,25 @@ WORD_START(_optimize1_, _while0_)
          * over token!                                 ( src dst             )
          * token+ false                                ( src dst' false      )
          */
+#if 1
         over, token_fetch, over, token_store,       /* ( src dst             ) */
         token_plus, swap, token_plus, swap, false,  /* ( src' dst'           ) */
         exit,
-        /* TODO */
+#endif
         _ip_to_data_, two_to_r,
         over, token_plus,
         flip, token_fetch,
         two_r_from, one_token, minus, bounds,
         do,
-            dup, i, token_fetch, equal,
-            _if_, T(10+nCALLt),
-                drop, i, token_plus, unloop,
-                swap, two,
-                CALL(noop /*_optimize_copy_*/),
-                true, exit,
+            dup, i, token_plus, token_fetch, equal,
+            _if_, T(13),
+                drop, i, token_plus, token_plus, swap,
+                i, token_fetch, unloop,
+                cmove_star,
+                nip, true, exit,
             then,
-            three, tokens,
-        _plus_loop_, T(-20-nCALLt),
+            four, tokens,
+        _plus_loop_, T(-24),
         over, token_store,
         token_plus, false, exit
       ),

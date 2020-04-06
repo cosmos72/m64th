@@ -103,7 +103,7 @@ FUNC_START(_cs_find_lit_)    /* [cs-find] */
         LOAD(  REG2,       AT(M4TH, M4TH_OFF_DEND))    /* b = dstack_end              */
         LD_ut( REG1,       AT(IP))                     /* a = category                */
         SUB2(  DSTK,       REG2)                       /* b = dstack depth in bytes   */
-        ZERO(  DTOPw)                                  /* dtop = 0                    */
+        ZERO(  DTOP)                                   /* dtop = 0                    */
         JB(    REG2,       IMM(SZ2), TO(_cs_find_lit_.throw))
         SUB2(  IMM(SZ2-1), REG2)                       /* b = dstack depth in bytes - SZ2 + 1 */
 LABEL(_cs_find_lit_.loop)

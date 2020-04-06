@@ -140,7 +140,7 @@ FUNC_END(name_to_flags_store)
 FUNC_START(name_to_string) /* ( nt -- c-addr u ) */
         LD_uh( REG1,       AT(DTOP, WORD_OFF_NAME_OFF)) /* a = w.name_off  */
         JNZ(   REG1,       TO(name_to_string.body))
-        ZERO(  DTOPw)                  /* dtop = 0                */
+        ZERO(  DTOP)                   /* dtop = 0                */
         JUMP(              TO(name_to_string.push_reg1))
 LABEL(name_to_string.body)
         SUB2(  REG1,       DTOP)       /* dtop = m4countedstring* */

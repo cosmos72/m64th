@@ -167,10 +167,12 @@ FUNC_END(plus_store)
 #endif
 
 
+#ifndef M4FMINUS
 FUNC_START(minus)          /* -  ( x y -- x-y )  */
-        DPOP(  REG1)       /* a = x              */
-        XSUB2(REG1,   DTOP)/* dtop = x-dtop      */
+        DPOP(  REG1)           /* a = x              */
+        XSUB2( REG1,   DTOP)   /* dtop = x - y       */
 FUNC_END(minus)
+#endif
 
 
 FUNC_START(minus_one)      /* -1   m4th-impl */

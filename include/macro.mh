@@ -224,7 +224,7 @@
 #define M4LIT_STRING(len, str)                                                                     \
     CAT3(., SZt, byte) M4_lit_string_, M4T(len);                                                   \
     .ascii str;                                                                                    \
-    .p2align PSZt, 0
+    ASM_ALIGN(PSZt, 0) /* needs #include "align.mh" */
 
 /* assembler macro: number of extra m4tokens needed by M4LIT_STRING(len, ...) */
 #define nSTRt(len) (1 + ((len) + SZt - 1) / SZt)

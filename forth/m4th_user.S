@@ -79,7 +79,9 @@ WORD_START(break,      bounds)
         _compile_jump_lit_, _break_, _break_, exit
     )
 WORD_END(break)
-WORD_START(continue,   bounds)
+/* cmove* ( src dst u -- src+u dst+u ) same as cmove, but returns updated addresses */
+WORD(cmove_star,       break,          DSTACK(3,2), RSTACK(0,0), WORD_IMPURE)
+WORD_START(continue,   cmove_star)
     WORD_STACK_NONE()  /* stack effect if not jumping */
     WORD_DSTACK(0,0)   /* stack effect if jumping */
     WORD_RSTACK(0,0)

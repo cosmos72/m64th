@@ -17,9 +17,9 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include "../dispatch/asm.mh"
 #include "../include/dict.mh"
 #include "../include/wordlist.mh"
-#include "../dispatch/asm.mh"
 
 /* clang-format off */
 
@@ -47,7 +47,7 @@ FUNC_END(ex_message_fetch)
 FUNC_START(iobuf_empty_query)
         LOAD(  REG1,   AT(DTOP, IOBUF_OFF_POS))        /* a = iobuf.pos          */
         LOAD(  REG2,   AT(DTOP, IOBUF_OFF_END))        /* b = iobuf.end         */
-        ZERO(  DTOPw)
+        ZERO(  DTOP)
         cmp    REG2,   REG1;
         cmovge RFFF,   DTOP;
 FUNC_END(iobuf_empty_query)

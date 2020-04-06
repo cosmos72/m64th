@@ -151,7 +151,7 @@ FUNC_START(obuf_write_char)
         STORb( DTOP,   AT(REG4, REG2, 1))              /* io.addr[io.end] = dtop  */
         INC1(  REG2)
         STOR(  REG2,   AT(REG1, IOBUF_OFF_END))        /* io.end++                */
-        ZERO(  DTOPw)                                  /* dtop = 0                */
+        ZERO(  DTOP)                                   /* dtop = 0                */
         ADD2(  IMM(SZ), DSTK)                          /* dstk ( 0              ) */
         NEXT0()
 LABEL(obuf_write_char.slow)
@@ -183,7 +183,7 @@ FUNC_START(obuf_write_string)
         STOR(  REG2,   AT(DSTK, SZ))                   /* ( c-addr dst u        ) */
         ASM_CALL(      FUNC(cmove))                    /* (                     ) */
         DPUSH( DTOP)                                   /* ( _                   ) */
-        ZERO(  DTOPw)                                  /* ( 0                   ) */
+        ZERO(  DTOP)                                   /* ( 0                   ) */
         NEXT0()
 LABEL(obuf_write_string.slow)
         /* not enough space, call forth word (obuf-flush-write-string) */

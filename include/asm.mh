@@ -31,14 +31,6 @@
 
 /* clang-format off */
 
-/* align functions at 8 bytes. */
-/* on amd64, aligning at 16 bytes should be faster, but wastes more memory */
-#define P_FUNC_ALIGN 3
-#define P_DATA_ALIGN 3 /* align general data at 8 bytes: it may contain uint64_t or pointers */
-
-#define DATA_ALIGN()                                                                               \
-    .p2align P_DATA_ALIGN, 0;
-
 #define AT_0(addr, i, _)                AT0(addr)
 #define AT_x(addr, i, _)                ATx(addr, i)
 #define AT_xy(addr, i, shift)           ATxy(addr, i, shift)

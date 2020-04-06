@@ -36,8 +36,8 @@
     .globl WORD_SYM(name);                                                                         \
     .type WORD_SYM(name), @object;
 
-#define WORD_ALIGN() /* align words at SZ bytes: they may contain uint64_t data[] */               \
-    .p2align PSZ, 0;
+/* align words at 1 << 3 = 8 bytes: they contain uint64_t prev */
+#define WORD_ALIGN() ASM_ALIGN(3, 0)
 
 #define WORD_DEF_SYM(name)                                                                         \
     WORD_ALIGN()                                                                                   \
@@ -68,16 +68,14 @@
 #define WORD_DATA_N_AUTO(name) /*   */                                                             \
     .4byte /**/.L.WORD_SYM(name).data_end - /**/.L.WORD_SYM(name).data_start;
 
-#define WORD_CODE_ALIGN() /*        */ .p2align PSZt, 0;
+#define WORD_CODE_ALIGN() /*        */ ASM_ALIGN(PSZt, 0)
 #define WORD_CODE_START(name) /*    */ .L.WORD_SYM(name).code_start:
 #define WORD_CODE_END(name) /*      */ .L.WORD_SYM(name).code_end:
 #define WORD_CODE_RAW(...) /*       */ CAT3(., SZt, byte) __VA_ARGS__;
 #define WORD_CODE_TOKEN(token) /*   */ M4ASM_BYTES(token);
 #define WORD_CODE_TOKENS(...) /*    */ WRAP_ARGS(WORD_CODE_TOKEN, __VA_ARGS__)
 
-#define WORD_DATA_START(name)                                                                      \
-    .p2align PSZ, 0;                                                                               \
-    .L.WORD_SYM(name).data_start:
+#define WORD_DATA_START(name) /*    */ ASM_ALIGN(PSZ, 0) /**/.L.WORD_SYM(name).data_start:
 #define WORD_DATA_END(name) /*      */ .L.WORD_SYM(name).data_end:
 #define WORD_DATA_BYTES(...) /*     */ .byte __VA_ARGS__;
 #define WORD_DATA_SHORTS(...) /*    */ .2byte __VA_ARGS__;

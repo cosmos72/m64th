@@ -20,9 +20,8 @@
 #ifndef M4TH_INCLUDE_FUNC_MH
 #define M4TH_INCLUDE_FUNC_MH
 
+#include "align.mh" /* FUNC_ALIGN() */
 #include "func_alias.mh"
-
-#define FUNC_ALIGN() .p2align P_FUNC_ALIGN;
 
 #define FUNC(name) m4f##name
 

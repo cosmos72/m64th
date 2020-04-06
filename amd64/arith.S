@@ -36,12 +36,20 @@ FUNC_START(plus_store)     /* +!   */
 FUNC_END(plus_store)
 
 
+#define M4FMINUS
+FUNC_START(minus)          /* -  ( x y -- x-y )  */
+        MOVE(  DTOP,   REG1)       /* a = y              */
+        DPOP___DTOP()              /* dtop = x           */
+        SUB2(REG1,   DTOP)         /* dtop = x - y       */
+FUNC_END(minus)
+
+
 /* / ( a b -- a/b ) signed divide */
 FUNC_START(div)
         MOVE(  DTOP,   %rcx)       /* DTOP is %rax, we will clobber it */
-        DPOP(  %rax)
+        DPOP___DTOP()              /* load %rax                        */
         cqto;                      /* sign-extend %rax into %rdx       */
-        idiv   %rcx;
+        idiv   %rcx;               /* quotient is in %rax, remainder in %rdx */
         /*MOVE(%rax,   DTOP)*/     /* result is already in DTOP = %rax */
 FUNC_END(div)
 
@@ -51,7 +59,7 @@ FUNC_START(div_mod)
         MOVE(  DTOP,   %rcx)       /* DTOP is %rax, we will clobber it */
         LOAD(  %rax,   AT(DSTK))
         cqto;                      /* sign-extend %rax into %rdx */
-        idiv   %rcx;
+        idiv   %rcx;               /* quotient is in %rax, remainder in %rdx */
         STOR(  %rdx,   AT(DSTK))   /* remainder */
         /*MOVE(%rax, DTOP)*/       /* result is already in DTOP = %rax */
 FUNC_END(div_mod)
@@ -60,7 +68,7 @@ FUNC_END(div_mod)
 #define M4FZERO
 FUNC_START(zero)           /* 0    m4th-impl */
         DPUSH( DTOP)
-        ZERO(  DTOPw)
+        ZERO(  DTOP)
 FUNC_END(zero)
 
 
@@ -157,23 +165,26 @@ FUNC_END(eight_sm_div)
 
 
 FUNC_START(less)           /* <   */
-        DPOP(  REG2)
-        cmp    DTOP, REG2;
+        MOVE(  DTOP,   REG2)
+        DPOP___DTOP()
+        cmp    REG2,   DTOP;
         MOVI(  0,      DTOP)      /* xor would affect EFLAGS */
         cmovl  RFFF,   DTOP;
 FUNC_END(less)
 
 
 FUNC_START(less_equal)     /* <=   m4th-user */
-        DPOP(  REG2)
-        cmp    DTOP, REG2;
+        MOVE(  DTOP,   REG2)
+        DPOP___DTOP()
+        cmp    REG2,   DTOP;
         MOVI(  0,      DTOP)      /* xor would affect EFLAGS */
         cmovle RFFF,   DTOP;
 FUNC_END(less_equal)
 
 
 FUNC_START(ne)             /* <>   core ext */
-        DPOP(  REG2)
+        MOVE(  DTOP,   REG2)
+        DPOP___DTOP()
         cmp    REG2,   DTOP;
         MOVI(  0,      DTOP)      /* xor would affect EFLAGS */
         cmovne RFFF,   DTOP;
@@ -181,7 +192,8 @@ FUNC_END(ne)
 
 
 FUNC_START(equal)          /* = */
-        DPOP(  REG2)
+        MOVE(  DTOP,   REG2)
+        DPOP___DTOP()
         cmp    REG2,   DTOP;
         MOVI(  0,      DTOP)      /* xor would affect EFLAGS */
         cmove  RFFF,   DTOP;
@@ -189,53 +201,56 @@ FUNC_END(equal)
 
 
 FUNC_START(more)           /* > */
-        DPOP(  REG2)
-        cmp    DTOP,   REG2;
+        MOVE(  DTOP,   REG2)
+        DPOP___DTOP()
+        cmp    REG2,   DTOP;
         MOVI(  0,      DTOP)      /* xor would affect EFLAGS */
         cmovg  RFFF,   DTOP;
 FUNC_END(more)
 
 
 FUNC_START(more_equal)     /* >=   m4th-user */
-        DPOP(  REG2)
-        cmp    DTOP,   REG2;
+        MOVE(  DTOP,   REG2)
+        DPOP___DTOP()
+        cmp    REG2,   DTOP;
         MOVI(  0,      DTOP)      /* xor would affect EFLAGS */
         cmovge RFFF,   DTOP;
 FUNC_END(more_equal)
 
 
 FUNC_START(abs)            /* abs */
-        MOVE(  DTOP, REG1)
+        MOVE(  DTOP,   REG1)
         NEG1(  REG1)
-        cmovg  REG1, DTOP;
+        cmovg  REG1,   DTOP;
 FUNC_END(abs)
 
 
 FUNC_START(lshift)         /* lshift */
-        MOVE(  DTOP, %rcx)
+        MOVE(  DTOPw,  %ecx)
         DPOP___DTOP()
-        shl    %cl,  DTOP;
+        shl    %cl,    DTOP;
 FUNC_END(lshift)
 
 
 FUNC_START(max)            /* max  */
         DPOP(  REG1)
-        cmp    DTOP, REG1;
-        cmovg  REG1, DTOP;
+        cmp    DTOP,   REG1;
+        cmovg  REG1,   DTOP;
 FUNC_END(max)
 
 
 FUNC_START(min)            /* min */
         DPOP(  REG1)
-        cmp    DTOP, REG1;
-        cmovl  REG1, DTOP;
+        cmp    DTOP,   REG1;
+        cmovl  REG1,   DTOP;
 FUNC_END(min)
+
 
 FUNC_START(mod)            /* mod  i.e. signed remainder */
         MOVE(  DTOP,   %rcx)       /* DTOP is %rax, we will clobber it */
-        DPOP(  %rax)
+        DPOP___DTOP()              /* load %rax                        */
         cqto;                      /* sign-extend %rax into %rdx */
-        idiv   %rcx;
+        idiv   %rcx;               /* quotient is in %rax, remainder in %rdx */
         MOVE(  %rdx,   DTOP)       /* remainder */
 FUNC_END(mod)
 
@@ -249,7 +264,7 @@ FUNC_END(over)
 
 
 FUNC_START(rshift)         /* rshift */
-        MOVE(  DTOP,   %rcx)
+        MOVE(  DTOPw,  %ecx)
         DPOP___DTOP()
         shr    %cl,    DTOP;
 FUNC_END(rshift)
@@ -264,6 +279,7 @@ FUNC_START(to_short)       /* to-short m4th-user */
 FUNC_END(to_short)
 
 FUNC_START(to_int)         /* to-int   m4th-user */
+        /* cltq; */        /* alias of: cdqe */
         movslq DTOPw,  DTOP_sw;
 FUNC_END(to_int)
 
@@ -281,46 +297,48 @@ FUNC_END(to_uint)
 
 
 FUNC_START(u_less)         /* u<   */
-        DPOP(  REG2)
-        cmp    DTOP, REG2;
-        MOVI(  0,      DTOP)      /* xor would affect EFLAGS */
+        MOVE(  DTOP,   REG2)
+        DPOP___DTOP()
+        cmp    REG2,   DTOP;
+        MOVI(  0,      DTOP)           /* xor would affect EFLAGS   */
         cmovb  RFFF,   DTOP;
 FUNC_END(u_less)
 
 
 FUNC_START(u_less_equal)   /* u<=  m4th-user */
-        DPOP(  REG2)
-        cmp    DTOP, REG2;
-        MOVI(  0,      DTOP)      /* xor would affect EFLAGS */
+        MOVE(  DTOP,   REG2)
+        DPOP___DTOP()
+        cmp    REG2,   DTOP;
+        MOVI(  0,      DTOP)           /* xor would affect EFLAGS   */
         cmovbe RFFF,   DTOP;
 FUNC_END(u_less_equal)
 
 
 FUNC_START(u_more)         /* u>   core ext */
-        DPOP(  REG2)
-        cmp    DTOP, REG2;
-        MOVI(  0,      DTOP)      /* xor would affect EFLAGS */
+        MOVE(  DTOP,   REG2)
+        DPOP___DTOP()
+        cmp    REG2,   DTOP;
+        MOVI(  0,      DTOP)           /* xor would affect EFLAGS   */
         cmova  RFFF,   DTOP;
 FUNC_END(u_more)
 
 
 FUNC_START(u_more_equal)   /* u>=  m4th-user */
-        DPOP(  REG2)
-        cmp    DTOP, REG2;
-        MOVI(  0,      DTOP)      /* xor would affect EFLAGS */
+        MOVE(  DTOP,   REG2)
+        DPOP___DTOP()
+        cmp    REG2,   DTOP;
+        MOVI(  0,      DTOP)           /* xor would affect EFLAGS   */
         cmovae RFFF,   DTOP;
 FUNC_END(u_more_equal)
 
 
 /* ( x lo hi -- flag ) true if lo <= x < hi \ signed or unsigned */
 FUNC_START(within)         /* within   core ext */
-        LOAD(  REG2,   AT(DSTK))       /* REG2 = lo                 */
-        LOAD(  REG1,   AT(DSTK, SZ))   /* REG1 = x                  */
+        DPOP2( REG2,   REG1)           /* b = lo, a = x             */
         SUB2(  REG2,   DTOP)           /* DTOP = hi-lo              */
         SUB2(  REG2,   REG1)           /* REG1 = x-lo               */
-        ADD2(  IMM(SZ2), DSTK)         /* update dstack pointer     */
         cmp    DTOP,   REG1;
-        MOVI(  0,      DTOP)          /* xor would affect EFLAGS   */
+        MOVI(  0,      DTOP)           /* xor would affect EFLAGS   */
         cmovb  RFFF,   DTOP;
 FUNC_END(within)
 
