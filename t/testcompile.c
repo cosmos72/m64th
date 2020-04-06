@@ -183,10 +183,15 @@ static const m4testcompile testcompile[] = {
      {5, {m4begin, m4_while_, T(-1), m4_again_, T(-4)}}},
     {"begin while again then", {}, {}, {6, {m4begin, m4_while_, T(3), m4_again_, T(-4), m4then}}},
     {"begin while repeat", {}, {}, {5, {m4begin, m4_while_, T(2), m4_repeat_, T(-4)}}},
-#if 0  /* currently broken */
     /* ------------------------------- optimize ----------------------------- */
-    {"false ;", {}, {}, {1, {m4zero}}}, */
-#endif /* 0 */
+    {"2drop ;", {2, {0, m4colon}}, {}, {3, {m4drop, m4drop, m4exit}}},
+    {"cell+ ;", {2, {0, m4colon}}, {}, {2, {m4_SZ_plus, m4exit}}},
+    {"cells ;", {2, {0, m4colon}}, {}, {2, {m4_SZ_times, m4exit}}},
+    {"char+ ;", {2, {0, m4colon}}, {}, {2, {m4one_plus, m4exit}}},
+    {"chars ;", {2, {0, m4colon}}, {}, {1, {m4exit}}},
+    {"false ;", {2, {0, m4colon}}, {}, {2, {m4zero, m4exit}}},
+    {"noop ;", {2, {0, m4colon}}, {}, {1, {m4exit}}},
+    {"true ;", {2, {0, m4colon}}, {}, {2, {m4minus_one, m4exit}}},
 };
 
 static m4code m4testcompile_init(const m4testcompile *t, m4countedcode *codegen_buf) {

@@ -490,7 +490,7 @@ WORD_START(_optimize1_, _while0_)
          *    if                                       ( src dst tok         ) (R: data-end data )
          *       drop i token+ token+ swap             ( src opt-toks dst    ) (R: data-end data )
          *       i token@ unloop                       ( src opt-toks dst u  )
-         *       cmove*                                ( src opt-toks' dst'  )
+         *       tokens cmove*                         ( src opt-toks' dst'  )
          *       nip true exit                         ( src dst' true       )
          *    then                                     ( src dst tok         ) (R: data-end data )
          *    3 tokens                                 ( src dst tok 3*SZt   )
@@ -500,7 +500,7 @@ WORD_START(_optimize1_, _while0_)
          * over token!                                 ( src dst             )
          * token+ false                                ( src dst' false      )
          */
-#if 1
+#if 0
         over, token_fetch, over, token_store,       /* ( src dst             ) */
         token_plus, swap, token_plus, swap, false,  /* ( src' dst'           ) */
         exit,
@@ -511,14 +511,14 @@ WORD_START(_optimize1_, _while0_)
         two_r_from, one_token, minus, bounds,
         do,
             dup, i, token_plus, token_fetch, equal,
-            _if_, T(13),
+            _if_, T(14),
                 drop, i, token_plus, token_plus, swap,
                 i, token_fetch, unloop,
-                cmove_star,
+                tokens, cmove_star,
                 nip, true, exit,
             then,
             four, tokens,
-        _plus_loop_, T(-24),
+        _plus_loop_, T(-25),
         over, token_store,
         token_plus, false, exit
       ),
