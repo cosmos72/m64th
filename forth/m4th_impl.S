@@ -618,9 +618,14 @@ WORD_START(_finish_, _defer_uninitialized_)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE)
     WORD_CODE(
-        _check_lit_, colon, cs_drop,
-        _lit_comma_, exit,
-        CALL(_optimize_), left_bracket, align, /* also align HERE to current word's data */
+        _check_lit_, colon,
+        _lit_comma_, exit, /* compile 'exit' */
+        drop, _lit_, T(M4FLAG_NOOPT_MASK), and,
+        /* optimize only if (word.flags & M4FLAG_NOOPT_MASK) == 0 */
+        _if0_, T(2+nCALLt),
+            CALL(_optimize_),
+        then,
+        left_bracket, align, /* also align HERE to current word's data */
         latest, get_current, wordlist_add, exit
     )
 WORD_END(_finish_)
