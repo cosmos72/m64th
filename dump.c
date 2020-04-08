@@ -73,16 +73,25 @@ static inline void dpush(m4th *m, m4cell val) {
     *--m->dstack.curr = val;
 }
 
-static void run_benchmark() {
+static void run_benchmark(m4cell crc_simd) {
     const m4token code[] = {m4do, m4two_dup, m4crc_string, m4drop, m4_loop_, (m4token)-5, m4bye};
     m4th *m = m4th_new();
-
-    fputs("benchmark: crc-string 1e7 iterations... ", stdout);
+#ifdef __x86_64__
+    const double n = 1e9f;
+#else
+    const double n = 1e8f;
+#endif
+    if (crc_simd) {
+        crc_simd = m4th_crc_simd_enabled();
+    } else {
+        m4th_crc_simd_enable(tfalse);
+    }
+    fprintf(stdout, "benchmark: crc-string%s %g iterations... ", (crc_simd ? "/simd" : ""), n);
     fflush(stdout);
     m->ip = code;
     dpush(m, (m4cell) "immediate");
     dpush(m, 9);
-    dpush(m, 100000000); /* 1e7 iterations */
+    dpush(m, (m4cell)n);
     dpush(m, 0);
     m4th_run(m);
     m4th_del(m);
@@ -94,7 +103,8 @@ int main(int argc, char *argv[]) {
         &m4dict_forth, &m4dict_m4th_user, &m4dict_m4th_c, &m4dict_m4th_core, &m4dict_m4th_impl,
     };
     m4cell show_crc = argc == 2 && !strcmp(argv[1], "crc");
-    m4cell benchmark = argc == 2 && !strcmp(argv[1], "benchmark");
+    m4cell benchmark_simd = argc == 2 && !strcmp(argv[1], "bench/simd");
+    m4cell benchmark = benchmark_simd || (argc == 2 && !strcmp(argv[1], "bench"));
     m4cell i;
 
     m4th_crcinit(m4th_crctable);
@@ -110,7 +120,7 @@ int main(int argc, char *argv[]) {
     }
 
     if (show_crc || benchmark) {
-        switch (m4th_cpu_has_crc32c_asm_instructions()) {
+        switch (m4th_crc_simd_detect()) {
         case tfalse:
             fputs("# this CPU does not have crc32c asm instructions\n", stdout);
             break;
@@ -122,7 +132,7 @@ int main(int argc, char *argv[]) {
         }
     }
     if (benchmark) {
-        run_benchmark();
+        run_benchmark(benchmark_simd);
     }
     return 0;
 }

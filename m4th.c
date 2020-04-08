@@ -870,7 +870,29 @@ void m4wordlist_print(const m4wordlist *wid, FILE *out) {
     m4dict_print(wid->dict, wid->last, out);
 }
 
+/* ----------------------- crc-simd ----------------------- */
+
+void m4th_crc_simd_enable(m4cell flag) {
+    extern void m4fcrc_string(m4arg _);
+    extern void m4fcrc_string_simd(m4arg _);
+    ftable[m4crc_string] = flag == ttrue ? m4fcrc_string_simd : m4fcrc_string;
+}
+
+m4cell m4th_crc_simd_enabled(void) {
+    extern void m4fcrc_string(m4arg _);
+    extern void m4fcrc_string_simd(m4arg _);
+    return ftable[m4crc_string] == m4fcrc_string_simd ? ttrue : tfalse;
+}
+
 /* ----------------------- m4th ----------------------- */
+
+void m4th_init_once(void) {
+    static m4cell initialized = 0;
+    if (!initialized) {
+        m4th_crc_simd_auto();
+        initialized = ttrue;
+    }
+}
 
 m4th *m4th_new() {
     m4th *m = (m4th *)m4mem_allocate(sizeof(m4th));
@@ -895,10 +917,8 @@ m4th *m4th_new() {
     m4th_also(m, &m4wordlist_forth);
     m4th_also(m, &m4wordlist_m4th_user);
 
-    if (m4th_cpu_has_crc32c_asm_instructions() == ttrue) {
-        extern void m4fcrc_string_simd(m4arg _);
-        ftable[m4crc_string] = m4fcrc_string_simd;
-    }
+    m4th_init_once();
+
     return m;
 }
 

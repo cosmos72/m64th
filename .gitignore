@@ -2,6 +2,7 @@ a.out
 dump
 m4th
 test
+*.gprof
 *.h.gch
 *.o
 *.s

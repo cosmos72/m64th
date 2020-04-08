@@ -114,7 +114,7 @@ static void m4th_cpuid(unsigned level, unsigned count, unsigned ret[4]) {
 }
 
 /* C implementation of cpu_has_crc32c_asm_instructions() */
-m4cell m4th_cpu_has_crc32c_asm_instructions(void) {
+m4cell m4th_crc_simd_detect(void) {
     unsigned ret[4];
     m4th_cpuid(1, 0, ret);
     return (ret[2] & bit_SSE4_2) ? ttrue : tfalse;
@@ -125,7 +125,7 @@ m4cell m4th_cpu_has_crc32c_asm_instructions(void) {
 #include <asm/hwcap.h>
 #include <sys/auxv.h>
 /* Linux/Android specific: use getauxval(AT_HWCAP) to detect CRC32c CPU instructions */
-m4cell m4th_cpu_has_crc32c_asm_instructions(void) {
+m4cell m4th_crc_simd_detect(void) {
     unsigned long hwcap = getauxval(AT_HWCAP);
     return (hwcap & HWCAP_CRC32) ? ttrue : tfalse;
 }
@@ -133,8 +133,12 @@ m4cell m4th_cpu_has_crc32c_asm_instructions(void) {
 #else
 
 /* no support to detect CRC32c CPU instructions on this arch/OS pair */
-m4cell m4th_cpu_has_crc32c_asm_instructions(void) {
+m4cell m4th_crc_simd_detect(void) {
     return 1; /* unknown */
 }
 
 #endif
+
+void m4th_crc_simd_auto() {
+    m4th_crc_simd_enable(m4th_crc_simd_detect());
+}

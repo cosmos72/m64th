@@ -39,7 +39,10 @@ void m4th_crcinit(m4cell table[256]);
 uint32_t m4th_crc1byte(uint32_t crc, unsigned char byte);
 uint32_t m4th_crcstring(m4string str);
 
-/** detect CRC32c asm instructions */
-m4cell m4th_cpu_has_crc32c_asm_instructions(void);
+/** detect and enable/disable CRC32c asm instructions */
+void m4th_crc_simd_auto();
+m4cell m4th_crc_simd_detect(void);
+void m4th_crc_simd_enable(m4cell flag);
+m4cell m4th_crc_simd_enabled(void);
 
 #endif /* M4TH_IMPL_H */
