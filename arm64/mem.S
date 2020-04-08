@@ -117,12 +117,6 @@ LABEL(move.done)
 FUNC_END(move)
 
 
-/*
- * crc-string/simd ( c-addr u -- crc ) compute CRC32c of a string
- * TODO: use NEON CPU instructions crc32*
- */
-FUNC_DEF(crc_string_simd)
-
 /* crc-string ( c-addr u -- crc ) compute CRC32c of a string */
 FUNC_START(crc_string)     /* crc-string ( c-addr u -- crc ) m4th-user */
         MOVE(  DTOP,   REG2)               /* b = u                    */
@@ -146,6 +140,50 @@ LABEL(crc_string.done)
 FUNC_END(crc_string)
 
 FUNC_SIZE(crc_string_simd)
+
+
+
+/*
+ * crc-string/simd ( c-addr u -- crc ) compute CRC32c of a string
+ * uses ARM NEON instructions crc32cb, crc32ch, crc32cw, crc32cx
+ */
+FUNC_START(crc_string_simd)
+        MOVI(  0xffffffff, REG3w)          /* c = 0xffffffff           */
+        DPOP(  REG1)                       /* a = c-addr               */
+        ZERO(  REG0)                       /* @ = i = 0                */
+        JBE(   DTOP,   IMM(7), TO(crc_string_simd.7))
+
+        SUB2(  IMM(8), DTOP)
+FUNC_ALIGN()
+LABEL(crc_string_simd.loop)
+        LOAD(  REG2,   AT(REG1, REG0, 1))  /* b = c-addr[i...i+7]      */
+        ADD2(  IMM(8), REG0)
+        /*
+         * symbolic ASM instructions crc32c*
+         * would require compiler/assembler flag -march=armv8.1-a
+         */
+        .4byte 0x9ac25c63;             /* crc32cx REG3w, REG3w,  REG2; */
+        JBE(   REG0,   DTOP,   TO(crc_string_simd.loop))
+        ADD2(  IMM(8), DTOP)
+LABEL(crc_string_simd.7)
+        ADDI(  REG0,   4,  REG4)
+        JA(    REG4,   DTOP, TO(crc_string_simd.3)) /* jump if (i + 4 > u) */
+        LD_uw( REG2,   AT(REG1, REG0, 1))
+        MOVE(  REG4,   REG0)           /* i += 4                        */
+        .4byte 0x1ac25863;             /* crc32cw REG3w, REG3w,  REG2w; */
+LABEL(crc_string_simd.3)
+        ADDI(  REG0,   2,  REG4)
+        JA(    REG4,   DTOP, TO(crc_string_simd.1)) /* jump if (i + 2 > u) */
+        LD_uh( REG2,   AT(REG1, REG0, 1))
+        MOVE(  REG4,   REG0)           /* i += 2                        */
+        .4byte 0x1ac25463;             /* crc32ch REG3w, REG3w,  REG2w; */
+LABEL(crc_string_simd.1)
+        JAE(   REG0,   DTOP, TO(crc_string_simd.0)) /* jump if (i >= u) */
+        LD_ub( REG2,   AT(REG1, REG0, 1))
+        .4byte 0x1ac25063;             /* crc32cb REG3w, REG3w,  REG2w; */
+LABEL(crc_string_simd.0)
+        NOT2(  REG3w,  DTOPw)
+FUNC_END(crc_string_simd)
 
 
 FUNC_START(string_equal)   /* string=  ( addr1 addr2 u -- addr1 addr2 u t|f ) m4th-user */

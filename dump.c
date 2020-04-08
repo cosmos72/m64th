@@ -23,6 +23,7 @@
 #include "m4th.h"
 
 #include <stdio.h>
+#include <string.h>
 
 #define N_OF(array) (sizeof(array) / sizeof((array)[0]))
 
@@ -68,36 +69,60 @@ static void dict_print_crc(const m4dict *dict, FILE *out) {
     }
 }
 
+static inline void dpush(m4th *m, m4cell val) {
+    *--m->dstack.curr = val;
+}
+
+static void run_benchmark() {
+    const m4token code[] = {m4do, m4two_dup, m4crc_string, m4drop, m4_loop_, (m4token)-5, m4bye};
+    m4th *m = m4th_new();
+
+    fputs("benchmark: crc-string 1e7 iterations... ", stdout);
+    fflush(stdout);
+    m->ip = code;
+    dpush(m, (m4cell) "immediate");
+    dpush(m, 9);
+    dpush(m, 100000000); /* 1e7 iterations */
+    dpush(m, 0);
+    m4th_run(m);
+    m4th_del(m);
+    fputs("done.\n", stdout);
+}
+
 int main(int argc, char *argv[]) {
     const m4dict *dict[] = {
         &m4dict_forth, &m4dict_m4th_user, &m4dict_m4th_c, &m4dict_m4th_core, &m4dict_m4th_impl,
     };
+    m4cell show_crc = argc == 2 && !strcmp(argv[1], "crc");
+    m4cell benchmark = argc == 2 && !strcmp(argv[1], "benchmark");
     m4cell i;
 
-    if (argc == 2) {
-        m4th_crcinit(m4th_crctable);
+    m4th_crcinit(m4th_crctable);
+    if (show_crc) {
         for (i = 0; i < (m4cell)N_OF(dict); i++) {
             dict_print_crc(dict[i], stdout);
         }
-    } else {
+    } else if (!benchmark) {
         fputs(license, stdout);
         for (i = 0; i < (m4cell)N_OF(dict); i++) {
             m4dict_print(dict[i], NULL, stdout);
         }
     }
 
-    if (argc == 2) {
+    if (show_crc || benchmark) {
         switch (m4th_cpu_has_crc32c_asm_instructions()) {
         case tfalse:
-            fputs("\nthis CPU does not have crc32c asm instructions\n", stdout);
+            fputs("# this CPU does not have crc32c asm instructions\n", stdout);
             break;
         case ttrue:
-            fputs("\nthis CPU has crc32c asm instructions\n", stdout);
+            fputs("# this CPU has crc32c asm instructions\n", stdout);
             break;
         default:
-            fputs("\nno support to detect crc32c asm instructions on this CPU/OS\n", stdout);
+            fputs("# no support to detect crc32c asm instructions on this CPU/OS\n", stdout);
         }
     }
-    /* suppress 'unused parameter' warning */
-    return 0 & argc & (m4cell)argv;
+    if (benchmark) {
+        run_benchmark();
+    }
+    return 0;
 }

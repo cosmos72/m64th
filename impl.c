@@ -101,6 +101,7 @@ uint32_t m4th_crcstring(m4string str) {
 }
 
 #if defined(__x86_64__)
+
 #include <cpuid.h>
 
 /* C implementation of cpuid() */
@@ -119,9 +120,19 @@ m4cell m4th_cpu_has_crc32c_asm_instructions(void) {
     return (ret[2] & bit_SSE4_2) ? ttrue : tfalse;
 }
 
-#elif defined(__aarch64__)
+#elif defined(__aarch64__) && defined(__linux__)
 
-/* TODO: Linux/Android specific: use getauxval(AT_HWCAP) */
+#include <asm/hwcap.h>
+#include <sys/auxv.h>
+/* Linux/Android specific: use getauxval(AT_HWCAP) to detect CRC32c CPU instructions */
+m4cell m4th_cpu_has_crc32c_asm_instructions(void) {
+    unsigned long hwcap = getauxval(AT_HWCAP);
+    return (hwcap & HWCAP_CRC32) ? ttrue : tfalse;
+}
+
+#else
+
+/* no support to detect CRC32c CPU instructions on this arch/OS pair */
 m4cell m4th_cpu_has_crc32c_asm_instructions(void) {
     return 1; /* unknown */
 }
