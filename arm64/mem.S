@@ -117,6 +117,29 @@ LABEL(move.done)
 FUNC_END(move)
 
 
+/* crc-string ( c-addr u -- crc ) compute CRC32c of a string */
+FUNC_START(crc_string)     /* crc-string ( c-addr u -- crc ) m4th-user */
+        MOVE(  DTOP,   REG2)               /* b = u                    */
+        MOVI(  0xffffffff, REG3w)          /* c = 0xffffffff           */
+        DPOP___DTOP()                      /* dtop = c-addr            */
+        JZ(    REG2,   TO(crc_string.done))
+        ZERO(  REG0)                       /* @ = 0                    */
+        ADDROF_4G(m4th_crctable,   REG4)   /* d = table                */
+FUNC_ALIGN()
+LABEL(crc_string.loop)
+        LD_ub( REG1,   AT(DTOP, REG0, 1))  /* a = c-addr[@] = str[i]   */
+        INC1(  REG0)                       /* @++                      */
+        XOR2(  REG3w,  REG1w)              /* a = str[i] ^ crc         */
+        cmp    REG0,   REG2;               /* if (i < u)               */
+        AND2(IMM(0xff),REG1w)              /* a &= 0xff                */
+        LOAD(  REG1,   AT(REG4, REG1, SZ)) /* a = table[a]             */
+        eor    REG3w,  REG1w, REG3w, lsr 8;/* crc = a ^ (crc >> 8)     */
+        b.lo   TO(crc_string.loop);
+LABEL(crc_string.done)
+        NOT2(  REG3w,  DTOPw)
+FUNC_END(crc_string)
+
+
 FUNC_START(string_equal)   /* string=  ( addr1 addr2 u -- addr1 addr2 u t|f ) m4th-user */
         ldp    REG2,   REG1,    AT(DSTK);                /* b = addr2, a = addr1 */
         DPUSH( DTOP)

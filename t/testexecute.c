@@ -532,13 +532,11 @@ static m4testexecute testexecute_d[] = {
      {{2, {0xffffffff, 't'}}, {}},
      {{1, {0x1b806fbc /* m4th_crc1byte(0xffffffff, 't')*/}}, {}},
      {}},
-#ifdef __x86_64__ /* broken on arm64 */
     {"crc-string",
      {m4crc_string, m4bye},
      {{2, {(m4cell) "immediate", 9}}, {}},
      {{1, {0x5ecabe1c /* m4th_crc_string("immediate", 9)*/}}, {}},
      {}},
-#endif
     {"' noop (exec-native)", {m4_exec_native_, m4bye}, {{1, {(m4cell)m4fnoop}}, {}}, {{}, {}}, {}},
     {"' two (exec-native)",
      {m4_exec_native_, m4bye},
