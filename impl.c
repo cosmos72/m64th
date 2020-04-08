@@ -116,14 +116,14 @@ static void m4th_cpuid(unsigned level, unsigned count, unsigned ret[4]) {
 m4cell m4th_cpu_has_crc32c_asm_instructions(void) {
     unsigned ret[4];
     m4th_cpuid(1, 0, ret);
-    return ((ret[2] & bit_SSE4_2) != 0);
+    return (ret[2] & bit_SSE4_2) ? ttrue : tfalse;
 }
 
 #elif defined(__aarch64__)
 
 /* TODO: Linux/Android specific: use getauxval(AT_HWCAP) */
 m4cell m4th_cpu_has_crc32c_asm_instructions(void) {
-    return 0;
+    return 1; /* unknown */
 }
 
 #endif

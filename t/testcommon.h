@@ -20,12 +20,11 @@
 #ifndef M4TH_T_TEST_IMPL_H
 #define M4TH_T_TEST_IMPL_H
 
+#include "../impl.h"          /* tfalse, ttrue */
 #include "../include/word.mh" /* WORD_SYM() */
 #include "../test.h"
 
 enum {
-    tfalse = (m4cell)0,
-    ttrue = (m4cell)-1,
     callsz = 1 + SZ / SZt, /* # of m4token needed to store a CALL(...) */
 };
 

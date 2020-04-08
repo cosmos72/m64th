@@ -87,14 +87,15 @@ int main(int argc, char *argv[]) {
     }
 
     if (argc == 2) {
-        if (m4th_cpu_has_crc32c_asm_instructions()) {
-            fputs("\nthis CPU has crc32c asm instructions\n", stdout);
-        } else {
-#ifdef __x86_64__
+        switch (m4th_cpu_has_crc32c_asm_instructions()) {
+        case tfalse:
             fputs("\nthis CPU does not have crc32c asm instructions\n", stdout);
-#else
-            fputs("\nno support to detect crc32c asm instructions on this CPU\n", stdout);
-#endif
+            break;
+        case ttrue:
+            fputs("\nthis CPU has crc32c asm instructions\n", stdout);
+            break;
+        default:
+            fputs("\nno support to detect crc32c asm instructions on this CPU/OS\n", stdout);
         }
     }
     /* suppress 'unused parameter' warning */

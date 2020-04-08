@@ -118,8 +118,8 @@ LABEL(move.loop)
 FUNC_END(move)
 
 
-/* crc-string ( c-addr u -- crc ) compute CRC32c of a string */
-FUNC_START(crc_string)     /* crc-string ( c-addr u -- crc ) m4th-user */
+/* crc-string ( c-addr u -- crc ) m4th-user: compute CRC32c of a string */
+FUNC_START(crc_string)
         MOVE(  DTOP,   REG2)               /* b = u                    */
         MOVE(  RFFFw,  REG3w)              /* c = 0xffffffff           */
         DPOP___DTOP()                      /* dtop = c-addr            */
@@ -139,6 +139,43 @@ LABEL(crc_string.done)
         NOT1(  REG3w)
         MOVE(  REG3w,  DTOPw)
 FUNC_END(crc_string)
+
+
+/*
+ * crc-string/simd ( c-addr u -- crc ) compute CRC32c of a string
+ * uses SSE4.2 CPU instructions crc32b, crc32w, crc32l, crc32q
+ */
+FUNC_START(crc_string_simd)
+        MOVE(  DTOP,   REG2)               /* b = u                    */
+        MOVE(  RFFFw,  REG3w)              /* c = 0xffffffff           */
+        DPOP___DTOP()                      /* dtop = c-addr            */
+        ZERO(  REG1)                       /* a = 0                    */
+        JBE(   REG2,   IMM(7), TO(crc_string_simd.7))
+
+        SUB2(  IMM(8), REG2)
+FUNC_ALIGN()
+LABEL(crc_string_simd.loop)
+        crc32q AT(DTOP, REG1, 1),   REG3;
+        ADD2(  IMM(8), REG1)
+        JBE(   REG1,   REG2,   TO(crc_string_simd.loop))
+        ADD2(  IMM(8), REG2)
+LABEL(crc_string_simd.7)
+        ADDI(  REG1,   4,  REG4)
+        JA(    REG4,   REG2, TO(crc_string_simd.3)) /* jump if (i + 4 > u) */
+        crc32l AT(DTOP, REG1, 1),   REG3w;
+        MOVE(  REG4,   REG1)               /* i += 4                   */
+LABEL(crc_string_simd.3)
+        ADDI(  REG1,   2,  REG4)
+        JA(    REG4,   REG2, TO(crc_string_simd.1)) /* jump if (i + 2 > u) */
+        crc32w AT(DTOP, REG1, 1),   REG3w;
+        MOVE(  REG4,   REG1)               /* i += 2                   */
+LABEL(crc_string_simd.1)
+        JAE(   REG1,   REG2, TO(crc_string_simd.0)) /* jump if (i >= u) */
+        crc32b AT(DTOP, REG1, 1),   REG3w;
+LABEL(crc_string_simd.0)
+        NOT1(  REG3w)
+        MOVE(  REG3w,  DTOPw)
+FUNC_END(crc_string_simd)
 
 
 FUNC_START(string_equal)   /* string=  ( addr1 addr2 u -- addr1 addr2 u t|f ) m4th-user */

@@ -117,6 +117,12 @@ LABEL(move.done)
 FUNC_END(move)
 
 
+/*
+ * crc-string/simd ( c-addr u -- crc ) compute CRC32c of a string
+ * TODO: use NEON CPU instructions crc32*
+ */
+FUNC_DEF(crc_string_simd)
+
 /* crc-string ( c-addr u -- crc ) compute CRC32c of a string */
 FUNC_START(crc_string)     /* crc-string ( c-addr u -- crc ) m4th-user */
         MOVE(  DTOP,   REG2)               /* b = u                    */
@@ -138,6 +144,8 @@ LABEL(crc_string.loop)
 LABEL(crc_string.done)
         NOT2(  REG3w,  DTOPw)
 FUNC_END(crc_string)
+
+FUNC_SIZE(crc_string_simd)
 
 
 FUNC_START(string_equal)   /* string=  ( addr1 addr2 u -- addr1 addr2 u t|f ) m4th-user */

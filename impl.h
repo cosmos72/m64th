@@ -22,6 +22,11 @@
 
 #include "m4th.h"
 
+enum {
+    tfalse = 0,
+    ttrue = (m4cell)-1,
+};
+
 /** wrapper around REPL */
 m4cell m4th_repl(m4th *m);
 

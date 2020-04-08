@@ -18,6 +18,7 @@
  */
 
 #include "m4th.h"
+#include "impl.h" /* tfalse, ttrue */
 #include "include/dict_all.mh"
 #include "include/dict_fwd.h"
 #include "include/func.mh"
@@ -25,7 +26,6 @@
 #include "include/macro.mh"
 #include "include/word_fwd.h"
 #include "include/wordlist_fwd.h"
-
 #include <assert.h> /* assert()  */
 #include <errno.h>  /* errno     */
 #include <stdio.h>  /* fprintf() */
@@ -44,8 +44,6 @@ enum {
     inbuf_n = 1024,
     outbuf_n = 1024,
     dataspace_n = 4096,
-    tfalse = 0,
-    ttrue = (m4cell)-1,
 };
 
 typedef char m4th_assert_sizeof_m4token_equal_SZt[(sizeof(m4token) == SZt) ? 1 : -1];
@@ -896,6 +894,11 @@ m4th *m4th_new() {
     memset(&m->searchorder, '\0', sizeof(m->searchorder));
     m4th_also(m, &m4wordlist_forth);
     m4th_also(m, &m4wordlist_m4th_user);
+
+    if (m4th_cpu_has_crc32c_asm_instructions() == ttrue) {
+        extern void m4fcrc_string_simd(m4arg _);
+        ftable[m4crc_string] = m4fcrc_string_simd;
+    }
     return m;
 }
 
