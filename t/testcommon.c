@@ -26,8 +26,6 @@
 #include <stdlib.h> /* exit()            */
 #include <string.h> /* memcpy()          */
 
-extern const m4word *wtable[]; /* from m4th.c */
-
 /* -------------- m4countedstack -------------- */
 
 void m4countedstack_copy(const m4countedstack *src, m4buf *dst) {

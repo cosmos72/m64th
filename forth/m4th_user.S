@@ -81,7 +81,9 @@ WORD_START(break,      bounds)
 WORD_END(break)
 /* cmove* ( src dst u -- src+u dst+u ) same as cmove, but returns updated addresses */
 WORD(cmove_star,       break,          DSTACK(3,2), RSTACK(0,0), WORD_IMPURE)
-WORD_START(continue,   cmove_star)
+/* crc-string ( c-addr u -- crc32 ) compute CRC32c of a string  */
+WORD(crc_string,       cmove_star,     DSTACK(2,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD_START(continue,   crc_string)
     WORD_STACK_NONE()  /* stack effect if not jumping */
     WORD_DSTACK(0,0)   /* stack effect if jumping */
     WORD_RSTACK(0,0)

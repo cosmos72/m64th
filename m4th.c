@@ -313,7 +313,7 @@ static m4func ftable[] = {
 
 /* initialize the whole m4token -> m4word conversion table in one fell swoop */
 #define WTABLE_ENTRY(strlen, str, name) [M4TOKEN_VAL(name)] = &WORD_SYM(name),
-const m4word *wtable[] = {
+static const m4word *wtable[] = {
     DICT_TOKENS_ALL(WTABLE_ENTRY) /**/[M4____end] = NULL,
 };
 #undef WTABLE_ENTRY

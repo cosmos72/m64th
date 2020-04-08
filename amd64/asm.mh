@@ -136,6 +136,9 @@
 #define RTOP_ut %ebp  /* zero-extend m4token into RTOP */
 
 #define RFFF  %r11  /* always contains -1    */
+#define RFFFb %r11b /*  8 bits, all set to 1 */
+#define RFFFh %r11w /* 16 bits, all set to 1 */
+#define RFFFw %r11d /* 32 bits, all set to 1 */
 #define RFFFt %r11w /* (m4token)-1           */
 
 #define DSTK  %rsi  /* pointer to second data stack element */

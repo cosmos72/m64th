@@ -31,7 +31,6 @@ int main(int argc, char *argv[]) {
 
     m4th_crcinit(m4th_crctable);
 
-    /* m4th_testprint_dicts_crc(out); */
     /* m4th_testbench_crc_c(out); */
 
     fail += m4th_testexecute(m, out);

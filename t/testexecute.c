@@ -532,6 +532,13 @@ static m4testexecute testexecute_d[] = {
      {{2, {0xffffffff, 't'}}, {}},
      {{1, {0x1b806fbc /* m4th_crc1byte(0xffffffff, 't')*/}}, {}},
      {}},
+#ifdef __x86_64__ /* broken on arm64 */
+    {"crc-string",
+     {m4crc_string, m4bye},
+     {{2, {(m4cell) "immediate", 9}}, {}},
+     {{1, {0x5ecabe1c /* m4th_crc_string("immediate", 9)*/}}, {}},
+     {}},
+#endif
     {"' noop (exec-native)", {m4_exec_native_, m4bye}, {{1, {(m4cell)m4fnoop}}, {}}, {{}, {}}, {}},
     {"' two (exec-native)",
      {m4_exec_native_, m4bye},
@@ -1335,32 +1342,6 @@ static void m4th_testexecute_bunch(m4th *m, m4testexecute bunch[], m4cell n, m4t
     }
     count->failed += fail;
     count->total += n;
-}
-
-void m4th_testprint_wordlist_crc(const m4wordlist *wid, FILE *out) {
-    const m4word *w = m4wordlist_lastword(wid);
-    m4string name = m4wordlist_name(wid);
-
-    fputs("\n---------------- ", out);
-    m4string_print(name, out);
-    fputs(" ----------------", out);
-
-    while (w) {
-        name = m4word_name(w);
-        fprintf(out, "\n0x%08x    ", m4th_crcstring(name));
-        m4string_print(name, out);
-        w = m4word_prev(w);
-    }
-    fputc('\n', out);
-}
-
-void m4th_testprint_wordlists_crc(FILE *out) {
-    const m4wordlist *wid[] = {&m4wordlist_forth, &m4wordlist_m4th_user, &m4wordlist_m4th_core,
-                               &m4wordlist_m4th_impl};
-    m4cell_u i;
-    for (i = 0; i < N_OF(wid); i++) {
-        m4th_testprint_wordlist_crc(wid[i], out);
-    }
 }
 
 void m4th_testbench_crc_c(FILE *out) {
