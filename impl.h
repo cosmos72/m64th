@@ -27,9 +27,6 @@ enum {
     ttrue = (m4cell)-1,
 };
 
-/** wrapper around REPL */
-m4cell m4th_repl(m4th *m);
-
 /** temporary C implementation of '.' */
 void m4th_dot(m4cell n, m4iobuf *io);
 

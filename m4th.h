@@ -238,14 +238,17 @@ m4th *m4th_new(void);
 /** delete an m4th struct */
 void m4th_del(m4th *m);
 
-/**
- * main entry point from C. implemented in assembly.
- * execute m4th->ip and subsequent code until m4th_bye is found.
- */
-m4cell m4th_run(m4th *m);
+/** start forth REPL */
+m4cell m4th_repl(m4th *m);
 
 /** execute the specified m4word, then return. preserves m4th->ip */
 m4cell m4th_execute_word(m4th *m, const m4word *w);
+
+/**
+ * low-level entry point from C. implemented in assembly.
+ * execute m4th->ip and subsequent code until m4th_bye is found.
+ */
+m4cell m4th_run(m4th *m);
 
 /**
  * clear data stack, return stack, input buffer and output buffer.

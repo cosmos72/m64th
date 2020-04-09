@@ -1037,6 +1037,11 @@ m4cell m4th_execute_word(m4th *m, const m4word *w) {
     return ret;
 }
 
+/** wrapper around REPL */
+m4cell m4th_repl(m4th *m) {
+    return m4th_execute_word(m, &m4w_repl);
+}
+
 /* ----------------------- optional cpu features ----------------------- */
 extern void m4fcrc_string(m4arg _);
 extern void m4fcrc_string_simd(m4arg _);

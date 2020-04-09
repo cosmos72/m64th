@@ -19,6 +19,7 @@
 
 #include "impl.h"
 #include "include/err.h"
+#include "include/hash_map.h"
 #include "include/token.h"
 #include "include/word_fwd.h"
 
@@ -26,11 +27,6 @@
 #include <errno.h>  /* errno                      */
 #include <stdlib.h> /* strtol()                   */
 #include <string.h> /* memcmp() memcpy() strlen() */
-
-/** wrapper around REPL */
-m4cell m4th_repl(m4th *m) {
-    return m4th_execute_word(m, &m4w_repl);
-}
 
 /** temporary C implementation of '.' */
 void m4th_dot(m4cell n, m4iobuf *io) {
@@ -62,6 +58,87 @@ void m4th_dot(m4cell n, m4iobuf *io) {
         return;
     }
 }
+
+/* C implementation of hash map */
+
+static inline m4cell m4hash_entry_present(const m4hash_entry *e) {
+    return e->next_index != m4hash_no_entry;
+}
+
+static inline m4cell m4hash_entry_next(const m4hash_entry *e) {
+    return e->next_index != m4hash_no_next;
+}
+
+static inline uint32_t m4hash_key_crc(m4hash_key key) {
+    return m4th_crcarray(&key, sizeof(key));
+}
+
+static inline m4hash_index m4hash_index_of(const m4hash_map *map, m4hash_key key) {
+    return m4hash_key_crc(key) & (map->cap - 1);
+}
+
+const m4hash_entry *m4hash_map_find_in_collision_list(const m4hash_map *map, m4hash_key key,
+                                                      const m4hash_entry *bucket) {
+    while (key != bucket->key) {
+        if (!m4hash_entry_next(bucket)) {
+            return NULL;
+        }
+        bucket = map->vec + bucket->next_index;
+    }
+    return bucket;
+}
+
+// returns NULL if key not found
+const m4hash_entry *m4hash_map_find(const m4hash_map *map, m4hash_key key) {
+    if (map->size != 0) {
+        const m4hash_entry *e = map->vec + m4hash_index_of(map, key);
+        if (m4hash_entry_present(e)) {
+            return m4hash_map_find_in_collision_list(map, key, e);
+        }
+    }
+    return NULL;
+}
+
+#if 0  /* TODO */
+// key MUST NOT be already present
+size_t pick_collision_index(size_t pos) const {
+    static const size_t relprime[] = {5, 7, 9, 11};
+    const size_t step = relprime[pos & 3];
+    const size_t cap = capacity();
+    for (size_t i = 0; i < cap; i++) {
+        const size_t collision_pos = (pos + i * step) & (cap - 1);
+        const Entry &entry = collision.at(collision_pos);
+        if (!entry.present()) {
+            return collision_pos;
+        }
+    }
+    return Index::no_entry;
+}
+
+void store(const K &key, const V &val, Index next_index, Entry *to) {
+    to->key = key;
+    to->val = val;
+    to->next_index = next_index;
+    count++;
+}
+
+bool insert_nogrow(const K &key, const V &val) {
+    size_t pos = index(key);
+    Entry &entry = vec.at(pos);
+    if (!entry.present()) {
+        store(key, val, Index::no_next, &entry);
+        return true;
+    }
+    pos = pick_collision_index(pos);
+    if (pos != Index::no_entry) {
+        Entry &collision_entry = collision.at(pos);
+        store(key, val, entry.next_index, &collision_entry);
+        entry.next_index = (Index)pos;
+        return true;
+    }
+    return false;
+}
+#endif /* 0 */
 
 /* temporary C implementation of CRC32c */
 m4cell m4th_crctable[256];
