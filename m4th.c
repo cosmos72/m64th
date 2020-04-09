@@ -49,8 +49,8 @@ enum {
 typedef char m4th_assert_sizeof_m4token_equal_SZt[(sizeof(m4token) == SZt) ? 1 : -1];
 typedef char m4th_assert_sizeof_m4cell_equal_SZ[(sizeof(m4cell) == SZ) ? 1 : -1];
 
-static inline void dpush(m4th *m, m4cell val) {
-    *--m->dstack.curr = val;
+static inline void dpush(m4th *m, m4cell x) {
+    *--m->dstack.curr = x;
 }
 
 #if 0  /* unused */
@@ -870,32 +870,23 @@ void m4wordlist_print(const m4wordlist *wid, FILE *out) {
     m4dict_print(wid->dict, wid->last, out);
 }
 
-/* ----------------------- crc-simd ----------------------- */
-
-void m4th_crc_simd_enable(m4cell flag) {
-    extern void m4fcrc_string(m4arg _);
-    extern void m4fcrc_string_simd(m4arg _);
-    ftable[m4crc_string] = flag == ttrue ? m4fcrc_string_simd : m4fcrc_string;
-}
-
-m4cell m4th_crc_simd_enabled(void) {
-    extern void m4fcrc_string(m4arg _);
-    extern void m4fcrc_string_simd(m4arg _);
-    return ftable[m4crc_string] == m4fcrc_string_simd ? ttrue : tfalse;
-}
-
 /* ----------------------- m4th ----------------------- */
 
-void m4th_init_once(void) {
+void m4th_init(void) {
     static m4cell initialized = 0;
     if (!initialized) {
-        m4th_crc_simd_auto();
+        m4th_cpu_features_autoenable();
+        m4th_crcinit(m4th_crctable);
         initialized = ttrue;
     }
 }
 
-m4th *m4th_new() {
-    m4th *m = (m4th *)m4mem_allocate(sizeof(m4th));
+m4th *m4th_new(void) {
+    m4th *m;
+
+    m4th_init();
+
+    m = (m4th *)m4mem_allocate(sizeof(m4th));
     m->dstack = m4stack_alloc(dstack_n);
     m->rstack = m4stack_alloc(rstack_n);
     m->ip = NULL;
@@ -916,8 +907,6 @@ m4th *m4th_new() {
     memset(&m->searchorder, '\0', sizeof(m->searchorder));
     m4th_also(m, &m4wordlist_forth);
     m4th_also(m, &m4wordlist_m4th_user);
-
-    m4th_init_once();
 
     return m;
 }
@@ -1046,4 +1035,24 @@ m4cell m4th_execute_word(m4th *m, const m4word *w) {
     ret = m4th_run(m);
     m->ip = save_ip;
     return ret;
+}
+
+/* ----------------------- optional cpu features ----------------------- */
+extern void m4fcrc_string(m4arg _);
+extern void m4fcrc_string_simd(m4arg _);
+
+m4cell m4th_cpu_features_enabled(void) {
+    return ftable[m4crc_string] == m4fcrc_string_simd ? m4th_cpu_feature_crc32c : 0;
+}
+
+void m4th_cpu_features_enable(m4cell mask) {
+    if (mask & m4th_cpu_feature_crc32c) {
+        ftable[m4crc_string] = m4fcrc_string_simd;
+    }
+}
+
+void m4th_cpu_features_disable(m4cell mask) {
+    if (mask & m4th_cpu_feature_crc32c) {
+        ftable[m4crc_string] = m4fcrc_string;
+    }
 }

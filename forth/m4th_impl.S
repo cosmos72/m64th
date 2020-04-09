@@ -523,7 +523,7 @@ WORD_START(_optimize1_, _while0_)
         token_plus, false, exit
       ),
       WORD_DATA_TOKENS(
-        OPT1_BODY(OPT1_TO_TOKENS) _missing_
+        OPT1_BODY(OPT1_TO_ASM_TOKENS) _missing_
       )
     )
 WORD_END(_optimize1_)

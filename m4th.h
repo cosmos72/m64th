@@ -229,8 +229,11 @@ struct m4th_s {        /**< m4th forth interpreter and compiler          */
 extern "C" {
 #endif
 
+/** initialize internal structures. called automatically by m4th_new() */
+void m4th_init(void);
+
 /** create a new m4th struct */
-m4th *m4th_new();
+m4th *m4th_new(void);
 
 /** delete an m4th struct */
 void m4th_del(m4th *m);

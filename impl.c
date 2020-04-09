@@ -91,54 +91,68 @@ uint32_t m4th_crc1byte(uint32_t crc, unsigned char byte) {
     return (crc >> 8) ^ m4th_crctable[(crc & 0xff) ^ byte];
 }
 
-uint32_t m4th_crcstring(m4string str) {
+uint32_t m4th_crcarray(const void *addr, const m4cell_u nbytes) {
     assert(m4th_crctable[0xff]);
+    const m4char *p = (const m4char *)addr;
     uint32_t crc = ~(uint32_t)0;
-    for (size_t i = 0; i < str.n; i++) {
-        crc = m4th_crc1byte(crc, str.addr[i]);
+    for (size_t i = 0; i < nbytes; i++) {
+        crc = m4th_crc1byte(crc, p[i]);
     }
     return ~crc;
+}
+
+uint32_t m4th_crcstring(m4string str) {
+    return m4th_crcarray(str.addr, str.n);
 }
 
 #if defined(__x86_64__)
 
 #include <cpuid.h>
 
-/* C implementation of cpuid() */
+/* C wrapper for cpuid() */
 static void m4th_cpuid(unsigned level, unsigned count, unsigned ret[4]) {
     unsigned max_level = __get_cpuid_max(level & 0x80000000ul, NULL);
-    ret[0] = ret[1] = ret[2] = ret[3] = count & 0;
+    ret[0] = ret[1] = ret[2] = ret[3] = 0;
     if (max_level != 0 && level <= max_level) {
         __cpuid_count(level, count, ret[0], ret[1], ret[2], ret[3]);
     }
 }
 
 /* amd64: use cpuid to detect CRC32c CPU instructions - they are part of SSE4.2 */
-m4cell m4th_crc_simd_detect(void) {
+m4cell m4th_cpu_features_detect(void) {
     unsigned ret[4];
     m4th_cpuid(1, 0, ret);
-    return (ret[2] & bit_SSE4_2) ? ttrue : tfalse;
+    return (ret[2] & bit_SSE4_2) ? m4th_cpu_feature_crc32c : 0;
 }
 
 #elif defined(__aarch64__) && defined(__linux__)
 
 #include <asm/hwcap.h>
 #include <sys/auxv.h>
-/* arm64: use Linux/Android specific getauxval(AT_HWCAP) to detect CRC32c CPU instructions */
-m4cell m4th_crc_simd_detect(void) {
+/* arm64+Linux: use Linux specific getauxval(AT_HWCAP) to detect CRC32c CPU instructions */
+m4cell m4th_cpu_features_detect(void) {
     unsigned long hwcap = getauxval(AT_HWCAP);
-    return (hwcap & HWCAP_CRC32) ? ttrue : tfalse;
+    return (hwcap & HWCAP_CRC32) ? m4th_cpu_feature_crc32c : 0;
+}
+
+#elif defined(__aarch64__) && defined(__ANDROID__)
+
+#include <cpu-features.h>
+/* arm64+Android: use Android specific android_getCpuFeatures() to detect CRC32c CPU instructions */
+m4cell m4th_cpu_features_detect(void) {
+    uint64_t features = android_getCpuFeatures();
+    return (features & ANDROID_CPU_ARM64_FEATURE_CRC32) ? m4th_cpu_feature_crc32c : 0;
 }
 
 #else
 
 /* no support to detect CRC32c CPU instructions on this arch/OS pair */
-m4cell m4th_crc_simd_detect(void) {
-    return 1; /* unknown */
+m4cell m4th_cpu_features_detect(void) {
+    return m4th_cpu_feature_cannot_detect;
 }
 
 #endif
 
-void m4th_crc_simd_auto() {
-    m4th_crc_simd_enable(m4th_crc_simd_detect());
+void m4th_cpu_features_autoenable() {
+    m4th_cpu_features_enable(m4th_cpu_features_detect());
 }

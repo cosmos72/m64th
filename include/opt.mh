@@ -124,7 +124,6 @@
         x(three, rshift, /*=>*/ eight_div)                   /* 3  lshift     => 8/             */ \
         x(four, times, /*=>*/ four_times)                    /* 4  *          => 4*             */ \
         x(four, plus, /*=>*/ four_plus)                      /* 4  +          => 4+             */ \
-        x(four, minus, /*=>*/ four_minus)                    /* 4  -          => 4-             */ \
         x(four, div, /*=>*/ four_sm_div)                     /* 4  /          => 4sm/           */ \
         /*x(four_times, eight_sm_div, => two_sm_div)*/       /* 4* 8sm/       => 2sm/ OVERFLOW! */ \
         /*x(four_times, four_sm_div => )*/                   /* 4* 4sm/       =>      OVERFLOW! */ \
@@ -136,7 +135,6 @@
         x(four_sm_div, two_sm_div, /*=>*/ four_sm_div)       /* 4sm/ 2sm/     => 8sm/           */ \
         x(eight, times, /*=>*/ eight_times)                  /* 8  *          => 8*             */ \
         x(eight, plus, /*=>*/ eight_plus)                    /* 8  +          => 8+             */ \
-        x(eight, minus, /*=>*/ eight_minus)                  /* 8  -          => 8-             */ \
         x(eight, div, /*=>*/ eight_sm_div)                   /* 8  /          => 8sm/           */ \
         /*x(eight_times, eight_sm_div => )*/                 /* 8* 8sm/       =>      OVERFLOW! */ \
         /*x(eight_times, four_sm_div, => two_times)*/        /* 8* 4sm/       => 2*   OVERFLOW! */ \
@@ -158,7 +156,7 @@
         /*____ 0<=>  0<> _____ redundant 0<> _____________*/ /*                                 */ \
         x(zero_less, zero_ne, /*=>*/ zero_less)              /* 0<    0<>     => 0<             */ \
         x(zero_less_equal, zero_ne, /*=>*/ zero_less)        /* 0<=   0<>     => 0<=            */ \
-        x(zero_ne, zero_ne, /*=>*/ zero_new)                 /* 0<>   0<>     => 0<>            */ \
+        x(zero_ne, zero_ne, /*=>*/ zero_ne)                  /* 0<>   0<>     => 0<>            */ \
         x(zero_equal, zero_ne, /*=>*/ zero_equal)            /* 0=    0<>     => 0=             */ \
         x(zero_more, zero_ne, /*=>*/ zero_more)              /* 0>    0<>     => 0>             */ \
         x(zero_more_equal, zero_ne, /*=>*/ zero_more_equal)  /* 0>=   0<>     => 0>=            */ \
@@ -263,7 +261,7 @@
         x(u_more, invert, /*=>*/ u_less_equal)               /* u>   invert   => u<=            */ \
         x(u_more_equal, invert, /*=>*/ u_less)               /* u>=  invert   => u<             */ \
         /*_____2... ______________________________________*/ /*                                 */ \
-        x(two_to_r, two_from_r /*=>*/)                       /* 2>r   2r>     =>                */ \
+        x(two_to_r, two_r_from /*=>*/)                       /* 2>r   2r>     =>                */ \
         x(two_dup, two_to_r, /*=>*/ two_dup_two_to_r)        /* 2dup  2>r     => 2dup2>r        */ \
         x(two_dup, two_drop /*=>*/)                          /* 2dup  2drop   =>                */ \
         x(two_dup, two_nip /*=>*/)                           /* 2dup  2nip    =>                */ \
@@ -274,7 +272,7 @@
         x(two_dup, swap, /*=>*/ over, trail)                 /* 2dup  swap    => over trail     */ \
         x(two_over, two_drop /*=>*/)                         /* 2over 2drop   =>                */ \
         x(two_over, two_nip, /*=>*/ two_drop, two_dup)       /* 2over 2nip    => 2drop 2dup     */ \
-        x(two_from_r, two_to_r /*=>*/)                       /* 2r>   2>r     =>                */ \
+        x(two_r_from, two_to_r /*=>*/)                       /* 2r>   2>r     =>                */ \
         x(two_r_from, two_drop, /*=>*/ two_r_from_two_drop)  /* 2r>   2drop   => 2r>2drop       */ \
         x(two_r_fetch, two_drop /*=>*/)                      /* 2r@   2drop   =>                */ \
         x(two_r_fetch, drop, /*=>*/ r2nd_fetch)              /* 2r@   drop    => r2nd@          */ \
@@ -287,7 +285,7 @@
         x(two_swap, two_nip, /*=>*/ two_drop)                /* 2swap 2nip    => 2drop          */ \
         x(two_swap, two_swap /*=>*/)                         /* 2swap 2swap   =>                */ \
         /*________________________________________________*/ /*                                 */ \
-        x(to_r, from_r /*=>*/)                               /* >r   r>       =>                */ \
+        x(to_r, r_from /*=>*/)                               /* >r   r>       =>                */ \
         x(plus, negate, /*=>*/ negate, sub)                  /* +    negate   => negate sub     */ \
         x(minus, negate, /*=>*/ sub)                         /* -    negate   => sub            */ \
         x(fetch, drop, /*=>*/ drop)                          /* @    drop     => drop           */ \
@@ -313,7 +311,7 @@
         x(short_aligned, int_aligned, /*=>*/ int_aligned)    /* short-a..   int-a.. =>  int-a.. */ \
         x(short_aligned, short_aligned, /*=>*/ short_aligned) /*short-a.. short-a.. => short-a..*/ \
         /*________________________________________________*/ /*                                 */ \
-        x(abs, zero_neq, /*=>*/ zero_ne)                     /* abs  0<>      => 0<>            */ \
+        x(abs, zero_ne, /*=>*/ zero_ne)                      /* abs  0<>      => 0<>            */ \
         x(abs, zero_equal, /*=>*/ zero_equal)                /* abs  0=       => 0=             */ \
         x(abs, abs, /*=>*/ abs)                              /* abs  abs      => abs            */ \
         x(abs, squared, /*=>*/ squared)                      /* abs  squared  => squared        */ \
@@ -399,7 +397,7 @@
         x(over, minus_rot, /*=>*/ trail)                     /* over   -rot   => trail          */ \
         x(over, rot, /*=>*/ swap, dup)                       /* over   rot    => swap dup       */ \
         x(over, swap, /*=>*/ trail)                          /* over   swap   => trail          */ \
-        x(from_r, to_r /*=>*/)                               /* r>     >r     =>                */ \
+        x(r_from, to_r /*=>*/)                               /* r>     >r     =>                */ \
         x(r_from, drop, /*=>*/ r_from_drop)                  /* r>     drop   => r>drop         */ \
         x(r_from_drop, to_r, /*=>*/ r_store)                 /* r>drop >r     => r!             */ \
         x(rot, flip, /*=>*/ swap)                            /* rot    flip   => swap           */ \
@@ -489,12 +487,7 @@
         x(swap, over, plus, /*=>*/ bounds)           /* swap   over  +     => bounds      */       \
         x(trail, plus, swap, /*=>*/ bounds)          /* trail  +     swap  => bounds      */
 
-#define OPT1_TO_TOKENS(...) T(COUNT_ARGS(__VA_ARGS__) - 1), FIRST_3_ARGS(__VA_ARGS__, noop, noop),
-#define OPT2_TO_TOKENS(...) T(COUNT_ARGS(__VA_ARGS__) - 2), FIRST_4_ARGS(__VA_ARGS__, noop, noop),
-#define OPT3_TO_TOKENS(...) T(COUNT_ARGS(__VA_ARGS__) - 3), FIRST_5_ARGS(__VA_ARGS__, noop, noop),
-
-/* OPT1_BODY(OPT1_TO_TOKENS) */
-/* OPT2_BODY(OPT2_TO_TOKENS) */
-/* OPT3_BODY(OPT3_TO_TOKENS) */
+#define OPT1_TO_ASM_TOKENS(...)                                                                    \
+    T(COUNT_ARGS(__VA_ARGS__) - 1), FIRST_3_ARGS(__VA_ARGS__, noop, noop),
 
 #endif /* M4TH_INCLUDE_OPT_MH */

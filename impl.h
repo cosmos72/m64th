@@ -38,11 +38,17 @@ extern m4cell m4th_crctable[256];
 void m4th_crcinit(m4cell table[256]);
 uint32_t m4th_crc1byte(uint32_t crc, unsigned char byte);
 uint32_t m4th_crcstring(m4string str);
+uint32_t m4th_crcarray(const void *addr, const m4cell_u nbytes);
 
-/** detect and enable/disable CRC32c asm instructions */
-void m4th_crc_simd_auto();
-m4cell m4th_crc_simd_detect(void);
-void m4th_crc_simd_enable(m4cell flag);
-m4cell m4th_crc_simd_enabled(void);
+/** detect and enable/disable optional CPU features: CRC32c asm instructions... */
+enum {
+    m4th_cpu_feature_cannot_detect = 1,
+    m4th_cpu_feature_crc32c = 2,
+};
+m4cell m4th_cpu_features_detect(void);
+void m4th_cpu_features_autoenable();
+m4cell m4th_cpu_features_enabled(void);
+void m4th_cpu_features_enable(m4cell mask);
+void m4th_cpu_features_disable(m4cell mask);
 
 #endif /* M4TH_IMPL_H */

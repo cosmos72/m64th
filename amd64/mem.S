@@ -141,41 +141,58 @@ LABEL(crc_string.done)
 FUNC_END(crc_string)
 
 
-/*
- * crc-string/simd ( c-addr u -- crc ) compute CRC32c of a string
- * uses SSE4.2 CPU instructions crc32b, crc32w, crc32l, crc32q
- */
 FUNC_START(crc_string_simd)
-        MOVE(  DTOP,   REG2)               /* b = u                    */
-        MOVE(  RFFFw,  REG3w)              /* c = 0xffffffff           */
-        DPOP___DTOP()                      /* dtop = c-addr            */
         ZERO(  REG1)                       /* a = 0                    */
-        JBE(   REG2,   IMM(7), TO(crc_string_simd.7))
+        MOVE(  DTOP,       REG2)           /* b = u                    */
+        LOAD(  REG3,       AT(DSTK))       /* c = c-addr               */
+        MOVE(  RFFFw,      DTOPw)          /* dtop = 0xffffffff        */
+        JBE(   REG2,       IMM(7), TO(crc_string_simd.small))
 
-        SUB2(  IMM(8), REG2)
+        SUB2(  IMM(8),     REG2)
 FUNC_ALIGN()
 LABEL(crc_string_simd.loop)
-        crc32q AT(DTOP, REG1, 1),   REG3;
-        ADD2(  IMM(8), REG1)
-        JBE(   REG1,   REG2,   TO(crc_string_simd.loop))
-        ADD2(  IMM(8), REG2)
-LABEL(crc_string_simd.7)
-        ADDI(  REG1,   4,  REG4)
-        JA(    REG4,   REG2, TO(crc_string_simd.3)) /* jump if (i + 4 > u) */
-        crc32l AT(DTOP, REG1, 1),   REG3w;
-        MOVE(  REG4,   REG1)               /* i += 4                   */
-LABEL(crc_string_simd.3)
-        ADDI(  REG1,   2,  REG4)
-        JA(    REG4,   REG2, TO(crc_string_simd.1)) /* jump if (i + 2 > u) */
-        crc32w AT(DTOP, REG1, 1),   REG3w;
-        MOVE(  REG4,   REG1)               /* i += 2                   */
-LABEL(crc_string_simd.1)
-        JAE(   REG1,   REG2, TO(crc_string_simd.0)) /* jump if (i >= u) */
-        crc32b AT(DTOP, REG1, 1),   REG3w;
+        crc32q (REG3,      REG1, 1),    DTOP;
+        ADD2(  IMM(8),     REG1)
+        JBE(   REG1,       REG2,   TO(crc_string_simd.loop))
+        ADD2(  IMM(8),     REG2)
+
+LABEL(crc_string_simd.small)
+        lea    TO(crc_string_simd.jumps)(%rip), REG4
+        ADD2(  IMM(8),     DSTK)
+        ADD2(  REG2,       REG3)           /* c = c-addr + u           */
+        SUB2(  REG1,       REG2)           /* b = left = u - i         */
+        jmp    *(REG4, REG2, SZ);
+
+LABEL(crc_string_simd.5)
+        crc32b -5(REG3),   DTOPw;
+LABEL(crc_string_simd.4)
+        crc32l -4(REG3),   DTOPw;
+        NOT1(  DTOPw)
+        ASM_RET()
+
+LABEL(crc_string_simd.6)
+        crc32l -6(REG3),   DTOPw;
+LABEL(crc_string_simd.2)
+        crc32w -2(REG3),   DTOPw;
 LABEL(crc_string_simd.0)
-        NOT1(  REG3w)
-        MOVE(  REG3w,  DTOPw)
-FUNC_END(crc_string_simd)
+        NOT1(  DTOPw)
+        ASM_RET()
+
+LABEL(crc_string_simd.7)
+        crc32l -7(REG3),   DTOPw;
+LABEL(crc_string_simd.3)
+        crc32w -3(REG3),   DTOPw;
+LABEL(crc_string_simd.1)
+        crc32b -1(REG3),   DTOPw;
+        NOT1(  DTOPw)
+        ASM_RET()
+
+LABEL(crc_string_simd.jumps)
+        .8byte TO(crc_string_simd.0), TO(crc_string_simd.1);
+        .8byte TO(crc_string_simd.2), TO(crc_string_simd.3);
+        .8byte TO(crc_string_simd.4), TO(crc_string_simd.5);
+        .8byte TO(crc_string_simd.6), TO(crc_string_simd.7);
+FUNC_RAWEND(crc_string_simd)
 
 
 FUNC_START(string_equal)   /* string=  ( addr1 addr2 u -- addr1 addr2 u t|f ) m4th-user */

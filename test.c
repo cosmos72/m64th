@@ -29,8 +29,6 @@ int main(int argc, char *argv[]) {
     m4th *m = m4th_new();
     m4cell fail = 0;
 
-    m4th_crcinit(m4th_crctable);
-
     /* m4th_testbench_crc_c(out); */
 
     fail += m4th_testexecute(m, out);
