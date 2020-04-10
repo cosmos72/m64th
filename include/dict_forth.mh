@@ -86,7 +86,7 @@
     X(3, "min", min)                                                                               \
     X(3, "mod", mod)                                                                               \
     X(4, "move", move)                                                                             \
-    X(3, "negate", negate)                                                                         \
+    X(6, "negate", negate)                                                                         \
     X(3, "nip", nip)                                                                               \
     X(2, "or", or)                                                                                 \
     X(4, "over", over)                                                                             \

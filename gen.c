@@ -66,13 +66,6 @@ const char license[] = "/**\n\
     {WRAP_ARGS(M4TOKEN_SYM_COMMA, T(COUNT_ARGS(__VA_ARGS__) - 3),                                  \
                FIRST_5_ARGS(__VA_ARGS__, _missing_, _missing_))},
 
-static void genopt2_add(m4hash_map *map, const m4token opt[5]) {
-    m4hash_key key = opt[1] | ((m4hash_key)opt[2] << 16);
-    m4hash_key val = opt[0] | ((m4hash_key)opt[3] << 16) | ((m4hash_key)opt[4] << 24);
-    assert(m4hash_map_find(map, key) == NULL);
-    assert(m4hash_map_insert(map, key, val));
-}
-
 static void genopt_print_n_tokens(uint64_t x, unsigned n, unsigned index, FILE *out);
 
 static void genopt_print_1_token(m4token tok, unsigned index, FILE *out) {
@@ -83,11 +76,13 @@ static void genopt_print_1_token(m4token tok, unsigned index, FILE *out) {
         if (index) {
             fprintf(out, "<<%u)", index * 16);
         }
+    } else if (tok) {
+        if (index) {
+            fprintf(out, "|(%u<<%u)", (unsigned)tok, index * 16);
+        } else {
+            fprintf(out, "%u", (unsigned)tok);
+        }
     }
-}
-
-static void genopt_print_2_tokens(uint64_t x, unsigned index, FILE *out) {
-    genopt_print_n_tokens(x, 2, index, out);
 }
 
 static void genopt_print_counted_tokens(uint64_t x, FILE *out) {
@@ -104,23 +99,72 @@ static void genopt_print_n_tokens(uint64_t x, unsigned n, unsigned index, FILE *
     }
 }
 
-static void run_genopt(FILE *out) {
-    static const m4token opt2[][5] = {OPT2_BODY(OPT2_TO_TOKENS)};
-    m4hash_map *map = m4hash_map_new(N_OF(opt2) / 2);
-    m4cell i, cap;
+static void genopt2_add(m4hash_map *map, const m4token opt[5]) {
+    m4hash_key key = opt[1] | ((m4hash_key)opt[2] << 16);
+    m4hash_key val = opt[0] | ((m4hash_key)opt[3] << 16) | ((m4hash_key)opt[4] << 32);
+    const m4hash_entry *e;
+    assert(opt[0] <= 2);
+    e = m4hash_map_find(map, key);
+    assert(e == NULL);
+    e = m4hash_map_insert(map, key, val);
+    assert(e != NULL);
+}
 
-    for (i = 0; i < (m4cell)N_OF(opt2); i++) {
-        genopt2_add(map, opt2[i]);
-    }
-    cap = 2u << map->lcap;
+static void genopt3_add(m4hash_map *map, const m4token opt[6]) {
+    m4hash_key key = opt[1] | ((m4hash_key)opt[2] << 16) | ((m4hash_key)opt[3] << 32);
+    m4hash_key val = opt[0] | ((m4hash_key)opt[4] << 16) | ((m4hash_key)opt[5] << 32);
+    const m4hash_entry *e;
+    assert(opt[0] <= 2);
+    e = m4hash_map_find(map, key);
+    assert(e == NULL);
+    e = m4hash_map_insert(map, key, val);
+    assert(e != NULL);
+}
+
+static void genopt_dump(const m4hash_map *map, unsigned key_n, FILE *out) {
+    m4hash_index i, cap = 2u << map->lcap;
+    fprintf(out, "HASH_MAP_START(/*size*/ %u, /*lcap*/ %u)\n", (unsigned)map->size,
+            (unsigned)map->lcap);
     for (i = 0; i < cap; i++) {
         const m4hash_entry *e = map->vec + i;
-        fputs(".8byte ", out);
-        genopt_print_2_tokens(e->key, 0, out);
-        fputs(",\t", out);
-        genopt_print_counted_tokens(e->val, out);
-        fprintf(out, ",\t%d;\n", (int)e->next_index);
+        fputs("HASH_ENTRY(", out);
+        if (e->next_index == m4hash_no_entry) {
+            fputs("0,\t0", out);
+        } else {
+            genopt_print_n_tokens(e->key, key_n, 0, out);
+            fputs(",\t", out);
+            genopt_print_counted_tokens(e->val, out);
+        }
+        fprintf(out, ",\t%d)\n", (int)e->next_index);
     }
+    fputs("HASH_MAP_END()", out);
+}
+
+static void genopt2_run(FILE *out) {
+    static const m4token opt[][5] = {OPT2_BODY(OPT2_TO_TOKENS)};
+    m4hash_map *map = m4hash_map_new(N_OF(opt) / 2);
+    m4cell i;
+    for (i = 0; i < (m4cell)N_OF(opt); i++) {
+        genopt2_add(map, opt[i]);
+    }
+    genopt_dump(map, 2, out);
+}
+
+static void genopt3_run(FILE *out) {
+    static const m4token opt[][6] = {OPT3_BODY(OPT3_TO_TOKENS)};
+    m4hash_map *map = m4hash_map_new(N_OF(opt) / 2);
+    m4cell i;
+    for (i = 0; i < (m4cell)N_OF(opt); i++) {
+        genopt3_add(map, opt[i]);
+    }
+    genopt_dump(map, 3, out);
+}
+
+static void genopt_with_file(const char *path, void (*gen)(FILE *out)) {
+    FILE *f = fopen(path, "w");
+    gen(f);
+    fclose(f);
+    fprintf(stdout, "# file '%s' updated\n", path);
 }
 
 static void run_show_words(FILE *out) {
@@ -179,10 +223,11 @@ int main(int argc, char *argv[]) {
             fputs("# this CPU does not have crc32c asm instructions\n", stdout);
         }
         run_benchmark(stdout);
-    } else if (1 /*show_words*/) {
+    } else if (show_words) {
         run_show_words(stdout);
     } else {
-        run_genopt(stdout);
+        genopt_with_file("generic_asm/opt2_hash.mh", genopt2_run);
+        genopt_with_file("generic_asm/opt3_hash.mh", genopt3_run);
     }
     return 0;
 }

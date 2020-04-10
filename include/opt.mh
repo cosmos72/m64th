@@ -46,7 +46,7 @@
         x(minus_one, or, /*=>*/ drop, minus_one)             /* -1 or         => drop -1        */ \
         x(minus_one, _until0_, /*=>*/ _again_)               /* -1 (until0)   => (again)        */ \
         x(minus_one, xor, /*=>*/ invert)                     /* -1 xor        => invert         */ \
-        x(zero, times, /*=>*/ drop, drop, zero)              /* 0  *          => drop 0         */ \
+        x(zero, times, /*=>*/ drop, zero)                    /* 0  *          => drop 0         */ \
         x(zero, minus /*=>*/)                                /* 0  -          =>                */ \
         x(zero, plus /*=>*/)                                 /* 0  +          =>                */ \
         x(zero, less, /*=>*/ zero_less)                      /* 0  <          => 0<             */ \
@@ -407,7 +407,7 @@
         x(minus_rot, rot /*=>*/)                             /* -rot   rot    =>                */ \
         x(minus_rot, minus_rot, /*=>*/ rot)                  /* -rot   -rot   => rot            */ \
         x(minus_rot, flip, /*=>*/ swap, minus_rot)           /* -rot   flip   => swap -rot      */ \
-        x(sub, negate, /*=>*/ negate)                        /* sub  negate   => -              */ \
+        x(sub, negate, /*=>*/ minus)                         /* sub  negate   => -              */ \
         x(swap, times, /*=>*/ times)                         /* swap   *      => *              */ \
         x(swap, plus, /*=>*/ plus)                           /* swap   +      => +              */ \
         x(swap, minus, /*=>*/ sub)                           /* swap   -      => sub            */ \
@@ -444,7 +444,7 @@
         x(tuck, nip, /*=>*/ nip, dup)                        /* tuck   nip    => nip dup        */ \
         x(tuck, rot, /*=>*/ dup)                             /* tuck   rot    => dup            */ \
         x(tuck, minus_rot, /*=>*/ dup)                       /* tuck   -rot   => dup            */ \
-        x (xor, invert, /*=>*/ invert, xor)                  /* xor    invert => invert xor     */
+        x(xor, invert, /*=>*/ invert, xor)                   /* xor    invert => invert xor     */
 
 #if 0
         x(one_plus, byte_fetch,/*=>*/byte_bracket1)           /* 1+    byte@   => byte[1]      */ \
@@ -479,7 +479,7 @@
         x(_if0_, T(1), then, /*=>*/ drop)            /* (if0)  then        => drop        */       \
         x(_q_if_, T(1), then /*=>*/)                 /* (?if)  then        =>             */       \
         x(_q_if0_, T(1), then /*=>*/)                /* (?if0) then        =>             */       \
-        x(lit, T(0xff), and, /*=>*/ to_char)         /* 0xff   and         => to-char     */       \
+        x(_lit_, T(0xff), and, /*=>*/ to_char)       /* 0xff   and         => to-char     */       \
         x(over, plus, swap, /*=>*/ bounds)           /* over   +     swap  => bounds      */       \
         x(over, trail, two_nip, /*=>*/ swap)         /* over   trail 2nip  => swap        */       \
         x(over, trail, two_swap, /*=>*/ tuck, trail) /* over   trail 2swap => tuck trail  */       \
