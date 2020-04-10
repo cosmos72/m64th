@@ -118,6 +118,15 @@ LABEL(move.loop)
 FUNC_END(move)
 
 
+/* crc-cell/simd ( x -- crc ) m4th-user: compute CRC32c of a cell */
+FUNC_START(crc_cell_simd)
+        MOVE(  DTOP,   REG1)
+        MOVE(  RFFFw,  DTOPw)              /* dtop = 0xffffffff        */
+        crc32q REG1,   DTOP;
+        NEG1(  DTOP)
+FUNC_END(crc_cell_simd)
+
+
 /* crc-string ( c-addr u -- crc ) m4th-user: compute CRC32c of a string */
 FUNC_START(crc_string)
         MOVE(  DTOP,   REG2)               /* b = u                    */

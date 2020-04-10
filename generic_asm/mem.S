@@ -115,6 +115,16 @@ FUNC_START(two_fetch)      /* 2@ */
 FUNC_END(two_fetch)
 
 
+/* crc-cell ( x -- crc ) m4th-user: compute CRC32c of a cell */
+FUNC_START(crc_cell)
+        DPUSH( DTOP)                       /* ( x _                  ) */
+        DPUSH( DSTK)                       /* ( x &x _               ) */
+        MOVE( IMM(SZ), DTOP)               /* ( x &x SZ              ) */
+        ASM_CALL(      FUNC(crc_string))   /* ( x crc                ) */
+        ADD2( IMM(SZ), DTOP)               /* ( crc                  ) */
+FUNC_END(crc_cell)
+
+
 #ifndef M4FDIV_STRING
 /* /string ( c-addr u n -- c-addr' u' )  'string' word set */
 FUNC_START(div_string)
