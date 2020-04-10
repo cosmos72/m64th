@@ -59,7 +59,38 @@ void m4th_dot(m4cell n, m4iobuf *io) {
     }
 }
 
-/* C implementation of hash map */
+/******************************************************************************/
+/* C implementation of hash map                                               */
+/******************************************************************************/
+
+static inline m4hash_index ceil_log_2(m4hash_index n) {
+    m4hash_index ret = 0;
+    while ((1u << ret) < n) {
+        ret++;
+    }
+    return ret;
+}
+
+m4hash_map *m4hash_map_new(m4hash_index capacity) {
+    m4hash_map *map;
+    m4hash_index i, lcap;
+    lcap = ceil_log_2(capacity);
+    capacity = 1 << (lcap + 1);
+    map = (m4hash_map *)m4mem_allocate(sizeof(m4hash_map) + capacity * sizeof(m4hash_entry));
+    map->size = 0;
+    map->lcap = lcap;
+    for (i = 0; i < capacity; i++) {
+        m4hash_entry *e = map->vec + i;
+        e->key = 0;
+        e->val = 0;
+        e->next_index = m4hash_no_entry;
+    }
+    return map;
+}
+
+void m4hash_map_del(m4hash_map *map) {
+    m4mem_free(map);
+}
 
 static inline m4cell m4hash_entry_present(const m4hash_entry *e) {
     return e->next_index != m4hash_no_entry;
@@ -74,11 +105,14 @@ static inline uint32_t m4hash_key_crc(m4hash_key key) {
 }
 
 static inline m4hash_index m4hash_index_of(const m4hash_map *map, m4hash_key key) {
-    return m4hash_key_crc(key) & (map->cap - 1);
+    uint32_t hash = m4hash_key_crc(key);
+    m4hash_index lcap = map->lcap;
+    m4hash_index cap = 1u << lcap;
+    return (hash ^ (hash >> lcap)) & (cap - 1);
 }
 
-const m4hash_entry *m4hash_map_find_in_collision_list(const m4hash_map *map, m4hash_key key,
-                                                      const m4hash_entry *bucket) {
+static const m4hash_entry *m4hash_map_find_in_collision_list(const m4hash_map *map, m4hash_key key,
+                                                             const m4hash_entry *bucket) {
     while (key != bucket->key) {
         if (!m4hash_entry_next(bucket)) {
             return NULL;
@@ -88,7 +122,7 @@ const m4hash_entry *m4hash_map_find_in_collision_list(const m4hash_map *map, m4h
     return bucket;
 }
 
-// returns NULL if key not found
+// find key in map. return NULL if not found
 const m4hash_entry *m4hash_map_find(const m4hash_map *map, m4hash_key key) {
     if (map->size != 0) {
         const m4hash_entry *e = map->vec + m4hash_index_of(map, key);
@@ -99,52 +133,55 @@ const m4hash_entry *m4hash_map_find(const m4hash_map *map, m4hash_key key) {
     return NULL;
 }
 
-#if 0  /* TODO */
-// key MUST NOT be already present
-size_t pick_collision_index(size_t pos) const {
-    static const size_t relprime[] = {5, 7, 9, 11};
-    const size_t step = relprime[pos & 3];
-    const size_t cap = capacity();
-    for (size_t i = 0; i < cap; i++) {
-        const size_t collision_pos = (pos + i * step) & (cap - 1);
-        const Entry &entry = collision.at(collision_pos);
-        if (!entry.present()) {
+static m4hash_index m4hash_pick_collision_index(m4hash_map *map, m4hash_index pos) {
+    static const m4hash_index relprime[] = {5, 7, 9, 11};
+    const m4hash_index step = relprime[pos & 3];
+    const m4hash_index cap = 1u << map->lcap;
+    for (m4hash_index i = 0; i < cap; i++) {
+        const m4hash_index collision_pos = cap + ((pos + i * step) & (cap - 1));
+        const m4hash_entry *entry = map->vec + collision_pos;
+        if (!m4hash_entry_present(entry)) {
             return collision_pos;
         }
     }
-    return Index::no_entry;
+    return m4hash_no_entry;
 }
 
-void store(const K &key, const V &val, Index next_index, Entry *to) {
+static void m4hash_store(m4hash_map *map, m4hash_entry *to, m4hash_key key, m4hash_val val,
+                         m4hash_index next_index) {
     to->key = key;
     to->val = val;
     to->next_index = next_index;
-    count++;
+    map->size++;
 }
 
-bool insert_nogrow(const K &key, const V &val) {
-    size_t pos = index(key);
-    Entry &entry = vec.at(pos);
-    if (!entry.present()) {
-        store(key, val, Index::no_next, &entry);
-        return true;
+// insert key and val.
+// key MUST NOT be already present. does not grow/rehash.
+// returns NULL on failure (if map is too full)
+const m4hash_entry *m4hash_map_insert(m4hash_map *map, m4hash_key key, m4hash_val val) {
+    m4hash_index pos = m4hash_index_of(map, key);
+    m4hash_entry *entry = map->vec + pos;
+    if (!m4hash_entry_present(entry)) {
+        m4hash_store(map, entry, key, val, m4hash_no_next);
+        return entry;
     }
-    pos = pick_collision_index(pos);
-    if (pos != Index::no_entry) {
-        Entry &collision_entry = collision.at(pos);
-        store(key, val, entry.next_index, &collision_entry);
-        entry.next_index = (Index)pos;
-        return true;
+    pos = m4hash_pick_collision_index(map, pos);
+    if (pos != m4hash_no_entry) {
+        m4hash_entry *collision_entry = map->vec + pos;
+        m4hash_store(map, collision_entry, key, val, entry->next_index);
+        entry->next_index = pos;
+        return collision_entry;
     }
-    return false;
+    return NULL;
 }
-#endif /* 0 */
 
-/* temporary C implementation of CRC32c */
+/******************************************************************************/
+/* C implementation of CRC32c                                                 */
+/******************************************************************************/
 m4cell m4th_crctable[256];
 
 void m4th_crcinit(m4cell table[256]) {
-    int i, j;
+    uint32_t i, j;
 
     if (table[255] != 0) {
         return;

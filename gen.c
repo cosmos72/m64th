@@ -19,10 +19,12 @@
 
 #include "impl.h"
 #include "include/dict_fwd.h" /* m4dict_... */
-#include "include/opt.mh"     /* OPT2_BODY */
-#include "include/word_fwd.h" /* m4w_... */
+#include "include/hash_map.h" /* m4dict_... */
+#include "include/opt.mh"     /* OPT2_BODY  */
+#include "include/word_fwd.h" /* m4w_...    */
 #include "m4th.h"
 
+#include <assert.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -54,12 +56,6 @@ const char license[] = "/**\n\
 
 #define N_OF(array) (sizeof(array) / sizeof((array)[0]))
 
-static void run_genopt2(const m4token opt2[5]) {
-    m4cell crc = m4th_crcarray(opt2 + 1, 2 * sizeof(m4token));
-    fprintf(stdout, "{0x%08x, %d, %d, %d, %d, %d,},\n", (unsigned)crc, (int)opt2[1], (int)opt2[2],
-            (int)opt2[0], (int)opt2[3], (int)opt2[4]);
-}
-
 #define OPT1_TO_TOKENS(...)                                                                        \
     {WRAP_ARGS(M4TOKEN_SYM_COMMA, T(COUNT_ARGS(__VA_ARGS__) - 1),                                  \
                FIRST_3_ARGS(__VA_ARGS__, _missing_, _missing_))},
@@ -70,12 +66,26 @@ static void run_genopt2(const m4token opt2[5]) {
     {WRAP_ARGS(M4TOKEN_SYM_COMMA, T(COUNT_ARGS(__VA_ARGS__) - 3),                                  \
                FIRST_5_ARGS(__VA_ARGS__, _missing_, _missing_))},
 
+static void genopt2_add(m4hash_map *map, const m4token opt[5]) {
+    m4hash_key key = opt[1] | ((m4hash_key)opt[2] << 16);
+    m4hash_key val = opt[0] | ((m4hash_key)opt[3] << 16) | ((m4hash_key)opt[4] << 24);
+    assert(m4hash_map_find(map, key) == NULL);
+    assert(m4hash_map_insert(map, key, val));
+}
+
 static void run_genopt(void) {
     static const m4token opt2[][5] = {OPT2_BODY(OPT2_TO_TOKENS)};
-    m4cell i;
+    m4hash_map *map = m4hash_map_new(N_OF(opt2) / 2);
+    m4cell i, cap;
 
     for (i = 0; i < (m4cell)N_OF(opt2); i++) {
-        run_genopt2(opt2[i]);
+        genopt2_add(map, opt2[i]);
+    }
+    cap = 2u << map->lcap;
+    for (i = 0; i < cap; i++) {
+        const m4hash_entry *e = map->vec + i;
+        fprintf(stdout, "{0x%x,\t0x%x,\t0x%x},\n", (unsigned)e->key, (unsigned)e->val,
+                (unsigned)e->next_index);
     }
 }
 

@@ -22,6 +22,7 @@
 #include "t/testcommon.c"
 #include "t/testcompile.c"
 #include "t/testexecute.c"
+#include "t/testhash_map.c"
 #include "t/testio.c"
 
 int main(int argc, char *argv[]) {
@@ -34,6 +35,7 @@ int main(int argc, char *argv[]) {
     fail += m4th_testexecute(m, out);
     fail += m4th_testio(m, out);
     fail += m4th_testcompile(m, out);
+    fail += m4th_testhash_map(out);
 
     m4th_del(m);
 

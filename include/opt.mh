@@ -147,11 +147,11 @@
         x(zero_more, zero_less, /*=>*/ zero_less)            /* 0>    0<      => 0>             */ \
         x(zero_more_equal, zero_less, /*=>*/ zero_less)      /* 0>=   0<      => 0>=            */ \
         /*____ 0<=>  0<= _____ always true _______________*/ /*                                 */ \
-        x(zero_less, zero_less_equal, /*=>*/ drop, true)     /* 0<    0<=     => drop true      */ \
+        x(zero_less, zero_less_equal, /*=>*/ drop, true)     /*   0<    0<=     => drop true */    \
         x(zero_less_equal, zero_less_equal, /*=>*/ drop, true) /* 0<=   0<=     => drop true */    \
-        x(zero_ne, zero_less_equal, /*=>*/ drop, true)    /* 0<>   0<=     => drop true      */    \
-        x(zero_equal, zero_less_equal, /*=>*/ drop, true) /* 0=    0<=     => drop true      */    \
-        x(zero_more, zero_less_equal, /*=>*/ drop, true)  /* 0>    0<=     => drop true      */    \
+        x(zero_ne, zero_less_equal, /*=>*/ drop, true)         /* 0<>   0<=     => drop true */    \
+        x(zero_equal, zero_less_equal, /*=>*/ drop, true)      /* 0=    0<=     => drop true */    \
+        x(zero_more, zero_less_equal, /*=>*/ drop, true)       /* 0>    0<=     => drop true */    \
         x(zero_more_equal, zero_less_equal, /*=>*/ drop, true) /* 0>=   0<=     => drop true */    \
         /*____ 0<=>  0<> _____ redundant 0<> _____________*/ /*                                 */ \
         x(zero_less, zero_ne, /*=>*/ zero_less)              /* 0<    0<>     => 0<             */ \
@@ -168,19 +168,19 @@
         x(zero_more, zero_equal, /*=>*/ zero_less_equal)     /* 0>    0=      => 0<=            */ \
         x(zero_more_equal, zero_equal, /*=>*/ zero_less)     /* 0>=   0=      => 0<             */ \
         /*____ 0<=>  0>  _____ always false ______________*/ /*                                 */ \
-        x(zero_less, zero_less_equal, /*=>*/ drop, false)    /*    0<    0>=  => drop false     */ \
-        x(zero_less_equal, zero_less_equal, /*=>*/ drop, false) /* 0<=   0>=  => drop false     */ \
-        x(zero_ne, zero_less_equal, /*=>*/ drop, false)    /*      0<>   0>=  => drop false     */ \
-        x(zero_equal, zero_less_equal, /*=>*/ drop, false) /*      0=    0>=  => drop false     */ \
-        x(zero_more, zero_less_equal, /*=>*/ drop, false)  /*      0>    0>=  => drop false     */ \
-        x(zero_more_equal, zero_less_equal, /*=>*/ drop, false) /* 0>= 0>=    => drop false     */ \
+        x(zero_less, zero_more, /*=>*/ drop, false)          /* 0<    0>  => drop false         */ \
+        x(zero_less_equal, zero_more, /*=>*/ drop, false)    /* 0<=   0>  => drop false         */ \
+        x(zero_ne, zero_more, /*=>*/ drop, false)            /* 0<>   0>  => drop false         */ \
+        x(zero_equal, zero_more, /*=>*/ drop, false)         /* 0=    0>  => drop false         */ \
+        x(zero_more, zero_more, /*=>*/ drop, false)          /* 0>    0>  => drop false         */ \
+        x(zero_more_equal, zero_more, /*=>*/ drop, false)    /* 0>=   0>  => drop false         */ \
         /*____ 0<=>  0>= _____ inverts first word ________*/ /*                                 */ \
-        x(zero_less, zero_more_equal, /*=>*/ zero_more_equal) /* 0<    0>=     => 0>=          */  \
-        x(zero_less_equal, zero_more_equal, /*=>*/ zero_more) /* 0<=   0>=     => 0>           */  \
-        x(zero_ne, zero_more_equal, /*=>*/ zero_equal)        /* 0<>   0>=     => 0=           */  \
-        x(zero_equal, zero_more_equal, /*=>*/ zero_ne)        /* 0=    0>=     => 0<>          */  \
-        x(zero_more, zero_more_equal, /*=>*/ zero_less_equal) /* 0>    0>=     => 0<=          */  \
-        x(zero_more_equal, zero_more_equal, /*=>*/ zero_less) /* 0>=   0>=     => 0<           */  \
+        x(zero_less, zero_more_equal, /*=>*/ zero_more_equal) /* 0<    0>=     => 0>=           */ \
+        x(zero_less_equal, zero_more_equal, /*=>*/ zero_more) /* 0<=   0>=     => 0>            */ \
+        x(zero_ne, zero_more_equal, /*=>*/ zero_equal)        /* 0<>   0>=     => 0=            */ \
+        x(zero_equal, zero_more_equal, /*=>*/ zero_ne)        /* 0=    0>=     => 0<>           */ \
+        x(zero_more, zero_more_equal, /*=>*/ zero_less_equal) /* 0>    0>=     => 0<=           */ \
+        x(zero_more_equal, zero_more_equal, /*=>*/ zero_less) /* 0>=   0>=     => 0<            */ \
         /*____ 0<=>  (if...),(while...) __________________*/ /*                                 */ \
         x(zero_ne, _if_, /*=>*/ _if_)                        /* 0<>   (if)    => (if)           */ \
         x(zero_equal, _if_, /*=>*/ _if0_)                    /* 0=    (if)    => (if0)          */ \
@@ -203,7 +203,7 @@
         x(zero_more_equal, invert, /*=>*/ zero_less)         /* 0>=   invert  => 0<             */ \
         /*________________________________________________*/ /*                                 */ \
         x(times, negate, /*=>*/ negate, times)               /* *    negate   => negate *       */ \
-        x(times, negate, /*=>*/ negate, times)               /* /    negate   => negate /       */ \
+        x(div, negate, /*=>*/ negate, div)                   /* /    negate   => negate /       */ \
         x(div_mod, drop, /*=>*/ div)                         /* /mod drop     => /              */ \
         x(div_mod, nip, /*=>*/ mod)                          /* /mod nip      => mod            */ \
         /*____ <=>  invert _______________________________*/ /*                                 */ \

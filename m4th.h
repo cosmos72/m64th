@@ -116,12 +116,12 @@ struct m4code_s { /**< array of m4token, with size */
 
 struct m4counteddata_s { /**< counted data                     */
     uint32_t n;          /**< # of bytes                       */
-    m4char addr[0];      /**< bytes                            */
+    m4char addr[];       /**< bytes                            */
 };
 
 struct m4countedstring_s { /**< counted string                   */
     m4char n;              /**< # of characters                  */
-    m4char addr[0];        /**< characters. do NOT end with '\0' */
+    m4char addr[];         /**< characters. do NOT end with '\0' */
 };
 
 struct m4dict_s {         /**< dictionary. used to implement wordlist                */
@@ -184,7 +184,7 @@ struct m4word_s {
     uint16_t flags;      /**< m4flags                                              */
     uint16_t code_n;     /**< forth code size, in m4token:s                        */
     int32_t data_n;      /**< data size, in bytes                                  */
-    m4token code[0];
+    m4token code[];
 };
 
 struct m4wordlist_s {   /**< wordlist                                                 */
@@ -222,7 +222,7 @@ struct m4th_s {        /**< m4th forth interpreter and compiler          */
     m4string ex_message;       /**< exception message, set manually before THROW */
     m4wordlist *compile_wid;   /**< compilation wordlist                         */
     m4searchorder searchorder; /**< wordlist search order                        */
-    m4cell user_var[0];        /**< further user variables                       */
+    m4cell user_var[];         /**< further user variables                       */
 };
 
 #ifdef __cplusplus

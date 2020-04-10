@@ -42,9 +42,21 @@ typedef struct m4hash_entry_s {
 } m4hash_entry;
 
 typedef struct m4hash_map_s {
-    m4hash_entry *vec;
-    m4hash_index size, cap;
+    m4hash_index size;
+    m4hash_index lcap; /* capacity is 1<<lcap */
+    m4hash_entry vec[];
 } m4hash_map;
+
+m4hash_map *m4hash_map_new(m4hash_index capacity);
+void m4hash_map_del(m4hash_map *map);
+
+// find key in map. return NULL if not found
+const m4hash_entry *m4hash_map_find(const m4hash_map *map, m4hash_key key);
+
+// insert key and val.
+// key MUST NOT be already present. does not grow/rehash.
+// returns NULL on failure (if map is too full)
+const m4hash_entry *m4hash_map_insert(m4hash_map *map, m4hash_key key, m4hash_val val);
 
 #ifdef __cplusplus
 }
