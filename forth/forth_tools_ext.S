@@ -46,7 +46,8 @@ WORD_START(cs_roll,      cs_pick)
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_COMPILE_ONLY)
     WORD_CODE(cs_roll, exit)
 WORD_END(cs_roll)
-WORD(name_to_string,     cs_roll,      DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(name_to_ident,      cs_roll,      DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(name_to_string,   name_to_ident,  DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 
 #undef LASTWORD
 #define LASTWORD name_to_string

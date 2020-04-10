@@ -319,6 +319,7 @@ const m4word *m4token_to_word(m4token tok);
 m4code m4word_code(const m4word *w);
 m4string m4word_data(const m4word *w, m4cell code_start_n);
 m4string m4word_name(const m4word *w);
+m4string m4word_ident(const m4word *w);
 const m4word *m4word_prev(const m4word *w);
 m4xt m4word_xt(const m4word *w);
 void m4word_print(const m4word *w, FILE *out);

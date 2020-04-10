@@ -137,6 +137,17 @@ FUNC_START(name_to_flags_store) /* ( m4flags nt -- ) */
 FUNC_END(name_to_flags_store)
 
 
+FUNC_START(name_to_ident) /* ( nt -- c-addr u ) */
+        ASM_CALL(          FUNC(name_to_string))
+        LOAD(  REG1,       AT(DSTK))   /* a = name.addr           */
+        JZ(    REG1,       FUNC_NEXT(name_to_ident))
+        ADD2(  REG1,       DTOP)       /* dtop = m4countedstring* */
+        ADDI(  DTOP,       1,  REG1)   /* a = ident.addr          */
+        LD_ub( DTOP,       AT(DTOP))   /* dtop = ident.len        */
+        STOR(  REG1,       AT(DSTK))
+FUNC_END(name_to_ident)
+
+
 FUNC_START(name_to_string) /* ( nt -- c-addr u ) */
         LD_uh( REG1,       AT(DTOP, WORD_OFF_NAME_OFF)) /* a = w.name_off  */
         JNZ(   REG1,       TO(name_to_string.body))

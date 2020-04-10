@@ -190,24 +190,24 @@
 #define M4user_var 660          /* user-var ( -- addr ) must be followed by index of user var */
 #undef M4____gap                /*                       */
 #define M4name_comma 662        /* name,       ( c-addr u --   ) create a new name        */
-#define M4name_to_code 663      /* name>code   ( nt -- addr u  ) get code array from name */
-#define M4name_to_code_n 664    /* name>code>n ( nt -- u       ) get code size from name  */
-#define M4name_to_flags 665     /* name>flags  ( nt -- m4flags ) get m4flags from name    */
-#define M4name_to_flags_store 666 /* name>flags!  ( m4flags nt -- ) set m4flags of name   */
-#define M4name_to_prev 667        /* name>prev   ( nt -- nt'|0   ) get previous name      */
-#define M4name_to_xt 668     /* name>xt     ( nt -- XT      ) get XT == code address from name */
-#define M4wordlist_add 669   /* ( wid nt -- ) add name to wordlist                     */
-#define M4wordlist_last 670  /* ( wid -- nt ) get last name in a wordlist              */
-#define M4wordlist_reset 671 /* ( wid --    ) remove all user-defined names from wid   */
-#undef M4____gap             /*                       */
-#define M4xt_to_name 673     /* xt>name       ( XT -- nt ) get name from XT */
+#undef M4____gap                /*                       */
+#define M4name_to_code 664      /* name>code   ( nt -- addr u  ) get code array from name */
+#define M4name_to_code_n 665    /* name>code>n ( nt -- u       ) get code size from name  */
+#define M4name_to_flags 666     /* name>flags  ( nt -- m4flags ) get m4flags from name    */
+#define M4name_to_flags_store 667 /* name>flags!  ( m4flags nt -- ) set m4flags of name   */
+#define M4name_to_ident 668  /* name>ident  ( nt -- c-addr u ) convert name to asm/C identifier */
+#define M4name_to_prev 669   /* name>prev   ( nt -- nt'|0    ) get previous name                */
+#define M4name_to_xt 670     /* name>xt     ( nt -- XT       ) get XT == code address from name */
 #undef M4____gap             /*                       */
 #undef M4____gap             /*                       */
-#undef M4____gap             /*                       */
-#undef M4____gap             /*                       */
+#define M4wordlist_add 673   /* ( wid nt -- ) add name to wordlist                     */
+#define M4wordlist_last 674  /* ( wid -- nt ) get last name in a wordlist              */
+#define M4wordlist_reset 675 /* ( wid --    ) remove all user-defined names from wid   */
 #undef M4____gap             /*                       */
 #undef M4____gap             /*                       */
 #undef M4____gap             /*                       */
+#undef M4____gap             /*                       */
+#define M4xt_to_name 680     /* xt>name       ( XT -- nt ) get name from XT */
 #undef M4____gap             /*                       */
 #undef M4____gap             /*                       */
 #undef M4____gap             /*                       */

@@ -28,7 +28,7 @@ extern "C" {
 
 typedef uint64_t m4hash_key;
 typedef uint64_t m4hash_val;
-typedef m4cell_u m4hash_index;
+typedef uint64_t m4hash_index;
 
 enum m4hash_index_e {
     m4hash_no_entry = (m4hash_index)-1,

@@ -20,7 +20,7 @@
 #ifndef M4TH_INCLUDE_COUNTEDSTRING_MH
 #define M4TH_INCLUDE_COUNTEDSTRING_MH
 
-#define COUNTEDSTRING_SYM(name) .Lcountedstring.name
+#define COUNTEDSTRING_SYM(name) .Lcstring.name
 
 #define COUNTEDSTRING_DEF_SYM(name)                                                                \
     /* no alignment */                                                                             \
@@ -29,17 +29,23 @@
 
 #define COUNTEDSTRING_START(name) COUNTEDSTRING_DEF_SYM(name)
 
-#define COUNTEDSTRING_LEN(strlen) .byte strlen;
-#define COUNTEDSTRING_ASCII(str) .ascii str;
-#define COUNTEDSTRING_END(name)
+#define COUNTEDSTRING_BODY(strlen, str)                                                            \
+    .byte strlen;                                                                                  \
+    .ascii str;
+#define COUNTEDSTRING_IDENT(name)                                                                  \
+    .byte /**/.Lcstring_id_end.name - 1 -.;                                                        \
+    .ascii #name;                                                                                  \
+    .Lcstring_id_end.name:
 
 #define COUNTEDSTRING(strlen, str, name)                                                           \
     COUNTEDSTRING_START(name)                                                                      \
-    COUNTEDSTRING_LEN(strlen)                                                                      \
-    COUNTEDSTRING_ASCII(str)                                                                       \
-    COUNTEDSTRING_END(name)
+    COUNTEDSTRING_BODY(strlen, str)
 
-#define DICTNAME COUNTEDSTRING
-#define WORDNAME COUNTEDSTRING
+#define COUNTEDSTRING_AND_IDENT(strlen, str, name)                                                 \
+    COUNTEDSTRING(strlen, str, name)                                                               \
+    COUNTEDSTRING_IDENT(name)
+
+#define DICTNAME COUNTEDSTRING_AND_IDENT
+#define WORDNAME COUNTEDSTRING_AND_IDENT
 
 #endif /* M4TH_INCLUDE_COUNTEDSTRING_MH */

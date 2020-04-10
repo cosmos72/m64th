@@ -791,7 +791,9 @@ void m4word_print(const m4word *w, FILE *out) {
         return;
     }
     m4string_print(m4word_name(w), out);
-    fputs(" {\n\tflags:\t", out);
+    fputs("\t/* ", out);
+    m4string_print(m4word_ident(w), out);
+    fputs(" */ {\n\tflags:\t", out);
     m4flags_print((m4flags)w->flags, out);
     if (jump_flags != m4flag_jump) {
         m4stackeffects_print(w->eff, "", out);
@@ -829,6 +831,19 @@ m4string m4word_name(const m4word *w) {
     const m4countedstring *name = (const m4countedstring *)((const m4char *)w - w->name_off);
     ret.addr = name->addr;
     ret.n = name->n;
+    return ret;
+}
+
+m4string m4word_ident(const m4word *w) {
+    m4string ret = {};
+    m4string name = m4word_name(w);
+    if (name.addr == NULL) {
+        return ret;
+    }
+    /* ident is stored immediately after name */
+    const m4countedstring *ident = (const m4countedstring *)(name.addr + name.n);
+    ret.addr = ident->addr;
+    ret.n = ident->n;
     return ret;
 }
 

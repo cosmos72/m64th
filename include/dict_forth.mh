@@ -177,6 +177,7 @@
 /* ------- forth 2012: tools ext ---------------------------------------------------------------- */
 #define DICT_TOKENS_FORTH_TOOLS_EXT(X)                                                             \
     X(3, "bye", bye)                                                                               \
+    X(10, "name>ident", name_to_ident)   /* ( nt -- addr n  ) convert name to asm/C identifier */  \
     X(11, "name>string", name_to_string) /* ( nt -- addr n  ) convert name to string           */
 
 #define DICT_WORDS_FORTH_TOOLS_EXT(X)                                                              \

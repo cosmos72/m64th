@@ -73,7 +73,38 @@ static void genopt2_add(m4hash_map *map, const m4token opt[5]) {
     assert(m4hash_map_insert(map, key, val));
 }
 
-static void run_genopt(void) {
+static void genopt_print_n_tokens(uint64_t x, unsigned n, unsigned index, FILE *out);
+
+static void genopt_print_1_token(m4token tok, unsigned index, FILE *out) {
+    const m4string s = m4word_ident(m4token_to_word(tok));
+    if (s.addr && s.n) {
+        fputs("|(M4" + (index ? 0 : 2), out);
+        m4string_print(s, out);
+        if (index) {
+            fprintf(out, "<<%u)", index * 16);
+        }
+    }
+}
+
+static void genopt_print_2_tokens(uint64_t x, unsigned index, FILE *out) {
+    genopt_print_n_tokens(x, 2, index, out);
+}
+
+static void genopt_print_counted_tokens(uint64_t x, FILE *out) {
+    unsigned count = (unsigned)(m4token)x;
+    fprintf(out, "%u", count);
+    genopt_print_n_tokens(x >> 16, count, 1, out);
+}
+
+static void genopt_print_n_tokens(uint64_t x, unsigned n, unsigned index, FILE *out) {
+    unsigned i;
+    for (i = 0; i < n; i++) {
+        genopt_print_1_token((m4token)x, index++, out);
+        x >>= 16;
+    }
+}
+
+static void run_genopt(FILE *out) {
     static const m4token opt2[][5] = {OPT2_BODY(OPT2_TO_TOKENS)};
     m4hash_map *map = m4hash_map_new(N_OF(opt2) / 2);
     m4cell i, cap;
@@ -84,19 +115,22 @@ static void run_genopt(void) {
     cap = 2u << map->lcap;
     for (i = 0; i < cap; i++) {
         const m4hash_entry *e = map->vec + i;
-        fprintf(stdout, "{0x%x,\t0x%x,\t0x%x},\n", (unsigned)e->key, (unsigned)e->val,
-                (unsigned)e->next_index);
+        fputs(".8byte ", out);
+        genopt_print_2_tokens(e->key, 0, out);
+        fputs(",\t", out);
+        genopt_print_counted_tokens(e->val, out);
+        fprintf(out, ",\t%d;\n", (int)e->next_index);
     }
 }
 
-static void run_show_words(void) {
+static void run_show_words(FILE *out) {
     const m4dict *dict[] = {
         &m4dict_forth, &m4dict_m4th_user, &m4dict_m4th_c, &m4dict_m4th_core, &m4dict_m4th_impl,
     };
     m4cell i;
     fputs(license, stdout);
     for (i = 0; i < (m4cell)N_OF(dict); i++) {
-        m4dict_print(dict[i], NULL, stdout);
+        m4dict_print(dict[i], NULL, out);
     }
 }
 
@@ -104,7 +138,7 @@ static inline void dpush(m4th *m, m4cell x) {
     *--m->dstack.curr = x;
 }
 
-static void run_benchmark(void) {
+static void run_benchmark(FILE *out) {
     static const m4token code[] = {m4do,     m4two_dup,   m4crc_string, m4drop,
                                    m4_loop_, (m4token)-5, m4bye};
     m4th *m = m4th_new();
@@ -113,9 +147,9 @@ static void run_benchmark(void) {
 #else
     const double n = 1e8f;
 #endif
-    fprintf(stdout, "benchmark: crc-string%s %g iterations... ",
+    fprintf(out, "benchmark: crc-string%s %g iterations... ",
             (m4th_cpu_features_enabled() & m4th_cpu_feature_crc32c ? "/simd" : ""), n);
-    fflush(stdout);
+    fflush(out);
     m->ip = code;
     dpush(m, (m4cell) "immediate");
     dpush(m, 9);
@@ -123,7 +157,7 @@ static void run_benchmark(void) {
     dpush(m, 0);
     m4th_run(m);
     m4th_del(m);
-    fputs("done.\n", stdout);
+    fputs("done.\n", out);
 }
 
 int main(int argc, char *argv[]) {
@@ -144,11 +178,11 @@ int main(int argc, char *argv[]) {
         } else {
             fputs("# this CPU does not have crc32c asm instructions\n", stdout);
         }
-        run_benchmark();
-    } else if (show_words) {
-        run_show_words();
+        run_benchmark(stdout);
+    } else if (1 /*show_words*/) {
+        run_show_words(stdout);
     } else {
-        run_genopt();
+        run_genopt(stdout);
     }
     return 0;
 }
