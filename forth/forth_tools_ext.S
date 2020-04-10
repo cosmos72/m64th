@@ -46,7 +46,14 @@ WORD_START(cs_roll,      cs_pick)
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_COMPILE_ONLY)
     WORD_CODE(cs_roll, exit)
 WORD_END(cs_roll)
-WORD(name_to_ident,      cs_roll,      DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD_START(name_to_ident,  cs_roll)
+    WORD_DSTACK(1,2)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE() /* uses %rip-relative ASM_CALL */
+    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
+    WORD_CODE(name_to_ident, exit)
+WORD_END(name_to_ident)
 WORD(name_to_string,   name_to_ident,  DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 
 #undef LASTWORD
