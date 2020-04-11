@@ -79,6 +79,7 @@ m4hash_map *m4hash_map_new(m4cell_u capacity) {
     map = (m4hash_map *)m4mem_allocate(sizeof(m4hash_map) + capacity * sizeof(m4hash_entry));
     map->size = 0;
     map->lcap = lcap;
+    map->vec = (m4hash_entry *)(map + 1);
     for (i = 0; i < capacity; i++) {
         m4hash_entry *e = map->vec + i;
         e->key = 0;

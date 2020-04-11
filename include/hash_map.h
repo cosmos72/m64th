@@ -40,7 +40,7 @@ typedef struct m4hash_entry_s {
 typedef struct m4hash_map_s {
     m4cell_u size;
     m4cell_u lcap; /* capacity is 1<<lcap */
-    m4hash_entry vec[];
+    m4hash_entry *vec;
 } m4hash_map;
 
 m4hash_map *m4hash_map_new(m4cell_u capacity);
