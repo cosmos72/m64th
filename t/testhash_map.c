@@ -29,14 +29,14 @@
 /* -------------- m4testhash_map -------------- */
 
 m4cell m4th_testhash_map(FILE *out) {
-    m4cell_u i, n = 450, cap = 256, fail = 0;
+    m4cell_u i, n = 512, cap = 256, fail = 0;
     m4hash_map *map = m4hash_map_new(cap);
     m4cell key;
     m4cell val;
     const m4hash_entry *e;
     for (i = 0; i < n; i++) {
         assert(map->size == i);
-        key = i * 1009;
+        key = i;
         val = i;
         if (!m4hash_map_insert(map, key, val)) {
             fprintf(out, "m4hash_map too full, failed to insert after %u elements\n",

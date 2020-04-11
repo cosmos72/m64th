@@ -108,9 +108,9 @@ static inline m4cell_u m4hash_index_of(const m4hash_map *map, m4cell key) {
     m4cell_u hash = m4cell_crc(key);
     m4cell_u lcap = map->lcap;
     m4cell_u cap = 1u << lcap;
-#if SZ >= 8
-    hash *= (hash - 0x13579bdf);
-#endif
+    if (SZ > 4 && lcap > 32) {
+        hash = (hash * (hash - 0x13579bdf)) ^ key;
+    }
     return (hash ^ (hash >> lcap)) & (cap - 1);
 }
 
