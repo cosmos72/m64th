@@ -47,6 +47,7 @@
     X(5, "-2rot", minus_two_rot)           /* ( a b c d e f -- e f a b c d )                    */ \
     X(6, "bounds", bounds)                 /* ( c-addr u -- c-addr+u c-addr ) get string bounds */ \
     X(6, "cmove*", cmove_star)             /* ( src-addr dst-addr u -- src-addr+u dst-addr+u )  */ \
+    X(8, "crc-cell", crc_cell)             /* ( x -- crc32 ) compute CRC32c of a cell           */ \
     X(10, "crc-string", crc_string)        /* ( c-addr u -- crc32 ) compute CRC32c of a string  */ \
     X(10, "do-i+-loop", do_i_plus_loop)    /* do i + loop                                       */ \
     X(5, "dup>r", dup_to_r)                /*                    equivalent to: dup >r          */ \

@@ -47,9 +47,9 @@
 #define M4minus_cs_roll M4minus_two_roll /* -cs-roll  equivalent to: -2roll       */
 #define M4minus_two_rot 528              /* -2rot     equivalent to: 2rot 2rot    */
 #define M4two_r_from_two_drop 529        /* 2r>2drop  equivalent to: 2r>  2drop   */
-#undef M4____gap                         /*                       */
-#define M4bounds 531                     /* ( c-addr u -- c-addr+u c-addr ) get string bounds */
-#define M4cmove_star 532                 /* ( src-addr dst-addr u -- src-addr+u dst-addr+u )  */
+#define M4bounds 530                     /* ( c-addr u -- c-addr+u c-addr ) get string bounds */
+#define M4cmove_star 531                 /* ( src-addr dst-addr u -- src-addr+u dst-addr+u )  */
+#define M4crc_cell 532                   /* ( x -- crc32 ) compute CRC32c of a cell           */
 #define M4crc_string 533                 /* ( c-addr u -- crc32 ) compute CRC32c of a string  */
 #define M4dup_to_r 534                   /* dup>r                   equivalent to: dup  >r    */
 #define M4ex_message_store 535           /* ( c-addr u -- ) save string as exception message  */

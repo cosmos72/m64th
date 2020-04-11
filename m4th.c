@@ -1058,21 +1058,29 @@ m4cell m4th_repl(m4th *m) {
 }
 
 /* ----------------------- optional cpu features ----------------------- */
+extern void m4fcrc_cell(m4arg _);
 extern void m4fcrc_string(m4arg _);
+extern void m4fcrc_cell_simd(m4arg _);
 extern void m4fcrc_string_simd(m4arg _);
 
 m4cell m4th_cpu_features_enabled(void) {
-    return ftable[m4crc_string] == m4fcrc_string_simd ? m4th_cpu_feature_crc32c : 0;
+    m4cell mask = 0;
+    if (ftable[m4crc_cell] == m4fcrc_cell_simd || ftable[m4crc_string] == m4fcrc_string_simd) {
+        mask |= m4th_cpu_feature_crc32c;
+    }
+    return mask;
 }
 
 void m4th_cpu_features_enable(m4cell mask) {
     if (mask & m4th_cpu_feature_crc32c) {
+        ftable[m4crc_cell] = m4fcrc_cell_simd;
         ftable[m4crc_string] = m4fcrc_string_simd;
     }
 }
 
 void m4th_cpu_features_disable(m4cell mask) {
     if (mask & m4th_cpu_feature_crc32c) {
+        ftable[m4crc_cell] = m4fcrc_cell;
         ftable[m4crc_string] = m4fcrc_string;
     }
 }

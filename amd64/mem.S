@@ -123,7 +123,7 @@ FUNC_START(crc_cell_simd)
         MOVE(  DTOP,   REG1)
         MOVE(  RFFFw,  DTOPw)              /* dtop = 0xffffffff        */
         crc32q REG1,   DTOP;
-        NEG1(  DTOP)
+        NOT1(  DTOPw)
 FUNC_END(crc_cell_simd)
 
 

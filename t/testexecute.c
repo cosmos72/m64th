@@ -510,6 +510,8 @@ static m4testexecute testexecute_c[] = {
      {}},
 };
 
+#define SH(x, n) ((m4cell)(x) << ((n)*8))
+
 static m4testexecute testexecute_d[] = {
     /* ----------------------------- literal -------------------------------- */
     {"(lit-short) SHORT(7)", {m4_lit_short_, SHORT(7), m4bye}, {{}, {}}, {{1, {7}}, {}}, {}},
@@ -532,7 +534,20 @@ static m4testexecute testexecute_d[] = {
      {{2, {0xffffffff, 't'}}, {}},
      {{1, {0x1b806fbc /* m4th_crc1byte(0xffffffff, 't')*/}}, {}},
      {}},
-    {"crc-string",
+    {"\"constant\" crc-cell",
+     {m4crc_cell, m4bye},
+     {{1,
+       {'c' | SH('o', 1) | SH('n', 2) | SH('s', 3) | SH('t', 4) | SH('a', 5) | SH('n', 6) |
+        SH('t', 7)}},
+      {}},
+     {{1, {0x92cfc8c9 /* m4th_crc_string("constant", 8)*/}}, {}},
+     {}},
+    {"\"constant\" crc-string",
+     {m4crc_string, m4bye},
+     {{2, {(m4cell) "constant", 8}}, {}},
+     {{1, {0x92cfc8c9 /* m4th_crc_string("constant", 8)*/}}, {}},
+     {}},
+    {"\"immediate\" crc-string",
      {m4crc_string, m4bye},
      {{2, {(m4cell) "immediate", 9}}, {}},
      {{1, {0x5ecabe1c /* m4th_crc_string("immediate", 9)*/}}, {}},

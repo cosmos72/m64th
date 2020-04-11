@@ -119,11 +119,13 @@ FUNC_END(move)
 
 /* crc-cell/simd ( x -- crc ) m4th-user: compute CRC32c of a cell */
 FUNC_START(crc_cell_simd)
-#if 0
         MOVI(  0xffffffff, REG1w)      /* dtop = 0xffffffff        */
-        crc32cx REG1, REG1, DTOP;
-        NEG2(  REG1w,    DTOPw)
-#endif /* 0 */
+        /*
+         * symbolic ASM instructions crc32c*
+         * would require compiler/assembler flag -march=armv8.1-a
+         */
+        .4byte 0x9ad45c21;             /* crc32cx REG1w, REG1w, DTOP;  */
+        NOT2(  REG1w,    DTOPw)
 FUNC_END(crc_cell_simd)
 
 

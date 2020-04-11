@@ -81,8 +81,17 @@ WORD_START(break,      bounds)
 WORD_END(break)
 /* cmove* ( src dst u -- src+u dst+u ) same as cmove, but returns updated addresses */
 WORD(cmove_star,       break,          DSTACK(3,2), RSTACK(0,0), WORD_IMPURE)
+/* crc-cell ( x u -- crc32 ) compute CRC32c of a cell  */
+WORD_START(crc_cell, cmove_star)
+    WORD_DSTACK(1,1)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE() /* uses %ip-relative ASM_CALL() - cannot inline in native code */
+    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
+    WORD_CODE(crc_cell, exit)
+WORD_END(crc_cell)
 /* crc-string ( c-addr u -- crc32 ) compute CRC32c of a string  */
-WORD_START(crc_string, cmove_star)
+WORD_START(crc_string, crc_cell)
     WORD_DSTACK(2,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
