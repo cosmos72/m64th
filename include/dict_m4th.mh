@@ -323,8 +323,10 @@
     X(13, "(eval-number)", _eval_number_) /* ( x -- ) interpret or compile number */               \
     /* ( src-addr dst-addr -- src-addr' dst-addr' t|f ) optimize a single token being compiled  */ \
     X(12, "(optimize-1)", _optimize1_)                                                             \
-    /* ( src-addr dst-addr -- src-addr' dst-addr' t|f ) optimize token pairs being compiled  */    \
+    /* ( src-addr dst-addr -- src-addr' dst-addr' t|f ) optimize token pairs being compiled */     \
     X(12, "(optimize-2)", _optimize2_)                                                             \
+    /* ( src-addr dst-addr -- src-addr' dst-addr' t|f ) optimize token triplets being compiled */  \
+    X(12, "(optimize-3)", _optimize3_)                                                             \
     /* ( x -- token t | x f ) try to optimize '[ x ] literal' */                                   \
     X(18, "(optimize-literal)", _optimize_literal_)                                                \
     X(15, "(repl-type-ack)", _repl_type_ack_)                                                      \

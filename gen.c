@@ -123,11 +123,13 @@ static void genopt3_add(m4hash_map *map, const m4token opt[6]) {
 
 static void genopt_dump(const m4hash_map *map, unsigned key_n, FILE *out) {
     m4cell_u i, cap = 2u << map->lcap;
-    fprintf(out, "HASHMAP_START(/*size*/ %u, /*lcap*/ %u)\n", (unsigned)map->size,
-            (unsigned)map->lcap);
+    fprintf(out,
+            "#define OPT%u_HASHMAP(start, entry)\t\\\n"
+            "start(/*size*/ %u, /*lcap*/ %u)\t\\\n",
+            key_n, (unsigned)map->size, (unsigned)map->lcap);
     for (i = 0; i < cap; i++) {
         const m4hash_entry *e = map->vec + i;
-        fputs("HASH_ENTRY(", out);
+        fputs("entry(", out);
         if (e->next_index == m4hash_no_entry) {
             fputs("0,\t0", out);
         } else {
@@ -135,9 +137,9 @@ static void genopt_dump(const m4hash_map *map, unsigned key_n, FILE *out) {
             fputs(",\t", out);
             genopt_print_counted_tokens(e->val, out);
         }
-        fprintf(out, ",\t%d)\n", (int)e->next_index);
+        fprintf(out, ",\t%d)%s\n", (int)e->next_index, (i + 1 == cap ? "" : "\t\\"));
     }
-    fputs("HASHMAP_END()", out);
+    fputs("\n", out);
 }
 
 static void genopt2_run(FILE *out) {

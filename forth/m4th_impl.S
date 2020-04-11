@@ -24,6 +24,8 @@
 #include "../include/err.mh"
 #include "../include/hash_map.mh"
 #include "../include/opt.mh"
+#include "../include/opt2_hash.mh"
+#include "../include/opt3_hash.mh"
 
 /* clang-format off */
 
@@ -528,7 +530,7 @@ WORD_START(_optimize1_, _while0_)
       )
     )
 WORD_END(_optimize1_)
-/* ( src-addr dst-addr -- src-addr' dst-addr' t|f ) optimize token pairs being compiled  */
+/* ( src-addr dst-addr -- src-addr' dst-addr' t|f ) optimize token pairs being compiled */
 WORD_START(_optimize2_, _optimize1_)
     WORD_DSTACK(2,3)
     WORD_RSTACK(0,0)
@@ -541,11 +543,31 @@ WORD_START(_optimize2_, _optimize1_)
       WORD_CODE_TOKENS(exit)
     WORD_CODE_END(_optimize2_)
     WORD_DATA_START(_optimize2_)
-#include "../include/opt2_hash.mh"
+#define H2_START(size, lcap) WORD_DATA_CELLS(size, lcap, .+ 8)
+#define H2_ENTRY(key, val, next) WORD_DATA_INTS(key, next) WORD_DATA_CELLS(val)
+      OPT2_HASHMAP(H2_START, H2_ENTRY)
     WORD_DATA_END(_optimize2_)
 WORD_END(_optimize2_)
+/* ( src-addr dst-addr -- src-addr' dst-addr' t|f ) optimize token triplets being compiled */
+WORD_START(_optimize3_, _optimize2_)
+    WORD_DSTACK(2,3)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_DATA_TOKENS)
+    WORD_CODE_N_AUTO(_optimize3_)
+    WORD_DATA_N_AUTO(_optimize3_)
+    WORD_CODE_START(_optimize3_)
+      WORD_CODE_TOKENS(exit)
+    WORD_CODE_END(_optimize3_)
+    WORD_DATA_START(_optimize3_)
+#define H3_START(size, lcap) WORD_DATA_CELLS(size, lcap, .+ 8)
+#define H3_ENTRY(key, val, next) WORD_DATA_CELLS(key, val, next)
+      OPT3_HASHMAP(H3_START, H3_ENTRY)
+    WORD_DATA_END(_optimize3_)
+WORD_END(_optimize3_)
 /* ( x -- token t | x f ) try to optimize '[ x ] literal' */
-WORD_START(_optimize_literal_, _optimize2_)
+WORD_START(_optimize_literal_, _optimize3_)
     WORD_DSTACK(1,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
