@@ -71,7 +71,7 @@ static void genopt_print_n_tokens(uint64_t x, unsigned n, unsigned index, FILE *
 static void genopt_print_1_token(m4token tok, unsigned index, FILE *out) {
     const m4string s = m4word_ident(m4token_to_word(tok));
     if (s.addr && s.n) {
-        fputs("|(M4" + (index ? 0 : 2), out);
+        fputs(&"|(M4"[index ? 0 : 2], out);
         m4string_print(s, out);
         if (index) {
             fprintf(out, "<<%u)", index * 16);

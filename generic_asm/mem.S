@@ -118,7 +118,8 @@ FUNC_END(two_fetch)
 /* crc-cell ( x -- crc ) m4th-user: compute CRC32c of a cell */
 FUNC_START(crc_cell)
         DPUSH( DTOP)                       /* ( x _                  ) */
-        DPUSH( DSTK)                       /* ( x &x _               ) */
+        STOR(  DSTK,   AT(DSTK, -SZ))
+        SUB2( IMM(SZ), DSTK)               /* ( x &x _               ) */
         MOVE( IMM(SZ), DTOP)               /* ( x &x SZ              ) */
         ASM_CALL(      FUNC(crc_string))   /* ( x crc                ) */
         ADD2( IMM(SZ), DTOP)               /* ( crc                  ) */
