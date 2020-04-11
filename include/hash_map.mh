@@ -17,8 +17,8 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_INCLUDE_HASH_MAP_MH
-#define M4TH_INCLUDE_HASH_MAP_MH
+#ifndef M4TH_INCLUDE_HASHMAP_MH
+#define M4TH_INCLUDE_HASHMAP_MH
 
 #define M4hash_no_entry -1
 #define M4hash_no_next -2
@@ -31,4 +31,8 @@
 #define M4HASHMAP_LCAP_OFF SZ
 #define M4HASHMAP_VEC_OFF SZ2
 
-#endif /* M4TH_INCLUDE_HASH_MAP_MH */
+#define HASHMAP_START(size, lcap) WORD_DATA_CELLS(size, lcap, .+ 8)
+#define HASH_ENTRY(key, val, next) WORD_DATA_INTS(key) WORD_DATA_CELLS(val) WORD_DATA_INTS(next)
+#define HASHMAP_END()
+
+#endif /* M4TH_INCLUDE_HASHMAP_MH */

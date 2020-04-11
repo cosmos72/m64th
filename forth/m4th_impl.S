@@ -22,6 +22,7 @@
 #include "../include/dict.mh"
 #include "../include/dict_m4th.mh"
 #include "../include/err.mh"
+#include "../include/hash_map.mh"
 #include "../include/opt.mh"
 
 /* clang-format off */
@@ -500,7 +501,7 @@ WORD_START(_optimize1_, _while0_)
          * over token!                                 ( src dst             )
          * token+ false                                ( src dst' false      )
          */
-#if 0
+#if 0 /* copy without optimizing */
         over, token_fetch, over, token_store,       /* ( src dst             ) */
         token_plus, swap, token_plus, swap, false,  /* ( src' dst'           ) */
         exit,
@@ -527,8 +528,24 @@ WORD_START(_optimize1_, _while0_)
       )
     )
 WORD_END(_optimize1_)
+/* ( src-addr dst-addr -- src-addr' dst-addr' t|f ) optimize token pairs being compiled  */
+WORD_START(_optimize2_, _optimize1_)
+    WORD_DSTACK(2,3)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_DATA_TOKENS)
+    WORD_CODE_N_AUTO(_optimize2_)
+    WORD_DATA_N_AUTO(_optimize2_)
+    WORD_CODE_START(_optimize2_)
+      WORD_CODE_TOKENS(exit)
+    WORD_CODE_END(_optimize2_)
+    WORD_DATA_START(_optimize2_)
+#include "../include/opt2_hash.mh"
+    WORD_DATA_END(_optimize2_)
+WORD_END(_optimize2_)
 /* ( x -- token t | x f ) try to optimize '[ x ] literal' */
-WORD_START(_optimize_literal_, _optimize1_)
+WORD_START(_optimize_literal_, _optimize2_)
     WORD_DSTACK(1,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()

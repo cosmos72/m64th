@@ -17,8 +17,8 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_INCLUDE_HASH_MAP_H
-#define M4TH_INCLUDE_HASH_MAP_H
+#ifndef M4TH_INCLUDE_HASHMAP_H
+#define M4TH_INCLUDE_HASHMAP_H
 
 #include "../m4th.h" /* m4cell_u, m4token */
 
@@ -58,4 +58,4 @@ const m4hash_entry *m4hash_map_insert(m4hash_map *map, m4cell key, m4cell val);
 }
 #endif
 
-#endif /* M4TH_INCLUDE_HASH_MAP_H */
+#endif /* M4TH_INCLUDE_HASHMAP_H */

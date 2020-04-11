@@ -17,8 +17,8 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_T_TESTHASH_MAP_C
-#define M4TH_T_TESTHASH_MAP_C
+#ifndef M4TH_T_TESTHASHMAP_C
+#define M4TH_T_TESTHASHMAP_C
 
 #include "../include/hash_map.h"
 #include "testcommon.h"
@@ -65,4 +65,4 @@ m4cell m4th_testhash_map(FILE *out) {
     return fail;
 }
 
-#endif /* M4TH_T_TESTHASH_MAP_C */
+#endif /* M4TH_T_TESTHASHMAP_C */

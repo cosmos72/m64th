@@ -123,7 +123,7 @@ static void genopt3_add(m4hash_map *map, const m4token opt[6]) {
 
 static void genopt_dump(const m4hash_map *map, unsigned key_n, FILE *out) {
     m4cell_u i, cap = 2u << map->lcap;
-    fprintf(out, "HASH_MAP_START(/*size*/ %u, /*lcap*/ %u)\n", (unsigned)map->size,
+    fprintf(out, "HASHMAP_START(/*size*/ %u, /*lcap*/ %u)\n", (unsigned)map->size,
             (unsigned)map->lcap);
     for (i = 0; i < cap; i++) {
         const m4hash_entry *e = map->vec + i;
@@ -137,7 +137,7 @@ static void genopt_dump(const m4hash_map *map, unsigned key_n, FILE *out) {
         }
         fprintf(out, ",\t%d)\n", (int)e->next_index);
     }
-    fputs("HASH_MAP_END()", out);
+    fputs("HASHMAP_END()", out);
 }
 
 static void genopt2_run(FILE *out) {
@@ -226,8 +226,8 @@ int main(int argc, char *argv[]) {
     } else if (show_words) {
         run_show_words(stdout);
     } else {
-        genopt_with_file("generic_asm/opt2_hash.mh", genopt2_run);
-        genopt_with_file("generic_asm/opt3_hash.mh", genopt3_run);
+        genopt_with_file("include/opt2_hash.mh", genopt2_run);
+        genopt_with_file("include/opt3_hash.mh", genopt3_run);
     }
     return 0;
 }
