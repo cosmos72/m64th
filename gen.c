@@ -100,8 +100,8 @@ static void genopt_print_n_tokens(uint64_t x, unsigned n, unsigned index, FILE *
 }
 
 static void genopt2_add(m4hash_map *map, const m4token opt[5]) {
-    m4hash_key key = opt[1] | ((m4hash_key)opt[2] << 16);
-    m4hash_key val = opt[0] | ((m4hash_key)opt[3] << 16) | ((m4hash_key)opt[4] << 32);
+    m4cell key = opt[1] | ((m4cell)opt[2] << 16);
+    m4cell val = opt[0] | ((m4cell)opt[3] << 16) | ((m4cell)opt[4] << 32);
     const m4hash_entry *e;
     assert(opt[0] <= 2);
     e = m4hash_map_find(map, key);
@@ -111,8 +111,8 @@ static void genopt2_add(m4hash_map *map, const m4token opt[5]) {
 }
 
 static void genopt3_add(m4hash_map *map, const m4token opt[6]) {
-    m4hash_key key = opt[1] | ((m4hash_key)opt[2] << 16) | ((m4hash_key)opt[3] << 32);
-    m4hash_key val = opt[0] | ((m4hash_key)opt[4] << 16) | ((m4hash_key)opt[5] << 32);
+    m4cell key = opt[1] | ((m4cell)opt[2] << 16) | ((m4cell)opt[3] << 32);
+    m4cell val = opt[0] | ((m4cell)opt[4] << 16) | ((m4cell)opt[5] << 32);
     const m4hash_entry *e;
     assert(opt[0] <= 2);
     e = m4hash_map_find(map, key);
@@ -122,7 +122,7 @@ static void genopt3_add(m4hash_map *map, const m4token opt[6]) {
 }
 
 static void genopt_dump(const m4hash_map *map, unsigned key_n, FILE *out) {
-    m4hash_index i, cap = 2u << map->lcap;
+    m4cell_u i, cap = 2u << map->lcap;
     fprintf(out, "HASH_MAP_START(/*size*/ %u, /*lcap*/ %u)\n", (unsigned)map->size,
             (unsigned)map->lcap);
     for (i = 0; i < cap; i++) {

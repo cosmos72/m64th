@@ -29,10 +29,10 @@
 /* -------------- m4testhash_map -------------- */
 
 m4cell m4th_testhash_map(FILE *out) {
-    m4hash_index i, n = 400, cap = 256, fail = 0;
+    m4cell_u i, n = 450, cap = 256, fail = 0;
     m4hash_map *map = m4hash_map_new(cap);
-    m4hash_key key;
-    m4hash_val val;
+    m4cell key;
+    m4cell val;
     const m4hash_entry *e;
     for (i = 0; i < n; i++) {
         assert(map->size == i);
@@ -42,7 +42,7 @@ m4cell m4th_testhash_map(FILE *out) {
             fprintf(out, "m4hash_map too full, failed to insert after %u elements\n",
                     (unsigned)map->size);
             fail++;
-            continue;
+            break;
         }
         e = m4hash_map_find(map, key);
         if (!e) {
