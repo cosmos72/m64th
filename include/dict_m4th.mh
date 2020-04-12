@@ -205,6 +205,7 @@
     X(11, "name>code>n", name_to_code_n) /* ( nt -- u        ) get code size from name       */    \
     X(10, "name>flags", name_to_flags)   /* ( nt -- m4flags  ) get m4flags of name           */    \
     X(11, "name>flags!", name_to_flags_store) /* ( m4flags nt -- ) set m4flags of name       */    \
+    X(10, "name>ident", name_to_ident) /* ( nt -- addr n  ) convert name to asm/C identifier */    \
     /* name>string is already defined by forth 'tools ext' wordset */                              \
     X(9, "name>prev", name_to_prev) /* ( nt -- nt'|0   ) get previous word in wordlist       */    \
     X(7, "name>xt", name_to_xt)     /* ( nt -- XT      ) get XT == code address from name    */    \
