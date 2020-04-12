@@ -306,7 +306,22 @@ WORD_START(_exec_xt_from_native_, _exec_token_)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_MAY_JUMP)
     WORD_CODE(_exec_xt_from_native_, exit)
 WORD_END(_exec_xt_from_native_)
-WORD_START(_if_, _exec_xt_from_native_)
+/* (hash-map-index-of/int) ( map key -- pos ) get bucket position for key  */
+WORD_START(_hash_map_indexof_int_, _exec_xt_from_native_)
+    WORD_DSTACK(2,2)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        crc_cell, swap,                                /* ( hash map           ) */
+        _lit_, T(M4HASH_MAP_OFF_LCAP_INT), plus,       /* ( hash &map.lcap     ) */
+        int_fetch, one, over, lshift,                  /* ( hash cap lcap      ) */
+        exit
+        /* return (hash ^ (hash >> lcap)) & (cap - 1); */
+    )
+WORD_END(_hash_map_indexof_int_)
+WORD_START(_if_, _hash_map_indexof_int_)
     WORD_DSTACK(1,0) /* token stack effect when not jumping */
     WORD_RSTACK(0,0)
     WORD_DSTACK(1,0) /* token stack effect when jumping */

@@ -179,7 +179,11 @@ WORD_START(hash_map_find_int, flip)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_FLAGS(0)
-    WORD_CODE(exit)
+    WORD_CODE(
+        over, _lit_, T(M4HASH_MAP_OFF_SIZE_INT), int_fetch, /* ( map key size    ) */
+        _if_, T(1),
+        then,
+        nip, zero, zero, exit)                              /* ( key 0 false     ) */
 WORD_END(hash_map_find_int)
 WORD(i_times,       hash_map_find_int, DSTACK(1,1), RSTACK(1,1), WORD_R_PURE)
 WORD(i_plus,           i_times,        DSTACK(1,1), RSTACK(1,1), WORD_R_PURE)

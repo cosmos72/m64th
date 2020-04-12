@@ -60,7 +60,7 @@ static inline m4cell H(m4hash_entry_next_)(const H(m4hash_entry_) * e) {
     return e->next != H(m4hash_no_next_);
 }
 
-static inline H(m4u) H(m4hash_index_of_)(const H(m4hash_map_) * map, H(m4) key) {
+static inline H(m4u) H(m4hash_indexof_)(const H(m4hash_map_) * map, H(m4) key) {
     H(m4u) hash = m4th_crc_cell(key);
     H(m4u) lcap = map->lcap;
     H(m4u) cap = 1u << lcap;
@@ -85,7 +85,7 @@ static const H(m4hash_entry_) *
 // find key in map. return NULL if not found
 const H(m4hash_entry_) * H(m4hash_map_find_)(const H(m4hash_map_) * map, H(m4) key) {
     if (map->size != 0) {
-        const H(m4hash_entry_) *e = map->vec + H(m4hash_index_of_)(map, key);
+        const H(m4hash_entry_) *e = map->vec + H(m4hash_indexof_)(map, key);
         if (H(m4hash_entry_present_)(e)) {
             return H(m4hash_map_find_in_collision_list_)(map, key, e);
         }
@@ -119,7 +119,7 @@ static void H(m4hash_store_)(H(m4hash_map_) * map, H(m4hash_entry_) * to, H(m4) 
 // key MUST NOT be already present. does not grow/rehash.
 // returns NULL on failure (if map is too full)
 const H(m4hash_entry_) * H(m4hash_map_insert_)(H(m4hash_map_) * map, H(m4) key, m4cell val) {
-    H(m4u) pos = H(m4hash_index_of_)(map, key);
+    H(m4u) pos = H(m4hash_indexof_)(map, key);
     H(m4hash_entry_) *entry = map->vec + pos;
     if (!H(m4hash_entry_present_)(entry)) {
         H(m4hash_store_)(map, entry, key, val, H(m4hash_no_next_));

@@ -153,7 +153,7 @@
     X(7, "cs-swap", cs_swap)          /* ( a_sys b_sys -- b_sys a_sys )                 */         \
     X(9, "ex>string", ex_to_string)   /* ( ex -- c-addr u ) get exception name          */         \
                                       /* ( map key -- key val t|f ) find entry in hash-map/int  */ \
-    X(14, "hash-map-find/int", hash_map_find_int)                                                  \
+    X(17, "hash-map-find/int", hash_map_find_int)                                                  \
     X(9, "interpret", interpret) /* one iteration of forth interpret/compile loop  */              \
     X(4, "repl", repl)           /* call INTERPRET repeatedly until IN I/O error   */              \
     X(5, "r2nd@", r2nd_fetch)   /* alias of '2r@ drop' i.e. fetch second item from return stack */ \
@@ -327,6 +327,7 @@
     /* ( nt -1|1 -- ) interpret or compile name. dtop == -1 if name is immediate */                \
     X(11, "(eval-name)", _eval_name_)                                                              \
     X(13, "(eval-number)", _eval_number_) /* ( x -- ) interpret or compile number */               \
+    X(22, "(hash-map-indexof/int)", _hash_map_indexof_int_)                                        \
     /* ( src-addr dst-addr -- src-addr' dst-addr' t|f ) optimize a single token being compiled  */ \
     X(12, "(optimize-1)", _optimize1_)                                                             \
     /* ( src-addr dst-addr -- src-addr' dst-addr' t|f ) optimize token pairs being compiled */     \
