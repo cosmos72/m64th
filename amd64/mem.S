@@ -120,7 +120,7 @@ FUNC_END(move)
 
 /* crc-byte/simd ( x -- crc ) m4th-user: compute CRC32c of a byte */
 FUNC_START(crc_byte_simd)
-        MOVE(  DTOP,   REG1)
+        MOVE(  DTOPw,  REG1w)
         MOVE(  RFFFw,  DTOPw)              /* dtop = 0xffffffff        */
         crc32b REG1b,  DTOPw;
         NOT1(  DTOPw)
@@ -129,7 +129,7 @@ FUNC_END(crc_byte_simd)
 
 /* crc-short/simd ( x -- crc ) m4th-user: compute CRC32c of a short */
 FUNC_START(crc_short_simd)
-        MOVE(  DTOP,   REG1)
+        MOVE(  DTOPw,  REG1w)
         MOVE(  RFFFw,  DTOPw)              /* dtop = 0xffffffff        */
         crc32w REG1h,  DTOPw;
         NOT1(  DTOPw)
@@ -138,7 +138,7 @@ FUNC_END(crc_short_simd)
 
 /* crc-int/simd ( x -- crc ) m4th-user: compute CRC32c of a int */
 FUNC_START(crc_int_simd)
-        MOVE(  DTOP,   REG1)
+        MOVE(  DTOPw,  REG1w)
         MOVE(  RFFFw,  DTOPw)              /* dtop = 0xffffffff        */
         crc32l REG1w,  DTOPw;
         NOT1(  DTOPw)
@@ -194,9 +194,9 @@ LABEL(crc_string_simd.loop)
 
 LABEL(crc_string_simd.small)
         lea    TO(crc_string_simd.jumps)(%rip), REG4
-        ADD2(  IMM(8),     DSTK)
         ADD2(  REG2,       REG3)           /* c = c-addr + u           */
         SUB2(  REG1,       REG2)           /* b = left = u - i         */
+        ADD2(  IMM(8),     DSTK)
         jmp    *(REG4, REG2, SZ);
 
 LABEL(crc_string_simd.5)
