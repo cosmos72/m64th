@@ -93,7 +93,7 @@ const H(m4hash_entry_) * H(m4hash_map_find_)(const H(m4hash_map_) * map, H(m4) k
     return NULL;
 }
 
-static H(m4u) m4hash_pick_collision_index_int(H(m4hash_map_) * map, H(m4u) pos) {
+static H(m4u) H(m4hash_pick_collision_index_)(H(m4hash_map_) * map, H(m4u) pos) {
     static const H(m4u) relprime[] = {5, 7, 9, 11};
     const H(m4u) step = relprime[pos & 3];
     const H(m4u) cap = 1u << map->lcap;

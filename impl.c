@@ -28,6 +28,25 @@
 #include <stdlib.h> /* strtol()                   */
 #include <string.h> /* memcmp() memcpy() strlen() */
 
+/******************************************************************************/
+/* C implementation of hash map                                               */
+/******************************************************************************/
+
+#include "include/hash_map.h"
+
+#define H(x) x##byte
+#include "c/hash_map_impl.c"
+#undef H
+#define H(x) x##short
+#include "c/hash_map_impl.c"
+#undef H
+#define H(x) x##int
+#include "c/hash_map_impl.c"
+#undef H
+#define H(x) x##cell
+#include "c/hash_map_impl.c"
+#undef H
+
 /** temporary C implementation of '.' */
 void m4th_dot(m4cell n, m4iobuf *io) {
     m4ucell len;
@@ -58,16 +77,6 @@ void m4th_dot(m4cell n, m4iobuf *io) {
         return;
     }
 }
-
-/******************************************************************************/
-/* C implementation of hash map                                               */
-/******************************************************************************/
-
-#include "include/hash_map.h"
-
-#define H(x) x##int
-#include "c/hash_map_impl.c"
-#undef H
 
 /******************************************************************************/
 /* C implementation of CRC32c                                                 */
