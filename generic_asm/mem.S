@@ -115,6 +115,39 @@ FUNC_START(two_fetch)      /* 2@ */
 FUNC_END(two_fetch)
 
 
+/* crc-byte ( x -- crc ) m4th-user: compute CRC32c of a byte */
+FUNC_START(crc_byte)
+        DPUSH( DTOP)                       /* ( x _                  ) */
+        STOR(  DSTK,   AT(DSTK, -SZ))
+        SUB2( IMM(SZ), DSTK)               /* ( x &x _               ) */
+        MOVE( IMM(1),  DTOP)               /* ( x &x 1               ) */
+        ASM_CALL(      FUNC(crc_string))   /* ( x crc                ) */
+        ADD2( IMM(SZ), DTOP)               /* ( crc                  ) */
+FUNC_END(crc_byte)
+
+
+/* crc-short ( x -- crc ) m4th-user: compute CRC32c of a short */
+FUNC_START(crc_short)
+        DPUSH( DTOP)                       /* ( x _                  ) */
+        STOR(  DSTK,   AT(DSTK, -SZ))
+        SUB2( IMM(SZ), DSTK)               /* ( x &x _               ) */
+        MOVE( IMM(2),  DTOP)               /* ( x &x 2               ) */
+        ASM_CALL(      FUNC(crc_string))   /* ( x crc                ) */
+        ADD2( IMM(SZ), DTOP)               /* ( crc                  ) */
+FUNC_END(crc_short)
+
+
+/* crc-int ( x -- crc ) m4th-user: compute CRC32c of an int */
+FUNC_START(crc_int)
+        DPUSH( DTOP)                       /* ( x _                  ) */
+        STOR(  DSTK,   AT(DSTK, -SZ))
+        SUB2( IMM(SZ), DSTK)               /* ( x &x _               ) */
+        MOVE( IMM(4),  DTOP)               /* ( x &x 4               ) */
+        ASM_CALL(      FUNC(crc_string))   /* ( x crc                ) */
+        ADD2( IMM(SZ), DTOP)               /* ( crc                  ) */
+FUNC_END(crc_int)
+
+
 /* crc-cell ( x -- crc ) m4th-user: compute CRC32c of a cell */
 FUNC_START(crc_cell)
         DPUSH( DTOP)                       /* ( x _                  ) */

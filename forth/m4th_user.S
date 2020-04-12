@@ -81,8 +81,35 @@ WORD_START(break,      bounds)
 WORD_END(break)
 /* cmove* ( src dst u -- src+u dst+u ) same as cmove, but returns updated addresses */
 WORD(cmove_star,       break,          DSTACK(3,2), RSTACK(0,0), WORD_IMPURE)
+/* crc-byte ( x -- crc32 ) compute CRC32c of a byte */
+WORD_START(crc_byte, cmove_star)
+    WORD_DSTACK(1,1)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE() /* uses %ip-relative ASM_CALL() - cannot inline in native code */
+    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
+    WORD_CODE(crc_byte, exit)
+WORD_END(crc_byte)
+/* crc-short ( x -- crc32 ) compute CRC32c of a short */
+WORD_START(crc_short, cmove_star)
+    WORD_DSTACK(1,1)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE() /* uses %ip-relative ASM_CALL() - cannot inline in native code */
+    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
+    WORD_CODE(crc_short, exit)
+WORD_END(crc_short)
+/* crc-int ( x -- crc32 ) compute CRC32c of an int */
+WORD_START(crc_int, cmove_star)
+    WORD_DSTACK(1,1)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE() /* uses %ip-relative ASM_CALL() - cannot inline in native code */
+    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
+    WORD_CODE(crc_int, exit)
+WORD_END(crc_int)
 /* crc-cell ( x u -- crc32 ) compute CRC32c of a cell  */
-WORD_START(crc_cell, cmove_star)
+WORD_START(crc_cell, crc_int)
     WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
