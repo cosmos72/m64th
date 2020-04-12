@@ -34,8 +34,9 @@ void m4th_dot(m4cell n, m4iobuf *io);
 extern m4cell m4th_crctable[256];
 void m4th_crcinit(m4cell table[256]);
 uint32_t m4th_crc1byte(uint32_t crc, unsigned char byte);
-uint32_t m4th_crcstring(m4string str);
-uint32_t m4th_crcarray(const void *addr, const m4cell_u nbytes);
+uint32_t m4th_crc_cell(m4cell key);
+uint32_t m4th_crc_string(m4string str);
+uint32_t m4th_crc_array(const void *addr, const m4ucell nbytes);
 
 /** detect and enable/disable optional CPU features: CRC32c asm instructions... */
 enum {

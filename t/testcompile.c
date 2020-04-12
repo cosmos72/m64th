@@ -204,7 +204,7 @@ static m4code m4testcompile_init(const m4testcompile *t, m4countedcode *codegen_
 
 static m4cell m4testcompile_run(m4th *m, const m4testcompile *t, m4code t_codegen) {
     m4word *w;
-    m4cell_u input_n = strlen(t->input);
+    m4ucell input_n = strlen(t->input);
     const m4countedstack empty = {};
 
     m4th_clear(m);

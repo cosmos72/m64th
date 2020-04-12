@@ -30,10 +30,16 @@
 
 typedef struct m4arg_s m4arg; /**< intentionally incomplete type, cannot be instantiated */
 
-typedef unsigned char m4char;
-typedef ssize_t m4cell;  /**< main forth type: number or pointer */
-typedef size_t m4cell_u; /**< unsigned variant of m4cell         */
-typedef m4cell m4err;    /**< error code, set by ABORT or THROW  */
+typedef int8_t m4byte;
+typedef uint8_t m4ubyte;
+typedef uint8_t m4char;
+typedef int16_t m4short;
+typedef uint16_t m4ushort;
+typedef int32_t m4int;
+typedef uint32_t m4uint;
+typedef ssize_t m4cell; /**< main forth type: number or pointer */
+typedef size_t m4ucell; /**< unsigned variant of m4cell         */
+typedef m4cell m4err;   /**< error code, set by ABORT or THROW  */
 /** forth instruction. uses forth calling convention, cannot be invoked from C */
 typedef void (*m4func)(m4arg);
 typedef uint8_t m4stackeffect; /**< stack # in and # out. 0xF if unknown or variable   */
@@ -111,7 +117,7 @@ struct m4cbuf_s {
 
 struct m4code_s { /**< array of m4token, with size */
     m4token *addr;
-    m4cell_u n;
+    m4ucell n;
 };
 
 struct m4counteddata_s { /**< counted data                     */
@@ -145,9 +151,9 @@ struct m4iobuf_s {
     m4xt func;     /**< ( handle c-addr u -- u' ior ) reads or writes data */
     m4cell handle; /**< FILE*, fd or whatever is needed by func        */
     m4cell err;    /**< last I/O error                                 */
-    m4cell_u pos;  /**< next char to read (or write) is addr[pos]      */
-    m4cell_u end;  /**< last char to read (or write) is addr[end-1]    */
-    m4cell_u max;  /**< capacity. I/O buffer is addr[0..max-1]         */
+    m4ucell pos;   /**< next char to read (or write) is addr[pos]      */
+    m4ucell end;   /**< last char to read (or write) is addr[end-1]    */
+    m4ucell max;   /**< capacity. I/O buffer is addr[0..max-1]         */
     m4char *addr;
 };
 
@@ -161,7 +167,7 @@ struct m4pair_s {
 
 struct m4string_s { /**< array of m4char, with size */
     const m4char *addr;
-    m4cell_u n;
+    m4ucell n;
 };
 
 struct m4stackeffects_s {
@@ -171,7 +177,7 @@ struct m4stackeffects_s {
 
 struct m4slice_s { /**< array of m4cell, with size */
     m4cell *addr;
-    m4cell_u n;
+    m4ucell n;
 };
 
 /** compiled forth word. Execution token i.e. XT is at word + code_off */
@@ -306,7 +312,7 @@ void m4string_print(m4string str, FILE *out);
 void m4string_print_hex(m4string str, FILE *out);
 /** print, replacing non-printable chars with escape sequences */
 void m4string_print_escape(m4string str, FILE *out);
-void m4string2_print_escape(const m4char *addr, const m4cell_u n, FILE *out);
+void m4string2_print_escape(const m4char *addr, const m4ucell n, FILE *out);
 
 void m4stack_print(const m4stack *stack, FILE *out);
 

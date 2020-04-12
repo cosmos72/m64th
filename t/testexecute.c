@@ -1373,7 +1373,7 @@ static void m4th_testexecute_bunch(m4th *m, m4testexecute bunch[], m4cell n, m4t
 }
 
 void m4th_testbench_crc_c(FILE *out) {
-    m4cell_u i, n = 1e8;
+    m4ucell i, n = 1e8;
     uint32_t crc = ~(uint32_t)0;
     const uint32_t expected = 0x773edc4e;
     for (i = 0; i < n; i++) {

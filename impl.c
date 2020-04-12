@@ -30,7 +30,7 @@
 
 /** temporary C implementation of '.' */
 void m4th_dot(m4cell n, m4iobuf *io) {
-    m4cell_u len;
+    m4ucell len;
     enum { N = SZ * 3 + 2 }; /* large enough also for sign and final space */
     char buf[N];
     char *addr = buf + N;
@@ -41,7 +41,7 @@ void m4th_dot(m4cell n, m4iobuf *io) {
         *--addr = '0';
     } else {
         m4cell negative = n < 0;
-        m4cell_u u = (m4cell_u)(negative ? -n : n);
+        m4ucell u = (m4ucell)(negative ? -n : n);
 
         while (u != 0) {
             *--addr = (u % 10) + '0';
@@ -63,121 +63,11 @@ void m4th_dot(m4cell n, m4iobuf *io) {
 /* C implementation of hash map                                               */
 /******************************************************************************/
 
-static inline m4cell_u ceil_log_2(m4cell_u n) {
-    m4cell_u ret = 0;
-    while ((1u << ret) < n) {
-        ret++;
-    }
-    return ret;
-}
+#include "include/hash_map.h"
 
-m4hash_map *m4hash_map_new(m4cell_u capacity) {
-    m4hash_map *map;
-    m4cell_u i, lcap;
-    lcap = ceil_log_2(capacity);
-    capacity = 1 << (lcap + 1);
-    map = (m4hash_map *)m4mem_allocate(sizeof(m4hash_map) + capacity * sizeof(m4hash_entry));
-    map->size = 0;
-    map->lcap = lcap;
-    map->vec = (m4hash_entry *)(map + 1);
-    for (i = 0; i < capacity; i++) {
-        m4hash_entry *e = map->vec + i;
-        e->key = 0;
-        e->val = 0;
-        e->next_index = m4hash_no_entry;
-    }
-    return map;
-}
-
-void m4hash_map_del(m4hash_map *map) {
-    m4mem_free(map);
-}
-
-static inline m4cell m4hash_entry_present(const m4hash_entry *e) {
-    return e->next_index != m4hash_no_entry;
-}
-
-static inline m4cell m4hash_entry_next(const m4hash_entry *e) {
-    return e->next_index != m4hash_no_next;
-}
-
-static inline uint32_t m4cell_crc(m4cell key) {
-    return m4th_crcarray(&key, sizeof(key));
-}
-
-static inline m4cell_u m4hash_index_of(const m4hash_map *map, m4cell key) {
-    m4cell_u hash = m4cell_crc(key);
-    m4cell_u lcap = map->lcap;
-    m4cell_u cap = 1u << lcap;
-    if (SZ > 4 && lcap > 32) {
-        hash = (hash * (hash - 0x13579bdf)) ^ key;
-    }
-    return (hash ^ (hash >> lcap)) & (cap - 1);
-}
-
-static const m4hash_entry *m4hash_map_find_in_collision_list(const m4hash_map *map, m4cell key,
-                                                             const m4hash_entry *bucket) {
-    while (key != bucket->key) {
-        if (!m4hash_entry_next(bucket)) {
-            return NULL;
-        }
-        bucket = map->vec + bucket->next_index;
-    }
-    return bucket;
-}
-
-// find key in map. return NULL if not found
-const m4hash_entry *m4hash_map_find(const m4hash_map *map, m4cell key) {
-    if (map->size != 0) {
-        const m4hash_entry *e = map->vec + m4hash_index_of(map, key);
-        if (m4hash_entry_present(e)) {
-            return m4hash_map_find_in_collision_list(map, key, e);
-        }
-    }
-    return NULL;
-}
-
-static m4cell_u m4hash_pick_collision_index(m4hash_map *map, m4cell_u pos) {
-    static const m4cell_u relprime[] = {5, 7, 9, 11};
-    const m4cell_u step = relprime[pos & 3];
-    const m4cell_u cap = 1u << map->lcap;
-    for (m4cell_u i = 0; i < cap; i++) {
-        const m4cell_u collision_pos = cap + ((pos + i * step) & (cap - 1));
-        const m4hash_entry *entry = map->vec + collision_pos;
-        if (!m4hash_entry_present(entry)) {
-            return collision_pos;
-        }
-    }
-    return m4hash_no_entry;
-}
-
-static void m4hash_store(m4hash_map *map, m4hash_entry *to, m4cell key, m4cell val,
-                         m4cell_u next_index) {
-    to->key = key;
-    to->val = val;
-    to->next_index = next_index;
-    map->size++;
-}
-
-// insert key and val.
-// key MUST NOT be already present. does not grow/rehash.
-// returns NULL on failure (if map is too full)
-const m4hash_entry *m4hash_map_insert(m4hash_map *map, m4cell key, m4cell val) {
-    m4cell_u pos = m4hash_index_of(map, key);
-    m4hash_entry *entry = map->vec + pos;
-    if (!m4hash_entry_present(entry)) {
-        m4hash_store(map, entry, key, val, m4hash_no_next);
-        return entry;
-    }
-    pos = m4hash_pick_collision_index(map, pos);
-    if (pos != m4hash_no_entry) {
-        m4hash_entry *collision_entry = map->vec + pos;
-        m4hash_store(map, collision_entry, key, val, entry->next_index);
-        entry->next_index = pos;
-        return collision_entry;
-    }
-    return NULL;
-}
+#define H(x) x##int
+#include "c/hash_map_impl.c"
+#undef H
 
 /******************************************************************************/
 /* C implementation of CRC32c                                                 */
@@ -209,7 +99,7 @@ uint32_t m4th_crc1byte(uint32_t crc, unsigned char byte) {
     return (crc >> 8) ^ m4th_crctable[(crc & 0xff) ^ byte];
 }
 
-uint32_t m4th_crcarray(const void *addr, const m4cell_u nbytes) {
+uint32_t m4th_crc_array(const void *addr, const m4ucell nbytes) {
     assert(m4th_crctable[0xff]);
     const m4char *p = (const m4char *)addr;
     uint32_t crc = ~(uint32_t)0;
@@ -219,8 +109,12 @@ uint32_t m4th_crcarray(const void *addr, const m4cell_u nbytes) {
     return ~crc;
 }
 
-uint32_t m4th_crcstring(m4string str) {
-    return m4th_crcarray(str.addr, str.n);
+uint32_t m4th_crc_cell(m4cell key) {
+    return m4th_crc_array(&key, sizeof(key));
+}
+
+uint32_t m4th_crc_string(m4string str) {
+    return m4th_crc_array(str.addr, str.n);
 }
 
 #if defined(__x86_64__)

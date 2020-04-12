@@ -16,30 +16,39 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef M4TH_INCLUDE_HASH_MAP_H
-#define M4TH_INCLUDE_HASH_MAP_H
-
-#include "../m4th.h" /* m4* */
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#define H(x) x##byte
-#include "hash_map_impl.h"
-#undef H
-#define H(x) x##short
-#include "hash_map_impl.h"
-#undef H
-#define H(x) x##int
-#include "hash_map_impl.h"
-#undef H
-#define H(x) x##cell
-#include "hash_map_impl.h"
-#undef H
+enum {
+    H(m4hash_no_entry_) = (H(m4u)) - 1,
+    H(m4hash_no_next_) = (H(m4u)) - 2,
+};
+
+typedef struct H(m4hash_entry_s_) {
+    m4cell val;
+    H(m4) key;
+    H(m4u) next;
+} H(m4hash_entry_);
+
+typedef struct H(m4hash_map_s_) {
+    H(m4u) size;
+    H(m4u) lcap; /* capacity is 1<<lcap */
+    H(m4hash_entry_) * vec;
+} H(m4hash_map_);
+
+H(m4hash_map_) * H(m4hash_map_new_)(H(m4u) capacity);
+void H(m4hash_map_del_)(H(m4hash_map_) * map);
+
+// find key in map. return NULL if not found
+const H(m4hash_entry_) * H(m4hash_map_find_)(const H(m4hash_map_) * map, H(m4) key);
+
+// insert key and val.
+// key MUST NOT be already present. does not grow/rehash.
+// returns NULL on failure (if map is too full)
+const H(m4hash_entry_) * H(m4hash_map_insert_)(H(m4hash_map_) * map, H(m4) key, m4cell val);
 
 #ifdef __cplusplus
 }
 #endif
-
-#endif /* M4TH_INCLUDE_HASH_MAP_H */

@@ -17,21 +17,31 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_INCLUDE_HASHMAP_MH
-#define M4TH_INCLUDE_HASHMAP_MH
+#ifndef M4TH_INCLUDE_HASH_MAP_MH
+#define M4TH_INCLUDE_HASH_MAP_MH
 
 #define M4hash_no_entry -1
 #define M4hash_no_next -2
 
-#define M4HASHENTRY_KEY_OFF 0
-#define M4HASHENTRY_VAL_OFF SZ
-#define M4HASHENTRY_NEXT_OFF SZ2
+/* hash-map */
+#define M4HASH_MAP_SIZE_OFF 0
+#define M4HASH_MAP_LCAP_OFF SZ
+#define M4HASH_MAP_VEC_OFF SZ2
 
-#define M4HASHMAP_SIZE_OFF 0
-#define M4HASHMAP_LCAP_OFF SZ
-#define M4HASHMAP_VEC_OFF SZ2
+#define M4HASH_ENTRY_KEY_OFF 0
+#define M4HASH_ENTRY_VAL_OFF SZ
+#define M4HASH_ENTRY_NEXT_OFF SZ2
 
-#endif /* M4TH_INCLUDE_HASHMAP_MH */
+/* hash-map/int */
+#define M4HASH_MAP_SIZE_OFF_INT 0
+#define M4HASH_MAP_LCAP_OFF_INT 4
+#define M4HASH_MAP_VEC_OFF_INT SZ
+
+#define M4HASH_ENTRY_KEY_OFF_INT 0
+#define M4HASH_ENTRY_NEXT_OFF_INT 4
+#define M4HASH_ENTRY_VAL_OFF_INT 8
+
+#endif /* M4TH_INCLUDE_HASH_MAP_MH */
 /**
  * Copyright (C) 2020 Massimiliano Ghilardi
  *
@@ -51,21 +61,21 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_INCLUDE_HASHMAP_MH
-#define M4TH_INCLUDE_HASHMAP_MH
+#ifndef M4TH_INCLUDE_HASH_MAP_MH
+#define M4TH_INCLUDE_HASH_MAP_MH
 
 #define M4hash_no_entry -1
 #define M4hash_no_next -2
 
-#define M4HASHENTRY_KEY_OFF 0
-#define M4HASHENTRY_VAL_OFF SZ
-#define M4HASHENTRY_NEXT_OFF SZ2
+#define M4HASH_ENTRY_KEY_OFF 0
+#define M4HASH_ENTRY_VAL_OFF SZ
+#define M4HASH_ENTRY_NEXT_OFF SZ2
 
-#define M4HASHMAP_SIZE_OFF 0
-#define M4HASHMAP_LCAP_OFF SZ
-#define M4HASHMAP_VEC_OFF SZ2
+#define M4HASH_MAP_SIZE_OFF 0
+#define M4HASH_MAP_LCAP_OFF SZ
+#define M4HASH_MAP_VEC_OFF SZ2
 
-#define HASHMAP_START(size, lcap)
+#define HASH_MAP_START(size, lcap)
 #define HASH_ENTY(size, lcap)
 
-#endif /* M4TH_INCLUDE_HASHMAP_MH */
+#endif /* M4TH_INCLUDE_HASH_MAP_MH */

@@ -111,7 +111,7 @@ static void m4char_print_escape(const m4char ch, FILE *out) {
 
 /* ----------------------- m4mem ----------------------- */
 
-static inline m4char *m4_aligned_at(const void *addr, m4cell_u power_of_two) {
+static inline m4char *m4_aligned_at(const void *addr, m4ucell power_of_two) {
     return (m4char *)(((m4cell)addr + power_of_two - 1) & ~(m4cell)(power_of_two - 1));
 }
 
@@ -285,8 +285,8 @@ void m4flags_print(m4flags fl, FILE *out) {
 
 /* ----------------------- m4string ---------------------- */
 
-void m4string2_print_escape(const m4char *addr, const m4cell_u n, FILE *out) {
-    m4cell_u i;
+void m4string2_print_escape(const m4char *addr, const m4ucell n, FILE *out) {
+    m4ucell i;
     for (i = 0; i < n; i++) {
         m4char_print_escape(addr[i], out);
     }
@@ -373,7 +373,7 @@ static m4cell m4token_print_int64(const m4token *code, FILE *out) {
     return sizeof(val) / SZt;
 }
 
-static m4cell m4token_print_lit_string(const m4char *ascii, const m4cell_u len, FILE *out) {
+static m4cell m4token_print_lit_string(const m4char *ascii, const m4ucell len, FILE *out) {
     fprintf(out, "LIT_STRING(%lu, \"", (unsigned long)len);
     m4string2_print_escape(ascii, len, out);
     fputs("\") ", out);
@@ -446,7 +446,7 @@ m4cell m4token_print_consumed_ip(m4token tok, const m4token *code, m4cell maxn, 
 
 /* ----------------------- m4cbuf ----------------------- */
 
-static m4cbuf m4cbuf_alloc(m4cell_u size) {
+static m4cbuf m4cbuf_alloc(m4ucell size) {
     m4char *p = (m4char *)m4mem_allocate(size * sizeof(m4char));
     m4cbuf ret = {p, p, p + size};
     return ret;
@@ -475,7 +475,7 @@ const m4char *m4addr_align_4(const void *addr) {
 /* ----------------------- m4code ----------------------- */
 
 m4cell m4code_equal(m4code src, m4code dst) {
-    m4cell_u i, n = src.n;
+    m4ucell i, n = src.n;
     if (dst.n != n || (n != 0 && (src.addr == NULL || dst.addr == NULL))) {
         return tfalse;
     }
@@ -490,7 +490,7 @@ m4cell m4code_equal(m4code src, m4code dst) {
 
 void m4code_print(m4code src, FILE *out) {
     const m4token *const code = src.addr;
-    m4cell_u i, n = src.n;
+    m4ucell i, n = src.n;
     if (code == NULL || out == NULL) {
         return;
     }
@@ -499,7 +499,7 @@ void m4code_print(m4code src, FILE *out) {
         const m4token tok = code[i++];
         if (tok == m4_call_xt_ && n - i >= SZ / SZt) {
             i += m4token_print_call(code + i, out);
-        } else if (tok == m4_lit_string_ && n - i >= 2 + (m4cell_u)(code[i] + SZt - 1) / SZt) {
+        } else if (tok == m4_lit_string_ && n - i >= 2 + (m4ucell)(code[i] + SZt - 1) / SZt) {
             i += m4token_print_lit_string((const m4char *)&code[i + 1], code[i], out);
         } else {
             m4token_print(tok, out);
@@ -564,7 +564,7 @@ void m4slice_copy_to_code(const m4slice src, m4code *dst) {
         fputs(" m4slice_copy_to_code(): invalid args, dst.addr is NULL", stderr);
         return;
     }
-    m4cell_u i = 0, j = 0, delta, sn = src.n, dn = dst->n;
+    m4ucell i = 0, j = 0, delta, sn = src.n, dn = dst->n;
     const m4cell *sdata = src.addr;
     m4token *ddata = dst->addr;
 
@@ -625,7 +625,7 @@ fail:
 
 /* ----------------------- m4iobuf ----------------------- */
 
-static m4iobuf *m4iobuf_new(m4cell_u capacity) {
+static m4iobuf *m4iobuf_new(m4ucell capacity) {
     m4iobuf *io = (m4iobuf *)m4mem_allocate(sizeof(m4iobuf) + capacity * sizeof(m4char));
     memset(io, '\0', sizeof(m4iobuf));
     io->func = WORD_SYM(always_eof).code;
@@ -1024,7 +1024,7 @@ void m4th_sync_lastw(m4th *m) {
 
 m4cell m4th_knows(const m4th *m, const m4wordlist *wid) {
     const m4searchorder *s = &m->searchorder;
-    m4cell_u i, n = s->n;
+    m4ucell i, n = s->n;
     if (wid == NULL) {
         return tfalse;
     }

@@ -17,8 +17,8 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_T_TESTHASHMAP_C
-#define M4TH_T_TESTHASHMAP_C
+#ifndef M4TH_T_TESTHASH_MAP_C
+#define M4TH_T_TESTHASH_MAP_C
 
 #include "../include/hash_map.h"
 #include "testcommon.h"
@@ -29,40 +29,41 @@
 /* -------------- m4testhash_map -------------- */
 
 m4cell m4th_testhash_map(FILE *out) {
-    m4cell_u i, n = 512, cap = 256, fail = 0;
-    m4hash_map *map = m4hash_map_new(cap);
-    m4cell key;
+    m4ucell i, n = 512, cap = 256, fail = 0;
+    m4hash_map_int *map = m4hash_map_new_int(cap);
+    m4int key;
     m4cell val;
-    const m4hash_entry *e;
+    const m4hash_entry_int *e;
     for (i = 0; i < n; i++) {
         assert(map->size == i);
         key = i;
         val = i;
-        if (!m4hash_map_insert(map, key, val)) {
-            fprintf(out, "m4hash_map too full, failed to insert after %u elements\n",
+        if (!m4hash_map_insert_int(map, key, val)) {
+            fprintf(out, "m4hash_map_int too full, failed to insert after %u elements\n",
                     (unsigned)map->size);
             fail++;
             break;
         }
-        e = m4hash_map_find(map, key);
+        e = m4hash_map_find_int(map, key);
         if (!e) {
-            fprintf(out, "m4hash_map_find() returned NULL instead of just-inserted key %u\n",
+            fprintf(out, "m4hash_map_find_int() returned NULL instead of just-inserted key %u\n",
                     (unsigned)key);
             fail++;
             continue;
         } else if (e->key != key || e->val != val) {
-            fprintf(out,
-                    "m4hash_map_find() returned wrong entry {0x%x, 0x%x} instead of just-inserted "
-                    "pair {0x%x, 0x%x}\n",
-                    (unsigned)e->key, (unsigned)e->val, (unsigned)key, (unsigned)val);
+            fprintf(
+                out,
+                "m4hash_map_find_int() returned wrong entry {0x%x, 0x%x} instead of just-inserted "
+                "pair {0x%x, 0x%x}\n",
+                (unsigned)e->key, (unsigned)e->val, (unsigned)key, (unsigned)val);
             fail++;
             continue;
         }
     }
     if (fail == 0) {
-        fprintf(out, "all %3u hashmap tests passed\n", (unsigned)n);
+        fprintf(out, "all %3u hash_map_int tests passed\n", (unsigned)n);
     }
     return fail;
 }
 
-#endif /* M4TH_T_TESTHASHMAP_C */
+#endif /* M4TH_T_TESTHASH_MAP_C */

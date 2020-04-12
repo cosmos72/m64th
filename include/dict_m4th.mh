@@ -152,8 +152,10 @@
     X(8, "-cs-roll", minus_cs_roll)   /* ( ... cs-depth -- ... )                        */         \
     X(7, "cs-swap", cs_swap)          /* ( a_sys b_sys -- b_sys a_sys )                 */         \
     X(9, "ex>string", ex_to_string)   /* ( ex -- c-addr u ) get exception name          */         \
-    X(9, "interpret", interpret)      /* one iteration of forth interpret/compile loop  */         \
-    X(4, "repl", repl)                /* call INTERPRET repeatedly until IN I/O error   */         \
+                                      /* ( map key -- key val t|f ) find entry in hash-map/int  */ \
+    X(14, "hash-map-find/int", hash_map_find_int)                                                  \
+    X(9, "interpret", interpret) /* one iteration of forth interpret/compile loop  */              \
+    X(4, "repl", repl)           /* call INTERPRET repeatedly until IN I/O error   */              \
     X(5, "r2nd@", r2nd_fetch)   /* alias of '2r@ drop' i.e. fetch second item from return stack */ \
     X(8, "string<>", string_ne) /* ( addr1 addr2 u -- addr1 addr2 u t|f )         */               \
     X(11, "string-ci<>", string_ci_ne) /* ( addr1 addr2 u -- addr1 addr2 u t|f )         */        \

@@ -37,7 +37,7 @@ uint32_t m4th_crc1byte_asm(uint32_t crc, unsigned char byte) {
     return _mm_crc32_u8(crc, byte);
 }
 
-/* must give same results as m4th_crcstring() in impl.c */
+/* must give same results as m4th_crc_string() in impl.c */
 uint32_t m4th_crcstring_asm(const unsigned char *addr, const size_t n) {
     uint32_t crc = ~(uint32_t)0;
     size_t i = 0;
