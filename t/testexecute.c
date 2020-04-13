@@ -1385,13 +1385,8 @@ m4cell m4th_testexecute(m4th *m, FILE *out) {
         testexecute_e, testexecute_f, testexecute_g,
     };
     const m4cell n[] = {
-        0,
-        0,
-        0,
-        0, // N_OF(testexecute_a), N_OF(testexecute_b), N_OF(testexecute_c), N_OF(testexecute_d),
-        N_OF(testexecute_e),
-        N_OF(testexecute_f),
-        N_OF(testexecute_g),
+        N_OF(testexecute_a), N_OF(testexecute_b), N_OF(testexecute_c), N_OF(testexecute_d),
+        N_OF(testexecute_e), N_OF(testexecute_f), N_OF(testexecute_g),
     };
     m4testcount count = {};
     m4cell i;
