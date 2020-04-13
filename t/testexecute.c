@@ -23,6 +23,7 @@
 #include "../impl.h"
 #include "../include/err.h"
 #include "../include/func_fwd.h"
+#include "../include/hash_map.h"
 #include "../include/iobuf.mh"
 #include "../include/token.h"
 #include "../include/word_fwd.h"
@@ -658,8 +659,16 @@ static m4testexecute testexecute_d[] = {
 static const m4token testoptimize_noop[] = {m4noop};
 static const m4token testoptimize_zero[] = {m4zero, m4noop};
 static const m4token testoptimize_nip_dup[] = {m4nip, m4dup, m4noop};
+static const m4hash_map_int test_hash_map_indexof_int_ = {
+    0 /*size*/, 31 /*lcap*/, NULL /*vec*/
+};
 
 static m4testexecute testexecute_e[] = {
+    {"(hash-map-indexof/int)",
+     {CALL(_hash_map_indexof_int_), m4bye},
+     {{2, {(m4cell)&test_hash_map_indexof_int_, 0x12345678}}, {}},
+     {{1, {(0xc662df9dul ^ (0xc662df9dul >> 31)) & ((1ul << 31) - 1)}}, {}},
+     {}},
 #if 0
     {"2drop (optimize-1)",
      {m4here, m4dup, m4_lit_comma_, m4two_drop, CALL(_optimize1_), m4minus_rot, m4sub, m4allot,
@@ -1376,8 +1385,13 @@ m4cell m4th_testexecute(m4th *m, FILE *out) {
         testexecute_e, testexecute_f, testexecute_g,
     };
     const m4cell n[] = {
-        N_OF(testexecute_a), N_OF(testexecute_b), N_OF(testexecute_c), N_OF(testexecute_d),
-        N_OF(testexecute_e), N_OF(testexecute_f), N_OF(testexecute_g),
+        0,
+        0,
+        0,
+        0, // N_OF(testexecute_a), N_OF(testexecute_b), N_OF(testexecute_c), N_OF(testexecute_d),
+        N_OF(testexecute_e),
+        N_OF(testexecute_f),
+        N_OF(testexecute_g),
     };
     m4testcount count = {};
     m4cell i;

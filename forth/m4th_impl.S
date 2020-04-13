@@ -308,17 +308,24 @@ WORD_START(_exec_xt_from_native_, _exec_token_)
 WORD_END(_exec_xt_from_native_)
 /* (hash-map-index-of/int) ( map key -- pos ) get bucket position for key  */
 WORD_START(_hash_map_indexof_int_, _exec_xt_from_native_)
-    WORD_DSTACK(2,2)
+    WORD_DSTACK(2,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
-    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
     WORD_CODE(
-        crc_cell, swap,                                /* ( hash map           ) */
-        _lit_, T(M4HASH_MAP_OFF_LCAP_INT), plus,       /* ( hash &map.lcap     ) */
-        int_fetch, one, over, lshift,                  /* ( hash cap lcap      ) */
-        exit
         /* return (hash ^ (hash >> lcap)) & (cap - 1); */
+        crc_cell, swap,                                /* ( hash map                    ) */
+#if M4HASH_MAP_OFF_LCAP_INT == 4
+        four_plus,
+#else
+        _lit_, T(M4HASH_MAP_OFF_LCAP_INT), plus,       /* ( hash &map.lcap              ) */
+#endif
+        int_fetch, one, over, lshift, one_minus,       /* ( hash lcap cap-1             ) */
+        minus_rot, trail,                              /* ( cap-1 hash hash lcap        ) */
+        rshift,                                        /* ( cap-1 hash hash>>lcap       ) */
+        xor,                                           /* ( cap-1 hash^(hash>>lcap)     ) */
+        and, exit                                      /* ( cap-1 & (hash^(hash>>lcap)) ) */
     )
 WORD_END(_hash_map_indexof_int_)
 WORD_START(_if_, _hash_map_indexof_int_)

@@ -102,7 +102,7 @@ static void genopt_print_n_tokens(uint64_t x, unsigned n, unsigned index, FILE *
 static void genopt2_add(m4hash_map_int *map, const m4token opt[5]) {
     m4cell key = opt[1] | ((m4cell)opt[2] << 16);
     m4cell val = opt[0] | ((m4cell)opt[3] << 16) | ((m4cell)opt[4] << 32);
-    const m4hash_entry_int *e;
+    const m4hash_map_entry_int *e;
     assert(opt[0] <= 2);
     e = m4hash_map_find_int(map, key);
     assert(e == NULL);
@@ -117,7 +117,7 @@ static void genopt_dump(const m4hash_map_int *map, unsigned key_n, FILE *out) {
             "start(/*size*/ %u, /*lcap*/ %u)\t\\\n",
             key_n, (unsigned)map->size, (unsigned)map->lcap);
     for (i = 0; i < cap; i++) {
-        const m4hash_entry_int *e = map->vec + i;
+        const m4hash_map_entry_int *e = map->vec + i;
         fputs("entry(", out);
         if (e->next == m4hash_no_entry_int) {
             fputs("0,\t0", out);

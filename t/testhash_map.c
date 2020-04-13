@@ -33,7 +33,7 @@ m4cell m4th_testhash_map(FILE *out) {
     m4hash_map_int *map = m4hash_map_new_int(cap);
     m4int key;
     m4cell val;
-    const m4hash_entry_int *e;
+    const m4hash_map_entry_int *e;
     for (i = 0; i < n; i++) {
         assert(map->size == i);
         key = i;
