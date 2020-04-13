@@ -153,8 +153,14 @@ WORD_START(hash_map_find_int, flip)
     WORD_NATIVE_NONE()
     WORD_FLAGS(0)
     WORD_CODE(
-        over, _lit_, T(M4HASH_MAP_OFF_SIZE_INT), int_fetch, /* ( map key size    ) */
-        _if_, T(1),
+        over, _lit_, T(M4HASH_MAP_OFF_SIZE_INT), plus,      /* ( map key &map.size ) */
+        int_fetch,                                          /* ( map key size      ) */
+        _if_, T(3+nCALLt),                                  /* ( map key           ) */
+            dup_to_r,                                       /* ( map key           ) (R: key ) */
+            over, _lit_, T(M4HASH_MAP_OFF_VEC_INT), plus,   /* ( map key &map.vec  ) (R: key ) */
+            fetch, minus_rot,                               /* ( vec map key       ) (R: key ) */
+            CALL(_hash_map_indexof_int_),                   /* ( vec pos           ) (R: key ) */
+            trail, CALL(_hash_map_entry_fetch_int_),        /* ( vec key' val next ) (R: key ) */
         then,
         nip, zero, zero, exit)                              /* ( key 0 false     ) */
 WORD_END(hash_map_find_int)

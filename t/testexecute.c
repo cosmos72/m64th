@@ -662,12 +662,21 @@ static const m4token testoptimize_nip_dup[] = {m4nip, m4dup, m4noop};
 static const m4hash_map_int test_hash_map_indexof_int_ = {
     0 /*size*/, 31 /*lcap*/, NULL /*vec*/
 };
+static const m4hash_map_entry_int test_hash_entry_fetch_int_[2] = {
+    {2 /*val*/, 1 /*key*/, 3 /*next*/},
+    {5 /*val*/, 4 /*key*/, 6 /*next*/},
+};
 
 static m4testexecute testexecute_e[] = {
     {"(hash-map-indexof/int)",
      {CALL(_hash_map_indexof_int_), m4bye},
      {{2, {(m4cell)&test_hash_map_indexof_int_, 0x12345678}}, {}},
      {{1, {(0xc662df9dul ^ (0xc662df9dul >> 31)) & ((1ul << 31) - 1)}}, {}},
+     {}},
+    {"(hash-map-entry@/int)",
+     {CALL(_hash_map_entry_fetch_int_), m4bye},
+     {{2, {(m4cell)&test_hash_entry_fetch_int_, 1}}, {}},
+     {{3, {4, 5, 6}}, {}},
      {}},
 #if 0
     {"2drop (optimize-1)",

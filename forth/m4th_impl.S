@@ -306,8 +306,27 @@ WORD_START(_exec_xt_from_native_, _exec_token_)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_MAY_JUMP)
     WORD_CODE(_exec_xt_from_native_, exit)
 WORD_END(_exec_xt_from_native_)
+/* (hash-map-entry@/int) ( vec u -- key val next ) fetch u-th entry in hash-map buckets */
+WORD_START(_hash_map_entry_fetch_int_, _exec_xt_from_native_)
+    WORD_DSTACK(2,3)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
+    WORD_CODE(
+        _lit_, T(M4HASH_MAP_ENTRY_SIZE_INT), times, plus,  /* ( vec'         )           */
+        dup_to_r,                                          /* ( vec          ) (R: vec ) */
+                                                           /* ( key          ) (R: vec ) */
+        _lit_, T(M4HASH_MAP_ENTRY_OFF_KEY_INT), plus, int_fetch,
+                                                           /* ( key val      ) (R: vec ) */
+        _lit_, T(M4HASH_MAP_ENTRY_OFF_VAL_INT), r_fetch, plus, fetch,
+                                                           /* ( key val next )           */
+        _lit_, T(M4HASH_MAP_ENTRY_OFF_NEXT_INT), r_from, plus, int_fetch,
+        exit
+    )
+WORD_END(_hash_map_entry_fetch_int_)
 /* (hash-map-index-of/int) ( map key -- pos ) get bucket position for key  */
-WORD_START(_hash_map_indexof_int_, _exec_xt_from_native_)
+WORD_START(_hash_map_indexof_int_, _hash_map_entry_fetch_int_)
     WORD_DSTACK(2,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
