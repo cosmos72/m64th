@@ -95,12 +95,18 @@ FUNC_START(name_comma)
         ADD2(  IMM(SZ),DSTK)                           /* ( 0                   ) */
         JUMP(  TO(name_comma.str_done))
 LABEL(name_comma.str)
+        ASM_CALL_PREPARE()
         LOAD(  REG1,   AT(DSTK))                       /* a = c-addr              */
         STOR(  HERE,   AT(DSTK))                       /* ( addr u              ) */
-        DPUSH( REG1)                                   /* ( addr c-addr u       ) */
-        ASM_CALL(      FUNC(countedstring_comma))      /* ( addr                ) */
+        DPUSH2(REG1,   DTOP)                           /* ( addr c-addr u u     ) */
+        DPUSH( REG1)                                   /* ( addr c-addr u c-addr u ) */
+        /* prepare word>name */
+        ASM_CALL_BODY( FUNC(countedstring_comma))      /* ( addr c-addr u       ) */
+        /* prepare word>ident */
+        ASM_CALL_BODY( FUNC(countedstring_comma))      /* ( addr                ) */
         ALIGN( SZ,     HERE)                           /* here = w                */
         XSUB2( HERE,   DTOP)                           /* dtop = w - addr         */
+        ASM_CALL_CLEANUP()
 LABEL(name_comma.str_done)                             /* ( addr                ) */
         init_R000_REG1()                               /* a = 0                   */
         init_RFFF_REG2()                               /* b = -1                  */

@@ -259,6 +259,11 @@
     LOAD(reg2, AT(DSTK, SZ))                                                                       \
     ADD2(IMM(SZ2), DSTK)
 
+#define DPUSH2(reg1, reg2) /* push reg1, then reg2 to data stack */                                \
+    STOR(reg1, AT(DSTK, -SZ))                                                                      \
+    STOR(reg2, AT(DSTK, -SZ2))                                                                     \
+    SUB2(IMM(SZ2), DSTK)
+
 #define RPUSH(reg) /* push reg to second return stack element */                                   \
     STOR(reg, AT(RSTK, -SZ))                                                                       \
     SUB2(IMM(SZ), RSTK)
