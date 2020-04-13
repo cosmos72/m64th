@@ -62,9 +62,9 @@
 #define M4cmove_star M4_u(32)            /* ( src-addr dst-addr u -- src-addr+u dst-addr+u )  */
 #undef M4____gap                         /*                       */
 #undef M4____gap                         /*                       */
-#define M4crc_byte M4_u(35)              /* ( x -- crc32 ) compute CRC32c of a byte           */
-#define M4crc_short M4_u(36)             /* ( x -- crc32 ) compute CRC32c of a short          */
-#define M4crc_int M4_u(37)               /* ( x -- crc32 ) compute CRC32c of an int           */
+#undef M4____gap                         /*                       */
+#undef M4____gap                         /*                       */
+#undef M4____gap                         /*                       */
 #define M4crc_cell M4_u(38)              /* ( x -- crc32 ) compute CRC32c of a cell           */
 #define M4crc_string M4_u(39)            /* ( c-addr u -- crc32 ) compute CRC32c of a string  */
 #undef M4____gap                         /*                       */

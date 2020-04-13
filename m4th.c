@@ -1059,21 +1059,13 @@ m4cell m4th_repl(m4th *m) {
 
 /* ----------------------- optional cpu features ----------------------- */
 extern void m4fcrc_cell(m4arg _);
-extern void m4fcrc_bytebyte(m4arg _);
-extern void m4fcrc_short(m4arg _);
-extern void m4fcrc_int(m4arg _);
-extern void m4fcrc_string(m4arg _);
-extern void m4fcrc_byte_simd(m4arg _);
-extern void m4fcrc_short_simd(m4arg _);
-extern void m4fcrc_int_simd(m4arg _);
 extern void m4fcrc_cell_simd(m4arg _);
+extern void m4fcrc_string(m4arg _);
 extern void m4fcrc_string_simd(m4arg _);
 
 m4cell m4th_cpu_features_enabled(void) {
     m4cell mask = 0;
-    if (ftable[m4crc_byte] == m4fcrc_byte_simd || ftable[m4crc_short] == m4fcrc_short_simd ||
-        ftable[m4crc_int] == m4fcrc_int_simd || ftable[m4crc_cell] == m4fcrc_cell_simd ||
-        ftable[m4crc_string] == m4fcrc_string_simd) {
+    if (ftable[m4crc_cell] == m4fcrc_cell_simd || ftable[m4crc_string] == m4fcrc_string_simd) {
         mask |= m4th_cpu_feature_crc32c;
     }
     return mask;
@@ -1081,9 +1073,6 @@ m4cell m4th_cpu_features_enabled(void) {
 
 void m4th_cpu_features_enable(m4cell mask) {
     if (mask & m4th_cpu_feature_crc32c) {
-        ftable[m4crc_byte] = m4fcrc_byte_simd;
-        ftable[m4crc_short] = m4fcrc_short_simd;
-        ftable[m4crc_int] = m4fcrc_int_simd;
         ftable[m4crc_cell] = m4fcrc_cell_simd;
         ftable[m4crc_string] = m4fcrc_string_simd;
     }
@@ -1091,9 +1080,6 @@ void m4th_cpu_features_enable(m4cell mask) {
 
 void m4th_cpu_features_disable(m4cell mask) {
     if (mask & m4th_cpu_feature_crc32c) {
-        ftable[m4crc_byte] = m4fcrc_byte;
-        ftable[m4crc_short] = m4fcrc_short;
-        ftable[m4crc_int] = m4fcrc_int;
         ftable[m4crc_cell] = m4fcrc_cell;
         ftable[m4crc_string] = m4fcrc_string;
     }

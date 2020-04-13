@@ -117,42 +117,6 @@ LABEL(move.done)
 FUNC_END(move)
 
 
-/* crc-byte/simd ( x -- crc ) m4th-user: compute CRC32c of a byte */
-FUNC_START(crc_byte_simd)
-        MOVI(  0xffffffff, REG1w)      /* dtop = 0xffffffff        */
-        /*
-         * symbolic ASM instructions crc32c*
-         * would require compiler/assembler flag -march=armv8.1-a
-         */
-        .4byte 0x1ad45021;         /* crc32cb REG1w, REG1w, DTOPb; */
-        NOT2(  REG1w,    DTOPw)
-FUNC_END(crc_byte_simd)
-
-
-/* crc-short/simd ( x -- crc ) m4th-user: compute CRC32c of a short */
-FUNC_START(crc_short_simd)
-        MOVI(  0xffffffff, REG1w)      /* dtop = 0xffffffff        */
-        /*
-         * symbolic ASM instructions crc32c*
-         * would require compiler/assembler flag -march=armv8.1-a
-         */
-        .4byte 0x1ad45421;         /* crc32ch REG1w, REG1w, DTOPh; */
-        NOT2(  REG1w,    DTOPw)
-FUNC_END(crc_short_simd)
-
-
-/* crc-int/simd ( x -- crc ) m4th-user: compute CRC32c of an int */
-FUNC_START(crc_int_simd)
-        MOVI(  0xffffffff, REG1w)      /* dtop = 0xffffffff        */
-        /*
-         * symbolic ASM instructions crc32c*
-         * would require compiler/assembler flag -march=armv8.1-a
-         */
-        .4byte 0x1ad45821;         /* crc32cw REG1w, REG1w, DTOPw; */
-        NOT2(  REG1w,    DTOPw)
-FUNC_END(crc_int_simd)
-
-
 /* crc-cell/simd ( x -- crc ) m4th-user: compute CRC32c of a cell */
 FUNC_START(crc_cell_simd)
         MOVI(  0xffffffff, REG1w)      /* dtop = 0xffffffff        */

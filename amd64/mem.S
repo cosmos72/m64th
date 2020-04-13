@@ -118,33 +118,6 @@ LABEL(move.loop)
 FUNC_END(move)
 
 
-/* crc-byte/simd ( x -- crc ) m4th-user: compute CRC32c of a byte */
-FUNC_START(crc_byte_simd)
-        MOVE(  DTOPw,  REG1w)
-        MOVE(  RFFFw,  DTOPw)              /* dtop = 0xffffffff        */
-        crc32b REG1b,  DTOPw;
-        NOT1(  DTOPw)
-FUNC_END(crc_byte_simd)
-
-
-/* crc-short/simd ( x -- crc ) m4th-user: compute CRC32c of a short */
-FUNC_START(crc_short_simd)
-        MOVE(  DTOPw,  REG1w)
-        MOVE(  RFFFw,  DTOPw)              /* dtop = 0xffffffff        */
-        crc32w REG1h,  DTOPw;
-        NOT1(  DTOPw)
-FUNC_END(crc_short_simd)
-
-
-/* crc-int/simd ( x -- crc ) m4th-user: compute CRC32c of a int */
-FUNC_START(crc_int_simd)
-        MOVE(  DTOPw,  REG1w)
-        MOVE(  RFFFw,  DTOPw)              /* dtop = 0xffffffff        */
-        crc32l REG1w,  DTOPw;
-        NOT1(  DTOPw)
-FUNC_END(crc_int_simd)
-
-
 /* crc-cell/simd ( x -- crc ) m4th-user: compute CRC32c of a cell */
 FUNC_START(crc_cell_simd)
         MOVE(  DTOP,   REG1)
