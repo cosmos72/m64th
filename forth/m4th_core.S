@@ -292,7 +292,15 @@ WORD(name_to_code,  name_inline_query, DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M
 WORD(name_to_code_n,   name_to_code,   DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 WORD(name_to_flags,    name_to_code_n, DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 WORD(name_to_flags_store,name_to_flags,DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE)
-WORD(name_to_prev, name_to_flags_store,DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD_START(name_to_ident,  name_to_flags_store)
+    WORD_DSTACK(1,2)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE() /* uses %rip-relative ASM_CALL */
+    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
+    WORD_CODE(name_to_ident, exit)
+WORD_END(name_to_ident)
+WORD(name_to_prev,     name_to_ident,  DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 WORD(name_to_xt,       name_to_prev,   DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 /* obuf-flush ( io -- err ) flush iobuf data */
 WORD_START(obuf_flush, name_to_xt)
