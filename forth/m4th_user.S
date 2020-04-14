@@ -20,6 +20,7 @@
 #include "../include/asm.mh"
 #include "../include/dict.mh"
 #include "../include/dict_m4th.mh"
+#include "../include/hash_map.mh"
 
 /* clang-format off */
 
@@ -153,16 +154,27 @@ WORD_START(hash_map_find_int, flip)
     WORD_NATIVE_NONE()
     WORD_FLAGS(0)
     WORD_CODE(
-        over, _lit_, T(M4HASH_MAP_OFF_SIZE_INT), plus,      /* ( map key &map.size ) */
-        int_fetch,                                          /* ( map key size      ) */
-        _if_, T(3+nCALLt),                                  /* ( map key           ) */
-            dup_to_r,                                       /* ( map key           ) (R: key ) */
-            over, _lit_, T(M4HASH_MAP_OFF_VEC_INT), plus,   /* ( map key &map.vec  ) (R: key ) */
-            fetch, minus_rot,                               /* ( vec map key       ) (R: key ) */
-            CALL(_hash_map_indexof_int_),                   /* ( vec pos           ) (R: key ) */
-            trail, CALL(_hash_map_entry_fetch_int_),        /* ( vec key' val next ) (R: key ) */
-        then,
-        nip, zero, zero, exit)                              /* ( key 0 false     ) */
+        dup_to_r,                                      /* ( map key            ) (R: key     ) */
+        over, _lit_, T(M4HASH_MAP_OFF_VEC_INT), plus,  /* ( map key &map.vec   ) (R: key     ) */
+        fetch, to_r,                                   /* ( map key            ) (R: key vec ) */
+        CALL(_hash_map_indexof_int_),                  /* ( pos                ) (R: key vec ) */
+        begin,                                         /* ( pos                ) (R: key vec ) */
+            r_fetch, swap,                             /* ( vec pos            ) (R: key vec ) */
+            CALL(_hash_map_entry_fetch_int_),          /* ( key' val next      ) (R: key vec ) */
+            dup, one_plus, /* 0 if no entry */         /* ( key' val next flag ) (R: key vec ) */
+        _while_, T(19),                                /* ( key' val next      ) (R: key vec ) */
+            pick2nd, r2nd_fetch, equal,                /* ( key' val next t|f  ) (R: key vec ) */
+            _if_, T(5),                                /* ( key' val next      ) (R: key vec ) */
+                two_r_from_two_drop, drop, true, exit, /* ( key' val t         )               */
+            then,                                      /* ( key' val next      ) (R: key vec ) */
+            dup, two_plus, /* 0 if no next entry */    /* ( key' val next flag ) (R: key vec ) */
+        _while_, T(4),                                 /* ( key' val next      ) (R: key vec ) */
+            nip, nip,                                  /* ( next               ) (R: key vec ) */
+        _repeat_, T(-25-nCALLt),                       /* ( key' val next      ) (R: key vec ) */
+        then,              /* matches 1st 'while' */   /* ( key' val next      ) (R: key vec ) */
+        two_drop, r_from_drop, r_from,                 /* ( key' key           )               */
+        nip, zero, zero, exit                          /* ( key 0 false        )               */
+    )
 WORD_END(hash_map_find_int)
 WORD(i_times,       hash_map_find_int, DSTACK(1,1), RSTACK(1,1), WORD_R_PURE)
 WORD(i_plus,           i_times,        DSTACK(1,1), RSTACK(1,1), WORD_R_PURE)
@@ -225,7 +237,8 @@ WORD_END(interpret)
 /* ( c-addr u ch -- u' ) get position of given char or CR/LF in string, whatever comes first */
 WORD(line_find_char,   interpret,      DSTACK(3,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 WORD(noop,             line_find_char, DSTACK(0,0), RSTACK(0,0), WORD_PURE)
-WORD(r_store,          noop,           DSTACK(1,0), RSTACK(1,1), WORD_R_PURE)
+WORD(pick2nd,          noop,           DSTACK(3,4), RSTACK(0,0), WORD_PURE)
+WORD(r_store,          pick2nd,        DSTACK(1,0), RSTACK(1,1), WORD_R_PURE)
 WORD(r_plus,           r_store,        DSTACK(1,0), RSTACK(1,1), WORD_R_PURE)
 WORD(r_from_drop,      r_plus,         DSTACK(0,0), RSTACK(1,0), WORD_R_PURE)
 WORD(rdepth,           r_from_drop,    DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)

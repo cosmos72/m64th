@@ -61,7 +61,7 @@ m4cell m4th_testhash_map(FILE *out) {
         }
     }
     if (fail == 0) {
-        fprintf(out, "all %3u hash_map_int tests passed\n", (unsigned)n);
+        fprintf(out, "all %3u hashmap tests passed\n", (unsigned)n);
     }
     return fail;
 }

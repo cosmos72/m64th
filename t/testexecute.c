@@ -171,6 +171,7 @@ static m4testexecute testexecute_a[] = {
     {"0 pick", {m4pick, m4bye}, {{2, {-1, 0}}, {}}, {{2, {-1, -1}}, {}}, {}},
     {"1 pick", {m4pick, m4bye}, {{3, {-2, -1, 1}}, {}}, {{3, {-2, -1, -2}}, {}}, {}},
     {"2 pick", {m4pick, m4bye}, {{4, {-3, -2, -1, 2}}, {}}, {{4, {-3, -2, -1, -3}}, {}}, {}},
+    {"pick2nd", {m4pick2nd, m4bye}, {{3, {-3, -2, -1}}, {}}, {{4, {-3, -2, -1, -3}}, {}}, {}},
     {"0 2pick", {m4two_pick, m4bye}, {{3, {-2, -1, 0}}, {}}, {{4, {-2, -1, -2, -1}}, {}}, {}},
     {"1 2pick",
      {m4two_pick, m4bye},
@@ -659,24 +660,38 @@ static m4testexecute testexecute_d[] = {
 static const m4token testoptimize_noop[] = {m4noop};
 static const m4token testoptimize_zero[] = {m4zero, m4noop};
 static const m4token testoptimize_nip_dup[] = {m4nip, m4dup, m4noop};
-static const m4hash_map_int test_hash_map_indexof_int_ = {
+static const m4hash_map_int test_hash_map_int0 = {
     0 /*size*/, 31 /*lcap*/, NULL /*vec*/
 };
-static const m4hash_map_entry_int test_hash_entry_fetch_int_[2] = {
+static const m4hash_map_entry_int test_hash_entry_int0[2] = {
     {2 /*val*/, 1 /*key*/, 3 /*next*/},
     {5 /*val*/, 4 /*key*/, 6 /*next*/},
+};
+static const m4hash_map_entry_int test_hash_entry_int1[8] = {
+    {0 /*val*/, 0 /*key*/, -1 /*next*/},  {0 /*val*/, 0 /*key*/, -1 /*next*/},
+    {654 /*val*/, 3 /*key*/, 7 /*next*/}, {0 /*val*/, 0 /*key*/, -1 /*next*/},
+    {0 /*val*/, 0 /*key*/, -1 /*next*/},  {0 /*val*/, 0 /*key*/, -1 /*next*/},
+    {0 /*val*/, 0 /*key*/, -1 /*next*/},  {987 /*val*/, 1 /*key*/, -2 /*next*/},
+};
+static const m4hash_map_int test_hash_map_int1 = {
+    0 /*size*/, 2 /*lcap*/, (m4hash_map_entry_int *)test_hash_entry_int1 /*vec*/
 };
 
 static m4testexecute testexecute_e[] = {
     {"(hash-map-indexof/int)",
      {CALL(_hash_map_indexof_int_), m4bye},
-     {{2, {(m4cell)&test_hash_map_indexof_int_, 0x12345678}}, {}},
+     {{2, {(m4cell)&test_hash_map_int0, 0x12345678}}, {}},
      {{1, {(0xc662df9dul ^ (0xc662df9dul >> 31)) & ((1ul << 31) - 1)}}, {}},
      {}},
     {"(hash-map-entry@/int)",
      {CALL(_hash_map_entry_fetch_int_), m4bye},
-     {{2, {(m4cell)&test_hash_entry_fetch_int_, 1}}, {}},
+     {{2, {(m4cell)&test_hash_entry_int0, 1}}, {}},
      {{3, {4, 5, 6}}, {}},
+     {}},
+    {"hash-map-find/int",
+     {CALL(hash_map_find_int), m4bye},
+     {{2, {(m4cell)&test_hash_map_int1, 1}}, {}},
+     {{3, {1, 987, ttrue}}, {}},
      {}},
 #if 0
     {"2drop (optimize-1)",

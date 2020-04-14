@@ -22,90 +22,90 @@
 
 /* 'm4th-user' wordlist */
 #define M4_u(x) ((x) + 510)
-#undef M4____gap                         /*                       */
-#undef M4____gap                         /*                       */
-#undef M4____gap                         /*                       */
-#undef M4____gap                         /*                       */
-#undef M4____gap                         /*                       */
-#define M4less_equal M4_u(0)             /* <=                    */
-#define M4more_equal M4_u(1)             /* >=                    */
-#undef M4____gap                         /*                       */
-#define M4zero_less_equal M4_u(3)        /* 0<=                   */
-#define M4zero_more_equal M4_u(4)        /* 0>=                   */
-#undef M4____gap                         /*                       */
-#define M4two_plus M4_u(6)               /* 2+                    */
-#define M4two_minus M4_u(7)              /* 2-                    */
-#define M4two_sm_div M4_u(8)             /* 2sm/ symmetric divide by 2            */
-#undef M4____gap                         /*                       */
-#define M4four_times M4_u(10)            /* 4*                    */
-#define M4four_plus M4_u(11)             /* 4+                    */
-#define M4four_div M4_u(12)              /* 4/   floored divide by 4              */
-#define M4four_sm_div M4_u(13)           /* 4sm/ symmetric divide by 4            */
-#undef M4____gap                         /*                       */
-#define M4eight_times M4_u(15)           /* 8*                    */
-#define M4eight_plus M4_u(16)            /* 8+                    */
-#define M4eight_div M4_u(17)             /* 8/   floored divide by 8              */
-#define M4eight_sm_div M4_u(18)          /* 8/sm symmetric divide by 8            */
-#undef M4____gap                         /*                       */
-#undef M4____gap                         /*                       */
-#define M4two_dup_two_to_r M4_u(21)      /* 2dup_2>r  equivalent to: 2dup 2>r     */
-#define M4two_nip M4_u(22)               /* 2nip      equivalent to: 2swap 2drop  */
-#define M4two_pick M4_u(23)              /* 2pick                 */
-#define M4two_roll M4_u(24)              /* 2roll     roll double-width cells     */
-#define M4minus_two_roll M4_u(25)        /* -2roll    2roll in opposite direction */
-#define M4minus_cs_roll M4minus_two_roll /* -cs-roll  equivalent to: -2roll       */
-#define M4minus_two_rot M4_u(27)         /* -2rot     equivalent to: 2rot 2rot    */
-#define M4two_r_from_two_drop M4_u(28)   /* 2r>2drop  equivalent to: 2r>  2drop   */
-#undef M4____gap                         /*                       */
-#undef M4____gap                         /*                       */
+#undef M4____gap                         /*                                         */
+#undef M4____gap                         /*                                         */
+#undef M4____gap                         /*                                         */
+#undef M4____gap                         /*                                         */
+#undef M4____gap                         /*                                         */
+#define M4less_equal M4_u(0)             /* <=                                      */
+#define M4more_equal M4_u(1)             /* >=                                      */
+#undef M4____gap                         /*                                         */
+#define M4zero_less_equal M4_u(3)        /* 0<=                                     */
+#define M4zero_more_equal M4_u(4)        /* 0>=                                     */
+#undef M4____gap                         /*                                         */
+#define M4two_plus M4_u(6)               /* 2+                                      */
+#define M4two_minus M4_u(7)              /* 2-                                      */
+#define M4two_sm_div M4_u(8)             /* 2sm/ symmetric divide by 2              */
+#undef M4____gap                         /*                                         */
+#define M4four_times M4_u(10)            /* 4*                                      */
+#define M4four_plus M4_u(11)             /* 4+                                      */
+#define M4four_div M4_u(12)              /* 4/   floored divide by 4                */
+#define M4four_sm_div M4_u(13)           /* 4sm/ symmetric divide by 4              */
+#undef M4____gap                         /*                                         */
+#define M4eight_times M4_u(15)           /* 8*                                      */
+#define M4eight_plus M4_u(16)            /* 8+                                      */
+#define M4eight_div M4_u(17)             /* 8/   floored divide by 8                */
+#define M4eight_sm_div M4_u(18)          /* 8/sm symmetric divide by 8              */
+#undef M4____gap                         /*                                         */
+#undef M4____gap                         /*                                         */
+#define M4two_dup_two_to_r M4_u(21)      /* 2dup_2>r  equivalent to: 2dup 2>r       */
+#define M4two_nip M4_u(22)               /* 2nip      equivalent to: 2swap 2drop    */
+#define M4two_pick M4_u(23)              /* 2pick                                   */
+#define M4two_roll M4_u(24)              /* 2roll     roll double-width cells       */
+#define M4minus_two_roll M4_u(25)        /* -2roll    2roll in opposite direction   */
+#define M4minus_cs_roll M4minus_two_roll /* -cs-roll  equivalent to: -2roll         */
+#define M4minus_two_rot M4_u(27)         /* -2rot     equivalent to: 2rot 2rot      */
+#define M4two_r_from_two_drop M4_u(28)   /* 2r>2drop  equivalent to: 2r>  2drop     */
+#undef M4____gap                         /*                                         */
+#undef M4____gap                         /*                                         */
 #define M4bounds M4_u(31)                /* ( c-addr u -- c-addr+u c-addr ) get string bounds */
 #define M4cmove_star M4_u(32)            /* ( src-addr dst-addr u -- src-addr+u dst-addr+u )  */
-#undef M4____gap                         /*                       */
-#undef M4____gap                         /*                       */
-#undef M4____gap                         /*                       */
-#undef M4____gap                         /*                       */
-#undef M4____gap                         /*                       */
+#undef M4____gap                         /*                                         */
+#undef M4____gap                         /*                                         */
+#undef M4____gap                         /*                                         */
+#undef M4____gap                         /*                                         */
+#undef M4____gap                         /*                                         */
 #define M4crc_cell M4_u(38)              /* ( x -- crc32 ) compute CRC32c of a cell           */
 #define M4crc_string M4_u(39)            /* ( c-addr u -- crc32 ) compute CRC32c of a string  */
-#undef M4____gap                         /*                       */
-#undef M4____gap                         /*                       */
+#undef M4____gap                         /*                                         */
+#undef M4____gap                         /*                                         */
 #define M4dup_to_r M4_u(42)              /* dup>r                   equivalent to: dup  >r    */
 #define M4ex_message_store M4_u(43)      /* ( c-addr u -- ) save string as exception message  */
 #define M4ex_message_fetch M4_u(44)      /* ( -- c-addr u ) fetch exception message string    */
 #define M4flip M4_u(45)                  /* flip ( a b c -- c b a ) equivalent to: swap rot   */
-#undef M4____gap                         /*                       */
-#define M4i_times M4_u(47)               /* i*                    */
-#define M4i_plus M4_u(48)                /* i+                    */
-#define M4i_minus M4_u(59)               /* i-                    */
-#define M4i_prime M4_u(60)               /* i'                    */
-#undef M4____gap                         /*                       */
+#undef M4____gap                         /*                                         */
+#define M4i_times M4_u(47)               /* i*                                      */
+#define M4i_plus M4_u(48)                /* i+                                      */
+#define M4i_minus M4_u(59)               /* i-                                      */
+#define M4i_prime M4_u(60)               /* i'                                      */
+#undef M4____gap                         /*                                         */
 #define M4line_find_char M4_u(62)        /* ( c-addr u ch -- u' ) get index of char or CR */
-#define M4noop M4_u(63)                  /* noop                  */
-#undef M4____gap                         /*                       */
-#define M4r_store M4_u(65)               /* r!        equivalent to: r>   drop >r   */
-#define M4r_plus M4_u(66)                /* r+        equivalent to: r>   +    >r   */
-#define M4r_from_drop M4_u(67)           /* r>drop    equivalent to: r>   drop      */
+#define M4noop M4_u(63)                  /* noop                                    */
+#define M4pick2nd M4_u(64)               /* pick2nd   equivalent to: 2   pick       */
+#define M4r_store M4_u(65)               /* r!        equivalent to: r>  drop >r    */
+#define M4r_plus M4_u(66)                /* r+        equivalent to: r>  +    >r    */
+#define M4r_from_drop M4_u(67)           /* r>drop    equivalent to: r>  drop       */
 #define M4rdepth M4_u(68)                /* rdepth    get return stack depth        */
 #define M4minus_roll M4_u(69)            /* -roll     rotate in opposite direction than "roll" */
-#define M4minus_rot M4_u(70)             /* -rot      equivalent to: rot  rot       */
-#undef M4____gap                         /*                       */
-#define M4squared M4_u(72)               /* squared   equivalent to: dup  *         */
-#undef M4____gap                         /*                       */
+#define M4minus_rot M4_u(70)             /* -rot      equivalent to: rot rot        */
+#undef M4____gap                         /*                                         */
+#define M4squared M4_u(72)               /* squared   equivalent to: dup *          */
+#undef M4____gap                         /*                                         */
 #define M4string_equal M4_u(74)          /* string=    ( c-addr1 c-addr2 u -- t|f ) */
 #define M4string_ci_equal M4_u(75)       /* string-ci= ( c-addr1 c-addr2 u -- t|f ) */
 #define M4string_find_blank M4_u(76)     /* ( c-addr u -- u' ) get index of first char <= ' ' */
 #define M4string_find_char M4_u(77)      /* ( c-addr u ch -- u' ) get index of first ch       */
 #define M4string_find_nonblank M4_u(78)  /* ( c-addr u -- u' ) get index of first char > ' '  */
-#undef M4____gap                         /*                       */
-#undef M4____gap                         /*                       */
+#undef M4____gap                         /*                                         */
+#undef M4____gap                         /*                                         */
 #define M4sub M4_u(81)                   /* sub       equivalent to: swap -         */
 #define M4trail M4_u(82)                 /* trail     equivalent to: over swap      */
-#undef M4____gap                         /*                       */
-#undef M4____gap                         /*                       */
-#define M4u_less_equal M4_u(85)          /* u<=                   */
-#define M4u_more_equal M4_u(86)          /* u>=                   */
-#undef M4____gap                         /*                       */
-#undef M4____gap                         /*                       */
+#undef M4____gap                         /*                                         */
+#undef M4____gap                         /*                                         */
+#define M4u_less_equal M4_u(85)          /* u<=                                     */
+#define M4u_more_equal M4_u(86)          /* u>=                                     */
+#undef M4____gap                         /*                                         */
+#undef M4____gap                         /*                                         */
 #define M4to_byte M4_u(89)      /* to-byte   truncate dtop to   int8_t, sign-extend high bits  */
 #define M4to_char M4_u(90)      /* to-char   truncate dtop to  uint8_t, zero-extend high bits  */
 #define M4to_short M4_u(91)     /* to-short  truncate dtop to  int16_t, sign-extend high bits  */
@@ -121,9 +121,9 @@
 #define M4byte_store M4c_store  /* byte!     write   (int8_t)dtop at address d2         */
 #define M4char_store M4c_store  /* char!     write  (uint8_t)dtop at address d2         */
 #define M4short_store M4_u(100) /* short!    write  (int16_t)dtop at address d2         */
-#define M4ushort_store M4short_store     /* ushort!   write (uint16_t)dtop at address d2         */
-#define M4int_store M4_u(101)            /* int!      write  (int32_t)dtop at address d2         */
-#define M4uint_store M4int_store         /* uint!     write (uint32_t)dtop at address d2         */
+#define M4ushort_store M4short_store     /* ushort!   write (uint16_t)dtop at address d2 */
+#define M4int_store M4_u(101)            /* int!      write  (int32_t)dtop at address d2 */
+#define M4uint_store M4int_store         /* uint!     write (uint32_t)dtop at address d2 */
 #define M4byte_comma M4c_comma           /* byte,   append    (int8_t)dtop to HERE   */
 #define M4char_comma M4c_comma           /* char,   append   (uint8_t)dtop to HERE   */
 #define M4short_comma M4_u(102)          /* short,  append   (int16_t)dtop to HERE   */
@@ -131,18 +131,18 @@
 #define M4int_comma M4_u(103)            /* int,    append   (int32_t)dtop to HERE   */
 #define M4uint_comma M4int_comma         /* uint,   append  (uint32_t)dtop to HERE   */
 #define M4countedstring_comma M4_u(104)  /* ( c-addr u -- ) append countedstring to HERE */
-#undef M4____gap                         /*                       */
-#undef M4____gap                         /*                       */
-#undef M4____gap                         /*                       */
-#define M4short_align M4_u(107)          /*  short-align  align HERE to sizeof(short)            */
-#define M4ushort_align M4short_align     /* ushort-align  align HERE to sizeof(ushort)           */
-#define M4int_align M4_u(108)            /*    int-align  align HERE to sizeof(int)              */
-#define M4uint_align M4int_align         /*   uint-align  align HERE to sizeof(uint)             */
-#define M4short_aligned M4_u(109)        /*      short-aligned  align dtop to sizeof(short)      */
-#define M4ushort_aligned M4short_aligned /* ushort-aligned  align dtop to sizeof(ushort)     */
-#define M4int_aligned M4_u(110)          /*    int-aligned  align dtop to sizeof(int)        */
-#define M4uint_aligned M4int_aligned     /*   uint-aligned  align dtop to sizeof(uint)       */
-#undef M4____gap                         /*                       */
+#undef M4____gap                         /*                                         */
+#undef M4____gap                         /*                                         */
+#undef M4____gap                         /*                                         */
+#define M4short_align M4_u(107)          /*  short-align  align HERE to sizeof(short)       */
+#define M4ushort_align M4short_align     /* ushort-align  align HERE to sizeof(ushort)      */
+#define M4int_align M4_u(108)            /*    int-align  align HERE to sizeof(int)         */
+#define M4uint_align M4int_align         /*   uint-align  align HERE to sizeof(uint)        */
+#define M4short_aligned M4_u(109)        /*      short-aligned  align dtop to sizeof(short) */
+#define M4ushort_aligned M4short_aligned /* ushort-aligned  align dtop to sizeof(ushort)    */
+#define M4int_aligned M4_u(110)          /*    int-aligned  align dtop to sizeof(int)       */
+#define M4uint_aligned M4int_aligned     /*   uint-aligned  align dtop to sizeof(uint)      */
+#undef M4____gap                         /*                                         */
 #define M4do_i_plus_loop M4_u(116)       /* do i + loop           */
 
 /* 'm4th-c' wordlist */
@@ -154,32 +154,32 @@
 #define M4_c_arg_4_ M4_c(4)  /* prepare 4 args for C function call    */
 #define M4_c_arg_5_ M4_c(5)  /* prepare 5 args for C function call    */
 #define M4_c_arg_6_ M4_c(7)  /* prepare 6 args for C function call    */
-#undef M4_c_arg_7_           /*                       */
-#undef M4_c_arg_8_           /*                       */
-#undef M4____gap             /*                       */
+#undef M4_c_arg_7_           /*                                         */
+#undef M4_c_arg_8_           /*                                         */
+#undef M4____gap             /*                                         */
 #define M4_c_call_ M4_c(10)  /* must be followed by C function pointer. calls it. */
 #undef M4_c_call_sync_       /* save regs to m4th, call C function, reload regs   */
 #undef M4c_exec              /* pop C function pointer, call it */
 #undef M4c_exec_sync         /* save regs to m4th, pop C function pointer, call it, reload regs */
-#undef M4____gap             /*                       */
+#undef M4____gap             /*                                         */
 #undef M4_c_farg_1_          /* pop 1 floating point arg  for C function call */
 #undef M4_c_farg_2_          /* pop 2 floating point args for C function call */
 #undef M4_c_farg_3_          /* pop 3 floating point args for C function call */
 #undef M4_c_farg_4_          /* pop 4 floating point args for C function call */
-#undef M4____gap             /*                       */
+#undef M4____gap             /*                                         */
 #define M4_c_ret_0_ M4_c(20) /* push 0 values returned by C function call */
 #define M4_c_ret_1_ M4_c(21) /* push 1 value  returned by C function call */
 #define M4_c_ret_2_ M4_c(22) /* push 2 values returned by C function call */
 
 /* 'm4th-core' wordlist */
 #define M4_(x) ((x) + 650)
-#undef M4____gap             /*                       */
-#undef M4____gap             /*                       */
-#undef M4____gap             /*                       */
-#undef M4____gap             /*                       */
-#undef M4____gap             /*                       */
+#undef M4____gap             /*                                         */
+#undef M4____gap             /*                                         */
+#undef M4____gap             /*                                         */
+#undef M4____gap             /*                                         */
+#undef M4____gap             /*                                         */
 #define M4in_to_ibuf M4_(11) /* in>ibuf      (    -- io     ) get current input as iobuf       */
-#undef M4____gap             /*                       */
+#undef M4____gap             /*                                         */
 #define M4iobuf_addr M4_(13) /* iobuf>addr   ( io -- c-addr ) get start of iobuf data buffer */
 #define M4iobuf_all_data M4_(14) /* ( io -- c-addr u ) get all data, from 0 to size */
 #define M4iobuf_data M4_(15)   /* iobuf>data   ( io -- c-addr u ) get data, from position to size*/
@@ -192,21 +192,21 @@
 #define M4iobuf_max M4_(22)    /* iobuf>max    ( io -- u    ) get iobuf max size i.e. capacity   */
 #define M4iobuf_pos M4_(23)    /* iobuf>pos    ( io -- addr ) get address of iobuf position      */
 #define M4iobuf_end M4_(24)    /* iobuf>end    ( io -- addr ) get address of iobuf end position  */
-#undef M4____gap               /*                       */
+#undef M4____gap               /*                                         */
 #define M4latest M4_(26)       /* latest       (    -- nt   ) get last defined word              */
-#undef M4____gap               /*                       */
-#undef M4____gap               /*                       */
+#undef M4____gap               /*                                         */
+#undef M4____gap               /*                                         */
 #define M4obuf_write_char M4_(29)   /* obuf-write-char   ( io c -- err ) write one char to iobuf */
 #define M4obuf_write_string M4_(30) /* obuf-write-string ( io c -- err ) write string to iobuf */
 #define M4out_to_obuf M4_(31)   /* out>obuf          (      -- io  ) get current output as iobuf  */
 #define M4set_latest M4_(32)    /* set-latest        ( nt --       ) set last defined word        */
 #define M4searchorder_i M4_(33) /* ( u -- addr ) get address of searchorder i-th element  */
 #define M4searchorder_n M4_(34) /* (   -- addr ) get address of searchorder count         */
-#undef M4____gap                /*                       */
+#undef M4____gap                /*                                         */
 #define M4user_var M4_(36)      /* user-var ( -- addr ) must be followed by index of user var */
-#undef M4____gap                /*                       */
+#undef M4____gap                /*                                         */
 #define M4name_comma M4_(38)    /* name,       ( c-addr u --   ) create a new name        */
-#undef M4____gap                /*                       */
+#undef M4____gap                /*                                         */
 #define M4name_to_code M4_(40)  /* ( nt -- addr u  ) get code array from name */
 #define M4name_to_code_n M4_(41)      /* ( nt -- u       ) get code size from name */
 #define M4name_to_flags M4_(42)       /* ( nt -- m4flags ) get m4flags from name   */
@@ -214,12 +214,12 @@
 #define M4name_to_ident M4_(44)       /* ( nt -- c-addr u ) convert name to asm/C identifier */
 #define M4name_to_prev M4_(45)        /* ( nt -- nt'|0    ) get previous name                */
 #define M4name_to_xt M4_(46)          /* ( nt -- XT       ) get XT == code address from name */
-#undef M4____gap                      /*                       */
-#undef M4____gap                      /*                       */
+#undef M4____gap                      /*                                         */
+#undef M4____gap                      /*                                         */
 #define M4wordlist_add M4_(49)        /* ( wid nt -- ) add name to wordlist                     */
 #define M4wordlist_last M4_(50)       /* ( wid -- nt ) get last name in a wordlist              */
 #define M4wordlist_reset M4_(51)      /* ( wid --    ) remove all user-defined names from wid   */
-#undef M4____gap                      /*                       */
+#undef M4____gap                      /*                                         */
 #define M4xt_to_name M4_(53)          /* xt>name       ( XT -- nt ) get name from XT */
 
 /* 'm4th-impl' wordlist */
@@ -231,8 +231,8 @@
 #define M4three M4_i(11)            /* 3                     */
 #define M4four M4_i(12)             /* 4                     */
 #define M4eight M4_i(13)            /* 8                     */
-#undef M4____gap                    /*                       */
-#undef M4____gap                    /*                       */
+#undef M4____gap                    /*                                         */
+#undef M4____gap                    /*                                         */
 #define M4_plus_loop_ M4_i(16)      /* (+loop)  followed by IP offset to jump          */
 #define M4_q_break_if_ M4_i(17)     /* (?break-if)     followed by IP offset to jump if dtop <> 0 */
 #define M4_q_break_if0_ M4_i(18)    /* (?break-if0)    followed by IP offset to jump if dtop == 0 */

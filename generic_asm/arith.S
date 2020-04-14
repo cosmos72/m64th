@@ -412,11 +412,11 @@ FUNC_START(pick)
 FUNC_END(pick)
 
 
-/* (pick-2) ( a b c -- a b c a ) m4th-impl equivalent to '2 pick' */
-FUNC_START(_pick_two_)
+/* pick2nd ( a b c -- a b c a ) m4th-user equivalent to '2 pick' */
+FUNC_START(pick2nd)
         DPUSH( DTOP)
         LOAD(  DTOP,   AT(DSTK, SZ2))
-FUNC_END(_pick_two_)
+FUNC_END(pick2nd)
 
 
 FUNC_START(rdepth)          /* ( -- n ) m4th-user get return stack depth */
