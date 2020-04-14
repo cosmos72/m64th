@@ -115,20 +115,30 @@ LABEL(name_comma.str_done)                             /* ( addr                
         STORh( DTOP,       AT(HERE, WORD_OFF_NAME_OFF))/* w.name_off = dtop       */
         STOR(  R000_REG1,  AT(HERE, WORD_OFF_FLAGS))   /* w.flags = w.code_n = w.data_n = 0 */
         MOVE(  HERE,       DTOP)                       /* ( w                   ) */
-        ADD2(  IMM(WORD_OFF_XT), HERE)               /* here = w.code           */
+        ADD2(  IMM(WORD_OFF_XT), HERE)                 /* here = w.code           */
 FUNC_END(name_comma)
 
 
 FUNC_START(name_to_code) /* ( nt -- xt u ) */
-        ADDI(  DTOP,  WORD_OFF_XT,   REG1)              /* a = w.code         */
-        LD_uh( DTOP,       AT(DTOP, WORD_OFF_CODE_N))   /* dtop = w.code_n    */
-        DPUSH( REG1)                                    /* d2   = w.code      */
+        ADDI(  DTOP,       WORD_OFF_XT,   REG1)        /* a = w.code         */
+        LD_uh( DTOP,       AT(DTOP, WORD_OFF_CODE_N))  /* dtop = w.code_n    */
+        DPUSH( REG1)                                   /* d2   = w.code      */
 FUNC_END(name_to_code)
 
 
 FUNC_START(name_to_code_n) /* ( nt -- n ) */
-        LD_uh( DTOP,       AT(DTOP, WORD_OFF_CODE_N)) /* DTOP = w.code_n    */
+        LD_uh( DTOP,       AT(DTOP, WORD_OFF_CODE_N))  /* DTOP = w.code_n    */
 FUNC_END(name_to_code_n)
+
+
+FUNC_START(name_to_data)     /* ( nt -- addr u ) */
+        ADDI(  DTOP,       WORD_OFF_XT,   REG1)        /* a = w.code         */
+        LD_uh( REG2,       AT(DTOP, WORD_OFF_CODE_N))  /* b = w.code_n       */
+        ADD4(  REG1,       REG2, PSZt,    REG2)        /* b = w.code + w.code_n */
+        ALIGN( SZ,         REG2)                       /* b = w.data         */
+        LD_uw( DTOP,       AT(DTOP, WORD_OFF_DATA_N))  /* dtop = w.data_n    */
+        DPUSH( REG2)                                   /* ( addr u         ) */
+FUNC_END(name_to_data)
 
 
 FUNC_START(name_to_flags) /* ( nt -- m4flags ) */

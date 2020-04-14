@@ -61,7 +61,7 @@
     /* ( c-addr u ch -- u' ) get position of given char or CR/LF in string  */                     \
     X(14, "line-find-char", line_find_char)                                                        \
     X(4, "noop", noop)                   /* ( -- ) do nothing                           */         \
-    X(8, "pick2nd", pick2nd)             /* ( a b c -- a b c a )  equivalent to: 2 pick */         \
+    X(7, "pick2nd", pick2nd)             /* ( a b c -- a b c a )  equivalent to: 2 pick */         \
     X(2, "r!", r_store)                  /* ( a -- ) (R: b -- a   )                     */         \
     X(2, "r+", r_plus)                   /* ( a -- ) (R: b -- a+b )                     */         \
     X(6, "r>drop", r_from_drop)          /* (R: x -- ) equivalent to: r> drop           */         \
@@ -206,6 +206,7 @@
     X(5, "name,", name_comma)            /* ( c-addr u -- nt ) create a new name             */    \
     X(9, "name>code", name_to_code)      /* ( nt  -- taddr n ) get code array from name      */    \
     X(11, "name>code>n", name_to_code_n) /* ( nt -- u        ) get code size from name       */    \
+    X(9, "name>data", name_to_data)      /* ( nt -- addr u   ) get data of name              */    \
     X(10, "name>flags", name_to_flags)   /* ( nt -- m4flags  ) get m4flags of name           */    \
     X(11, "name>flags!", name_to_flags_store) /* ( m4flags nt -- ) set m4flags of name       */    \
     X(10, "name>ident", name_to_ident) /* ( nt -- addr n  ) convert name to asm/C identifier */    \

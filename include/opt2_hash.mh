@@ -1,5 +1,5 @@
 #define OPT2_HASH_MAP(start, entry)	\
-start(/*size*/ 369, /*lcap*/ 8)	\
+start(/*size*/ 370, /*lcap*/ 8)	\
 entry(M4ne|(M4zero_more<<16),	2|(M4two_drop<<16)|(M4false<<32),	256)	\
 entry(M4abs|(M4abs<<16),	1|(M4abs<<16),	257)	\
 entry(M4three|(M4lshift<<16),	1|(M4eight_times<<16),	258)	\
@@ -38,7 +38,7 @@ entry(M4one|(M4div_mod<<16),	2|(M4drop<<16)|(M4zero<<32),	290)	\
 entry(M4one|(M4rshift<<16),	1|(M4two_div<<16),	291)	\
 entry(M4zero_equal|(M4zero_equal<<16),	1|(M4zero_ne<<16),	-2)	\
 entry(M4zero_less|(M4zero_equal<<16),	1|(M4zero_more_equal<<16),	293)	\
-entry(M4four_times|(M4two_times<<16),	1|(M4eight_times<<16),	348)	\
+entry(M4four_times|(M4two_times<<16),	1|(M4eight_times<<16),	375)	\
 entry(M4two_dup|(M4drop<<16),	1|(M4over<<16),	306)	\
 entry(M4dup|(M4min<<16),	0,	-2)	\
 entry(M4dup|(M4less<<16),	2|(M4drop<<16)|(M4false<<32),	297)	\
@@ -92,7 +92,7 @@ entry(M4two|(M4lshift<<16),	1|(M4four_times<<16),	344)	\
 entry(0,	0,	-1)	\
 entry(M4zero_more_equal|(M4zero_less<<16),	1|(M4zero_less<<16),	355)	\
 entry(M4negate|(M4_if_<<16),	1|(M4_if_<<16),	-2)	\
-entry(M4more|(M4zero_more<<16),	2|(M4two_drop<<16)|(M4false<<32),	-2)	\
+entry(M4two|(M4pick<<16),	1|(M4pick2nd<<16),	348)	\
 entry(M4less_equal|(M4zero_equal<<16),	1|(M4more<<16),	349)	\
 entry(M4zero_less_equal|(M4zero_less_equal<<16),	2|(M4drop<<16)|(M4true<<32),	359)	\
 entry(M4two_dup|(M4nip<<16),	1|(M4dup<<16),	-2)	\
@@ -348,7 +348,7 @@ entry(M4four|(M4div<<16),	1|(M4four_sm_div<<16),	-2)	\
 entry(0,	0,	-1)	\
 entry(M4dup|(M4max<<16),	0,	-2)	\
 entry(M4swap|(M4u_more_equal<<16),	1|(M4u_less_equal<<16),	332)	\
-entry(M4trail|(M4drop<<16),	2|(M4drop<<16)|(M4dup<<32),	321)	\
+entry(M4more|(M4zero_more<<16),	2|(M4two_drop<<16)|(M4false<<32),	-2)	\
 entry(M4equal|(M4zero_more<<16),	2|(M4two_drop<<16)|(M4false<<32),	-2)	\
 entry(M4swap|(M4over<<16),	1|(M4tuck<<16),	-2)	\
 entry(M4invert|(M4_while_<<16),	1|(M4_while0_<<16),	342)	\
@@ -375,7 +375,7 @@ entry(M4swap|(M4times<<16),	1|(M4times<<16),	366)	\
 entry(M4two_rot|(M4two_rot<<16),	1|(M4minus_two_rot<<16),	-2)	\
 entry(M4zero_equal|(M4zero_less<<16),	1|(M4zero_less<<16),	-2)	\
 entry(0,	0,	-1)	\
-entry(0,	0,	-1)	\
+entry(M4trail|(M4drop<<16),	2|(M4drop<<16)|(M4dup<<32),	321)	\
 entry(0,	0,	-1)	\
 entry(M4zero|(M4rshift<<16),	0,	-2)	\
 entry(M4two_div|(M4two_div<<16),	1|(M4four_div<<16),	-2)	\

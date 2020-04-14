@@ -209,12 +209,12 @@
 #undef M4____gap                /*                                         */
 #define M4name_to_code M4_(40)  /* ( nt -- addr u  ) get code array from name */
 #define M4name_to_code_n M4_(41)      /* ( nt -- u       ) get code size from name */
-#define M4name_to_flags M4_(42)       /* ( nt -- m4flags ) get m4flags from name   */
-#define M4name_to_flags_store M4_(43) /* ( m4flags nt -- ) set m4flags of name     */
-#define M4name_to_ident M4_(44)       /* ( nt -- c-addr u ) convert name to asm/C identifier */
-#define M4name_to_prev M4_(45)        /* ( nt -- nt'|0    ) get previous name                */
-#define M4name_to_xt M4_(46)          /* ( nt -- XT       ) get XT == code address from name */
-#undef M4____gap                      /*                                         */
+#define M4name_to_data M4_(42)        /* ( nt -- addr u  ) get data array from name */
+#define M4name_to_flags M4_(43)       /* ( nt -- m4flags ) get m4flags from name   */
+#define M4name_to_flags_store M4_(44) /* ( m4flags nt -- ) set m4flags of name     */
+#define M4name_to_ident M4_(45)       /* ( nt -- c-addr u ) convert name to asm/C identifier */
+#define M4name_to_prev M4_(46)        /* ( nt -- nt'|0    ) get previous name                */
+#define M4name_to_xt M4_(47)          /* ( nt -- XT       ) get XT == code address from name */
 #undef M4____gap                      /*                                         */
 #define M4wordlist_add M4_(49)        /* ( wid nt -- ) add name to wordlist                     */
 #define M4wordlist_last M4_(50)       /* ( wid -- nt ) get last name in a wordlist              */
