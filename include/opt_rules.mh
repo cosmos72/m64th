@@ -23,7 +23,7 @@
 #include "macro.mh"
 
 /* optimize a single token. right hand side must be at most two tokens */
-#define OPT1_BODY(x)                                                                               \
+#define OPT1_RULES(x)                                                                              \
     x(two_drop, /*=>*/ drop, drop)    /* 2drop    => drop drop (allows further optimizations) */   \
         x(cell_plus, /*=>*/ _SZ_plus) /* cell+    => SZ+           */                              \
         x(cells, /*=>*/ _SZ_times)    /* cells    => SZ*           */                              \
@@ -38,10 +38,9 @@
  * optimize two consecutive tokens. right hand side must be at most three tokens.
  * Do NOT match 2drop in these rules: it is always found as 'drop drop'
  * Also, do NOT produce 2drop: it must be emitted as 'drop drop' to allow further optimizations.
- * For the same reasons, always use 'zero' instead of 'false'
- *   and always use 'minus_one' instead of 'true'
+ * For the same reasons, always use 'zero' instead of 'false', and 'minus_one' instead of 'true'
  */
-#define OPT2_BODY(x)                                         /* '_' means noop                  */ \
+#define OPT2_RULES(x)                                        /* '_' means noop                  */ \
     x(minus_one, times, /*=>*/ negate)                       /* -1 *          => negate         */ \
         x(minus_one, plus, /*=>*/ one_minus)                 /* -1 +          => 1-             */ \
         x(minus_one, minus, /*=>*/ one_plus)                 /* -1 -          => 1+             */ \
@@ -479,11 +478,11 @@
 #endif /* 0 */
 
 /* low-priority optimizations: they may prevent other optimizations   */
-#define OPT2_LOWPRIO_BODY(x)          /* note: '_' represents noop       */                        \
+#define OPT2_LOWPRIO_RULES(x)         /* note: '_' represents noop       */                        \
     x(drop, drop, /*=>*/ two_drop)    /* drop drop       => 2drop        */                        \
         x(over, over, /*=>*/ two_dup) /* over over       => 2dup         */
 
-#define OPT3_BODY(x)                                 /* note: '_' represents noop         */       \
+#define OPT3_RULES(x)                                /* note: '_' represents noop         */       \
     x(r_from, plus, to_r, /*=>*/ r_plus)             /* r>     +   >r      => r+          */       \
         x(_if_, T(1), then, /*=>*/ drop)             /* if     then        => drop        */       \
         x(_if0_, T(1), then, /*=>*/ drop)            /* (if0)  then        => drop        */       \

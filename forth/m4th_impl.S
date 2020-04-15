@@ -23,9 +23,9 @@
 #include "../include/dict_m4th.mh"
 #include "../include/err.mh"
 #include "../include/hash_map.mh"
-#include "../include/opt.mh"
 #include "../include/opt2_hash.mh"
 #include "../include/opt3_hash.mh"
+#include "../include/opt_rules.mh"
 
 /* clang-format off */
 
@@ -567,7 +567,7 @@ WORD_START(_optimize1_, _while0_)
         token_plus, false, exit
       ),
       WORD_DATA_TOKENS(
-        OPT1_BODY(OPT1_TO_ASM_TOKENS) _missing_
+        OPT1_RULES(OPT1_TO_ASM_TOKENS) _missing_
       )
     )
 WORD_END(_optimize1_)

@@ -18,10 +18,10 @@
  */
 
 #include "impl.h"
-#include "include/dict_fwd.h" /* m4dict_... */
-#include "include/hash_map.h" /* m4dict_... */
-#include "include/opt.mh"     /* OPT2_BODY  */
-#include "include/word_fwd.h" /* m4w_...    */
+#include "include/dict_fwd.h"   /* m4dict_... */
+#include "include/hash_map.h"   /* m4dict_... */
+#include "include/opt_rules.mh" /* OPT2_RULES */
+#include "include/word_fwd.h"   /* m4w_...    */
 #include "m4th.h"
 
 #include <assert.h>
@@ -132,7 +132,7 @@ static void genopt_dump(const m4hash_map_int *map, unsigned key_n, FILE *out) {
 }
 
 static void genopt2_run(FILE *out) {
-    static const m4token opt[][6] = {OPT2_BODY(OPT2_TO_TOKENS)};
+    static const m4token opt[][6] = {OPT2_RULES(OPT2_TO_TOKENS)};
     m4hash_map_int *map = m4hash_map_new_int(N_OF(opt) / 2);
     m4cell i;
     for (i = 0; i < (m4cell)N_OF(opt); i++) {
