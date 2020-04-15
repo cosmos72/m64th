@@ -61,7 +61,7 @@ const char license[] = "/**\n\
                FIRST_3_ARGS(__VA_ARGS__, _missing_, _missing_))},
 #define OPT2_TO_TOKENS(...)                                                                        \
     {WRAP_ARGS(M4TOKEN_SYM_COMMA, T(COUNT_ARGS(__VA_ARGS__) - 2),                                  \
-               FIRST_4_ARGS(__VA_ARGS__, _missing_, _missing_))},
+               FIRST_5_ARGS(__VA_ARGS__, _missing_, _missing_, _missing_))},
 #define OPT3_TO_TOKENS(...)                                                                        \
     {WRAP_ARGS(M4TOKEN_SYM_COMMA, T(COUNT_ARGS(__VA_ARGS__) - 3),                                  \
                FIRST_5_ARGS(__VA_ARGS__, _missing_, _missing_))},
@@ -99,11 +99,11 @@ static void genopt_print_n_tokens(uint64_t x, unsigned n, unsigned index, FILE *
     }
 }
 
-static void genopt2_add(m4hash_map_int *map, const m4token opt[5]) {
+static void genopt2_add(m4hash_map_int *map, const m4token opt[6]) {
     m4cell key = opt[1] | ((m4cell)opt[2] << 16);
-    m4cell val = opt[0] | ((m4cell)opt[3] << 16) | ((m4cell)opt[4] << 32);
+    m4cell val = opt[0] | ((m4cell)opt[3] << 16) | ((m4cell)opt[4] << 32) | ((m4cell)opt[5] << 48);
     const m4hash_map_entry_int *e;
-    assert(opt[0] <= 2);
+    assert(opt[0] <= 3);
     e = m4hash_map_find_int(map, key);
     assert(e == NULL);
     e = m4hash_map_insert_int(map, key, val);
@@ -132,7 +132,7 @@ static void genopt_dump(const m4hash_map_int *map, unsigned key_n, FILE *out) {
 }
 
 static void genopt2_run(FILE *out) {
-    static const m4token opt[][5] = {OPT2_BODY(OPT2_TO_TOKENS)};
+    static const m4token opt[][6] = {OPT2_BODY(OPT2_TO_TOKENS)};
     m4hash_map_int *map = m4hash_map_new_int(N_OF(opt) / 2);
     m4cell i;
     for (i = 0; i < (m4cell)N_OF(opt); i++) {

@@ -678,7 +678,6 @@ static const m4hash_map_int test_hash_map_int1 = {
 };
 
 static m4testexecute testexecute_e[] = {
-#if 0
     {"(hash-map-indexof/int)",
      {CALL(_hash_map_indexof_int_), m4bye},
      {{2, {(m4cell)&test_hash_map_int0, 0x12345678}}, {}},
@@ -718,7 +717,6 @@ static m4testexecute testexecute_e[] = {
      {{}, {}},
      {{1, {ttrue}}, {}},
      {1, {m4zero}}},
-#endif
     {"{swap drop} (optimize-2)",
      {m4here, m4dup, m4_lit_comma_, m4swap, /* ( here here     ) compiled: swap      */
       m4_lit_comma_, m4drop,                /* ( here here     ) compiled: swap drop */
@@ -727,6 +725,14 @@ static m4testexecute testexecute_e[] = {
      {{}, {}},
      {{1, {ttrue}}, {}},
      {1, {m4nip}}},
+    {"{<> 0>} (optimize-2)",
+     {m4here, m4dup, m4_lit_comma_, m4ne,  /* ( here here     ) compiled: <>          */
+      m4_lit_comma_, m4zero_more,          /* ( here here     ) compiled: <> 0>       */
+      CALL(_optimize2_),                   /* ( src' dst' t|f ) compiled: drop drop 0 */
+      m4minus_rot, m4sub, m4allot, m4bye}, /* ( t|f           ) update HERE           */
+     {{}, {}},
+     {{1, {ttrue}}, {}},
+     {3, {m4drop, m4drop, m4zero}}},
 };
 
 static const char teststr_empty[] = "";
@@ -1435,13 +1441,8 @@ m4cell m4th_testexecute(m4th *m, FILE *out) {
         testexecute_e, testexecute_f, testexecute_g,
     };
     const m4cell n[] = {
-        0,
-        0,
-        0,
-        0, // N_OF(testexecute_a), N_OF(testexecute_b), N_OF(testexecute_c), N_OF(testexecute_d),
-        N_OF(testexecute_e),
-        N_OF(testexecute_f),
-        N_OF(testexecute_g),
+        N_OF(testexecute_a), N_OF(testexecute_b), N_OF(testexecute_c), N_OF(testexecute_d),
+        N_OF(testexecute_e), N_OF(testexecute_f), N_OF(testexecute_g),
     };
     m4testcount count = {};
     m4cell i;
