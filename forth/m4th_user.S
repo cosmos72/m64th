@@ -163,7 +163,7 @@ WORD_START(hash_map_find_int, flip)
             CALL(_hash_map_entry_fetch_int_),          /* ( key' val next      ) (R: key vec ) */
             dup, one_plus, /* 0 if no entry */         /* ( key' val next flag ) (R: key vec ) */
         _while_, T(19),                                /* ( key' val next      ) (R: key vec ) */
-            pick2nd, r2nd_fetch, equal,                /* ( key' val next t|f  ) (R: key vec ) */
+            hop, r2nd_fetch, equal,                    /* ( key' val next t|f  ) (R: key vec ) */
             _if_, T(5),                                /* ( key' val next      ) (R: key vec ) */
                 two_r_from_two_drop, drop, true, exit, /* ( key' val t         )               */
             then,                                      /* ( key' val next      ) (R: key vec ) */
@@ -176,7 +176,8 @@ WORD_START(hash_map_find_int, flip)
         nip, zero, zero, exit                          /* ( key 0 false        )               */
     )
 WORD_END(hash_map_find_int)
-WORD(i_times,       hash_map_find_int, DSTACK(1,1), RSTACK(1,1), WORD_R_PURE)
+WORD(hop,           hash_map_find_int, DSTACK(3,4), RSTACK(0,0), WORD_PURE)
+WORD(i_times,          hop,            DSTACK(1,1), RSTACK(1,1), WORD_R_PURE)
 WORD(i_plus,           i_times,        DSTACK(1,1), RSTACK(1,1), WORD_R_PURE)
 WORD(i_minus,          i_plus,         DSTACK(1,1), RSTACK(1,1), WORD_R_PURE)
 WORD(i_prime,          i_minus,        DSTACK(0,1), RSTACK(2,2), WORD_R_PURE)
@@ -237,8 +238,7 @@ WORD_END(interpret)
 /* ( c-addr u ch -- u' ) get position of given char or CR/LF in string, whatever comes first */
 WORD(line_find_char,   interpret,      DSTACK(3,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 WORD(noop,             line_find_char, DSTACK(0,0), RSTACK(0,0), WORD_PURE)
-WORD(pick2nd,          noop,           DSTACK(3,4), RSTACK(0,0), WORD_PURE)
-WORD(r_store,          pick2nd,        DSTACK(1,0), RSTACK(1,1), WORD_R_PURE)
+WORD(r_store,          noop,           DSTACK(1,0), RSTACK(1,1), WORD_R_PURE)
 WORD(r_plus,           r_store,        DSTACK(1,0), RSTACK(1,1), WORD_R_PURE)
 WORD(r_from_drop,      r_plus,         DSTACK(0,0), RSTACK(1,0), WORD_R_PURE)
 WORD(rdepth,           r_from_drop,    DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)

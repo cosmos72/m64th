@@ -144,16 +144,20 @@ FUNC_END(two_swap)
 #endif
 
 
+#ifndef M4FTIMES
 FUNC_START(times)          /* *    */
         DPOP(  REG1)
         MUL2(  REG1,   DTOP)
 FUNC_END(times)
+#endif
 
 
+#ifndef M4FPLUS
 FUNC_START(plus)           /* +    */
         DPOP(  REG1)
         ADD2(  REG1,   DTOP)
 FUNC_END(plus)
+#endif
 
 
 #ifndef M4FPLUS_STORE
@@ -412,11 +416,11 @@ FUNC_START(pick)
 FUNC_END(pick)
 
 
-/* pick2nd ( a b c -- a b c a ) m4th-user equivalent to '2 pick' */
-FUNC_START(pick2nd)
+/* hop ( a b c -- a b c a ) m4th-user equivalent to '2 pick' */
+FUNC_START(hop)
         DPUSH( DTOP)
         LOAD(  DTOP,   AT(DSTK, SZ2))
-FUNC_END(pick2nd)
+FUNC_END(hop)
 
 
 FUNC_START(rdepth)          /* ( -- n ) m4th-user get return stack depth */
@@ -448,10 +452,12 @@ FUNC_START(squared)        /* squared  m4th-user equivalent to: dup * */
 FUNC_END(squared)
 
 
+#ifndef M4FSUB
 FUNC_START(sub)            /* sub      m4th-user equivalent to: swap - */
         DPOP(  REG1)
         SUB2(  REG1,   DTOP)
 FUNC_END(sub)
+#endif
 
 
 FUNC_START(swap)           /* remember: x86 instruction 'xchg' is SLOW */

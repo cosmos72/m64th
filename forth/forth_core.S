@@ -89,8 +89,12 @@ WORD_START(colon,      two_swap)
          */
         state, fetch, zero_ne,
             _lit_, T(M4ERR_COMPILER_NESTING), and, throw,
+#if 1
         /* temporarily disable optimizer, it does not recompute jump offsets */
-        _lit_, T(M4FLAG_NOOPT), /* zero, */
+        _lit_, T(M4FLAG_NOOPT),
+#else
+        zero,
+#endif
         CALL(_create_),
         right_bracket, exit
     )

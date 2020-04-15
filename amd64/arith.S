@@ -27,6 +27,20 @@ FUNC_START(_missing_)      /* (missing) called instead of invalid/unimplemented 
 FUNC_END(_missing_)
 
 
+#define M4FTIMES
+FUNC_START(times)          /* *    */
+        MUL2(  AT(DSTK),   DTOP)
+        ADD2(  IMM(SZ),    DSTK)
+FUNC_END(times)
+
+
+#define M4FPLUS
+FUNC_START(plus)           /* +    */
+        ADD2(  AT(DSTK),   DTOP)
+        ADD2(  IMM(SZ),    DSTK)
+FUNC_END(plus)
+
+
 #define M4FPLUS_STORE
 FUNC_START(plus_store)     /* +!   */
         LOAD(  REG1,   AT(DSTK))
@@ -268,6 +282,13 @@ FUNC_START(rshift)         /* rshift */
         DPOP___DTOP()
         shr    %cl,    DTOP;
 FUNC_END(rshift)
+
+
+#define M4FSUB
+FUNC_START(sub)            /* sub      m4th-user equivalent to: swap - */
+        SUB2(  AT(DSTK),   DTOP)
+        ADD2(  IMM(SZ),    DSTK)
+FUNC_END(sub)
 
 
 FUNC_START(to_byte)        /* to-byte  m4th-user */

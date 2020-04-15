@@ -581,7 +581,45 @@ WORD_START(_optimize2_, _optimize1_)
     WORD_CODE_N_AUTO(_optimize2_)
     WORD_DATA_N_AUTO(_optimize2_)
     WORD_CODE_START(_optimize2_)
-      WORD_CODE_TOKENS(exit)
+      WORD_CODE_TOKENS(
+        /* (ip>data>addr) >r                           ( src dst               ) (R: hash-map )
+         * over token@ hop token+ token@               ( src dst tok0 tok1     ) (R: hash-map )
+         * 8 tokens lshift or                          ( src dst tok0|tok1<<16 ) (R: hash-map )
+         * r> swap                                     ( src dst hash-map key  )
+         * hash-map-find/int                           ( src dst key' val' t|f )
+         * 0= if                                       ( src dst key' val'     )
+         *    2drop 2 tokens                           ( src dst 2*SZt         )
+         *    cmove*                                   ( src' dst'             )
+         *    false exit                               ( src dst false         )
+         * then                                        ( src dst key val       )
+         * nip dup 8 tokens rshift swap to-token 0     ( src dst val>>16 len 0 )
+         * ?do                                         ( src dst toks          ) (R: len 0    )
+         *    tuck to-token                            ( src toks dst toki     ) (R: len i    )
+         *    over token!                              ( src toks dst          ) (R: len i    )
+         *    token+                                   ( src toks dst'         ) (R: len i    )
+         *    swap 8 tokens rshift                     ( src dst toks>>16      ) (R: len i    )
+         * loop                                        ( src dst 0             )
+         * drop swap token+ token+ swap true           ( src' dst true         )
+         */
+        _ip_to_data_addr_, to_r,
+        over, token_fetch, hop, token_plus, token_fetch,
+        eight, tokens, lshift, or,
+        r_from, swap,
+        CALL(hash_map_find_int),
+        _if0_, T(7),
+            two_drop, two, tokens,
+            cmove_star,
+            false, exit,
+        then,
+        nip, dup, eight, tokens, rshift, swap, to_token, zero,
+        _q_do_, T(11),
+            tuck, to_token,
+            over, token_store,
+            token_plus,
+            swap, eight, tokens, rshift,
+        _loop_, T(-11),
+        drop, swap, token_plus, token_plus, swap, true, exit
+      )
     WORD_CODE_END(_optimize2_)
     WORD_DATA_START(_optimize2_)
 #define H2_START(size, lcap) WORD_DATA_INTS(size, lcap) WORD_DATA_CELLS(.+ 8)

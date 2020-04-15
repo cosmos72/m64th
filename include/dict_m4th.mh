@@ -61,7 +61,7 @@
     /* ( c-addr u ch -- u' ) get position of given char or CR/LF in string  */                     \
     X(14, "line-find-char", line_find_char)                                                        \
     X(4, "noop", noop)                   /* ( -- ) do nothing                           */         \
-    X(7, "pick2nd", pick2nd)             /* ( a b c -- a b c a )  equivalent to: 2 pick */         \
+    X(3, "hop", hop)                     /* ( a b c -- a b c a )  equivalent to: 2 pick */         \
     X(2, "r!", r_store)                  /* ( a -- ) (R: b -- a   )                     */         \
     X(2, "r+", r_plus)                   /* ( a -- ) (R: b -- a+b )                     */         \
     X(6, "r>drop", r_from_drop)          /* (R: x -- ) equivalent to: r> drop           */         \

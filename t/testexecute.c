@@ -158,6 +158,7 @@ static m4testexecute testexecute_a[] = {
     {"_ _ drop", {m4drop, m4bye}, {{2, {1, 2}}, {}}, {{1, {1}}, {}}, {}},
     {"dup", {m4dup, m4bye}, {{1, {-5}}, {}}, {{2, {-5, -5}}, {}}, {}},
     {"false", {m4false, m4bye}, {{}, {}}, {{1, {tfalse}}, {}}, {}},
+    {"hop", {m4hop, m4bye}, {{3, {-3, -2, -1}}, {}}, {{4, {-3, -2, -1, -3}}, {}}, {}},
     {"lshift", {m4lshift, m4bye}, {{2, {99, 3}}, {}}, {{1, {99 << 3}}, {}}, {}},
     {"max", {m4max, m4bye}, {{2, {1, 2}}, {}}, {{1, {2}}, {}}, {}},
     {"min", {m4min, m4bye}, {{2, {3, 4}}, {}}, {{1, {3}}, {}}, {}},
@@ -171,7 +172,6 @@ static m4testexecute testexecute_a[] = {
     {"0 pick", {m4pick, m4bye}, {{2, {-1, 0}}, {}}, {{2, {-1, -1}}, {}}, {}},
     {"1 pick", {m4pick, m4bye}, {{3, {-2, -1, 1}}, {}}, {{3, {-2, -1, -2}}, {}}, {}},
     {"2 pick", {m4pick, m4bye}, {{4, {-3, -2, -1, 2}}, {}}, {{4, {-3, -2, -1, -3}}, {}}, {}},
-    {"pick2nd", {m4pick2nd, m4bye}, {{3, {-3, -2, -1}}, {}}, {{4, {-3, -2, -1, -3}}, {}}, {}},
     {"0 2pick", {m4two_pick, m4bye}, {{3, {-2, -1, 0}}, {}}, {{4, {-2, -1, -2, -1}}, {}}, {}},
     {"1 2pick",
      {m4two_pick, m4bye},
@@ -678,6 +678,7 @@ static const m4hash_map_int test_hash_map_int1 = {
 };
 
 static m4testexecute testexecute_e[] = {
+#if 0
     {"(hash-map-indexof/int)",
      {CALL(_hash_map_indexof_int_), m4bye},
      {{2, {(m4cell)&test_hash_map_int0, 0x12345678}}, {}},
@@ -696,21 +697,36 @@ static m4testexecute testexecute_e[] = {
     {"{ ... optimize-2 ... } hash-map-find/int",
      {m4name_to_data, m4drop, m4swap, CALL(hash_map_find_int), m4bye},
      {{2, {M4two | (M4pick << 16), (m4cell)&WORD_SYM(_optimize2_)}}, {}},
-     {{3, {M4two | (M4pick << 16), 1 | (M4pick2nd << 16), ttrue}}, {}},
+     {{3, {M4two | (M4pick << 16), 1 | (M4hop << 16), ttrue}}, {}},
      {}},
-#if 0
-    {"' 2drop , (optimize-1)",
-     {m4here, m4dup, m4_lit_comma_, m4two_drop, CALL(_optimize1_), m4minus_rot, m4sub, m4allot,
-      m4bye},
+    {"{noop} (optimize-1)",
+     {m4here, m4dup, m4_lit_comma_, m4noop, /* ( here here     ) compiled: noop      */
+      CALL(_optimize1_),                    /* ( src' dst' t|f ) compiled:           */
+      m4minus_rot, m4sub, m4allot, m4bye},  /* ( t|f           ) update HERE         */
+     {{}, {}},
+     {{1, {ttrue}}, {}},
+     {0, {}}},
+    {"{2drop} (optimize-1)",
+     {m4here, m4dup, m4_lit_comma_, m4two_drop, /* ( here here     ) compiled: 2drop     */
+      CALL(_optimize1_),                        /* ( src' dst' t|f ) compiled: drop drop */
+      m4minus_rot, m4sub, m4allot, m4bye},      /* ( t|f           ) update HERE         */
      {{}, {}},
      {{1, {ttrue}}, {}},
      {2, {m4drop, m4drop}}},
-    {"' false , (optimize-1)",
-     {m4here, m4dup, m4_lit_comma_, m4false, CALL(_optimize1_), m4minus_rot, m4sub, m4bye},
+    {"{false} (optimize-1)",
+     {m4here, m4dup, m4_lit_comma_, m4false, CALL(_optimize1_), m4minus_rot, m4sub, m4allot, m4bye},
      {{}, {}},
-     {{2, {ttrue, 0}}, {}},
+     {{1, {ttrue}}, {}},
      {1, {m4zero}}},
-#endif /* 0 */
+#endif
+    {"{swap drop} (optimize-2)",
+     {m4here, m4dup, m4_lit_comma_, m4swap, /* ( here here     ) compiled: swap      */
+      m4_lit_comma_, m4drop,                /* ( here here     ) compiled: swap drop */
+      CALL(_optimize2_),                    /* ( src' dst' t|f ) compiled: nip       */
+      m4minus_rot, m4sub, m4allot, m4bye},  /* ( t|f           ) update HERE         */
+     {{}, {}},
+     {{1, {ttrue}}, {}},
+     {1, {m4nip}}},
 };
 
 static const char teststr_empty[] = "";
@@ -1419,8 +1435,13 @@ m4cell m4th_testexecute(m4th *m, FILE *out) {
         testexecute_e, testexecute_f, testexecute_g,
     };
     const m4cell n[] = {
-        N_OF(testexecute_a), N_OF(testexecute_b), N_OF(testexecute_c), N_OF(testexecute_d),
-        N_OF(testexecute_e), N_OF(testexecute_f), N_OF(testexecute_g),
+        0,
+        0,
+        0,
+        0, // N_OF(testexecute_a), N_OF(testexecute_b), N_OF(testexecute_c), N_OF(testexecute_d),
+        N_OF(testexecute_e),
+        N_OF(testexecute_f),
+        N_OF(testexecute_g),
     };
     m4testcount count = {};
     m4cell i;

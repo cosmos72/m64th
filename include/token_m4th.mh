@@ -68,12 +68,12 @@
 #define M4crc_cell M4_u(38)              /* ( x -- crc32 ) compute CRC32c of a cell           */
 #define M4crc_string M4_u(39)            /* ( c-addr u -- crc32 ) compute CRC32c of a string  */
 #undef M4____gap                         /*                                         */
+#define M4dup_to_r M4_u(41)              /* dup>r                   equivalent to: dup  >r    */
+#define M4ex_message_store M4_u(42)      /* ( c-addr u -- ) save string as exception message  */
+#define M4ex_message_fetch M4_u(43)      /* ( -- c-addr u ) fetch exception message string    */
+#define M4flip M4_u(44)                  /* flip ( a b c -- c b a ) equivalent to: swap rot   */
 #undef M4____gap                         /*                                         */
-#define M4dup_to_r M4_u(42)              /* dup>r                   equivalent to: dup  >r    */
-#define M4ex_message_store M4_u(43)      /* ( c-addr u -- ) save string as exception message  */
-#define M4ex_message_fetch M4_u(44)      /* ( -- c-addr u ) fetch exception message string    */
-#define M4flip M4_u(45)                  /* flip ( a b c -- c b a ) equivalent to: swap rot   */
-#undef M4____gap                         /*                                         */
+#define M4hop M4_u(46)                   /* hop       equivalent to: 2   pick       */
 #define M4i_times M4_u(47)               /* i*                                      */
 #define M4i_plus M4_u(48)                /* i+                                      */
 #define M4i_minus M4_u(59)               /* i-                                      */
@@ -81,7 +81,7 @@
 #undef M4____gap                         /*                                         */
 #define M4line_find_char M4_u(62)        /* ( c-addr u ch -- u' ) get index of char or CR */
 #define M4noop M4_u(63)                  /* noop                                    */
-#define M4pick2nd M4_u(64)               /* pick2nd   equivalent to: 2   pick       */
+#undef M4____gap                         /*                                         */
 #define M4r_store M4_u(65)               /* r!        equivalent to: r>  drop >r    */
 #define M4r_plus M4_u(66)                /* r+        equivalent to: r>  +    >r    */
 #define M4r_from_drop M4_u(67)           /* r>drop    equivalent to: r>  drop       */
