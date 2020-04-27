@@ -185,6 +185,7 @@
 
 /* ------- m4th-core ---------------------------------------------------------------------------- */
 #define DICT_TOKENS_M4TH_CORE(X)                                                                   \
+    X(21, "flags>consumed-tokens", flags_to_consumed_tokens) /* ( flags -- u ) # consumed tokens*/ \
     X(7, "in>ibuf", in_to_ibuf)     /* (    -- io       ) get current input as iobuf     */        \
     X(10, "iobuf>addr", iobuf_addr) /* ( io -- c-addr   ) get start of iobuf data buffer */        \
     /* ( io -- c-addr u ) get iobuf entire content i.e. from 0 to iobuf>end */                     \

@@ -81,6 +81,31 @@ FUNC_END(ex_message_fetch)
 #endif /* M4FEX_STRING_FETCH */
 
 
+/* flags>consumed-tokens ( flags -- u ) get # consumed tokens from flags */
+FUNC_START(flags_to_consumed_tokens)
+        AND2(  IMM(M4FLAG_CONSUMES_IP_MASK),   DTOP)
+
+/* LABEL(flags_to_consumed_tokens.2) */
+        JNE(   DTOP,   IMM(M4FLAG_CONSUMES_IP_2),  TO(flags_to_consumed_tokens.4))
+        MOVI(  2/SZt,  DTOP)
+        JUMP(  FUNC_NEXT(flags_to_consumed_tokens))
+
+LABEL(flags_to_consumed_tokens.4)
+        JNE(   DTOP,   IMM(M4FLAG_CONSUMES_IP_4),  TO(flags_to_consumed_tokens.8))
+        MOVI(  4/SZt,  DTOP)
+        JUMP(  FUNC_NEXT(flags_to_consumed_tokens))
+
+LABEL(flags_to_consumed_tokens.8)
+        JNE(   DTOP,   IMM(M4FLAG_CONSUMES_IP_8),  TO(flags_to_consumed_tokens.0))
+        MOVI(  8/SZt,  DTOP)
+        JUMP(  FUNC_NEXT(flags_to_consumed_tokens))
+
+LABEL(flags_to_consumed_tokens.0)
+        ZERO(  DTOP)
+
+FUNC_END(flags_to_consumed_tokens)
+
+
 /* get-current ( -- wid ) forth 'search order' word set */
 FUNC_START(get_current)
         DPUSH( DTOP)

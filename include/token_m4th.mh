@@ -173,11 +173,11 @@
 
 /* 'm4th-core' wordlist */
 #define M4_(x) ((x) + 650)
-#undef M4____gap             /*                                         */
-#undef M4____gap             /*                                         */
-#undef M4____gap             /*                                         */
-#undef M4____gap             /*                                         */
-#undef M4____gap             /*                                         */
+#undef M4____gap                          /*                                         */
+#define M4flags_to_consumed_tokens M4_(7) /* ( flags -- u ) get # consumed tokens from flags */
+#undef M4____gap                          /*                                         */
+#undef M4____gap                          /*                                         */
+#undef M4____gap                          /*                                         */
 #define M4in_to_ibuf M4_(11) /* in>ibuf      (    -- io     ) get current input as iobuf       */
 #undef M4____gap             /*                                         */
 #define M4iobuf_addr M4_(13) /* iobuf>addr   ( io -- c-addr ) get start of iobuf data buffer */
