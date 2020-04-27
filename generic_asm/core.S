@@ -83,26 +83,26 @@ FUNC_END(ex_message_fetch)
 
 /* flags>consumed-tokens ( flags -- u ) get # consumed tokens from flags */
 FUNC_START(flags_to_consumed_tokens)
+#ifdef __aarch64__
+        MOVI(  M4FLAG_CONSUMES_IP_MASK,        REG1)
+        AND2(  REG1,   DTOP)
+#else
         AND2(  IMM(M4FLAG_CONSUMES_IP_MASK),   DTOP)
-
+#endif
 /* LABEL(flags_to_consumed_tokens.2) */
         JNE(   DTOP,   IMM(M4FLAG_CONSUMES_IP_2),  TO(flags_to_consumed_tokens.4))
         MOVI(  2/SZt,  DTOP)
         JUMP(  FUNC_NEXT(flags_to_consumed_tokens))
-
 LABEL(flags_to_consumed_tokens.4)
         JNE(   DTOP,   IMM(M4FLAG_CONSUMES_IP_4),  TO(flags_to_consumed_tokens.8))
         MOVI(  4/SZt,  DTOP)
         JUMP(  FUNC_NEXT(flags_to_consumed_tokens))
-
 LABEL(flags_to_consumed_tokens.8)
         JNE(   DTOP,   IMM(M4FLAG_CONSUMES_IP_8),  TO(flags_to_consumed_tokens.0))
         MOVI(  8/SZt,  DTOP)
         JUMP(  FUNC_NEXT(flags_to_consumed_tokens))
-
 LABEL(flags_to_consumed_tokens.0)
         ZERO(  DTOP)
-
 FUNC_END(flags_to_consumed_tokens)
 
 
