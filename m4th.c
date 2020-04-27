@@ -906,6 +906,7 @@ m4th *m4th_new(void) {
     m->rstack = m4stack_alloc(rstack_n);
     m->ip = NULL;
     m->ftable = ftable;
+    m->wtable = wtable;
     m->in = m4iobuf_new(inbuf_n);
     m->out = m4iobuf_new(outbuf_n);
     memset(m->c_regs, '\0', sizeof(m->c_regs));
@@ -922,7 +923,6 @@ m4th *m4th_new(void) {
     memset(&m->searchorder, '\0', sizeof(m->searchorder));
     m4th_also(m, &m4wordlist_forth);
     m4th_also(m, &m4wordlist_m4th_user);
-    m->wtable = wtable;
 
     return m;
 }
