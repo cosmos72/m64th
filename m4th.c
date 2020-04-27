@@ -922,6 +922,7 @@ m4th *m4th_new(void) {
     memset(&m->searchorder, '\0', sizeof(m->searchorder));
     m4th_also(m, &m4wordlist_forth);
     m4th_also(m, &m4wordlist_m4th_user);
+    m->wtable = wtable;
 
     return m;
 }

@@ -221,6 +221,7 @@
     X(13, "searchorder-i", searchorder_i)                                                          \
     X(13, "searchorder-n", searchorder_n) /* (    -- addr ) get address of searchorder count */    \
     X(10, "set-latest", set_latest)       /* ( nt --      ) set last defined word            */    \
+    X(10, "token>name", token_to_name)    /* ( token -- nt|0 ) convert token to name */            \
     X(8, "user-var", user_var) /*     ( -- addr ) must be followed by index of user variable */    \
     X(12, "wordlist-add", wordlist_add)     /* ( nt wid -- ) add name to wordlist            */    \
     X(13, "wordlist-last", wordlist_last)   /* ( wid -- nt ) get last name in wordlist       */    \
@@ -339,9 +340,10 @@
     /* ( x -- token t | x f ) try to optimize '[ x ] literal' */                                   \
     X(18, "(optimize-literal)", _optimize_literal_)                                                \
     X(15, "(repl-type-ack)", _repl_type_ack_)                                                      \
-    X(8, "[finish]", _finish_)      /* ( sys -- ) finish compiling a word, make it findable   */   \
-    X(8, "[inline]", _inline_)      /* ( nt -- ) inline a call to word into XT being compiled */   \
-    X(10, "[optimize]", _optimize_) /* optimize current XT being compiled  */                      \
+    X(8, "[finish]", _finish_)        /* ( sys -- ) finish compiling a word, make it findable   */ \
+    X(8, "[inline]", _inline_)        /* ( nt -- ) inline a call to word into XT being compiled */ \
+    X(10, "[optimize]", _optimize_)   /* optimize current XT being compiled  */                    \
+    X(11, "[recompile]", _recompile_) /* rebuild jump offsets after optimization */                \
     X(22, "[resolve-begin-repeat]", _resolve_begin_repeat_) /* common back-end of 'begin..' */     \
     X(19, "[resolve-jump-here]", _resolve_jump_here_)       /* resolve a jump to here       */     \
     X(20, "[resolve-jump-there]", _resolve_jump_there_)     /* resolve a jump from here     */     \

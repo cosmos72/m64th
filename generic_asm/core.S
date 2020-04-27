@@ -206,6 +206,17 @@ FUNC_START(set_current)
 FUNC_END(set_current)
 
 
+/* token>name ( token -- nt|0 ) convert token to name */
+FUNC_START(token_to_name)
+        ZERO(  REG1)
+        JAE(   DTOP,   IMM(M4____end), TO(token_to_name.done))
+        LOAD(  REG1,   AT(M4TH, M4TH_OFF_WTABLE)) /* a = wtable               */
+        LOAD(  REG1,   AT(REG1, DTOP, SZ))        /* a = name = wtable[token] */
+LABEL(token_to_name.done)
+        MOVE(  REG1,   DTOP)
+FUNC_END(token_to_name)
+
+
 /* user-var ( -- addr ) must be followed by index. get address of i-th user variable  */
 FUNC_START(user_var)
         DPUSH( DTOP)

@@ -20,19 +20,20 @@
 #ifndef M4TH_ARM64_SZ_MH
 #define M4TH_ARM64_SZ_MH
 
-#define SZ 8    /* sizeof(m4cell), sizeof(void*) and width of registers in bytes */
-#define SZ2 16  /* SZ * 2 */
-#define SZ3 24  /* SZ * 3 */
-#define SZ4 32  /* SZ * 4 */
-#define SZ5 40  /* SZ * 5 */
-#define SZ6 48  /* SZ * 6 */
-#define SZ7 56  /* SZ * 7 */
-#define SZ8 64  /* SZ * 8 */
-#define SZ9 72  /* SZ * 9 */
-#define SZ10 80 /* SZ * 10 */
-#define SZ11 88 /* SZ * 11 */
-#define SZ12 96 /* SZ * 12 */
-#define PSZ 3   /* (1 << PSZ) == SZ */
+#define SZ 8     /* sizeof(m4cell), sizeof(void*) and width of registers in bytes */
+#define SZ2 16   /* SZ * 2 */
+#define SZ3 24   /* SZ * 3 */
+#define SZ4 32   /* SZ * 4 */
+#define SZ5 40   /* SZ * 5 */
+#define SZ6 48   /* SZ * 6 */
+#define SZ7 56   /* SZ * 7 */
+#define SZ8 64   /* SZ * 8 */
+#define SZ9 72   /* SZ * 9 */
+#define SZ10 80  /* SZ * 10 */
+#define SZ11 88  /* SZ * 11 */
+#define SZ12 96  /* SZ * 12 */
+#define SZ13 104 /* SZ * 13 */
+#define PSZ 3    /* (1 << PSZ) == SZ */
 
 #define SZt 2  /* sizeof(m4token) in bytes */
 #define SZt2 4 /* SZt * 2 */

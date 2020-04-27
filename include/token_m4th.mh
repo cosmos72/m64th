@@ -195,32 +195,32 @@
 #undef M4____gap               /*                                         */
 #define M4latest M4_(26)       /* latest       (    -- nt   ) get last defined word              */
 #undef M4____gap               /*                                         */
+#define M4name_comma M4_(28)   /* name,       ( c-addr u --   ) create a new name        */
 #undef M4____gap               /*                                         */
-#define M4obuf_write_char M4_(29)   /* obuf-write-char   ( io c -- err ) write one char to iobuf */
-#define M4obuf_write_string M4_(30) /* obuf-write-string ( io c -- err ) write string to iobuf */
-#define M4out_to_obuf M4_(31)   /* out>obuf          (      -- io  ) get current output as iobuf  */
-#define M4set_latest M4_(32)    /* set-latest        ( nt --       ) set last defined word        */
-#define M4searchorder_i M4_(33) /* ( u -- addr ) get address of searchorder i-th element  */
-#define M4searchorder_n M4_(34) /* (   -- addr ) get address of searchorder count         */
-#undef M4____gap                /*                                         */
-#define M4user_var M4_(36)      /* user-var ( -- addr ) must be followed by index of user var */
-#undef M4____gap                /*                                         */
-#define M4name_comma M4_(38)    /* name,       ( c-addr u --   ) create a new name        */
-#undef M4____gap                /*                                         */
-#define M4name_to_code M4_(40)  /* ( nt -- addr u  ) get code array from name */
-#define M4name_to_code_n M4_(41)      /* ( nt -- u       ) get code size from name */
-#define M4name_to_data M4_(42)        /* ( nt -- addr u  ) get data array from name */
-#define M4name_to_flags M4_(43)       /* ( nt -- m4flags ) get m4flags from name   */
-#define M4name_to_flags_store M4_(44) /* ( m4flags nt -- ) set m4flags of name     */
-#define M4name_to_ident M4_(45)       /* ( nt -- c-addr u ) convert name to asm/C identifier */
-#define M4name_to_prev M4_(46)        /* ( nt -- nt'|0    ) get previous name                */
-#define M4name_to_xt M4_(47)          /* ( nt -- XT       ) get XT == code address from name */
+#define M4name_to_code M4_(30) /* ( nt -- addr u  ) get code array from name */
+#define M4name_to_code_n M4_(31)      /* ( nt -- u       ) get code size from name */
+#define M4name_to_data M4_(32)        /* ( nt -- addr u  ) get data array from name */
+#define M4name_to_flags M4_(33)       /* ( nt -- m4flags ) get m4flags from name   */
+#define M4name_to_flags_store M4_(34) /* ( m4flags nt -- ) set m4flags of name     */
+#define M4name_to_ident M4_(35)       /* ( nt -- c-addr u ) convert name to asm/C identifier */
+#define M4name_to_prev M4_(36)        /* ( nt -- nt'|0    ) get previous name                */
+#define M4name_to_xt M4_(37)          /* ( nt -- XT       ) get XT == code address from name */
 #undef M4____gap                      /*                                         */
-#define M4wordlist_add M4_(49)        /* ( wid nt -- ) add name to wordlist                     */
-#define M4wordlist_last M4_(50)       /* ( wid -- nt ) get last name in a wordlist              */
-#define M4wordlist_reset M4_(51)      /* ( wid --    ) remove all user-defined names from wid   */
-#undef M4____gap                      /*                                         */
-#define M4xt_to_name M4_(53)          /* xt>name       ( XT -- nt ) get name from XT */
+#define M4obuf_write_char M4_(39)   /* obuf-write-char   ( io c -- err ) write one char to iobuf */
+#define M4obuf_write_string M4_(40) /* obuf-write-string ( io c -- err ) write string to iobuf */
+#define M4out_to_obuf M4_(41)   /* out>obuf          (      -- io  ) get current output as iobuf  */
+#define M4set_latest M4_(42)    /* set-latest        ( nt --       ) set last defined word        */
+#define M4searchorder_i M4_(43) /* ( u -- addr ) get address of searchorder i-th element  */
+#define M4searchorder_n M4_(44) /* (   -- addr ) get address of searchorder count         */
+#undef M4____gap                /*                                         */
+#define M4token_to_name M4_(46) /* token>name ( token -- nt|0 ) convert token to name */
+#define M4user_var M4_(47)      /* user-var ( -- addr ) must be followed by index of user var */
+#undef M4____gap                /*                                         */
+#define M4wordlist_add M4_(49)  /* ( wid nt -- ) add name to wordlist                     */
+#define M4wordlist_last M4_(50) /* ( wid -- nt ) get last name in a wordlist              */
+#define M4wordlist_reset M4_(51) /* ( wid --    ) remove all user-defined names from wid   */
+#undef M4____gap                 /*                                         */
+#define M4xt_to_name M4_(53)     /* xt>name       ( XT -- nt ) get name from XT */
 
 /* 'm4th-impl' wordlist */
 #define M4_i(x) ((x) + 700)

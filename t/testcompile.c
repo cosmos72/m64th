@@ -189,6 +189,9 @@ static const m4testcompile testcompile[] = {
     {"cells ;", {2, {0, m4colon}}, {}, {2, {m4_SZ_times, m4exit}}},
     {"char+ ;", {2, {0, m4colon}}, {}, {2, {m4one_plus, m4exit}}},
     {"chars ;", {2, {0, m4colon}}, {}, {1, {m4exit}}},
+#if 0 /* [recompile] not implemented yet */
+    {"if chars then ;", {2, {0, m4colon}}, {}, {4, {m4_if_, T(1), m4then, m4exit}}},
+#endif
     {"false ;", {2, {0, m4colon}}, {}, {2, {m4zero, m4exit}}},
     {"noop ;", {2, {0, m4colon}}, {}, {1, {m4exit}}},
     {"true ;", {2, {0, m4colon}}, {}, {2, {m4minus_one, m4exit}}},

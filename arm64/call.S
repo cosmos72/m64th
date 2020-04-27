@@ -24,7 +24,7 @@
 /* clang-format off */
 
 /**
- * m4th_run: enter m4th interpreter from C:
+ * m4th_run: enter m4th interpreter from C.
  * save C registers,
  * load m4th registers from struct (m4th*)
  *      passed in x0 as per arm64 ABI,

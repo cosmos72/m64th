@@ -772,30 +772,54 @@ WORD_START(_optimize_, _inline_)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE)
     WORD_CODE(
-        /* state @ here #compiled tokens               ( xt here u    )
-         * cmove                                       (              )
-         * here state @ #compiled 0                    ( here xt u' 0 )
-         * ?do                                         ( here xt      ) (R: u i )
-         *    (optimize-1) drop                        ( here' xt'    ) (R: u i )
-         * loop                                        ( here' xt'    )
+        /* state @ here #compiled 0                    ( xt here u 0  )
+         * ?do                                         ( xt here      ) (R: u i )
+         *    (optimize-1) drop                        ( xt' here'    ) (R: u i )
+         * loop                                        ( xt' here'    )
+         * nip here -                                  ( nbytes       )
+         * here state @ rot                            ( here xt n    )
+         * cmove*                                      ( here' xt'    )
          * nip here                                    ( xt' here     )
-         * - allot        \ update HERE, set it to xt'
+         * - allot        \ update HERE, set it to xt' (              )
+         * (recompile)
          */
-        state, fetch, here, _num_compiled_, tokens,
-        cmove,
-        here, state, fetch, _num_compiled_, zero,
+        state, fetch, here, _num_compiled_, zero,
         _q_do_, T(4+nCALLt),
             CALL(_optimize1_), drop,
         _loop_, T(-4-nCALLt),
+        nip, here, minus,
+        here, state, fetch, rot,
+        cmove_star,
         nip, here,
-        minus, allot, exit
+        minus, allot,
+        CALL(_recompile_), exit
     )
 WORD_END(_optimize_)
+/* rebuild jump offsets after optimization */
+WORD_START(_recompile_, _optimize_)
+    WORD_DSTACK(0,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE)
+    WORD_CODE(
+        /* #compiled 0 2>r                             (              ) (R: u 0 )
+         * begin                                       (              ) (R: u i )
+         *   r@ r2nd@ <                                ( t|f          ) (R: u i )
+         * while                                       (              ) (R: u i )
+         *   r@ tokens state @ +                       ( xt'          ) (R: u i )
+         *   token@                                    ( token        ) (R: u i )
+         *
+         * repeat
+         */
+        exit
+    )
+WORD_END(_recompile_)
 /**
  * Resolve all jumps in 'begin..again' 'begin..repeat' and 'begin..until'
  * Called by 'again' 'repeat' and 'until'
  */
-WORD_START(_resolve_begin_repeat_, _optimize_)
+WORD_START(_resolve_begin_repeat_, _recompile_)
     WORD_DSTACK(-1,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
