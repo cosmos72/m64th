@@ -515,15 +515,40 @@ WORD_START(_while0_, _while_)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_MAY_JUMP | M4FLAG_IMMEDIATE)
     WORD_CODE(_compile_jump_lit_, _while0_, _while_, exit)
 WORD_END(_while0_)
+/* ( src dst src-end -- src' dst' ) optimize single tokens being compiled  */                  \
+WORD_START(_optimize_1_, _inline_)
+    WORD_DSTACK(3,2)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        /* >r                                          ( src dst      ) (R: src-end )
+         * begin                                       ( src dst      ) (R: src-end )
+         *    over r@ <                                ( src dst t|f  ) (R: src-end )
+         * while                                       ( src dst      ) (R: src-end )
+         *    (optimize-1token) drop                   ( src' dst'    ) (R: src-end )
+         * repeat                                      ( src' dst'    ) (R: src-end )
+         * r> drop  ( optimized code is at dst...dst' )
+         */
+        to_r,
+        begin,
+            over, r_fetch, less,
+        _while_, T(4+nCALLt),
+            CALL(_optimize_1token_), drop,
+        _repeat_, T(-9-nCALLt),
+        r_from_drop, exit
+    )
+WORD_END(_optimize_1_)
 /* ( src-addr dst-addr -- src-addr' dst-addr' t|f ) optimize a single token being compiled  */
-WORD_START(_optimize1_, _while0_)
+WORD_START(_optimize_1token_, _optimize_1_)
     WORD_DSTACK(2,3)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_DATA_TOKENS)
     WORD_CODE_AND_DATA(
-      _optimize1_,
+      _optimize_1token_,
       WORD_CODE_TOKENS(
         /* (ip>data) 2>r                               ( src dst             ) (R: data u        )
          * over token+                                 ( src dst src'        ) (R: data u        )
@@ -545,9 +570,7 @@ WORD_START(_optimize1_, _while0_)
          * token+ false                                ( src dst' false      )
          */
 #if 0 /* copy without optimizing */
-        over, token_fetch, over, token_store,       /* ( src dst             ) */
-        token_plus, swap, token_plus, swap, false,  /* ( src' dst'           ) */
-        exit,
+        one_token, cmove_star, false, exit          /* ( src' dst' false     ) */
 #endif
         _ip_to_data_, two_to_r,
         over, token_plus,
@@ -570,17 +593,44 @@ WORD_START(_optimize1_, _while0_)
         OPT1_RULES(OPT1_TO_ASM_TOKENS) _missing_
       )
     )
-WORD_END(_optimize1_)
+WORD_END(_optimize_1token_)
+/* ( src dst src-end -- src' dst' ) optimize tokens pairs being compiled  */                  \
+WORD_START(_optimize_2_, _optimize_1token_)
+    WORD_DSTACK(3,2)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        /* >r                                          ( src dst      ) (R: src-end )
+         * begin                                       ( src dst      ) (R: src-end )
+         *    over token+ r@ <                         ( src dst t|f  ) (R: src-end )
+         * while                                       ( src dst      ) (R: src-end )
+         *    (optimize-2token) drop                   ( src' dst'    ) (R: src-end )
+         * repeat                                      ( src dst      ) (R: src-end )
+         * over r> sub                                 ( src dst u    )
+         * cmove*                                      ( src' dst'    )
+         */
+        to_r,
+        begin,
+            over, token_plus, r_fetch, less,
+        _while_, T(4+nCALLt),
+            CALL(_optimize_2token_), drop,
+        _repeat_, T(-10-nCALLt),
+        over, r_from, sub,
+        cmove_star, exit
+    )
+WORD_END(_optimize_2_)
 /* ( src-addr dst-addr -- src-addr' dst-addr' t|f ) optimize token pairs being compiled */
-WORD_START(_optimize2_, _optimize1_)
+WORD_START(_optimize_2token_, _optimize_2_)
     WORD_DSTACK(2,3)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_DATA_TOKENS)
-    WORD_CODE_N_AUTO(_optimize2_)
-    WORD_DATA_N_AUTO(_optimize2_)
-    WORD_CODE_START(_optimize2_)
+    WORD_CODE_N_AUTO(_optimize_2token_)
+    WORD_DATA_N_AUTO(_optimize_2token_)
+    WORD_CODE_START(_optimize_2token_)
       WORD_CODE_TOKENS(
         /* (ip>data>addr) >r                           ( src dst               ) (R: hash-map )
          * over token@ hop token+ token@               ( src dst tok0 tok1     ) (R: hash-map )
@@ -588,9 +638,8 @@ WORD_START(_optimize2_, _optimize1_)
          * r> swap                                     ( src dst hash-map key  )
          * hash-map-find/int                           ( src dst key' val' t|f )
          * 0= if                                       ( src dst key' val'     )
-         *    2drop 2 tokens                           ( src dst 2*SZt         )
-         *    cmove*                                   ( src' dst'             )
-         *    false exit                               ( src dst false         )
+         *    2drop 1token                             ( src dst SZt           )
+         *    cmove* false exit                        ( src' dst' false       )
          * then                                        ( src dst key val       )
          * nip dup 8 tokens rshift swap to-token 0     ( src dst val>>16 len 0 )
          * ?do                                         ( src dst toks          ) (R: len 0    )
@@ -606,10 +655,9 @@ WORD_START(_optimize2_, _optimize1_)
         eight, tokens, lshift, or,
         r_from, swap,
         CALL(hash_map_find_int),
-        _if0_, T(7),
-            two_drop, two, tokens,
-            cmove_star,
-            false, exit,
+        _if0_, T(6),
+            two_drop, one_token,
+            cmove_star, false, exit,
         then,
         nip, dup, eight, tokens, rshift, swap, to_token, zero,
         _q_do_, T(11),
@@ -620,33 +668,33 @@ WORD_START(_optimize2_, _optimize1_)
         _loop_, T(-11),
         drop, swap, token_plus, token_plus, swap, true, exit
       )
-    WORD_CODE_END(_optimize2_)
-    WORD_DATA_START(_optimize2_)
+    WORD_CODE_END(_optimize_2token_)
+    WORD_DATA_START(_optimize_2token_)
 #define H2_START(size, lcap) WORD_DATA_INTS(size, lcap) WORD_DATA_CELLS(.+ 8)
 #define H2_ENTRY(key, val, next) WORD_DATA_CELLS(val) WORD_DATA_INTS(key, next)
       OPT2_HASH_MAP(H2_START, H2_ENTRY)
-    WORD_DATA_END(_optimize2_)
-WORD_END(_optimize2_)
+    WORD_DATA_END(_optimize_2token_)
+WORD_END(_optimize_2token_)
 /* ( src-addr dst-addr -- src-addr' dst-addr' t|f ) optimize token triplets being compiled */
-WORD_START(_optimize3_, _optimize2_)
+WORD_START(_optimize_3token_, _optimize_2token_)
     WORD_DSTACK(2,3)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_DATA_TOKENS)
-    WORD_CODE_N_AUTO(_optimize3_)
-    WORD_DATA_N_AUTO(_optimize3_)
-    WORD_CODE_START(_optimize3_)
+    WORD_CODE_N_AUTO(_optimize_3token_)
+    WORD_DATA_N_AUTO(_optimize_3token_)
+    WORD_CODE_START(_optimize_3token_)
       WORD_CODE_TOKENS(exit)
-    WORD_CODE_END(_optimize3_)
-    WORD_DATA_START(_optimize3_)
+    WORD_CODE_END(_optimize_3token_)
+    WORD_DATA_START(_optimize_3token_)
 #define H3_START(size, lcap) WORD_DATA_CELLS(size, lcap, .+ 8)
 #define H3_ENTRY(key, val, next) WORD_DATA_CELLS(val, key, next)
       OPT3_HASH_MAP(H3_START, H3_ENTRY)
-    WORD_DATA_END(_optimize3_)
-WORD_END(_optimize3_)
+    WORD_DATA_END(_optimize_3token_)
+WORD_END(_optimize_3token_)
 /* ( x -- token t | x f ) try to optimize '[ x ] literal' */
-WORD_START(_optimize_literal_, _optimize3_)
+WORD_START(_optimize_literal_, _optimize_3token_)
     WORD_DSTACK(1,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -772,24 +820,21 @@ WORD_START(_optimize_, _inline_)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE)
     WORD_CODE(
-        /* state @ here #compiled 0                    ( xt here u 0  )
-         * ?do                                         ( xt here      ) (R: u i )
-         *    (optimize-1) drop                        ( xt' here'    ) (R: u i )
-         * loop                                        ( xt' here'    )
-         * nip here -                                  ( nbytes       )
-         * here state @ rot                            ( here xt n    )
-         * cmove*                                      ( here' xt'    )
+        /* state @ here dup                            ( xt here here  )
+         *    ( original code is at xt...xt' )
+         * (optimize-1)                                ( xt' here'     )
+         *    ( optimized code is at here...here'  )
+         * nip here state @ rot                        ( here xt here' )
+         * (optimize-2)                                ( here' xt'     )
+         *    ( optimized code is now at xt...xt'  )
          * nip here                                    ( xt' here     )
          * - allot        \ update HERE, set it to xt' (              )
          * [recompile]
          */
-        state, fetch, here, _num_compiled_, zero,
-        _q_do_, T(4+nCALLt),
-            CALL(_optimize1_), drop,
-        _loop_, T(-4-nCALLt),
-        nip, here, minus,
-        here, state, fetch, rot,
-        cmove_star,
+        state, fetch, here, dup,
+        CALL(_optimize_1_),
+        nip, here, state, fetch, rot,
+        CALL(_optimize_2_),
         nip, here,
         minus, allot,
         CALL(_recompile_), exit

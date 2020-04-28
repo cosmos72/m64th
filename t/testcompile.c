@@ -183,7 +183,7 @@ static const m4testcompile testcompile[] = {
      {5, {m4begin, m4_while_, T(-1), m4_again_, T(-4)}}},
     {"begin while again then", {}, {}, {6, {m4begin, m4_while_, T(3), m4_again_, T(-4), m4then}}},
     {"begin while repeat", {}, {}, {5, {m4begin, m4_while_, T(2), m4_repeat_, T(-4)}}},
-    /* ------------------------------- optimize ----------------------------- */
+    /* ------------------------------- (optimize-1) ------------------------- */
     {"2drop ;", {2, {0, m4colon}}, {}, {3, {m4drop, m4drop, m4exit}}},
     {"cell+ ;", {2, {0, m4colon}}, {}, {2, {m4_SZ_plus, m4exit}}},
     {"cells ;", {2, {0, m4colon}}, {}, {2, {m4_SZ_times, m4exit}}},
@@ -192,9 +192,16 @@ static const m4testcompile testcompile[] = {
     {"false ;", {2, {0, m4colon}}, {}, {2, {m4zero, m4exit}}},
     {"noop ;", {2, {0, m4colon}}, {}, {1, {m4exit}}},
     {"true ;", {2, {0, m4colon}}, {}, {2, {m4minus_one, m4exit}}},
+    /* ------------------------------- (optimize-2) ------------------------- */
+    {"1+ 1- ;", {2, {0, m4colon}}, {}, {1, {m4exit}}},
+    {"1+ 1+ ;", {2, {0, m4colon}}, {}, {2, {m4two_plus, m4exit}}},
+    {"1+ noop 1+ ;", {2, {0, m4colon}}, {}, {2, {m4two_plus, m4exit}}},
+    {"swap drop ;", {2, {0, m4colon}}, {}, {2, {m4nip, m4exit}}},
+    /* ------------------------------- [recompile] -------------------------- */
     /* test [recompile] to correctly update jump offsets after optimization */
     {"if chars then ;", {2, {0, m4colon}}, {}, {4, {m4_if_, T(1), m4then, m4exit}}},
     {"if noop 1+ then ;", {2, {0, m4colon}}, {}, {5, {m4_if_, T(2), m4one_plus, m4then, m4exit}}},
+    {"if 1+ 1+ then ;", {2, {0, m4colon}}, {}, {5, {m4_if_, T(2), m4two_plus, m4then, m4exit}}},
 };
 
 static m4code m4testcompile_init(const m4testcompile *t, m4countedcode *codegen_buf) {

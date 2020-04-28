@@ -332,12 +332,16 @@
     X(19, "hash-map-entry@/int", _hash_map_entry_fetch_int_)                                       \
     /* ( map key -- pos ) convert map key to bucket index */                                       \
     X(22, "(hash-map-indexof/int)", _hash_map_indexof_int_)                                        \
+    /* ( src dst src-end -- src' dst' ) optimize single tokens being compiled  */                  \
+    X(12, "(optimize-1)", _optimize_1_)                                                            \
     /* ( src-addr dst-addr -- src-addr' dst-addr' t|f ) optimize a single token being compiled  */ \
-    X(12, "(optimize-1)", _optimize1_)                                                             \
-    /* ( src-addr dst-addr -- src-addr' dst-addr' t|f ) optimize token pairs being compiled */     \
-    X(12, "(optimize-2)", _optimize2_)                                                             \
-    /* ( src-addr dst-addr -- src-addr' dst-addr' t|f ) optimize token triplets being compiled */  \
-    X(12, "(optimize-3)", _optimize3_)                                                             \
+    X(17, "(optimize-1token)", _optimize_1token_)                                                  \
+    /* ( src dst src-end -- src' dst' ) optimize tokens pairs being compiled  */                   \
+    X(12, "(optimize-2)", _optimize_2_)                                                            \
+    /* ( src-addr dst-addr -- src-addr' dst-addr' t|f ) optimize a token pair being compiled */    \
+    X(17, "(optimize-2token)", _optimize_2token_)                                                  \
+    /* ( src-addr dst-addr -- src-addr' dst-addr' t|f ) optimize a token triplet being compiled */ \
+    X(17, "(optimize-3token)", _optimize_3token_)                                                  \
     /* ( x -- token t | x f ) try to optimize '[ x ] literal' */                                   \
     X(18, "(optimize-literal)", _optimize_literal_)                                                \
     X(15, "(repl-type-ack)", _repl_type_ack_)                                                      \

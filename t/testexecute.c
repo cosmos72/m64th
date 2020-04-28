@@ -695,32 +695,32 @@ static m4testexecute testexecute_e[] = {
      {}},
     {"{ ... optimize-2 ... } hash-map-find/int",
      {m4name_to_data, m4drop, m4swap, CALL(hash_map_find_int), m4bye},
-     {{2, {M4two | (M4pick << 16), (m4cell)&WORD_SYM(_optimize2_)}}, {}},
+     {{2, {M4two | (M4pick << 16), (m4cell)&WORD_SYM(_optimize_2token_)}}, {}},
      {{3, {M4two | (M4pick << 16), 1 | (M4hop << 16), ttrue}}, {}},
      {}},
     {"{noop} (optimize-1)",
      {m4here, m4dup, m4_lit_comma_, m4noop, /* ( here here     ) compiled: noop      */
-      CALL(_optimize1_),                    /* ( src' dst' t|f ) compiled:           */
+      CALL(_optimize_1token_),                    /* ( src' dst' t|f ) compiled:           */
       m4minus_rot, m4sub, m4allot, m4bye},  /* ( t|f           ) update HERE         */
      {{}, {}},
      {{1, {ttrue}}, {}},
      {0, {}}},
     {"{2drop} (optimize-1)",
      {m4here, m4dup, m4_lit_comma_, m4two_drop, /* ( here here     ) compiled: 2drop     */
-      CALL(_optimize1_),                        /* ( src' dst' t|f ) compiled: drop drop */
+      CALL(_optimize_1token_),                        /* ( src' dst' t|f ) compiled: drop drop */
       m4minus_rot, m4sub, m4allot, m4bye},      /* ( t|f           ) update HERE         */
      {{}, {}},
      {{1, {ttrue}}, {}},
      {2, {m4drop, m4drop}}},
     {"{false} (optimize-1)",
-     {m4here, m4dup, m4_lit_comma_, m4false, CALL(_optimize1_), m4minus_rot, m4sub, m4allot, m4bye},
+     {m4here, m4dup, m4_lit_comma_, m4false, CALL(_optimize_1token_), m4minus_rot, m4sub, m4allot, m4bye},
      {{}, {}},
      {{1, {ttrue}}, {}},
      {1, {m4zero}}},
     {"{swap drop} (optimize-2)",
      {m4here, m4dup, m4_lit_comma_, m4swap, /* ( here here     ) compiled: swap      */
       m4_lit_comma_, m4drop,                /* ( here here     ) compiled: swap drop */
-      CALL(_optimize2_),                    /* ( src' dst' t|f ) compiled: nip       */
+      CALL(_optimize_2token_),                    /* ( src' dst' t|f ) compiled: nip       */
       m4minus_rot, m4sub, m4allot, m4bye},  /* ( t|f           ) update HERE         */
      {{}, {}},
      {{1, {ttrue}}, {}},
@@ -728,7 +728,7 @@ static m4testexecute testexecute_e[] = {
     {"{<> 0>} (optimize-2)",
      {m4here, m4dup, m4_lit_comma_, m4ne,  /* ( here here     ) compiled: <>          */
       m4_lit_comma_, m4zero_more,          /* ( here here     ) compiled: <> 0>       */
-      CALL(_optimize2_),                   /* ( src' dst' t|f ) compiled: drop drop 0 */
+      CALL(_optimize_2token_),                   /* ( src' dst' t|f ) compiled: drop drop 0 */
       m4minus_rot, m4sub, m4allot, m4bye}, /* ( t|f           ) update HERE           */
      {{}, {}},
      {{1, {ttrue}}, {}},
