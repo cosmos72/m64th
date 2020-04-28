@@ -344,7 +344,8 @@
     X(8, "[finish]", _finish_)        /* ( sys -- ) finish compiling a word, make it findable   */ \
     X(8, "[inline]", _inline_)        /* ( nt -- ) inline a call to word into XT being compiled */ \
     X(10, "[optimize]", _optimize_)   /* optimize current XT being compiled  */                    \
-    X(11, "[recompile]", _recompile_) /* rebuild jump offsets after optimization */                \
+    X(11, "[recompile]", _recompile_) /* rebuild word jump offsets after optimization */           \
+    X(17, "[recompile-token]", _recompile_token_) /* recompile one token after optimization */     \
     X(22, "[resolve-begin-repeat]", _resolve_begin_repeat_) /* common back-end of 'begin..' */     \
     X(19, "[resolve-jump-here]", _resolve_jump_here_)       /* resolve a jump to here       */     \
     X(20, "[resolve-jump-there]", _resolve_jump_there_)     /* resolve a jump from here     */     \

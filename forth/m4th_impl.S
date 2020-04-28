@@ -781,7 +781,7 @@ WORD_START(_optimize_, _inline_)
          * cmove*                                      ( here' xt'    )
          * nip here                                    ( xt' here     )
          * - allot        \ update HERE, set it to xt' (              )
-         * (recompile)
+         * [recompile]
          */
         state, fetch, here, _num_compiled_, zero,
         _q_do_, T(4+nCALLt),
@@ -803,23 +803,69 @@ WORD_START(_recompile_, _optimize_)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE)
     WORD_CODE(
-        /* #compiled 0 2>r                             (              ) (R: u 0 )
-         * begin                                       (              ) (R: u i )
-         *   r@ r2nd@ <                                ( t|f          ) (R: u i )
-         * while                                       (              ) (R: u i )
-         *   r@ tokens state @ +                       ( xt'          ) (R: u i )
-         *   token@                                    ( token        ) (R: u i )
-         *
-         * repeat
+        /* here dup state @ sub allot ( set here = xt )( here            )
+         * >r 0 ' colon                                ( sys             ) (R: here )
+         * begin                                       ( ...             ) (R: here )
+         *   here r@ <                                 ( t|f             ) (R: here )
+         * while                                       (                 ) (R: here )
+         *   [recompile-token]                         ( ...             ) (R: here )
+         * repeat                                      (                 ) (R: here )
+         * ' colon (check)                             ( sys             ) (R: here )
+         * cs-drop r> drop                             (                 )
          */
-        exit
+        here, dup, state, fetch, sub, allot,
+        to_r, zero, _lit_, colon,
+        begin,
+            here, r_fetch, less,
+        _while_, T(3+nCALLt),
+            CALL(_recompile_token_),
+        _repeat_, T(-8-nCALLt),
+        _check_lit_, colon,
+        cs_drop, r_from_drop, exit
     )
 WORD_END(_recompile_)
+/*
+ * ( -- ) recompile a single token at 'here' after optimization.
+ * update 'here' considering also IP consumed by token
+ * as for example jumps, literals, calls.
+ */
+WORD_START(_recompile_token_, _recompile_)
+    WORD_DSTACK(0,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE)
+    WORD_CODE(
+        /* here token@ token>name                      ( nt|0            )
+         * dup 0= if                                   ( 0               )
+         *   drop 1token allot exit                    (                 )
+         * then                                        ( nt              )
+         * dup name>flags                              ( nt flags        )
+         * M4FLAG_IMMEDIATE and                        ( nt immediate    )
+         * if                                          ( nt              )
+         *    name>xt execute execute exit             ( ...             )
+         * then                                        ( nt              )
+         * name>flags flags>consumed-tokens            ( u               )
+         * 1+ tokens allot                             (                 )
+         */
+        here, token_fetch, token_to_name,
+        _q_if0_, T(5),
+            drop, one_token, allot, exit,
+        then,
+        dup, name_to_flags,
+        _lit_, T(M4FLAG_IMMEDIATE), and,
+        _if_, T(4),
+            name_to_xt, execute, exit,
+        then,
+        name_to_flags, flags_to_consumed_tokens,
+        one_plus, tokens, allot, exit
+    )
+WORD_END(_recompile_token_)
 /**
  * Resolve all jumps in 'begin..again' 'begin..repeat' and 'begin..until'
  * Called by 'again' 'repeat' and 'until'
  */
-WORD_START(_resolve_begin_repeat_, _recompile_)
+WORD_START(_resolve_begin_repeat_, _recompile_token_)
     WORD_DSTACK(-1,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
