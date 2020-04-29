@@ -516,7 +516,7 @@ WORD_START(_while0_, _while_)
     WORD_CODE(_compile_jump_lit_, _while0_, _while_, exit)
 WORD_END(_while0_)
 /* ( src dst src-end -- src' dst' ) optimize single tokens being compiled  */                  \
-WORD_START(_optimize_1_, _inline_)
+WORD_START(_optimize_1_, _while0_)
     WORD_DSTACK(3,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -527,20 +527,28 @@ WORD_START(_optimize_1_, _inline_)
          * begin                                       ( src dst      ) (R: src-end )
          *    over r@ <                                ( src dst t|f  ) (R: src-end )
          * while                                       ( src dst      ) (R: src-end )
-         *    (optimize-1token) drop                   ( src' dst'    ) (R: src-end )
+         *    (optimize-1token)                        ( src' dst' n  ) (R: src-end )
+         *    0< 1token and                            ( src dst SZt|0) (R: src-end )
+         *    cmove*                                   ( src' dst'    ) (R: src-end )
          * repeat                                      ( src' dst'    ) (R: src-end )
          * r> drop  ( optimized code is at dst...dst' )
          */
         to_r,
         begin,
             over, r_fetch, less,
-        _while_, T(4+nCALLt),
-            CALL(_optimize_1token_), drop,
-        _repeat_, T(-9-nCALLt),
+        _while_, T(7+nCALLt),
+            CALL(_optimize_1token_),
+            zero_less, one_token, and,
+            cmove_star,
+        _repeat_, T(-12-nCALLt),
         r_from_drop, exit
     )
 WORD_END(_optimize_1_)
-/* ( src-addr dst-addr -- src-addr' dst-addr' t|f ) optimize a single token being compiled  */
+/*
+ * (optimize-1token) ( src-addr dst-addr -- src-addr' dst-addr' n )
+ * optimize a single token being compiled. n is the length of optimized sequence in tokens,
+ * or -1 if no optimization was performed - in such case no token is copied.
+ */
 WORD_START(_optimize_1token_, _optimize_1_)
     WORD_DSTACK(2,3)
     WORD_RSTACK(0,0)
@@ -551,43 +559,42 @@ WORD_START(_optimize_1token_, _optimize_1_)
       _optimize_1token_,
       WORD_CODE_TOKENS(
         /* (ip>data) 2>r                               ( src dst             ) (R: data u        )
-         * over token+                                 ( src dst src'        ) (R: data u        )
-         * flip token@                                 ( src' dst tok        ) (R: data u        )
+         * over token@                                 ( src dst tok         ) (R: data u        )
          * 2r> 1token - bounds                         ( src dst tok data-end data )
          * do                                          ( src dst tok         ) (R: data-end data )
          *    dup i token+ token@ =                    ( src dst tok t|f     ) (R: data-end data )
          *    if                                       ( src dst tok         ) (R: data-end data )
          *       drop i token+ token+ swap             ( src opt-toks dst    ) (R: data-end data )
-         *       i token@ unloop                       ( src opt-toks dst u  )
-         *       tokens cmove*                         ( src opt-toks' dst'  )
-         *       nip true exit                         ( src dst' true       )
+         *       i token@ unloop dup >r                ( src opt-toks dst u  ) (R: u )
+         *       tokens cmove*                         ( src opt-toks' dst'  ) (R: u )
+         *       nip                                   ( src dst'            )
+         *       swap token+ swap                      ( src' dst'           )
+         *       r> exit                               ( src' dst' u         )
          *    then                                     ( src dst tok         ) (R: data-end data )
-         *    3 tokens                                 ( src dst tok 3*SZt   )
+         *    4 tokens                                 ( src dst tok 4*SZt   )
          * +loop                                       ( src dst tok         )
-         *             \ no optimization available,
-         *             \ just copy one token from src to dst
-         * over token!                                 ( src dst             )
-         * token+ false                                ( src dst' false      )
+         *              \ no optimization available, just return -1
+         * drop -1                                     ( src dst -1          )
          */
-#if 0 /* copy without optimizing */
-        one_token, cmove_star, false, exit          /* ( src' dst' false     ) */
+#if 0 /* do not optimize */
+        minus_one, exit,                            /* ( src dst -1          ) */
 #endif
         _ip_to_data_, two_to_r,
-        over, token_plus,
-        flip, token_fetch,
+        over, token_fetch,
         two_r_from, one_token, minus, bounds,
         do,
             dup, i, token_plus, token_fetch, equal,
-            _if_, T(14),
+            _if_, T(18),
                 drop, i, token_plus, token_plus, swap,
-                i, token_fetch, unloop,
+                i, token_fetch, unloop, dup_to_r,
                 tokens, cmove_star,
-                nip, true, exit,
+                nip,
+                swap, token_plus, swap,
+                r_from, exit,
             then,
             four, tokens,
-        _plus_loop_, T(-25),
-        over, token_store,
-        token_plus, false, exit
+        _plus_loop_, T(-29),
+        drop, minus_one, exit
       ),
       WORD_DATA_TOKENS(
         OPT1_RULES(OPT1_TO_ASM_TOKENS) _missing_

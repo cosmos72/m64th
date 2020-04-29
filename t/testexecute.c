@@ -699,39 +699,46 @@ static m4testexecute testexecute_e[] = {
      {{3, {M4two | (M4pick << 16), 1 | (M4hop << 16), ttrue}}, {}},
      {}},
     {"{noop} (optimize-1token)",
-     {m4here, m4dup, m4_lit_comma_, m4noop, /* ( here here     ) compiled: noop      */
-      CALL(_optimize_1token_),              /* ( src' dst' t|f ) compiled:           */
-      m4minus_rot, m4sub, m4allot, m4bye},  /* ( t|f           ) update HERE         */
+     {m4here, m4dup, m4_lit_comma_, m4noop, /* ( here here   ) original:  noop     */
+      CALL(_optimize_1token_),              /* ( src' dst' n ) optimized:          */
+      m4minus_rot, m4sub, m4allot, m4bye},  /* ( n           ) update HERE         */
      {{}, {}},
-     {{1, {ttrue}}, {}},
+     {{1, {0}}, {}},
      {0, {}}},
     {"{2drop} (optimize-1token)",
-     {m4here, m4dup, m4_lit_comma_, m4two_drop, /* ( here here     ) compiled: 2drop     */
-      CALL(_optimize_1token_),                  /* ( src' dst' t|f ) compiled: drop drop */
-      m4minus_rot, m4sub, m4allot, m4bye},      /* ( t|f           ) update HERE         */
+     {m4here, m4dup, m4_lit_comma_, m4two_drop, /* ( here here   ) original:  2drop     */
+      CALL(_optimize_1token_),                  /* ( src' dst' n ) optimized: drop drop */
+      m4minus_rot, m4sub, m4allot, m4bye},      /* ( n           ) update HERE          */
      {{}, {}},
-     {{1, {ttrue}}, {}},
+     {{1, {2}}, {}},
      {2, {m4drop, m4drop}}},
     {"{false} (optimize-1token)",
-     {m4here, m4dup, m4_lit_comma_, m4false, /* ( here here     ) compiled: false     */
-      CALL(_optimize_1token_),               /* ( src' dst' t|f ) compiled: 0         */
-      m4minus_rot, m4sub, m4allot, m4bye},   /* ( t|f           ) update HERE         */
+     {m4here, m4dup, m4_lit_comma_, m4false, /* ( here here   ) original:  false    */
+      CALL(_optimize_1token_),               /* ( src' dst' n ) optimized: 0        */
+      m4minus_rot, m4sub, m4allot, m4bye},   /* ( n           ) update HERE         */
      {{}, {}},
-     {{1, {ttrue}}, {}},
+     {{1, {1}}, {}},
      {1, {m4zero}}},
+    {"{1+} (optimize-1token)",
+     {m4here, m4dup, m4_lit_comma_, m4one_plus, /* ( here here   ) original:  1+       */
+      CALL(_optimize_1token_),                  /* ( src' dst' n ) optimized: 1+       */
+      m4minus_rot, m4sub, m4allot, m4bye},      /* ( n           ) update HERE         */
+     {{}, {}},
+     {{1, {-1}}, {}},
+     {1, {m4one_plus}}},
     {"{swap drop} (optimize-2token)",
-     {m4here, m4dup, m4_lit_comma_, m4swap, /* ( here here     ) compiled: swap      */
-      m4_lit_comma_, m4drop,                /* ( here here     ) compiled: swap drop */
-      CALL(_optimize_2token_),              /* ( src' dst' t|f ) compiled: nip       */
-      m4minus_rot, m4sub, m4allot, m4bye},  /* ( t|f           ) update HERE         */
+     {m4here, m4dup, m4_lit_comma_, m4swap, /* ( here here     )                      */
+      m4_lit_comma_, m4drop,                /* ( here here     ) original:  swap drop */
+      CALL(_optimize_2token_),              /* ( src' dst' t|f ) optimized: nip       */
+      m4minus_rot, m4sub, m4allot, m4bye},  /* ( t|f           ) update HERE          */
      {{}, {}},
      {{1, {ttrue}}, {}},
      {1, {m4nip}}},
     {"{<> 0>} (optimize-2token)",
-     {m4here, m4dup, m4_lit_comma_, m4ne,  /* ( here here     ) compiled: <>          */
-      m4_lit_comma_, m4zero_more,          /* ( here here     ) compiled: <> 0>       */
-      CALL(_optimize_2token_),             /* ( src' dst' t|f ) compiled: drop drop 0 */
-      m4minus_rot, m4sub, m4allot, m4bye}, /* ( t|f           ) update HERE           */
+     {m4here, m4dup, m4_lit_comma_, m4ne,  /* ( here here     )                        */
+      m4_lit_comma_, m4zero_more,          /* ( here here     ) original:  <> 0>       */
+      CALL(_optimize_2token_),             /* ( src' dst' t|f ) optimized: drop drop 0 */
+      m4minus_rot, m4sub, m4allot, m4bye}, /* ( t|f           ) update HERE            */
      {{}, {}},
      {{1, {ttrue}}, {}},
      {3, {m4drop, m4drop, m4zero}}},
