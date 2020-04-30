@@ -80,10 +80,18 @@ WORD_START(break,      bounds)
         _compile_jump_lit_, _break_, _break_, exit
     )
 WORD_END(break)
-/* cmove* ( src dst u -- src+u dst+u ) same as cmove, but returns updated addresses */
+/**
+ * cmove* ( src dst u -- src+u dst+u ) forward copy u bytes from src..src+u-1 to dst..dst+u-1
+ * and return updated addresses
+ */
 WORD(cmove_star,       break,          DSTACK(3,2), RSTACK(0,0), WORD_IMPURE)
+/**
+ * cmove<* ( src dst u -- src-u dst-u ) backward copy u bytes from src-1..src-u to dst-1..dst-u
+ * and return updated addresses
+ */
+WORD(minus_cmove_star, cmove_star,     DSTACK(3,2), RSTACK(0,0), WORD_IMPURE)
 /* crc-cell ( x u -- crc32 ) compute CRC32c of a cell  */
-WORD_START(crc_cell, cmove_star)
+WORD_START(crc_cell, minus_cmove_star)
     WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()

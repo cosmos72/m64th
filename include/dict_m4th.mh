@@ -44,13 +44,18 @@
     X(8, "2r>2drop", two_r_from_two_drop)                                                          \
     X(5, "2roll", two_roll)                                                                        \
     X(6, "-2roll", minus_two_roll)                                                                 \
-    X(5, "-2rot", minus_two_rot)           /* ( a b c d e f -- e f a b c d )                    */ \
-    X(6, "bounds", bounds)                 /* ( c-addr u -- c-addr+u c-addr ) get string bounds */ \
-    X(6, "cmove*", cmove_star)             /* ( src-addr dst-addr u -- src-addr+u dst-addr+u )  */ \
-    X(8, "crc-cell", crc_cell)             /* ( x -- crc32 ) compute CRC32c of a cell           */ \
-    X(10, "crc-string", crc_string)        /* ( c-addr u -- crc32 ) compute CRC32c of a string  */ \
-    X(10, "do-i+-loop", do_i_plus_loop)    /* do i + loop                                       */ \
-    X(5, "dup>r", dup_to_r)                /*                    equivalent to: dup >r          */ \
+    X(5, "-2rot", minus_two_rot) /* ( a b c d e f -- e f a b c d )                           */    \
+    X(6, "bounds", bounds)       /* ( c-addr u -- c-addr+u c-addr ) get string bounds        */    \
+    /* ( src dst u -- src+u dst+u ) forward copy u bytes, */                                       \
+    /*  and post-increment addresses after copying each byte  */                                   \
+    X(6, "cmove*", cmove_star)                                                                     \
+    /* ( src dst u -- src-u dst-u ) backward copy u bytes, */                                      \
+    /*  and pre-decrement addresses before copying each byte  */                                   \
+    X(7, "-cmove*", minus_cmove_star)                                                              \
+    X(8, "crc-cell", crc_cell)      /* ( x -- crc32 ) compute CRC32c of a cell               */    \
+    X(10, "crc-string", crc_string) /* ( c-addr u -- crc32 ) compute CRC32c of a string      */    \
+    X(10, "do-i+-loop", do_i_plus_loop) /* do i + loop                                        */   \
+    X(5, "dup>r", dup_to_r)             /*                    equivalent to: dup >r           */   \
     X(11, "ex-message!", ex_message_store) /* ( c-addr u --    ) store exception message string */ \
     X(11, "ex-message@", ex_message_fetch) /* (    -- c-addr u ) fetch exception message string */ \
     X(4, "flip", flip)                     /* ( a b c -- c b a ) equivalent to: swap rot        */ \

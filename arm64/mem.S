@@ -28,6 +28,7 @@ FUNC_START(cmove)
         ADD2(IMM(SZ2), DSTK)
 FUNC_END(cmove)
 
+
 /* cmove* ( src-addr dst-addr u -- src-addr+u dst-addr+u ) m4th-user */
 FUNC_START(cmove_star)
         LOAD(  REG1,   AT(DSTK, SZ))       /* a = src                 */
@@ -63,6 +64,44 @@ LABEL(cmove.done)
         ADD2(  REG2,   DTOP)               /* dtop = dst + u */
         STOR(  REG1,   AT(DSTK))           /* ( src+u dst+u )*/
 FUNC_END(cmove_star)
+
+
+/* -cmove* ( src-addr dst-addr u -- src-addr-u dst-addr-u ) m4th-user */
+FUNC_START(minus_cmove_star)
+        NEG1(  DTOP)                       /* dtop = -u               */
+        LOAD(  REG1,   AT(DSTK, SZ))       /* a = src                 */
+        DPOP(  REG2)                       /* b = dst                 */
+        ZERO(  REG0)                       /* @ = index               */
+        JA(    DTOP,   IMM(-SZ),TO(cmove_1.test)) /* copying < SZ bytes => slow        */
+        JAE(   REG2,   REG1,   TO(cmove_SZ.init)) /* copying to higher address => fast */
+        SUB3(  REG1,   REG2,   REG3)              /* c = src - dst                     */
+        JB(    REG3,   IMM(SZ),TO(cmove_1))       /* copying to too near address => slow */
+LABEL(minus_cmove_SZ.init)
+        ADD2(  IMM(SZ),DTOP)               /* dtop = -u + SZ */
+        /* copy SZ bytes per iteration */
+FUNC_ALIGN()
+LABEL(minus_cmove_SZ)
+        SUB2(  IMM(SZ),REG0)               /* index -= SZ    */
+        LOAD(  REG3,   AT(REG1, REG0))     /* c = src[index] */
+        STOR(  REG3,   AT(REG2, REG0))     /* dst[index] = c */
+        JA(    REG0,   DTOP,   TO(cmove_SZ))/* loop if index > -u i.e. still > SZ bytes to copy */
+        /* copy last SZ bytes */
+        LOAD(  REG3,   AT(REG1, DTOP))     /* c = src[-u+SZ] */
+        STOR(  REG3,   AT(REG2, DTOP))     /* dst[-u+SZ] = c */
+        SUB2(  IMM(SZ),DTOP)               /* dtop = -u      */
+        JUMP(  TO(cmove.done))
+        /* copy 1 byte per iteration */
+LABEL(minus_cmove_1)
+        SUB2(  IMM(1), REG0)               /* index--        */
+        LD_ub( REG3,   AT(REG1, REG0))     /* c = src[index] */
+        STORb( REG3,   AT(REG2, REG0))     /* dst[index] = c */
+LABEL(minus_cmove_1.test)
+        JA(    REG0,   DTOP,   TO(cmove_1))/* loop if index > -u */
+LABEL(minus_cmove.done)
+        ADD2(  DTOP,   REG1)               /* src -= u       */
+        ADD2(  REG2,   DTOP)               /* dtop = dst - u */
+        STOR(  REG1,   AT(DSTK))           /* ( src-u dst-u )*/
+FUNC_END(minus_cmove_star)
 
 
 /* move ( src-addr dst-addr u -- ) */

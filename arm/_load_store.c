@@ -17,7 +17,7 @@ size_t *push(size_t *addr, size_t val) {
     return addr;
 }
 
-// ld_s*
+/* ld_s* */
 int8_t ld_sb(int8_t *addr, int32_t i) {
     return addr[i];
 }
@@ -30,7 +30,7 @@ int32_t ld_sw(int32_t *addr, int32_t i) {
     return addr[i];
 }
 
-// ld_u*
+/* ld_u* */
 uint8_t ld_ub(uint8_t *addr, int32_t i) {
     return addr[i];
 }
@@ -43,7 +43,7 @@ uint32_t ld_uw(uint32_t *addr, int32_t i) {
     return addr[i];
 }
 
-// stor*
+/* stor* */
 void storb(int8_t *addr, int8_t val, int32_t i) {
     addr[i] = val;
 }

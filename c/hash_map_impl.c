@@ -82,7 +82,7 @@ static const H(m4hash_map_entry_) *
     return bucket;
 }
 
-// find key in map. return NULL if not found
+/* find key in map. return NULL if not found */
 const H(m4hash_map_entry_) * H(m4hash_map_find_)(const H(m4hash_map_) * map, H(m4) key) {
     if (map->size != 0) {
         const H(m4hash_map_entry_) *e = map->vec + H(m4hash_map_indexof_)(map, key);
@@ -115,9 +115,11 @@ static void H(m4hash_store_)(H(m4hash_map_) * map, H(m4hash_map_entry_) * to, H(
     map->size++;
 }
 
-// insert key and val.
-// key MUST NOT be already present. does not grow/rehash.
-// returns NULL on failure (if map is too full)
+/*
+ * insert key and val.
+ * key MUST NOT be already present. does not grow/rehash.
+ * returns NULL on failure (if map is too full)
+ */
 const H(m4hash_map_entry_) * H(m4hash_map_insert_)(H(m4hash_map_) * map, H(m4) key, m4cell val) {
     H(m4u) pos = H(m4hash_map_indexof_)(map, key);
     H(m4hash_map_entry_) *entry = map->vec + pos;

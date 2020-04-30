@@ -527,7 +527,7 @@ WORD_START(_optimize_1_, _while0_)
          * begin                                       ( src dst      ) (R: src-end )
          *    over r@ <                                ( src dst t|f  ) (R: src-end )
          * while                                       ( src dst      ) (R: src-end )
-         *    (optimize-1token)                        ( src' dst' n  ) (R: src-end )
+         *    false (optimize-1token)                  ( src' dst' n  ) (R: src-end )
          *    0< 1token and                            ( src dst SZt|0) (R: src-end )
          *    cmove*                                   ( src' dst'    ) (R: src-end )
          * repeat                                      ( src' dst'    ) (R: src-end )
@@ -536,21 +536,28 @@ WORD_START(_optimize_1_, _while0_)
         to_r,
         begin,
             over, r_fetch, less,
-        _while_, T(7+nCALLt),
-            CALL(_optimize_1token_),
+        _while_, T(8+nCALLt),
+            false, CALL(_optimize_1token_),
             zero_less, one_token, and,
             cmove_star,
-        _repeat_, T(-12-nCALLt),
+        _repeat_, T(-13-nCALLt),
         r_from_drop, exit
     )
 WORD_END(_optimize_1_)
 /*
- * (optimize-1token) ( src-addr dst-addr -- src-addr' dst-addr' n )
- * optimize a single token being compiled. n is the length of optimized sequence in tokens,
- * or -1 if no optimization was performed - in such case no token is copied.
+ * (optimize-1token) ( src-addr dst-addr direction-flag -- src-addr' dst-addr' n )
+ * fetch a single token from src-addr, and store at dst-addr an optimized token sequence
+ * equivalent to it.
+ *
+ * if direction-flag = 0, dst-addr is post-incremented after each stored token,
+ * otherwise (if direction-flag <> 0), dst-addr is pre-decremented after each stored token.
+ *
+ * n is the length of the optimized sequence, in tokens.
+ * if no optimized sequence was found, returns n = -1 and does not copy any token,
+ * thus src-addr and dst-addr are returned verbatim.
  */
 WORD_START(_optimize_1token_, _optimize_1_)
-    WORD_DSTACK(2,3)
+    WORD_DSTACK(3,3)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
@@ -558,43 +565,57 @@ WORD_START(_optimize_1token_, _optimize_1_)
     WORD_CODE_AND_DATA(
       _optimize_1token_,
       WORD_CODE_TOKENS(
-        /* (ip>data) 2>r                               ( src dst             ) (R: data u        )
-         * over token@                                 ( src dst tok         ) (R: data u        )
-         * 2r> 1token - bounds                         ( src dst tok data-end data )
-         * do                                          ( src dst tok         ) (R: data-end data )
-         *    dup i token+ token@ =                    ( src dst tok t|f     ) (R: data-end data )
-         *    if                                       ( src dst tok         ) (R: data-end data )
-         *       drop i token+ token+ swap             ( src opt-toks dst    ) (R: data-end data )
-         *       i token@ unloop dup >r                ( src opt-toks dst u  ) (R: u )
-         *       tokens cmove*                         ( src opt-toks' dst'  ) (R: u )
-         *       nip                                   ( src dst'            )
-         *       swap token+ swap                      ( src' dst'           )
-         *       r> exit                               ( src' dst' u         )
-         *    then                                     ( src dst tok         ) (R: data-end data )
-         *    4 tokens                                 ( src dst tok 4*SZt   )
-         * +loop                                       ( src dst tok         )
+        /* (ip>data) rot >r 2>r                        ( src dst                 ) (R: dir data u        )
+         * over token@                                 ( src dst tok             ) (R: dir data u        )
+         * 2r> 1token - bounds                         ( src dst tok data-end data ) (R: dir             )
+         * do                                          ( src dst tok             ) (R: dir data-end data )
+         *    dup i token+ token@ =                    ( src dst tok t|f         ) (R: dir data-end data )
+         *    if                                       ( src dst tok             ) (R: dir data-end data )
+         *       drop i token+ token+                  ( src dst opt-toks        ) (R: dir data-end data )
+         *       i token@ unloop r> swap >r            ( src dst opt-toks dir    ) (R: u )
+         *       if                                    ( src dst opt-toks        ) (R: u )
+         *         r@ tokens +                         ( src dst opt-toks'       ) (R: u )
+         *         swap r@ tokens                      ( src opt-toks dst u'     ) (R: u )
+         *         cmove*                              ( src opt-toks' dst'      ) (R: u )
+         *       else                                  ( src dst opt-toks        ) (R: u )
+         *         swap r@ tokens                      ( src opt-toks dst u'     ) (R: u )
+         *         -cmove*                             ( src opt-toks' dst'      ) (R: u )
+         *       then                                  ( src opt-toks' dst'      ) (R: u )
+         *       nip                                   ( src dst                 ) (R: u )
+         *       swap token+ swap                      ( src' dst                ) (R: u )
+         *       r> exit                               ( src' dst u              )
+         *    then                                     ( src dst tok             ) (R: dir data-end data )
+         *    4 tokens                                 ( src dst tok 4*SZt       ) (R: dir data-end data )
+         * +loop                                       ( src dst tok             ) (R: dir               )
          *              \ no optimization available, just return -1
-         * drop -1                                     ( src dst -1          )
+         * drop r> drop -1                             ( src dst -1              )
          */
 #if 0 /* do not optimize */
-        minus_one, exit,                            /* ( src dst -1          ) */
+        drop, minus_one, exit,                            /* ( src dst -1          ) */
 #endif
-        _ip_to_data_, two_to_r,
+        _ip_to_data_, rot, to_r, two_to_r,
         over, token_fetch,
         two_r_from, one_token, minus, bounds,
         do,
             dup, i, token_plus, token_fetch, equal,
-            _if_, T(18),
-                drop, i, token_plus, token_plus, swap,
-                i, token_fetch, unloop, dup_to_r,
-                tokens, cmove_star,
+            _if_, T(33),
+                drop, i, token_plus, token_plus,
+                i, token_fetch, unloop, r_from, swap, to_r,
+                _if_, T(9),
+                    r_fetch, tokens, plus,
+                    swap, r_fetch, tokens,
+                    minus_cmove_star,
+                _else_, T(5),
+                    swap, r_fetch, tokens,
+                    cmove_star,
+                then,
                 nip,
                 swap, token_plus, swap,
                 r_from, exit,
             then,
             four, tokens,
-        _plus_loop_, T(-29),
-        drop, minus_one, exit
+        _plus_loop_, T(-44),
+        drop, r_from_drop, minus_one, exit
       ),
       WORD_DATA_TOKENS(
         OPT1_RULES(OPT1_TO_ASM_TOKENS) _missing_

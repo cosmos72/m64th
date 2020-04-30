@@ -693,35 +693,35 @@ static m4testexecute testexecute_e[] = {
      {{2, {(m4cell)&test_hash_map_int1, 1}}, {}},
      {{3, {1, 987, ttrue}}, {}},
      {}},
-    {"{ ... optimize-2token ... } hash-map-find/int",
+    {"{...} hash-map-find/int",
      {m4name_to_data, m4drop, m4swap, CALL(hash_map_find_int), m4bye},
      {{2, {M4two | (M4pick << 16), (m4cell)&WORD_SYM(_optimize_2token_)}}, {}},
      {{3, {M4two | (M4pick << 16), 1 | (M4hop << 16), ttrue}}, {}},
      {}},
     {"{noop} (optimize-1token)",
      {m4here, m4dup, m4_lit_comma_, m4noop, /* ( here here   ) original:  noop     */
-      CALL(_optimize_1token_),              /* ( src' dst' n ) optimized:          */
+      m4false, CALL(_optimize_1token_),     /* ( src' dst' n ) optimized:          */
       m4minus_rot, m4sub, m4allot, m4bye},  /* ( n           ) update HERE         */
      {{}, {}},
      {{1, {0}}, {}},
      {0, {}}},
     {"{2drop} (optimize-1token)",
      {m4here, m4dup, m4_lit_comma_, m4two_drop, /* ( here here   ) original:  2drop     */
-      CALL(_optimize_1token_),                  /* ( src' dst' n ) optimized: drop drop */
+      m4false, CALL(_optimize_1token_),         /* ( src' dst' n ) optimized: drop drop */
       m4minus_rot, m4sub, m4allot, m4bye},      /* ( n           ) update HERE          */
      {{}, {}},
      {{1, {2}}, {}},
      {2, {m4drop, m4drop}}},
     {"{false} (optimize-1token)",
      {m4here, m4dup, m4_lit_comma_, m4false, /* ( here here   ) original:  false    */
-      CALL(_optimize_1token_),               /* ( src' dst' n ) optimized: 0        */
+      m4false, CALL(_optimize_1token_),      /* ( src' dst' n ) optimized: 0        */
       m4minus_rot, m4sub, m4allot, m4bye},   /* ( n           ) update HERE         */
      {{}, {}},
      {{1, {1}}, {}},
      {1, {m4zero}}},
     {"{1+} (optimize-1token)",
      {m4here, m4dup, m4_lit_comma_, m4one_plus, /* ( here here   ) original:  1+       */
-      CALL(_optimize_1token_),                  /* ( src' dst' n ) optimized: 1+       */
+      m4false, CALL(_optimize_1token_),         /* ( src' dst' n ) optimized: 1+       */
       m4minus_rot, m4sub, m4allot, m4bye},      /* ( n           ) update HERE         */
      {{}, {}},
      {{1, {-1}}, {}},

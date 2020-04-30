@@ -92,6 +92,29 @@ FUNC_START(cmove_star)
 FUNC_END(cmove_star)
 
 
+/* -cmove* ( src_addr dst_addr u -- src_addr-u dst_addr-u ) m4th-user */
+FUNC_START(minus_cmove_star)
+        MOVE(  DSTK,   %rbx)           /* save DSTK == %rsi */
+        MOVE(  RSTK,   %rdx)           /* save RSTK == %rdi */
+        LOAD(  %rsi,   AT(%rbx, SZ))   /* src               */
+        LOAD(  %rdi,   AT(%rbx))       /* dst               */
+        MOVE(  DTOP,   %rcx)           /* n                 */
+        DEC1(  %rsi)
+        DEC1(  %rdi)
+
+        std;                           /* backward direction     */
+        rep    movsb (%rsi), (%rdi);   /* copy string            */
+        cld;                           /* restore direction flag */
+
+        INC1(  %rsi)
+        INC1(  %rdi)
+        STOR(  %rsi,   AT(%rbx, SZ))   /* ( src' dst u    ) */
+        MOVE(  %rdi,   DTOP)           /* ( src' _ dst'   ) */
+        ADDI(  %rbx,   SZ,     DSTK)   /* reload DSTK       */
+        MOVE(  %rdx,   RSTK)           /* reload RSTK       */
+FUNC_END(minus_cmove_star)
+
+
 /* move ( src_addr dst_addr u -- ) */
 FUNC_START(move)
         MOVE(  DSTK,   %rbx)           /* save DSTK == %rsi */

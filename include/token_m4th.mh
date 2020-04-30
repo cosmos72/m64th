@@ -59,8 +59,8 @@
 #undef M4____gap                         /*                                         */
 #undef M4____gap                         /*                                         */
 #define M4bounds M4_u(31)                /* ( c-addr u -- c-addr+u c-addr ) get string bounds */
-#define M4cmove_star M4_u(32)            /* ( src-addr dst-addr u -- src-addr+u dst-addr+u )  */
-#undef M4____gap                         /*                                         */
+#define M4cmove_star M4_u(32)            /* ( src_addr dst_addr u -- src_addr+u dst-addr+u )  */
+#define M4minus_cmove_star M4_u(33)      /* ( src_addr dst_addr u -- src_addr-u dst_addr-u )  */
 #undef M4____gap                         /*                                         */
 #undef M4____gap                         /*                                         */
 #undef M4____gap                         /*                                         */
