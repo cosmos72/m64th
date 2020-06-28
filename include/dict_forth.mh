@@ -70,7 +70,7 @@
     X(5, "chars", chars)                                                                           \
     X(5, "count", count)                                                                           \
     X(5, "depth", depth)                                                                           \
-    X(2, "do", do)                                                                                \
+    X(2, "do", do)                                                                                 \
     X(4, "drop", drop)                                                                             \
     X(3, "dup", dup)                                                                               \
     X(4, "emit", emit)                                                                             \
@@ -107,6 +107,7 @@
 #define DICT_WORDS_FORTH_CORE(X)                                                                   \
     DICT_TOKENS_FORTH_CORE(X)                                                                      \
     /* the following words are implemented in forth, thus no dedicated m4token value */            \
+    X(1, "'", tick)                                                                                \
     X(5, "+loop", plus_loop)                                                                       \
     X(1, ".", dot)                                                                                 \
     X(1, ";", semi)                                                                                \
@@ -117,9 +118,9 @@
     X(2, "cr", cr)                                                                                 \
     X(6, "create", create)                                                                         \
     X(7, "decimal", decimal)                                                                       \
-    X(4, "else", else)                                                                            \
+    X(4, "else", else)                                                                             \
     X(4, "find", find)                                                                             \
-    X(2, "if", if)                                                                                \
+    X(2, "if", if)                                                                                 \
     X(5, "leave", leave)                                                                           \
     X(7, "literal", literal)                                                                       \
     X(4, "loop", loop)                                                                             \

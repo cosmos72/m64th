@@ -26,7 +26,55 @@ DICT_WORDS_FORTH_CORE(WORDNAME)
 #define LASTWORD store
 
 WORD(store,            LASTWORD,   DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE)
-WORD(times,            store,      DSTACK(2,1), RSTACK(0,0), WORD_PURE)
+WORD_START(tick,       store)
+    WORD_DSTACK(0,1)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        /* parse-name                                   ( c-addr u                 )
+         * ?if0                                         ( c-addr u                 )
+         *    2drop M4ERR_ZERO_LENGTH_NAME throw        (                          )
+         * then                                         ( c-addr u                 )
+         * 2dup                                         ( c-addr u c-addr u        )
+         * string>name                                  ( c-addr u nt|0 -1|0|1     )
+         * if0                      ( word not found )  ( c-addr u 0               )
+         *    drop ex-message!                          (                          )
+         *    M4ERR_UNDEFINED_WORD throw                (                          )
+         * then                                         ( c-addr u nt              )
+         * dup name>flags                               ( c-addr u nt flags        )
+         * M4FLAG_COMPILE_ONLY and                      ( c-addr u nt flag|0       )
+         * if                    ( compile-only word )  ( c-addr u nt              )
+         *    drop ex-message!                          (                          )
+         *    M4ERR_INTERPRETING_COMPILE_ONLY_WORD      (                          )
+         *    throw                                     (                          )
+         * then                                         ( c-addr u nt              )
+         * nip nip                                      ( nt                       )
+         * name>xt                                      ( xt                       )
+         */
+        CALL(parse_name),
+        _q_if0_, T(5),
+            two_drop, _lit_, T(M4ERR_ZERO_LENGTH_NAME), throw,
+        then,
+        two_dup,
+        CALL(string_to_name),
+        _if0_, T(6),
+            drop, ex_message_store,
+            _lit_, T(M4ERR_UNDEFINED_WORD), throw,
+        then,
+        dup, name_to_flags,
+        _lit_, T(M4FLAG_COMPILE_ONLY), and,
+        _if_, T(6),
+            drop, ex_message_store,
+            _lit_, T(M4ERR_INTERPRETING_COMPILE_ONLY_WORD),
+            throw,
+        then,
+        nip, nip,
+        name_to_xt, exit
+    )
+WORD_END(tick)
+WORD(times,            tick,       DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(plus,             times,      DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(plus_store,       plus,       DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE)
 WORD_START(plus_loop, plus_store)

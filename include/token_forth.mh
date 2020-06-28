@@ -32,7 +32,7 @@
 #undef M4number_sign /*2*/        /* #        */
 #undef M4num_end /*3*/            /* #>       */
 #undef M4num_s /*4*/              /* #s       */
-#undef M4tick /*5*/               /* '        */
+#undef M4tick /*5*/               /* '        implemented in forth, no dedicated m4token */
 #undef M4paren /*6*/              /* (        */
 #define M4times 7                 /* *        */
 #define M4times_div 8             /* * /      */
