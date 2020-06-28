@@ -536,7 +536,20 @@ WORD_START(while,     variable)
     )
 WORD(xor,              while,      DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(left_bracket,     xor,        DSTACK(0,0), RSTACK(0,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
-WORD_START(right_bracket,  left_bracket)
+WORD_START(bracket_tick,  left_bracket)
+    WORD_DSTACK(0,1)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
+    WORD_CODE(
+        /* '
+         * postpone literal
+         */
+        CALL(tick), CALL(literal), exit
+    )
+WORD_END(bracket_tick)
+WORD_START(right_bracket,  bracket_tick)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()

@@ -123,6 +123,8 @@ static const m4testcompile testcompile[] = {
     {"[ $7eef constant my-number", {}, {}, {3, {m4_lit2s_, T(0x7eef), m4exit}}},
     {"[ create w", {}, {}, {3 + nCALLt, {m4_ip_to_data_addr_, CALL(noop), m4exit}}},
     {"[ variable x", {}, {}, {2, {m4_ip_to_data_addr_, m4exit}}},
+    /* ------------------------------- ['] -00000000------------------------- */
+    {"['] true", {}, {}, {1 + nCALLt, {m4_lit_xt_, DXT(true)}}},
     /* ------------------------------- if else then ------------------------- */
     {"if", {}, {2, {2, m4_if_}}, {2, {m4_if_, T(-1)}}},
     {"if then", {}, {}, {3, {m4_if_, T(1), m4then}}},

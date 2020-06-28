@@ -130,7 +130,8 @@
     X(5, "space", space)                                                                           \
     X(5, "until", until)                                                                           \
     X(8, "variable", variable)                                                                     \
-    X(5, "while", while)
+    X(5, "while", while)                                                                           \
+    X(3, "[']", bracket_tick)
 
 /* ------- forth 2012: core ext ----------------------------------------------------------------- */
 #define DICT_TOKENS_FORTH_CORE_EXT(X)                                                              \

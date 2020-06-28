@@ -158,7 +158,7 @@
 #undef M4word /*128*/             /* word     */
 #define M4xor 129                 /* xor      */
 #define M4left_bracket 130        /* [        */
-#undef M4bracket_tick /*131*/     /* [']      */
+#undef M4bracket_tick /*131*/     /* [']      implemented in forth, no dedicated m4token */
 #undef M4bracket_char /*132*/     /* [char]   */
 #define M4right_bracket 133       /* ]        */
 
