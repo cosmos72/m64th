@@ -59,6 +59,7 @@
     X(11, "ex-message!", ex_message_store) /* ( c-addr u --    ) store exception message string */ \
     X(11, "ex-message@", ex_message_fetch) /* (    -- c-addr u ) fetch exception message string */ \
     X(4, "flip", flip)                     /* ( a b c -- c b a ) equivalent to: swap rot        */ \
+    X(3, "hop", hop)                       /* ( a b c -- a b c a )  equivalent to: 2 pick */       \
     X(2, "i*", i_times)                    /* equivalent to: i *         */                        \
     X(2, "i+", i_plus)                     /* equivalent to: i +         */                        \
     X(2, "i-", i_minus)                    /* equivalent to: i -         */                        \
@@ -66,7 +67,6 @@
     /* ( c-addr u ch -- u' ) get position of given char or CR/LF in string  */                     \
     X(14, "line-find-char", line_find_char)                                                        \
     X(4, "noop", noop)                   /* ( -- ) do nothing                           */         \
-    X(3, "hop", hop)                     /* ( a b c -- a b c a )  equivalent to: 2 pick */         \
     X(2, "r!", r_store)                  /* ( a -- ) (R: b -- a   )                     */         \
     X(2, "r+", r_plus)                   /* ( a -- ) (R: b -- a+b )                     */         \
     X(6, "r>drop", r_from_drop)          /* (R: x -- ) equivalent to: r> drop           */         \
@@ -257,15 +257,18 @@
     /* ( io c-addr u -- c-addr' u' err  ) send string to iobuf I/O func, ignoring current data. */ \
     /* return string still to write - non-empty only on I/O error                               */ \
     X(15, "(obuf-overflow)", _obuf_overflow_)                                                      \
-    X(11, "string>name", string_to_name) /*( c-addr u -- nt|0 -1|0|1 ) find name in search order*/ \
-    X(6, "/token", div_token)            /* alias of _SZt_div,      no dedicated m4token */        \
-    X(6, ">token", to_token)             /* alias of to_SZtu,       no dedicated m4token */        \
-    X(6, "token!", token_store)          /* alias of _SZtu_store,   no dedicated m4token */        \
-    X(6, "token@", token_fetch)          /* alias of _SZtu_fetch,   no dedicated m4token */        \
-    X(6, "1token", one_token)            /* alias of _SZt,          no dedicated m4token */        \
-    X(6, "token+", token_plus)           /* alias of _SZt_plus,     no dedicated m4token */        \
-    X(6, "tokens", tokens)               /* alias of _SZt_times,    no dedicated m4token */        \
-    X(11, "token-align", token_align)    /* alias of _SZt_align,    no dedicated m4token */        \
+    /* parse-xt ( xt -1|1 ) throws if name not found. 1 if name is immediate, else -1 */           \
+    X(8, "parse-xt", parse_xt)                                                                     \
+    /*( c-addr u -- nt|0 -1|0|1 ) find name in search order. 1 if name is immediate, else -1 */    \
+    X(11, "string>name", string_to_name)                                                           \
+    X(6, "/token", div_token)             /* alias of _SZt_div,      no dedicated m4token */       \
+    X(6, ">token", to_token)              /* alias of to_SZtu,       no dedicated m4token */       \
+    X(6, "token!", token_store)           /* alias of _SZtu_store,   no dedicated m4token */       \
+    X(6, "token@", token_fetch)           /* alias of _SZtu_fetch,   no dedicated m4token */       \
+    X(6, "1token", one_token)             /* alias of _SZt,          no dedicated m4token */       \
+    X(6, "token+", token_plus)            /* alias of _SZt_plus,     no dedicated m4token */       \
+    X(6, "tokens", tokens)                /* alias of _SZt_times,    no dedicated m4token */       \
+    X(11, "token-align", token_align)     /* alias of _SZt_align,    no dedicated m4token */       \
     X(13, "token-aligned", token_aligned) /* alias of _SZt_aligned, no dedicated m4token */        \
     X(13, "wordlist-find", wordlist_find) /* ( c-addr u wid -- w|0 -1|0|1 ) search in wordlist */
 

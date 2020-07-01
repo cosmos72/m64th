@@ -26,6 +26,8 @@
 #include "../m4th.h"
 #include "testcommon.h"
 
+#define XT(name) CELL(DXT(name))
+
 #include <assert.h> /* assert() */
 #include <stdio.h>  /* fprintf() fputs() */
 #include <string.h> /* memcpy()          */
@@ -123,8 +125,8 @@ static const m4testcompile testcompile[] = {
     {"[ $7eef constant my-number", {}, {}, {3, {m4_lit2s_, T(0x7eef), m4exit}}},
     {"[ create w", {}, {}, {3 + nCALLt, {m4_ip_to_data_addr_, CALL(noop), m4exit}}},
     {"[ variable x", {}, {}, {2, {m4_ip_to_data_addr_, m4exit}}},
-    /* ------------------------------- ['] -00000000------------------------- */
-    {"['] true", {}, {}, {1 + nCALLt, {m4_lit_xt_, DXT(true)}}},
+    /* ------------------------------- ['] ---------------------------------- */
+    {"['] true", {}, {}, {1 + nCALLt, {m4_lit_xt_, XT(true)}}},
     /* ------------------------------- if else then ------------------------- */
     {"if", {}, {2, {2, m4_if_}}, {2, {m4_if_, T(-1)}}},
     {"if then", {}, {}, {3, {m4_if_, T(1), m4then}}},
@@ -185,6 +187,12 @@ static const m4testcompile testcompile[] = {
      {5, {m4begin, m4_while_, T(-1), m4_again_, T(-4)}}},
     {"begin while again then", {}, {}, {6, {m4begin, m4_while_, T(3), m4_again_, T(-4), m4then}}},
     {"begin while repeat", {}, {}, {5, {m4begin, m4_while_, T(2), m4_repeat_, T(-4)}}},
+    /* ------------------------------- postpone ----------------------------- */
+    {"postpone then ;", {2, {0, m4colon}}, {}, {2 + nCALLt, {CALL(then), m4exit}}},
+    {"postpone and ;",
+     {2, {0, m4colon}},
+     {},
+     {3 + 2 * nCALLt, {m4_lit_xt_, XT(and), CALL(compile_comma), m4exit}}},
     /* ------------------------------- (optimize-1) ------------------------- */
     {"2drop ;", {2, {0, m4colon}}, {}, {3, {m4drop, m4drop, m4exit}}},
     {"cell+ ;", {2, {0, m4colon}}, {}, {2, {m4_SZ_plus, m4exit}}},

@@ -483,8 +483,43 @@ WORD_START(obuf_write_string, obuf_write_char)
     )
 WORD_END(obuf_write_string)
 WORD(out_to_obuf,   obuf_write_string, DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
+/* parse-xt ( xt -1|1 ) throws if name is not found. 1 if xt is immediate, else -1 */
+WORD_START(parse_xt,  out_to_obuf)
+    WORD_DSTACK(0,2)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        /* parse-name                                   ( c-addr u                 )
+         * ?if0                                         ( c-addr u                 )
+         *    M4ERR_ZERO_LENGTH_NAME throw              (                          )
+         * then                                         ( c-addr u                 )
+         * 2dup                                         ( c-addr u c-addr u        )
+         * string>name                                  ( c-addr u nt|0 -1|0|1     )
+         * ?if0                     ( word not found )  ( c-addr u 0 0             )
+         *    2drop ex-message!                         (                          )
+         *    M4ERR_UNDEFINED_WORD throw                (                          )
+         * then                                         ( c-addr u nt -1|1         )
+         * 2nip                                         ( nt -1|1                  )
+         * swap name>xt swap                            ( xt -1|1                  )
+         */
+        CALL(parse_name),
+        _q_if0_, T(4),
+            _lit_, T(M4ERR_ZERO_LENGTH_NAME), throw,
+        then,
+        two_dup,
+        CALL(string_to_name),
+        _q_if0_, T(6),
+            two_drop, ex_message_store,
+            _lit_, T(M4ERR_UNDEFINED_WORD), throw,
+        then,
+        two_nip,
+        swap, name_to_xt, swap, exit
+    )
+WORD_END(parse_xt)
 /* searchorder-i ( -- addr ) get address of ith wordlist in searchorder */
-WORD(searchorder_i,    out_to_obuf,    DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
+WORD(searchorder_i,    parse_xt,       DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
 /* searchorder-n ( -- addr ) get address of searchorder count */
 WORD(searchorder_n,    searchorder_i,  DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 WORD(set_latest,       searchorder_n,  DSTACK(1,0), RSTACK(0,0), WORD_IMPURE)

@@ -128,7 +128,7 @@
 #define M4negate 98               /* negate   */
 #define M4or 99                   /* or       */
 #define M4over 100                /* over     */
-#undef M4postpone /*101*/         /* postpone */
+#undef M4postpone /*101*/         /* postpone implemented in forth, no dedicated m4token */
 #undef M4quit /*102*/             /* quit     */
 #define M4r_from 103              /* r>       */
 #define M4r_fetch 104             /* r@       */

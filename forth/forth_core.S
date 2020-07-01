@@ -33,45 +33,24 @@ WORD_START(tick,       store)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
-        /* parse-name                                   ( c-addr u                 )
-         * ?if0                                         ( c-addr u                 )
-         *    2drop M4ERR_ZERO_LENGTH_NAME throw        (                          )
-         * then                                         ( c-addr u                 )
-         * 2dup                                         ( c-addr u c-addr u        )
-         * string>name                                  ( c-addr u nt|0 -1|0|1     )
-         * if0                      ( word not found )  ( c-addr u 0               )
-         *    drop ex-message!                          (                          )
-         *    M4ERR_UNDEFINED_WORD throw                (                          )
-         * then                                         ( c-addr u nt              )
-         * dup name>flags                               ( c-addr u nt flags        )
-         * M4FLAG_COMPILE_ONLY and                      ( c-addr u nt flag|0       )
-         * if                    ( compile-only word )  ( c-addr u nt              )
-         *    drop ex-message!                          (                          )
-         *    M4ERR_INTERPRETING_COMPILE_ONLY_WORD      (                          )
-         *    throw                                     (                          )
-         * then                                         ( c-addr u nt              )
-         * nip nip                                      ( nt                       )
-         * name>xt                                      ( xt                       )
+        /* parse-xt                                    ( xt -1|1                  )
+         * drop dup xt>name name>flags                 ( xt flags                 )
+         * M4FLAG_COMPILE_ONLY and                     ( xt flag|0                )
+         * if                    ( compile-only word ) ( xt                       )
+         *    xt>name name>string ex-message!          (                          )
+         *    M4ERR_INTERPRETING_COMPILE_ONLY_WORD     (                          )
+         *    throw                                    (                          )
+         * then                                        ( xt                       )
          */
-        CALL(parse_name),
-        _q_if0_, T(5),
-            two_drop, _lit_, T(M4ERR_ZERO_LENGTH_NAME), throw,
-        then,
-        two_dup,
-        CALL(string_to_name),
-        _if0_, T(6),
-            drop, ex_message_store,
-            _lit_, T(M4ERR_UNDEFINED_WORD), throw,
-        then,
-        dup, name_to_flags,
+        CALL(parse_xt),
+        drop, dup, xt_to_name, name_to_flags,
         _lit_, T(M4FLAG_COMPILE_ONLY), and,
         _if_, T(6),
-            drop, ex_message_store,
+            xt_to_name, name_to_string, ex_message_store,
             _lit_, T(M4ERR_INTERPRETING_COMPILE_ONLY_WORD),
             throw,
         then,
-        nip, nip,
-        name_to_xt, exit
+        exit
     )
 WORD_END(tick)
 WORD(times,            tick,       DSTACK(2,1), RSTACK(0,0), WORD_PURE)
@@ -261,7 +240,7 @@ WORD_START(create,     constant)
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
         _lit2s_, SHORT(M4FLAG_CREATE),
-        CALL(_create_),                        /* create word, mark it M4FLAG_CREATE  */
+        CALL(_create_),                        /* create word, mark it M4FLAG_CREATE   */
         right_bracket,                         /* start compiling                      */
         _lit_comma_, _ip_to_data_addr_,        /* compile (ip>data>addr)               */
         _lit_comma_, _call_xt_,                /* compile (call-xt)                    */
@@ -419,7 +398,31 @@ WORD(move,             mod,        DSTACK(3,0), RSTACK(0,0), WORD_IMPURE | M4FLA
 WORD(negate,           move,       DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(or,               negate,     DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(over,             or,         DSTACK(2,3), RSTACK(0,0), WORD_PURE)
-WORD(r_from,           over,       DSTACK(0,1), RSTACK(1,0), WORD_R_PURE)
+WORD_START(postpone,   over)
+    WORD_DSTACK(0,0)   /* stack effect when compiling */
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
+    WORD_CODE(
+        /* parse-xt                                    ( xt -1|1               )
+         * invert                  ( -2 if immediate ) ( xt 0|-2               )
+         * if0                       ( not immediate ) ( xt                    )
+         *   postpone literal                          (                       )
+         *   ' compile,                                ( xt                    )
+         * then                                        ( xt                    )
+         * compile,                                    (                       )
+         */
+        CALL(parse_xt),
+        invert,
+        _if0_, T(3+2*nCALLt),
+            CALL(literal),
+            _lit_xt_, XT(compile_comma),
+        then,
+        CALL(compile_comma), exit
+    )
+WORD_END(postpone)
+WORD(r_from,           postpone,   DSTACK(0,1), RSTACK(1,0), WORD_R_PURE)
 WORD(r_fetch,          r_from,     DSTACK(0,1), RSTACK(1,1), WORD_R_PURE)
 WORD_START(repeat,     r_fetch)
     WORD_DSTACK(4,0)   /* stack effect when compiling */
@@ -428,11 +431,11 @@ WORD_START(repeat,     r_fetch)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_CODE(
-        _check_lit_, begin,             /* ( while-sys begin-sys ) topmost must be 'begin' */
+        _check_lit_, begin,         /* ( while-sys begin-sys ) topmost must be 'begin'      */
         _compile_jump_lit_, _repeat_, _repeat_,
         cs_drop,                    /* we only need the compiled '(repeat)' not the cs data */
         CALL(_resolve_jump_there_), /* resolve jump from '(repeat)' to 'begin'              */
-        _check_lit_, _while_,           /* ( while-sys ) must be '(while)'                      */
+        _check_lit_, _while_,       /* ( while-sys ) must be '(while)'                      */
         CALL(_resolve_jump_here_),  /* resolve jump from '(while)' to here                  */
         exit
     )
