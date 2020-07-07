@@ -79,16 +79,16 @@ static m4testexecute testexecute_a[] = {
      {{2, {(m4cell) "foo", 3}}, {1, {(m4cell)&m4wordlist_forth}}},
      {}},
 #elif 0
-    {"1e8 0 do crc+ loop",
+    {"1e8 0 do over crc+ loop nip",
      {m4do, m4over, m4_call_xt_, CELL(crc1byte_code), m4_loop_, T(-3 - callsz), m4nip, m4bye},
      {{4, {'t', 0xffffffff, 1e8, 0}}, {}},
      {{1, {0x773edc4e}}, {}},
      {}},
 #elif 0
-    {"1e8 0 do crc+-native-forth loop",
-     {m4do, m4_call_native_, (m4cell)m4ftest_crc_plus_native_forth, m4_loop_, T(-2 - callsz),
-      m4bye},
-     {{4, {'t', 0xffffffff, 1e8, 0}}, {1, {}}},
+    {"1e8 0 do over crc+-native-forth loop nip",
+     {m4do, m4over, m4_call_native_, CELL(m4ftest_crc_plus_native_forth), m4_loop_, T(-3 - callsz),
+      m4nip, m4bye},
+     {{4, {'t', 0xffffffff, 1e8, 0}}, {}},
      {{1, {0x773edc4e}}, {}},
      {}},
 #else
