@@ -415,8 +415,8 @@ WORD_START(postpone,   over)
          */
         CALL(parse_xt),
         invert,
-        _if0_, T(3+2*nCALLt),
-            CALL(literal),
+        _if0_, T(5+nCALLt),
+            _lit_comma_, _lit_xt_, xt_comma, /* CALL(literal) tries to optimize small values */
             _lit_xt_, XT(compile_comma),
         then,
         CALL(compile_comma), exit
@@ -549,7 +549,9 @@ WORD_START(bracket_tick,  left_bracket)
         /* '
          * postpone literal
          */
-        CALL(tick), CALL(literal), exit
+        CALL(tick),
+        _lit_comma_, _lit_xt_, xt_comma, /* CALL(literal) tries to optimize small values */
+        exit
     )
 WORD_END(bracket_tick)
 WORD_START(right_bracket,  bracket_tick)

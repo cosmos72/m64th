@@ -128,7 +128,15 @@ WORD_START(_break_,    _again_)
        CALL(break), exit
     )
 WORD_END(_break_)
-WORD_START(_call_xt_,  _break_)
+WORD_START(_call_native_, _break_)
+    WORD_DSTACK(-1,-1) /* stack effect of called code */
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()  /* stack effect when calling */
+    WORD_NATIVE_NONE() /* (call-native) uses tail-call optimization: cannot inline into native code */
+    WORD_FLAGS(M4FLAG_CONSUMES_IP_SZ | M4FLAG_INLINE_ALWAYS)
+    WORD_CODE(_call_native_, exit)
+WORD_END(_call_native_)
+WORD_START(_call_xt_,  _call_native_)
     WORD_DSTACK(-1,-1) /* stack effect of called XT */
     WORD_RSTACK(0,0)
     WORD_DSTACK(0,0)   /* stack effect when calling */
@@ -277,15 +285,7 @@ WORD_START(_eval_number_, _eval_name_)
         then, exit
     )
 WORD_END(_eval_number_)
-WORD_START(_exec_native_, _eval_number_)
-    WORD_DSTACK(-1,-1)
-    WORD_RSTACK(0,0)
-    WORD_STACK_NONE()
-    WORD_NATIVE_NONE() /* (exec-native) uses tail-call optimization: cannot inline into native code */
-    WORD_FLAGS(M4FLAG_INLINE)
-    WORD_CODE(_exec_native_, exit)
-WORD_END(_exec_native_)
-WORD_START(_exec_token_, _exec_native_)
+WORD_START(_exec_token_, _eval_number_)
     WORD_DSTACK(-1,-1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()

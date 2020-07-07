@@ -207,12 +207,12 @@ FUNC_START(_c_ret_2_)
 FUNC_END(_c_ret_2_)
 
 
-/** pop address of native code from dstack and call it. */
-FUNC_START(_exec_native_)
-        MOVE(  DTOP, REG1)         /* REG1 = address                */
-        DPOP___DTOP()              /* reload dstack top             */
+/** must be followed by address of native forth code. call it. */
+FUNC_START(_call_native_)
+        LOAD(  REG1,   AT(IP))
+        ADD2(  IMM(SZ),IP)         /* skip native function address  */
         jmp    *REG1;              /* tail-call optimization: jump to native code */
-FUNC_RAWEND(_exec_native_)
+FUNC_RAWEND(_call_native_)
 
 
 /** pop m4token from dstack and call it. works only for tokens with native_len != -1 */

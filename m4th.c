@@ -358,7 +358,11 @@ static m4cell m4token_print_int16(const m4token *code, FILE *out) {
 static m4cell m4token_print_int32(const m4token *code, FILE *out) {
     int32_t val;
     memcpy(&val, code, sizeof(val));
-    fprintf(out, "INT(%ld) ", (long)val);
+    if (val >= -1024 && val <= 1024) {
+        fprintf(out, "INT(%ld) ", (long)val);
+    } else {
+        fprintf(out, "INT(0x%lx) ", (unsigned long)val);
+    }
     return sizeof(val) / SZt;
 }
 

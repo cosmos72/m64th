@@ -251,7 +251,7 @@
 #define M4_break_ M4_i(31)          /* (break)         followed by IP offset to jump              */
 #define M4_break_if_ M4_i(32)       /* (break-if)      followed by IP offset to jump if dtop <> 0 */
 #define M4_break_if0_ M4_i(33)      /* (break-if0)     followed by IP offset to jump if dtop == 0 */
-#undef M4____gap                    /*                                                            */
+#define M4_call_native_ M4_i(34)    /* (call-native)   followed by native code address. calls it. */
 #define M4_call_xt_ M4_i(35)        /* (call-xt)       followed by XT. calls it.                  */
 #define M4_catch_beg_ M4_i(36)      /* (catch-beg)     first  half of 'catch'                     */
 #define M4_catch_end_ M4_i(37)      /* (catch-end)     second half of 'catch'                     */
@@ -266,7 +266,7 @@
 #undef M4____gap                    /*                                                            */
 #undef M4____gap                    /*                                                            */
 #undef M4____gap                    /*                                                            */
-#define M4_exec_native_ M4_i(49)    /* (exec-native) pop native code address, execute it          */
+#undef M4____gap                    /*                                                            */
 #define M4_exec_token_ M4_i(50)     /* pop token, exec it. It must be 'inline' and not consume IP */
 #define M4_exec_xt_from_native_ M4_i(51) /* pop XT and execute it from native code  */
 #undef M4____gap                /*                                                            */
