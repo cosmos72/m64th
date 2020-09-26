@@ -257,13 +257,13 @@ LABEL(fill.large.loop)
         b.hs   TO(fill.large.loop);
         ADD2(IMM(64),  REG2)                    /* count  += 64                */
         ADD2(IMM(16),  REG1)                    /* c-addr += 16                */
-        JB(    REG2,   IMM(16), TO(fill.small.tail))
+        JB(    REG2,   IMM(16), TO(fill.small.tail)) /* jump if count < 16     */
 
 FUNC_ALIGN()
 LABEL(fill.small)
         SUB2(IMM(16),  REG2)                    /* count -= 16                 */
         stp    DTOP,   DTOP, AT(REG1), 16;      /* post-increment c-addr       */
-        JAE(   REG2,   IMM(16), TO(fill.small))
+        JAE(   REG2,   IMM(16), TO(fill.small)) /* loop while count >= 16      */
 
 LABEL(fill.small.tail)
         /* store 16 bytes at c-addr[u - 16] */
