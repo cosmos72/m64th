@@ -81,7 +81,7 @@ FUNC_END(div_mod)
 
 #define M4FZERO
 FUNC_START(zero)           /* 0    m4th-impl */
-        DPUSH( DTOP)
+        DPUSH__DTOP()
         ZERO(  DTOP)
 FUNC_END(zero)
 

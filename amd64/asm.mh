@@ -247,11 +247,14 @@
     STOR(reg, AT(DSTK, -SZ))                                                                       \
     SUB2(IMM(SZ), DSTK)
 
+#define DPUSH__DTOP() /* dup, i.e. push DTOP to second data stack element */                       \
+    DPUSH(DTOP)       /* currently not optimized */
+
 #define DPOP(reg) /* pop second data stack element into reg */                                     \
     LOAD(reg, AT(DSTK))                                                                            \
     ADD2(IMM(SZ), DSTK)
 
-#define DPOP___DTOP()        /* pop second data stack element into DTOP */                         \
+#define DPOP___DTOP()        /* drop, i.e. pop second data stack element into DTOP */              \
     lodsq /**/ (DSTK), DTOP; /* requires DSTK = %rsi, DTOP = %rax */
 
 #define DPOP2(reg1, reg2) /* pop 2nd, 3rd data stack elements into reg1, reg2 */                   \

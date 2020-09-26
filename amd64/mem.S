@@ -230,7 +230,7 @@ FUNC_RAWEND(crc_string_simd)
 FUNC_START(string_equal)   /* string=  ( addr1 addr2 u -- addr1 addr2 u t|f ) m4th-user */
         LOAD(  REG2,   AT(DSTK))       /* b = addr2 */
         LOAD(  REG1,   AT(DSTK, SZ))   /* a = addr1 */
-        DPUSH( DTOP)
+        DPUSH__DTOP()
         JEQ(   REG1,   REG2,    TO(string_equal.true))   /* addr1 == addr2 */
         JZ(    DTOP,            TO(string_equal.true))   /* u == 0         */
         ZERO(  REG4)

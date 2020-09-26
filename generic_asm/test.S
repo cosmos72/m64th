@@ -75,7 +75,7 @@ FUNC_END(do_i_plus_loop)
  */
 FUNC_START(test_crc_plus_native_forth)
         /* over */
-        DPUSH( DTOP)
+        DPUSH__DTOP()
         LOAD(  DTOP,   AT(DSTK, SZ))
         /* xor */
 #ifdef __x86_64__
@@ -94,7 +94,7 @@ FUNC_START(test_crc_plus_native_forth)
         /* cells */
         SHL2(  IMM(3), DTOP)
         /* _lit_cell_, CELL(m4th_crctable) */
-        DPUSH( DTOP)
+        DPUSH__DTOP()
         ADDROF_4G(m4th_crctable,  DTOP)
         /* plus */
         DPOP(  REG1)

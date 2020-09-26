@@ -23,7 +23,7 @@
 
 #ifndef M4F_LIT2S_
 FUNC_START(_lit2s_)        /* (lit-2s) push to dstack the int16 at following IP */
-        DPUSH( DTOP)
+        DPUSH__DTOP()
         LD_sh( DTOP,   AT(IP))
         NEXT2() /* skip 2 bytes */
 FUNC_RAWEND(_lit2s_)
@@ -31,7 +31,7 @@ FUNC_RAWEND(_lit2s_)
 
 #ifndef M4F_LIT4S_
 FUNC_START(_lit4s_)        /* (lit-4s) push to dstack the int32 at following IP */
-        DPUSH( DTOP)
+        DPUSH__DTOP()
         LD_sw( DTOP,   AT(IP))
         NEXT4() /* skip 4 bytes */
 FUNC_RAWEND(_lit4s_)
@@ -39,7 +39,7 @@ FUNC_RAWEND(_lit4s_)
 
 #ifndef M4F_LIT8S_
 FUNC_START(_lit8s_)        /* (lit-8s) push to dstack the int64 at following IP */
-        DPUSH( DTOP)
+        DPUSH__DTOP()
         LOAD(  DTOP,   AT(IP))
         NEXT8() /* skip 8 bytes */
 FUNC_RAWEND(_lit8s_)
@@ -47,7 +47,7 @@ FUNC_RAWEND(_lit8s_)
 
 #ifndef M4F_LIT_STRING_
 FUNC_START(_lit_string_)   /* (lit-string) push to dstack the SZt and ascii at following IP */
-        DPUSH( DTOP)
+        DPUSH__DTOP()
         LD_ut( DTOP,   AT(IP))         /* dtop = length                     */
         ADDI(  IP,     SZt,    REG1)   /* a  = c-addr                       */
         ADD4(  REG1,   DTOP,0, IP)     /* IP = c-addr + length              */
@@ -180,14 +180,14 @@ FUNC_END(minus)
 
 
 FUNC_START(minus_one)      /* -1   m4th-impl */
-        DPUSH( DTOP)
+        DPUSH__DTOP()
         MOVE(  IMM_1,  DTOP)
 FUNC_END(minus_one)
 
 
 #ifndef M4FZERO
 FUNC_START(zero)           /* 0   m4th-impl */
-        DPUSH( DTOP)
+        DPUSH__DTOP()
         ZERO(  DTOP)
 FUNC_END(zero)
 #endif
@@ -199,7 +199,7 @@ FUNC_END(zero_less)
 
 
 FUNC_START(one)            /* 1    m4th-impl */
-        DPUSH( DTOP)
+        DPUSH__DTOP()
         MOVI(  1,      DTOP)
 FUNC_END(one)
 
@@ -215,7 +215,7 @@ FUNC_END(one_minus)
 
 
 FUNC_START(two)            /* 2   m4th-impl */
-        DPUSH( DTOP)
+        DPUSH__DTOP()
         MOVI(  2,      DTOP)
 FUNC_END(two)
 
@@ -241,13 +241,13 @@ FUNC_END(two_div)
 
 
 FUNC_START(three)          /* 3   m4th-impl */
-        DPUSH( DTOP)
+        DPUSH__DTOP()
         MOVI(  3,      DTOP)
 FUNC_END(three)
 
 
 FUNC_START(four)           /* 4   m4th-impl */
-        DPUSH( DTOP)
+        DPUSH__DTOP()
         MOVI(  4,      DTOP)
 FUNC_END(four)
 
@@ -268,7 +268,7 @@ FUNC_END(four_div)
 
 
 FUNC_START(eight)          /* 8   m4th-impl */
-        DPUSH( DTOP)
+        DPUSH__DTOP()
         MOVI(  8,      DTOP)
 FUNC_END(eight)
 
@@ -290,7 +290,7 @@ FUNC_END(eight_div)
 
 FUNC_START(question_dup)   /* ?dup */
         JZ(    DTOP,   FUNC_NEXT(question_dup))
-        DPUSH( DTOP)
+        DPUSH__DTOP()
 FUNC_END(question_dup)
 
 
@@ -316,13 +316,13 @@ FUNC_END(and)
 
 
 FUNC_START(base)
-        DPUSH( DTOP)
+        DPUSH__DTOP()
         ADDI(  M4TH,   M4TH_OFF_BASE, DTOP)
 FUNC_END(base)
 
 
 FUNC_START(bl)
-        DPUSH( DTOP)
+        DPUSH__DTOP()
         MOVI(  32,     DTOP)
 FUNC_END(bl)
 
@@ -342,7 +342,7 @@ FUNC_END(drop)
 
 
 FUNC_START(depth)          /* ( -- n ) get stack depth */
-        DPUSH( DTOP)
+        DPUSH__DTOP()
         LOAD(  DTOP,   AT(M4TH, M4TH_OFF_DEND))
         SUB2(  DSTK,   DTOP)
         SAR2(  IMM(PSZ),   DTOP)
@@ -350,7 +350,7 @@ FUNC_END(depth)
 
 
 FUNC_START(dup)
-        DPUSH( DTOP)
+        DPUSH__DTOP()
 FUNC_END(dup)
 
 
@@ -362,7 +362,7 @@ FUNC_END(flip)
 
 
 FUNC_START(here)
-        DPUSH( DTOP)
+        DPUSH__DTOP()
         MOVE(  HERE,   DTOP)
 FUNC_END(here)
 
@@ -377,7 +377,7 @@ FUNC_END(invert)
  *   i' i
  */
 FUNC_START(j)
-        DPUSH( DTOP)
+        DPUSH__DTOP()
         LOAD(  DTOP,   AT(RSTK, SZ))
 FUNC_END(j)
 
@@ -404,7 +404,7 @@ FUNC_END(or)
 
 #ifndef M4FOVER
 FUNC_START(over)
-        DPUSH( DTOP)
+        DPUSH__DTOP()
         LOAD(  DTOP,   AT(DSTK, SZ))
 FUNC_END(over)
 #endif
@@ -418,13 +418,13 @@ FUNC_END(pick)
 
 /* hop ( a b c -- a b c a ) m4th-user equivalent to '2 pick' */
 FUNC_START(hop)
-        DPUSH( DTOP)
+        DPUSH__DTOP()
         LOAD(  DTOP,   AT(DSTK, SZ2))
 FUNC_END(hop)
 
 
 FUNC_START(rdepth)          /* ( -- n ) m4th-user get return stack depth */
-        DPUSH( DTOP)
+        DPUSH__DTOP()
         LOAD(  DTOP,   AT(M4TH, M4TH_OFF_REND))
         SUB2(  RSTK,   DTOP)
         SAR2(  IMM(PSZ),   DTOP)

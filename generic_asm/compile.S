@@ -25,7 +25,7 @@
 
 /** [#compiled] ( -- u ) code size i.e. # of tokens in XT being compiled  */
 FUNC_START(_num_compiled_)
-        DPUSH( DTOP)
+        DPUSH__DTOP()
 #ifdef __x86_64__
         MOVE(  HERE,       DTOP)                       /* dtop = here           */
         SUB2(  AT(M4TH, M4TH_OFF_XT),  DTOP)           /* dtop = here - m4th.xt */
@@ -66,7 +66,7 @@ FUNC_RAWEND(_lit_comma_)
  */
 FUNC_START(_compile_jump_lit_)
         LD_ut( REG1,       AT(IP))                     /* a = token                  */
-        DPUSH( DTOP)
+        DPUSH__DTOP()
         DPUSH( REG1)
         LD_ut( DTOP,       AT(IP, SZt))                /* dtop = category            */
         ADD2( IMM(SZt2),   IP)                         /* skip two m4token           */
@@ -99,7 +99,7 @@ FUNC_SIZE(_compile_jump_lit_)
  * Stops at colon-sys, throws if not found.
  */
 FUNC_START(_cs_find_lit_)    /* [cs-find] */
-        DPUSH( DTOP)               /* push dtop now: avoid special case cs-depth == 0 */
+        DPUSH__DTOP()              /* push dtop now: avoid special case cs-depth == 0 */
         LOAD(  REG2,       AT(M4TH, M4TH_OFF_DEND))    /* b = dstack_end              */
         LD_ut( REG1,       AT(IP))                     /* a = category                */
         SUB2(  DSTK,       REG2)                       /* b = dstack depth in bytes   */
@@ -209,7 +209,7 @@ FUNC_END(immediate)
 
 /* latest ( -- nt ) get last defined word */
 FUNC_START(latest)
-        DPUSH( DTOP)
+        DPUSH__DTOP()
         LOAD(  DTOP,   AT(M4TH, M4TH_OFF_LASTW))   /* nt = m4th.lastw       */
 FUNC_END(latest)
 
@@ -228,7 +228,7 @@ FUNC_END(set_latest)
 
 
 FUNC_START(state)
-        DPUSH( DTOP)
+        DPUSH__DTOP()
         ADDI(  M4TH, M4TH_OFF_XT, DTOP)                /* &m4th.xt is also used as STATE */
 FUNC_END(state)
 

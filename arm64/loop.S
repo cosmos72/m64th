@@ -37,7 +37,7 @@ FUNC_START(_plus_loop_)
          */
         ADD2(  REG2,   REG1)                           /* a = old i - i' + mincell    */
         adds   REG1,   REG1,   DTOP;                   /* a += delta, update flags    */
-        DPOP___DTOP()                                  /* arm64: does not alter flags */
+        DPOP___DTOP()                                  /* preserves condition flags   */
         b.vs           TO(_plus_loop_.leave);          /* jump if overflow            */
         RELJUMP()
 LABEL(_plus_loop_.leave)
@@ -85,7 +85,7 @@ FUNC_SIZE(_do_)
  */
 FUNC_START(_if_)
         cmp    DTOP, IMM(0);
-        DPOP___DTOP()
+        DPOP___DTOP()                /* preserves condition flags */
         b.ne   TO(_if_.enter);
         RELJUMP()
 LABEL(_if_.enter)
@@ -101,7 +101,7 @@ FUNC_RAWEND(_if_)
  */
 FUNC_START(_if0_)
         cmp    DTOP, IMM(0);
-        DPOP___DTOP()
+        DPOP___DTOP()                /* preserves condition flags */
         b.eq   TO(_if0_.enter)
         RELJUMP()
 LABEL(_if0_.enter)

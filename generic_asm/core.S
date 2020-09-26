@@ -26,7 +26,7 @@
   * i.e. the address of the (ip) m4token itself inside the code being executed
   */
 FUNC_START(_ip_)
-        DPUSH( DTOP)
+        DPUSH__DTOP()
         ADDI(  IP, -SZt,   DTOP)       /* IP actually points to next instruction: fix it */
 FUNC_END(_ip_)
 
@@ -38,7 +38,7 @@ FUNC_END(_ip_)
 FUNC_START(_ip_to_data_)
         ADDI(  IP, -SZt-WORD_OFF_XT,  REG1)           /* a = w                       */
         ADDI(  IP, -SZt,   REG2)                      /* b = w.code                  */
-        DPUSH( DTOP)
+        DPUSH__DTOP()
         LD_uh( REG3,       AT(REG1, WORD_OFF_CODE_N)) /* c = w.code_n                */
         LD_uw( DTOP,       AT(REG1, WORD_OFF_DATA_N)) /* dtop = w.data_n             */
         ADD4(  REG2, REG3, PSZt,   REG2)              /* b = w.code + w.code_n       */
@@ -53,7 +53,7 @@ FUNC_END(_ip_to_data_)
   */
 FUNC_START(_ip_to_data_addr_)
         ADDI(  IP, -SZt-WORD_OFF_XT,  REG1)           /* a = w                       */
-        DPUSH( DTOP)
+        DPUSH__DTOP()
         ADDI(  IP, -SZt,   DTOP)                      /* dtop = w.code               */
         LD_uh( REG3,       AT(REG1, WORD_OFF_CODE_N)) /* c = w.code_n                */
         ADD4(  DTOP, REG3, PSZt,   DTOP)              /* dtop = w.code + w.code_n    */
@@ -73,9 +73,9 @@ FUNC_END(ex_message_store)
 
 #ifndef M4FEX_STRING_FETCH
 FUNC_START(ex_message_fetch)
-        DPUSH( DTOP)
+        DPUSH__DTOP()
         LOAD(  DTOP,   AT(M4TH, M4TH_OFF_EX_STRING_ADDR))
-        DPUSH( DTOP)
+        DPUSH__DTOP()
         LOAD(  DTOP,   AT(M4TH, M4TH_OFF_EX_STRING_N))
 FUNC_END(ex_message_fetch)
 #endif /* M4FEX_STRING_FETCH */
@@ -108,7 +108,7 @@ FUNC_END(flags_to_consumed_tokens)
 
 /* get-current ( -- wid ) forth 'search order' word set */
 FUNC_START(get_current)
-        DPUSH( DTOP)
+        DPUSH__DTOP()
         LOAD(  DTOP,   AT(M4TH, M4TH_OFF_COMPILE_WID))
 FUNC_END(get_current)
 
@@ -219,7 +219,7 @@ FUNC_END(searchorder_i)
 
 /* searchorder-n ( -- addr ) get address of searchorder count */
 FUNC_START(searchorder_n)
-        DPUSH( DTOP)
+        DPUSH__DTOP()
         ADDI(  M4TH,   M4TH_OFF_SEARCHORDER, DTOP)
 FUNC_END(searchorder_n)
 
@@ -244,7 +244,7 @@ FUNC_END(token_to_name)
 
 /* user-var ( -- addr ) must be followed by index. get address of i-th user variable  */
 FUNC_START(user_var)
-        DPUSH( DTOP)
+        DPUSH__DTOP()
         LD_ut( REG1,       AT(IP)) /* a = index */
 #if M4TH_OFF_USER != 0
         ADD2(  IMM(M4TH_OFF_USER/SZ), REG1)
@@ -255,7 +255,7 @@ FUNC_RAWEND(user_var)
 
 
 FUNC_START(wordlist_add) /* ( nt wid -- ) add name to wordlist */
-        DPUSH( DTOP)                                   /* ( nt wid wid            */
+        DPUSH__DTOP()                                  /* ( nt wid wid            */
         ASM_CALL(      FUNC(wordlist_last))            /* ( dtop = prevnt         */
         LOAD(  REG1,   AT(DSTK, SZ))                   /* a = nt                  */
         JZ(    DTOP,   TO(wordlist_add.prevnt))

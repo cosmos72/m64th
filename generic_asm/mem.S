@@ -34,7 +34,7 @@ FUNC_END(c_store)
 FUNC_START(count)          /* count */
         LD_ub( REG1,   AT(DTOP))
         INC1(  DTOP)
-        DPUSH( DTOP)
+        DPUSH__DTOP()
         MOVE(  REG1,   DTOP)
 FUNC_END(count)
 
@@ -117,7 +117,7 @@ FUNC_END(two_fetch)
 
 /* crc-cell ( x -- crc ) m4th-user: compute CRC32c of a cell */
 FUNC_START(crc_cell)
-        DPUSH( DTOP)                       /* ( x _                  ) */
+        DPUSH__DTOP()                      /* ( x _                  ) */
         STOR(  DSTK,   AT(DSTK, -SZ))
         SUB2( IMM(SZ), DSTK)               /* ( x &x _               ) */
         MOVE( IMM(SZ), DTOP)               /* ( x &x SZ              ) */
@@ -225,7 +225,7 @@ FUNC_RAWEND(minus_two_roll)
 FUNC_START(string_ci_equal)
         LOAD(  REG2,   AT(DSTK))       /* b = addr2 */
         LOAD(  REG1,   AT(DSTK, SZ))   /* a = addr1 */
-        DPUSH( DTOP)
+        DPUSH__DTOP()
         JEQ(   REG1,   REG2,    TO(string_ci_equal.true))   /* addr1 == addr2 */
         JZ(    DTOP,            TO(string_ci_equal.true))   /* u == 0         */
         ZERO(  REG0)

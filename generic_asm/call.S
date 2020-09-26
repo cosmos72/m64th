@@ -110,7 +110,7 @@ LABEL(_catch_end_.thrown)
 
 LABEL(_catch_end_.push)
         /* final touch: push REG2 to dstk */
-        DPUSH( DTOP)
+        DPUSH__DTOP()
         MOVE(  REG2,   DTOP)                         /* ( exception | 0          ) */
 FUNC_END(_catch_end_)
 

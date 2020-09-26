@@ -68,7 +68,7 @@ FUNC_END(noop)
 
 
 FUNC_START(dup)
-    DPUSH(DTOP)
+    DPUSH__DTOP()
 FUNC_END(dup)
 
 

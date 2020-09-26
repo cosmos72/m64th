@@ -236,7 +236,7 @@ FUNC_END(crc_string_simd)
 
 FUNC_START(string_equal)   /* string=  ( addr1 addr2 u -- addr1 addr2 u t|f ) m4th-user */
         ldp    REG2,   REG1,    AT(DSTK);                /* b = addr2, a = addr1 */
-        DPUSH( DTOP)
+        DPUSH__DTOP()
         JEQ(   REG1,   REG2,    TO(string_equal.true))   /* addr1 == addr2 */
         JZ(    DTOP,            TO(string_equal.true))   /* u == 0         */
         ZERO(  REG0)

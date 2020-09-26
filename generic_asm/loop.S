@@ -96,7 +96,7 @@ FUNC_END(two_to_r)
 #ifndef M4FTWO_R_FROM
 FUNC_START(two_r_from)         /* 2r>      */
         RPOP(  REG1)
-        DPUSH( DTOP)
+        DPUSH__DTOP()
         MOVE(  RTOP,       DTOP)
         DPUSH( REG1)
         RPOP(  RTOP)
@@ -135,7 +135,7 @@ FUNC_END(dup_to_r)
 
 
 FUNC_START(i)                  /* i and r@ */
-        DPUSH( DTOP)
+        DPUSH__DTOP()
         MOVE(  RTOP, DTOP)
 FUNC_END(i)
 
@@ -156,7 +156,7 @@ FUNC_END(i_minus)
 
 
 FUNC_START(i_prime)            /* i' and r2nd@ m4th-user */
-        DPUSH( DTOP)
+        DPUSH__DTOP()
         LOAD(  DTOP, AT(RSTK))
 FUNC_END(i_prime)
 
@@ -174,7 +174,7 @@ FUNC_END(r_plus)
 
 
 FUNC_START(r_from)             /* r> */
-        DPUSH( DTOP)
+        DPUSH__DTOP()
         MOVE(  RTOP, DTOP)
         RPOP(  RTOP)
 FUNC_END(r_from)

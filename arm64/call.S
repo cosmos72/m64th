@@ -74,7 +74,7 @@ FUNC_RAWEND(_vm_)
  */
 FUNC_START(bye)
         RPUSH( RTOP)                            /* save first return stack element */
-        DPUSH( DTOP)                            /* save first data   stack element */
+        DPUSH__DTOP()                           /* save first data   stack element */
         STOR(  HERE, AT(M4TH, M4TH_OFF_HERE))   /* save HERE pointer               */
         STOR(  FTBL, AT(M4TH, M4TH_OFF_FTABLE)) /* save table m4token -> m4func    */
         STOR(  IP,   AT(M4TH, M4TH_OFF_IP))     /* save instruction  pointer       */
@@ -99,7 +99,7 @@ FUNC_RAWEND(bye)
 
 /* pop 0 args, prepare for C function call */
 FUNC_START(_c_arg_0_)
-        DPUSH( DTOP) /* c-ret-[N] will reload DTOP */
+        DPUSH__DTOP() /* c-ret-[N] will reload DTOP */
 FUNC_END(_c_arg_0_)
 
 

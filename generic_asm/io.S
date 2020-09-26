@@ -27,13 +27,13 @@ FUNC_START(emit)
         LOAD(  REG1,   AT(M4TH, M4TH_OFF_OUT))         /* a = io                 */
         DPUSH( REG1)                                   /* dstk ( io ch         ) */
         ASM_CALL(      FUNC(obuf_write_char))          /* dstk ( err           ) */
-        DPOP___DTOP()                                    /* dstk (               ) */
+        DPOP___DTOP()                                  /* dstk (               ) */
 FUNC_END(emit)
 
 
 /* in>ibuf ( -- io ) get current input as iobuf */
 FUNC_START(in_to_ibuf)
-        DPUSH( DTOP)
+        DPUSH__DTOP()
         LOAD(  DTOP,   AT(M4TH, M4TH_OFF_IN))
 FUNC_END(in_to_ibuf)
 
@@ -56,9 +56,9 @@ FUNC_END(iobuf_all_data)
 FUNC_START(iobuf_data)
         LOAD(  REG1,   AT(DTOP, IOBUF_OFF_ADDR))   /* a = iobuf.addr    */
         LOAD(  REG2,   AT(DTOP, IOBUF_OFF_POS))    /* b = iobuf.pos     */
-        LOAD(  DTOP,   AT(DTOP, IOBUF_OFF_END))    /* dtop = iobuf.end */
+        LOAD(  DTOP,   AT(DTOP, IOBUF_OFF_END))    /* dtop = iobuf.end  */
         ADD2(  REG2,   REG1)     /* a = c-addr = iobuf.addr + iobuf.pos */
-        SUB2(  REG2,   DTOP)     /* dtop =  u  = iobuf.end - iobuf.pos */
+        SUB2(  REG2,   DTOP)     /* dtop =  u  = iobuf.end - iobuf.pos  */
         DPUSH( REG1)
 FUNC_END(iobuf_data)
 
@@ -122,7 +122,7 @@ FUNC_END(iobuf_end)
 
 /* ( -- char ) receive one character */
 FUNC_START(key)
-        DPUSH( DTOP)
+        DPUSH__DTOP()
         LOAD(  REG1,   AT(M4TH, M4TH_OFF_IN))
         LOAD(  REG2,   AT(REG1, IOBUF_OFF_POS))
         LOAD(  REG3,   AT(REG1, IOBUF_OFF_END))
@@ -157,7 +157,7 @@ FUNC_START(obuf_write_char)
 LABEL(obuf_write_char.slow)
         /* not enough space, call forth word (obuf-flush-write-char) */
         ADDROF_4G( WORD_SYM(_obuf_flush_write_char_), REG2) /* b = word           */
-        DPUSH( DTOP)                                   /* dstk ( io ch _        ) */
+        DPUSH__DTOP()                                  /* dstk ( io ch _        ) */
         ADDI(  REG2,   WORD_OFF_XT, DTOP)              /* dstk ( io ch xt       ) */
         JUMP(  FUNC(_exec_xt_from_native_))            /* dstk ( err            ) */
 FUNC_RAWEND(obuf_write_char)
@@ -182,13 +182,13 @@ FUNC_START(obuf_write_string)
         STOR(  REG1,   AT(DSTK))                       /* ( io dst u            ) */
         STOR(  REG2,   AT(DSTK, SZ))                   /* ( c-addr dst u        ) */
         ASM_CALL(      FUNC(cmove))                    /* (                     ) */
-        DPUSH( DTOP)                                   /* ( _                   ) */
+        DPUSH__DTOP()                                  /* ( _                   ) */
         ZERO(  DTOP)                                   /* ( 0                   ) */
         NEXT0()
 LABEL(obuf_write_string.slow)
         /* not enough space, call forth word (obuf-flush-write-string) */
         ADDROF_4G( WORD_SYM(_obuf_flush_write_string_), REG2) /* b = word           */
-        DPUSH( DTOP)                                   /* dstk ( io c-addr u _    ) */
+        DPUSH__DTOP()                                  /* dstk ( io c-addr u _    ) */
         ADDI(  REG2,   WORD_OFF_XT, DTOP)              /* dstk ( io c-addr u xt   ) */
         JUMP(  FUNC(_exec_xt_from_native_))            /* dstk ( err              ) */
 FUNC_END(obuf_write_string)
@@ -196,7 +196,7 @@ FUNC_END(obuf_write_string)
 
 /* out>obuf ( -- io ) get current output as iobuf */
 FUNC_START(out_to_obuf)
-        DPUSH( DTOP)
+        DPUSH__DTOP()
         LOAD(  DTOP,   AT(M4TH, M4TH_OFF_OUT))
 FUNC_END(out_to_obuf)
 
@@ -208,5 +208,5 @@ FUNC_START(type)
         STOR(  REG1,   AT(DSTK))                       /* dstk ( io u          ) */
         DPUSH( REG2)                                   /* dstk ( io c-addr u   ) */
         ASM_CALL(      FUNC(obuf_write_string))        /* dstk ( err           ) */
-        DPOP___DTOP()                                    /* dstk (               ) */
+        DPOP___DTOP()                                  /* dstk (               ) */
 FUNC_END(type)

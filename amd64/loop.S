@@ -91,11 +91,10 @@ FUNC_SIZE(_do_)
  */
 FUNC_START(_if_)
         test   DTOP, DTOP;
+        DPOP___DTOP()              /* preserves EFLAGS        */
         jnz    TO(_if_.enter);
-        DPOP___DTOP()              /* affects EFLAGS          */
         RELJUMP()
 LABEL(_if_.enter)
-        DPOP___DTOP()              /* affects EFLAGS          */
         NEXTT()                    /* skip IP offset          */
 FUNC_RAWEND(_if_)
 
@@ -107,11 +106,10 @@ FUNC_RAWEND(_if_)
  */
 FUNC_START(_if0_)
         test   DTOP, DTOP;
+        DPOP___DTOP()              /* preserves EFLAGS        */
         jz     TO(_if0_.enter);
-        DPOP___DTOP()              /* affects EFLAGS          */
         RELJUMP()
 LABEL(_if0_.enter)
-        DPOP___DTOP()              /* affects EFLAGS          */
         NEXTT()                    /* skip IP offset          */
 FUNC_RAWEND(_if0_)
 
