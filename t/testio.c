@@ -62,32 +62,6 @@ static const m4testio testio_a[] = {
      {{1, {tfalse}}, {}},
      {" ", ""},
      {" ", ""}},
-    {"\"123\" iobuf>data 'a' fill",
-     {m4in_to_ibuf, m4iobuf_data, m4_lit2s_, T('a'), m4fill, m4bye},
-     {{}, {}},
-     {{}, {}},
-     {"123", ""},
-     {"aaa", ""}},
-    {"\"123456789012345\" iobuf>data 'b' fill",
-     {m4in_to_ibuf, m4iobuf_data, m4_lit2s_, T('b'), m4fill, m4bye},
-     {{}, {}},
-     {{}, {}},
-     {"123456789012345", ""},
-     {"bbbbbbbbbbbbbbb", ""}},
-    {"\"1234567890123456\" iobuf>data 'c' fill",
-     {m4in_to_ibuf, m4iobuf_data, m4_lit2s_, T('c'), m4fill, m4bye},
-     {{}, {}},
-     {{}, {}},
-     {"1234567890123456", ""},
-     {"cccccccccccccccc", ""}},
-#if 0
-    {"\"12345678901234567890123456789012345678901234567890123456789012345\" iobuf>data 'd' fill",
-     {m4in_to_ibuf, m4iobuf_data, m4_lit2s_, T('d'), m4fill, m4bye},
-     {{}, {}},
-     {{}, {}},
-     {"12345678901234567890123456789012345678901234567890123456789012345", ""},
-     {"ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd", ""}},
-#endif // 0
     /* ------------------------- ibuf --------------------------------------- */
     {"ibuf-skip-blanks",
      {m4in_to_ibuf, CALL(ibuf_skip_blanks), m4bye},
@@ -237,7 +211,35 @@ static const m4testio testio_b[] = {
     {"s\"", {CALL(s_quote), m4bye}, {{}, {}}, {{}, {}}, {" fubar\"", ""}, {"", ""}},
 };
 
+/* these require higher ibuf capacity */
 static const m4testio testio_c[] = {
+    {"\"123\" iobuf>data 'a' fill",
+     {m4in_to_ibuf, m4iobuf_data, m4_lit2s_, T('a'), m4fill, m4bye},
+     {{}, {}},
+     {{}, {}},
+     {"123", ""},
+     {"aaa", ""}},
+    {"\"123456789012345\" iobuf>data 'b' fill",
+     {m4in_to_ibuf, m4iobuf_data, m4_lit2s_, T('b'), m4fill, m4bye},
+     {{}, {}},
+     {{}, {}},
+     {"123456789012345", ""},
+     {"bbbbbbbbbbbbbbb", ""}},
+    {"\"1234567890123456\" iobuf>data 'c' fill",
+     {m4in_to_ibuf, m4iobuf_data, m4_lit2s_, T('c'), m4fill, m4bye},
+     {{}, {}},
+     {{}, {}},
+     {"1234567890123456", ""},
+     {"cccccccccccccccc", ""}},
+    {"\"12345678901234567890123456789012345678901234567890123456789012345\" iobuf>data 'd' fill",
+     {m4in_to_ibuf, m4iobuf_data, m4_lit2s_, T('d'), m4fill, m4bye},
+     {{}, {}},
+     {{}, {}},
+     {"12345678901234567890123456789012345678901234567890123456789012345", ""},
+     {"ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd", ""}},
+};
+
+static const m4testio testio_d[] = {
     /* ------------------------- interpret ---------------------------------- */
     {"interpret", {CALL(interpret), m4bye}, {{}, {}}, {{1, {3}}, {}}, {" 3 2", ""}, {" 2", ""}},
     /* ------------------------- repl --------------------------------------- */
@@ -280,13 +282,13 @@ static const m4cell m4ibuf_with_counteddata_read_w[m4test_code_n] = {
 
 static m4token m4ibuf_with_counteddata_read[m4test_code_n];
 
-static void m4ibuf_with_counteddata_init(m4iobuf *in) {
+static void m4ibuf_with_counteddata_init(m4iobuf *in, m4ucell capacity) {
     /* reuse part of in->addr buffer as m4counteddata */
-    m4counteddata *d = (m4counteddata *)(in->addr + SZ2);
+    m4counteddata *d = (m4counteddata *)(in->addr + capacity);
     d->n = 0;
     in->handle = (m4cell)d;
     in->func = m4ibuf_with_counteddata_read;
-    in->max = SZ2; /* reduce capacity to trigger iobuf refill */
+    in->max = capacity; /* reduced capacity is used to trigger iobuf refill */
 }
 
 static m4cell m4ibuf_with_counteddata_equal(const m4iobuf *io, const char *cstr) {
@@ -466,13 +468,13 @@ static void m4testio_failed(const m4th *m, const m4testio *t, FILE *out) {
     fputc('\n', out);
 }
 
-static void m4testio_bunch(m4th *m, const m4testio bunch[], m4cell n, m4testcount *count,
-                           FILE *out) {
+static void m4testio_bunch(m4th *m, const m4testio bunch[], m4cell n, m4testcount *count, FILE *out,
+                           m4ucell ibuf_capacity) {
     const m4iobuf ibuf = *m->in, obuf = *m->out;
     m4countedcode countedcode = {m4test_code_n, {}};
     m4cell i, fail = 0;
 
-    m4ibuf_with_counteddata_init(m->in);
+    m4ibuf_with_counteddata_init(m->in, ibuf_capacity);
     m4obuf_with_counteddata_init(m->out);
 
     for (i = 0; i < n; i++) {
@@ -491,9 +493,10 @@ static void m4testio_bunch(m4th *m, const m4testio bunch[], m4cell n, m4testcoun
 m4cell m4th_testio(m4th *m, FILE *out) {
     m4testcount count = {};
     m4testio_global_init();
-    m4testio_bunch(m, testio_a, N_OF(testio_a), &count, out);
-    m4testio_bunch(m, testio_b, N_OF(testio_b), &count, out);
-    m4testio_bunch(m, testio_c, N_OF(testio_c), &count, out);
+    m4testio_bunch(m, testio_a, N_OF(testio_a), &count, out, SZ2);
+    m4testio_bunch(m, testio_b, N_OF(testio_b), &count, out, SZ2);
+    m4testio_bunch(m, testio_c, N_OF(testio_c), &count, out, 80);
+    m4testio_bunch(m, testio_d, N_OF(testio_d), &count, out, SZ2);
 
     if (out != NULL) {
         if (count.failed == 0) {
