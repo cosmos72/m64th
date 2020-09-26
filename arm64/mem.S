@@ -233,9 +233,58 @@ LABEL(crc_string_simd.0)
         NOT2(  REG3w,  DTOPw)
 FUNC_END(crc_string_simd)
 
-FUNC_START(fill) /* fill  ( c-addr u char -- ) core */
-        /* TODO */
+
+/* fill ( c-addr u char -- ) core */
+FUNC_START(fill)
+        LOAD(  REG1,   AT(DSTK, SZ))            /* a = c-addr                  */
+        LOAD(  REG2,   AT(DSTK))                /* b = u = count               */
+        and    DTOPw,  DTOPw,   IMM(255);
+        orr    DTOPw,  DTOPw,   DTOPw,  lsl 8;
+        orr    DTOPw,  DTOPw,   DTOPw,  lsl 16;
+        orr    DTOP,   DTOP,    DTOP,   lsl 32; /* DTOP = ch<<56|ch<<48 ... | ch<<8|ch */
+        JBE(   REG2,   IMM(15), TO(fill.tiny))
+        JBE(   REG2,   IMM(63), TO(fill.small))
+
+        SUB2(IMM(16),  REG1)                    /* c-addr -= 16                */
+        SUB2(IMM(64),  REG2)                    /* count  -= 64                */
+FUNC_ALIGN()
+LABEL(fill.large.loop)
+        stp    DTOP,   DTOP, AT(REG1, 16);
+        stp    DTOP,   DTOP, AT(REG1, 32);
+        stp    DTOP,   DTOP, AT(REG1, 48);
+        stp    DTOP,   DTOP, [REG1, 64]!;       /* pre-increment c-addr        */
+        subs   REG2,   REG2, IMM(64);           /* count -= 64; update flags   */
+        b.hs   TO(fill.large.loop);
+        ADD2(IMM(16),  REG1)                    /* c-addr += 16                */
+        ADD2(IMM(64),  REG2)                    /* count  += 64                */
+
+LABEL(fill.small)
+        SUB2(IMM(16),  REG2)                    /* count -= 16                 */
+        stp    DTOP,   DTOP, AT(REG1), 16;      /* post-increment c-addr       */
+        JAE(   REG2,   IMM(16), TO(fill.small))
+
+        /* store 16 bytes at c-addr[u - 16] */
+        add    REG1,   REG2, IMM(-16);
+        stp    DTOP,   DTOP, AT(REG1);
+        JUMP(  TO(fill.done))
+
+LABEL(fill.tiny)
+        tbz    REG2,   IMM(3),  TO(fill.upto7); /* jump if count & (1<<3) == 0 */
+        str    DTOP,   AT(REG1),  8;
+LABEL(fill.upto7)
+        tbz    REG2,   IMM(2),  TO(fill.upto3); /* jump if count & (1<<2) == 0 */
+        str    DTOPw,  AT(REG1),  4;
+LABEL(fill.upto3)
+        tbz    REG2,   IMM(1),  TO(fill.upto1); /* jump if count & (1<<1) == 0 */
+        strh   DTOPh,  AT(REG1),  2;
+LABEL(fill.upto1)
+        tbz    REG2,   IMM(0),  TO(fill.done);  /* jump if count & (1<<0) == 0 */
+        strb   DTOPb,  AT(REG1);
+LABEL(fill.done)
+        LOAD(  DTOP,   AT(DSTK, SZ2))
+        ADD2(IMM(SZ3), DSTK)
 FUNC_END(fill)
+
 
 FUNC_START(string_equal)   /* string=  ( addr1 addr2 u -- addr1 addr2 u t|f ) m4th-user */
         ldp    REG2,   REG1,    AT(DSTK);                /* b = addr2, a = addr1 */

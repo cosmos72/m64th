@@ -36,9 +36,9 @@
 #define AT_xy(addr, i, shift)           ATxy(addr, i, shift)
 #define AT_(addr, i, shift, kind, ...)  AT_##kind(addr, i, shift)
 /**
- * expand AT(reg)            -> AT0 (reg)
- * expand AT(reg, imm)       -> ATx (reg, imm)
- * expand AT(reg1,reg2,rmul) -> ATxy(reg1,reg2,rmul)
+ * expand AT(reg)            -> AT_0 (reg)
+ * expand AT(reg, imm)       -> AT_x (reg, imm)
+ * expand AT(reg1,reg2,rmul) -> AT_xy(reg1,reg2,rmul)
  */
 #define AT(...)                         AT_(__VA_ARGS__, xy, x, 0)
 
