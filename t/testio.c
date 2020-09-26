@@ -62,6 +62,14 @@ static const m4testio testio_a[] = {
      {{1, {tfalse}}, {}},
      {" ", ""},
      {" ", ""}},
+#ifdef __x86_64__
+    {"\"foo\" iobuf>data 'x' fill",
+     {m4in_to_ibuf, m4iobuf_data, m4_lit2s_, T('x'), m4fill, m4bye},
+     {{}, {}},
+     {{}, {}},
+     {"foo", ""},
+     {"xxx", ""}},
+#endif // __x86_64__
     /* ------------------------- ibuf --------------------------------------- */
     {"ibuf-skip-blanks",
      {m4in_to_ibuf, CALL(ibuf_skip_blanks), m4bye},
