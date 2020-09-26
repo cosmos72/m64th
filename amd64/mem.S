@@ -238,6 +238,7 @@ FUNC_START(fill)
         LOAD(  %rcx,   AT(DSTK))       /* b {%rcx} = u               */
         MOVE(  RSTK,   REG1)           /* a = RSTK {%rdi}            */
         LOAD(  %rdi,   AT(DSTK, SZ))   /* %rdi = c-addr              */
+        cld;                           /* forward direction          */
         rep stosb %al, (%rdi);
         MOVE(  REG1,   RSTK)           /* restore RSTK               */
         LOAD(  DTOP,   AT(DSTK, SZ2))  /* reload DTOP                */
