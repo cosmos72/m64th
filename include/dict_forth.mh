@@ -76,6 +76,7 @@
     X(4, "emit", emit)                                                                             \
     X(7, "execute", execute)                                                                       \
     X(4, "exit", exit)                                                                             \
+    X(4, "fill", fill)                                                                             \
     X(4, "here", here)                                                                             \
     X(1, "i", i)                                                                                   \
     X(9, "immediate", immediate)                                                                   \

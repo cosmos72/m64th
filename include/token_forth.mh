@@ -105,7 +105,7 @@
 #undef M4evaluate /*75*/          /* evaluate */
 #define M4execute 76              /* execute  */
 #define M4exit 77                 /* exit     */
-#undef M4fill /*78*/              /* fill     */
+#define M4fill 78                 /* fill     */
 #undef M4find /*79*/              /* find     implemented in forth, no dedicated m4token */
 #define M4f_m_div_mod 80          /* fm/mod   */
 #define M4here 81                 /* here     */

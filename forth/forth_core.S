@@ -326,7 +326,8 @@ WORD_START(exit, execute)
    /* make inliner happy: it skips the final 'exit' of a word's code when inlining */
     WORD_CODE(exit, exit)
 WORD_END(exit)
-WORD(here,             exit,       DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
+WORD(fill,             exit,       DSTACK(3,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE)
+WORD(here,             fill,       DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 WORD(i,                here,       DSTACK(0,1), RSTACK(1,1), WORD_R_PURE)
 WORD_START(if, i)
     WORD_DSTACK(0,2)  /* stack effect when compiling */

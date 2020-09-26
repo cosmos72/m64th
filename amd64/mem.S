@@ -192,23 +192,22 @@ LABEL(crc_string_simd.small)
         lea    TO(crc_string_simd.jumps)(%rip), REG4
         ADD2(  REG2,       REG3)           /* c = c-addr + u           */
         SUB2(  REG1,       REG2)           /* b = left = u - i         */
+        ADD4(  REG4, REG2, 1, REG4) /* each jmp below occupies 2 bytes */
         ADD2(  IMM(8),     DSTK)
-        jmp    *(REG4, REG2, SZ);
 
-LABEL(crc_string_simd.5)
-        crc32b -5(REG3),   DTOPw;
-LABEL(crc_string_simd.4)
-        crc32l -4(REG3),   DTOPw;
-        NOT1(  DTOPw)
-        ASM_RET()
+        jmp    *REG4;
 
-LABEL(crc_string_simd.6)
-        crc32l -6(REG3),   DTOPw;
-LABEL(crc_string_simd.2)
-        crc32w -2(REG3),   DTOPw;
-LABEL(crc_string_simd.0)
-        NOT1(  DTOPw)
-        ASM_RET()
+LABEL(crc_string_simd.jumps)
+        /* a jump table containing absolute addresses would cause      */
+        /* linker warning: relocation in read-only section `.text'     */
+        jmp    TO(crc_string_simd.0)
+        jmp    TO(crc_string_simd.1)
+        jmp    TO(crc_string_simd.2)
+        jmp    TO(crc_string_simd.3)
+        jmp    TO(crc_string_simd.4)
+        jmp    TO(crc_string_simd.5)
+        jmp    TO(crc_string_simd.6)
+        /* jmp    TO(crc_string_simd.7) */ /* fallthrough */
 
 LABEL(crc_string_simd.7)
         crc32l -7(REG3),   DTOPw;
@@ -218,14 +217,24 @@ LABEL(crc_string_simd.1)
         crc32b -1(REG3),   DTOPw;
         NOT1(  DTOPw)
         ASM_RET()
-
-LABEL(crc_string_simd.jumps)
-        .8byte TO(crc_string_simd.0), TO(crc_string_simd.1);
-        .8byte TO(crc_string_simd.2), TO(crc_string_simd.3);
-        .8byte TO(crc_string_simd.4), TO(crc_string_simd.5);
-        .8byte TO(crc_string_simd.6), TO(crc_string_simd.7);
+LABEL(crc_string_simd.5)
+        crc32b -5(REG3),   DTOPw;
+LABEL(crc_string_simd.4)
+        crc32l -4(REG3),   DTOPw;
+        NOT1(  DTOPw)
+        ASM_RET()
+LABEL(crc_string_simd.6)
+        crc32l -6(REG3),   DTOPw;
+LABEL(crc_string_simd.2)
+        crc32w -2(REG3),   DTOPw;
+LABEL(crc_string_simd.0)
+        NOT1(  DTOPw)
+        ASM_RET()
 FUNC_RAWEND(crc_string_simd)
 
+FUNC_START(fill) /* fill  ( c-addr u char -- ) core */
+        /* TODO */
+FUNC_END(fill)
 
 FUNC_START(string_equal)   /* string=  ( addr1 addr2 u -- addr1 addr2 u t|f ) m4th-user */
         LOAD(  REG2,   AT(DSTK))       /* b = addr2 */

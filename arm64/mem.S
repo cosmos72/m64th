@@ -233,6 +233,9 @@ LABEL(crc_string_simd.0)
         NOT2(  REG3w,  DTOPw)
 FUNC_END(crc_string_simd)
 
+FUNC_START(fill) /* fill  ( c-addr u char -- ) core */
+        /* TODO */
+FUNC_END(fill)
 
 FUNC_START(string_equal)   /* string=  ( addr1 addr2 u -- addr1 addr2 u t|f ) m4th-user */
         ldp    REG2,   REG1,    AT(DSTK);                /* b = addr2, a = addr1 */
