@@ -242,8 +242,8 @@ FUNC_START(fill)
         orr    DTOPw,  DTOPw,   DTOPw,  lsl 8;
         orr    DTOPw,  DTOPw,   DTOPw,  lsl 16;
         orr    DTOP,   DTOP,    DTOP,   lsl 32; /* DTOP = ch<<56|ch<<48 ... | ch<<8|ch */
-        JBE(   REG2,   IMM(15), TO(fill.tiny))
-        JBE(   REG2,   IMM(63), TO(fill.small))
+        JB(    REG2,   IMM(16), TO(fill.tiny))
+        JB(    REG2,   IMM(64), TO(fill.small))
 
         SUB2(IMM(16),  REG1)                    /* c-addr -= 16                */
         SUB2(IMM(64),  REG2)                    /* count  -= 64                */
@@ -255,14 +255,17 @@ LABEL(fill.large.loop)
         stp    DTOP,   DTOP, [REG1, 64]!;       /* pre-increment c-addr        */
         subs   REG2,   REG2, IMM(64);           /* count -= 64; update flags   */
         b.hs   TO(fill.large.loop);
-        ADD2(IMM(16),  REG1)                    /* c-addr += 16                */
         ADD2(IMM(64),  REG2)                    /* count  += 64                */
+        ADD2(IMM(16),  REG1)                    /* c-addr += 16                */
+        JB(    REG2,   IMM(16), TO(fill.small.tail))
 
+FUNC_ALIGN()
 LABEL(fill.small)
         SUB2(IMM(16),  REG2)                    /* count -= 16                 */
         stp    DTOP,   DTOP, AT(REG1), 16;      /* post-increment c-addr       */
         JAE(   REG2,   IMM(16), TO(fill.small))
 
+LABEL(fill.small.tail)
         /* store 16 bytes at c-addr[u - 16] */
         add    REG1,   REG1, REG2;              /* a = c-addr + u              */
         stp    DTOP,   DTOP, AT(REG1, IMM(-16));
