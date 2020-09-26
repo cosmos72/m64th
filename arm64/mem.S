@@ -264,8 +264,8 @@ LABEL(fill.small)
         JAE(   REG2,   IMM(16), TO(fill.small))
 
         /* store 16 bytes at c-addr[u - 16] */
-        add    REG1,   REG2, IMM(-16);
-        stp    DTOP,   DTOP, AT(REG1);
+        add    REG1,   REG1, REG2;              /* a = c-addr + u              */
+        stp    DTOP,   DTOP, AT(REG1, IMM(-16));
         JUMP(  TO(fill.done))
 
 LABEL(fill.tiny)
