@@ -804,8 +804,19 @@ WORD_START(_defer_uninitialized_, _num_compiled_)
     WORD_FLAGS(0)
     WORD_CODE(_lit2s_, SHORT(M4ERR_DEFER_UNINITIALIZED), throw, exit)
 WORD_END(_defer_uninitialized_)
+/* ( -- ) replace execution semantics of latest word */
+WORD_START(_does_, _defer_uninitialized_)
+    WORD_DSTACK(0,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY)
+    WORD_CODE(
+        exit
+    )
+WORD_END(_does_)
 /* ( sys -- ) finish compiling a word, make it findable */
-WORD_START(_finish_, _defer_uninitialized_)
+WORD_START(_finish_, _does_)
     WORD_DSTACK(2,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -1036,6 +1047,22 @@ WORD_START(_throw_compile_only_xt_, _resolve_loop_)
         exit
     )
 WORD_END(_throw_compile_only_xt_)
+/* ( -- ) throws M4ERR_INTERPRETING_COMPILE_ONLY_WORD if not in compile mode */
+WORD_START(_throw_if_not_compiling_, _throw_compile_only_xt_)
+    WORD_STACK_NONE() /* stack effect when not jumping */
+    WORD_DSTACK(0,0)  /* stack effect when jumping */
+    WORD_RSTACK(0,0)
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MAY_JUMP)
+    WORD_CODE(
+        /* state @ 0=
+         * M4ERR_INTERPRETING_COMPILE_ONLY_WORD and throw
+         */
+        state, fetch, zero_equal,
+        _lit_, T(M4ERR_INTERPRETING_COMPILE_ONLY_WORD), and, throw,
+        exit
+    )
+WORD_END(_throw_if_not_compiling_)
 WORD(minus_one,_throw_compile_only_xt_,DSTACK(0,1), RSTACK(0,0), WORD_PURE)
 WORD(zero,             minus_one,      DSTACK(0,1), RSTACK(0,0), WORD_PURE)
 WORD(one,              zero,           DSTACK(0,1), RSTACK(0,0), WORD_PURE)

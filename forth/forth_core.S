@@ -37,18 +37,14 @@ WORD_START(tick,       store)
          * drop dup xt>name name>flags                 ( xt flags                 )
          * M4FLAG_COMPILE_ONLY and                     ( xt flag|0                )
          * if                    ( compile-only word ) ( xt                       )
-         *    xt>name name>string ex-message!          (                          )
-         *    M4ERR_INTERPRETING_COMPILE_ONLY_WORD     (                          )
-         *    throw                                    (                          )
+         *    (throw-compile-only-xt)                  (                          )
          * then                                        ( xt                       )
          */
         CALL(parse_xt),
         drop, dup, xt_to_name, name_to_flags,
         _lit_, T(M4FLAG_COMPILE_ONLY), and,
-        _if_, T(6),
-            xt_to_name, name_to_string, ex_message_store,
-            _lit_, T(M4ERR_INTERPRETING_COMPILE_ONLY_WORD),
-            throw,
+        _if_, T(2+nCALLt),
+            CALL(_throw_compile_only_xt_),
         then,
         exit
     )
@@ -133,13 +129,10 @@ WORD_START(semi,       colon)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE)
     WORD_CODE(
-        /* state @ 0=                                  ( colon-sys t|f   )
-         *    M4ERR_INTERPRETING_COMPILE_ONLY_WORD and throw (           )
-         * ' : check cs-drop        ( check that colon-sys is present    )
+        /* [throw-if-not-compiling]    ( colon-sys       )
          * [finish]                 ( name is now findable by parse-name )
          */
-        state, fetch, zero_equal,
-            _lit_, T(M4ERR_INTERPRETING_COMPILE_ONLY_WORD), and, throw,
+        CALL(_throw_if_not_compiling_),
         CALL(_finish_), exit
     )
 WORD_END(semi)
@@ -269,7 +262,28 @@ WORD_START(do, depth)
         _compile_jump_lit_, _do_, _do_, exit
     )
 WORD_END(do)
-WORD(drop,             do,         DSTACK(1,0), RSTACK(0,0), WORD_PURE)
+WORD_START(does,       do)
+    WORD_DSTACK(2,2)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE)
+    WORD_CODE(
+        /* [throw-if-not-compiling]                    ( colon-sys t|f   )
+         * ' : check                   ( check that colon-sys is present )
+         * ' (does) compile,           ( compile '(does)'                )
+         * ' exit compile,             ( compile 'exit'                  )
+         *
+         * TODO
+         */
+        CALL(_throw_if_not_compiling_),
+        _check_lit_, colon,
+        _lit_comma_, _call_xt_, _lit_xt_, XT(_does_), /* compile '(call-xt) (does)' */
+        _lit_comma_, exit,                            /* compile 'exit'      */
+        exit
+    )
+WORD_END(does)
+WORD(drop,             does,       DSTACK(1,0), RSTACK(0,0), WORD_PURE)
 WORD(dup,              drop,       DSTACK(1,2), RSTACK(0,0), WORD_PURE)
 WORD_START(find, dup)
     WORD_DSTACK(1,2)

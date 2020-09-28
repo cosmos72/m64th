@@ -119,6 +119,7 @@
     X(2, "cr", cr)                                                                                 \
     X(6, "create", create)                                                                         \
     X(7, "decimal", decimal)                                                                       \
+    X(5, "does>", does)                                                                            \
     X(4, "else", else)                                                                             \
     X(4, "find", find)                                                                             \
     X(2, "if", if)                                                                                 \

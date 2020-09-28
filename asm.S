@@ -59,7 +59,7 @@ MARKER(asm_func_start)
 #include "generic_asm/test.S" /* only used for test & benchmark */
 
 MARKER(asm_func_end)
-SECTION_RODATA()
+SECTION_DATA() /* SECTION_RODATA() causes linker warning: relocation in read-only section `.rodata' */
 MARKER(asm_data_start)
 
 #include "forth/forth.S"
