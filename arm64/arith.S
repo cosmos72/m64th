@@ -84,7 +84,7 @@ FUNC_END(two_sm_div)
 #define M4FTWO_NIP
 FUNC_START(two_nip)        /* 2nip     m4th-user */
         LOAD(  REG1,   AT(DSTK))
-        str    REG1,   [DSTK, SZ2]! ;
+        str    REG1,   [DSTK, SZ2]!;
 FUNC_END(two_nip)
 
 
@@ -120,6 +120,17 @@ FUNC_START(minus_two_rot)
         str    REG0,           AT(DSTK, SZ4);  /* ( e f a b c _ ) */
         MOVE(  REG4,   DTOP)                   /* ( e f a b c d ) */
 FUNC_END(minus_two_rot)
+
+
+/* 2swap ( a b c d -- c d a b ) */
+#define M4FTWO_SWAP
+FUNC_START(two_swap)
+        ldp    REG1,   REG2, AT(DSTK);
+        ldr    REG3,         AT(DSTK, SZ2);
+        stp    DTOP,   REG1, AT(DSTK, SZ);
+        str    REG3,         AT(DSTK);
+        MOVE(  REG2,   DTOP)
+FUNC_END(two_swap)
 
 
 FUNC_START(four_sm_div)    /* 4sm/ m4th-user symmetric divide by 4 */
@@ -271,6 +282,13 @@ FUNC_START(u_more_equal)   /* u>=      m4th-user */
         cmp    REG2,   DTOP;
         csetm  DTOP,   hs;
 FUNC_END(u_more_equal)
+
+
+#define M4FTUCK
+FUNC_START(tuck)           /* tuck      core ( a b -- b a b ) */
+        LOAD(  REG1,          AT(DSTK))
+        stp    REG1,   DTOP,  [DSTK, -SZ]!;
+FUNC_END(tuck)
 
 
 /* ( x lo hi -- flag ) true if lo <= x < hi \ signed or unsigned */

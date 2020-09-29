@@ -131,7 +131,7 @@ FUNC_END(minus_two_rot)
 
 
 #ifndef M4FTWO_SWAP
-/* remember: x86 instruction 'xchg' is SLOW */
+/* remember: x86 instruction 'xchg' with memory operand is SLOW */
 FUNC_START(two_swap)       /* 2swap    ( a b c d -- c d a b ) */
         LOAD(  REG1,   AT(DSTK))
         LOAD(  REG2,   AT(DSTK, SZ))
@@ -460,7 +460,7 @@ FUNC_END(sub)
 #endif
 
 
-FUNC_START(swap)           /* remember: x86 instruction 'xchg' is SLOW */
+FUNC_START(swap)           /* remember: x86 instruction 'xchg' with memory operand is SLOW */
         LOAD(  REG1,   AT(DSTK))
         STOR(  DTOP,   AT(DSTK))
         MOVE(  REG1,   DTOP)
@@ -473,8 +473,10 @@ FUNC_START(trail)          /* trail    m4th-user ( a b -- a a b ) equivalent to:
 FUNC_END(trail)
 
 
-FUNC_START(tuck)
+#ifndef M4FTUCK
+FUNC_START(tuck)          /* tuck      core ( a b -- b a b ) */
         LOAD(  REG1,   AT(DSTK))
         STOR(  DTOP,   AT(DSTK))
         DPUSH( REG1)
 FUNC_END(tuck)
+#endif // M4FTUCK

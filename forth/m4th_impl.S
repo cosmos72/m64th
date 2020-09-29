@@ -812,6 +812,10 @@ WORD_START(_does_, _defer_uninitialized_)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY)
     WORD_CODE(
+        /* [throw-if-not-compiling]
+         *
+         */
+        CALL(_throw_if_not_compiling_),
         exit
     )
 WORD_END(_does_)
