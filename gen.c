@@ -196,12 +196,20 @@ int main(int argc, char *argv[]) {
     m4th_cpu_features_disable(cpu_features_disable_mask);
 
     if (benchmark) {
+#if defined(__x86_64__)
+#define ARCH_STR_ "amd64 "
+#elif defined(__aarch64__)
+#define ARCH_STR_ "arm64 "
+#else
+#define ARCH_STR_ " "
+#endif
         if (cpu_features == m4th_cpu_feature_cannot_detect) {
-            fputs("# no support to detect optional CPU features on this CPU/OS\n", stdout);
+            fputs("# no support to detect optional CPU features on this " ARCH_STR_ "CPU/OS\n",
+                  stdout);
         } else if (cpu_features & m4th_cpu_feature_crc32c) {
-            fputs("# this CPU has crc32c asm instructions\n", stdout);
+            fputs("# this " ARCH_STR_ "CPU has crc32c asm instructions\n", stdout);
         } else {
-            fputs("# this CPU does not have crc32c asm instructions\n", stdout);
+            fputs("# this " ARCH_STR_ "CPU does not have crc32c asm instructions\n", stdout);
         }
         run_benchmark(stdout);
     } else if (show_words) {

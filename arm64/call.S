@@ -59,8 +59,8 @@ FUNC_START(_vm_)
 FUNC_ALIGN()
 LABEL(_vm_.loop)
         /* cannot use x0..x8 here: they are used by c-arg-[N] and c-ret-[N] */
-        ldrh   w9,     AT(IP);             /* load m4token of current vm instruction */
-        ADD2(  IMM(SZt), IP)               /* pre-increment vm IP                    */
+        ldrh   w9,     AT(IP), SZt;        /* load m4token of current vm instruction */
+                                           /* then increment vm IP                   */
         LOAD(  x9,     AT(FTBL, x9, SZ))   /* load m4func of current vm instruction  */
         blr    x9;                         /* execute vm instruction                 */
         JUMP(          TO(_vm_.loop))      /* loop                                   */
