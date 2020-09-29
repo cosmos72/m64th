@@ -804,7 +804,7 @@ WORD_START(_defer_uninitialized_, _num_compiled_)
     WORD_FLAGS(0)
     WORD_CODE(_lit2s_, SHORT(M4ERR_DEFER_UNINITIALIZED), throw, exit)
 WORD_END(_defer_uninitialized_)
-/* ( -- ) replace execution semantics of latest word */
+/* ( -- ) replace execution semantics of latest word, setting it to code after caller's IP */
 WORD_START(_does_, _defer_uninitialized_)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)
@@ -813,9 +813,30 @@ WORD_START(_does_, _defer_uninitialized_)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY)
     WORD_CODE(
         /* [throw-if-not-compiling]
+         *                               ( RTOP contains return IP i.e. caller's IP )
+         * r@ token+                                   ( IP of code following does> )
          *
+         * latest dup 0<>                              ( IP nt t|f                  )
+         *    M4ERR_ZERO_LENGTH_NAME and throw         ( IP nt                      )
+         * dup name>flags                              ( IP nt flags                )
+         * M4FLAG_CREATE and 0<>                       ( IP nt t|f                  )
+         *    M4ERR_NOT_CREATED and throw              ( IP nt                      )
+         * name>xt                                     ( IP xt                      )
+         *
+         *          ( xt of CREATEd words contains 'ip>data>addr (call-xt) XT exit' )
+         * token+ token+                               ( IP xt-addr                 )
+         * !                                           (                            )
          */
         CALL(_throw_if_not_compiling_),
+        r_fetch, token_plus,
+        latest, dup, zero_ne,
+            _lit_, T(M4ERR_ZERO_LENGTH_NAME), and, throw,
+        dup, name_to_flags,
+        _lit_, T(M4FLAG_CREATE), and, zero_ne,
+            _lit_, T(M4ERR_NOT_CREATED), and, throw,
+        name_to_xt,
+        token_plus, token_plus,
+        store,
         exit
     )
 WORD_END(_does_)

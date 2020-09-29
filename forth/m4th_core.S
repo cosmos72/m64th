@@ -483,7 +483,7 @@ WORD_START(obuf_write_string, obuf_write_char)
     )
 WORD_END(obuf_write_string)
 WORD(out_to_obuf,   obuf_write_string, DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
-/* parse-xt ( xt -1|1 ) throws if name is not found. 1 if xt is immediate, else -1 */
+/* parse-xt ( -- xt -1|1 ) throws if name is not found. 1 if xt is immediate, else -1 */
 WORD_START(parse_xt,  out_to_obuf)
     WORD_DSTACK(0,2)
     WORD_RSTACK(0,0)

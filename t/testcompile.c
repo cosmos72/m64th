@@ -187,6 +187,9 @@ static const m4testcompile testcompile[] = {
      {5, {m4begin, m4_while_, T(-1), m4_again_, T(-4)}}},
     {"begin while again then", {}, {}, {6, {m4begin, m4_while_, T(3), m4_again_, T(-4), m4then}}},
     {"begin while repeat", {}, {}, {5, {m4begin, m4_while_, T(2), m4_repeat_, T(-4)}}},
+    /* ------------------------------- does> -------------------------------- */
+    {"does> ;", {2, {0, m4colon}}, {}, {3 + nCALLt, {CALL(_does_), m4exit, m4exit}}},
+    {"does> 1+ ;", {2, {0, m4colon}}, {}, {4 + nCALLt, {CALL(_does_), m4exit, m4one_plus, m4exit}}},
     /* ------------------------------- postpone ----------------------------- */
     {"postpone then ;", {2, {0, m4colon}}, {}, {2 + nCALLt, {CALL(then), m4exit}}},
     {"postpone and ;",

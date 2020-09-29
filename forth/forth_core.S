@@ -269,7 +269,7 @@ WORD_START(does,       do)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE)
     WORD_CODE(
-        /* [throw-if-not-compiling]                    ( colon-sys t|f   )
+        /* [throw-if-not-compiling]                    ( colon-sys       )
          * ' : check                   ( check that colon-sys is present )
          * ' (does) compile,           ( compile '(does)'                )
          * ' exit compile,             ( compile 'exit'                  )
@@ -278,8 +278,9 @@ WORD_START(does,       do)
          */
         CALL(_throw_if_not_compiling_),
         _check_lit_, colon,
-        _lit_comma_, _call_xt_, _lit_xt_, XT(_does_), /* compile '(call-xt) (does)' */
-        _lit_comma_, exit,                            /* compile 'exit'      */
+        _lit_comma_, _call_xt_,                        /* compile T(call-xt)     */
+        _lit_xt_, XT(_does_), xt_comma,                /* compile XT(does)       */
+        _lit_comma_, exit,                             /* compile T(exit)        */
         exit
     )
 WORD_END(does)
