@@ -838,8 +838,18 @@ WORD_START(_does_, _defer_uninitialized_)
         exit
     )
 WORD_END(_does_)
+/* alias of exit. used immediately after (does) */
+WORD_START(_does_exit_, _does_)
+    WORD_STACK_NONE() /* dummy, token always jumps */
+    WORD_DSTACK(0,0)   /* stack effect when jumping */
+    WORD_RSTACK(1,0)
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS | M4FLAG_JUMP)
+    /* make inliner happy: it skips the final 'exit' of a word's code when inlining */
+    WORD_CODE(_does_exit_, exit)
+WORD_END(_does_exit_)
 /* ( sys -- ) finish compiling a word, make it findable */
-WORD_START(_finish_, _does_)
+WORD_START(_finish_, _does_exit_)
     WORD_DSTACK(2,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()

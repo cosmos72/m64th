@@ -27,6 +27,7 @@
 #define m4f_again_ m4f_jump_     /* (again)    unconditional jump             */
 #define m4f_break_ m4f_jump_     /* (break)    unconditional jump             */
 #define m4f_continue_ m4f_jump_  /* (continue) unconditional jump             */
+#define m4f_does_exit_ m4fexit   /* (does-exit) alias of exit                 */
 #define m4f_else_ m4f_jump_      /* (else)     unconditional jump             */
 #define m4fthen m4fnoop          /* then       noop, used as compile marker   */
 #define m4f_repeat_ m4f_jump_    /* (repeat)   unconditional jump             */

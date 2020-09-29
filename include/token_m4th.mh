@@ -262,8 +262,8 @@
 #undef M4____gap                    /*                                                            */
 #undef M4____gap                    /*                                                            */
 #define M4_do_ M4_i(44)             /* (do)            followed by IP offset (ignored)            */
-#define M4_else_ M4_i(45)           /* (else)          followed by IP offset to jump              */
-#undef M4____gap                    /*                                                            */
+#define M4_does_exit_ M4_i(45)      /* (does-exit)   alias of exit. used immediately after (does) */
+#define M4_else_ M4_i(46)           /* (else)          followed by IP offset to jump              */
 #undef M4____gap                    /*                                                            */
 #undef M4____gap                    /*                                                            */
 #undef M4____gap                    /*                                                            */

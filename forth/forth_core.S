@@ -278,9 +278,9 @@ WORD_START(does,       do)
          */
         CALL(_throw_if_not_compiling_),
         _check_lit_, colon,
-        _lit_comma_, _call_xt_,                        /* compile T(call-xt)     */
-        _lit_xt_, XT(_does_), xt_comma,                /* compile XT(does)       */
-        _lit_comma_, exit,                             /* compile T(exit)        */
+        _lit_comma_, _call_xt_,                        /* compile '(call-xt)'    */
+        _lit_xt_, XT(_does_), xt_comma,                /* compile XT of '(does)' */
+        _lit_comma_, _does_exit_,                      /* compile '(does-exit)'  */
         exit
     )
 WORD_END(does)

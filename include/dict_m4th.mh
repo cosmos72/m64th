@@ -291,6 +291,7 @@
     X(11, "(check-lit)", _check_lit_) /* ( x -- x ) followed by expected x */                      \
     X(10, "(continue)", _continue_)                                                                \
     X(4, "(do)", _do_)                                                                             \
+    X(11, "(does-exit)", _does_exit_) /* alias of exit. used immediately after (does) */           \
     X(6, "(else)", _else_)                                                                         \
     X(12, "(exec-token)", _exec_token_)                                                            \
     X(21, "(exec-xt-from-native)", _exec_xt_from_native_)                                          \
@@ -334,6 +335,7 @@
     X(8, "(create)", _create_)                                                                     \
     X(21, "(defer-uninitialized)", _defer_uninitialized_) /* throw M4ERR_DEFER_UNINITIALIZED */    \
     /* ( nt -1|1 -- ) interpret or compile name. dtop == -1 if name is immediate */                \
+    X(6, "(does)", _does_) /* ( -- ) replace execution semantics of latest word */                 \
     X(11, "(eval-name)", _eval_name_)                                                              \
     X(13, "(eval-number)", _eval_number_) /* ( x -- ) interpret or compile number */               \
     /* ( vec pos -- key val next ) fetch entry from map bucket index */                            \
@@ -353,7 +355,6 @@
     /* ( x -- token t | x f ) try to optimize '[ x ] literal' */                                   \
     X(18, "(optimize-literal)", _optimize_literal_)                                                \
     X(15, "(repl-type-ack)", _repl_type_ack_)                                                      \
-    X(6, "[does]", _does_)            /* ( -- ) replace execution semantics of latest word      */ \
     X(8, "[finish]", _finish_)        /* ( sys -- ) finish compiling a word, make it findable   */ \
     X(8, "[inline]", _inline_)        /* ( nt -- ) inline a call to word into XT being compiled */ \
     X(10, "[optimize]", _optimize_)   /* optimize current XT being compiled  */                    \
