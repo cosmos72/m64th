@@ -812,14 +812,13 @@ WORD_START(_does_, _defer_uninitialized_)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY)
     WORD_CODE(
-        /* [throw-if-not-compiling]
-         *                               ( RTOP contains return IP i.e. caller's IP )
+        /*                               ( RTOP contains return IP i.e. caller's IP )
          * r@ token+                                   ( IP of code following does> )
          *
-         * latest dup 0<>                              ( IP nt t|f                  )
+         * latest dup 0=                               ( IP nt t|f                  )
          *    M4ERR_ZERO_LENGTH_NAME and throw         ( IP nt                      )
          * dup name>flags                              ( IP nt flags                )
-         * M4FLAG_CREATE and 0<>                       ( IP nt t|f                  )
+         * M4FLAG_CREATE and 0=                        ( IP nt t|f                  )
          *    M4ERR_NOT_CREATED and throw              ( IP nt                      )
          * name>xt                                     ( IP xt                      )
          *
@@ -827,12 +826,11 @@ WORD_START(_does_, _defer_uninitialized_)
          * token+ token+                               ( IP xt-addr                 )
          * !                                           (                            )
          */
-        CALL(_throw_if_not_compiling_),
         r_fetch, token_plus,
-        latest, dup, zero_ne,
+        latest, dup, zero_equal,
             _lit_, T(M4ERR_ZERO_LENGTH_NAME), and, throw,
         dup, name_to_flags,
-        _lit_, T(M4FLAG_CREATE), and, zero_ne,
+        _lit_, T(M4FLAG_CREATE), and, zero_equal,
             _lit_, T(M4ERR_NOT_CREATED), and, throw,
         name_to_xt,
         token_plus, token_plus,
