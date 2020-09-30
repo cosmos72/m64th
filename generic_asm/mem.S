@@ -122,7 +122,7 @@ FUNC_START(crc_cell)
         SUB2( IMM(SZ), DSTK)               /* ( x &x _               ) */
         MOVE( IMM(SZ), DTOP)               /* ( x &x SZ              ) */
         ASM_CALL(      FUNC(crc_string))   /* ( x crc                ) */
-        ADD2( IMM(SZ), DTOP)               /* ( crc                  ) */
+        ADD2( IMM(SZ), DSTK)               /* ( crc                  ) */
 FUNC_END(crc_cell)
 
 
