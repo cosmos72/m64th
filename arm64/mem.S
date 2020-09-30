@@ -199,33 +199,62 @@ FUNC_START(crc_string_simd)
         MOVI(  0xffffffff, REG3w)          /* c = 0xffffffff           */
         DPOP(  REG1)                       /* a = c-addr               */
         ZERO(  REG0)                       /* @ = i = 0                */
-        JBE(   DTOP,   IMM(7), TO(crc_string_simd.7))
+        JB(    DTOP,   IMM(8), TO(crc_string_simd.upto7))
+#if 1
+        JB(    DTOP,   IMM(64),TO(crc_string_simd.by8))
 
-        SUB2(  IMM(8), DTOP)
+        SUB2(IMM(64),  DTOP)
 FUNC_ALIGN()
-LABEL(crc_string_simd.loop)
-        LOAD(  REG2,   AT(REG1, REG0, 1))  /* b = c-addr[i...i+7]      */
-        ADD2(  IMM(8), REG0)
+LABEL(crc_string_simd.by64.loop)
+        ldp    x4, x5, AT(REG1);
+        ldp    x6, x7, AT(REG1, 16);
+        ldp    x8, x9, AT(REG1, 32);
+        ldp    x10,x11,AT(REG1, 48);
+        ADD2(IMM(64),  REG0)               /* i += 64                  */
+        ADD2(IMM(64),  REG1)               /* c-addr += 64             */
         /*
          * symbolic ASM instructions crc32c*
          * would require compiler/assembler flag -march=armv8.1-a
          */
+        .4byte 0x9ac45c63;             /* crc32cx REG3w, REG3w,  x4;    */
+        .4byte 0x9ac55c63;             /* crc32cx REG3w, REG3w,  x5;    */
+        .4byte 0x9ac65c63;             /* crc32cx REG3w, REG3w,  x6;    */
+        .4byte 0x9ac75c63;             /* crc32cx REG3w, REG3w,  x7;    */
+        .4byte 0x9ac85c63;             /* crc32cx REG3w, REG3w,  x8;    */
+        .4byte 0x9ac95c63;             /* crc32cx REG3w, REG3w,  x9;    */
+        .4byte 0x9aca5c63;             /* crc32cx REG3w, REG3w,  x10;   */
+        .4byte 0x9acb5c63;             /* crc32cx REG3w, REG3w,  x11;   */
+
+        JBE(   REG0,   DTOP,   TO(crc_string_simd.by64.loop))
+        ADD2(IMM(64),  DTOP)
+        SUB2(  REG0,   REG1)               /* c-addr -= i              */
+        SUB3(  DTOP,   REG0,   REG4)       /* d = left = u - i         */
+        JB(    REG4,   IMM(8), TO(crc_string_simd.upto7))
+
+LABEL(crc_string_simd.by8)
+#endif // 1
+        
+        SUB2(  IMM(8), DTOP)
+FUNC_ALIGN()
+LABEL(crc_string_simd.by8.loop)
+        LOAD(  REG2,   AT(REG1, REG0, 1))  /* b = c-addr[i...i+7]      */
+        ADD2(  IMM(8), REG0)
         .4byte 0x9ac25c63;             /* crc32cx REG3w, REG3w,  REG2; */
-        JBE(   REG0,   DTOP,   TO(crc_string_simd.loop))
+        JBE(   REG0,   DTOP,   TO(crc_string_simd.by8.loop))
         ADD2(  IMM(8), DTOP)
-LABEL(crc_string_simd.7)
+LABEL(crc_string_simd.upto7)
         ADDI(  REG0,   4,  REG4)
-        JA(    REG4,   DTOP, TO(crc_string_simd.3)) /* jump if (i + 4 > u) */
+        JA(    REG4,   DTOP, TO(crc_string_simd.upto3)) /* jump if (i + 4 > u) */
         LD_uw( REG2,   AT(REG1, REG0, 1))
         MOVE(  REG4,   REG0)           /* i += 4                        */
         .4byte 0x1ac25863;             /* crc32cw REG3w, REG3w,  REG2w; */
-LABEL(crc_string_simd.3)
+LABEL(crc_string_simd.upto3)
         ADDI(  REG0,   2,  REG4)
-        JA(    REG4,   DTOP, TO(crc_string_simd.1)) /* jump if (i + 2 > u) */
+        JA(    REG4,   DTOP, TO(crc_string_simd.upto1)) /* jump if (i + 2 > u) */
         LD_uh( REG2,   AT(REG1, REG0, 1))
         MOVE(  REG4,   REG0)           /* i += 2                        */
         .4byte 0x1ac25463;             /* crc32ch REG3w, REG3w,  REG2w; */
-LABEL(crc_string_simd.1)
+LABEL(crc_string_simd.upto1)
         JAE(   REG0,   DTOP, TO(crc_string_simd.0)) /* jump if (i >= u) */
         LD_ub( REG2,   AT(REG1, REG0, 1))
         .4byte 0x1ac25063;             /* crc32cb REG3w, REG3w,  REG2w; */

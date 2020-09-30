@@ -179,6 +179,7 @@ FUNC_START(crc_string_simd)
         LOAD(  REG3,       AT(DSTK))       /* c = c-addr               */
         MOVE(  RFFFw,      DTOPw)          /* dtop = 0xffffffff        */
         JB(    REG2,       IMM(8),  TO(crc_string_simd.upto7))
+#if 1
         JB(    REG2,       IMM(64), TO(crc_string_simd.by8))
 
         MOVE(  REG2,       REG4)           /* d = u                    */
@@ -200,6 +201,8 @@ LABEL(crc_string_simd.by64.loop)
         JB(    REG4,       IMM(8),  TO(crc_string_simd.upto7))
 
 LABEL(crc_string_simd.by8)
+#endif // 1
+
         SUB2(  IMM(8),     REG2)
 FUNC_ALIGN()
 LABEL(crc_string_simd.by8.loop)
