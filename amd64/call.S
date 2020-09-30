@@ -105,7 +105,7 @@ FUNC_END(_c_arg_0_)
 FUNC_START(_c_arg_1_)
         STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))   /* save dstk = %rsi (clobbered) */
         STOR(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))   /* save rstk = %rdi = C arg1 */
-        MOVE(  DTOP,   %rdi)                      /* %rdi = C arg 1 */
+        MOVE(  DTOP,   %rdi)                      /* %rdi = C arg 1 (clobbers RSTK) */
 FUNC_END(_c_arg_1_)
 
 
@@ -114,7 +114,7 @@ FUNC_START(_c_arg_2_)
         ADD2(  IMM(SZ), DSTK)
         STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))   /* save dstk = %rsi = C arg2 */
         STOR(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))   /* save rstk = %rdi = C arg1 */
-        LOAD(  %rdi,   AT(DSTK, -SZ))             /* %rdi = C arg 1 */
+        LOAD(  %rdi,   AT(DSTK, -SZ))             /* %rdi = C arg 1 (clobbers RSTK) */
         MOVE(  DTOP,   %rsi)                      /* %rsi = C arg 2 (clobbers DSTK) */
 FUNC_END(_c_arg_2_)
 
@@ -125,7 +125,7 @@ FUNC_START(_c_arg_3_)
         STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))   /* save dstk = %rsi = C arg2 */
         STOR(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))   /* save rstk = %rdi = C arg1 */
         MOVE(  DTOP,   %rdx)                      /* %rdx = C arg 3 */
-        LOAD(  %rdi,   AT(DSTK, -SZ))             /* %rdi = C arg 1 */
+        LOAD(  %rdi,   AT(DSTK, -SZ))             /* %rdi = C arg 1 (clobbers RSTK) */
         LOAD(  %rsi,   AT(DSTK, -SZ2))            /* %rsi = C arg 2 (clobbers DSTK) */
 FUNC_END(_c_arg_3_)
 
@@ -137,7 +137,7 @@ FUNC_START(_c_arg_4_)
         STOR(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))   /* save rstk = %rdi = C arg1 */
         MOVE(  DTOP,   %rcx)                      /* %rcx = C arg 4 */
         LOAD(  %rdx,   AT(DSTK, -SZ3))            /* %rdx = C arg 3 */
-        LOAD(  %rdi,   AT(DSTK, -SZ))             /* %rdi = C arg 1 */
+        LOAD(  %rdi,   AT(DSTK, -SZ))             /* %rdi = C arg 1 (clobbers RSTK) */
         LOAD(  %rsi,   AT(DSTK, -SZ2))            /* %rsi = C arg 2 (clobbers DSTK) */
 FUNC_END(_c_arg_4_)
 
@@ -150,7 +150,7 @@ FUNC_START(_c_arg_5_)
         MOVE(  DTOP,   %r8)                        /* %r8  = C arg 5 */
         LOAD(  %rcx,   AT(DSTK, -SZ4))             /* %rcx = C arg 4 */
         LOAD(  %rdx,   AT(DSTK, -SZ3))             /* %rdx = C arg 3 */
-        LOAD(  %rdi,   AT(DSTK, -SZ))              /* %rdi = C arg 1 */
+        LOAD(  %rdi,   AT(DSTK, -SZ))              /* %rdi = C arg 1 (clobbers RSTK) */
         LOAD(  %rsi,   AT(DSTK, -SZ2))             /* %rsi = C arg 2 (clobbers DSTK) */
 FUNC_END(_c_arg_5_)
 
@@ -164,7 +164,7 @@ FUNC_START(_c_arg_6_)
         LOAD(  %r8,    AT(DSTK, -SZ5))             /* %r8  = C arg 5 */
         LOAD(  %rcx,   AT(DSTK, -SZ4))             /* %rcx = C arg 4 */
         LOAD(  %rdx,   AT(DSTK, -SZ3))             /* %rdx = C arg 3 */
-        LOAD(  %rdi,   AT(DSTK, -SZ))              /* %rdi = C arg 1 */
+        LOAD(  %rdi,   AT(DSTK, -SZ))              /* %rdi = C arg 1 (clobbers RSTK) */
         LOAD(  %rsi,   AT(DSTK, -SZ2))             /* %rsi = C arg 2 (clobbers DSTK) */
 FUNC_END(_c_arg_6_)
 

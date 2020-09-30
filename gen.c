@@ -176,8 +176,8 @@ static void run_benchmark(FILE *out) {
             (m4th_cpu_features_enabled() & m4th_cpu_feature_crc32c ? "/simd" : ""), n);
     fflush(out);
     m->ip = code;
-    dpush(m, (m4cell) "immediate");
-    dpush(m, 9);
+    dpush(m, (m4cell) "1234567890123456789012345678901234567890123456789012345678901234");
+    dpush(m, 64);
     dpush(m, (m4cell)n);
     dpush(m, 0);
     m4th_run(m);

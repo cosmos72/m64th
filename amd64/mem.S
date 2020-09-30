@@ -178,22 +178,42 @@ FUNC_START(crc_string_simd)
         MOVE(  DTOP,       REG2)           /* b = u                    */
         LOAD(  REG3,       AT(DSTK))       /* c = c-addr               */
         MOVE(  RFFFw,      DTOPw)          /* dtop = 0xffffffff        */
-        JBE(   REG2,       IMM(7), TO(crc_string_simd.small))
+        JB(    REG2,       IMM(8),  TO(crc_string_simd.upto7))
+        JB(    REG2,       IMM(64), TO(crc_string_simd.by8))
 
+        MOVE(  REG2,       REG4)           /* d = u                    */
+        SUB2(  IMM(64),    REG2)
+FUNC_ALIGN()
+LABEL(crc_string_simd.by64.loop)
+        crc32q (REG3,     REG1, 1),     DTOP;
+        crc32q 8(REG3,     REG1, 1),    DTOP;
+        crc32q 16(REG3,    REG1, 1),    DTOP;
+        crc32q 24(REG3,    REG1, 1),    DTOP;
+        crc32q 32(REG3,    REG1, 1),    DTOP;
+        crc32q 40(REG3,    REG1, 1),    DTOP;
+        crc32q 48(REG3,    REG1, 1),    DTOP;
+        crc32q 56(REG3,    REG1, 1),    DTOP;
+        ADD2(  IMM(64),    REG1)
+        JBE(   REG1,       REG2,    TO(crc_string_simd.by64.loop))
+        SUB2(  REG1,       REG4)           /* d = left = u - i         */
+        ADD2(  IMM(64),    REG2)
+        JB(    REG4,       IMM(8),  TO(crc_string_simd.upto7))
+
+LABEL(crc_string_simd.by8)
         SUB2(  IMM(8),     REG2)
 FUNC_ALIGN()
-LABEL(crc_string_simd.loop)
+LABEL(crc_string_simd.by8.loop)
         crc32q (REG3,      REG1, 1),    DTOP;
         ADD2(  IMM(8),     REG1)
-        JBE(   REG1,       REG2,   TO(crc_string_simd.loop))
+        JBE(   REG1,       REG2,    TO(crc_string_simd.by8.loop))
         ADD2(  IMM(8),     REG2)
 
-LABEL(crc_string_simd.small)
+LABEL(crc_string_simd.upto7)
         lea    TO(crc_string_simd.jumps)(%rip), REG4
         ADD2(  REG2,       REG3)           /* c = c-addr + u           */
         SUB2(  REG1,       REG2)           /* b = left = u - i         */
         ADD4(  REG4, REG2, 1, REG4) /* each jmp below occupies 2 bytes */
-        ADD2(  IMM(8),     DSTK)
+        ADD2(  IMM(SZ),    DSTK)
 
         jmp    *REG4;
 
