@@ -28,7 +28,7 @@
 #include "include/wordlist_fwd.h"
 #include <assert.h> /* assert()  */
 #include <errno.h>  /* errno     */
-#include <stdio.h>  /* fprintf() */
+#include <stdio.h>  /* printf() */
 #include <stdlib.h> /* exit(), free(), malloc() */
 #include <string.h> /* memset()  */
 
@@ -392,7 +392,7 @@ static m4cell m4token_print_xt(const m4token *code, FILE *out) {
 
 static m4cell m4token_print_lit_xt(const m4token *code, FILE *out) {
     fputs("LIT_", out);
-    return 1 + m4token_print_xt(code, out);
+    return m4token_print_xt(code, out);
 }
 
 static m4cell m4token_print_lit_string(const m4char *ascii, const m4ucell len, FILE *out) {
