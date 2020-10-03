@@ -32,17 +32,18 @@
  */
 FUNC_START(th_run)
         SUB2(  IMM(SZ10), sp)                   /* save C registers                */
-                                             /* not clobbered: x18 x19 x28 x29 x30 */
+                                                /* not clobbered: x18 x19 x29      */
         stp    x20,  x21,  AT(sp);
         stp    x22,  x23,  AT(sp, SZ2);
         stp    x24,  x25,  AT(sp, SZ4);
         stp    x26,  x27,  AT(sp, SZ6);
-        STOR(  lr,   AT(sp, SZ9))               /* save LR register (return addr)  */
-        ADDI(  x0,   M4TH_OFF_,  M4TH)          /* load m4th*                      */
+        stp    x28,  lr,   AT(sp, SZ8);         /* save LR register (return addr)  */
+        ADDI(  x0,   M4TH_OFF_,  M4TH)          /* load m4th pointer               */
         MOVE(  sp,   REG1)
         STOR(  REG1, AT(M4TH, M4TH_OFF_C_REG0)) /* save C stack pointer            */
         LOAD(  DSTK, AT(M4TH, M4TH_OFF_DSTK))   /* load data   stack pointer       */
         LOAD(  RSTK, AT(M4TH, M4TH_OFF_RSTK))   /* load return stack pointer       */
+        LOAD(  LOCL, AT(M4TH, M4TH_OFF_LOCL))   /* load local variables pointer    */
         LOAD(  IP,   AT(M4TH, M4TH_OFF_IP))     /* load instruction  pointer       */
         LOAD(  FTBL, AT(M4TH, M4TH_OFF_FTABLE)) /* load table m4token -> m4func    */
         LOAD(  HERE, AT(M4TH, M4TH_OFF_HERE))   /* load HERE pointer               */
@@ -54,8 +55,8 @@ FUNC_RAWEND(th_run)
 
 /** forth vm main loop: fetch m4token instructions and execute them */
 FUNC_START(_vm_)
-        RPUSH( RTOP)                       /* save LR. needed by (return-from-native) */
-        MOVE(  lr,     RTOP)
+        RPUSH( RTOP)
+        MOVE(  lr,     RTOP)              /* save LR. needed by (return-from-native) */
 FUNC_ALIGN()
 LABEL(_vm_.loop)
         /* cannot use x0..x8 here: they are used by c-arg-[N] and c-ret-[N] */
@@ -78,6 +79,7 @@ FUNC_START(bye)
         STOR(  HERE, AT(M4TH, M4TH_OFF_HERE))   /* save HERE pointer               */
         STOR(  FTBL, AT(M4TH, M4TH_OFF_FTABLE)) /* save table m4token -> m4func    */
         STOR(  IP,   AT(M4TH, M4TH_OFF_IP))     /* save instruction  pointer       */
+        STOR(  LOCL, AT(M4TH, M4TH_OFF_LOCL))   /* save local variables pointer    */
         STOR(  RSTK, AT(M4TH, M4TH_OFF_RSTK))   /* save return stack pointer       */
         STOR(  DSTK, AT(M4TH, M4TH_OFF_DSTK))   /* save data   stack pointer       */
         /*
@@ -91,7 +93,7 @@ FUNC_START(bye)
         ldp    x22,  x23,  AT(sp, SZ2);
         ldp    x24,  x25,  AT(sp, SZ4);
         ldp    x26,  x27,  AT(sp, SZ6);
-        LOAD(  lr,   AT(sp, SZ9))               /* load LR register (return addr)  */
+        ldp    x28,  lr,   AT(sp, SZ8);         /* load LR register (return addr)  */
         ADD2(  IMM(SZ10), sp)
         ret;                                    /* return to C                     */
 FUNC_RAWEND(bye)

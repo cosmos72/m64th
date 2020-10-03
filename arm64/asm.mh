@@ -32,6 +32,9 @@
  * return   registers:     x0 x1. also x8 for wider returns
  * caller-saved registers: x9 ... x17 and argument/return registers
  * callee-saved registers: x18 ... x30 and sp (i.e. x31)
+ *  note: x18 is reserved as 'platform register' at least on OS X and Windows
+ *  note: x29 is frame pointer, it shoud point to previous x29,x30 pair on C stack
+ *  note: x30 is link register, automatically set to return addr by ASM calls
  */
 
 #define REG0 x0 /* scratch register 0 */
@@ -40,7 +43,7 @@
 #define REG3 x3 /* scratch register 3 */
 #define REG4 x4 /* scratch register 4 */
 /* additional scratch registers:      x5 .. x17           */
-/* additional callee-saved registers: x18 x19 x28 x29 x30 */
+/* additional callee-saved registers: x18 x19 x29 x30     */
 
 #define REG0b w0   /* low  8 bits of REG0 */
 #define REG0h w0   /* low 16 bits of REG0 */
@@ -135,12 +138,13 @@
 #define RTOP_uw w22 /* zero-extend 32 bits into RTOP */
 #define RTOP_ut w22 /* zero-extend m4token into RTOP */
 
-#define DSTK x21 /* pointer to second data stack element */
-#define RSTK x23 /* pointer to second return stack element */
-#define M4TH x24 /* pointer to C struct m4th */
-#define HERE x25 /* pointer to first available code/data location */
-#define FTBL x26 /* pointer to table m4func[m4token] containing asm function addresses */
-#define IP x27   /* instruction pointer */
+#define DSTK x21 /* pointer to second data stack element             */
+#define RSTK x23 /* pointer to second return stack element           */
+#define LOCL x24 /* pointer to local variables (inside return stack) */
+#define M4TH x25 /* pointer to C struct field &m4th->user            */
+#define HERE x26 /* pointer to first available code/data location    */
+#define FTBL x27 /* pointer to table m4func[m4token] containing asm function addresses */
+#define IP x28   /* forth bytecode instruction pointer */
 
 #define R000 xzr  /* 64 bit, always 0 */
 #define R000b wzr /*  8 bit, always 0 */

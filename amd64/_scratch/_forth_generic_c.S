@@ -17,10 +17,12 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "../dispatch/asm.mh"
-#include "../include/section.mh"
+#include "../../dispatch/asm.mh"
+#include "../../include/section.mh"
 
 SECTION_FUNC()
+
+/* clang-format off */
 
 FUNC_START(_next_)
     movzwl (%r8),%r10d;

@@ -40,7 +40,6 @@
 #define REG2  %rcx  /* scratch register 2 */
 #define REG3  %rdx  /* scratch register 3 */
 #define REG4  %r8   /* scratch register 4 */
-/* additional scratch registers: %r9 */
 
 #define REG0b   %r10b /* low  8 bits of REG0 */
 #define REG0h   %r10w /* low 16 bits of REG0 */
@@ -141,13 +140,14 @@
 #define RFFFw %r11d /* 32 bits, all set to 1 */
 #define RFFFt %r11w /* (m4token)-1           */
 
-#define DSTK  %rsi  /* pointer to second data stack element */
-#define RSTK  %rdi  /* pointer to second return stack element */
-#define M4TH  %r13  /* pointer to C struct m4th */
-#define HERE  %r14  /* pointer to first available code/data location */
+#define DSTK  %rsi  /* pointer to second data stack element             */
+#define RSTK  %rdi  /* pointer to second return stack element           */
+#define LOCL  %r9   /* pointer to local variables (inside return stack) */
+#define M4TH  %r13  /* pointer to C struct field &m4th->user            */
+#define HERE  %r14  /* pointer to first available code/data location    */
 #define FTBL  %r12  /* pointer to table m4func[m4token] containing asm function addresses */
-#define IP    %r15  /* forth bytecode instruction pointer */
-#define RIP   %rip  /* x86-64 instruction pointer */
+#define IP    %r15  /* forth bytecode instruction pointer     */
+#define RIP   %rip  /* x86-64 instruction pointer             */
 
 #define AND2(src, dst)        and  src,     dst;   /* dst &= src     */
 #define ADD2(src, dst)        add  src,     dst;   /* dst += src     */

@@ -209,13 +209,14 @@ struct m4searchorder_s {                 /**< counted array of wordlists */
 struct m4th_s {            /**< m4th forth interpreter and compiler          */
     m4stack dstack;        /**< data stack                                   */
     m4stack rstack;        /**< return stack                                 */
+    m4cell *locals;        /**< pointer to forth local variables (in return stack) */
     const m4token *ip;     /**< instruction pointer                          */
     m4func *ftable;        /**< table m4token -> m4func asm function address */
     const m4word **wtable; /**< table m4token -> m4word*                     */
     m4iobuf *in;           /**< input  buffer                                */
     m4iobuf *out;          /**< output buffer                                */
 
-    const void *c_regs[1]; /**< m4th_run() may save C registers here     */
+    const void *c_regs[1]; /**< m4th_run() may save C registers here         */
 
     /* USER variables, i.e. thread-local */
     uint32_t user_size;        /**< # available cells in user variables          */

@@ -930,6 +930,7 @@ m4th *m4th_new(void) {
     m = (m4th *)m4mem_allocate(sizeof(m4th));
     m->dstack = m4stack_alloc(dstack_n);
     m->rstack = m4stack_alloc(rstack_n);
+    m->locals = NULL;
     m->ip = NULL;
     m->ftable = ftable;
     m->wtable = wtable;
