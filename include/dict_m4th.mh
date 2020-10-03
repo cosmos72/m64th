@@ -307,10 +307,42 @@
     X(8, "(lit-8s)", _lit8s_)                                                                      \
     X(8, "(lit-xt)", _lit_xt_)                                                                     \
     X(12, "(lit-string)", _lit_string_)                                                            \
+    X(9, "(local-0)", _local_0_) /* get 0-th local variable */                                     \
+    X(9, "(local-1)", _local_1_) /* get 1-st local variable */                                     \
+    X(9, "(local-2)", _local_2_) /* get 2-nd local variable */                                     \
+    X(9, "(local-3)", _local_3_) /* get 3-rd local variable */                                     \
+    X(9, "(local-4)", _local_4_) /* get 4-th local variable */                                     \
+    X(9, "(local-5)", _local_5_) /* get 5-th local variable */                                     \
+    X(9, "(local-6)", _local_6_) /* get 6-th local variable */                                     \
+    X(9, "(local-7)", _local_7_) /* get 7-th local variable */                                     \
+    X(9, "(local-8)", _local_8_) /* get 8-th local variable */                                     \
+    X(9, "(local-9)", _local_9_) /* get 9-th local variable */                                     \
+    X(9, "(local-a)", _local_a_) /* get 10-th local variable */                                    \
+    X(9, "(local-b)", _local_b_) /* get 11-th local variable */                                    \
+    X(9, "(local-c)", _local_c_) /* get 12-th local variable */                                    \
+    X(9, "(local-d)", _local_d_) /* get 13-th local variable */                                    \
+    X(9, "(local-e)", _local_e_) /* get 14-th local variable */                                    \
+    X(9, "(local-f)", _local_f_) /* get 15-th local variable */                                    \
     X(6, "(loop)", _loop_)                                                                         \
     X(9, "(missing)", _missing_)                                                                   \
     X(8, "(repeat)", _repeat_)                                                                     \
     X(18, "(return-to-native)", _return_to_native_)                                                \
+    X(12, "(to-local-0)", _to_local_0_) /* set 0-th local variable */                              \
+    X(12, "(to-local-1)", _to_local_1_) /* set 1-st local variable */                              \
+    X(12, "(to-local-2)", _to_local_2_) /* set 2-nd local variable */                              \
+    X(12, "(to-local-3)", _to_local_3_) /* set 3-rd local variable */                              \
+    X(12, "(to-local-4)", _to_local_4_) /* set 4-th local variable */                              \
+    X(12, "(to-local-5)", _to_local_5_) /* set 5-th local variable */                              \
+    X(12, "(to-local-6)", _to_local_6_) /* set 6-th local variable */                              \
+    X(12, "(to-local-7)", _to_local_7_) /* set 7-th local variable */                              \
+    X(12, "(to-local-8)", _to_local_8_) /* set 8-th local variable */                              \
+    X(12, "(to-local-9)", _to_local_9_) /* set 9-th local variable */                              \
+    X(12, "(to-local-a)", _to_local_a_) /* set 10-th local variable */                             \
+    X(12, "(to-local-b)", _to_local_b_) /* set 11-th local variable */                             \
+    X(12, "(to-local-c)", _to_local_c_) /* set 12-th local variable */                             \
+    X(12, "(to-local-d)", _to_local_d_) /* set 13-th local variable */                             \
+    X(12, "(to-local-e)", _to_local_e_) /* set 14-th local variable */                             \
+    X(12, "(to-local-f)", _to_local_f_) /* set 15-th local variable */                             \
     X(7, "(until)", _until_)                                                                       \
     X(8, "(until0)", _until0_)                                                                     \
     X(7, "(while)", _while_)                                                                       \
