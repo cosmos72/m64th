@@ -50,14 +50,15 @@ FUNC_START(_num_compiled_reg0_)
 FUNC_END(_num_compiled_reg0_)
 
 
+#ifndef M4F_LIT_COMMA_
 /** ( -- ) must be followed by m4token, append it to XT being compiled. */
-FUNC_START(_lit_comma_)    /* [compile-lit] */
+FUNC_START(_lit_comma_)    /* (lit,) */
         LD_ut( REG3,       AT(IP))                     /* c = m4token             */
         STORt( REG3,       AT(HERE))                   /* *here = c               */
         ADD2(  IMM(SZt),   HERE)                       /* here += SZt             */
         NEXTT()                                        /* skip m4token            */
 FUNC_RAWEND(_lit_comma_)
-
+#endif
 
 /**
  * [compile-jump-lit] ( -- sys ) must be followed by m4token and its category.

@@ -22,6 +22,14 @@
 
 /* clang-format off */
 
+#define M4F_LIT_COMMA_
+/** ( -- ) must be followed by m4token, append it to XT being compiled. */
+FUNC_START(_lit_comma_)    /* (lit,) */
+        ldrh   REG3h,      [IP],   SZt;                /* c = m4token; IP += SZt  */
+        strh   REG3h,      [HERE], SZt;                /* *here = c; here += SZt  */
+FUNC_END(_lit_comma_)
+
+
 #define M4FC_COMMA
 FUNC_START(c_comma)        /* c,   */
         strb   DTOPb,      [HERE], 1;
