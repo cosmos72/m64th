@@ -192,8 +192,8 @@ int main(int argc, char *argv[]) {
     m4cell cpu_features;
 
     m4th_init();
-    cpu_features = m4th_cpu_features_enabled();
     m4th_cpu_features_disable(cpu_features_disable_mask);
+    cpu_features = m4th_cpu_features_enabled();
 
     if (benchmark) {
 #if defined(__x86_64__)
