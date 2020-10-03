@@ -377,6 +377,24 @@ static m4cell m4token_print_int64(const m4token *code, FILE *out) {
     return sizeof(val) / SZt;
 }
 
+static m4cell m4token_print_xt(const m4token *code, FILE *out) {
+    m4xt val;
+    memcpy(&val, code, sizeof(val));
+    if (val != NULL) {
+        fputs("XT(", out);
+        m4string_print(m4word_name(m4xt_word(val)), out);
+        fputs(") ", out);
+    } else {
+        fputs("XT() ", out);
+    }
+    return sizeof(val) / SZt;
+}
+
+static m4cell m4token_print_lit_xt(const m4token *code, FILE *out) {
+    fputs("LIT_", out);
+    return 1 + m4token_print_xt(code, out);
+}
+
 static m4cell m4token_print_lit_string(const m4char *ascii, const m4ucell len, FILE *out) {
     fprintf(out, "LIT_STRING(%lu, \"", (unsigned long)len);
     m4string2_print_escape(ascii, len, out);
@@ -435,6 +453,8 @@ m4cell m4token_print_consumed_ip(m4token tok, const m4token *code, m4cell maxn, 
         fputc('\'', out);
         m4token_print(code[1], out);
         return 2;
+    } else if (tok == m4_lit_xt_ && nbytes == SZ) {
+        return m4token_print_xt(code, out);
     }
     switch (nbytes) {
     case 2:
@@ -503,6 +523,8 @@ void m4code_print(m4code src, FILE *out) {
         const m4token tok = code[i++];
         if (tok == m4_call_xt_ && n - i >= SZ / SZt) {
             i += m4token_print_call(code + i, out);
+        } else if (tok == m4_lit_xt_ && n - i >= SZ / SZt) {
+            i += m4token_print_lit_xt(code + i, out);
         } else if (tok == m4_lit_string_ && n - i >= 2 + (m4ucell)(code[i] + SZt - 1) / SZt) {
             i += m4token_print_lit_string((const m4char *)&code[i + 1], code[i], out);
         } else {

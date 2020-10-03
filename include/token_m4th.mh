@@ -280,20 +280,20 @@
 #define M4_ip_to_data_ M4_i(60) /* (ip>data) must be 1st instr in word. return word's data */
 #define M4_ip_to_data_addr_ M4_i(61) /* must be 1st instr in word. return word's data>addr      */
 #undef M4____gap                     /*                                         */
-#undef M4____gap                     /*                                         */
-#define M4_leave_ M4_i(64)           /* (leave)  followed by IP offset to jump          */
-#define M4_lit_comma_ M4_i(65)  /* followed by m4token, append it to current word's code/data */
-#define M4_lit2s_ M4_i(66)      /* (lit-2s) followed by int16, push it to dstack   */
-#define M4_lit4s_ M4_i(67)      /* (lit-4s) followed by int32, push it to dstack   */
-#define M4_lit8s_ M4_i(68)      /* (lit-8s) followed by int64, push it to dstack   */
+#define M4_leave_ M4_i(63)           /* (leave)  followed by IP offset to jump          */
+#define M4_lit_comma_ M4_i(64)  /* followed by m4token, append it to current word's code/data */
+#define M4_lit2s_ M4_i(65)      /* (lit-2s) followed by int16, push it to dstack     */
+#define M4_lit4s_ M4_i(66)      /* (lit-4s) followed by int32, push it to dstack     */
+#define M4_lit8s_ M4_i(67)      /* (lit-8s) followed by int64, push it to dstack     */
+#define M4_lit_xt_ M4_i(68)     /* followed by XT, push it to dstack                 */
 #define M4_lit_string_ M4_i(69) /* followed by T(len) and ascii, push them to dstack */
-#define M4_loop_ M4_i(70)       /* (loop)   followed by IP offset to jump          */
+#undef M4____gap                /*                                         */
+#define M4_loop_ M4_i(71)       /* (loop)   followed by IP offset to jump            */
 #undef M4____gap                /*                                         */
 #define M4_missing_ 0           /* (missing) called instead of invalid/unimplemented function */
 #undef M4____gap                /*                                         */
-#undef M4____gap                /*                                         */
-#define M4_repeat_ M4_i(75)     /* (repeat) followed by IP offset to jump              */
-#define M4_return_to_native_ M4_i(76) /* (return-to-native) return to native code */
+#define M4_repeat_ M4_i(75)     /* (repeat) followed by IP offset to jump            */
+#define M4_return_to_native_ M4_i(76) /* (return-to-native) return to native code    */
 #undef M4____gap                      /*                                         */
 #undef M4____gap                      /*                                         */
 #define M4_until_ M4_i(79)            /* (until)  followed by IP offset to jump if dtop == 0 */

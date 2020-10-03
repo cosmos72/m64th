@@ -305,6 +305,7 @@
     X(8, "(lit-2s)", _lit2s_)                                                                      \
     X(8, "(lit-4s)", _lit4s_)                                                                      \
     X(8, "(lit-8s)", _lit8s_)                                                                      \
+    X(8, "(lit-xt)", _lit_xt_)                                                                     \
     X(12, "(lit-string)", _lit_string_)                                                            \
     X(6, "(loop)", _loop_)                                                                         \
     X(9, "(missing)", _missing_)                                                                   \

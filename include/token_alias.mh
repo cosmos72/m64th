@@ -38,7 +38,6 @@
 #define m4_lit_int_ m4_lit4s_
 #define m4_lit_ CAT3(m4_lit, SZt, s_)
 #define m4_lit_cell_ CAT3(m4_lit, SZ, s_)
-#define m4_lit_xt_ CAT3(m4_lit, SZ, s_)
 
 #define m4char_fetch m4c_fetch       /* char@   is an alias for c@     - no dedicated m4token */
 #define m4byte_store m4c_store       /* byte!   is an alias for c!     - no dedicated m4token */
@@ -164,7 +163,6 @@
 #define M4_lit_int_ M4_lit4s_
 #define M4_lit_ CAT3(M4_lit, SZt, s_)
 #define M4_lit_cell_ CAT3(M4_lit, SZ, s_)
-#define M4_lit_xt_ CAT3(M4_lit, SZ, s_)
 
 #define M4char_fetch M4c_fetch       /* char@   is an alias for c@     - no dedicated m4token */
 #define M4byte_store M4c_store       /* byte!   is an alias for c!     - no dedicated m4token */

@@ -194,6 +194,7 @@
 #define M4SIZEOF_CALL(x) _, (SZt + SZ)
 #define M4SIZEOF_WADDR(x) _, SZ
 #define M4SIZEOF_XT(x) _, SZ
+#define M4SIZEOF_LIT_XT(xt) _, (SZt + SZ)
 #define M4SIZEOF_LIT_STRING(len, str) _, ((3 * SZt + len - 1) & ~(SZt - 1))
 
 #define M4UNITOF_SHORT(x) _, 2
@@ -202,6 +203,7 @@
 #define M4UNITOF_CALL(x) _, CALL
 #define M4UNITOF_WADDR(x) _, SZ
 #define M4UNITOF_XT(x) _, SZ
+#define M4UNITOF_LIT_XT(xt) _, LIT_XT
 #define M4UNITOF_LIT_STRING(len, str) _, LIT_STRING
 
 #define M4SIZEOF(token) SECOND_ARG(M4SIZEOF_##token, SZt)
@@ -226,6 +228,7 @@
 #define M4ASM_BYTES_4(token) .4byte M4TOKEN_VAL(token)
 #define M4ASM_BYTES_8(token) .8byte M4TOKEN_VAL(token)
 #define M4ASM_BYTES_CALL(token) M4TOKEN_VAL(token)       /* expands to M4CALL(word)           */
+#define M4ASM_BYTES_LIT_XT(token) M4TOKEN_VAL(token)     /* expands to M4LIT_XT(len, str)     */
 #define M4ASM_BYTES_LIT_STRING(token) M4TOKEN_VAL(token) /* expands to M4LIT_STRING(len, str) */
 
 /*
@@ -235,8 +238,16 @@
     CAT3(., SZt, byte) M4_call_xt_;                                                                \
     CAT3(., SZ, byte) WORD_SYM(word) + WORD_OFF_XT;
 
-/* assembler macro: number of extra m4tokens needed by M4CALL(...) */
+/* assembler macro: number of extra m4tokens needed by M4CALL(...) and M4LIT_XT(...) */
 #define nCALLt (SZ / SZt)
+
+/*
+ * assembler macro: insert M4_lit_xt_ and XT(name)
+ * in a sequence of m4token.
+ */
+#define M4LIT_XT(word)                                                                             \
+    CAT3(., SZt, byte) M4_lit_xt_;                                                                 \
+    CAT3(., SZ, byte) WORD_SYM(word) + WORD_OFF_XT;
 
 /*
  * assembler macro: insert M4_lit_string_, length and padded ascii string

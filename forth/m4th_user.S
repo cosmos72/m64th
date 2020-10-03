@@ -280,7 +280,7 @@ WORD_START(repl,  rdepth)
             out_to_obuf, CALL(obuf_flush), drop,
             in_to_ibuf, CALL(ibuf_refill_if_empty),
         _while0_, T(20+4*nCALLt),
-            _lit_cell_, XT(interpret), _catch_beg_, _catch_end_,
+            LIT_XT(interpret), _catch_beg_, _catch_end_,
             dup, zero_equal,
             in_to_ibuf, CALL(ibuf_skip_blanks),
             in_to_ibuf, iobuf_empty_query, and,

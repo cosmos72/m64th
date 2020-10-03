@@ -152,4 +152,6 @@
 #define m4f_4_aligned m4fint_aligned
 #define m4f_8_aligned m4faligned
 
+#define m4f_lit_xt_ CAT3(m4f_lit, SZ, s_)
+
 #endif /* M4TH_INCLUDE_FUNC_ALIAS_MH */
