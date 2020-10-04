@@ -22,6 +22,27 @@
 /* clang-format off */
 
 
+#define M4F_LIT2S_
+FUNC_START(_lit2s_)        /* (lit-2s) push to dstack the int16 at following IP */
+        DPUSH__DTOP()
+        ldrsh  DTOP_sh,AT(IP), 2;
+FUNC_END(_lit2s_)
+
+
+#define M4F_LIT4S_
+FUNC_START(_lit4s_)        /* (lit-4s) push to dstack the int32 at following IP */
+        DPUSH__DTOP()
+        ldrsw  DTOP_sw,AT(IP), 4;
+FUNC_END(_lit4s_)
+
+
+#define M4F_LIT8S_
+FUNC_START(_lit8s_)        /* (lit-8s) push to dstack the int64 at following IP */
+        DPUSH__DTOP()
+        ldr    DTOP,   AT(IP), SZ;
+FUNC_END(_lit8s_)
+
+
 #define M4F_MISSING_
 FUNC_START(_missing_)      /* (missing) called instead of invalid/unimplemented function */
         .int   0; /* udf */            /* crash with SIGILL */
