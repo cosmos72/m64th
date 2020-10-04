@@ -39,7 +39,7 @@ FUNC_END(_lit4s_)
 #define M4F_LIT8S_
 FUNC_START(_lit8s_)        /* (lit-8s) push to dstack the int64 at following IP */
         DPUSH__DTOP()
-        ldr    DTOP,   AT(IP), SZ;
+        ldr    DTOP,   AT(IP), 8;
 FUNC_END(_lit8s_)
 
 
