@@ -280,36 +280,36 @@
 #define M4_ip_to_data_addr_ M4_i(60) /* must be 1st instr in word. return word's data>addr      */
 #undef M4____gap                     /*                                         */
 #define M4_leave_ M4_i(62)           /* (leave)  followed by IP offset to jump          */
-#define M4_lit_comma_ M4_i(63)  /* followed by m4token, append it to current word's code/data */
-#define M4_lit2s_ M4_i(64)      /* (lit-2s) followed by int16, push it to dstack     */
-#define M4_lit4s_ M4_i(65)      /* (lit-4s) followed by int32, push it to dstack     */
-#define M4_lit8s_ M4_i(66)      /* (lit-8s) followed by int64, push it to dstack     */
-#define M4_lit_xt_ M4_i(67)     /* followed by XT, push it to dstack                 */
-#define M4_lit_string_ M4_i(68) /* followed by T(len) and ascii, push them to dstack */
-#undef M4____gap                /*                                         */
-#define M4_local_0_ M4_i(70)    /* get 0-th local variable                 */
-#define M4_local_1_ M4_i(71)    /* get 1-th local variable                 */
-#define M4_local_2_ M4_i(72)    /* get 2-th local variable                 */
-#define M4_local_3_ M4_i(73)    /* get 3-th local variable                 */
-#define M4_local_4_ M4_i(74)    /* get 4-th local variable                 */
-#define M4_local_5_ M4_i(75)    /* get 5-th local variable                 */
-#define M4_local_6_ M4_i(76)    /* get 6-th local variable                 */
-#define M4_local_7_ M4_i(77)    /* get 7-th local variable                 */
-#define M4_local_8_ M4_i(78)    /* get 8-th local variable                 */
-#define M4_local_9_ M4_i(79)    /* get 9-th local variable                 */
-#define M4_local_a_ M4_i(80)    /* get 10-th local variable                */
-#define M4_local_b_ M4_i(81)    /* get 11-th local variable                */
-#define M4_local_c_ M4_i(82)    /* get 12-th local variable                */
-#define M4_local_d_ M4_i(83)    /* get 13-th local variable                */
-#define M4_local_e_ M4_i(84)    /* get 14-th local variable                */
-#define M4_local_f_ M4_i(85)    /* get 15-th local variable                */
-#undef M4____gap                /*                                         */
-#undef M4____gap                /*                                         */
-#undef M4____gap                /*                                         */
-#undef M4____gap                /*                                         */
-#define M4_loop_ M4_i(90)       /* (loop)   followed by IP offset to jump            */
-#define M4_missing_ 0           /* (missing) called instead of invalid/unimplemented function */
-#define M4_repeat_ M4_i(92)     /* (repeat) followed by IP offset to jump            */
+#define M4_lit_comma_ M4_i(63)   /* followed by m4token, append it to current word's code/data */
+#define M4_lit2s_ M4_i(64)       /* (lit-2s) followed by int16, push it to dstack     */
+#define M4_lit4s_ M4_i(65)       /* (lit-4s) followed by int32, push it to dstack     */
+#define M4_lit8s_ M4_i(66)       /* (lit-8s) followed by int64, push it to dstack     */
+#define M4_lit_xt_ M4_i(67)      /* followed by XT, push it to dstack                 */
+#define M4_lit_string_ M4_i(68)  /* followed by T(len) and ascii, push them to dstack */
+#undef M4____gap                 /*                                         */
+#define M4_local_0_ M4_i(70)     /* get 0-th local variable                 */
+#define M4_local_1_ M4_i(71)     /* get 1-th local variable                 */
+#define M4_local_2_ M4_i(72)     /* get 2-th local variable                 */
+#define M4_local_3_ M4_i(73)     /* get 3-th local variable                 */
+#define M4_local_4_ M4_i(74)     /* get 4-th local variable                 */
+#define M4_local_5_ M4_i(75)     /* get 5-th local variable                 */
+#define M4_local_6_ M4_i(76)     /* get 6-th local variable                 */
+#define M4_local_7_ M4_i(77)     /* get 7-th local variable                 */
+#define M4_local_8_ M4_i(78)     /* get 8-th local variable                 */
+#define M4_local_9_ M4_i(79)     /* get 9-th local variable                 */
+#define M4_local_a_ M4_i(80)     /* get 10-th local variable                */
+#define M4_local_b_ M4_i(81)     /* get 11-th local variable                */
+#define M4_local_c_ M4_i(82)     /* get 12-th local variable                */
+#define M4_local_d_ M4_i(83)     /* get 13-th local variable                */
+#define M4_local_e_ M4_i(84)     /* get 14-th local variable                */
+#define M4_local_f_ M4_i(85)     /* get 15-th local variable                */
+#define M4_local_alloc_ M4_i(86) /* followed by T(n), reserve space for n local variables */
+#define M4_local_free_ M4_i(87)  /* release space for last reserved local variables       */
+#undef M4____gap                 /*                                         */
+#undef M4____gap                 /*                                         */
+#define M4_loop_ M4_i(90)        /* (loop)   followed by IP offset to jump            */
+#define M4_missing_ 0            /* (missing) called instead of invalid/unimplemented function */
+#define M4_repeat_ M4_i(92)      /* (repeat) followed by IP offset to jump            */
 #define M4_return_to_native_ M4_i(93)  /* (return-to-native) return to native code    */
 #undef M4____gap                       /*                                         */
 #undef M4____gap                       /*                                         */

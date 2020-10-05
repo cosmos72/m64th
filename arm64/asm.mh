@@ -256,19 +256,19 @@
 #define ADDROF_1M(sym, dst) /* load symbol address into dst. symbol must be within +/- 1MB */ \
     adr   dst,  sym;             /* low 21 bits */
 
-/* pop second data stack element into reg */
-#define DPOP(reg)         ldr   reg, [DSTK], SZ;
-/* pop 2nd, 3rd data stack elements into reg1, reg2 */
-#define DPOP2(reg1,reg2)  ldp   reg1, reg2, [DSTK], SZ2;
-#define DPOP___DTOP()     DPOP(DTOP)
-
-#define DPUSH(reg)        str   reg, [DSTK, -SZ]!;      /* push reg to second data stack element */
-#define DPUSH2(reg1,reg2) stp   reg2, reg1, [DSTK, -SZ2]!; /* push reg1, then reg2 to data stack */
+#define DPUSH(reg)        str   reg, [DSTK, -SZ]!;        /* push reg to second data stack element */
+#define DPUSH2(reg1,reg2) stp   reg2, reg1, [DSTK, -SZ2]!;/* push reg1, then reg2 to data stack */
 #define DPUSH__DTOP()     DPUSH(DTOP)
 
+#define DPOP(reg)         ldr   reg, [DSTK], SZ;         /* pop second data stack element into reg */
+#define DPOP2(reg1,reg2)  ldp   reg1, reg2, [DSTK], SZ2; /* pop 2nd, 3rd data stack elements into reg1, reg2 */
+#define DPOP___DTOP()     DPOP(DTOP)
 
-#define RPUSH(reg)       str   reg, [RSTK, -SZ]!; /* push val to second return stack element */
-#define RPOP(reg)        ldr   reg, [RSTK], SZ;   /* pop second return stack element into val */
+#define RPUSH(reg)       str   reg, [RSTK, -SZ]!;        /* push val to second return stack element */
+#define RPUSH2(reg1,reg2) stp  reg2, reg1, [RSTK, -SZ2]!;/* push reg1, then reg2 to return stack */
+
+#define RPOP(reg)        ldr   reg, [RSTK], SZ;          /* pop second return stack element into val */
+#define RPOP2(reg1,reg2) ldp   reg1, reg2, [RSTK], SZ2;  /* pop 2nd, 3rd data stack elements into reg1, reg2 */
 
 /* clang-format on */
 

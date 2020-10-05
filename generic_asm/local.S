@@ -87,6 +87,30 @@ FUNC_START(_local_f_) /* (local-f) ( -- x ) push 15-th local variable to dstack 
 FUNC_END(_local_f_)
 
 
+/* (local-alloc) (R: -- locl ln-1 ... l1 l0 n ) followed by T(n), reserve space for n local variables */
+FUNC_START(_local_alloc_)
+#ifdef __aarch64__
+        ldrh   REG1_ut,AT(IP), SZt;        /* a = n; IP += SZt i.e. skip T(n) */
+#else
+        LD_ut( REG1,   AT(IP))             /* a = n                           */
+        ADD2(IMM(SZt), IP)                 /* IP += SZt i.e. skip T(n)        */
+#endif
+        RPUSH2(RTOP, LOCL)                 /* (R: LOCL _                    ) */
+        MOVE(  REG1,   RTOP)               /* (R: LOCL n                    ) */
+        NEG1(  REG1)                       /* a = -n                          */
+        ADD4(  RSTK,   REG1, PSZ,  RSTK)   /* (R: LOCL ln-1 ... l1 l0 n     ) */
+        MOVE(  RSTK,   LOCL)               /* LOCL = &l0                      */
+        NEXT0()
+FUNC_RAWEND(_local_alloc_)
+
+
+/* (local-free) (R: locl ln-1 ... l1 l0 n -- ) release space for last reserved local variables */
+FUNC_START(_local_free_)
+        ADD4(  RSTK,   RTOP, PSZ,  RSTK)   /* (R: LOCL n                    ) */
+        RPOP2( LOCL,   RTOP)               /* (R:                           ) */
+FUNC_END(_local_free_)
+
+
 FUNC_START(_to_local_0_) /* (to-local-0) ( x -- ) store dstack top to 1-st local variable */
         STOR(  DTOP,   AT(LOCL))
         DPOP___DTOP()

@@ -46,7 +46,7 @@ FUNC_END(_lit8s_)
 #define M4F_LIT_STRING_
 FUNC_START(_lit_string_)   /* (lit-string) push to dstack the SZt and ascii at following IP */
         ldrh   REG1_ut,AT(IP), SZt;    /* a  = length; IP = c-addr          */
-        stp    IP,DTOP,AT(DSTK, -16)!; /* push dtop, c-addr to DSTK         */
+        DPUSH2(DTOP,   IP)             /* push dtop, c-addr to DSTK         */
         ADD4(  IP,     REG1,0,   IP)   /* IP = c-addr + length              */
         MOVE(  REG1,   DTOP)           /* dtop = length                     */
         ALIGN( SZt,    IP)             /* IP = aligned@SZt(c-addr + length) */
