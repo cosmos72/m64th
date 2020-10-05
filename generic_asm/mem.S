@@ -155,6 +155,7 @@ LABEL(line_find_char.done)
 FUNC_END(line_find_char)
 
 
+#ifndef M4FROLL
 /* ( xu xu_1 ... x1 x0 u -- xu_1 ... x1 x0 xu ) */
 FUNC_START(roll)
         LOAD(  REG1,   AT(DSTK, DTOP, SZ)) /* a = xu                             */
@@ -166,8 +167,10 @@ FUNC_START(roll)
         ASM_CALL(      FUNC(move))         /* ( xu_1 ... x1 x0 x0 xu )           */
         ADD2(IMM(SZ),  DSTK)               /* ( xu_1 ... x1 x0 xu    )           */
 FUNC_END(roll)
+#endif
 
 
+#ifndef M4FMINUS_ROLL
 /* ( xu xu_1 ... x1 x0 u -- x0 xu xu_1 ... x1 ) */
 FUNC_START(minus_roll)
         ADD4(  DSTK,   DTOP, PSZ, REG0)    /* @ = address of xu   */
@@ -181,6 +184,7 @@ FUNC_START(minus_roll)
         ASM_CALL(      FUNC(move))         /* ( xu xu xu_1 ... x1 x0 &xu           ) */
         JUMP(  FUNC(store))                /* ( x0 xu xu_1 ... x1                  ) */
 FUNC_RAWEND(minus_roll)
+#endif
 
 
 #ifndef M4FTWO_ROLL
