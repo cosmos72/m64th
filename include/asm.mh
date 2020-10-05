@@ -44,8 +44,8 @@
 
 /* align register at n = some power of two */
 #define ALIGN(n, reg)                                                                              \
-    ADD2(IMM(((n)-1)), reg)                                                                        \
-    AND2(IMM((-(n))),  reg)
+    ADD2(IMM((n)-1), reg)                                                                          \
+    AND2(IMM(-(n)),  reg)
 
 #define TO(label) .L##label /* local label */
 #define LABEL(label) TO(label) :

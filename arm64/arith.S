@@ -43,6 +43,17 @@ FUNC_START(_lit8s_)        /* (lit-8s) push to dstack the int64 at following IP 
 FUNC_END(_lit8s_)
 
 
+#define M4F_LIT_STRING_
+FUNC_START(_lit_string_)   /* (lit-string) push to dstack the SZt and ascii at following IP */
+        ldrh   REG1_ut,AT(IP), SZt;    /* a  = length; IP = c-addr          */
+        stp    IP,DTOP,AT(DSTK, -16)!; /* push dtop, c-addr to DSTK         */
+        ADD4(  IP,     REG1,0,   IP)   /* IP = c-addr + length              */
+        MOVE(  REG1,   DTOP)           /* dtop = length                     */
+        ALIGN( SZt,    IP)             /* IP = aligned@SZt(c-addr + length) */
+        NEXT0()                        /* jump to end of string             */
+FUNC_RAWEND(_lit_string_)
+
+
 #define M4F_MISSING_
 FUNC_START(_missing_)      /* (missing) called instead of invalid/unimplemented function */
         .int   0; /* udf */            /* crash with SIGILL */

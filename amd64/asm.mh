@@ -24,7 +24,7 @@
 #include "../include/macro.mh"
 #include "sz.mh"
 
-#define IMM(constant) $constant /* immediate constant */
+#define IMM(constant) $(constant) /* immediate constant */
 
 /* clang-format off */
 
