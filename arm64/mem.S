@@ -21,6 +21,21 @@
 
 /* clang-format off */
 
+#define M4FTWO_ROLL
+/* ( du du_1 ... d1 d0 u -- du_1 ... d1 d0 du ) */
+FUNC_START(two_roll)
+        SHL2(IMM(1),   DTOP)               /* dtop <<= 1                         */
+        ADD4(  DSTK,   DTOP, PSZ, REG2)    /* b = address of du                  */
+        ADDI(  DSTK,   SZ2,  REG1)         /* a = address of d1                  */
+        ldp REG3,REG4, AT(REG2);           /* c = xu; d = yu                     */
+        stp REG1,DSTK, AT(DSTK, -SZ4);     /* ( du ... d1 d0 __ &d0 &d1 u      ) */
+        stp REG3,REG4, AT(DSTK, -SZ2);     /* ( du ... d1 d0 du &d0 &d1 u      ) */
+        SUB2(IMM(SZ4), DSTK)
+        ASM_CALL(      FUNC(move))         /* ( du_1 ... d1 d0 d0 du           ) */
+        JUMP(          FUNC(two_nip))      /* ( du_1 ... d1 d0 du              ) */
+FUNC_RAWEND(two_roll)
+
+
 /* cmove ( src-c-addr dst-c-addr u -- ) 'string' word set */
 FUNC_START(cmove)
         ASM_CALL(      FUNC(cmove_star))
@@ -233,7 +248,7 @@ LABEL(crc_string_simd.by64.loop)
 
 LABEL(crc_string_simd.by8)
 #endif // 1
-        
+
         SUB2(  IMM(8), DTOP)
 FUNC_ALIGN()
 LABEL(crc_string_simd.by8.loop)

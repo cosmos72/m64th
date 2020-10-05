@@ -183,6 +183,7 @@ FUNC_START(minus_roll)
 FUNC_RAWEND(minus_roll)
 
 
+#ifndef M4FTWO_ROLL
 /* ( du du_1 ... d1 d0 u -- du_1 ... d1 d0 du ) */
 FUNC_START(two_roll)
         SHL2(IMM(1),   DTOP)               /* dtop <<= 1                         */
@@ -198,6 +199,7 @@ FUNC_START(two_roll)
         ASM_CALL(      FUNC(move))         /* ( du_1 ... d0 d0 du              ) */
         JUMP(          FUNC(two_nip))      /* ( du_1 ... d0 du                 ) */
 FUNC_RAWEND(two_roll)
+#endif
 
 
 /* ( du du_1 ... d1 d0 u -- d0 du du_1 ... d1 ) */

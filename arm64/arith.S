@@ -56,7 +56,7 @@ FUNC_RAWEND(_lit_string_)
 
 #define M4F_MISSING_
 FUNC_START(_missing_)      /* (missing) called instead of invalid/unimplemented function */
-        .int   0; /* udf */            /* crash with SIGILL */
+        .4byte   0; /* udf */          /* crash with SIGILL */
 FUNC_END(_missing_)
 
 
