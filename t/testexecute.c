@@ -669,7 +669,7 @@ static m4testexecute testexecute_d[] = {
 static const m4token testoptimize_noop[] = {m4noop};
 static const m4token testoptimize_zero[] = {m4zero, m4noop};
 static const m4token testoptimize_nip_dup[] = {m4nip, m4dup, m4noop};
-static const m4hashmap_int test_hash_map_int0 = {
+static const m4hashmap_int test_hashmap_int0 = {
     0 /*size*/, 31 /*lcap*/, NULL /*vec*/
 };
 static const m4hashmap_entry_int test_hash_entry_int0[2] = {
@@ -682,28 +682,28 @@ static const m4hashmap_entry_int test_hash_entry_int1[8] = {
     {0 /*val*/, 0 /*key*/, -1 /*next*/},  {0 /*val*/, 0 /*key*/, -1 /*next*/},
     {0 /*val*/, 0 /*key*/, -1 /*next*/},  {987 /*val*/, 1 /*key*/, -2 /*next*/},
 };
-static const m4hashmap_int test_hash_map_int1 = {
+static const m4hashmap_int test_hashmap_int1 = {
     0 /*size*/, 2 /*lcap*/, (m4hashmap_entry_int *)test_hash_entry_int1 /*vec*/
 };
 
 static m4testexecute testexecute_e[] = {
-    {"(hash-map-indexof/int)",
-     {CALL(_hash_map_indexof_int_), m4bye},
-     {{2, {(m4cell)&test_hash_map_int0, 0x12345678}}, {}},
+    {"(hashmap-indexof/int)",
+     {CALL(_hashmap_indexof_int_), m4bye},
+     {{2, {(m4cell)&test_hashmap_int0, 0x12345678}}, {}},
      {{1, {(0xc662df9dul ^ (0xc662df9dul >> 31)) & ((1ul << 31) - 1)}}, {}},
      {}},
-    {"(hash-map-entry@/int)",
-     {CALL(_hash_map_entry_fetch_int_), m4bye},
+    {"(hashmap-entry@/int)",
+     {CALL(_hashmap_entry_fetch_int_), m4bye},
      {{2, {(m4cell)&test_hash_entry_int0, 1}}, {}},
      {{3, {4, 5, 6}}, {}},
      {}},
-    {"{3:654, 1:987} 1 hash-map-find/int",
-     {CALL(hash_map_find_int), m4bye},
-     {{2, {(m4cell)&test_hash_map_int1, 1}}, {}},
+    {"{3:654, 1:987} 1 hashmap-find/int",
+     {CALL(hashmap_find_int), m4bye},
+     {{2, {(m4cell)&test_hashmap_int1, 1}}, {}},
      {{3, {1, 987, ttrue}}, {}},
      {}},
-    {"{...} hash-map-find/int",
-     {m4name_to_data, m4drop, m4swap, CALL(hash_map_find_int), m4bye},
+    {"{...} hashmap-find/int",
+     {m4name_to_data, m4drop, m4swap, CALL(hashmap_find_int), m4bye},
      {{2, {M4two | (M4pick << 16), (m4cell)&WORD_SYM(_optimize_2token_)}}, {}},
      {{3, {M4two | (M4pick << 16), 1 | (M4hop << 16), ttrue}}, {}},
      {}},

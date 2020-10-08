@@ -306,8 +306,8 @@ WORD_START(_exec_xt_from_native_, _exec_token_)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_MAY_JUMP)
     WORD_CODE(_exec_xt_from_native_, exit)
 WORD_END(_exec_xt_from_native_)
-/* (hash-map-entry@/int) ( vec u -- key val next ) fetch u-th entry in hash-map buckets */
-WORD_START(_hash_map_entry_fetch_int_, _exec_xt_from_native_)
+/* (hashmap-entry@/int) ( vec u -- key val next ) fetch u-th entry in hashmap buckets */
+WORD_START(_hashmap_entry_fetch_int_, _exec_xt_from_native_)
     WORD_DSTACK(2,3)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -324,9 +324,9 @@ WORD_START(_hash_map_entry_fetch_int_, _exec_xt_from_native_)
         _lit_, T(M4HASH_MAP_ENTRY_OFF_NEXT_INT), r_from, plus, int_fetch,
         exit
     )
-WORD_END(_hash_map_entry_fetch_int_)
-/* (hash-map-index-of/int) ( map key -- pos ) get bucket position for key  */
-WORD_START(_hash_map_indexof_int_, _hash_map_entry_fetch_int_)
+WORD_END(_hashmap_entry_fetch_int_)
+/* (hashmap-index-of/int) ( map key -- pos ) get bucket position for key  */
+WORD_START(_hashmap_indexof_int_, _hashmap_entry_fetch_int_)
     WORD_DSTACK(2,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -346,8 +346,8 @@ WORD_START(_hash_map_indexof_int_, _hash_map_entry_fetch_int_)
         xor,                                           /* ( cap-1 hash^(hash>>lcap)     ) */
         and, exit                                      /* ( cap-1 & (hash^(hash>>lcap)) ) */
     )
-WORD_END(_hash_map_indexof_int_)
-WORD_START(_if_, _hash_map_indexof_int_)
+WORD_END(_hashmap_indexof_int_)
+WORD_START(_if_, _hashmap_indexof_int_)
     WORD_DSTACK(1,0) /* token stack effect when not jumping */
     WORD_RSTACK(0,0)
     WORD_DSTACK(1,0) /* token stack effect when jumping */
@@ -709,11 +709,11 @@ WORD_START(_optimize_2token_, _optimize_2_)
     WORD_DATA_N_AUTO(_optimize_2token_)
     WORD_CODE_START(_optimize_2token_)
       WORD_CODE_TOKENS(
-        /* (ip>data>addr) >r                           ( src dst               ) (R: hash-map )
-         * over token@ hop token+ token@               ( src dst tok0 tok1     ) (R: hash-map )
-         * 8 tokens lshift or                          ( src dst tok0|tok1<<16 ) (R: hash-map )
-         * r> swap                                     ( src dst hash-map key  )
-         * hash-map-find/int                           ( src dst key' val' t|f )
+        /* (ip>data>addr) >r                           ( src dst               ) (R: hashmap )
+         * over token@ hop token+ token@               ( src dst tok0 tok1     ) (R: hashmap )
+         * 8 tokens lshift or                          ( src dst tok0|tok1<<16 ) (R: hashmap )
+         * r> swap                                     ( src dst hashmap key  )
+         * hashmap-find/int                           ( src dst key' val' t|f )
          * 0= if                                       ( src dst key' val'     )
          *    2drop 1token                             ( src dst SZt           )
          *    cmove* false exit                        ( src' dst' false       )
@@ -731,7 +731,7 @@ WORD_START(_optimize_2token_, _optimize_2_)
         over, token_fetch, hop, token_plus, token_fetch,
         eight, tokens, lshift, or,
         r_from, swap,
-        CALL(hash_map_find_int),
+        CALL(hashmap_find_int),
         _if0_, T(6),
             two_drop, one_token,
             cmove_star, false, exit,

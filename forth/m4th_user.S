@@ -154,8 +154,8 @@ WORD_START(ex_to_string, ex_message_fetch)
     )
 WORD_END(ex_to_string)
 WORD(flip,             ex_to_string,   DSTACK(3,3), RSTACK(0,0), WORD_PURE)
-/* hash-map-find/int ( map key -- key val t|f ) find entry in hash-map/int  */
-WORD_START(hash_map_find_int, flip)
+/* hashmap-find/int ( map key -- key val t|f ) find entry in hashmap/int  */
+WORD_START(hashmap_find_int, flip)
     WORD_DSTACK(2,3)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -165,10 +165,10 @@ WORD_START(hash_map_find_int, flip)
         dup_to_r,                                      /* ( map key            ) (R: key     ) */
         over, _lit_, T(M4HASH_MAP_OFF_VEC_INT), plus,  /* ( map key &map.vec   ) (R: key     ) */
         fetch, to_r,                                   /* ( map key            ) (R: key vec ) */
-        CALL(_hash_map_indexof_int_),                  /* ( pos                ) (R: key vec ) */
+        CALL(_hashmap_indexof_int_),                  /* ( pos                ) (R: key vec ) */
         begin,                                         /* ( pos                ) (R: key vec ) */
             r_fetch, swap,                             /* ( vec pos            ) (R: key vec ) */
-            CALL(_hash_map_entry_fetch_int_),          /* ( key' val next      ) (R: key vec ) */
+            CALL(_hashmap_entry_fetch_int_),          /* ( key' val next      ) (R: key vec ) */
             dup, one_plus, /* 0 if no entry */         /* ( key' val next flag ) (R: key vec ) */
         _while_, T(19),                                /* ( key' val next      ) (R: key vec ) */
             hop, r2nd_fetch, equal,                    /* ( key' val next t|f  ) (R: key vec ) */
@@ -183,8 +183,8 @@ WORD_START(hash_map_find_int, flip)
         two_drop, r_from_drop, r_from,                 /* ( key' key           )               */
         nip, zero, zero, exit                          /* ( key 0 false        )               */
     )
-WORD_END(hash_map_find_int)
-WORD(hop,           hash_map_find_int, DSTACK(3,4), RSTACK(0,0), WORD_PURE)
+WORD_END(hashmap_find_int)
+WORD(hop,           hashmap_find_int, DSTACK(3,4), RSTACK(0,0), WORD_PURE)
 WORD(i_times,          hop,            DSTACK(1,1), RSTACK(1,1), WORD_R_PURE)
 WORD(i_plus,           i_times,        DSTACK(1,1), RSTACK(1,1), WORD_R_PURE)
 WORD(i_minus,          i_plus,         DSTACK(1,1), RSTACK(1,1), WORD_R_PURE)

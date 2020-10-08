@@ -23,7 +23,7 @@
 #define M4hash_no_entry -1
 #define M4hash_no_next -2
 
-/* hash-map/cell */
+/* hashmap/cell */
 #define M4HASH_MAP_OFF_SIZE_CELL 0
 #define M4HASH_MAP_OFF_LCAP_CELL SZ
 #define M4HASH_MAP_OFF_VEC_CELL SZ2
@@ -32,7 +32,7 @@
 #define M4HASH_MAP_ENTRY_OFF_KEY_CELL SZ
 #define M4HASH_MAP_ENTRY_OFF_NEXT_CELL SZ2
 
-/* hash-map/int */
+/* hashmap/int */
 #define M4HASH_MAP_OFF_SIZE_INT 0
 #define M4HASH_MAP_OFF_LCAP_INT 4
 #define M4HASH_MAP_OFF_VEC_INT SZ

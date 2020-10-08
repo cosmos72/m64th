@@ -25,7 +25,7 @@
 m4cell m4th_testcompile(m4th *m, FILE *out);
 m4cell m4th_testexecute(m4th *m, FILE *out);
 m4cell m4th_testio(m4th *m, FILE *out);
-m4cell m4th_testhash_map(FILE *out);
+m4cell m4th_testhashmap(FILE *out);
 
 #define N_OF(array) (sizeof(array) / sizeof((array)[0]))
 

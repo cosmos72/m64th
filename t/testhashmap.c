@@ -26,9 +26,9 @@
 #include <assert.h> /* assert() */
 #include <stdio.h>  /* fprintf() fputs() */
 
-/* -------------- m4testhash_map -------------- */
+/* -------------- m4testhashmap -------------- */
 
-m4cell m4th_testhash_map(FILE *out) {
+m4cell m4th_testhashmap(FILE *out) {
     m4ucell i, n = 512, cap = 256, fail = 0;
     m4hashmap_int *map = m4hashmap_new_int(cap);
     m4int key;

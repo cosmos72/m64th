@@ -155,8 +155,8 @@
     X(8, "-cs-roll", minus_cs_roll)   /* ( ... cs-depth -- ... )                        */         \
     X(7, "cs-swap", cs_swap)          /* ( a_sys b_sys -- b_sys a_sys )                 */         \
     X(9, "ex>string", ex_to_string)   /* ( ex -- c-addr u ) get exception name          */         \
-                                      /* ( map key -- key val t|f ) find entry in hash-map/int  */ \
-    X(17, "hash-map-find/int", hash_map_find_int)                                                  \
+                                      /* ( map key -- key val t|f ) find entry in hashmap/int  */  \
+    X(16, "hashmap-find/int", hashmap_find_int)                                                    \
     X(9, "interpret", interpret) /* one iteration of forth interpret/compile loop  */              \
     X(4, "repl", repl)           /* call INTERPRET repeatedly until IN I/O error   */              \
     X(5, "r2nd@", r2nd_fetch)   /* alias of '2r@ drop' i.e. fetch second item from return stack */ \
@@ -375,9 +375,9 @@
     X(11, "(eval-name)", _eval_name_)                                                              \
     X(13, "(eval-number)", _eval_number_) /* ( x -- ) interpret or compile number */               \
     /* ( vec pos -- key val next ) fetch entry from map bucket index */                            \
-    X(19, "hash-map-entry@/int", _hash_map_entry_fetch_int_)                                       \
+    X(18, "hashmap-entry@/int", _hashmap_entry_fetch_int_)                                         \
     /* ( map key -- pos ) convert map key to bucket index */                                       \
-    X(22, "(hash-map-indexof/int)", _hash_map_indexof_int_)                                        \
+    X(21, "(hashmap-indexof/int)", _hashmap_indexof_int_)                                          \
     /* ( src dst src-end -- src' dst' ) optimize single tokens being compiled  */                  \
     X(12, "(optimize-1)", _optimize_1_)                                                            \
     /* ( src-addr dst-addr -- src-addr' dst-addr' t|f ) optimize a single token being compiled  */ \
