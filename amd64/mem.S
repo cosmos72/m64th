@@ -68,7 +68,7 @@ FUNC_END(div_string)
 
 /* cmove ( src_addr dst_addr u -- ) 'string' word set */
 FUNC_START(cmove)
-        ASM_CALL(      FUNC(cmove_star))   /* ( src' dst'    ) */
+        ASM_CALL(      FUNC(cmove_star), cmove.0)   /* ( src' dst'    ) */
         LOAD(  DTOP,   AT(DSTK, SZ))
         ADD2(IMM(SZ2), DSTK)
 FUNC_END(cmove)
@@ -239,20 +239,20 @@ LABEL(crc_string_simd.3)
 LABEL(crc_string_simd.1)
         crc32b -1(REG3),   DTOPw;
         NOT1(  DTOPw)
-        ASM_RET()
+        NEXT0()
 LABEL(crc_string_simd.5)
         crc32b -5(REG3),   DTOPw;
 LABEL(crc_string_simd.4)
         crc32l -4(REG3),   DTOPw;
         NOT1(  DTOPw)
-        ASM_RET()
+        NEXT0()
 LABEL(crc_string_simd.6)
         crc32l -6(REG3),   DTOPw;
 LABEL(crc_string_simd.2)
         crc32w -2(REG3),   DTOPw;
 LABEL(crc_string_simd.0)
         NOT1(  DTOPw)
-        ASM_RET()
+        NEXT0()
 FUNC_RAWEND(crc_string_simd)
 
 

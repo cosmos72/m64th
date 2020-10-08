@@ -70,7 +70,7 @@ void m4ftest_crc_plus_native_forth(m4arg _); /* implemented in generic_asm/test.
 void m4ftest_exec_xt_from_native(m4arg _);   /* implemented in generic_asm/test.S */
 
 static m4testexecute testexecute_a[] = {
-#if 0
+#if 1
     {"1e9 0 do loop", {m4do, m4_loop_, T(-2), m4bye}, {{2, {1e9, 0}}, {}}, {{}, {}}, {}},
 #elif 0
     {"1e6 0 do wordlist-find loop",
@@ -1457,6 +1457,10 @@ static void m4th_testexecute_bunch(m4th *m, m4testexecute bunch[], m4cell n, m4t
     m4cell i, fail = 0;
     for (i = 0; i < n; i++) {
         m4code_pair code_pair = m4testexecute_init(&bunch[i], &countedcode_pair);
+#define M4TH_TEST_VERBOSE
+#ifdef M4TH_TEST_VERBOSE
+        fprintf(out, "%s\n", bunch[i].name);
+#endif
         if (!m4testexecute_run(m, &bunch[i], &code_pair)) {
             fail++, m4testexecute_failed(m, &bunch[i], &code_pair, out);
         }
@@ -1481,8 +1485,8 @@ void m4th_testbench_crc_c(FILE *out) {
 
 m4cell m4th_testexecute(m4th *m, FILE *out) {
     m4testexecute *t[] = {
-        testexecute_a, testexecute_b, testexecute_c, testexecute_d,
-        testexecute_e, testexecute_f, testexecute_g,
+        testexecute_a, // testexecute_b, testexecute_c, testexecute_d,
+        // testexecute_e, testexecute_f, testexecute_g,
     };
     const m4cell n[] = {
         N_OF(testexecute_a), N_OF(testexecute_b), N_OF(testexecute_c), N_OF(testexecute_d),

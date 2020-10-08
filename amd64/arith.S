@@ -26,7 +26,6 @@ FUNC_START(_missing_)      /* (missing) called instead of invalid/unimplemented 
         ud2;                   /* crash with SIGILL */
 FUNC_END(_missing_)
 
-
 #define M4FTIMES
 FUNC_START(times)          /* *    */
         MUL2(  AT(DSTK),   DTOP)

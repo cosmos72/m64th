@@ -923,6 +923,7 @@ void m4th_init(void) {
 }
 
 m4th *m4th_new(void) {
+    extern void m4f_vm_(m4arg _);
     m4th *m;
 
     m4th_init();
@@ -937,6 +938,7 @@ m4th *m4th_new(void) {
     m->in = m4iobuf_new(inbuf_n);
     m->out = m4iobuf_new(outbuf_n);
     memset(m->c_regs, '\0', sizeof(m->c_regs));
+    m->c_regs[1] = m4f_vm_;
     m->user_size = ((m4cell)&m->user_var[0] - (m4cell)&m->user_size) / SZ;
     m->user_next = m->user_size;
     m->lastw = NULL;
@@ -967,9 +969,12 @@ void m4th_del(m4th *m) {
 
 /* does NOT modify m->state and user variables as m->base, m->searchorder... */
 void m4th_clear(m4th *m) {
+    extern void m4f_vm_(m4arg _);
+
     m->dstack.curr = m->dstack.end;
     m->rstack.curr = m->rstack.end;
     memset(m->c_regs, '\0', sizeof(m->c_regs));
+    m->c_regs[1] = m4f_vm_;
     m->in->err = m->in->pos = m->in->end = 0;
     m->out->err = m->out->pos = m->out->end = 0;
     m->ip = NULL;

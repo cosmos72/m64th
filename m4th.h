@@ -216,7 +216,7 @@ struct m4th_s {            /**< m4th forth interpreter and compiler          */
     m4iobuf *in;           /**< input  buffer                                */
     m4iobuf *out;          /**< output buffer                                */
 
-    const void *c_regs[1]; /**< m4th_run() may save C registers here         */
+    const void *c_regs[2]; /**< m4th_run() may save C registers here         */
 
     /* USER variables, i.e. thread-local */
     uint32_t user_size;        /**< # available cells in user variables          */

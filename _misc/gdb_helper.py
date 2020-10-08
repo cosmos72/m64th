@@ -45,7 +45,7 @@ class PrintDataStack(gdb.Command):
         regs = ()
         arch_name = inf.architecture().name()
         if arch_name == "i386:x86-64":
-            regs = ("rax", "rbp", "rsi", "rdi", "r13", "r15")
+            regs = ("rax", "rbp", "rsi", "rsp", "r13", "r15")
         elif arch_name == "aarch64":
             regs = ("x20", "x22", "x21", "x23", "x24", "x27")
         return (
@@ -53,8 +53,8 @@ class PrintDataStack(gdb.Command):
             int(frame.read_register(regs[1])), # rtop
             int(frame.read_register(regs[2])), # dstk
             int(frame.read_register(regs[3])), # rstk
-            int(frame.read_register(regs[4])) - self.sz*12, # m4th
-            int(frame.read_register(regs[5])) - self.szt) # ip
+            int(frame.read_register(regs[4])) - self.sz*14, # m4th
+            int(frame.read_register(regs[5])) - self.szt)   # ip
     def stack_print(self, inf, label, top, stk, n):
         gdb.write("%s <%d> " % (label, n))
         if n > 0:

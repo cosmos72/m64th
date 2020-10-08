@@ -119,5 +119,5 @@ FUNC_END(test_crc_plus_native_forth)
 
 
 FUNC_START(test_exec_xt_from_native)
-        ASM_CALL(      FUNC(_exec_xt_from_native_))
+        ASM_CALL(FUNC(_exec_xt_from_native_), test_exec_xt_from_native.0)
 FUNC_END(test_exec_xt_from_native)
