@@ -95,7 +95,7 @@ FUNC_START(_local_alloc_)
         LD_ut( REG1,   AT(IP))             /* a = n                           */
         ADD2(IMM(SZt), IP)                 /* IP += SZt i.e. skip T(n)        */
 #endif
-        RPUSH2(RTOP, LOCL)                 /* (R: LOCL _                    ) */
+        RPUSH2(RTOP,   LOCL)               /* (R: LOCL _                    ) */
         MOVE(  REG1,   RTOP)               /* (R: LOCL n                    ) */
         NEG1(  REG1)                       /* a = -n                          */
         ADD4(  RSTK,   REG1, PSZ,  RSTK)   /* (R: LOCL ln-1 ... l1 l0 n     ) */
@@ -106,8 +106,14 @@ FUNC_RAWEND(_local_alloc_)
 
 /* (local-free) (R: locl ln-1 ... l1 l0 n -- ) release space for last reserved local variables */
 FUNC_START(_local_free_)
+#ifdef __x86_64__
+        leaq   SZ2(RSTK, RTOP, SZ),  RSTK;
+        LOAD(  LOCL,   AT(RSTK, -SZ2))
+        LOAD(  RTOP,   AT(RSTK, -SZ))
+#else
         ADD4(  RSTK,   RTOP, PSZ,  RSTK)   /* (R: LOCL n                    ) */
         RPOP2( LOCL,   RTOP)               /* (R:                           ) */
+#endif
 FUNC_END(_local_free_)
 
 

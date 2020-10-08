@@ -461,7 +461,16 @@ WORD(_local_c_,    _local_b_,      DSTACK(0,1), RSTACK(0,0), WORD_IMPURE | M4FLA
 WORD(_local_d_,    _local_c_,      DSTACK(0,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
 WORD(_local_e_,    _local_d_,      DSTACK(0,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
 WORD(_local_f_,    _local_e_,      DSTACK(0,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
-WORD_START(_loop_, _local_f_)
+WORD_START(_local_alloc_,_local_f_)
+    WORD_DSTACK(0,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_INLINE_ALWAYS)
+    WORD_CODE(_local_alloc_, T(0), exit)
+WORD_END(_local_alloc_)
+WORD(_local_free_, _local_alloc_, DSTACK(0,0), RSTACK(0,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS)
+WORD_START(_loop_, _local_free_)
     WORD_DSTACK(0,0) /* stack effect when not jumping */
     WORD_RSTACK(2,0)
     WORD_DSTACK(0,0) /* stack effect when jumping */

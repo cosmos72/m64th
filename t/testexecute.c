@@ -344,6 +344,18 @@ static m4testexecute testexecute_b[] = {
      {{1, {9876543210l}}, {}},
      {{1, {(uint32_t)9876543210l}}, {}},
      {}},
+    {"(local-alloc)",
+     {m4_local_alloc_, T(3), m4_to_local_0_, m4_to_local_1_, m4_to_local_2_, m4bye},
+     {{3, {7, 8, 9}}, {}},
+     {{}, {5, {0, 7, 8, 9, 3}}},
+     {}},
+    {"(local-free)", {m4_local_free_, m4bye}, {{}, {3, {99, 11, 1}}}, {}, {}},
+    {"locals",
+     {m4_local_alloc_, T(2), m4_to_local_0_, m4_to_local_1_, m4_local_0_, m4_local_1_, m4minus,
+      m4_local_free_, m4bye},
+     {{2, {8, 3}}, {}},
+     {{1, {-5}}, {}},
+     {}},
 };
 
 static m4testexecute testexecute_c[] = {

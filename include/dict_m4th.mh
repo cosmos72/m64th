@@ -323,6 +323,9 @@
     X(9, "(local-d)", _local_d_) /* get 13-th local variable */                                    \
     X(9, "(local-e)", _local_e_) /* get 14-th local variable */                                    \
     X(9, "(local-f)", _local_f_) /* get 15-th local variable */                                    \
+    /* followed by T(n), reserve space for n local variables */                                    \
+    X(13, "(local-alloc)", _local_alloc_)                                                          \
+    X(12, "(local-free)", _local_free_) /* release space for last reserved local variables */      \
     X(6, "(loop)", _loop_)                                                                         \
     X(9, "(missing)", _missing_)                                                                   \
     X(8, "(repeat)", _repeat_)                                                                     \
