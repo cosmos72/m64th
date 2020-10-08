@@ -19,7 +19,7 @@
 
 #include "impl.h"
 #include "include/dict_fwd.h"   /* m4dict_... */
-#include "include/hash_map.h"   /* m4dict_... */
+#include "include/hashmap.h"   /* m4dict_... */
 #include "include/opt_rules.mh" /* OPT2_RULES */
 #include "include/word_fwd.h"   /* m4w_...    */
 #include "m4th.h"
@@ -99,25 +99,25 @@ static void genopt_print_n_tokens(uint64_t x, unsigned n, unsigned index, FILE *
     }
 }
 
-static void genopt2_add(m4hash_map_int *map, const m4token opt[6]) {
+static void genopt2_add(m4hashmap_int *map, const m4token opt[6]) {
     m4cell key = opt[1] | ((m4cell)opt[2] << 16);
     m4cell val = opt[0] | ((m4cell)opt[3] << 16) | ((m4cell)opt[4] << 32) | ((m4cell)opt[5] << 48);
-    const m4hash_map_entry_int *e;
+    const m4hashmap_entry_int *e;
     assert(opt[0] <= 3);
-    e = m4hash_map_find_int(map, key);
+    e = m4hashmap_find_int(map, key);
     assert(e == NULL);
-    e = m4hash_map_insert_int(map, key, val);
+    e = m4hashmap_insert_int(map, key, val);
     assert(e != NULL);
 }
 
-static void genopt_dump(const m4hash_map_int *map, unsigned key_n, FILE *out) {
+static void genopt_dump(const m4hashmap_int *map, unsigned key_n, FILE *out) {
     m4ucell i, cap = 2u << map->lcap;
     fprintf(out,
             "#define OPT%u_HASH_MAP(start, entry)\t\\\n"
             "start(/*size*/ %u, /*lcap*/ %u)\t\\\n",
             key_n, (unsigned)map->size, (unsigned)map->lcap);
     for (i = 0; i < cap; i++) {
-        const m4hash_map_entry_int *e = map->vec + i;
+        const m4hashmap_entry_int *e = map->vec + i;
         fputs("entry(", out);
         if (e->next == m4hash_no_entry_int) {
             fputs("0,\t0", out);
@@ -133,7 +133,7 @@ static void genopt_dump(const m4hash_map_int *map, unsigned key_n, FILE *out) {
 
 static void genopt2_run(FILE *out) {
     static const m4token opt[][6] = {OPT2_RULES(OPT2_TO_TOKENS)};
-    m4hash_map_int *map = m4hash_map_new_int(N_OF(opt) / 2);
+    m4hashmap_int *map = m4hashmap_new_int(N_OF(opt) / 2);
     m4cell i;
     for (i = 0; i < (m4cell)N_OF(opt); i++) {
         genopt2_add(map, opt[i]);

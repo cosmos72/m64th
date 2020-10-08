@@ -23,7 +23,7 @@
 #include "../impl.h"
 #include "../include/err.h"
 #include "../include/func_fwd.h"
-#include "../include/hash_map.h"
+#include "../include/hashmap.h"
 #include "../include/iobuf.mh"
 #include "../include/token.h"
 #include "../include/word_fwd.h"
@@ -669,21 +669,21 @@ static m4testexecute testexecute_d[] = {
 static const m4token testoptimize_noop[] = {m4noop};
 static const m4token testoptimize_zero[] = {m4zero, m4noop};
 static const m4token testoptimize_nip_dup[] = {m4nip, m4dup, m4noop};
-static const m4hash_map_int test_hash_map_int0 = {
+static const m4hashmap_int test_hash_map_int0 = {
     0 /*size*/, 31 /*lcap*/, NULL /*vec*/
 };
-static const m4hash_map_entry_int test_hash_entry_int0[2] = {
+static const m4hashmap_entry_int test_hash_entry_int0[2] = {
     {2 /*val*/, 1 /*key*/, 3 /*next*/},
     {5 /*val*/, 4 /*key*/, 6 /*next*/},
 };
-static const m4hash_map_entry_int test_hash_entry_int1[8] = {
+static const m4hashmap_entry_int test_hash_entry_int1[8] = {
     {0 /*val*/, 0 /*key*/, -1 /*next*/},  {0 /*val*/, 0 /*key*/, -1 /*next*/},
     {654 /*val*/, 3 /*key*/, 7 /*next*/}, {0 /*val*/, 0 /*key*/, -1 /*next*/},
     {0 /*val*/, 0 /*key*/, -1 /*next*/},  {0 /*val*/, 0 /*key*/, -1 /*next*/},
     {0 /*val*/, 0 /*key*/, -1 /*next*/},  {987 /*val*/, 1 /*key*/, -2 /*next*/},
 };
-static const m4hash_map_int test_hash_map_int1 = {
-    0 /*size*/, 2 /*lcap*/, (m4hash_map_entry_int *)test_hash_entry_int1 /*vec*/
+static const m4hashmap_int test_hash_map_int1 = {
+    0 /*size*/, 2 /*lcap*/, (m4hashmap_entry_int *)test_hash_entry_int1 /*vec*/
 };
 
 static m4testexecute testexecute_e[] = {

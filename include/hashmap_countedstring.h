@@ -17,40 +17,52 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#ifndef M4TH_HASH_MAP_COUNTEDSTRING_H
+#define M4TH_HASH_MAP_COUNTEDSTRING_H
+
+#include "../m4th.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+#define H(x) x##countedstring
+
 enum {
-    H(m4hash_no_entry_) = (H(m4u)) - 1,
-    H(m4hash_no_next_) = (H(m4u)) - 2,
+    H(m4hash_no_entry_) = (m4char)-1,
+    H(m4hash_no_next_) = (m4char)-2,
 };
 
-typedef struct H(m4hash_map_entry_s_) {
+typedef struct m4hashmap_entry_s_string {
+    m4char keylen;
+    m4char key[255];
     m4cell val;
-    H(m4) key;
-    H(m4u) next;
-} H(m4hash_map_entry_);
+    m4ucell next;
+} H(m4hashmap_entry_);
 
-typedef struct H(m4hash_map_s_) {
-    H(m4u) size;
-    H(m4u) lcap; /* capacity is 1<<lcap */
-    H(m4hash_map_entry_) * vec;
-} H(m4hash_map_);
+typedef struct H(m4hashmap_s_) {
+    m4ucell size;
+    m4ucell lcap; /* capacity is 1<<lcap */
+    H(m4hashmap_entry_) * vec;
+} H(m4hashmap_);
 
-H(m4hash_map_) * H(m4hash_map_new_)(H(m4u) capacity);
-void H(m4hash_map_del_)(H(m4hash_map_) * map);
+H(m4hashmap_) * H(m4hashmap_new_)(m4ucell capacity);
+void H(m4hashmap_del_)(H(m4hashmap_) * map);
 
 /* find key in map. return NULL if not found */
-const H(m4hash_map_entry_) * H(m4hash_map_find_)(const H(m4hash_map_) * map, H(m4) key);
+const H(m4hashmap_entry_) * H(m4hashmap_find_)(const H(m4hashmap_) * map, m4string key);
 
 /*
  * insert key and val.
  * key MUST NOT be already present. does not grow/rehash.
  * returns NULL on failure (if map is too full)
  */
-const H(m4hash_map_entry_) * H(m4hash_map_insert_)(H(m4hash_map_) * map, H(m4) key, m4cell val);
+const H(m4hashmap_entry_) * H(m4hashmap_insert_)(H(m4hashmap_) * map, m4string key, m4cell val);
+
+#undef H
 
 #ifdef __cplusplus
 }
 #endif
+
+#endif /* M4TH_HASH_MAP_COUNTEDSTRING_H */

@@ -20,7 +20,7 @@
 #ifndef M4TH_T_TESTHASH_MAP_C
 #define M4TH_T_TESTHASH_MAP_C
 
-#include "../include/hash_map.h"
+#include "../include/hashmap.h"
 #include "testcommon.h"
 
 #include <assert.h> /* assert() */
@@ -30,30 +30,30 @@
 
 m4cell m4th_testhash_map(FILE *out) {
     m4ucell i, n = 512, cap = 256, fail = 0;
-    m4hash_map_int *map = m4hash_map_new_int(cap);
+    m4hashmap_int *map = m4hashmap_new_int(cap);
     m4int key;
     m4cell val;
-    const m4hash_map_entry_int *e;
+    const m4hashmap_entry_int *e;
     for (i = 0; i < n; i++) {
         assert(map->size == i);
         key = i;
         val = i;
-        if (!m4hash_map_insert_int(map, key, val)) {
-            fprintf(out, "m4hash_map_int too full, failed to insert after %u elements\n",
+        if (!m4hashmap_insert_int(map, key, val)) {
+            fprintf(out, "m4hashmap_int too full, failed to insert after %u elements\n",
                     (unsigned)map->size);
             fail++;
             break;
         }
-        e = m4hash_map_find_int(map, key);
+        e = m4hashmap_find_int(map, key);
         if (!e) {
-            fprintf(out, "m4hash_map_find_int() returned NULL instead of just-inserted key %u\n",
+            fprintf(out, "m4hashmap_find_int() returned NULL instead of just-inserted key %u\n",
                     (unsigned)key);
             fail++;
             continue;
         } else if (e->key != key || e->val != val) {
             fprintf(
                 out,
-                "m4hash_map_find_int() returned wrong entry {0x%x, 0x%x} instead of just-inserted "
+                "m4hashmap_find_int() returned wrong entry {0x%x, 0x%x} instead of just-inserted "
                 "pair {0x%x, 0x%x}\n",
                 (unsigned)e->key, (unsigned)e->val, (unsigned)key, (unsigned)val);
             fail++;

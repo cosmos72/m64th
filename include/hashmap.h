@@ -26,16 +26,16 @@ extern "C" {
 #endif
 
 #define H(x) x##byte
-#include "hash_map_impl.h"
+#include "hashmap_impl.h"
 #undef H
 #define H(x) x##short
-#include "hash_map_impl.h"
+#include "hashmap_impl.h"
 #undef H
 #define H(x) x##int
-#include "hash_map_impl.h"
+#include "hashmap_impl.h"
 #undef H
 #define H(x) x##cell
-#include "hash_map_impl.h"
+#include "hashmap_impl.h"
 #undef H
 
 #ifdef __cplusplus

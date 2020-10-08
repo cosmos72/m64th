@@ -20,7 +20,7 @@
 #include "../include/asm.mh"
 #include "../include/dict.mh"
 #include "../include/dict_m4th.mh"
-#include "../include/hash_map.mh"
+#include "../include/hashmap.mh"
 
 /* clang-format off */
 

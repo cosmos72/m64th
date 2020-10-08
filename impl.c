@@ -19,7 +19,7 @@
 
 #include "impl.h"
 #include "include/err.h"
-#include "include/hash_map.h"
+#include "include/hashmap.h"
 #include "include/token.h"
 #include "include/word_fwd.h"
 
@@ -32,19 +32,19 @@
 /* C implementation of hash map                                               */
 /******************************************************************************/
 
-#include "include/hash_map.h"
+#include "include/hashmap.h"
 
 #define H(x) x##byte
-#include "c/hash_map_impl.c"
+#include "c/hashmap_impl.c"
 #undef H
 #define H(x) x##short
-#include "c/hash_map_impl.c"
+#include "c/hashmap_impl.c"
 #undef H
 #define H(x) x##int
-#include "c/hash_map_impl.c"
+#include "c/hashmap_impl.c"
 #undef H
 #define H(x) x##cell
-#include "c/hash_map_impl.c"
+#include "c/hashmap_impl.c"
 #undef H
 
 /** temporary C implementation of '.' */

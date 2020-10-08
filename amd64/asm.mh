@@ -308,7 +308,7 @@
 #define NEXTCELL() CAT2(NEXT, SZ)() /* skip SZ bytes,    jump to following instruction */
 
 #define RELJUMP()               /* relative jump by number of instructions stored at next IP */    \
-    LD_st(REG3, AT(IP));        /* REG3 = IP jump offset */                                        \
+    LD_st(REG3, AT(IP));        /* c  = IP jump offset   */                                        \
     lea SZt(IP, REG3, SZt), IP; /* IP = TARGET_IP        */                                        \
     NEXT0()                     /* jump to TARGET_IP     */
 
