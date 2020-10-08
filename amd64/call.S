@@ -41,7 +41,10 @@ FUNC_START(th_run)
         ADDI(  %rdi,   M4TH_OFF_,  M4TH)          /* load m4th pointer               */
         STOR(  %rsp,   AT(M4TH, M4TH_OFF_C_REG0)) /* save C stack pointer            */
         LOAD(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))   /* load data   stack pointer       */
+#define M4TH_SWITCH_NATIVE_STACK /* changing %rsp to different stack breaks google-pprof */
+#ifdef M4TH_SWITCH_NATIVE_STACK
         LOAD(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))   /* load return stack pointer       */
+#endif
         LOAD(  LOCL,   AT(M4TH, M4TH_OFF_LOCL))   /* load local variables pointer    */
         LOAD(  IP,     AT(M4TH, M4TH_OFF_IP))     /* load instruction  pointer       */
         LOAD(  FTBL,   AT(M4TH, M4TH_OFF_FTABLE)) /* load table m4token -> m4func    */
@@ -77,7 +80,9 @@ FUNC_START(bye)
         STOR(  FTBL,   AT(M4TH, M4TH_OFF_FTABLE)) /* save table m4token -> m4func    */
         STOR(  IP,     AT(M4TH, M4TH_OFF_IP))     /* save instruction  pointer       */
         STOR(  LOCL,   AT(M4TH, M4TH_OFF_LOCL))   /* save local variables pointer    */
+#ifdef M4TH_SWITCH_NATIVE_STACK
         STOR(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))   /* save return stack pointer       */
+#endif
         STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))   /* save data   stack pointer       */
         /*
          * TODO: this discards the call stack of native forth code
