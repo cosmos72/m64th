@@ -125,9 +125,9 @@ LABEL(name_comma.str)
         DPUSH2(REG1,   DTOP)                           /* ( addr c-addr u u     ) */
         DPUSH( REG1)                                   /* ( addr c-addr u c-addr u ) */
         /* prepare word>name */
-        ASM_CALL(FUNC(countedstring_comma), name_comma.0) /* ( addr c-addr u       ) */
+        TOKEN_CALL(FUNC(countedstring_comma), name_comma.0) /* ( addr c-addr u       ) */
         /* prepare word>ident */
-        ASM_CALL(FUNC(countedstring_comma), name_comma.1) /* ( addr                ) */
+        TOKEN_CALL(FUNC(countedstring_comma), name_comma.1) /* ( addr                ) */
         ALIGN( SZ,     HERE)                           /* here = w                */
         XSUB2( HERE,   DTOP)                           /* dtop = w - addr         */
 LABEL(name_comma.str_done)                             /* ( addr                ) */
@@ -177,7 +177,7 @@ FUNC_END(name_to_flags_store)
 
 
 FUNC_START(name_to_ident) /* ( nt -- c-addr u ) */
-        ASM_CALL(FUNC(name_to_string), name_to_ident.0)
+        TOKEN_CALL(FUNC(name_to_string), name_to_ident.0)
         LOAD(  REG1,       AT(DSTK))   /* a = name.addr           */
         JZ(    REG1,       FUNC_NEXT(name_to_ident))
         ADD2(  REG1,       DTOP)       /* dtop = m4countedstring* */
@@ -254,7 +254,7 @@ FUNC_RAWEND(user_var)
 
 FUNC_START(wordlist_add) /* ( nt wid -- ) add name to wordlist */
         DPUSH__DTOP()                                  /* ( nt wid wid            */
-        ASM_CALL(FUNC(wordlist_last), wordlist_add.0)  /* ( dtop = prevnt         */
+        TOKEN_CALL(FUNC(wordlist_last), wordlist_add.0)  /* ( dtop = prevnt         */
         LOAD(  REG1,   AT(DSTK, SZ))                   /* a = nt                  */
         JZ(    DTOP,   TO(wordlist_add.prevnt))
         XSUB2( REG1,   DTOP)                           /* dtop = nt-prevnt        */

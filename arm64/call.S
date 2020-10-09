@@ -181,8 +181,7 @@ FUNC_END(_c_ret_2_)
 
 /** must be followed by address of native forth code. call it. */
 FUNC_START(_call_native_)
-        LOAD(  REG0,   AT(IP))
-        ADD2(  IMM(SZ),IP)         /* skip native function address  */
+        ldr    REG0,   AT(IP), IMM(SZ);     /* also skip native function address  */
         br     REG0;               /* tail-call optimization: jump to native code */
 FUNC_RAWEND(_call_native_)
 

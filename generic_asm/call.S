@@ -30,15 +30,17 @@ FUNC_START(_call_xt_)
 FUNC_RAWEND(_call_xt_)
 
 
-/** pop XT from dstack and call it from native code. */
+/** pop XT from dstack and call it.
+ * This function is called from native code: use ASM_RET() to return
+ */
 FUNC_START(_exec_xt_from_native_)
-        RPUSH( IP)                 /* save IP. reorders rstack...     */
-        /*                          let token 'execute' pop dtop = xt */
+        RPUSH( IP)                 /* save IP                         */
+        /**/                     /* let token 'execute' pop dtop = xt */
         ADDROF_1M(TO(_exec_xt_from_native_.vm_code), IP)
-        ASM_CALL(      FUNC(_vm_), _exec_xt_from_native_.0)
+        TOKEN_CALL(      FUNC(_vm_), _exec_xt_from_native_.0)
         RPOP(  IP)                 /* load IP. reorders rstack...     */
-        NEXT0()
-	WORD_CODE_ALIGN()
+        ASM_RET()
+WORD_CODE_ALIGN()
 LABEL(_exec_xt_from_native_.vm_code)
         WORD_CODE_TOKENS(execute, _return_to_native_)
 FUNC_RAWEND(_exec_xt_from_native_)

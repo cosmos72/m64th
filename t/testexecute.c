@@ -569,8 +569,6 @@ static m4testexecute testexecute_d[] = {
      {{2, {(m4cell) "immediate", 9}}, {}},
      {{1, {0x5ecabe1c /* m4th_crc_string("immediate", 9)*/}}, {}},
      {}},
-    {"(call-native) nop", {m4_call_native_, CELL(m4fnoop), m4bye}, {{}, {}}, {{}, {}}, {}},
-    {"(call-native) two", {m4_call_native_, CELL(m4ftwo), m4bye}, {{}, {}}, {{1, {2}}, {}}, {}},
     {"(call-native) crc+-native-forth",
      {m4_call_native_, CELL(m4ftest_crc_plus_native_forth), m4bye},
      {{2, {0xffffffff, 't'}}, {}},

@@ -26,7 +26,7 @@ WORD_START(cmove,      div_string)
     WORD_DSTACK(3,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE() /* uses %ip-relative ASM_CALL(), cannot inline in native code */
+    WORD_NATIVE_NONE() /* uses %ip-relative TOKEN_CALL(), cannot inline in native code */
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH | M4FLAG_MEM_STORE)
     WORD_CODE(cmove, exit)
 WORD_END(cmove)

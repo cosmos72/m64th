@@ -192,17 +192,17 @@
 
 /* clang-format on */
 
-#define ASM_CALL_PREPARE(ret) /* raw/native assembly: prepare for asm call */                      \
+#define TOKEN_CALL_PREPARE(ret) /* prepare to call token from another token */                     \
     RPUSH(VRET)                                                                                    \
     ADDROF_1M(TO(ret), VRET)
-#define ASM_CALL_CLEANUP(ret) /* raw/native assembly: cleanup after asm call */                    \
+#define TOKEN_CALL_CLEANUP(ret) /* cleanup after call token->token */                              \
     LABEL(ret)                                                                                     \
     RPOP(VRET)
-#define ASM_CALL_BODY(func) jmp func; /* raw/native assembly: call native code */
-#define ASM_CALL(func, ret)           /* raw/native assembly: call native code */                  \
-    ASM_CALL_PREPARE(ret)             /*                                       */                  \
-    ASM_CALL_BODY(func)               /*                                       */                  \
-    ASM_CALL_CLEANUP(ret)
+#define TOKEN_CALL_BODY(func) jmp func; /* actually call token->token */
+#define TOKEN_CALL(func, ret)           /* call token from another token */                        \
+    TOKEN_CALL_PREPARE(ret)             /*                                       */                \
+    TOKEN_CALL_BODY(func)               /*                                       */                \
+    TOKEN_CALL_CLEANUP(ret)
 
 #define ASM_RET() ret; /* raw/native assembly: return */
 

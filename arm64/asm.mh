@@ -202,13 +202,13 @@
 #define STORw(reg, at) str reg##w, at;  /* *(uint32_t*)at  = reg */
 #define STORt(reg, at) strh reg##t, at; /* *(m4token *)at  = reg */
 
-#define ASM_CALL_PREPARE() RPUSH(lr) /* cheat slightly to reduce code size: reorder rstack */
-#define ASM_CALL_CLEANUP() RPOP(lr)  /* acceptable, functions must not access caller's rstack  */
-#define ASM_CALL_BODY(func) bl func; /* raw/native assembly: call native code  */
-#define ASM_CALL(func, ret)          /* raw/native assembly: call native code */                   \
-    ASM_CALL_PREPARE()               /*                                       */                   \
-    ASM_CALL_BODY(func)              /*                                       */                   \
-    ASM_CALL_CLEANUP()
+#define TOKEN_CALL_PREPARE() RPUSH(lr) /* cheat slightly to reduce code size: reorder rstack    */
+#define TOKEN_CALL_CLEANUP() RPOP(lr)  /* acceptable, functions must not access caller's rstack */
+#define TOKEN_CALL_BODY(func) bl func; /* raw/native assembly: call token->token */
+#define TOKEN_CALL(func, ret)          /* call token from another token          */                \
+    TOKEN_CALL_PREPARE()               /*                                        */                \
+    TOKEN_CALL_BODY(func)              /*                                        */                \
+    TOKEN_CALL_CLEANUP()
 
 #define ASM_RET() ret; /* raw/native assembly: return */
 

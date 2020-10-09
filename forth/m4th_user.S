@@ -47,7 +47,7 @@ WORD_START(two_roll,   two_r_from_two_drop)
     WORD_DSTACK(1,0) /* DSTACK(x+1,x) */
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE() /* uses %rip-relative ASM_CALL */
+    WORD_NATIVE_NONE() /* uses %rip-relative TOKEN_CALL */
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(two_roll, exit)
 WORD_END(two_roll)
@@ -55,7 +55,7 @@ WORD_START(minus_two_roll,   two_roll)
     WORD_DSTACK(1,0) /* DSTACK(x+1,x) */
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE() /* uses %rip-relative ASM_CALL */
+    WORD_NATIVE_NONE() /* uses %rip-relative TOKEN_CALL */
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(minus_two_roll, exit)
 WORD_END(minus_two_roll)
@@ -95,7 +95,7 @@ WORD_START(crc_cell, minus_cmove_star)
     WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE() /* uses %ip-relative ASM_CALL() - cannot inline in native code */
+    WORD_NATIVE_NONE() /* uses %ip-relative TOKEN_CALL() - cannot inline in native code */
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
     WORD_CODE(crc_cell, exit)
 WORD_END(crc_cell)
@@ -122,7 +122,7 @@ WORD_START(minus_cs_roll,   continue)
     WORD_DSTACK(1,0) /* DSTACK(x+1,x) */
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE() /* uses %rip-relative ASM_CALL */
+    WORD_NATIVE_NONE() /* uses %rip-relative TOKEN_CALL */
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(minus_cs_roll, exit)
 WORD_END(minus_cs_roll)
@@ -299,7 +299,7 @@ WORD_START(minus_roll, sub)
     WORD_DSTACK(1,0) /* DSTACK(x+1,x)   */
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE() /* uses %rip-relative ASM_CALL, cannot inline in native code */
+    WORD_NATIVE_NONE() /* uses %rip-relative TOKEN_CALL, cannot inline in native code */
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(minus_roll, exit)
 WORD_END(minus_roll)

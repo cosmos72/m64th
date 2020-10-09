@@ -68,7 +68,7 @@ FUNC_END(div_string)
 
 /* cmove ( src_addr dst_addr u -- ) 'string' word set */
 FUNC_START(cmove)
-        ASM_CALL(      FUNC(cmove_star), cmove.0)   /* ( src' dst'    ) */
+        TOKEN_CALL(    FUNC(cmove_star), cmove.0)   /* ( src' dst'    ) */
         LOAD(  DTOP,   AT(DSTK, SZ))
         ADD2(IMM(SZ2), DSTK)
 FUNC_END(cmove)

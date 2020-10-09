@@ -814,7 +814,7 @@ WORD_START(_compile_jump_, _check_lit_)
     WORD_DSTACK(2,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE() /* uses IP-relative ASM_CALL(), cannot inline in native code */
+    WORD_NATIVE_NONE() /* uses IP-relative TOKEN_CALL(), cannot inline in native code */
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE)
     WORD_CODE(_compile_jump_, exit)
 WORD_END(_compile_jump_)
@@ -827,7 +827,7 @@ WORD_START(_compile_jump_lit_, _compile_jump_)
     WORD_DSTACK(0,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE() /* consumes IP and uses IP-relative ASM_CALL(), cannot inline in native code */
+    WORD_NATIVE_NONE() /* consumes IP and uses IP-relative TOKEN_CALL(), cannot inline in native code */
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt2 | M4FLAG_INLINE_ALWAYS)
     WORD_CODE(_compile_jump_lit_, T(-1), T(-1), exit)
 WORD_END(_compile_jump_lit_)

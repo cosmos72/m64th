@@ -191,7 +191,7 @@
 #define STORw(reg, at) str reg##w, at;  /* *(uint32_t*)at  = reg */
 #define STORt(reg, at) strh reg##t, at; /* *(m4token *)at  = reg */
 
-#define ASM_CALL(func, ret) /* raw/native assembly: call native code  */                           \
+#define TOKEN_CALL(func, ret) /* raw/native assembly: call native code  */                           \
     RPUSH(RTOP)                                                                                    \
     MOVE(lr, RTOP)                                                                                 \
     bl func;                                                                                       \
