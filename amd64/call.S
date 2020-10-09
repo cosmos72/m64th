@@ -236,6 +236,5 @@ FUNC_RAWEND(_exec_token_)
 
 /* return to native code */
 FUNC_START(_return_to_native_)
-        ADD2(  IMM(SZ),%rsp)       /* skip return address, it's inside _vm_ */
-        ASM_RET()                  /* return to caller of _vm_ - usually _exec_xt_from_native_ */
+        ASM_RET()
 FUNC_RAWEND(_return_to_native_)

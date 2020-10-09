@@ -144,7 +144,8 @@
 #define M4TH x25 /* pointer to C struct field &m4th->user            */
 #define HERE x26 /* pointer to first available code/data location    */
 #define FTBL x27 /* pointer to table m4func[m4token] containing asm function addresses */
-#define IP x28   /* forth bytecode instruction pointer */
+#define IP x28   /* forth bytecode instruction pointer               */
+#define VRET lr  /* return address                                   */
 
 #define R000 xzr  /* 64 bit, always 0 */
 #define R000b wzr /*  8 bit, always 0 */
@@ -202,15 +203,20 @@
 #define STORw(reg, at) str reg##w, at;  /* *(uint32_t*)at  = reg */
 #define STORt(reg, at) strh reg##t, at; /* *(m4token *)at  = reg */
 
+#define ASM_CALL(func)               /* raw/native assembly: call function        */               \
+    RPUSH(lr)                        /*                                           */               \
+    ASM_CALL_BODY(func)              /*                                           */               \
+    RPOP(lr)                         /*                                           */
+#define ASM_CALL_BODY(func) bl func; /*                                           */
+#define ASM_RET() ret;               /* raw/native assembly: return from function */
+
 #define TOKEN_CALL_PREPARE() RPUSH(lr) /* cheat slightly to reduce code size: reorder rstack    */
 #define TOKEN_CALL_CLEANUP() RPOP(lr)  /* acceptable, functions must not access caller's rstack */
-#define TOKEN_CALL_BODY(func) bl func; /* raw/native assembly: call token->token */
-#define TOKEN_CALL(func, ret)          /* call token from another token          */                \
-    TOKEN_CALL_PREPARE()               /*                                        */                \
-    TOKEN_CALL_BODY(func)              /*                                        */                \
+#define TOKEN_CALL_BODY(func, ret) bl func; /* raw/native assembly: call token->token */
+#define TOKEN_CALL(func, ret)               /* call token from another token          */           \
+    TOKEN_CALL_PREPARE()                    /*                                        */           \
+    TOKEN_CALL_BODY(func, ret)              /*                                        */           \
     TOKEN_CALL_CLEANUP()
-
-#define ASM_RET() ret; /* raw/native assembly: return */
 
 #define JA(reg, val, label) /*  if reg u>  val jump to label */                                    \
     cmp reg, val;                                                                                  \

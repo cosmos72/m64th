@@ -192,19 +192,23 @@
 
 /* clang-format on */
 
-#define TOKEN_CALL_PREPARE(ret) /* prepare to call token from another token */                     \
-    RPUSH(VRET)                                                                                    \
-    ADDROF_1M(TO(ret), VRET)
-#define TOKEN_CALL_CLEANUP(ret) /* cleanup after call token->token */                              \
-    LABEL(ret)                                                                                     \
-    RPOP(VRET)
-#define TOKEN_CALL_BODY(func) jmp func; /* actually call token->token */
-#define TOKEN_CALL(func, ret)           /* call token from another token */                        \
-    TOKEN_CALL_PREPARE(ret)             /*                                       */                \
-    TOKEN_CALL_BODY(func)               /*                                       */                \
-    TOKEN_CALL_CLEANUP(ret)
+#define ASM_CALL(func) ASM_CALL_BODY(func) /* raw/native assembly: call function        */
+#define ASM_CALL_BODY(func) call func;     /*                                           */
+#define ASM_RET() ret;                     /* raw/native assembly: return from function */
 
-#define ASM_RET() ret; /* raw/native assembly: return */
+#define TOKEN_CALL_PREPARE() /* prepare to call token from another token ______________________ */ \
+    RPUSH(VRET)
+#define TOKEN_CALL_CLEANUP() /* cleanup after call token->token _______________________________ */ \
+    RPOP(VRET)
+#define TOKEN_CALL_BODY(func, ret) /* actually call token->token ______________________________ */ \
+    ADDROF_1M(TO(ret), VRET)                                                                       \
+    jmp func;                                                                                      \
+    LABEL(ret)
+
+#define TOKEN_CALL(func, ret)  /* call token from another token         */                         \
+    TOKEN_CALL_PREPARE()       /*                                       */                         \
+    TOKEN_CALL_BODY(func, ret) /*                                       */                         \
+    TOKEN_CALL_CLEANUP()
 
 #define JA(reg, val, label) /*  if reg u> val jump to label */                                     \
     cmp val, reg;                                                                                  \
