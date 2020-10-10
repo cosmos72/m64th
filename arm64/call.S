@@ -49,6 +49,7 @@ FUNC_START(th_run)
         LOAD(  HERE, AT(M4TH, M4TH_OFF_HERE))   /* load HERE pointer               */
         DPOP___DTOP()                           /* load first data   stack element */
         RPOP(  RTOP)                            /* load first return stack element */
+	ADDROF_1M(TO(_vm_.loop), lr)     /* return addr for all tokens = vm loop */
         b      TO(_vm_.loop)             /* enter vm loop, without saving LR again */
 FUNC_RAWEND(th_run)
 
@@ -63,8 +64,7 @@ LABEL(_vm_.loop)
         ldrh   w9,     AT(IP), SZt;        /* load m4token of current vm instruction */
                                            /* then increment vm IP                   */
         LOAD(  x9,     AT(FTBL, x9, SZ))   /* load m4func of current vm instruction  */
-        blr    x9;                         /* execute vm instruction                 */
-        JUMP(          TO(_vm_.loop))      /* loop                                   */
+        br     x9;                         /* execute vm instruction                 */
 FUNC_RAWEND(_vm_)
 
 /**
