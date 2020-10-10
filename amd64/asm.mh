@@ -120,25 +120,25 @@
 #define DTOP_uw %eax  /* zero-extend 32 bits into DTOP */
 #define DTOP_ut %eax  /* zero-extend m4token into DTOP */
 
-#define RTOP    %rbp  /* value of first data stack element */
-#define RTOPb   %bpl  /* low  8 bits of RTOP */
-#define RTOPh   %bp   /* low 16 bits of RTOP */
-#define RTOPw   %ebp  /* low 32 bits of RTOP */
-#define RTOPt   %bp   /* (m4token)RTOP        */
-#define RTOP_sb %rbp  /* sign-extend  8 bits into RTOP */
-#define RTOP_sh %rbp  /* sign-extend 16 bits into RTOP */
-#define RTOP_sw %rbp  /* sign-extend 32 bits into RTOP */
-#define RTOP_st %rbp  /* sign-extend m4token into RTOP */
-#define RTOP_ub %ebp  /* zero-extend  8 bits into RTOP */
-#define RTOP_uh %ebp  /* zero-extend 16 bits into RTOP */
-#define RTOP_uw %ebp  /* zero-extend 32 bits into RTOP */
-#define RTOP_ut %ebp  /* zero-extend m4token into RTOP */
+#define RTOP    %rdi  /* value of first data stack element */
+#define RTOPb   %dil  /* low  8 bits of RTOP */
+#define RTOPh   %di   /* low 16 bits of RTOP */
+#define RTOPw   %edi  /* low 32 bits of RTOP */
+#define RTOPt   %di   /* (m4token)RTOP        */
+#define RTOP_sb %rdi  /* sign-extend  8 bits into RTOP */
+#define RTOP_sh %rdi  /* sign-extend 16 bits into RTOP */
+#define RTOP_sw %rdi  /* sign-extend 32 bits into RTOP */
+#define RTOP_st %rdi  /* sign-extend m4token into RTOP */
+#define RTOP_ub %edi  /* zero-extend  8 bits into RTOP */
+#define RTOP_uh %edi  /* zero-extend 16 bits into RTOP */
+#define RTOP_uw %edi  /* zero-extend 32 bits into RTOP */
+#define RTOP_ut %edi  /* zero-extend m4token into RTOP */
 
-#define RFFF    %rdi  /* always contains -1    */
-#define RFFFb   %dil  /*  8 bits, all set to 1 */
-#define RFFFh   %di   /* 16 bits, all set to 1 */
-#define RFFFw   %edi  /* 32 bits, all set to 1 */
-#define RFFFt   %di   /* (m4token)-1           */
+#define RFFF    %r11  /* always contains -1    */
+#define RFFFb   %r11b /*  8 bits, all set to 1 */
+#define RFFFh   %r11w /* 16 bits, all set to 1 */
+#define RFFFw   %r11d /* 32 bits, all set to 1 */
+#define RFFFt   %r11w /* (m4token)-1           */
 
 #define DSTK  %rsi  /* pointer to second data stack element             */
 #define RSTK  %rsp  /* pointer to second return stack element           */
@@ -148,7 +148,7 @@
 #define FTBL  %r12  /* pointer to table m4func[m4token] containing asm function addresses */
 #define IP    %r15  /* forth bytecode instruction pointer     */
 #define RIP   %rip  /* x86-64 instruction pointer             */
-#define VRET  %r11  /* return address                         */
+#define VRET  %rbp  /* return address                         */
 
 #define AND2(src, dst)        and  src,     dst;   /* dst &= src     */
 #define ADD2(src, dst)        add  src,     dst;   /* dst += src     */
