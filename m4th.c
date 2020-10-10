@@ -937,8 +937,8 @@ m4th *m4th_new(void) {
     m->wtable = wtable;
     m->in = m4iobuf_new(inbuf_n);
     m->out = m4iobuf_new(outbuf_n);
+    m->vret = m4f_vm_;
     memset(m->c_regs, '\0', sizeof(m->c_regs));
-    m->c_regs[1] = m4f_vm_;
     m->user_size = ((m4cell)&m->user_var[0] - (m4cell)&m->user_size) / SZ;
     m->user_next = m->user_size;
     m->lastw = NULL;
@@ -973,8 +973,8 @@ void m4th_clear(m4th *m) {
 
     m->dstack.curr = m->dstack.end;
     m->rstack.curr = m->rstack.end;
+    m->vret = m4f_vm_;
     memset(m->c_regs, '\0', sizeof(m->c_regs));
-    m->c_regs[1] = m4f_vm_;
     m->in->err = m->in->pos = m->in->end = 0;
     m->out->err = m->out->pos = m->out->end = 0;
     m->ip = NULL;

@@ -48,7 +48,7 @@ FUNC_START(th_run)
         LOAD(  LOCL,   AT(M4TH, M4TH_OFF_LOCL))   /* load local variables pointer    */
         LOAD(  IP,     AT(M4TH, M4TH_OFF_IP))     /* load instruction  pointer       */
         LOAD(  FTBL,   AT(M4TH, M4TH_OFF_FTABLE)) /* load table m4token -> m4func    */
-        LOAD(  VRET,   AT(M4TH, M4TH_OFF_C_REG1)) /* load VRET address               */
+        LOAD(  VRET,   AT(M4TH, M4TH_OFF_VRET))   /* load VRET address               */
         LOAD(  HERE,   AT(M4TH, M4TH_OFF_HERE))   /* load HERE pointer               */
         DPOP___DTOP()                             /* load first data   stack element */
         RPOP(  RTOP)                              /* load first return stack element */
@@ -76,7 +76,7 @@ FUNC_START(bye)
         RPUSH( RTOP)                              /* save first return stack element */
         DPUSH__DTOP()                             /* save first data   stack element */
         STOR(  HERE,   AT(M4TH, M4TH_OFF_HERE))   /* save HERE pointer               */
-        STOR(  VRET,   AT(M4TH, M4TH_OFF_C_REG1)) /* save VRET address               */
+        STOR(  VRET,   AT(M4TH, M4TH_OFF_VRET))   /* save VRET address               */
         STOR(  FTBL,   AT(M4TH, M4TH_OFF_FTABLE)) /* save table m4token -> m4func    */
         STOR(  IP,     AT(M4TH, M4TH_OFF_IP))     /* save instruction  pointer       */
         STOR(  LOCL,   AT(M4TH, M4TH_OFF_LOCL))   /* save local variables pointer    */
@@ -178,11 +178,11 @@ FUNC_END(_c_arg_6_)
 
 /* must be followed by C function address. call it. */
 FUNC_START(_c_call_)
-        STOR(  VRET,   AT(M4TH, M4TH_OFF_C_REG1)) /* save VRET = %r11 (clobbered)   */
+        STOR(  VRET,   AT(M4TH, M4TH_OFF_VRET))    /* save VRET = %r11 (clobbered)   */
 
         /* do not restore %rsp, it would clobber our call stack */
         call   *AT(IP);
-        ADD2(  IMM(SZ),IP)                        /* skip C function address */
+        ADD2(  IMM(SZ),IP)                         /* skip C function address        */
         /*
          * C functions can clobber %rdi %rsi %rdx %rcx %r8 %r9 %r10 %r11
          * i.e our VRET DSTK REG3 REG2 REG4 LOCL REG0 RFFF
@@ -190,10 +190,10 @@ FUNC_START(_c_call_)
          * i.e. our DTOP REG3
          * we need to restore only: VRET DSTK LOCL RFFF
          */
-        LOAD(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))    /* reload DSTK = %rsi */
-        LOAD(  LOCL,   AT(M4TH, M4TH_OFF_LOCL))    /* reload LOCL = %r9  */
-        LOAD(  VRET,   AT(M4TH, M4TH_OFF_C_REG1))  /* reload VRET = %r11 */
-        ZERO(RFFF)      NOT1(  RFFF)               /* set RFFF = -1      */
+        LOAD(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))    /* reload DSTK = %rsi             */
+        LOAD(  LOCL,   AT(M4TH, M4TH_OFF_LOCL))    /* reload LOCL = %r9              */
+        LOAD(  VRET,   AT(M4TH, M4TH_OFF_VRET))    /* reload VRET = %r11             */
+        ZERO(RFFF)      NOT1(  RFFF)               /* set RFFF = -1                  */
 FUNC_END(_c_call_)
 
 
