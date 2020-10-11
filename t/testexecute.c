@@ -1457,7 +1457,7 @@ static void m4th_testexecute_bunch(m4th *m, m4testexecute bunch[], m4cell n, m4t
     m4cell i, fail = 0;
     for (i = 0; i < n; i++) {
         m4code_pair code_pair = m4testexecute_init(&bunch[i], &countedcode_pair);
-#define M4TH_TEST_VERBOSE
+#undef M4TH_TEST_VERBOSE
 #ifdef M4TH_TEST_VERBOSE
         fprintf(out, "%s\n", bunch[i].name);
 #endif
