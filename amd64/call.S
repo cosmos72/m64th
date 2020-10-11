@@ -239,6 +239,27 @@ FUNC_START(_exec_token_)
 FUNC_RAWEND(_exec_token_)
 
 
+/**
+ * pop XT from dstack and call it.
+ * This function is called from native code with ASM_CALL()
+ * => use ASM_RET() to return
+ */
+FUNC_START(_exec_xt_from_native_)
+    RPUSH( IP)                 /* save IP                           */
+    RPUSH( VM)                 /* save VM                           */
+    LOAD(  VM, AT(M4TH, M4TH_OFF_VM))  /* set VM   = m4th->vm       */
+    ADDROF_1M(TO(_exec_xt_from_native_.vm_code), IP)
+    /* enter '(vm)' interpreter, let token 'execute' pop dtop = xt  */
+    call   *VM;
+    RPOP(  VM)                 /* load VM                           */
+    RPOP(  IP)                 /* load IP                           */
+    ASM_RET()
+WORD_CODE_ALIGN()
+LABEL(_exec_xt_from_native_.vm_code)
+    WORD_CODE_TOKENS(execute, _return_to_native_)
+FUNC_RAWEND(_exec_xt_from_native_)
+
+
 /* return to native code */
 FUNC_START(_return_to_native_)
         ASM_RET()

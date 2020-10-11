@@ -30,27 +30,6 @@ FUNC_START(_call_xt_)
 FUNC_RAWEND(_call_xt_)
 
 
-/**
- * pop XT from dstack and call it.
- * This function is called from native code with ASM_CALL()
- * => use ASM_RET() to return
- */
-FUNC_START(_exec_xt_from_native_)
-        RPUSH( IP)                 /* save IP                           */
-        RPUSH( VM)                 /* save VM                           */
-        ADDROF_1M(TO(_exec_xt_from_native_.vm_code), IP)
-        ADDROF_1M(FUNC(_vm_), VM)  /* set VM   = FUNC(_vm_)             */
-        /**/                       /* let token 'execute' pop dtop = xt */
-        ASM_CALL_BODY(FUNC(_vm_))
-        RPOP(  VM)                 /* load VM                           */
-        RPOP(  IP)                 /* load IP                           */
-        ASM_RET()
-WORD_CODE_ALIGN()
-LABEL(_exec_xt_from_native_.vm_code)
-        WORD_CODE_TOKENS(execute, _return_to_native_)
-FUNC_RAWEND(_exec_xt_from_native_)
-
-
 /*
  * (catch-beg) is the first part of 'catch'. it must be followed by '(catch-end)'
  * it pushes the following cells to rstk:
