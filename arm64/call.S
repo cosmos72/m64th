@@ -31,35 +31,32 @@
  * execute m4th->code.start[0] and subsequent instructions until m4bye is found.
  */
 FUNC_START(th_run)
-        SUB2(  IMM(SZ10), sp)                   /* save C registers                */
-                                                /* not clobbered: x18 x19 x29      */
-        stp    x20,  x21,  AT(sp);
-        stp    x22,  x23,  AT(sp, SZ2);
-        stp    x24,  x25,  AT(sp, SZ4);
-        stp    x26,  x27,  AT(sp, SZ6);
-        stp    x28,  lr,   AT(sp, SZ8);         /* save LR register (return addr)  */
+        SUB2(  IMM(SZ12), sp)                   /* save C registers                */
+        stp    x19,  x20,  AT(sp);              /* not clobbered: x18              */
+        stp    x21,  x22,  AT(sp, SZ2);
+        stp    x23,  x24,  AT(sp, SZ4);
+        stp    x25,  x26,  AT(sp, SZ6);
+        stp    x27,  x28,  AT(sp, SZ8);
+        stp    x29,  lr,   AT(sp, SZ10);
         ADDI(  x0,   M4TH_OFF_,  M4TH)          /* load m4th pointer               */
         MOVE(  sp,   REG1)
+        add    x29,  sp,   IMM(SZ10)            /* update x29: helps debuggers     */
         STOR(  REG1, AT(M4TH, M4TH_OFF_C_REG0)) /* save C stack pointer            */
         LOAD(  DSTK, AT(M4TH, M4TH_OFF_DSTK))   /* load data   stack pointer       */
         LOAD(  RSTK, AT(M4TH, M4TH_OFF_RSTK))   /* load return stack pointer       */
         LOAD(  LOCL, AT(M4TH, M4TH_OFF_LOCL))   /* load local variables pointer    */
         LOAD(  IP,   AT(M4TH, M4TH_OFF_IP))     /* load instruction  pointer       */
         LOAD(  FTBL, AT(M4TH, M4TH_OFF_FTABLE)) /* load table m4token -> m4func    */
+        LOAD(  VM,   AT(M4TH, M4TH_OFF_VM))     /* load VM pointer                 */
         LOAD(  HERE, AT(M4TH, M4TH_OFF_HERE))   /* load HERE pointer               */
         DPOP___DTOP()                           /* load first data   stack element */
         RPOP(  RTOP)                            /* load first return stack element */
-	ADDROF_1M(TO(_vm_.loop), lr)     /* return addr for all tokens = vm loop */
-        b      TO(_vm_.loop)             /* enter vm loop, without saving LR again */
+        NEXT0()                                 /* enter vm loop                   */
 FUNC_RAWEND(th_run)
 
 
 /** forth vm main loop: fetch m4token instructions and execute them */
 FUNC_START(_vm_)
-        RPUSH( RTOP)
-        MOVE(  lr,     RTOP)              /* save LR. needed by (return-from-native) */
-FUNC_ALIGN()
-LABEL(_vm_.loop)
         /* cannot use x0..x8 here: they are used by c-arg-[N] and c-ret-[N] */
         ldrh   w9,     AT(IP), SZt;        /* load m4token of current vm instruction */
                                            /* then increment vm IP                   */
@@ -77,6 +74,7 @@ FUNC_START(bye)
         RPUSH( RTOP)                            /* save first return stack element */
         DPUSH__DTOP()                           /* save first data   stack element */
         STOR(  HERE, AT(M4TH, M4TH_OFF_HERE))   /* save HERE pointer               */
+        STOR(  VM,   AT(M4TH, M4TH_OFF_VM))     /* save VM pointer                 */
         STOR(  FTBL, AT(M4TH, M4TH_OFF_FTABLE)) /* save table m4token -> m4func    */
         STOR(  IP,   AT(M4TH, M4TH_OFF_IP))     /* save instruction  pointer       */
         STOR(  LOCL, AT(M4TH, M4TH_OFF_LOCL))   /* save local variables pointer    */
@@ -89,12 +87,13 @@ FUNC_START(bye)
         LOAD(  REG1, AT(M4TH, M4TH_OFF_C_REG0)) /* load C stack pointer            */
         LOAD(  x0,   AT(M4TH, M4TH_OFF_EX))     /* load return value = m4th.ex     */
         MOVE(  REG1, sp)
-        ldp    x20,  x21,  AT(sp);              /* load C registers                */
-        ldp    x22,  x23,  AT(sp, SZ2);
-        ldp    x24,  x25,  AT(sp, SZ4);
-        ldp    x26,  x27,  AT(sp, SZ6);
-        ldp    x28,  lr,   AT(sp, SZ8);         /* load LR register (return addr)  */
-        ADD2(  IMM(SZ10), sp)
+        ldp    x19,  x20,  AT(sp);              /* load C registers                */
+        ldp    x21,  x22,  AT(sp, SZ2);
+        ldp    x23,  x24,  AT(sp, SZ4);
+        ldp    x25,  x26,  AT(sp, SZ6);
+        ldp    x27,  x28,  AT(sp, SZ8);
+        ldp    x29,  lr,   AT(sp, SZ10);
+        ADD2(  IMM(SZ12), sp)
         ret;                                    /* return to C                     */
 FUNC_RAWEND(bye)
 
@@ -197,8 +196,5 @@ FUNC_RAWEND(_exec_token_)
 
 /* return to native code */
 FUNC_START(_return_to_native_)
-        /* skip current return address (it's inside _vm_) and load previous one */
-        MOVE(  RTOP,   VM)
-        RPOP(  RTOP)
-        ASM_RET()                  /* return to caller of _vm_ - usually _exec_xt_from_native_ */
+        ASM_RET()
 FUNC_RAWEND(_return_to_native_)
