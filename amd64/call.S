@@ -108,8 +108,8 @@ FUNC_RAWEND(bye)
 /* pop 0 args, prepare for C function call */
 FUNC_START(_c_arg_0_)
         SUB2(  IMM(SZ),DSTK)
-        /* alternatively we could save DSTK, LOCL also into struct m4th, */
-        /* but that would break calls from C back into forth             */
+        /* save DSTK, LOCL to return stack. we could instead save them               */
+        /* into struct m4th, but that would break calls from C back into forth       */
         RPUSH( LOCL)                               /* save LOCL = %r9  (clobbered)   */
         RPUSH( DSTK)                               /* save DSTK = %rsi (clobbered)   */
         STOR(  DTOP,   AT(DSTK))                   /* will be reloaded by c-ret-[N]  */
