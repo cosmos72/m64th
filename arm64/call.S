@@ -152,9 +152,11 @@ FUNC_END(_c_arg_6_)
 /* must be followed by C function address. call it. */
 FUNC_START(_c_call_)
         /* cannot use x0..x8 here, they are used by c-args-[N] and c-ret-[N] */
-        ldr    x9,     AT(IP),   IMM(SZ); /* post-increment */
-        br     x9;                /* tail call optimization */
-FUNC_RAWEND(_c_call_)
+        LOAD(  x9,     AT(IP),   IMM(SZ)) /* post-increment */
+        RPUSH(  lr)                    /* save lr                            */
+        blr    x9;                     /* call C func, overwrites lr         */
+        RPOP(   lr)                    /* load lr                            */
+FUNC_END(_c_call_)
 
 
 /* push 0 values returned by C function call */
@@ -180,9 +182,9 @@ FUNC_END(_c_ret_2_)
 
 /** must be followed by address of native forth code. call it. */
 FUNC_START(_call_native_)
-        LOAD(  REG0,   AT(IP), IMM(SZ))/* @ = func; IP += SZ                 */
+        LOAD(  REG0,   AT(IP),   IMM(SZ)) /* post-increment */
         RPUSH(  lr)                    /* save lr                            */
-        blr    REG0;                   /* call func, overwrites lr           */
+        blr    REG0;                   /* call native code, overwrites lr    */
         RPOP(   lr)                    /* load lr                            */
 FUNC_END(_call_native_)
 
