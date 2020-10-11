@@ -216,7 +216,7 @@ struct m4th_s {                /**< m4th forth interpreter and compiler         
     m4iobuf *in;               /**< input  buffer                                */
     m4iobuf *out;              /**< output buffer                                */
                                /*                                                */
-    const void *vret;          /**< forth return address may be saved here       */
+    const void *vm;            /**< pointer to '(vm)' bytecode interpreter       */
     const void *c_regs[1];     /**< m4th_run() may save C registers here         */
                                /*                                                */
                                /* USER variables, i.e. thread-local              */

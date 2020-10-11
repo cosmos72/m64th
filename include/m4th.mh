@@ -31,7 +31,7 @@
 #define M4TH_OFF_WTABLE -SZ5        /* offset of m4th->wtable          */
 #define M4TH_OFF_IN -SZ4            /* offset of m4th->in              */
 #define M4TH_OFF_OUT -SZ3           /* offset of m4th->out             */
-#define M4TH_OFF_VRET -SZ2          /* offset of m4th->vret            */
+#define M4TH_OFF_VM   -SZ2          /* offset of m4th->vm              */
 #define M4TH_OFF_C_REG0 -SZ         /* offset of m4th->c_regs[0]       */
 #define M4TH_OFF_USER 0             /* offset of m4th->user*           */
 #define M4TH_OFF_LASTW SZ           /* offset of m4th->lastw           */

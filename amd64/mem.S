@@ -76,28 +76,25 @@ FUNC_END(cmove)
 
 /* cmove* ( src_addr dst_addr u -- src_addr+u dst_addr+u ) m4th-user */
 FUNC_START(cmove_star)
-        MOVE(  DSTK,   %rbx)           /* save DSTK == %rsi */
-        MOVE(  RSTK,   %rdx)           /* save RSTK == %rdi */
-        LOAD(  %rsi,   AT(%rbx, SZ))   /* src               */
-        LOAD(  %rdi,   AT(%rbx))       /* dst               */
+        MOVE(  DSTK,   %rdx)           /* save DSTK == %rsi */
+        LOAD(  %rsi,   AT(%rdx, SZ))   /* src               */
+        LOAD(  %rdi,   AT(%rdx))       /* dst               */
         MOVE(  DTOP,   %rcx)           /* n                 */
 
         cld;                           /* forward direction */
         rep    movsb (%rsi), (%rdi);   /* copy string       */
 
-        STOR(  %rsi,   AT(%rbx, SZ))   /* ( src' dst u    ) */
+        STOR(  %rsi,   AT(%rdx, SZ))   /* ( src' dst u    ) */
         MOVE(  %rdi,   DTOP)           /* ( src' _ dst'   ) */
-        ADDI(  %rbx,   SZ,     DSTK)   /* reload DSTK       */
-        MOVE(  %rdx,   RSTK)           /* reload RSTK       */
+        ADDI(  %rdx,   SZ,     DSTK)   /* reload DSTK       */
 FUNC_END(cmove_star)
 
 
 /* -cmove* ( src_addr dst_addr u -- src_addr-u dst_addr-u ) m4th-user */
 FUNC_START(minus_cmove_star)
-        MOVE(  DSTK,   %rbx)           /* save DSTK == %rsi */
-        MOVE(  RSTK,   %rdx)           /* save RSTK == %rdi */
-        LOAD(  %rsi,   AT(%rbx, SZ))   /* src               */
-        LOAD(  %rdi,   AT(%rbx))       /* dst               */
+        MOVE(  DSTK,   %rdx)           /* save DSTK == %rsi */
+        LOAD(  %rsi,   AT(%rdx, SZ))   /* src               */
+        LOAD(  %rdi,   AT(%rdx))       /* dst               */
         MOVE(  DTOP,   %rcx)           /* n                 */
         DEC1(  %rsi)
         DEC1(  %rdi)
@@ -108,19 +105,17 @@ FUNC_START(minus_cmove_star)
 
         INC1(  %rsi)
         INC1(  %rdi)
-        STOR(  %rsi,   AT(%rbx, SZ))   /* ( src' dst u    ) */
+        STOR(  %rsi,   AT(%rdx, SZ))   /* ( src' dst u    ) */
         MOVE(  %rdi,   DTOP)           /* ( src' _ dst'   ) */
-        ADDI(  %rbx,   SZ,     DSTK)   /* reload DSTK       */
-        MOVE(  %rdx,   RSTK)           /* reload RSTK       */
+        ADDI(  %rdx,   SZ,     DSTK)   /* reload DSTK       */
 FUNC_END(minus_cmove_star)
 
 
 /* move ( src_addr dst_addr u -- ) */
 FUNC_START(move)
-        MOVE(  DSTK,   %rbx)           /* save DSTK == %rsi */
-        MOVE(  RSTK,   %rdx)           /* save RSTK == %rdi */
-        LOAD(  %rsi,   AT(%rbx, SZ))   /* src               */
-        LOAD(  %rdi,   AT(%rbx))       /* dst               */
+        MOVE(  DSTK,   %rdx)           /* save DSTK == %rsi */
+        LOAD(  %rsi,   AT(%rdx, SZ))   /* src               */
+        LOAD(  %rdi,   AT(%rdx))       /* dst               */
         MOVE(  DTOP,   %rcx)           /* n                 */
 
         cld;                           /* forward direction */
@@ -135,9 +130,8 @@ FUNC_START(move)
 LABEL(move.loop)
         rep    movsq (%rsi), (%rdi);   /* copy 8 bytes per iteration */
         cld;
-        ADDI(  %rbx,   SZ3,    DSTK)   /* reload DSTK       */
-        LOAD(  DTOP,   AT(%rbx,SZ2))   /* reload dstack top */
-        MOVE(  %rdx,   RSTK)           /* reload RSTK       */
+        ADDI(  %rdx,   SZ3,    DSTK)   /* reload DSTK       */
+        LOAD(  DTOP,   AT(%rdx,SZ2))   /* reload dstack top */
 FUNC_END(move)
 
 

@@ -198,7 +198,7 @@ FUNC_RAWEND(_exec_token_)
 /* return to native code */
 FUNC_START(_return_to_native_)
         /* skip current return address (it's inside _vm_) and load previous one */
-        MOVE(  RTOP,   VRET)
+        MOVE(  RTOP,   VM)
         RPOP(  RTOP)
         ASM_RET()                  /* return to caller of _vm_ - usually _exec_xt_from_native_ */
 FUNC_RAWEND(_return_to_native_)

@@ -23,10 +23,10 @@
 
 /** must be followed by an XT. calls it. */
 FUNC_START(_call_xt_)
-        RPUSH( RTOP)               /* save RTOP            */
+        RPUSH( RTOP)               /* save RTOP                     */
         ADDI(  IP,     SZ, RTOP)   /* save return address = IP+SZ   */
-        LOAD(  IP,     AT(IP))     /* load xt from IP[0]   */
-        NEXT0()                    /* jump to xt           */
+        LOAD(  IP,     AT(IP))     /* load xt from IP[0]            */
+        NEXT0()                    /* jump to xt                    */
 FUNC_RAWEND(_call_xt_)
 
 
@@ -36,14 +36,14 @@ FUNC_RAWEND(_call_xt_)
  * => use ASM_RET() to return
  */
 FUNC_START(_exec_xt_from_native_)
-        RPUSH( IP)                 /* save IP                         */
-        RPUSH( VRET)               /* save VRET                       */
+        RPUSH( IP)                 /* save IP                           */
+        RPUSH( VM)                 /* save VM                           */
         ADDROF_1M(TO(_exec_xt_from_native_.vm_code), IP)
-        ADDROF_1M(FUNC(_vm_), VRET)/* set VRET = FUNC(_vm_)           */
-        /**/                     /* let token 'execute' pop dtop = xt */
+        ADDROF_1M(FUNC(_vm_), VM)  /* set VM   = FUNC(_vm_)             */
+        /**/                       /* let token 'execute' pop dtop = xt */
         ASM_CALL_BODY(FUNC(_vm_))
-        RPOP(  VRET)               /* load VRET                       */
-        RPOP(  IP)                 /* load IP                         */
+        RPOP(  VM)                 /* load VM                           */
+        RPOP(  IP)                 /* load IP                           */
         ASM_RET()
 WORD_CODE_ALIGN()
 LABEL(_exec_xt_from_native_.vm_code)

@@ -36,7 +36,7 @@
  * callee-saved registers: %rbx %rbp %rsp %r12 %r13 %r14 %r15
  */
 #define REG0  %r10  /* scratch register 0 */
-#define REG1  %rbx  /* scratch register 1 */
+#define REG1  %rdi  /* scratch register 1 */
 #define REG2  %rcx  /* scratch register 2 */
 #define REG3  %rdx  /* scratch register 3 */
 #define REG4  %r8   /* scratch register 4 */
@@ -54,18 +54,18 @@
 #define REG0_uw %r10d /* zero-extend 32 bits into REG0 */
 #define REG0_ut %r10d /* zero-extend m4token into REG0 */
 
-#define REG1b   %bl  /* low  8 bits of REG1 */
-#define REG1h   %bx  /* low 16 bits of REG1 */
-#define REG1w   %ebx /* low 32 bits of REG1 */
-#define REG1t   %bx  /* (m4token)REG1       */
-#define REG1_sb %rbx /* sign-extend  8 bits into REG1 */
-#define REG1_sh %rbx /* sign-extend 16 bits into REG1 */
-#define REG1_sw %rbx /* sign-extend 32 bits into REG1 */
-#define REG1_st %rbx /* sign-extend m4token into REG1 */
-#define REG1_ub %ebx /* zero-extend  8 bits into REG1 */
-#define REG1_uh %ebx /* zero-extend 16 bits into REG1 */
-#define REG1_uw %ebx /* zero-extend 32 bits into REG1 */
-#define REG1_ut %ebx /* zero-extend m4token into REG1 */
+#define REG1b   %dil /* low  8 bits of REG1 */
+#define REG1h   %di  /* low 16 bits of REG1 */
+#define REG1w   %edi /* low 32 bits of REG1 */
+#define REG1t   %di  /* (m4token)REG1       */
+#define REG1_sb %rdi /* sign-extend  8 bits into REG1 */
+#define REG1_sh %rdi /* sign-extend 16 bits into REG1 */
+#define REG1_sw %rdi /* sign-extend 32 bits into REG1 */
+#define REG1_st %rdi /* sign-extend m4token into REG1 */
+#define REG1_ub %edi /* zero-extend  8 bits into REG1 */
+#define REG1_uh %edi /* zero-extend 16 bits into REG1 */
+#define REG1_uw %edi /* zero-extend 32 bits into REG1 */
+#define REG1_ut %edi /* zero-extend m4token into REG1 */
 
 #define REG2b   %cl  /* low  8 bits of REG2 */
 #define REG2h   %cx  /* low 16 bits of REG2 */
@@ -120,19 +120,19 @@
 #define DTOP_uw %eax  /* zero-extend 32 bits into DTOP */
 #define DTOP_ut %eax  /* zero-extend m4token into DTOP */
 
-#define RTOP    %rdi  /* value of first data stack element */
-#define RTOPb   %dil  /* low  8 bits of RTOP */
-#define RTOPh   %di   /* low 16 bits of RTOP */
-#define RTOPw   %edi  /* low 32 bits of RTOP */
-#define RTOPt   %di   /* (m4token)RTOP        */
-#define RTOP_sb %rdi  /* sign-extend  8 bits into RTOP */
-#define RTOP_sh %rdi  /* sign-extend 16 bits into RTOP */
-#define RTOP_sw %rdi  /* sign-extend 32 bits into RTOP */
-#define RTOP_st %rdi  /* sign-extend m4token into RTOP */
-#define RTOP_ub %edi  /* zero-extend  8 bits into RTOP */
-#define RTOP_uh %edi  /* zero-extend 16 bits into RTOP */
-#define RTOP_uw %edi  /* zero-extend 32 bits into RTOP */
-#define RTOP_ut %edi  /* zero-extend m4token into RTOP */
+#define RTOP    %rbx  /* value of first data stack element */
+#define RTOPb   %bl   /* low  8 bits of RTOP */
+#define RTOPh   %bx   /* low 16 bits of RTOP */
+#define RTOPw   %ebx  /* low 32 bits of RTOP */
+#define RTOPt   %bx   /* (m4token)RTOP        */
+#define RTOP_sb %rbx  /* sign-extend  8 bits into RTOP */
+#define RTOP_sh %rbx  /* sign-extend 16 bits into RTOP */
+#define RTOP_sw %rbx  /* sign-extend 32 bits into RTOP */
+#define RTOP_st %rbx  /* sign-extend m4token into RTOP */
+#define RTOP_ub %ebx  /* zero-extend  8 bits into RTOP */
+#define RTOP_uh %ebx  /* zero-extend 16 bits into RTOP */
+#define RTOP_uw %ebx  /* zero-extend 32 bits into RTOP */
+#define RTOP_ut %ebx  /* zero-extend m4token into RTOP */
 
 #define RFFF    %r11  /* always contains -1    */
 #define RFFFb   %r11b /*  8 bits, all set to 1 */
@@ -148,7 +148,7 @@
 #define FTBL  %r12  /* pointer to table m4func[m4token] containing asm function addresses */
 #define IP    %r15  /* forth bytecode instruction pointer     */
 #define RIP   %rip  /* x86-64 instruction pointer             */
-#define VRET  %rbp  /* return address                         */
+#define VM    %rbp  /* pointer to '(vm)' bytecode interpreter */
 
 #define AND2(src, dst)        and  src,     dst;   /* dst &= src     */
 #define ADD2(src, dst)        add  src,     dst;   /* dst += src     */
@@ -197,11 +197,11 @@
 #define ASM_RET() ret;                     /* raw/native assembly: return from function */
 
 #define TOKEN_CALL_PREPARE() /* prepare to call token from another token ______________________ */ \
-    RPUSH(VRET)
+    RPUSH(VM)
 #define TOKEN_CALL_CLEANUP() /* cleanup after call token->token _______________________________ */ \
-    RPOP(VRET)
+    RPOP(VM)
 #define TOKEN_CALL_BODY(func, ret) /* actually call token->token ______________________________ */ \
-    ADDROF_1M(TO(ret), VRET)                                                                       \
+    ADDROF_1M(TO(ret), VM)                                                                       \
     jmp func;                                                                                      \
     LABEL(ret)
 
@@ -289,22 +289,22 @@
     RPOP(reg1) RPOP(reg2)
 
 #define NEXT0() /* jump to current instruction. useful after manually updating IP              */  \
-    jmp *VRET;
+    jmp *VM;
 
 #define NEXT() /* jump to following instruction ______________________________________________ */  \
-    jmp *VRET;
+    jmp *VM;
 
 #define NEXT2() /* skip 2 bytes, jump to following instruction */                                  \
     ADD2(IMM(2), IP)                                                                               \
-    jmp *VRET;
+    jmp *VM;
 
 #define NEXT4() /* skip 4 bytes, jump to following instruction */                                  \
     ADD2(IMM(4), IP)                                                                               \
-    jmp *VRET;
+    jmp *VM;
 
 #define NEXT8() /* skip 8 bytes, jump to following instruction */                                  \
     ADD2(IMM(8), IP)                                                                               \
-    jmp *VRET;
+    jmp *VM;
 
 #define NEXTT() CAT2(NEXT, SZt)()   /* skip SZt bytes,   jump to following instruction */
 #define NEXTT2() CAT2(NEXT, SZt2)() /* skip SZt*2 bytes, jump to following instruction */

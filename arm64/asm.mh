@@ -145,7 +145,7 @@
 #define HERE x26 /* pointer to first available code/data location    */
 #define FTBL x27 /* pointer to table m4func[m4token] containing asm function addresses */
 #define IP x28   /* forth bytecode instruction pointer               */
-#define VRET lr  /* return address                                   */
+#define VM   lr  /* return address                                   */
 
 #define R000 xzr  /* 64 bit, always 0 */
 #define R000b wzr /*  8 bit, always 0 */
