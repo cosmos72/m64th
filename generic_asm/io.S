@@ -136,7 +136,7 @@ FUNC_START(key)
 FUNC_END(key)
 
 
-/* obuf-write-char ( io ch -- ) write one char iobuf */
+/* obuf-write-char ( io ch -- err ) write one char iobuf */
 FUNC_START(obuf_write_char)
         LOAD(  REG1,   AT(DSTK))                       /* a = io                 */
         LOAD(  REG2,   AT(REG1, IOBUF_OFF_END))        /* b = io.end             */
@@ -160,11 +160,10 @@ LABEL(obuf_write_char.slow)
         DPUSH__DTOP()                                  /* dstk ( io ch _        ) */
         ADDI(  REG2,   WORD_OFF_XT, DTOP)              /* dstk ( io ch xt       ) */
         ASM_CALL(FUNC(_exec_xt_from_native_))          /* dstk ( err            ) */
-        DPOP___DTOP()                                  /* dstk (                ) */
 FUNC_END(obuf_write_char)
 
 
-/* obuf-write-string ( io c-addr u -- ) write string to iobuf */
+/* obuf-write-string ( io c-addr u -- err ) write string to iobuf */
 FUNC_START(obuf_write_string)
         LOAD(  REG1,   AT(DSTK, SZ))                   /* a = io                  */
         LOAD(  REG2,   AT(REG1, IOBUF_OFF_END))        /* b = io.end              */
@@ -192,7 +191,6 @@ LABEL(obuf_write_string.slow)
         DPUSH__DTOP()                                  /* dstk ( io c-addr u _    ) */
         ADDI(  REG2,   WORD_OFF_XT, DTOP)              /* dstk ( io c-addr u xt   ) */
         ASM_CALL(FUNC(_exec_xt_from_native_))          /* dstk ( err              ) */
-        DPOP___DTOP()                                  /* dstk (                  ) */
 FUNC_END(obuf_write_string)
 
 
