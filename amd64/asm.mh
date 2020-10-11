@@ -201,7 +201,7 @@
 #define TOKEN_CALL_CLEANUP() /* cleanup after call token->token _______________________________ */ \
     RPOP(VM)
 #define TOKEN_CALL_BODY(func, ret) /* actually call token->token ______________________________ */ \
-    ADDROF_1M(TO(ret), VM)                                                                       \
+    ADDROF_1M(TO(ret), VM)                                                                         \
     jmp func;                                                                                      \
     LABEL(ret)
 

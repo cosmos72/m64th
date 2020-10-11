@@ -249,8 +249,12 @@ FUNC_START(_exec_xt_from_native_)
     RPUSH( VM)                 /* save VM                           */
     LOAD(  VM, AT(M4TH, M4TH_OFF_VM))  /* set VM   = m4th->vm       */
     ADDROF_1M(TO(_exec_xt_from_native_.vm_code), IP)
+
     /* enter '(vm)' interpreter, let token 'execute' pop dtop = xt  */
-    call   *VM;
+    /* pushes return address to stack,                              */
+    /* it will be popped by (return-to-native)                      */
+    call  *VM;
+
     RPOP(  VM)                 /* load VM                           */
     RPOP(  IP)                 /* load IP                           */
     ASM_RET()
@@ -262,5 +266,5 @@ FUNC_RAWEND(_exec_xt_from_native_)
 
 /* return to native code */
 FUNC_START(_return_to_native_)
-        ASM_RET()
+    ASM_RET()
 FUNC_RAWEND(_return_to_native_)
