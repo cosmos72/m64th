@@ -682,6 +682,9 @@ void m4stack_print(const m4stack *stack, FILE *out) {
     const m4cell *lo = stack->curr;
     const m4cell *hi = stack->end;
     fprintf(out, "<%ld> ", (long)(hi - lo));
+    if (lo < stack->start) {
+        return;
+    }
     while (hi > lo) {
         long x = (long)*--hi;
         if (x > -1024 && x < 1024) {
