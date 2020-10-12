@@ -44,7 +44,16 @@ FUNC_START(th_run)
         ADDI(  x0,   M4TH_OFF_,  M4TH)          /* load m4th pointer               */
         STOR(  x29,  AT(M4TH, M4TH_OFF_C_REG0)) /* save C stack pointer            */
         LOAD(  DSTK, AT(M4TH, M4TH_OFF_DSTK))   /* load data   stack pointer       */
+
+        /* if m4th->rstack.curr == 0, no forth return stack is available           */
+        /* => use C stack as forth return stack                                    */
         LOAD(  RSTK, AT(M4TH, M4TH_OFF_RSTK))   /* load return stack pointer       */
+        JNZ(   RSTK, TO(th_run.stack_done))
+LABEL(th_run.stack_c)
+        MOVE(  x29,  RSTK)
+        STOR(  x29,  AT(M4TH, M4TH_OFF_REND))
+
+LABEL(th_run.stack_done)
         LOAD(  LOCL, AT(M4TH, M4TH_OFF_LOCL))   /* load local variables pointer    */
         LOAD(  IP,   AT(M4TH, M4TH_OFF_IP))     /* load instruction  pointer       */
         LOAD(  FTBL, AT(M4TH, M4TH_OFF_FTABLE)) /* load table m4token -> m4func    */
@@ -79,12 +88,16 @@ FUNC_START(bye)
         STOR(  FTBL, AT(M4TH, M4TH_OFF_FTABLE)) /* save table m4token -> m4func    */
         STOR(  IP,   AT(M4TH, M4TH_OFF_IP))     /* save instruction  pointer       */
         STOR(  LOCL, AT(M4TH, M4TH_OFF_LOCL))   /* save local variables pointer    */
-        STOR(  RSTK, AT(M4TH, M4TH_OFF_RSTK))   /* save return stack pointer       */
+
+        /* if m4th->rstack.curr == 0, no forth return stack is available           */
+        /* => we used C stack as forth return stack                                */
+        LOAD(  REG1, AT(M4TH, M4TH_OFF_RSTK))
+        cmp    REG1, IMM(0);
+        csel   RSTK, REG1, RSTK, eq;
+        STOR(  RSTK, AT(M4TH, M4TH_OFF_RSTK))
+
         STOR(  DSTK, AT(M4TH, M4TH_OFF_DSTK))   /* save data   stack pointer       */
-        /*
-         * TODO: these discard the call stack of native forth code
-         *       executed since m4th_run(). how to preserve it?
-         */
+
         LOAD(  x0,   AT(M4TH, M4TH_OFF_EX))     /* load return value = m4th.ex     */
         LOAD(  x1,   AT(M4TH, M4TH_OFF_C_REG0)) /* load C stack pointer            */
         MOVE(  x1,   sp)
@@ -155,10 +168,13 @@ FUNC_END(_c_arg_6_)
 /* must be followed by C function address. call it. */
 FUNC_START(_c_call_)
         /* cannot use x0..x8 here, they are used by c-args-[N] and c-ret-[N] */
-        LOAD(  x9,     AT(IP),   IMM(SZ)) /* post-increment */
-        RPUSH(  lr)                    /* save lr                            */
+        LOAD(  x9, AT(IP), IMM(SZ))    /* post-increment */
+        RPUSH( lr)                     /* save lr                            */
+        and    sp, RSTK,  IMM(-SZ2);   /* set sp = RSTK, then align it       */
         blr    x9;                     /* call C func, overwrites lr         */
-        RPOP(   lr)                    /* load lr                            */
+        RPOP(  lr)                     /* load lr                            */
+        LOAD(  x9, AT(M4TH, M4TH_OFF_C_REG0)) /* reload sp                   */
+        MOVE(  x9, sp)
 FUNC_END(_c_call_)
 
 
