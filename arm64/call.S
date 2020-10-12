@@ -31,17 +31,15 @@
  * execute m4th->code.start[0] and subsequent instructions until m4bye is found.
  */
 FUNC_START(th_run)
-        SUB2(  IMM(SZ12), sp)                   /* save C registers                */
-        stp    x19,  x20,  AT(sp);              /* not clobbered: x18              */
-        stp    x21,  x22,  AT(sp, SZ2);
-        stp    x23,  x24,  AT(sp, SZ4);
-        stp    x25,  x26,  AT(sp, SZ6);
-        stp    x27,  x28,  AT(sp, SZ8);
-        stp    x29,  lr,   AT(sp, SZ10);
+        stp    x29,  lr,   AT(sp, -SZ12)!;      /* make space for C registers on stack */
+        MOVE(  sp,   x29)                       /* update x29: helps debuggers     */
+        stp    x19,  x20,  AT(sp, SZ2);         /* save C registers                */
+        stp    x21,  x22,  AT(sp, SZ4);         /* not clobbered: x18              */
+        stp    x23,  x24,  AT(sp, SZ6);
+        stp    x25,  x26,  AT(sp, SZ8);
+        stp    x27,  x28,  AT(sp, SZ10);
         ADDI(  x0,   M4TH_OFF_,  M4TH)          /* load m4th pointer               */
-        MOVE(  sp,   REG1)
-        add    x29,  sp,   IMM(SZ10)            /* update x29: helps debuggers     */
-        STOR(  REG1, AT(M4TH, M4TH_OFF_C_REG0)) /* save C stack pointer            */
+        STOR(  x29,  AT(M4TH, M4TH_OFF_C_REG0)) /* save C stack pointer            */
         LOAD(  DSTK, AT(M4TH, M4TH_OFF_DSTK))   /* load data   stack pointer       */
         LOAD(  RSTK, AT(M4TH, M4TH_OFF_RSTK))   /* load return stack pointer       */
         LOAD(  LOCL, AT(M4TH, M4TH_OFF_LOCL))   /* load local variables pointer    */
@@ -84,16 +82,15 @@ FUNC_START(bye)
          * TODO: these discard the call stack of native forth code
          *       executed since m4th_run(). how to preserve it?
          */
-        LOAD(  REG1, AT(M4TH, M4TH_OFF_C_REG0)) /* load C stack pointer            */
+        LOAD(  x29,  AT(M4TH, M4TH_OFF_C_REG0)) /* load C stack pointer            */
         LOAD(  x0,   AT(M4TH, M4TH_OFF_EX))     /* load return value = m4th.ex     */
-        MOVE(  REG1, sp)
-        ldp    x19,  x20,  AT(sp);              /* load C registers                */
-        ldp    x21,  x22,  AT(sp, SZ2);
-        ldp    x23,  x24,  AT(sp, SZ4);
-        ldp    x25,  x26,  AT(sp, SZ6);
-        ldp    x27,  x28,  AT(sp, SZ8);
-        ldp    x29,  lr,   AT(sp, SZ10);
-        ADD2(  IMM(SZ12), sp)
+        ldp    x29,  lr,   AT(sp);
+        ldp    x19,  x20,  AT(sp, SZ2);         /* save C registers                */
+        ldp    x21,  x22,  AT(sp, SZ4);         /* not clobbered: x18              */
+        ldp    x23,  x24,  AT(sp, SZ6);
+        ldp    x25,  x26,  AT(sp, SZ8);
+        ldp    x27,  x28,  AT(sp, SZ10);
+        MOVE(  x29,  sp)
         ret;                                    /* return to C                     */
 FUNC_RAWEND(bye)
 
