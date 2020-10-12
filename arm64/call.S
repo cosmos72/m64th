@@ -32,6 +32,9 @@
  */
 FUNC_START(th_run)
         stp    x29,  lr,   AT(sp, -SZ12)!;      /* make space for C registers on stack */
+	.cfi_def_cfa_offset SZ12
+	.cfi_offset 29, -SZ12
+	.cfi_offset 30, -SZ11
         MOVE(  sp,   x29)                       /* update x29: helps debuggers     */
         stp    x19,  x20,  AT(sp, SZ2);         /* save C registers                */
         stp    x21,  x22,  AT(sp, SZ4);         /* not clobbered: x18              */
@@ -91,6 +94,9 @@ FUNC_START(bye)
         ldp    x25,  x26,  AT(sp, SZ8);
         ldp    x27,  x28,  AT(sp, SZ10);
         ldp    x29,  lr,   AT(sp), SZ12;
+	.cfi_restore 30
+	.cfi_restore 29
+	.cfi_def_cfa_offset 0
         ret;                                    /* return to C                     */
 FUNC_RAWEND(bye)
 
