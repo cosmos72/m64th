@@ -27,7 +27,7 @@
 
 int main(int argc, char *argv[]) {
     FILE *out = stdout;
-    m4th *m = m4th_new();
+    m4th *m = m4th_new(m4opt_return_stack_is_private);
     m4cell fail = 0;
 
     /* m4th_testbench_crc_c(out); */

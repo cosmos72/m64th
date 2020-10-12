@@ -25,17 +25,13 @@
 #include <string.h>
 
 int main(int argc, char *argv[]) {
-    m4th *m = m4th_new();
+    m4th *m = m4th_new(m4opt_return_stack_is_c_stack);
     m4cell ret;
 
     m->in->func = WORD_SYM(c_linenoise).code;
     m->in->handle = (m4cell) "m4th> "; /* prompt */
     m->out->func = WORD_SYM(c_fwrite_fflush).code;
     m->out->handle = (m4cell)stdout;
-
-    // use C stack as forth return stack
-    m4stack_free(&m->rstack);
-    memset(&m->rstack, 0, sizeof(m->rstack));
 
     ret = m4th_repl(m);
     m4th_del(m);

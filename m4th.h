@@ -234,6 +234,13 @@ struct m4th_s {                /**< m4th forth interpreter and compiler         
     m4cell user_var[];         /**< further user variables                       */
 };
 
+/** m4th_new() options */
+typedef enum m4th_opt_e {
+    m4opt_return_stack_is_c_stack = 0, /* default */
+    m4opt_return_stack_is_private = 1, /* useful for testing tokens with side effects on return
+                                          stack. calling C functions may fail */
+} m4th_opt;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -242,7 +249,7 @@ extern "C" {
 void m4th_init(void);
 
 /** create a new m4th struct */
-m4th *m4th_new(void);
+m4th *m4th_new(m4th_opt options);
 
 /** delete an m4th struct */
 void m4th_del(m4th *m);

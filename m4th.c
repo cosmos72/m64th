@@ -674,7 +674,7 @@ m4stack m4stack_alloc(m4ucell size) {
 }
 
 void m4stack_free(m4stack *arg) {
-    if (arg) {
+    if (arg && arg->start) {
         m4mem_unmap(arg->start, (arg->end - arg->start + 1) / sizeof(m4cell));
     }
 }
@@ -926,7 +926,7 @@ void m4th_init(void) {
     }
 }
 
-m4th *m4th_new(void) {
+m4th *m4th_new(m4th_opt options) {
     extern void m4f_vm_(m4arg _);
     m4th *m;
 
@@ -934,7 +934,11 @@ m4th *m4th_new(void) {
 
     m = (m4th *)m4mem_allocate(sizeof(m4th));
     m->dstack = m4stack_alloc(dstack_n);
-    m->rstack = m4stack_alloc(rstack_n);
+    if (options & m4opt_return_stack_is_private) {
+        m->rstack = m4stack_alloc(rstack_n);
+    } else {
+        memset(&m->rstack, '\0', sizeof(m->rstack));
+    }
     m->locals = NULL;
     m->ip = NULL;
     m->ftable = ftable;

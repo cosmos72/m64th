@@ -19,7 +19,7 @@
 
 #include "impl.h"
 #include "include/dict_fwd.h"   /* m4dict_... */
-#include "include/hashmap.h"   /* m4dict_... */
+#include "include/hashmap.h"    /* m4dict_... */
 #include "include/opt_rules.mh" /* OPT2_RULES */
 #include "include/word_fwd.h"   /* m4w_...    */
 #include "m4th.h"
@@ -166,7 +166,7 @@ static inline void dpush(m4th *m, m4cell x) {
 static void run_benchmark(FILE *out) {
     static const m4token code[] = {m4do,     m4two_dup,   m4crc_string, m4drop,
                                    m4_loop_, (m4token)-5, m4bye};
-    m4th *m = m4th_new();
+    m4th *m = m4th_new(m4opt_return_stack_is_c_stack);
 #ifdef __x86_64__
     const double n = 1e9f;
 #else
