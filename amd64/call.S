@@ -45,9 +45,13 @@ FUNC_START(th_run)
         /* changing %rsp to different stack breaks google-pprof: */
         /* do it only if requested i.e. m4th->rstack.curr != 0   */
         LOAD(  REG1,   AT(M4TH, M4TH_OFF_RSTK))   /* load return stack pointer       */
-        testq  REG1,   REG1;
+        test   REG1,   REG1;
         cmovne REG1,   RSTK;
+        JNZ(   REG1,   TO(th_run.stack_done))
+LABEL(th_run.stack_c)
+        MOVE(  RSTK,   AT(M4TH, M4TH_OFF_REND))
 
+LABEL(th_run.stack_done)
         LOAD(  LOCL,   AT(M4TH, M4TH_OFF_LOCL))   /* load local variables pointer    */
         LOAD(  IP,     AT(M4TH, M4TH_OFF_IP))     /* load instruction  pointer       */
         LOAD(  FTBL,   AT(M4TH, M4TH_OFF_FTABLE)) /* load table m4token -> m4func    */
@@ -55,7 +59,7 @@ FUNC_START(th_run)
         LOAD(  HERE,   AT(M4TH, M4TH_OFF_HERE))   /* load HERE pointer               */
         DPOP___DTOP()                             /* load first data   stack element */
         RPOP(  RTOP)                              /* load first return stack element */
-        MOVE(IMM(-1),  RFFF)                      /* set RFFF = -1                   */
+        RPUSH(IMM(-1)) RPOP(RFFF)                 /* set RFFF = -1                   */
         NEXT0()                                   /* enter vm loop                   */
 FUNC_RAWEND(th_run)
 
@@ -197,7 +201,7 @@ FUNC_START(_c_call_)
          */
         RPOP(  DSTK)                               /* reload DSTK = %rsi             */
         RPOP(  LOCL)                               /* reload LOCL = %r9              */
-        MOVE(IMM(-1),  RFFF)                       /* set RFFF = -1                  */
+        RPUSH(IMM(-1)) RPOP(RFFF)                  /* set RFFF = -1                  */
 FUNC_END(_c_call_)
 
 

@@ -285,15 +285,16 @@ void m4flags_print(m4flags fl, FILE *out) {
 
 /* ----------------------- m4string ---------------------- */
 
-void m4string2_print_escape(const m4char *addr, const m4ucell n, FILE *out) {
-    m4ucell i;
-    for (i = 0; i < n; i++) {
-        m4char_print_escape(addr[i], out);
-    }
+m4string m4string_make(const void *addr, const m4ucell n) {
+    m4string ret = {(const m4char *)addr, n};
+    return ret;
 }
 
 void m4string_print_escape(m4string str, FILE *out) {
-    m4string2_print_escape(str.addr, str.n, out);
+    m4ucell i;
+    for (i = 0; i < str.n; i++) {
+        m4char_print_escape(str.addr[i], out);
+    }
 }
 
 /* ----------------------- m4token ----------------------- */
@@ -395,11 +396,11 @@ static m4cell m4token_print_lit_xt(const m4token *code, FILE *out) {
     return m4token_print_xt(code, out);
 }
 
-static m4cell m4token_print_lit_string(const m4char *ascii, const m4ucell len, FILE *out) {
-    fprintf(out, "LIT_STRING(%lu, \"", (unsigned long)len);
-    m4string2_print_escape(ascii, len, out);
+static m4cell m4token_print_lit_string(const m4string str, FILE *out) {
+    fprintf(out, "LIT_STRING(%lu, \"", (unsigned long)str.n);
+    m4string_print_escape(str, out);
     fputs("\") ", out);
-    return 1 + (len + SZt - 1) / SZt;
+    return 1 + (str.n + SZt - 1) / SZt;
 }
 
 static m4cell m4token_print_call(const m4token *code, FILE *out) {
@@ -526,7 +527,7 @@ void m4code_print(m4code src, FILE *out) {
         } else if (tok == m4_lit_xt_ && n - i >= SZ / SZt) {
             i += m4token_print_lit_xt(code + i, out);
         } else if (tok == m4_lit_string_ && n - i >= 2 + (m4ucell)(code[i] + SZt - 1) / SZt) {
-            i += m4token_print_lit_string((const m4char *)&code[i + 1], code[i], out);
+            i += m4token_print_lit_string(m4string_make(&code[i + 1], code[i]), out);
         } else {
             m4token_print(tok, out);
             i += m4token_print_consumed_ip(tok, code + i, n - i, out);
@@ -666,13 +667,13 @@ static void m4iobuf_del(m4iobuf *arg) {
 
 /* ----------------------- m4stack ----------------------- */
 
-static m4stack m4stack_alloc(m4cell size) {
+m4stack m4stack_alloc(m4ucell size) {
     m4cell *p = (m4cell *)m4mem_map(size * sizeof(m4cell));
     m4stack ret = {p, p + size - 1, p + size - 1};
     return ret;
 }
 
-static void m4stack_free(m4stack *arg) {
+void m4stack_free(m4stack *arg) {
     if (arg) {
         m4mem_unmap(arg->start, (arg->end - arg->start + 1) / sizeof(m4cell));
     }

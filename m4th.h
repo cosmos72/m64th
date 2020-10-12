@@ -310,13 +310,15 @@ void m4flags_print(m4flags fl, FILE *out);
 void m4slice_copy_to_code(m4slice src, m4code *dst);
 void m4slice_to_word_code(const m4slice *src, m4word *dst);
 
+m4string m4string_make(const void *addr, const m4ucell n);
 m4cell m4string_equals(m4string a, m4string b);
 void m4string_print(m4string str, FILE *out);
 void m4string_print_hex(m4string str, FILE *out);
 /** print, replacing non-printable chars with escape sequences */
 void m4string_print_escape(m4string str, FILE *out);
-void m4string2_print_escape(const m4char *addr, const m4ucell n, FILE *out);
 
+m4stack m4stack_alloc(m4ucell size);
+void m4stack_free(m4stack *arg);
 void m4stack_print(const m4stack *stack, FILE *out);
 
 /** return how many bytes of code are consumed by executing token */

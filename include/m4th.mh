@@ -23,6 +23,7 @@
 #define M4TH_OFF_ SZ14              /* distance between C m4th* and Forth m4th* */
 #define M4TH_OFF_DSTK -SZ13         /* offset of m4th->dstack.curr     */
 #define M4TH_OFF_DEND -SZ12         /* offset of m4th->dstack.end      */
+#define M4TH_OFF_RBEG -SZ11         /* offset of m4th->rstack.start    */
 #define M4TH_OFF_RSTK -SZ10         /* offset of m4th->rstack.curr     */
 #define M4TH_OFF_REND -SZ9          /* offset of m4th->rstack.end      */
 #define M4TH_OFF_LOCL -SZ8          /* offset of m4th->locals          */
@@ -31,7 +32,7 @@
 #define M4TH_OFF_WTABLE -SZ5        /* offset of m4th->wtable          */
 #define M4TH_OFF_IN -SZ4            /* offset of m4th->in              */
 #define M4TH_OFF_OUT -SZ3           /* offset of m4th->out             */
-#define M4TH_OFF_VM   -SZ2          /* offset of m4th->vm              */
+#define M4TH_OFF_VM -SZ2            /* offset of m4th->vm              */
 #define M4TH_OFF_C_REG0 -SZ         /* offset of m4th->c_regs[0]       */
 #define M4TH_OFF_USER 0             /* offset of m4th->user*           */
 #define M4TH_OFF_LASTW SZ           /* offset of m4th->lastw           */

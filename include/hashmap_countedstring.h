@@ -29,11 +29,11 @@ extern "C" {
 #define H(x) x##countedstring
 
 enum {
-    H(m4hash_no_entry_) = (m4char)-1,
-    H(m4hash_no_next_) = (m4char)-2,
+    H(m4hash_no_entry_) = (m4ucell)-1,
+    H(m4hash_no_next_) = (m4ucell)-2,
 };
 
-typedef struct m4hashmap_entry_s_string {
+typedef struct H(m4hashmap_entry_s_) {
     m4char keylen;
     m4char key[255];
     m4cell val;
