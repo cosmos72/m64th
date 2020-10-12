@@ -279,7 +279,7 @@
 #define RPUSH2(reg1,reg2) stp  reg2, reg1, [RSTK, -SZ2]!;/* push reg1, then reg2 to return stack */
 
 #define RPOP(reg)        ldr   reg, [RSTK], SZ;          /* pop second return stack element into val */
-#define RPOP2(reg1,reg2) ldp   reg1, reg2, [RSTK], SZ2;  /* pop 2nd, 3rd data stack elements into reg1, reg2 */
+#define RPOP2(reg1,reg2) ldp   reg1, reg2, [RSTK], SZ2;  /* pop 2nd, 3rd return stack elements into reg1, reg2 */
 
 /* clang-format on */
 

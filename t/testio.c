@@ -323,7 +323,7 @@ static void m4ibuf_with_counteddata_print(const m4iobuf *io, FILE *out) {
     const m4ucell nd = d ? d->n : 0;
     const m4ucell nio = io->end - io->pos;
     fprintf(out, "<%lu> [", (unsigned long)(nd + nio));
-    if (nio) {
+    if (io->end >= io->pos && nio) {
         m4string2_print_escape(io->addr + io->pos, nio, out);
     }
     if (nd) {
@@ -396,7 +396,7 @@ static void m4obuf_with_counteddata_print(const m4iobuf *io, FILE *out) {
     if (nd) {
         m4string2_print_escape(d->addr, nd, out);
     }
-    if (nio) {
+    if (io->end >= io->pos && nio) {
         m4string2_print_escape(io->addr + io->pos, nio, out);
     }
     fputc(']', out);

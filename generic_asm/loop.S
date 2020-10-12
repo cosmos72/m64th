@@ -63,10 +63,9 @@ FUNC_RAWEND(_jump_)
 /** implementation of 'do', enters a (do) ... (loop) */
 #ifndef M4FDO
 FUNC_START(do)
-        RPUSH( RTOP)                 /* save rstack top       */
         DPOP(  REG1)                 /* REG1 = i'             */
-        MOVE(  DTOP, RTOP)           /* RTOP = i              */
-        RPUSH( REG1)                 /* push i' on rstack     */
+        RPUSH2(RTOP,       REG1)     /* save rstack top, i'   */
+        MOVE(  DTOP,       RTOP)     /* RTOP = i              */
         DPOP___DTOP()                /* reload dstack top     */
 FUNC_END(do)
 #endif
@@ -74,10 +73,9 @@ FUNC_END(do)
 
 #ifndef M4FTWO_DUP_TWO_TO_R
 FUNC_START(two_dup_two_to_r)   /* 2dup 2>r  m4th-user */
-        RPUSH( RTOP)
         LOAD(  REG1,       AT(DSTK))
+        RPUSH2(RTOP,       REG1)
         MOVE(  DTOP,       RTOP)
-        RPUSH( REG1)
 FUNC_END(two_dup_two_to_r)
 #endif
 
@@ -85,9 +83,8 @@ FUNC_END(two_dup_two_to_r)
 #ifndef M4FTWO_TO_R
 FUNC_START(two_to_r)           /* 2>r      */
         DPOP(  REG1)
-        RPUSH( RTOP)
+        RPUSH2(RTOP,       REG1)
         MOVE(  DTOP,       RTOP)
-        RPUSH( REG1)
         DPOP___DTOP()
 FUNC_END(two_to_r)
 #endif
@@ -95,11 +92,10 @@ FUNC_END(two_to_r)
 
 #ifndef M4FTWO_R_FROM
 FUNC_START(two_r_from)         /* 2r>      */
-        RPOP(  REG1)
         DPUSH__DTOP()
         MOVE(  RTOP,       DTOP)
+        RPOP2( REG1,       RTOP)
         DPUSH( REG1)
-        RPOP(  RTOP)
 FUNC_END(two_r_from)
 #endif
 

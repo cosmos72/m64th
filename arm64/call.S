@@ -204,16 +204,14 @@ FUNC_RAWEND(_exec_token_)
  * => use ASM_RET() to return
  */
 FUNC_START(_exec_xt_from_native_)
-    RPUSH( IP)                 /* save IP                           */
-    RPUSH( VM)                 /* save VM                           */
+    RPUSH2(IP, VM)             /* save IP, VM                       */
     RPUSH( lr)                 /* save lr                           */
     LOAD(  VM, AT(M4TH, M4TH_OFF_VM))  /* set VM   = m4th->vm       */
     ADDROF_1M(TO(_exec_xt_from_native_.vm_code), IP)
     /* enter '(vm)' interpreter, let token 'execute' pop dtop = xt  */
     blr    VM;
     RPOP(  lr)                 /* load lr                           */
-    RPOP(  VM)                 /* load VM                           */
-    RPOP(  IP)                 /* load IP                           */
+    RPOP2( VM, IP)             /* load VM, IP                       */
     ASM_RET()
 WORD_CODE_ALIGN()
 LABEL(_exec_xt_from_native_.vm_code)

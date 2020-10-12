@@ -128,18 +128,6 @@ FUNC_START(two_sm_div)     /* 2sm/   m4th-user symmetric divide by 2 */
 FUNC_END(two_sm_div)
 
 
-#define M4FTWO_TO_R
-FUNC_START(two_to_r)       /* 2>r      */
-        LOAD(  REG1,   AT(DSTK))
-        STOR(  RTOP,   AT(RSTK, -SZ))
-        STOR(  REG1,   AT(RSTK, -SZ2))
-        MOVE(  DTOP,   RTOP)
-        LOAD(  DTOP,   AT(DSTK, SZ))
-        ADD2(  IMM(SZ2), DSTK)
-        SUB2(  IMM(SZ2), RSTK)
-FUNC_END(two_to_r)
-
-
 /* 2pick ( du ... d1 d0 u -- du_1 ... d1 d0 du ) m4th-user */
 FUNC_START(two_pick)
         shl    DTOP;
@@ -147,18 +135,6 @@ FUNC_START(two_pick)
         mov      (DSTK, DTOP, SZ), DTOP;
         DPUSH( REG1)
 FUNC_END(two_pick)
-
-
-#define M4FTWO_R_FROM
-FUNC_START(two_r_from)     /* 2r>      */
-        LOAD(  REG1,   AT(RSTK))
-        STOR(  DTOP,   AT(DSTK, -SZ))
-        STOR(  REG1,   AT(DSTK, -SZ2))
-        MOVE(  RTOP,   DTOP)
-        LOAD(  RTOP,   AT(RSTK, SZ))
-        ADD2(  IMM(SZ2), RSTK)
-        SUB2(  IMM(SZ2), DSTK)
-FUNC_END(two_r_from)
 
 
 FUNC_START(four_sm_div)    /* 4sm/ m4th-user symmetric divide by 4 */

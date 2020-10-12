@@ -253,11 +253,9 @@ FUNC_RAWEND(crc_string_simd)
 /* fill ( c-addr u char -- ) core */
 FUNC_START(fill)
         LOAD(  %rcx,   AT(DSTK))       /* b {%rcx} = u               */
-        MOVE(  RSTK,   REG1)           /* a = RSTK {%rdi}            */
-        LOAD(  %rdi,   AT(DSTK, SZ))   /* %rdi = c-addr              */
+        LOAD(  %rdi,   AT(DSTK, SZ))   /* a {%rdi} = c-addr          */
         cld;                           /* forward direction          */
         rep stosb %al, (%rdi);
-        MOVE(  REG1,   RSTK)           /* restore RSTK               */
         LOAD(  DTOP,   AT(DSTK, SZ2))  /* reload DTOP                */
         ADD2(IMM(SZ3), DSTK)           /* drop 3 cells from DSTK     */
 FUNC_END(fill)
