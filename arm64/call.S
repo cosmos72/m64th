@@ -82,15 +82,15 @@ FUNC_START(bye)
          * TODO: these discard the call stack of native forth code
          *       executed since m4th_run(). how to preserve it?
          */
-        LOAD(  x29,  AT(M4TH, M4TH_OFF_C_REG0)) /* load C stack pointer            */
         LOAD(  x0,   AT(M4TH, M4TH_OFF_EX))     /* load return value = m4th.ex     */
-        ldp    x29,  lr,   AT(sp);
-        ldp    x19,  x20,  AT(sp, SZ2);         /* save C registers                */
+        LOAD(  x1,   AT(M4TH, M4TH_OFF_C_REG0)) /* load C stack pointer            */
+        MOVE(  x1,   sp)
+        ldp    x19,  x20,  AT(sp, SZ2);         /* load C registers                */
         ldp    x21,  x22,  AT(sp, SZ4);         /* not clobbered: x18              */
         ldp    x23,  x24,  AT(sp, SZ6);
         ldp    x25,  x26,  AT(sp, SZ8);
         ldp    x27,  x28,  AT(sp, SZ10);
-        MOVE(  x29,  sp)
+        ldp    x29,  lr,   AT(sp), SZ12;
         ret;                                    /* return to C                     */
 FUNC_RAWEND(bye)
 

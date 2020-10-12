@@ -112,7 +112,7 @@ FUNC_START(test_crc_plus_native_forth)
         XOR2(  AT(DSTK),   DTOP)
         ADD2(  IMM(8), DSTK)
 #else
-	DPOP(  REG1)
+        DPOP(  REG1)
         XOR2(  REG1,   DTOP)
 #endif
         /* this pretends to be native code: */
