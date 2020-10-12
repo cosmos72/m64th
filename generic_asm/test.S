@@ -36,13 +36,10 @@
  */
 FUNC_START(do_i_plus_loop)
         /* do */
-        SUB2( IMM(SZ2),RSTK)           /* update rstack pointer */
-        LOAD(  REG1,   AT(DSTK))       /* REG1 = i'             */
-        STOR(  RTOP,   AT(RSTK, SZ))   /* save RTOP             */
-        MOVE(  DTOP,   RTOP)           /* RTOP = i              */
-        STOR(  REG1,   AT(RSTK))       /* save i' to rstack     */
-        LOAD(  DTOP,   AT(DSTK, SZ))   /* reload dstack top     */
-        ADD2( IMM(SZ2),DSTK)           /* update dstack pointer */
+        RPUSH( RTOP)                 /* save rtop             */
+        MOVE(  DTOP,   RTOP)         /* rtop = i              */
+        DPOP2( REG1,   DTOP)         /* a = i', reload dtop   */
+        RPUSH( REG1)                 /* rpush i'              */
 ASM_ALIGN(3) /* *much* faster at least on x86-64 */
 LABEL(test_sum_forth.iter)
         /* i_plus */
