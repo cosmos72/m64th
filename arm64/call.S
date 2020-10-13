@@ -45,7 +45,7 @@ FUNC_START(th_run)
         STOR(  x29,  AT(M4TH, M4TH_OFF_C_REG0)) /* save C stack pointer            */
         LOAD(  DSTK, AT(M4TH, M4TH_OFF_DSTK))   /* load data   stack pointer       */
 
-        /* if m4th->rstack.curr == 0, no forth return stack is available           */
+        /* if m4th->rstack.curr == 0, no dedicated forth return stack is available */
         /* => use C stack as forth return stack                                    */
         LOAD(  RSTK, AT(M4TH, M4TH_OFF_RSTK))   /* load return stack pointer       */
         JNZ(   RSTK, TO(th_run.stack_done))
@@ -168,13 +168,26 @@ FUNC_END(_c_arg_6_)
 /* must be followed by C function address. call it. */
 FUNC_START(_c_call_)
         /* cannot use x0..x8 here, they are used by c-args-[N] and c-ret-[N] */
-        LOAD(  x9, AT(IP), IMM(SZ))    /* post-increment */
+        LOAD(  x9, AT(IP), IMM(SZ))    /* post-increment                     */
         RPUSH( lr)                     /* save lr                            */
+        LOAD( x10, AT(M4TH, M4TH_OFF_RSTK))
+        JZ(   x10, TO(_c_call_.stack_c))
+
+        /* m4th->rstack.curr != 0 thus RSTK points to dedicated memory       */
+        /* and sp points to C stack: nothing to fix                          */
+        blr    x9;                     /* call C func, overwrites lr         */
+        JUMP(  TO(_c_call_.finish))
+
+LABEL(_c_call_.stack_c)
+        /* m4th->rstack.curr == 0 thus RSTK points to C stack, below sp:     */
+        /* update sp before call, and restore it after call                  */
         and    sp, RSTK,  IMM(-SZ2);   /* set sp = RSTK, then align it       */
         blr    x9;                     /* call C func, overwrites lr         */
+        LOAD(  x9, AT(M4TH, M4TH_OFF_C_REG0))
+        MOVE(  x9, sp)                 /* reload sp                          */
+
+LABEL(_c_call_.finish)
         RPOP(  lr)                     /* load lr                            */
-        LOAD(  x9, AT(M4TH, M4TH_OFF_C_REG0)) /* reload sp                   */
-        MOVE(  x9, sp)
 FUNC_END(_c_call_)
 
 

@@ -189,8 +189,23 @@ FUNC_END(_c_arg_6_)
 
 /* must be followed by C function address. call it. */
 FUNC_START(_c_call_)
-        /* do not restore %rsp, it would clobber our call stack */
+        LOAD(  REG0,   AT(M4TH, M4TH_OFF_RSTK))
+        JZ(    REG0,   TO(_c_call_.stack_c))
+
+        /* m4th->rstack.curr != 0 thus RSTK i.e. %rsp points to private memory:      */
+        /* update %rsp before call, and restore it after call                        */
+        STOR(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))
+        LOAD(  %rsp,   AT(M4TH, M4TH_OFF_C_REG0))
         call   *AT(IP);
+        LOAD(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))
+        JUMP(  TO(_c_call_.finish))
+
+LABEL(_c_call_.stack_c)
+        /* m4th->rstack.curr == 0 thus RSTK i.e. %rsp points to C stack:             */
+        /* nothing to fix                                                            */
+        call   *AT(IP);
+
+LABEL(_c_call_.finish)
         ADD2(  IMM(SZ),IP)                         /* skip C function address        */
         /*
          * C functions can clobber %rdi %rsi %rdx %rcx %r8 %r9 %r10 %r11

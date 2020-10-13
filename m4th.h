@@ -236,9 +236,11 @@ struct m4th_s {                /**< m4th forth interpreter and compiler         
 
 /** m4th_new() options */
 typedef enum m4th_opt_e {
-    m4opt_return_stack_is_c_stack = 0, /* default */
-    m4opt_return_stack_is_private = 1, /* useful for testing tokens with side effects on return
-                                          stack. calling C functions may fail */
+    /* default: forth return stack is shared with C stack  */
+    m4opt_return_stack_is_c_stack = 0,
+    /* forth return stack is private, allocated memory:
+     * useful for testing tokens with side effects on return stack. */
+    m4opt_return_stack_is_private = 1,
 } m4th_opt;
 
 #ifdef __cplusplus
