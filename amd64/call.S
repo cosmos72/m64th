@@ -82,21 +82,24 @@ FUNC_RAWEND(_vm_)
 FUNC_START(bye)
         RPUSH( RTOP)                              /* save first return stack element */
         DPUSH__DTOP()                             /* save first data   stack element */
-        STOR(  HERE,   AT(M4TH, M4TH_OFF_HERE))   /* save HERE pointer               */
-        STOR(  VM,     AT(M4TH, M4TH_OFF_VM  ))   /* save VM   address               */
-        STOR(  FTBL,   AT(M4TH, M4TH_OFF_FTABLE)) /* save table m4token -> m4func    */
-        STOR(  IP,     AT(M4TH, M4TH_OFF_IP))     /* save instruction  pointer       */
         STOR(  LOCL,   AT(M4TH, M4TH_OFF_LOCL))   /* save local variables pointer    */
+        STOR(  IP,     AT(M4TH, M4TH_OFF_IP))     /* save instruction  pointer       */
+        STOR(  FTBL,   AT(M4TH, M4TH_OFF_FTABLE)) /* save table m4token -> m4func    */
+        STOR(  VM,     AT(M4TH, M4TH_OFF_VM  ))   /* save VM   address               */
+        STOR(  HERE,   AT(M4TH, M4TH_OFF_HERE))   /* save HERE pointer               */
 
-        /* changing %rsp to different stack breaks google-pprof: */
-        /* do it only if requested i.e. m4th->rstack.curr != 0   */
         LOAD(  REG1,   AT(M4TH, M4TH_OFF_RSTK))   /* load return stack pointer       */
-        testq  REG1,   REG1;
-        cmovne RSTK,   REG1;
-        STOR(  REG1,   AT(M4TH, M4TH_OFF_RSTK))   /* save return stack pointer       */
+        test   REG1,   REG1;
+        /* if m4th->rstack.curr != 0, forth return stack is dedicated memory         */
+        /* then save RSTK AT(M4TH, M4TH_OFF_RSTK)                                    */
+        /* else write zero AT(M4TH, M4TH_OFF_REND)                                   */
+        ADDI(  M4TH,   M4TH_OFF_RSTK, REG2)       /* RSTK should be saved here       */
+        ADDI(  M4TH,   M4TH_OFF_REND, REG3)       /* REND should be saved here       */
+        cmovnz RSTK,   REG1;
+        cmovnz REG2,   REG3;
+        STOR(  REG1,   AT(REG3))       /* save RSTK, or zero AT(M4TH, M4TH_OFF_REND) */
 
         STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))   /* save data   stack pointer       */
-
         LOAD(  %rsp,   AT(M4TH, M4TH_OFF_C_REG0)) /* load C stack pointer            */
         LOAD(  %rax,   AT(M4TH, M4TH_OFF_EX))     /* load return value = m4th.ex     */
         pop    %r15;                              /* load C registers                */
