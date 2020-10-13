@@ -17,7 +17,25 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "m4th.h"
+#include "impl.h"
 
 #include "c/c_liblinenoise.c"
 #include "c/c_std.c"
+
+/******************************************************************************/
+/* C implementation of hash map                                               */
+/******************************************************************************/
+
+#define H(x) x##byte
+#include "c/hashmap_impl.c"
+#undef H
+#define H(x) x##short
+#include "c/hashmap_impl.c"
+#undef H
+#define H(x) x##int
+#include "c/hashmap_impl.c"
+#undef H
+#define H(x) x##cell
+#include "c/hashmap_impl.c"
+#undef H
+#include "c/hashmap_countedstring.c"

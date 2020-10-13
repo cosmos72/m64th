@@ -34,8 +34,9 @@ enum {
 };
 
 typedef struct H(m4hashmap_entry_s_) {
-    m4ucell next;
     m4cell val;
+    m4ucell next;
+    m4ucell keyhash;
     m4char keylen;
     m4char key[255];
 } H(m4hashmap_entry_);
@@ -48,14 +49,14 @@ typedef struct H(m4hashmap_s_) {
 
 H(m4hashmap_) * H(m4hashmap_new_)(m4ucell capacity);
 void H(m4hashmap_del_)(H(m4hashmap_) * map);
+void H(m4hashmap_clear_)(H(m4hashmap_) * map);
 
 /* find key in map. return NULL if not found */
 const H(m4hashmap_entry_) * H(m4hashmap_find_)(const H(m4hashmap_) * map, m4string key);
 
 /*
- * insert key and val.
- * key MUST NOT be already present. does not grow/rehash.
- * returns NULL on failure (if map is too full)
+ * insert key and val. does not grow/rehash.
+ * returns NULL on failure (if map is too full or key is already present)
  */
 const H(m4hashmap_entry_) * H(m4hashmap_insert_)(H(m4hashmap_) * map, m4string key, m4cell val);
 

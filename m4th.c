@@ -286,7 +286,7 @@ void m4flags_print(m4flags fl, FILE *out) {
 /* ----------------------- m4string ---------------------- */
 
 m4string m4string_make(const void *addr, const m4ucell n) {
-    m4string ret = {(const m4char *)addr, n};
+    m4string ret = {(m4char *)addr, n};
     return ret;
 }
 

@@ -35,7 +35,8 @@ int main(int argc, char *argv[]) {
     fail += m4th_testexecute(m, out);
     fail += m4th_testio(m, out);
     fail += m4th_testcompile(m, out);
-    fail += m4th_testhashmap(out);
+    fail += m4th_testhashmap_int(out);
+    fail += m4th_testhashmap_countedstring(out);
 
     m4th_del(m);
 

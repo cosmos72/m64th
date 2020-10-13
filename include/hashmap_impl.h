@@ -39,15 +39,15 @@ typedef struct H(m4hashmap_s_) {
 } H(m4hashmap_);
 
 H(m4hashmap_) * H(m4hashmap_new_)(H(m4u) capacity);
+void H(m4hashmap_clear_)(H(m4hashmap_) * map);
 void H(m4hashmap_del_)(H(m4hashmap_) * map);
 
 /* find key in map. return NULL if not found */
 const H(m4hashmap_entry_) * H(m4hashmap_find_)(const H(m4hashmap_) * map, H(m4) key);
 
 /*
- * insert key and val.
- * key MUST NOT be already present. does not grow/rehash.
- * returns NULL on failure (if map is too full)
+ * insert key and val. does not grow/rehash.
+ * returns NULL on failure (if map is too full or key is already present)
  */
 const H(m4hashmap_entry_) * H(m4hashmap_insert_)(H(m4hashmap_) * map, H(m4) key, m4cell val);
 
