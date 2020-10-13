@@ -285,15 +285,16 @@ void m4flags_print(m4flags fl, FILE *out) {
 
 /* ----------------------- m4string ---------------------- */
 
-void m4string2_print_escape(const m4char *addr, const m4ucell n, FILE *out) {
-    m4ucell i;
-    for (i = 0; i < n; i++) {
-        m4char_print_escape(addr[i], out);
-    }
+m4string m4string_make(const void *addr, const m4ucell n) {
+    m4string ret = {(m4char *)addr, n};
+    return ret;
 }
 
 void m4string_print_escape(m4string str, FILE *out) {
-    m4string2_print_escape(str.addr, str.n, out);
+    m4ucell i;
+    for (i = 0; i < str.n; i++) {
+        m4char_print_escape(str.addr[i], out);
+    }
 }
 
 /* ----------------------- m4token ----------------------- */
@@ -395,11 +396,11 @@ static m4cell m4token_print_lit_xt(const m4token *code, FILE *out) {
     return m4token_print_xt(code, out);
 }
 
-static m4cell m4token_print_lit_string(const m4char *ascii, const m4ucell len, FILE *out) {
-    fprintf(out, "LIT_STRING(%lu, \"", (unsigned long)len);
-    m4string2_print_escape(ascii, len, out);
+static m4cell m4token_print_lit_string(const m4string str, FILE *out) {
+    fprintf(out, "LIT_STRING(%lu, \"", (unsigned long)str.n);
+    m4string_print_escape(str, out);
     fputs("\") ", out);
-    return 1 + (len + SZt - 1) / SZt;
+    return 1 + (str.n + SZt - 1) / SZt;
 }
 
 static m4cell m4token_print_call(const m4token *code, FILE *out) {
@@ -526,7 +527,7 @@ void m4code_print(m4code src, FILE *out) {
         } else if (tok == m4_lit_xt_ && n - i >= SZ / SZt) {
             i += m4token_print_lit_xt(code + i, out);
         } else if (tok == m4_lit_string_ && n - i >= 2 + (m4ucell)(code[i] + SZt - 1) / SZt) {
-            i += m4token_print_lit_string((const m4char *)&code[i + 1], code[i], out);
+            i += m4token_print_lit_string(m4string_make(&code[i + 1], code[i]), out);
         } else {
             m4token_print(tok, out);
             i += m4token_print_consumed_ip(tok, code + i, n - i, out);
@@ -666,14 +667,14 @@ static void m4iobuf_del(m4iobuf *arg) {
 
 /* ----------------------- m4stack ----------------------- */
 
-static m4stack m4stack_alloc(m4cell size) {
+m4stack m4stack_alloc(m4ucell size) {
     m4cell *p = (m4cell *)m4mem_map(size * sizeof(m4cell));
     m4stack ret = {p, p + size - 1, p + size - 1};
     return ret;
 }
 
-static void m4stack_free(m4stack *arg) {
-    if (arg) {
+void m4stack_free(m4stack *arg) {
+    if (arg && arg->start) {
         m4mem_unmap(arg->start, (arg->end - arg->start + 1) / sizeof(m4cell));
     }
 }
@@ -682,6 +683,9 @@ void m4stack_print(const m4stack *stack, FILE *out) {
     const m4cell *lo = stack->curr;
     const m4cell *hi = stack->end;
     fprintf(out, "<%ld> ", (long)(hi - lo));
+    if (lo < stack->start) {
+        return;
+    }
     while (hi > lo) {
         long x = (long)*--hi;
         if (x > -1024 && x < 1024) {
@@ -922,20 +926,26 @@ void m4th_init(void) {
     }
 }
 
-m4th *m4th_new(void) {
+m4th *m4th_new(m4th_opt options) {
+    extern void m4f_vm_(m4arg _);
     m4th *m;
 
     m4th_init();
 
     m = (m4th *)m4mem_allocate(sizeof(m4th));
     m->dstack = m4stack_alloc(dstack_n);
-    m->rstack = m4stack_alloc(rstack_n);
+    if (options & m4opt_return_stack_is_private) {
+        m->rstack = m4stack_alloc(rstack_n);
+    } else {
+        memset(&m->rstack, '\0', sizeof(m->rstack));
+    }
     m->locals = NULL;
     m->ip = NULL;
     m->ftable = ftable;
     m->wtable = wtable;
     m->in = m4iobuf_new(inbuf_n);
     m->out = m4iobuf_new(outbuf_n);
+    m->vm = m4f_vm_;
     memset(m->c_regs, '\0', sizeof(m->c_regs));
     m->user_size = ((m4cell)&m->user_var[0] - (m4cell)&m->user_size) / SZ;
     m->user_next = m->user_size;
@@ -967,8 +977,11 @@ void m4th_del(m4th *m) {
 
 /* does NOT modify m->state and user variables as m->base, m->searchorder... */
 void m4th_clear(m4th *m) {
+    extern void m4f_vm_(m4arg _);
+
     m->dstack.curr = m->dstack.end;
     m->rstack.curr = m->rstack.end;
+    m->vm = m4f_vm_;
     memset(m->c_regs, '\0', sizeof(m->c_regs));
     m->in->err = m->in->pos = m->in->end = 0;
     m->out->err = m->out->pos = m->out->end = 0;

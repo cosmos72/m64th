@@ -23,25 +23,11 @@
 
 /** must be followed by an XT. calls it. */
 FUNC_START(_call_xt_)
-        RPUSH( RTOP)               /* save RTOP            */
+        RPUSH( RTOP)               /* save RTOP                     */
         ADDI(  IP,     SZ, RTOP)   /* save return address = IP+SZ   */
-        LOAD(  IP,     AT(IP))     /* load xt from IP[0]   */
-        NEXT0()                    /* jump to xt           */
+        LOAD(  IP,     AT(IP))     /* load xt from IP[0]            */
+        NEXT0()                    /* jump to xt                    */
 FUNC_RAWEND(_call_xt_)
-
-
-/** pop XT from dstack and call it from native code. */
-FUNC_START(_exec_xt_from_native_)
-        RPUSH( IP)                 /* save IP. reorders rstack...     */
-        /*                          let token 'execute' pop dtop = xt */
-        ADDROF_1M(TO(_exec_xt_from_native_.vm_code), IP)
-        ASM_CALL(      FUNC(_vm_))
-        RPOP(  IP)                 /* load IP. reorders rstack...     */
-        ASM_RET()
-	WORD_CODE_ALIGN()
-LABEL(_exec_xt_from_native_.vm_code)
-        WORD_CODE_TOKENS(execute, _return_to_native_)
-FUNC_RAWEND(_exec_xt_from_native_)
 
 
 /*

@@ -27,7 +27,7 @@
 
 int main(int argc, char *argv[]) {
     FILE *out = stdout;
-    m4th *m = m4th_new();
+    m4th *m = m4th_new(m4opt_return_stack_is_private);
     m4cell fail = 0;
 
     /* m4th_testbench_crc_c(out); */
@@ -35,7 +35,8 @@ int main(int argc, char *argv[]) {
     fail += m4th_testexecute(m, out);
     fail += m4th_testio(m, out);
     fail += m4th_testcompile(m, out);
-    fail += m4th_testhashmap(out);
+    fail += m4th_testhashmap_int(out);
+    fail += m4th_testhashmap_countedstring(out);
 
     m4th_del(m);
 

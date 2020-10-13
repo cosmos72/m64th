@@ -23,7 +23,7 @@
 
 /* cmove ( src-c-addr dst-c-addr u -- ) 'string' word set */
 FUNC_START(cmove)
-        ASM_CALL(      FUNC(cmove_star))
+        TOKEN_CALL(      FUNC(cmove_star), cmove.0)
         LOAD(  DTOP,   AT(DSTK, SZ))
         ADD2(IMM(SZ2), DSTK)
 FUNC_END(cmove)

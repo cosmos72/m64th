@@ -237,7 +237,7 @@ WORD_START(create,     constant)
         right_bracket,                         /* start compiling                      */
         _lit_comma_, _ip_to_data_addr_,        /* compile (ip>data>addr)               */
         _lit_comma_, _call_xt_,                /* compile (call-xt)                    */
-        LIT_XT(noop), xt_comma,          /* compile XT(noop). placeholder set by DOES> */
+        _lit_xt_, XT(noop), xt_comma,          /* compile XT(noop). placeholder set by DOES> */
         CALL(_finish_), exit                   /* finish compiling, make word findable */
     )
 WORD_END(create)
@@ -279,7 +279,7 @@ WORD_START(does,       do)
         CALL(_throw_if_not_compiling_),
         _check_lit_, colon,
         _lit_comma_, _call_xt_,                        /* compile '(call-xt)'    */
-        LIT_XT(_does_), xt_comma,                      /* compile XT of '(does)' */
+        _lit_xt_, XT(_does_), xt_comma,                /* compile XT of '(does)' */
         _lit_comma_, _does_exit_,                      /* compile '(does-exit)'  */
         exit
     )
@@ -319,7 +319,7 @@ WORD_START(emit, else)
     WORD_DSTACK(1,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE() /* uses ip-relative ADDROF() and ASM_CALL(), cannot inline in native code */
+    WORD_NATIVE_NONE() /* uses ip-relative ADDROF() and TOKEN_CALL(), cannot inline in native code */
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(emit, exit)
 WORD_END(emit)
@@ -435,7 +435,7 @@ WORD_START(postpone,   over)
         /* avoid CALL(literal) because it compiles (lit-[1248]s) instead of (lit-xt) */
             _lit_comma_, _lit_xt_,                     /* compiles (lit-xt)   */
             xt_comma,                                  /* xt,                 */
-            LIT_XT(compile_comma),                     /* ' compile,          */
+            _lit_xt_, XT(compile_comma),               /* ' compile,          */
         then,
         CALL(compile_comma), exit
     )

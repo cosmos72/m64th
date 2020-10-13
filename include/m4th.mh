@@ -20,17 +20,19 @@
 #ifndef M4TH_INCLUDE_M4TH_MH
 #define M4TH_INCLUDE_M4TH_MH
 
-#define M4TH_OFF_ SZ13              /* distance between C m4th* and Forth m4th* */
-#define M4TH_OFF_DSTK -SZ12         /* offset of m4th->dstack.curr     */
-#define M4TH_OFF_DEND -SZ11         /* offset of m4th->dstack.end      */
-#define M4TH_OFF_RSTK -SZ9          /* offset of m4th->rstack.curr     */
-#define M4TH_OFF_REND -SZ8          /* offset of m4th->rstack.end      */
-#define M4TH_OFF_LOCL -SZ7          /* offset of m4th->locals          */
-#define M4TH_OFF_IP -SZ6            /* offset of m4th->ip              */
-#define M4TH_OFF_FTABLE -SZ5        /* offset of m4th->ftable          */
-#define M4TH_OFF_WTABLE -SZ4        /* offset of m4th->wtable          */
-#define M4TH_OFF_IN -SZ3            /* offset of m4th->in              */
-#define M4TH_OFF_OUT -SZ2           /* offset of m4th->out             */
+#define M4TH_OFF_ SZ14              /* distance between C m4th* and Forth m4th* */
+#define M4TH_OFF_DSTK -SZ13         /* offset of m4th->dstack.curr     */
+#define M4TH_OFF_DEND -SZ12         /* offset of m4th->dstack.end      */
+#define M4TH_OFF_RBEG -SZ11         /* offset of m4th->rstack.start    */
+#define M4TH_OFF_RSTK -SZ10         /* offset of m4th->rstack.curr     */
+#define M4TH_OFF_REND -SZ9          /* offset of m4th->rstack.end      */
+#define M4TH_OFF_LOCL -SZ8          /* offset of m4th->locals          */
+#define M4TH_OFF_IP -SZ7            /* offset of m4th->ip              */
+#define M4TH_OFF_FTABLE -SZ6        /* offset of m4th->ftable          */
+#define M4TH_OFF_WTABLE -SZ5        /* offset of m4th->wtable          */
+#define M4TH_OFF_IN -SZ4            /* offset of m4th->in              */
+#define M4TH_OFF_OUT -SZ3           /* offset of m4th->out             */
+#define M4TH_OFF_VM -SZ2            /* offset of m4th->vm              */
 #define M4TH_OFF_C_REG0 -SZ         /* offset of m4th->c_regs[0]       */
 #define M4TH_OFF_USER 0             /* offset of m4th->user*           */
 #define M4TH_OFF_LASTW SZ           /* offset of m4th->lastw           */

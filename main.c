@@ -22,16 +22,15 @@
 #include "m4th.h"
 
 #include <stdio.h>
-
-#define N_OF(array) (sizeof(array) / sizeof((array)[0]))
+#include <string.h>
 
 int main(int argc, char *argv[]) {
-    m4th *m = m4th_new();
+    m4th *m = m4th_new(m4opt_return_stack_is_c_stack);
     m4cell ret;
 
-    m->in->func = m4word_code(&WORD_SYM(c_linenoise)).addr;
+    m->in->func = WORD_SYM(c_linenoise).code;
     m->in->handle = (m4cell) "m4th> "; /* prompt */
-    m->out->func = m4word_code(&WORD_SYM(c_fwrite_fflush)).addr;
+    m->out->func = WORD_SYM(c_fwrite_fflush).code;
     m->out->handle = (m4cell)stdout;
 
     ret = m4th_repl(m);

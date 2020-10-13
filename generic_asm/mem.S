@@ -117,12 +117,12 @@ FUNC_END(two_fetch)
 
 /* crc-cell ( x -- crc ) m4th-user: compute CRC32c of a cell */
 FUNC_START(crc_cell)
-        DPUSH__DTOP()                      /* ( x _                  ) */
+        DPUSH__DTOP()                          /* ( x _                  ) */
         STOR(  DSTK,   AT(DSTK, -SZ))
-        SUB2( IMM(SZ), DSTK)               /* ( x &x _               ) */
-        MOVE( IMM(SZ), DTOP)               /* ( x &x SZ              ) */
-        ASM_CALL(      FUNC(crc_string))   /* ( x crc                ) */
-        ADD2( IMM(SZ), DSTK)               /* ( crc                  ) */
+        SUB2( IMM(SZ), DSTK)                   /* ( x &x _               ) */
+        MOVE( IMM(SZ), DTOP)                   /* ( x &x SZ              ) */
+        TOKEN_CALL(FUNC(crc_string), crc_cell.0) /* ( x crc                ) */
+        ADD2( IMM(SZ), DSTK)                   /* ( crc                  ) */
 FUNC_END(crc_cell)
 
 
@@ -164,7 +164,7 @@ FUNC_START(roll)
         STOR(  DSTK,   AT(DSTK, -SZ2))     /* ( xu xu_1 ... x1 x0 xu &x0 u     ) */
         STOR(  REG2,   AT(DSTK, -SZ3))     /* ( xu xu_1 ... x1 x0 xu &x0 &x1 u ) */
         SUB2(IMM(SZ3), DSTK)
-        ASM_CALL(      FUNC(move))         /* ( xu_1 ... x1 x0 x0 xu )           */
+        TOKEN_CALL(FUNC(move), roll.0)       /* ( xu_1 ... x1 x0 x0 xu )           */
         ADD2(IMM(SZ),  DSTK)               /* ( xu_1 ... x1 x0 xu    )           */
 FUNC_END(roll)
 #endif
@@ -181,7 +181,7 @@ FUNC_START(minus_roll)
         STOR(  REG2,   AT(DSTK, -SZ3))     /* ( xu xu_1 ... x1 x0 x0 &xu &x1 u     ) */
         STOR(  DSTK,   AT(DSTK, -SZ4))     /* ( xu xu_1 ... x1 x0 x0 &xu &x1 &x0 u ) */
         SUB2(IMM(SZ4), DSTK)
-        ASM_CALL(      FUNC(move))         /* ( xu xu xu_1 ... x1 x0 &xu           ) */
+        TOKEN_CALL(FUNC(move), minus_roll.0) /* ( xu xu xu_1 ... x1 x0 &xu           ) */
         JUMP(  FUNC(store))                /* ( x0 xu xu_1 ... x1                  ) */
 FUNC_RAWEND(minus_roll)
 #endif
@@ -200,8 +200,8 @@ FUNC_START(two_roll)
         STOR(  DSTK,   AT(DSTK, -SZ3))     /* ( du ... d0 du &d0 u             ) */
         STOR(  REG1,   AT(DSTK, -SZ4))     /* ( du ... d0 du &d0 &d1 u         ) */
         SUB2(IMM(SZ4), DSTK)
-        ASM_CALL(      FUNC(move))         /* ( du_1 ... d0 d0 du              ) */
-        JUMP(          FUNC(two_nip))      /* ( du_1 ... d0 du                 ) */
+        TOKEN_CALL(FUNC(move), two_roll.0)   /* ( du_1 ... d0 d0 du              ) */
+        JUMP(    FUNC(two_nip))            /* ( du_1 ... d0 du                 ) */
 FUNC_RAWEND(two_roll)
 #endif
 
@@ -219,8 +219,8 @@ FUNC_START(minus_two_roll)
         STOR(  REG3,   AT(DSTK, -SZ4))     /* ( du ... d0 d0 &du &d1 u         ) */
         STOR(  DSTK,   AT(DSTK, -SZ5))     /* ( du ... d0 d0 &du &d1 &d0 u     ) */
         SUB2(IMM(SZ5), DSTK)
-        ASM_CALL(      FUNC(move))         /* ( du du ... d1 d0 &du            ) */
-        JUMP(          FUNC(two_store))    /* ( d0 du ... d1                   ) */
+        TOKEN_CALL(FUNC(move), minus_two_roll.0) /* ( du du ... d1 d0 &du            ) */
+        JUMP(    FUNC(two_store))              /* ( d0 du ... d1                   ) */
 FUNC_RAWEND(minus_two_roll)
 
 

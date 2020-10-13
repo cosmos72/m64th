@@ -36,7 +36,7 @@
  * callee-saved registers: %rbx %rbp %rsp %r12 %r13 %r14 %r15
  */
 #define REG0  %r10  /* scratch register 0 */
-#define REG1  %rbx  /* scratch register 1 */
+#define REG1  %rdi  /* scratch register 1 */
 #define REG2  %rcx  /* scratch register 2 */
 #define REG3  %rdx  /* scratch register 3 */
 #define REG4  %r8   /* scratch register 4 */
@@ -54,18 +54,18 @@
 #define REG0_uw %r10d /* zero-extend 32 bits into REG0 */
 #define REG0_ut %r10d /* zero-extend m4token into REG0 */
 
-#define REG1b   %bl  /* low  8 bits of REG1 */
-#define REG1h   %bx  /* low 16 bits of REG1 */
-#define REG1w   %ebx /* low 32 bits of REG1 */
-#define REG1t   %bx  /* (m4token)REG1       */
-#define REG1_sb %rbx /* sign-extend  8 bits into REG1 */
-#define REG1_sh %rbx /* sign-extend 16 bits into REG1 */
-#define REG1_sw %rbx /* sign-extend 32 bits into REG1 */
-#define REG1_st %rbx /* sign-extend m4token into REG1 */
-#define REG1_ub %ebx /* zero-extend  8 bits into REG1 */
-#define REG1_uh %ebx /* zero-extend 16 bits into REG1 */
-#define REG1_uw %ebx /* zero-extend 32 bits into REG1 */
-#define REG1_ut %ebx /* zero-extend m4token into REG1 */
+#define REG1b   %dil /* low  8 bits of REG1 */
+#define REG1h   %di  /* low 16 bits of REG1 */
+#define REG1w   %edi /* low 32 bits of REG1 */
+#define REG1t   %di  /* (m4token)REG1       */
+#define REG1_sb %rdi /* sign-extend  8 bits into REG1 */
+#define REG1_sh %rdi /* sign-extend 16 bits into REG1 */
+#define REG1_sw %rdi /* sign-extend 32 bits into REG1 */
+#define REG1_st %rdi /* sign-extend m4token into REG1 */
+#define REG1_ub %edi /* zero-extend  8 bits into REG1 */
+#define REG1_uh %edi /* zero-extend 16 bits into REG1 */
+#define REG1_uw %edi /* zero-extend 32 bits into REG1 */
+#define REG1_ut %edi /* zero-extend m4token into REG1 */
 
 #define REG2b   %cl  /* low  8 bits of REG2 */
 #define REG2h   %cx  /* low 16 bits of REG2 */
@@ -120,34 +120,35 @@
 #define DTOP_uw %eax  /* zero-extend 32 bits into DTOP */
 #define DTOP_ut %eax  /* zero-extend m4token into DTOP */
 
-#define RTOP    %rbp  /* value of first data stack element */
-#define RTOPb   %bpl  /* low  8 bits of RTOP */
-#define RTOPh   %bp   /* low 16 bits of RTOP */
-#define RTOPw   %ebp  /* low 32 bits of RTOP */
-#define RTOPt   %bp   /* (m4token)RTOP        */
-#define RTOP_sb %rbp  /* sign-extend  8 bits into RTOP */
-#define RTOP_sh %rbp  /* sign-extend 16 bits into RTOP */
-#define RTOP_sw %rbp  /* sign-extend 32 bits into RTOP */
-#define RTOP_st %rbp  /* sign-extend m4token into RTOP */
-#define RTOP_ub %ebp  /* zero-extend  8 bits into RTOP */
-#define RTOP_uh %ebp  /* zero-extend 16 bits into RTOP */
-#define RTOP_uw %ebp  /* zero-extend 32 bits into RTOP */
-#define RTOP_ut %ebp  /* zero-extend m4token into RTOP */
+#define RTOP    %rbx  /* value of first data stack element */
+#define RTOPb   %bl   /* low  8 bits of RTOP */
+#define RTOPh   %bx   /* low 16 bits of RTOP */
+#define RTOPw   %ebx  /* low 32 bits of RTOP */
+#define RTOPt   %bx   /* (m4token)RTOP        */
+#define RTOP_sb %rbx  /* sign-extend  8 bits into RTOP */
+#define RTOP_sh %rbx  /* sign-extend 16 bits into RTOP */
+#define RTOP_sw %rbx  /* sign-extend 32 bits into RTOP */
+#define RTOP_st %rbx  /* sign-extend m4token into RTOP */
+#define RTOP_ub %ebx  /* zero-extend  8 bits into RTOP */
+#define RTOP_uh %ebx  /* zero-extend 16 bits into RTOP */
+#define RTOP_uw %ebx  /* zero-extend 32 bits into RTOP */
+#define RTOP_ut %ebx  /* zero-extend m4token into RTOP */
 
-#define RFFF  %r11  /* always contains -1    */
-#define RFFFb %r11b /*  8 bits, all set to 1 */
-#define RFFFh %r11w /* 16 bits, all set to 1 */
-#define RFFFw %r11d /* 32 bits, all set to 1 */
-#define RFFFt %r11w /* (m4token)-1           */
+#define RFFF    %r11  /* always contains -1    */
+#define RFFFb   %r11b /*  8 bits, all set to 1 */
+#define RFFFh   %r11w /* 16 bits, all set to 1 */
+#define RFFFw   %r11d /* 32 bits, all set to 1 */
+#define RFFFt   %r11w /* (m4token)-1           */
 
 #define DSTK  %rsi  /* pointer to second data stack element             */
-#define RSTK  %rdi  /* pointer to second return stack element           */
+#define RSTK  %rsp  /* pointer to second return stack element           */
 #define LOCL  %r9   /* pointer to local variables (inside return stack) */
 #define M4TH  %r13  /* pointer to C struct field &m4th->user            */
 #define HERE  %r14  /* pointer to first available code/data location    */
 #define FTBL  %r12  /* pointer to table m4func[m4token] containing asm function addresses */
 #define IP    %r15  /* forth bytecode instruction pointer     */
 #define RIP   %rip  /* x86-64 instruction pointer             */
+#define VM    %rbp  /* pointer to '(vm)' bytecode interpreter */
 
 #define AND2(src, dst)        and  src,     dst;   /* dst &= src     */
 #define ADD2(src, dst)        add  src,     dst;   /* dst += src     */
@@ -191,15 +192,23 @@
 
 /* clang-format on */
 
-#define ASM_CALL_PREPARE()             /* no preparation needed */
-#define ASM_CALL_CLEANUP()             /* no cleanup needed */
-#define ASM_CALL_BODY(func) call func; /* raw/native assembly: call native code */
-#define ASM_CALL(func)                 /* raw/native assembly: call native code */                 \
-    ASM_CALL_PREPARE()                 /*                                       */                 \
-    ASM_CALL_BODY(func)                /*                                       */                 \
-    ASM_CALL_CLEANUP()
+#define ASM_CALL(func) ASM_CALL_BODY(func) /* raw/native assembly: call function        */
+#define ASM_CALL_BODY(func) call func;     /*                                           */
+#define ASM_RET() ret;                     /* raw/native assembly: return from function */
 
-#define ASM_RET() ret; /* raw/native assembly: return */
+#define TOKEN_CALL_PREPARE() /* prepare to call token from another token ______________________ */ \
+    RPUSH(VM)
+#define TOKEN_CALL_CLEANUP() /* cleanup after call token->token _______________________________ */ \
+    RPOP(VM)
+#define TOKEN_CALL_BODY(func, ret) /* actually call token->token ______________________________ */ \
+    ADDROF_1M(TO(ret), VM)                                                                         \
+    jmp func;                                                                                      \
+    LABEL(ret)
+
+#define TOKEN_CALL(func, ret)  /* call token from another token         */                         \
+    TOKEN_CALL_PREPARE()       /*                                       */                         \
+    TOKEN_CALL_BODY(func, ret) /*                                       */                         \
+    TOKEN_CALL_CLEANUP()
 
 #define JA(reg, val, label) /*  if reg u> val jump to label */                                     \
     cmp val, reg;                                                                                  \
@@ -267,41 +276,35 @@
 #define DPOP___DTOP()        /* drop, i.e. pop second data stack element into DTOP */              \
     lodsq /**/ (DSTK), DTOP; /* requires DSTK = %rsi, DTOP = %rax */
 
-#define RPUSH(reg) /* push reg to second return stack element */                                   \
-    STOR(reg, AT(RSTK, -SZ))                                                                       \
-    SUB2(IMM(SZ), RSTK)
+#define RPUSH(reg) /* push reg to second return stack element ________________________________ */  \
+    pushq reg;
 
-#define RPUSH2(reg1, reg2) /* push reg1, then reg2 to return stack */                              \
-    STOR(reg1, AT(RSTK, -SZ))                                                                      \
-    STOR(reg2, AT(RSTK, -SZ2))                                                                     \
-    SUB2(IMM(SZ2), RSTK)
+#define RPUSH2(reg1, reg2) /* push reg1, then reg2 to return stack ___________________________ */  \
+    RPUSH(reg1) RPUSH(reg2)
 
-#define RPOP(reg) /* pop second return stack element into reg */                                   \
-    LOAD(reg, AT(RSTK))                                                                            \
-    ADD2(IMM(SZ), RSTK)
+#define RPOP(reg) /* pop second return stack element into reg ________________________________ */  \
+    popq reg;
 
-#define RPOP2(reg1, reg2) /* pop 2nd, 3rd returndata stack elements into reg1, reg2 */             \
-    LOAD(reg1, AT(RSTK))                                                                           \
-    LOAD(reg2, AT(RSTK, SZ))                                                                       \
-    ADD2(IMM(SZ2), RSTK)
+#define RPOP2(reg1, reg2) /* pop 2nd, 3rd returndata stack elements into reg1, reg2 __________ */  \
+    RPOP(reg1) RPOP(reg2)
 
 #define NEXT0() /* jump to current instruction. useful after manually updating IP              */  \
-    ret;
+    jmp *VM;
 
 #define NEXT() /* jump to following instruction ______________________________________________ */  \
-    ret;
+    jmp *VM;
 
 #define NEXT2() /* skip 2 bytes, jump to following instruction */                                  \
     ADD2(IMM(2), IP)                                                                               \
-    ret;
+    jmp *VM;
 
 #define NEXT4() /* skip 4 bytes, jump to following instruction */                                  \
     ADD2(IMM(4), IP)                                                                               \
-    ret;
+    jmp *VM;
 
 #define NEXT8() /* skip 8 bytes, jump to following instruction */                                  \
     ADD2(IMM(8), IP)                                                                               \
-    ret;
+    jmp *VM;
 
 #define NEXTT() CAT2(NEXT, SZt)()   /* skip SZt bytes,   jump to following instruction */
 #define NEXTT2() CAT2(NEXT, SZt2)() /* skip SZt*2 bytes, jump to following instruction */

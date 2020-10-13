@@ -26,7 +26,7 @@
 FUNC_START(emit)
         LOAD(  REG1,   AT(M4TH, M4TH_OFF_OUT))         /* a = io                 */
         DPUSH( REG1)                                   /* dstk ( io ch         ) */
-        ASM_CALL(      FUNC(obuf_write_char))          /* dstk ( err           ) */
+        TOKEN_CALL(   FUNC(obuf_write_char), emit.0) /* dstk ( err           ) */
         DPOP___DTOP()                                  /* dstk (               ) */
 FUNC_END(emit)
 
@@ -136,7 +136,7 @@ FUNC_START(key)
 FUNC_END(key)
 
 
-/* obuf-write-char ( io ch -- ) write one char iobuf */
+/* obuf-write-char ( io ch -- err ) write one char iobuf */
 FUNC_START(obuf_write_char)
         LOAD(  REG1,   AT(DSTK))                       /* a = io                 */
         LOAD(  REG2,   AT(REG1, IOBUF_OFF_END))        /* b = io.end             */
@@ -159,11 +159,11 @@ LABEL(obuf_write_char.slow)
         ADDROF_4G( WORD_SYM(_obuf_flush_write_char_), REG2) /* b = word           */
         DPUSH__DTOP()                                  /* dstk ( io ch _        ) */
         ADDI(  REG2,   WORD_OFF_XT, DTOP)              /* dstk ( io ch xt       ) */
-        JUMP(  FUNC(_exec_xt_from_native_))            /* dstk ( err            ) */
-FUNC_RAWEND(obuf_write_char)
+        ASM_CALL(FUNC(_exec_xt_from_native_))          /* dstk ( err            ) */
+FUNC_END(obuf_write_char)
 
 
-/* obuf-write-string ( io c-addr u -- ) write string to iobuf */
+/* obuf-write-string ( io c-addr u -- err ) write string to iobuf */
 FUNC_START(obuf_write_string)
         LOAD(  REG1,   AT(DSTK, SZ))                   /* a = io                  */
         LOAD(  REG2,   AT(REG1, IOBUF_OFF_END))        /* b = io.end              */
@@ -181,7 +181,7 @@ FUNC_START(obuf_write_string)
         LOAD(  REG2,   AT(DSTK))                       /* b = c-addr              */
         STOR(  REG1,   AT(DSTK))                       /* ( io dst u            ) */
         STOR(  REG2,   AT(DSTK, SZ))                   /* ( c-addr dst u        ) */
-        ASM_CALL(      FUNC(cmove))                    /* (                     ) */
+        TOKEN_CALL(FUNC(cmove), obuf_write_string.0) /* (               ) */
         DPUSH__DTOP()                                  /* ( _                   ) */
         ZERO(  DTOP)                                   /* ( 0                   ) */
         NEXT0()
@@ -190,7 +190,7 @@ LABEL(obuf_write_string.slow)
         ADDROF_4G( WORD_SYM(_obuf_flush_write_string_), REG2) /* b = word           */
         DPUSH__DTOP()                                  /* dstk ( io c-addr u _    ) */
         ADDI(  REG2,   WORD_OFF_XT, DTOP)              /* dstk ( io c-addr u xt   ) */
-        JUMP(  FUNC(_exec_xt_from_native_))            /* dstk ( err              ) */
+        ASM_CALL(FUNC(_exec_xt_from_native_))          /* dstk ( err              ) */
 FUNC_END(obuf_write_string)
 
 
@@ -207,6 +207,6 @@ FUNC_START(type)
         LOAD(  REG2,   AT(DSTK))                       /* b = c-addr             */
         STOR(  REG1,   AT(DSTK))                       /* dstk ( io u          ) */
         DPUSH( REG2)                                   /* dstk ( io c-addr u   ) */
-        ASM_CALL(      FUNC(obuf_write_string))        /* dstk ( err           ) */
+        TOKEN_CALL(FUNC(obuf_write_string), type.0)  /* dstk ( err           ) */
         DPOP___DTOP()                                  /* dstk (               ) */
 FUNC_END(type)

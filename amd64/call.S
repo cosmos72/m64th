@@ -41,15 +41,26 @@ FUNC_START(th_run)
         ADDI(  %rdi,   M4TH_OFF_,  M4TH)          /* load m4th pointer               */
         STOR(  %rsp,   AT(M4TH, M4TH_OFF_C_REG0)) /* save C stack pointer            */
         LOAD(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))   /* load data   stack pointer       */
-        LOAD(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))   /* load return stack pointer       */
+
+        /* changing %rsp to different stack breaks google-pprof: */
+        /* do it only if requested i.e. m4th->rstack.curr != 0   */
+        LOAD(  REG1,   AT(M4TH, M4TH_OFF_RSTK))   /* load return stack pointer       */
+        test   REG1,   REG1;
+        cmovne REG1,   RSTK;
+        JNZ(   REG1,   TO(th_run.stack_done))
+LABEL(th_run.stack_c)
+        MOVE(  RSTK,   AT(M4TH, M4TH_OFF_REND))
+
+LABEL(th_run.stack_done)
         LOAD(  LOCL,   AT(M4TH, M4TH_OFF_LOCL))   /* load local variables pointer    */
         LOAD(  IP,     AT(M4TH, M4TH_OFF_IP))     /* load instruction  pointer       */
         LOAD(  FTBL,   AT(M4TH, M4TH_OFF_FTABLE)) /* load table m4token -> m4func    */
+        LOAD(  VM,     AT(M4TH, M4TH_OFF_VM))     /* load VM pointer                 */
         LOAD(  HERE,   AT(M4TH, M4TH_OFF_HERE))   /* load HERE pointer               */
         DPOP___DTOP()                             /* load first data   stack element */
         RPOP(  RTOP)                              /* load first return stack element */
-        MOVE(  IMM(-1),RFFF)                      /* set RFFF to -1                  */
-        jmp    FUNC(_vm_);                        /* enter vm loop                   */
+        RPUSH(IMM(-1)) RPOP(RFFF)                 /* set RFFF = -1                   */
+        NEXT0()                                   /* enter vm loop                   */
 FUNC_RAWEND(th_run)
 
 
@@ -58,8 +69,7 @@ FUNC_START(_vm_)
         /* cannot use REG1..REG4: they are used by c-arg-[N] */
         LD_ut( REG0,   AT(IP))         /* load m4token of current vm instruction */
         ADD2(IMM(SZt), IP)             /* increment vm IP                        */
-        call *(FTBL,   REG0,   SZ);    /* execute vm instruction                 */
-        jmp    FUNC(_vm_);             /* loop                                   */
+        jmp  *(FTBL,   REG0,   SZ);    /* execute vm instruction                 */
 FUNC_RAWEND(_vm_)
 
 
@@ -72,128 +82,144 @@ FUNC_RAWEND(_vm_)
 FUNC_START(bye)
         RPUSH( RTOP)                              /* save first return stack element */
         DPUSH__DTOP()                             /* save first data   stack element */
-        STOR(  HERE,   AT(M4TH, M4TH_OFF_HERE))   /* save HERE pointer               */
-        STOR(  FTBL,   AT(M4TH, M4TH_OFF_FTABLE)) /* save table m4token -> m4func    */
-        STOR(  IP,     AT(M4TH, M4TH_OFF_IP))     /* save instruction  pointer       */
         STOR(  LOCL,   AT(M4TH, M4TH_OFF_LOCL))   /* save local variables pointer    */
-        STOR(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))   /* save return stack pointer       */
+        STOR(  IP,     AT(M4TH, M4TH_OFF_IP))     /* save instruction  pointer       */
+        STOR(  FTBL,   AT(M4TH, M4TH_OFF_FTABLE)) /* save table m4token -> m4func    */
+        STOR(  VM,     AT(M4TH, M4TH_OFF_VM  ))   /* save VM   address               */
+        STOR(  HERE,   AT(M4TH, M4TH_OFF_HERE))   /* save HERE pointer               */
+
+        LOAD(  REG1,   AT(M4TH, M4TH_OFF_RSTK))   /* load return stack pointer       */
+        test   REG1,   REG1;
+        /* if m4th->rstack.curr != 0, forth return stack is dedicated memory         */
+        /* then save RSTK AT(M4TH, M4TH_OFF_RSTK)                                    */
+        /* else write zero AT(M4TH, M4TH_OFF_REND)                                   */
+        ADDI(  M4TH,   M4TH_OFF_RSTK, REG2)       /* RSTK should be saved here       */
+        ADDI(  M4TH,   M4TH_OFF_REND, REG3)       /* REND should be saved here       */
+        cmovnz RSTK,   REG1;
+        cmovnz REG2,   REG3;
+        STOR(  REG1,   AT(REG3))       /* save RSTK, or zero AT(M4TH, M4TH_OFF_REND) */
+
         STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))   /* save data   stack pointer       */
-        /*
-         * TODO: this discards the call stack of native forth code
-         *       executed since m4th_run(). how to preserve it?
-         */
-        LOAD(  %rsp,   AT(M4TH, M4TH_OFF_C_REG0))  /* load C stack pointer            */
-        LOAD(  %rax,   AT(M4TH, M4TH_OFF_EX))      /* load return value = m4th.ex     */
-        pop    %r15;                               /* load C registers                */
+        LOAD(  %rsp,   AT(M4TH, M4TH_OFF_C_REG0)) /* load C stack pointer            */
+        LOAD(  %rax,   AT(M4TH, M4TH_OFF_EX))     /* load return value = m4th.ex     */
+        pop    %r15;                              /* load C registers                */
         pop    %r14;
         pop    %r13;
         pop    %r12;
         pop    %rbx;
         pop    %rbp;
-        ret;                       /* return to C                     */
+        ret;                                      /* return to C                     */
 FUNC_RAWEND(bye)
 
 
 /* pop 0 args, prepare for C function call */
 FUNC_START(_c_arg_0_)
         SUB2(  IMM(SZ),DSTK)
-        STOR(  LOCL,   AT(M4TH, M4TH_OFF_LOCL))   /* save locl = %r9  (clobbered)  */
-        STOR(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))   /* save rstk = %rsi (clobbered)  */
-        STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))   /* save dstk = %rdi (clobbered)  */
-        STOR(  DTOP,   AT(DSTK))                  /* will be reloaded by c-ret-[N] */
+        /* save DSTK, LOCL to return stack. we could instead save them               */
+        /* into struct m4th, but that would break calls from C back into forth       */
+        RPUSH( LOCL)                               /* save LOCL = %r9  (clobbered)   */
+        RPUSH( DSTK)                               /* save DSTK = %rsi (clobbered)   */
+        STOR(  DTOP,   AT(DSTK))                   /* will be reloaded by c-ret-[N]  */
 FUNC_END(_c_arg_0_)
 
 
 /* pop 1 arg, prepare it for C function call */
 FUNC_START(_c_arg_1_)
-        STOR(  LOCL,   AT(M4TH, M4TH_OFF_LOCL))   /* save locl = %r9  (clobbered)  */
-        STOR(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))   /* save rstk = %rdi = C arg1 */
-        STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))   /* save dstk = %rsi (clobbered) */
-        MOVE(  DTOP,   %rdi)                      /* %rdi = C arg 1 (clobbers RSTK) */
+        RPUSH( LOCL)                               /* save LOCL = %r9  (clobbered)   */
+        RPUSH( DSTK)                               /* save DSTK = %rsi (clobbered)   */
+        MOVE(  DTOP,   %rdi)                       /* %rdi = C arg 1                 */
 FUNC_END(_c_arg_1_)
 
 
 /* pop 2 args, prepare them for C function call */
 FUNC_START(_c_arg_2_)
         ADD2(  IMM(SZ), DSTK)
-        STOR(  LOCL,   AT(M4TH, M4TH_OFF_LOCL))   /* save locl = %r9  (clobbered)  */
-        STOR(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))   /* save rstk = %rdi = C arg1 */
-        STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))   /* save dstk = %rsi = C arg2 */
-        LOAD(  %rdi,   AT(DSTK, -SZ))             /* %rdi = C arg 1 (clobbers RSTK) */
-        MOVE(  DTOP,   %rsi)                      /* %rsi = C arg 2 (clobbers DSTK) */
+        RPUSH( LOCL)                               /* save LOCL = %r9  (clobbered)   */
+        RPUSH( DSTK)                               /* save DSTK = %rsi = C arg 2     */
+        LOAD(  %rdi,   AT(DSTK, -SZ))              /* %rdi = C arg 1                 */
+        MOVE(  DTOP,   %rsi)                       /* %rsi = C arg 2 (clobbers DSTK) */
 FUNC_END(_c_arg_2_)
 
 
 /* pop 3 args, prepare them for C function call */
 FUNC_START(_c_arg_3_)
         ADD2(  IMM(SZ2), DSTK)
-        STOR(  LOCL,   AT(M4TH, M4TH_OFF_LOCL))   /* save locl = %r9  (clobbered)  */
-        STOR(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))   /* save rstk = %rdi = C arg1 */
-        STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))   /* save dstk = %rsi = C arg2 */
-        MOVE(  DTOP,   %rdx)                      /* %rdx = C arg 3 */
-        LOAD(  %rdi,   AT(DSTK, -SZ))             /* %rdi = C arg 1 (clobbers RSTK) */
-        LOAD(  %rsi,   AT(DSTK, -SZ2))            /* %rsi = C arg 2 (clobbers DSTK) */
+        RPUSH( LOCL)                               /* save LOCL = %r9  (clobbered)   */
+        RPUSH( DSTK)                               /* save DSTK = %rsi = C arg 2     */
+        MOVE(  DTOP,   %rdx)                       /* %rdx = C arg 3                 */
+        LOAD(  %rdi,   AT(DSTK, -SZ))              /* %rdi = C arg 1                 */
+        LOAD(  %rsi,   AT(DSTK, -SZ2))             /* %rsi = C arg 2 (clobbers DSTK) */
 FUNC_END(_c_arg_3_)
 
 
 /* pop 4 args, prepare them for C function call */
 FUNC_START(_c_arg_4_)
         ADD2(  IMM(SZ3), DSTK)
-        STOR(  LOCL,   AT(M4TH, M4TH_OFF_LOCL))   /* save locl = %r9  (clobbered)  */
-        STOR(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))   /* save rstk = %rdi = C arg1 */
-        STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))   /* save dstk = %rsi = C arg2 */
-        MOVE(  DTOP,   %rcx)                      /* %rcx = C arg 4 */
-        LOAD(  %rdx,   AT(DSTK, -SZ3))            /* %rdx = C arg 3 */
-        LOAD(  %rdi,   AT(DSTK, -SZ))             /* %rdi = C arg 1 (clobbers RSTK) */
-        LOAD(  %rsi,   AT(DSTK, -SZ2))            /* %rsi = C arg 2 (clobbers DSTK) */
+        RPUSH( LOCL)                               /* save LOCL = %r9  (clobbered)   */
+        RPUSH( DSTK)                               /* save DSTK = %rsi = C arg 2     */
+        MOVE(  DTOP,   %rcx)                       /* %rcx = C arg 4                 */
+        LOAD(  %rdx,   AT(DSTK, -SZ3))             /* %rdx = C arg 3                 */
+        LOAD(  %rdi,   AT(DSTK, -SZ))              /* %rdi = C arg 1                 */
+        LOAD(  %rsi,   AT(DSTK, -SZ2))             /* %rsi = C arg 2 (clobbers DSTK) */
 FUNC_END(_c_arg_4_)
 
 
 /* pop 5 args, prepare them for C function call */
 FUNC_START(_c_arg_5_)
         ADD2(  IMM(SZ4), DSTK)
-        STOR(  LOCL,   AT(M4TH, M4TH_OFF_LOCL))   /* save locl = %r9  (clobbered)  */
-        STOR(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))   /* save rstk = %rdi = C arg1 */
-        STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))   /* save dstk = %rsi = C arg2 */
-        MOVE(  DTOP,   %r8)                       /* %r8  = C arg 5 */
-        LOAD(  %rcx,   AT(DSTK, -SZ4))            /* %rcx = C arg 4 */
-        LOAD(  %rdx,   AT(DSTK, -SZ3))            /* %rdx = C arg 3 */
-        LOAD(  %rdi,   AT(DSTK, -SZ))             /* %rdi = C arg 1 (clobbers RSTK) */
-        LOAD(  %rsi,   AT(DSTK, -SZ2))            /* %rsi = C arg 2 (clobbers DSTK) */
+        RPUSH( LOCL)                               /* save LOCL = %r9  (clobbered)   */
+        RPUSH( DSTK)                               /* save DSTK = %rsi = C arg 2     */
+        LOAD(  %rcx,   AT(DSTK, -SZ4))             /* %rcx = C arg 4                 */
+        LOAD(  %rdx,   AT(DSTK, -SZ3))             /* %rdx = C arg 3                 */
+        LOAD(  %rdi,   AT(DSTK, -SZ))              /* %rdi = C arg 1                 */
+        LOAD(  %rsi,   AT(DSTK, -SZ2))             /* %rsi = C arg 2 (clobbers DSTK) */
 FUNC_END(_c_arg_5_)
 
 
 /* pop 6 args, prepare them for C function call */
 FUNC_START(_c_arg_6_)
         ADD2(  IMM(SZ5), DSTK)
-        STOR(  LOCL,   AT(M4TH, M4TH_OFF_LOCL))   /* save locl = %r9  = C arg6 */
-        STOR(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))   /* save rstk = %rdi = C arg1 */
-        STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))   /* save dstk = %rsi = C arg2 */
-        MOVE(  DTOP,   %r9)                       /* %r9  = C arg 6 */
-        LOAD(  %r8,    AT(DSTK, -SZ5))            /* %r8  = C arg 5 */
-        LOAD(  %rcx,   AT(DSTK, -SZ4))            /* %rcx = C arg 4 */
-        LOAD(  %rdx,   AT(DSTK, -SZ3))            /* %rdx = C arg 3 */
-        LOAD(  %rdi,   AT(DSTK, -SZ))             /* %rdi = C arg 1 (clobbers RSTK) */
-        LOAD(  %rsi,   AT(DSTK, -SZ2))            /* %rsi = C arg 2 (clobbers DSTK) */
+        RPUSH( LOCL)                               /* save LOCL = %r9  (clobbered)   */
+        RPUSH( DSTK)                               /* save DSTK = %rsi = C arg 2     */
+        MOVE(  DTOP,   %r9)                        /* %r9  = C arg 6                 */
+        LOAD(  %r8,    AT(DSTK, -SZ5))             /* %r8  = C arg 5                 */
+        LOAD(  %rcx,   AT(DSTK, -SZ4))             /* %rcx = C arg 4                 */
+        LOAD(  %rdx,   AT(DSTK, -SZ3))             /* %rdx = C arg 3                 */
+        LOAD(  %rdi,   AT(DSTK, -SZ))              /* %rdi = C arg 1                 */
+        LOAD(  %rsi,   AT(DSTK, -SZ2))             /* %rsi = C arg 2 (clobbers DSTK) */
 FUNC_END(_c_arg_6_)
 
 
 /* must be followed by C function address. call it. */
 FUNC_START(_c_call_)
-        /* do not restore %rsp, it would clobber our call stack */
+        LOAD(  REG0,   AT(M4TH, M4TH_OFF_RSTK))
+        JZ(    REG0,   TO(_c_call_.stack_c))
+
+        /* m4th->rstack.curr != 0 thus RSTK i.e. %rsp points to private memory:      */
+        /* update %rsp before call, and restore it after call                        */
+        STOR(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))
+        LOAD(  %rsp,   AT(M4TH, M4TH_OFF_C_REG0))
         call   *AT(IP);
-        ADD2(  IMM(SZ),IP)                         /* skip C function address */
+        LOAD(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))
+        JUMP(  TO(_c_call_.finish))
+
+LABEL(_c_call_.stack_c)
+        /* m4th->rstack.curr == 0 thus RSTK i.e. %rsp points to C stack:             */
+        /* nothing to fix                                                            */
+        call   *AT(IP);
+
+LABEL(_c_call_.finish)
+        ADD2(  IMM(SZ),IP)                         /* skip C function address        */
         /*
          * C functions can clobber %rdi %rsi %rdx %rcx %r8 %r9 %r10 %r11
-         * i.e our RSTK DSTK REG3 REG2 REG4 LOCL REG0 RFFF
+         * i.e our REG1 DSTK REG3 REG2 REG4 LOCL REG0 RFFF
          * and write their results in %rax %rdx
          * i.e. our DTOP REG3
-         * we need to restore only: DSTK RSTK LOCL RFFF
+         * we need to restore only: DSTK LOCL RFFF
          */
-        LOAD(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))    /* reload DSTK = %rsi */
-        LOAD(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))    /* reload RSTK = %rdi */
-        LOAD(  LOCL,   AT(M4TH, M4TH_OFF_LOCL))    /* reload LOCL = %9   */
-        MOVE(  IMM(-1),RFFF)                       /* reload RFFF = %r10 */
+        RPOP(  DSTK)                               /* reload DSTK = %rsi             */
+        RPOP(  LOCL)                               /* reload LOCL = %r9              */
+        RPUSH(IMM(-1)) RPOP(RFFF)                  /* set RFFF = -1                  */
 FUNC_END(_c_call_)
 
 
@@ -206,7 +232,7 @@ FUNC_END(_c_ret_0_)
 
 /* push 1 value  returned by C function call */
 FUNC_START(_c_ret_1_)
-        /*MOVE(  %rax,   DTOP)*/   /* result is already in DTOP = %rax */
+        /*MOVE(  %rax,   DTOP)*/                   /* result is already in DTOP = %rax */
 FUNC_END(_c_ret_1_)
 
 
@@ -220,22 +246,47 @@ FUNC_END(_c_ret_2_)
 /** must be followed by address of native forth code. call it. */
 FUNC_START(_call_native_)
         LOAD(  REG1,   AT(IP))
-        ADD2(  IMM(SZ),IP)         /* skip native function address  */
+        ADD2(IMM(SZ),  IP)         /* skip native function address                */
+        RPUSH(  VM)                /* native code ends with ASM_RET(),            */
+                                   /* which pops address at %rsp and jumps to it  */
         jmp    *REG1;              /* tail-call optimization: jump to native code */
 FUNC_RAWEND(_call_native_)
 
 
 /** pop m4token from dstack and call it. works only for tokens with native_len != -1 */
 FUNC_START(_exec_token_)
-        /* FIXME this assumes SZt = 2 */
-        movzwl DTOPt,  REG3_ut;    /* a = m4token                   */
-        DPOP___DTOP()              /* reload dstack top             */
+        LD_ut( REG3,   DTOPt);     /* c = m4token                           */
+        DPOP___DTOP()              /* reload dstack top                     */
         jmp    *(FTBL, REG3, SZ);  /* tail-call optimization: jump to token */
 FUNC_RAWEND(_exec_token_)
 
 
+/**
+ * pop XT from dstack and call it.
+ * This function is called from native code with ASM_CALL()
+ * => use ASM_RET() to return
+ */
+FUNC_START(_exec_xt_from_native_)
+    RPUSH( IP)                 /* save IP                           */
+    RPUSH( VM)                 /* save VM                           */
+    LOAD(  VM, AT(M4TH, M4TH_OFF_VM))  /* set VM   = m4th->vm       */
+    ADDROF_1M(TO(_exec_xt_from_native_.vm_code), IP)
+
+    /* enter '(vm)' interpreter, let token 'execute' pop dtop = xt  */
+    /* pushes return address to stack,                              */
+    /* it will be popped by (return-to-native)                      */
+    call  *VM;
+
+    RPOP(  VM)                 /* load VM                           */
+    RPOP(  IP)                 /* load IP                           */
+    ASM_RET()
+WORD_CODE_ALIGN()
+LABEL(_exec_xt_from_native_.vm_code)
+    WORD_CODE_TOKENS(execute, _return_to_native_)
+FUNC_RAWEND(_exec_xt_from_native_)
+
+
 /* return to native code */
 FUNC_START(_return_to_native_)
-        ADD2(  IMM(SZ),%rsp)       /* skip return address, it's inside _vm_ */
-        ASM_RET()                  /* return to caller of _vm_ - usually _exec_xt_from_native_ */
+    ASM_RET()
 FUNC_RAWEND(_return_to_native_)

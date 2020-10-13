@@ -36,13 +36,10 @@
  */
 FUNC_START(do_i_plus_loop)
         /* do */
-        SUB2( IMM(SZ2),RSTK)           /* update rstack pointer */
-        LOAD(  REG1,   AT(DSTK))       /* REG1 = i'             */
-        STOR(  RTOP,   AT(RSTK, SZ))   /* save RTOP             */
-        MOVE(  DTOP,   RTOP)           /* RTOP = i              */
-        STOR(  REG1,   AT(RSTK))       /* save i' to rstack     */
-        LOAD(  DTOP,   AT(DSTK, SZ))   /* reload dstack top     */
-        ADD2( IMM(SZ2),DSTK)           /* update dstack pointer */
+        RPUSH( RTOP)                 /* save rtop             */
+        MOVE(  DTOP,   RTOP)         /* rtop = i              */
+        DPOP2( REG1,   DTOP)         /* a = i', reload dtop   */
+        RPUSH( REG1)                 /* rpush i'              */
 ASM_ALIGN(3) /* *much* faster at least on x86-64 */
 LABEL(test_sum_forth.iter)
         /* i_plus */
@@ -112,12 +109,18 @@ FUNC_START(test_crc_plus_native_forth)
         XOR2(  AT(DSTK),   DTOP)
         ADD2(  IMM(8), DSTK)
 #else
-	DPOP(  REG1)
+        DPOP(  REG1)
         XOR2(  REG1,   DTOP)
 #endif
-FUNC_END(test_crc_plus_native_forth)
+        /* this pretends to be native code: */
+        /* called with ASM_CALL(), must return with ASM_RET() */
+        ASM_RET()
+FUNC_RAWEND(test_crc_plus_native_forth)
 
 
 FUNC_START(test_exec_xt_from_native)
-        ASM_CALL(      FUNC(_exec_xt_from_native_))
-FUNC_END(test_exec_xt_from_native)
+        ASM_CALL(FUNC(_exec_xt_from_native_))
+        /* this pretends to be native code: */
+        /* called with ASM_CALL(), must return with ASM_RET() */
+        ASM_RET()
+FUNC_RAWEND(test_exec_xt_from_native)

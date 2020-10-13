@@ -314,14 +314,14 @@ WORD_START(_hashmap_entry_fetch_int_, _exec_xt_from_native_)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
     WORD_CODE(
-        _lit_, T(M4HASH_MAP_ENTRY_SIZE_INT), times, plus,  /* ( vec'         )           */
+        _lit_, T(M4HASHMAP_ENTRY_SIZE_INT), times, plus,  /* ( vec'         )           */
         dup_to_r,                                          /* ( vec          ) (R: vec ) */
                                                            /* ( key          ) (R: vec ) */
-        _lit_, T(M4HASH_MAP_ENTRY_OFF_KEY_INT), plus, int_fetch,
+        _lit_, T(M4HASHMAP_ENTRY_OFF_KEY_INT), plus, int_fetch,
                                                            /* ( key val      ) (R: vec ) */
-        _lit_, T(M4HASH_MAP_ENTRY_OFF_VAL_INT), r_fetch, plus, fetch,
+        _lit_, T(M4HASHMAP_ENTRY_OFF_VAL_INT), r_fetch, plus, fetch,
                                                            /* ( key val next )           */
-        _lit_, T(M4HASH_MAP_ENTRY_OFF_NEXT_INT), r_from, plus, int_fetch,
+        _lit_, T(M4HASHMAP_ENTRY_OFF_NEXT_INT), r_from, plus, int_fetch,
         exit
     )
 WORD_END(_hashmap_entry_fetch_int_)
@@ -335,10 +335,10 @@ WORD_START(_hashmap_indexof_int_, _hashmap_entry_fetch_int_)
     WORD_CODE(
         /* return (hash ^ (hash >> lcap)) & (cap - 1); */
         crc_cell, swap,                                /* ( hash map                    ) */
-#if M4HASH_MAP_OFF_LCAP_INT == 4
+#if M4HASHMAP_OFF_LCAP_INT == 4
         four_plus,
 #else
-        _lit_, T(M4HASH_MAP_OFF_LCAP_INT), plus,       /* ( hash &map.lcap              ) */
+        _lit_, T(M4HASHMAP_OFF_LCAP_INT), plus,       /* ( hash &map.lcap              ) */
 #endif
         int_fetch, one, over, lshift, one_minus,       /* ( hash lcap cap-1             ) */
         minus_rot, trail,                              /* ( cap-1 hash hash lcap        ) */
@@ -435,7 +435,7 @@ WORD_START(_lit_xt_, _lit8s_)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZ | M4FLAG_INLINE_ALWAYS)
-    WORD_CODE(LIT_XT(noop), exit)
+    WORD_CODE(_lit_xt_, XT(noop), exit)
 WORD_END(_lit_xt_)
 WORD_START(_lit_string_, _lit_xt_)
     WORD_DSTACK(0,2)
@@ -749,7 +749,9 @@ WORD_START(_optimize_2token_, _optimize_2_)
     WORD_DATA_START(_optimize_2token_)
 #define H2_START(size, lcap) WORD_DATA_INTS(size, lcap) WORD_DATA_CELLS(.+ 8)
 #define H2_ENTRY(key, val, next) WORD_DATA_CELLS(val) WORD_DATA_INTS(key, next)
-      OPT2_HASH_MAP(H2_START, H2_ENTRY)
+      OPT2_HASHMAP(H2_START, H2_ENTRY)
+#undef H2_START
+#undef H2_ENTRY
     WORD_DATA_END(_optimize_2token_)
 WORD_END(_optimize_2token_)
 /* ( src-addr dst-addr -- src-addr' dst-addr' t|f ) optimize token triplets being compiled */
@@ -767,7 +769,9 @@ WORD_START(_optimize_3token_, _optimize_2token_)
     WORD_DATA_START(_optimize_3token_)
 #define H3_START(size, lcap) WORD_DATA_CELLS(size, lcap, .+ 8)
 #define H3_ENTRY(key, val, next) WORD_DATA_CELLS(val, key, next)
-      OPT3_HASH_MAP(H3_START, H3_ENTRY)
+      OPT3_HASHMAP(H3_START, H3_ENTRY)
+#undef H3_START
+#undef H3_ENTRY
     WORD_DATA_END(_optimize_3token_)
 WORD_END(_optimize_3token_)
 /* ( x -- token t | x f ) try to optimize '[ x ] literal' */
@@ -814,7 +818,7 @@ WORD_START(_compile_jump_, _check_lit_)
     WORD_DSTACK(2,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE() /* uses IP-relative ASM_CALL(), cannot inline in native code */
+    WORD_NATIVE_NONE() /* uses IP-relative TOKEN_CALL(), cannot inline in native code */
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE)
     WORD_CODE(_compile_jump_, exit)
 WORD_END(_compile_jump_)
@@ -827,7 +831,7 @@ WORD_START(_compile_jump_lit_, _compile_jump_)
     WORD_DSTACK(0,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE() /* consumes IP and uses IP-relative ASM_CALL(), cannot inline in native code */
+    WORD_NATIVE_NONE() /* consumes IP and uses IP-relative TOKEN_CALL(), cannot inline in native code */
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt2 | M4FLAG_INLINE_ALWAYS)
     WORD_CODE(_compile_jump_lit_, T(-1), T(-1), exit)
 WORD_END(_compile_jump_lit_)

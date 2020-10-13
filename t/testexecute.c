@@ -69,14 +69,26 @@ static const m4token testdata_any[] = {
 void m4ftest_crc_plus_native_forth(m4arg _); /* implemented in generic_asm/test.S */
 void m4ftest_exec_xt_from_native(m4arg _);   /* implemented in generic_asm/test.S */
 
+#define _1e9 ((m4cell)1000000000)
+
 static m4testexecute testexecute_a[] = {
 #if 0
-    {"1e9 0 do loop", {m4do, m4_loop_, T(-2), m4bye}, {{2, {1e9, 0}}, {}}, {{}, {}}, {}},
+    {"1e9 0 do i+ loop",
+     {m4do, m4i_plus, m4_loop_, T(-3), m4bye},
+     {{3, {0, _1e9, 0}}, {}},
+     {{1, {_1e9 * (_1e9 - 1) / 2}}, {}},
+     {}},
+#elif 0
+    {"1e9 0 do-i+-loop",
+     {m4do_i_plus_loop, m4bye},
+     {{3, {0, _1e9, 0}}, {}},
+     {{1, {_1e9 * (_1e9 - 1) / 2}}, {}},
+     {}},
 #elif 0
     {"1e6 0 do wordlist-find loop",
      {m4do, m4j, CALL(wordlist_find), m4_loop_, T(-3 - callsz), m4bye},
-     {{4, {(m4cell) "foo", 3, 1e6, 0}}, {1, {(m4cell)&m4wordlist_forth}}},
-     {{2, {(m4cell) "foo", 3}}, {1, {(m4cell)&m4wordlist_forth}}},
+     {{4, {(m4cell) "dup", 3, 1e6, 0}}, {1, {(m4cell)&m4wordlist_forth}}},
+     {{2, {(m4cell) "dup", 3}}, {1, {(m4cell)&m4wordlist_forth}}},
      {}},
 #elif 0
     {"1e8 0 do over crc+ loop nip",
@@ -567,8 +579,6 @@ static m4testexecute testexecute_d[] = {
      {{2, {(m4cell) "immediate", 9}}, {}},
      {{1, {0x5ecabe1c /* m4th_crc_string("immediate", 9)*/}}, {}},
      {}},
-    {"(call-native) nop", {m4_call_native_, CELL(m4fnoop), m4bye}, {{}, {}}, {{}, {}}, {}},
-    {"(call-native) two", {m4_call_native_, CELL(m4ftwo), m4bye}, {{}, {}}, {{1, {2}}, {}}, {}},
     {"(call-native) crc+-native-forth",
      {m4_call_native_, CELL(m4ftest_crc_plus_native_forth), m4bye},
      {{2, {0xffffffff, 't'}}, {}},
@@ -1457,6 +1467,10 @@ static void m4th_testexecute_bunch(m4th *m, m4testexecute bunch[], m4cell n, m4t
     m4cell i, fail = 0;
     for (i = 0; i < n; i++) {
         m4code_pair code_pair = m4testexecute_init(&bunch[i], &countedcode_pair);
+#undef M4TH_TEST_VERBOSE
+#ifdef M4TH_TEST_VERBOSE
+        fprintf(out, "%s\n", bunch[i].name);
+#endif
         if (!m4testexecute_run(m, &bunch[i], &code_pair)) {
             fail++, m4testexecute_failed(m, &bunch[i], &code_pair, out);
         }

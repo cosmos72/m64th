@@ -31,40 +31,47 @@
  * execute m4th->code.start[0] and subsequent instructions until m4bye is found.
  */
 FUNC_START(th_run)
-        SUB2(  IMM(SZ10), sp)                   /* save C registers                */
-                                                /* not clobbered: x18 x19 x29      */
-        stp    x20,  x21,  AT(sp);
-        stp    x22,  x23,  AT(sp, SZ2);
-        stp    x24,  x25,  AT(sp, SZ4);
-        stp    x26,  x27,  AT(sp, SZ6);
-        stp    x28,  lr,   AT(sp, SZ8);         /* save LR register (return addr)  */
+        stp    x29,  lr,   AT(sp, -SZ12)!;      /* make space for C registers on stack */
+	.cfi_def_cfa_offset SZ12
+	.cfi_offset 29, -SZ12
+	.cfi_offset 30, -SZ11
+        MOVE(  sp,   x29)                       /* update x29: helps debuggers     */
+        stp    x19,  x20,  AT(sp, SZ2);         /* save C registers                */
+        stp    x21,  x22,  AT(sp, SZ4);         /* not clobbered: x18              */
+        stp    x23,  x24,  AT(sp, SZ6);
+        stp    x25,  x26,  AT(sp, SZ8);
+        stp    x27,  x28,  AT(sp, SZ10);
         ADDI(  x0,   M4TH_OFF_,  M4TH)          /* load m4th pointer               */
-        MOVE(  sp,   REG1)
-        STOR(  REG1, AT(M4TH, M4TH_OFF_C_REG0)) /* save C stack pointer            */
+        STOR(  x29,  AT(M4TH, M4TH_OFF_C_REG0)) /* save C stack pointer            */
         LOAD(  DSTK, AT(M4TH, M4TH_OFF_DSTK))   /* load data   stack pointer       */
+
+        /* if m4th->rstack.curr == 0, no dedicated forth return stack is available */
+        /* => use C stack as forth return stack                                    */
         LOAD(  RSTK, AT(M4TH, M4TH_OFF_RSTK))   /* load return stack pointer       */
+        JNZ(   RSTK, TO(th_run.stack_done))
+LABEL(th_run.stack_c)
+        MOVE(  x29,  RSTK)
+        STOR(  x29,  AT(M4TH, M4TH_OFF_REND))
+
+LABEL(th_run.stack_done)
         LOAD(  LOCL, AT(M4TH, M4TH_OFF_LOCL))   /* load local variables pointer    */
         LOAD(  IP,   AT(M4TH, M4TH_OFF_IP))     /* load instruction  pointer       */
         LOAD(  FTBL, AT(M4TH, M4TH_OFF_FTABLE)) /* load table m4token -> m4func    */
+        LOAD(  VM,   AT(M4TH, M4TH_OFF_VM))     /* load VM pointer                 */
         LOAD(  HERE, AT(M4TH, M4TH_OFF_HERE))   /* load HERE pointer               */
         DPOP___DTOP()                           /* load first data   stack element */
         RPOP(  RTOP)                            /* load first return stack element */
-        b      TO(_vm_.loop)             /* enter vm loop, without saving LR again */
+        NEXT0()                                 /* enter vm loop                   */
 FUNC_RAWEND(th_run)
 
 
 /** forth vm main loop: fetch m4token instructions and execute them */
 FUNC_START(_vm_)
-        RPUSH( RTOP)
-        MOVE(  lr,     RTOP)              /* save LR. needed by (return-from-native) */
-FUNC_ALIGN()
-LABEL(_vm_.loop)
         /* cannot use x0..x8 here: they are used by c-arg-[N] and c-ret-[N] */
         ldrh   w9,     AT(IP), SZt;        /* load m4token of current vm instruction */
                                            /* then increment vm IP                   */
         LOAD(  x9,     AT(FTBL, x9, SZ))   /* load m4func of current vm instruction  */
-        blr    x9;                         /* execute vm instruction                 */
-        JUMP(          TO(_vm_.loop))      /* loop                                   */
+        br     x9;                         /* execute vm instruction                 */
 FUNC_RAWEND(_vm_)
 
 /**
@@ -77,24 +84,32 @@ FUNC_START(bye)
         RPUSH( RTOP)                            /* save first return stack element */
         DPUSH__DTOP()                           /* save first data   stack element */
         STOR(  HERE, AT(M4TH, M4TH_OFF_HERE))   /* save HERE pointer               */
+        STOR(  VM,   AT(M4TH, M4TH_OFF_VM))     /* save VM pointer                 */
         STOR(  FTBL, AT(M4TH, M4TH_OFF_FTABLE)) /* save table m4token -> m4func    */
         STOR(  IP,   AT(M4TH, M4TH_OFF_IP))     /* save instruction  pointer       */
         STOR(  LOCL, AT(M4TH, M4TH_OFF_LOCL))   /* save local variables pointer    */
-        STOR(  RSTK, AT(M4TH, M4TH_OFF_RSTK))   /* save return stack pointer       */
+
+        /* if m4th->rstack.curr == 0, no forth return stack is available           */
+        /* => we used C stack as forth return stack                                */
+        LOAD(  REG1, AT(M4TH, M4TH_OFF_RSTK))
+        cmp    REG1, IMM(0);
+        csel   RSTK, REG1, RSTK, eq;
+        STOR(  RSTK, AT(M4TH, M4TH_OFF_RSTK))
+
         STOR(  DSTK, AT(M4TH, M4TH_OFF_DSTK))   /* save data   stack pointer       */
-        /*
-         * TODO: these discard the call stack of native forth code
-         *       executed since m4th_run(). how to preserve it?
-         */
-        LOAD(  REG1, AT(M4TH, M4TH_OFF_C_REG0)) /* load C stack pointer            */
+
         LOAD(  x0,   AT(M4TH, M4TH_OFF_EX))     /* load return value = m4th.ex     */
-        MOVE(  REG1, sp)
-        ldp    x20,  x21,  AT(sp);              /* load C registers                */
-        ldp    x22,  x23,  AT(sp, SZ2);
-        ldp    x24,  x25,  AT(sp, SZ4);
-        ldp    x26,  x27,  AT(sp, SZ6);
-        ldp    x28,  lr,   AT(sp, SZ8);         /* load LR register (return addr)  */
-        ADD2(  IMM(SZ10), sp)
+        LOAD(  x1,   AT(M4TH, M4TH_OFF_C_REG0)) /* load C stack pointer            */
+        MOVE(  x1,   sp)
+        ldp    x19,  x20,  AT(sp, SZ2);         /* load C registers                */
+        ldp    x21,  x22,  AT(sp, SZ4);         /* not clobbered: x18              */
+        ldp    x23,  x24,  AT(sp, SZ6);
+        ldp    x25,  x26,  AT(sp, SZ8);
+        ldp    x27,  x28,  AT(sp, SZ10);
+        ldp    x29,  lr,   AT(sp), SZ12;
+	.cfi_restore 30
+	.cfi_restore 29
+	.cfi_def_cfa_offset 0
         ret;                                    /* return to C                     */
 FUNC_RAWEND(bye)
 
@@ -153,9 +168,27 @@ FUNC_END(_c_arg_6_)
 /* must be followed by C function address. call it. */
 FUNC_START(_c_call_)
         /* cannot use x0..x8 here, they are used by c-args-[N] and c-ret-[N] */
-        ldr    x9,     AT(IP),   IMM(SZ); /* post-increment */
-        br     x9;                /* tail call optimization */
-FUNC_RAWEND(_c_call_)
+        LOAD(  x9, AT(IP), IMM(SZ))    /* post-increment                     */
+        RPUSH( lr)                     /* save lr                            */
+        LOAD( x10, AT(M4TH, M4TH_OFF_RSTK))
+        JZ(   x10, TO(_c_call_.stack_c))
+
+        /* m4th->rstack.curr != 0 thus RSTK points to dedicated memory       */
+        /* and sp points to C stack: nothing to fix                          */
+        blr    x9;                     /* call C func, overwrites lr         */
+        JUMP(  TO(_c_call_.finish))
+
+LABEL(_c_call_.stack_c)
+        /* m4th->rstack.curr == 0 thus RSTK points to C stack, below sp:     */
+        /* update sp before call, and restore it after call                  */
+        and    sp, RSTK,  IMM(-SZ2);   /* set sp = RSTK, then align it       */
+        blr    x9;                     /* call C func, overwrites lr         */
+        LOAD(  x9, AT(M4TH, M4TH_OFF_C_REG0))
+        MOVE(  x9, sp)                 /* reload sp                          */
+
+LABEL(_c_call_.finish)
+        RPOP(  lr)                     /* load lr                            */
+FUNC_END(_c_call_)
 
 
 /* push 0 values returned by C function call */
@@ -181,10 +214,11 @@ FUNC_END(_c_ret_2_)
 
 /** must be followed by address of native forth code. call it. */
 FUNC_START(_call_native_)
-        LOAD(  REG0,   AT(IP))
-        ADD2(  IMM(SZ),IP)         /* skip native function address  */
-        br     REG0;               /* tail-call optimization: jump to native code */
-FUNC_RAWEND(_call_native_)
+        LOAD(  REG0,   AT(IP),   IMM(SZ)) /* post-increment */
+        RPUSH(  lr)                    /* save lr                            */
+        blr    REG0;                   /* call native code, overwrites lr    */
+        RPOP(   lr)                    /* load lr                            */
+FUNC_END(_call_native_)
 
 
 /** pop m4token from dstack and call it. works only for tokens with native_len != -1 */
@@ -196,10 +230,27 @@ FUNC_START(_exec_token_)
 FUNC_RAWEND(_exec_token_)
 
 
+/**
+ * pop XT from dstack and call it.
+ * This function is called from native code with ASM_CALL()
+ * => use ASM_RET() to return
+ */
+FUNC_START(_exec_xt_from_native_)
+    RPUSH2(IP, VM)             /* save IP, VM                       */
+    RPUSH( lr)                 /* save lr                           */
+    LOAD(  VM, AT(M4TH, M4TH_OFF_VM))  /* set VM   = m4th->vm       */
+    ADDROF_1M(TO(_exec_xt_from_native_.vm_code), IP)
+    /* enter '(vm)' interpreter, let token 'execute' pop dtop = xt  */
+    blr    VM;
+    RPOP(  lr)                 /* load lr                           */
+    RPOP2( VM, IP)             /* load VM, IP                       */
+    ASM_RET()
+WORD_CODE_ALIGN()
+LABEL(_exec_xt_from_native_.vm_code)
+    WORD_CODE_TOKENS(execute, _return_to_native_)
+FUNC_RAWEND(_exec_xt_from_native_)
+
 /* return to native code */
 FUNC_START(_return_to_native_)
-        /* skip current return address (it's inside _vm_) and load previous one */
-        MOVE(  RTOP,   lr)
-        RPOP(  RTOP)
-        ASM_RET()                  /* return to caller of _vm_ - usually _exec_xt_from_native_ */
+        ASM_RET()
 FUNC_RAWEND(_return_to_native_)

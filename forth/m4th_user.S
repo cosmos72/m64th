@@ -47,7 +47,7 @@ WORD_START(two_roll,   two_r_from_two_drop)
     WORD_DSTACK(1,0) /* DSTACK(x+1,x) */
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE() /* uses %rip-relative ASM_CALL */
+    WORD_NATIVE_NONE() /* uses %rip-relative TOKEN_CALL */
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(two_roll, exit)
 WORD_END(two_roll)
@@ -55,7 +55,7 @@ WORD_START(minus_two_roll,   two_roll)
     WORD_DSTACK(1,0) /* DSTACK(x+1,x) */
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE() /* uses %rip-relative ASM_CALL */
+    WORD_NATIVE_NONE() /* uses %rip-relative TOKEN_CALL */
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(minus_two_roll, exit)
 WORD_END(minus_two_roll)
@@ -95,7 +95,7 @@ WORD_START(crc_cell, minus_cmove_star)
     WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE() /* uses %ip-relative ASM_CALL() - cannot inline in native code */
+    WORD_NATIVE_NONE() /* uses %ip-relative TOKEN_CALL() - cannot inline in native code */
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
     WORD_CODE(crc_cell, exit)
 WORD_END(crc_cell)
@@ -122,7 +122,7 @@ WORD_START(minus_cs_roll,   continue)
     WORD_DSTACK(1,0) /* DSTACK(x+1,x) */
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE() /* uses %rip-relative ASM_CALL */
+    WORD_NATIVE_NONE() /* uses %rip-relative TOKEN_CALL */
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(minus_cs_roll, exit)
 WORD_END(minus_cs_roll)
@@ -163,7 +163,7 @@ WORD_START(hashmap_find_int, flip)
     WORD_FLAGS(0)
     WORD_CODE(
         dup_to_r,                                      /* ( map key            ) (R: key     ) */
-        over, _lit_, T(M4HASH_MAP_OFF_VEC_INT), plus,  /* ( map key &map.vec   ) (R: key     ) */
+        over, _lit_, T(M4HASHMAP_OFF_VEC_INT), plus,  /* ( map key &map.vec   ) (R: key     ) */
         fetch, to_r,                                   /* ( map key            ) (R: key vec ) */
         CALL(_hashmap_indexof_int_),                  /* ( pos                ) (R: key vec ) */
         begin,                                         /* ( pos                ) (R: key vec ) */
@@ -280,7 +280,7 @@ WORD_START(repl,  rdepth)
             out_to_obuf, CALL(obuf_flush), drop,
             in_to_ibuf, CALL(ibuf_refill_if_empty),
         _while0_, T(20+4*nCALLt),
-            LIT_XT(interpret), _catch_beg_, _catch_end_,
+            _lit_xt_, XT(interpret), _catch_beg_, _catch_end_,
             dup, zero_equal,
             in_to_ibuf, CALL(ibuf_skip_blanks),
             in_to_ibuf, iobuf_empty_query, and,
@@ -299,7 +299,7 @@ WORD_START(minus_roll, sub)
     WORD_DSTACK(1,0) /* DSTACK(x+1,x)   */
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE() /* uses %rip-relative ASM_CALL, cannot inline in native code */
+    WORD_NATIVE_NONE() /* uses %rip-relative TOKEN_CALL, cannot inline in native code */
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(minus_roll, exit)
 WORD_END(minus_roll)

@@ -25,27 +25,27 @@
 #define M4F_LIT2S_
 FUNC_START(_lit2s_)        /* (lit-2s) push to dstack the int16 at following IP */
         DPUSH__DTOP()
-        ldrsh  DTOP_sh,AT(IP), 2;
+        LD_sh( DTOP,   AT(IP), 2)
 FUNC_END(_lit2s_)
 
 
 #define M4F_LIT4S_
 FUNC_START(_lit4s_)        /* (lit-4s) push to dstack the int32 at following IP */
         DPUSH__DTOP()
-        ldrsw  DTOP_sw,AT(IP), 4;
+        LD_sw( DTOP,   AT(IP), 4)
 FUNC_END(_lit4s_)
 
 
 #define M4F_LIT8S_
 FUNC_START(_lit8s_)        /* (lit-8s) push to dstack the int64 at following IP */
         DPUSH__DTOP()
-        ldr    DTOP,   AT(IP), 8;
+        LOAD(  DTOP,   AT(IP), 8)
 FUNC_END(_lit8s_)
 
 
 #define M4F_LIT_STRING_
 FUNC_START(_lit_string_)   /* (lit-string) push to dstack the SZt and ascii at following IP */
-        ldrh   REG1_ut,AT(IP), SZt;    /* a  = length; IP = c-addr          */
+        LD_st( REG1,   AT(IP), SZt)    /* a  = length; IP = c-addr          */
         DPUSH2(DTOP,   IP)             /* push dtop, c-addr to DSTK         */
         ADD4(  IP,     REG1,0,   IP)   /* IP = c-addr + length              */
         MOVE(  REG1,   DTOP)           /* dtop = length                     */

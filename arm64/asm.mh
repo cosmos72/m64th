@@ -34,7 +34,7 @@
  * callee-saved registers: x18 ... x30 and sp (i.e. x31)
  *  note: x18 is reserved as 'platform register' at least on OS X and Windows
  *  note: x29 is frame pointer, it shoud point to previous x29,x30 pair on C stack
- *  note: x30 is link register, automatically set to return addr by ASM calls
+ *  note: x30 is link register 'lr', automatically set to return addr by ASM calls
  */
 
 #define REG0 x0 /* scratch register 0 */
@@ -43,7 +43,7 @@
 #define REG3 x3 /* scratch register 3 */
 #define REG4 x4 /* scratch register 4 */
 /* additional scratch registers:      x5 .. x17           */
-/* additional callee-saved registers: x18 x19 x29 x30     */
+/* additional callee-saved registers: x18 x29 x30         */
 
 #define REG0b w0   /* low  8 bits of REG0 */
 #define REG0h w0   /* low 16 bits of REG0 */
@@ -144,7 +144,8 @@
 #define M4TH x25 /* pointer to C struct field &m4th->user            */
 #define HERE x26 /* pointer to first available code/data location    */
 #define FTBL x27 /* pointer to table m4func[m4token] containing asm function addresses */
-#define IP x28   /* forth bytecode instruction pointer */
+#define IP   x28 /* forth bytecode instruction pointer               */
+#define VM   x19 /* pointer to '(vm)' bytecode interpreter           */
 
 #define R000 xzr  /* 64 bit, always 0 */
 #define R000b wzr /*  8 bit, always 0 */
@@ -167,7 +168,7 @@
 #define DEC1(dst)         sub   dst, dst, 1;        /* dst--          */
 #define DIV3(a,b,dst)     sdiv  dst, a, b;          /* dst  = a / b   */
 #define INC1(dst)         add   dst, dst, 1;        /* dst++          */
-#define LOAD(reg,mem)     ldr   reg, mem;           /* reg  = *mem    */
+#define LOAD(reg, ...)    ldr   reg, __VA_ARGS__;   /* reg  = *at     */
 #define MOVE(src,dst)     mov   dst, src;           /* dst  = src     */
 #define MUL2(src,dst)     mul   dst, dst, src;      /* dst *= src     */
 #define NEG1(dst)         neg   dst, dst;           /* dst  = -dst    */
@@ -179,38 +180,48 @@
 #define SHR2(src,dst)     lsr   dst, dst, src;      /* dst >>= src    unsigned */
 #define SUB2(src,dst)     sub   dst, dst, src;      /* dst -= src     */
 #define SUB3(a,b,dst)     sub   dst, a, b;          /* dst  = a - b   */
-#define STOR(reg,at)      str   reg, at;            /* *at  = reg     */
+#define STOR(reg, ...)    str   reg, __VA_ARGS__;   /* *at  = reg     */
 #define XOR2(src,dst)     eor   dst, dst, src;      /* dst ^= src     */
 #define XSUB2(a,b)        sub   b,   a, b;          /* b    = a - b   */
 #define ZERO(dst)         mov   dst, 0;             /* dst  = 0       */
 
 /* clang-format on */
 
-#define LD_sb(reg, at) ldrsb reg##_sb, at; /* reg = *(int8_t *)at   */
-#define LD_sh(reg, at) ldrsh reg##_sh, at; /* reg = *(int16_t*)at   */
-#define LD_sw(reg, at) ldrsw reg##_sw, at; /* reg = *(int32_t*)at   */
-#define LD_st(reg, at) ldrsh reg##_st, at; /* reg = *(signed m4token*)at */
+#define LD_sb(reg, ...) ldrsb reg##_sb, __VA_ARGS__; /* reg = *(int8_t *)at   */
+#define LD_sh(reg, ...) ldrsh reg##_sh, __VA_ARGS__; /* reg = *(int16_t*)at   */
+#define LD_sw(reg, ...) ldrsw reg##_sw, __VA_ARGS__; /* reg = *(int32_t*)at   */
+#define LD_st(reg, ...) ldrsh reg##_st, __VA_ARGS__; /* reg = *(signed m4token*)at */
 
-#define LD_ub(reg, at) ldrb reg##_ub, at; /* reg = *(uint8_t *)at  */
-#define LD_uh(reg, at) ldrh reg##_uh, at; /* reg = *(uint16_t*)at  */
-#define LD_uw(reg, at) ldr reg##_uw, at;  /* reg = *(uint32_t*)at  */
-#define LD_ut(reg, at) ldrh reg##_ut, at; /* reg = *(unsigned m4token*)at */
+#define LD_ub(reg, ...) ldrb reg##_ub, __VA_ARGS__; /* reg = *(uint8_t *)at  */
+#define LD_uh(reg, ...) ldrh reg##_uh, __VA_ARGS__; /* reg = *(uint16_t*)at  */
+#define LD_uw(reg, ...) ldr reg##_uw, __VA_ARGS__;  /* reg = *(uint32_t*)at  */
+#define LD_ut(reg, ...) ldrh reg##_ut, __VA_ARGS__; /* reg = *(unsigned m4token*)at */
 
 /* no difference between signed and unsigned STOR* */
-#define STORb(reg, at) strb reg##b, at; /* *(uint8_t *)at  = reg */
-#define STORh(reg, at) strh reg##h, at; /* *(uint16_t*)at  = reg */
-#define STORw(reg, at) str reg##w, at;  /* *(uint32_t*)at  = reg */
-#define STORt(reg, at) strh reg##t, at; /* *(m4token *)at  = reg */
+#define STORb(reg, ...) strb reg##b, __VA_ARGS__; /* *(uint8_t *)at  = reg */
+#define STORh(reg, ...) strh reg##h, __VA_ARGS__; /* *(uint16_t*)at  = reg */
+#define STORw(reg, ...) str reg##w, __VA_ARGS__;  /* *(uint32_t*)at  = reg */
+#define STORt(reg, ...) strh reg##t, __VA_ARGS__; /* *(m4token *)at  = reg */
 
-#define ASM_CALL_PREPARE() RPUSH(lr) /* cheat slightly to reduce code size: reorder rstack */
-#define ASM_CALL_CLEANUP() RPOP(lr)  /* acceptable, functions must not access caller's rstack  */
-#define ASM_CALL_BODY(func) bl func; /* raw/native assembly: call native code  */
-#define ASM_CALL(func)               /* raw/native assembly: call native code */                   \
-    ASM_CALL_PREPARE()               /*                                       */                   \
-    ASM_CALL_BODY(func)              /*                                       */                   \
-    ASM_CALL_CLEANUP()
+#define ASM_CALL(func)               /* raw/native assembly: call function        */               \
+    RPUSH(lr)                        /*                                           */               \
+    ASM_CALL_BODY(func)              /*                                           */               \
+    RPOP(lr)                         /*                                           */
+#define ASM_CALL_BODY(func) bl func; /*                                           */
+#define ASM_RET() ret;               /* raw/native assembly: return from function */
 
-#define ASM_RET() ret; /* raw/native assembly: return */
+#define TOKEN_CALL_PREPARE(ret)                                                                    \
+    RPUSH(VM)                 /* cheat slightly to reduce code size: reorder rstack    */          \
+    ADDROF_1M(TO(ret), VM)    /* acceptable, functions must not access caller's rstack */
+#define TOKEN_CALL_CLEANUP(ret)  /* __________________________________________________ */          \
+    RPOP(VM)
+#define TOKEN_CALL_BODY(func, ret) /* raw/native assembly: call token->token           */          \
+    b func;                                                                                        \
+    LABEL(ret)
+#define TOKEN_CALL(func, ret)               /* call token from another token          */           \
+    TOKEN_CALL_PREPARE(ret)                 /*                                        */           \
+    TOKEN_CALL_BODY(func, ret)              /*                                        */           \
+    TOKEN_CALL_CLEANUP(ret)
 
 #define JA(reg, val, label) /*  if reg u>  val jump to label */                                    \
     cmp reg, val;                                                                                  \
@@ -268,36 +279,35 @@
 #define RPUSH2(reg1,reg2) stp  reg2, reg1, [RSTK, -SZ2]!;/* push reg1, then reg2 to return stack */
 
 #define RPOP(reg)        ldr   reg, [RSTK], SZ;          /* pop second return stack element into val */
-#define RPOP2(reg1,reg2) ldp   reg1, reg2, [RSTK], SZ2;  /* pop 2nd, 3rd data stack elements into reg1, reg2 */
+#define RPOP2(reg1,reg2) ldp   reg1, reg2, [RSTK], SZ2;  /* pop 2nd, 3rd return stack elements into reg1, reg2 */
 
 /* clang-format on */
 
 #define NEXT0() /* jump to current instruction. useful after manually updating IP _____________ */ \
-    ret;
+    br VM;
 
 #define NEXT() /* jump to following instruction _______________________________________________ */ \
-    ret;
+    br VM;
 
 #define NEXT2() /* skip 2 bytes, jump to following instruction */                                  \
     ADD2(IMM(2), IP);                                                                              \
-    ret;
+    br VM;
 
 #define NEXT4() /* skip 4 bytes, jump to following instruction */                                  \
     ADD2(IMM(4), IP);                                                                              \
-    ret;
+    br VM;
 
 #define NEXT8() /* skip 8 bytes (four instructions), jump to following instruction */              \
     ADD2(IMM(8), IP);                                                                              \
-    ret;
+    br VM;
 
 #define NEXTT() CAT2(NEXT, SZt)()   /* skip SZt bytes,   jump to following instruction */
 #define NEXTT2() CAT2(NEXT, SZt2)() /* skip SZt*2 bytes, jump to following instruction */
 #define NEXTCELL() CAT2(NEXT, SZ)() /* skip SZ bytes,    jump to following instruction */
 
 #define RELJUMP()                                                                                  \
-    LD_st(REG0, AT(IP));        /* REG0 = IP jump offset       */                                  \
-    add IP, IP, REG0, lsl PSZt; /* IP = TARGET_IP - SZt        */                                  \
-    ADD2(IMM(SZt), IP);         /* IP = TARGET_IP              */                                  \
-    NEXT0()                     /* jump to TARGET_IP           */
+    LD_st( REG0,   AT(IP), IMM(SZt)) /* REG0 = IP jump offset; IP += SZt       */                  \
+    ADD4(  IP, REG0, PSZt, IP)       /* IP = TARGET_IP - SZt                   */                  \
+    NEXT0()                          /* jump to TARGET_IP                      */
 
 #endif /* M4TH_ARM64_ASM_MH */

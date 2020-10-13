@@ -252,7 +252,7 @@ static void m4cstr_print_escape(const char *cstr, FILE *out) {
     if (cstr) {
         m4ucell len = (m4ucell)strlen(cstr);
         fprintf(out, "<%ld> [", (unsigned long)len);
-        m4string2_print_escape((const m4char *)cstr, len, out);
+        m4string_print_escape(m4string_make(cstr, len), out);
         fputc(']', out);
     } else {
         fputs("<0> []", out);
@@ -323,11 +323,11 @@ static void m4ibuf_with_counteddata_print(const m4iobuf *io, FILE *out) {
     const m4ucell nd = d ? d->n : 0;
     const m4ucell nio = io->end - io->pos;
     fprintf(out, "<%lu> [", (unsigned long)(nd + nio));
-    if (nio) {
-        m4string2_print_escape(io->addr + io->pos, nio, out);
+    if (io->end >= io->pos && nio) {
+        m4string_print_escape(m4string_make(io->addr + io->pos, nio), out);
     }
     if (nd) {
-        m4string2_print_escape(d->addr, nd, out);
+        m4string_print_escape(m4string_make(d->addr, nd), out);
     }
     fputc(']', out);
 }
@@ -394,10 +394,10 @@ static void m4obuf_with_counteddata_print(const m4iobuf *io, FILE *out) {
     const m4ucell nio = io->end - io->pos;
     fprintf(out, "<%lu> [", (unsigned long)(nd + nio));
     if (nd) {
-        m4string2_print_escape(d->addr, nd, out);
+        m4string_print_escape(m4string_make(d->addr, nd), out);
     }
-    if (nio) {
-        m4string2_print_escape(io->addr + io->pos, nio, out);
+    if (io->end >= io->pos && nio) {
+        m4string_print_escape(m4string_make(io->addr + io->pos, nio), out);
     }
     fputc(']', out);
 }
