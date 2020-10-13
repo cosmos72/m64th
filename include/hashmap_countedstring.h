@@ -37,7 +37,7 @@ typedef struct H(m4hashmap_entry_s_) {
     m4ucell next;
     m4cell val;
     m4char keylen;
-    m4char key[];
+    m4char key[255];
 } H(m4hashmap_entry_);
 
 typedef struct H(m4hashmap_s_) {

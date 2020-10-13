@@ -750,6 +750,8 @@ WORD_START(_optimize_2token_, _optimize_2_)
 #define H2_START(size, lcap) WORD_DATA_INTS(size, lcap) WORD_DATA_CELLS(.+ 8)
 #define H2_ENTRY(key, val, next) WORD_DATA_CELLS(val) WORD_DATA_INTS(key, next)
       OPT2_HASHMAP(H2_START, H2_ENTRY)
+#undef H2_START
+#undef H2_ENTRY
     WORD_DATA_END(_optimize_2token_)
 WORD_END(_optimize_2token_)
 /* ( src-addr dst-addr -- src-addr' dst-addr' t|f ) optimize token triplets being compiled */
@@ -768,6 +770,8 @@ WORD_START(_optimize_3token_, _optimize_2token_)
 #define H3_START(size, lcap) WORD_DATA_CELLS(size, lcap, .+ 8)
 #define H3_ENTRY(key, val, next) WORD_DATA_CELLS(val, key, next)
       OPT3_HASHMAP(H3_START, H3_ENTRY)
+#undef H3_START
+#undef H3_ENTRY
     WORD_DATA_END(_optimize_3token_)
 WORD_END(_optimize_3token_)
 /* ( x -- token t | x f ) try to optimize '[ x ] literal' */
