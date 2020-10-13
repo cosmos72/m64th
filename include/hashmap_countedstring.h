@@ -17,8 +17,8 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_HASH_MAP_COUNTEDSTRING_H
-#define M4TH_HASH_MAP_COUNTEDSTRING_H
+#ifndef M4TH_HASHMAP_COUNTEDSTRING_H
+#define M4TH_HASHMAP_COUNTEDSTRING_H
 
 #include "../m4th.h"
 
@@ -34,10 +34,10 @@ enum {
 };
 
 typedef struct H(m4hashmap_entry_s_) {
-    m4char keylen;
-    m4char key[255];
-    m4cell val;
     m4ucell next;
+    m4cell val;
+    m4char keylen;
+    m4char key[];
 } H(m4hashmap_entry_);
 
 typedef struct H(m4hashmap_s_) {
@@ -65,4 +65,4 @@ const H(m4hashmap_entry_) * H(m4hashmap_insert_)(H(m4hashmap_) * map, m4string k
 }
 #endif
 
-#endif /* M4TH_HASH_MAP_COUNTEDSTRING_H */
+#endif /* M4TH_HASHMAP_COUNTEDSTRING_H */

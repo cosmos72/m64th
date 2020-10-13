@@ -163,7 +163,7 @@ WORD_START(hashmap_find_int, flip)
     WORD_FLAGS(0)
     WORD_CODE(
         dup_to_r,                                      /* ( map key            ) (R: key     ) */
-        over, _lit_, T(M4HASH_MAP_OFF_VEC_INT), plus,  /* ( map key &map.vec   ) (R: key     ) */
+        over, _lit_, T(M4HASHMAP_OFF_VEC_INT), plus,  /* ( map key &map.vec   ) (R: key     ) */
         fetch, to_r,                                   /* ( map key            ) (R: key vec ) */
         CALL(_hashmap_indexof_int_),                  /* ( pos                ) (R: key vec ) */
         begin,                                         /* ( pos                ) (R: key vec ) */

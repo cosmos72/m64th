@@ -16,8 +16,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef M4TH_INCLUDE_HASH_MAP_H
-#define M4TH_INCLUDE_HASH_MAP_H
+#ifndef M4TH_INCLUDE_HASHMAP_H
+#define M4TH_INCLUDE_HASHMAP_H
 
 #include "../m4th.h" /* m4* */
 
@@ -42,4 +42,4 @@ extern "C" {
 }
 #endif
 
-#endif /* M4TH_INCLUDE_HASH_MAP_H */
+#endif /* M4TH_INCLUDE_HASHMAP_H */

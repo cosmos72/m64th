@@ -314,14 +314,14 @@ WORD_START(_hashmap_entry_fetch_int_, _exec_xt_from_native_)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
     WORD_CODE(
-        _lit_, T(M4HASH_MAP_ENTRY_SIZE_INT), times, plus,  /* ( vec'         )           */
+        _lit_, T(M4HASHMAP_ENTRY_SIZE_INT), times, plus,  /* ( vec'         )           */
         dup_to_r,                                          /* ( vec          ) (R: vec ) */
                                                            /* ( key          ) (R: vec ) */
-        _lit_, T(M4HASH_MAP_ENTRY_OFF_KEY_INT), plus, int_fetch,
+        _lit_, T(M4HASHMAP_ENTRY_OFF_KEY_INT), plus, int_fetch,
                                                            /* ( key val      ) (R: vec ) */
-        _lit_, T(M4HASH_MAP_ENTRY_OFF_VAL_INT), r_fetch, plus, fetch,
+        _lit_, T(M4HASHMAP_ENTRY_OFF_VAL_INT), r_fetch, plus, fetch,
                                                            /* ( key val next )           */
-        _lit_, T(M4HASH_MAP_ENTRY_OFF_NEXT_INT), r_from, plus, int_fetch,
+        _lit_, T(M4HASHMAP_ENTRY_OFF_NEXT_INT), r_from, plus, int_fetch,
         exit
     )
 WORD_END(_hashmap_entry_fetch_int_)
@@ -335,10 +335,10 @@ WORD_START(_hashmap_indexof_int_, _hashmap_entry_fetch_int_)
     WORD_CODE(
         /* return (hash ^ (hash >> lcap)) & (cap - 1); */
         crc_cell, swap,                                /* ( hash map                    ) */
-#if M4HASH_MAP_OFF_LCAP_INT == 4
+#if M4HASHMAP_OFF_LCAP_INT == 4
         four_plus,
 #else
-        _lit_, T(M4HASH_MAP_OFF_LCAP_INT), plus,       /* ( hash &map.lcap              ) */
+        _lit_, T(M4HASHMAP_OFF_LCAP_INT), plus,       /* ( hash &map.lcap              ) */
 #endif
         int_fetch, one, over, lshift, one_minus,       /* ( hash lcap cap-1             ) */
         minus_rot, trail,                              /* ( cap-1 hash hash lcap        ) */
@@ -749,7 +749,7 @@ WORD_START(_optimize_2token_, _optimize_2_)
     WORD_DATA_START(_optimize_2token_)
 #define H2_START(size, lcap) WORD_DATA_INTS(size, lcap) WORD_DATA_CELLS(.+ 8)
 #define H2_ENTRY(key, val, next) WORD_DATA_CELLS(val) WORD_DATA_INTS(key, next)
-      OPT2_HASH_MAP(H2_START, H2_ENTRY)
+      OPT2_HASHMAP(H2_START, H2_ENTRY)
     WORD_DATA_END(_optimize_2token_)
 WORD_END(_optimize_2token_)
 /* ( src-addr dst-addr -- src-addr' dst-addr' t|f ) optimize token triplets being compiled */
@@ -767,7 +767,7 @@ WORD_START(_optimize_3token_, _optimize_2token_)
     WORD_DATA_START(_optimize_3token_)
 #define H3_START(size, lcap) WORD_DATA_CELLS(size, lcap, .+ 8)
 #define H3_ENTRY(key, val, next) WORD_DATA_CELLS(val, key, next)
-      OPT3_HASH_MAP(H3_START, H3_ENTRY)
+      OPT3_HASHMAP(H3_START, H3_ENTRY)
     WORD_DATA_END(_optimize_3token_)
 WORD_END(_optimize_3token_)
 /* ( x -- token t | x f ) try to optimize '[ x ] literal' */
