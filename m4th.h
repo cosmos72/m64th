@@ -91,6 +91,7 @@ typedef struct m4counteddata_s m4counteddata;
 typedef struct m4countedstring_s m4countedstring;
 typedef struct m4dict_s m4dict;
 typedef struct m4iobuf_s m4iobuf;
+typedef struct m4localnames_s m4localnames;
 typedef struct m4slice_s m4slice;
 typedef struct m4buf_s m4stack;
 typedef struct m4pair_s m4pair;
@@ -155,6 +156,12 @@ struct m4iobuf_s {
     m4ucell end;   /**< last char to read (or write) is addr[end-1]    */
     m4ucell max;   /**< capacity. I/O buffer is addr[0..max-1]         */
     m4char *addr;
+};
+
+/** list of local variable names */
+struct m4localnames_s {
+    m4ucell end, capacity, n;
+    m4countedstring vec[];
 };
 
 struct m4pair_s {
@@ -224,6 +231,7 @@ struct m4th_s {                /**< m4th forth interpreter and compiler         
     uint32_t user_next;        /**< next available cell in user variables        */
     m4word *lastw;             /**< last defined forth word                      */
     m4xt xt;                   /**< XT being compiled. also used for STATE       */
+    m4localnames *localnames;  /**< local variable names of XT being compiled    */
     m4cell base;               /**< current BASE                                 */
     m4cbuf mem;                /**< start, HERE and end of data space            */
     m4cell handler;            /**< exception handler installed by CATCH         */
