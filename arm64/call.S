@@ -52,6 +52,9 @@ FUNC_START(th_run)
 LABEL(th_run.stack_c)
         MOVE(  x29,  RSTK)
         STOR(  x29,  AT(M4TH, M4TH_OFF_REND))
+        /* decrease sp to ensure we do not write below it:                         */
+        /* required by aarch64 procedure call standard, checked by valgrind        */
+        SUB2(IMM(4096),    sp)
 
 LABEL(th_run.stack_done)
         LOAD(  LOCL, AT(M4TH, M4TH_OFF_LOCL))   /* load local variables pointer    */
@@ -183,8 +186,8 @@ LABEL(_c_call_.stack_c)
         /* update sp before call, and restore it after call                  */
         and    sp, RSTK,  IMM(-SZ2);   /* set sp = RSTK, then align it       */
         blr    x9;                     /* call C func, overwrites lr         */
-        LOAD(  x9, AT(M4TH, M4TH_OFF_C_REG0))
-        MOVE(  x9, sp)                 /* reload sp                          */
+        /* decrease sp to ensure we do not write below it                    */
+        SUB2(IMM(4096),   sp)
 
 LABEL(_c_call_.finish)
         RPOP(  lr)                     /* load lr                            */
