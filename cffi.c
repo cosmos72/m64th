@@ -27,15 +27,15 @@
 /******************************************************************************/
 
 #define H(x) x##byte
-#include "c/hashmap_impl.c"
+#include "c/hashmap_number_impl.c"
 #undef H
 #define H(x) x##short
-#include "c/hashmap_impl.c"
+#include "c/hashmap_number_impl.c"
 #undef H
 #define H(x) x##int
-#include "c/hashmap_impl.c"
+#include "c/hashmap_number_impl.c"
 #undef H
 #define H(x) x##cell
-#include "c/hashmap_impl.c"
+#include "c/hashmap_number_impl.c"
 #undef H
-#include "c/hashmap_countedstring.c"
+#include "c/hashmap_string.c"

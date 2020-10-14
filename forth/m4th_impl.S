@@ -22,7 +22,7 @@
 #include "../include/dict.mh"
 #include "../include/dict_m4th.mh"
 #include "../include/err.mh"
-#include "../include/hashmap.mh"
+#include "../include/hashmap_number.mh"
 #include "../include/opt2_hash.mh"
 #include "../include/opt3_hash.mh"
 #include "../include/opt_rules.mh"

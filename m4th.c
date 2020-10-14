@@ -748,7 +748,7 @@ void m4string_print_hex(m4string str, FILE *out) {
 }
 
 m4cell m4string_equals(m4string a, m4string b) {
-    if (a.addr == NULL || b.addr == NULL || a.n != b.n) {
+    if (a.n != b.n || (a.addr == NULL) != (b.addr == NULL)) {
         return tfalse;
     }
     if (a.addr == b.addr || a.n == 0) {

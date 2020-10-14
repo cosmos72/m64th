@@ -20,8 +20,8 @@
 #ifndef M4TH_T_TESTHASHMAP_C
 #define M4TH_T_TESTHASHMAP_C
 
-#include "../include/hashmap.h"
-#include "../include/hashmap_countedstring.h"
+#include "../include/hashmap_number.h"
+#include "../include/hashmap_string.h"
 #include "testcommon.h"
 
 #include <assert.h> /* assert() */
@@ -68,49 +68,48 @@ m4cell m4th_testhashmap_int(FILE *out) {
     return fail;
 }
 
-/* -------------- m4th_testhashmap_countedstring -------------- */
-
-enum { MAXLEN = 255 };
+/* -------------- m4th_testhashmap_string -------------- */
 
 static void m4th_testhashmap_fill(m4string *key, m4ucell i) {
-    m4char *addr = (m4char *)key->addr;
-    m4ucell j, n = 0;
-    for (j = 0; j < MAXLEN && i; j++) {
-        addr[j] = (i & 1) ? 'x' : ' ';
-        i >>= 1;
-        n++;
-    }
-    key->n = n;
+    m4char *addr = (m4char *)m4mem_allocate(i);
+    memset(addr, (m4char)i | ' ', i);
+    key->addr = addr;
+    key->n = i;
 }
 
-m4cell m4th_testhashmap_countedstring(FILE *out) {
-    m4char keybuf[MAXLEN + 1];
-    m4string key = {keybuf, 0};
+m4cell m4th_testhashmap_string(FILE *out) {
+    enum { n = 470 };
+    m4string key, keys[n] = {};
     m4cell val;
-    m4ucell i, n = 436, cap = 256, fail = 0;
-    m4hashmap_countedstring *map = m4hashmap_new_countedstring(cap);
-    const m4hashmap_entry_countedstring *e;
+    m4ucell i, cap = 256, fail = 0;
+    m4hashmap_string *map = m4hashmap_new_string(cap);
+    const m4hashmap_entry_string *e;
     for (i = 0; i < n; i++) {
         assert(map->size == i);
         m4th_testhashmap_fill(&key, i);
+        keys[i] = key;
         val = i;
-        if (!m4hashmap_insert_countedstring(map, key, val)) {
-            fprintf(out, "m4hashmap_countedstring too full, failed to insert after %u elements\n",
+        if (!m4hashmap_insert_string(map, key, val)) {
+            fprintf(out, "m4hashmap_string too full, failed to insert after %u elements\n",
                     (unsigned)i);
             fail++;
             break;
         }
-        e = m4hashmap_find_countedstring(map, key);
+        e = m4hashmap_find_string(map, key);
         if (!e) {
-            fputs("m4hashmap_find_countedstring() returned NULL instead of just-inserted key \"",
-                  out);
+            fprintf(out,
+                    "m4hashmap_find_string() failed after %u elements, returned NULL instead of "
+                    "just-inserted key \"",
+                    (unsigned)i);
             m4string_print(key, out);
             fputs("\"\n", out);
             fail++;
             continue;
-        } else if (!m4string_equals(key, m4string_make(e->key, e->keylen)) || e->val != val) {
-            fputs("m4hashmap_find_countedstring() returned wrong entry {\"", out);
-            m4string_print(m4string_make(e->key, e->keylen), out);
+        } else if (!m4string_equals(key, e->key) || e->val != val) {
+            fprintf(out,
+                    "m4hashmap_find_string() failed after %u elements, returned wrong entry {\"",
+                    (unsigned)i);
+            m4string_print(e->key, out);
             fprintf(out, "\", 0x%lx} instead of just-inserted pair {\"", (long)e->val);
             m4string_print(key, out);
             fprintf(out, "\", 0x%lx}\n", (long)val);
@@ -121,7 +120,10 @@ m4cell m4th_testhashmap_countedstring(FILE *out) {
     if (fail == 0) {
         fprintf(out, "all %3u hashmap/s tests passed\n", (unsigned)n);
     }
-    m4hashmap_del_countedstring(map);
+    m4hashmap_del_string(map);
+    for (i = 0; i < n; i++) {
+        m4mem_free((void *)keys[i].addr);
+    }
     return fail;
 }
 

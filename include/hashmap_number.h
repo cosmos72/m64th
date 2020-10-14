@@ -16,8 +16,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef M4TH_INCLUDE_HASHMAP_H
-#define M4TH_INCLUDE_HASHMAP_H
+#ifndef M4TH_INCLUDE_HASHMAP_NUMBER_H
+#define M4TH_INCLUDE_HASHMAP_NUMBER_H
 
 #include "../m4th.h" /* m4* */
 
@@ -26,20 +26,20 @@ extern "C" {
 #endif
 
 #define H(x) x##byte
-#include "hashmap_impl.h"
+#include "hashmap_number_impl.h"
 #undef H
 #define H(x) x##short
-#include "hashmap_impl.h"
+#include "hashmap_number_impl.h"
 #undef H
 #define H(x) x##int
-#include "hashmap_impl.h"
+#include "hashmap_number_impl.h"
 #undef H
 #define H(x) x##cell
-#include "hashmap_impl.h"
+#include "hashmap_number_impl.h"
 #undef H
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* M4TH_INCLUDE_HASHMAP_H */
+#endif /* M4TH_INCLUDE_HASHMAP_NUMBER_H */

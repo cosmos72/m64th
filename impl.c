@@ -19,7 +19,7 @@
 
 #include "impl.h"
 #include "include/err.h"
-#include "include/hashmap.h"
+#include "include/hashmap_number.h"
 #include "include/token.h"
 #include "include/word_fwd.h"
 

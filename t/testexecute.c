@@ -23,7 +23,7 @@
 #include "../impl.h"
 #include "../include/err.h"
 #include "../include/func_fwd.h"
-#include "../include/hashmap.h"
+#include "../include/hashmap_number.h"
 #include "../include/iobuf.mh"
 #include "../include/token.h"
 #include "../include/word_fwd.h"
