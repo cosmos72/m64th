@@ -256,4 +256,4 @@ FUNC_RAWEND(_exec_xt_from_native_)
 /* return to native code */
 FUNC_START(_return_to_native_)
         ASM_RET()
-FUNC_RAWEND(_return_to_native_)
+FUNC_END(_return_to_native_)
