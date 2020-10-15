@@ -85,6 +85,12 @@ FUNC_START(_local_f_) /* (local-f) ( -- x ) push 15-th local variable to dstack 
         DPUSH__DTOP()
         LOAD(  DTOP,   AT(LOCL, SZ15))
 FUNC_END(_local_f_)
+FUNC_START(_local_n_) /* (local-n) ( -- x ) must be followed by N. push N-th local variable to dstack */
+        LD_ut( REG1,   AT(IP))
+        DPUSH__DTOP()
+        LOAD(  DTOP,   AT(LOCL, REG1, SZ))
+        ADD2(IMM(SZt), IP)
+FUNC_END(_local_n_)
 
 
 /* (local-alloc) (R: -- locl ln-1 ... l1 l0 n ) followed by T(n), reserve space for n local variables */
@@ -181,3 +187,9 @@ FUNC_START(_to_local_f_) /* (to-local-f) ( x -- ) store dstack top to 15-th loca
         STOR(  DTOP,   AT(LOCL, SZ15))
         DPOP___DTOP()
 FUNC_END(_to_local_f_)
+FUNC_START(_to_local_n_) /* (local-n) ( x -- ) must be followed by N. store dstack top to N-th local variable */
+        LD_ut( REG1,   AT(IP))
+        STOR(  DTOP,   AT(LOCL, REG1, SZ))
+        DPOP___DTOP()
+        ADD2(IMM(SZt), IP)
+FUNC_END(_to_local_n_)

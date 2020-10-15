@@ -67,8 +67,7 @@ FUNC_RAWEND(_lit_comma_)
  */
 FUNC_START(_compile_jump_lit_)
         LD_ut( REG1,       AT(IP))                     /* a = token                  */
-        DPUSH__DTOP()
-        DPUSH( REG1)
+        DPUSH2(DTOP,       REG1)
         LD_ut( DTOP,       AT(IP, SZt))                /* dtop = category            */
         ADD2( IMM(SZt2),   IP)                         /* skip two m4token           */
         /* FALLTHROUGH */

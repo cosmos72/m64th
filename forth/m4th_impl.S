@@ -461,7 +461,8 @@ WORD(_local_c_,    _local_b_,      DSTACK(0,1), RSTACK(0,0), WORD_IMPURE | M4FLA
 WORD(_local_d_,    _local_c_,      DSTACK(0,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
 WORD(_local_e_,    _local_d_,      DSTACK(0,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
 WORD(_local_f_,    _local_e_,      DSTACK(0,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
-WORD_START(_local_alloc_,_local_f_)
+WORD(_local_n_,    _local_f_,      DSTACK(0,1), RSTACK(0,0), M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_INLINE_ALWAYS)
+WORD_START(_local_alloc_,_local_n_)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -508,7 +509,7 @@ WORD_START(_return_to_native_, _repl_type_ack_)
     WORD_STACK_NONE() /* stack effect when not jumping */
     WORD_DSTACK(0,0)  /* stack effect when jumping */
     WORD_RSTACK(1,0)
-    WORD_NATIVE_NONE() /* (return-to-native) messes with %rsp to redirect ret: cannot inline into native code */
+    WORD_NATIVE_LEN(_return_to_native_)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS | M4FLAG_JUMP)
     WORD_CODE(_return_to_native_, exit)
 WORD_END(_return_to_native_)
@@ -528,7 +529,8 @@ WORD(_to_local_c_, _to_local_b_,   DSTACK(1,0), RSTACK(0,0), WORD_IMPURE | M4FLA
 WORD(_to_local_d_, _to_local_c_,   DSTACK(1,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
 WORD(_to_local_e_, _to_local_d_,   DSTACK(1,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
 WORD(_to_local_f_, _to_local_e_,   DSTACK(1,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
-WORD_START(_until_, _to_local_f_)
+WORD(_to_local_n_, _to_local_f_,   DSTACK(1,0), RSTACK(0,0), M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_CONSUMES_IP_SZt)
+WORD_START(_until_, _to_local_n_)
     WORD_DSTACK(1,0) /* token stack effect when not jumping */
     WORD_RSTACK(0,0)
     WORD_DSTACK(1,0) /* token stack effect when jumping */

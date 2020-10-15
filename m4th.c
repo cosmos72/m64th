@@ -951,6 +951,7 @@ m4th *m4th_new(m4th_opt options) {
     m->user_next = m->user_size;
     m->lastw = NULL;
     m->xt = NULL;
+    m->localnames = NULL;
     m->mem = m4cbuf_alloc(dataspace_n);
     m->base = 10;
     m->handler = m->ex = 0;
@@ -988,6 +989,7 @@ void m4th_clear(m4th *m) {
     m->ip = NULL;
     m->lastw = NULL;
     m->xt = NULL;
+    m->localnames = NULL;
     m->mem.curr = m->mem.start;
     m->handler = m->ex = 0;
     m->ex_message.addr = NULL;
