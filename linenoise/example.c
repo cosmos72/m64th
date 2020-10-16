@@ -13,8 +13,8 @@ void completion(const linenoiseString currentInput, linenoiseCompletions *lc, vo
     }
 }
 
-char *hints(const char *buf, int *color, int *bold) {
-    if (!strcasecmp(buf, "hello")) {
+char *hints(const linenoiseString currentInput, int *color, int *bold) {
+    if (currentInput.len == 5 && !strncasecmp(currentInput.addr, "hello", 5)) {
         *color = 35;
         *bold = 0;
         return " World";

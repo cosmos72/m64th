@@ -354,6 +354,11 @@ static void freeCompletions(linenoiseCompletions *lc) {
     lc->size = 0;
 }
 
+static linenoiseString makeString(size_t len, const char *addr) {
+    linenoiseString str = {len, addr};
+    return str;
+}
+
 /* This is an helper function for linenoiseEdit() and is called when the
  * user types the <tab> key in order to complete the string currently in the
  * input.
@@ -365,10 +370,7 @@ static int completeLine(linenoiseState *ls) {
     int nread, nwritten;
     char c = 0;
 
-    {
-        linenoiseString bufstr = {ls->len, ls->buf};
-        completionCallback(bufstr, lc, completionCallbackUserData);
-    }
+    completionCallback(makeString(ls->len, ls->buf), lc, completionCallbackUserData);
     if (lc->size == 0) {
         linenoiseBeep();
     } else {
@@ -497,7 +499,7 @@ void refreshShowHints(struct abuf *ab, linenoiseState *l, int plen) {
     char seq[64];
     if (hintsCallback && plen + l->len < l->cols) {
         int color = -1, bold = 0;
-        char *hint = hintsCallback(l->buf, &color, &bold);
+        char *hint = hintsCallback(makeString(l->len, l->buf), &color, &bold);
         if (hint) {
             int hintlen = strlen(hint);
             int hintmaxlen = l->cols - (plen + l->len);
@@ -1065,14 +1067,6 @@ int linenoise(char *buf, size_t buflen, const char *prompt) {
         return linenoiseFgets(buf, buflen, prompt);
     }
     return linenoiseRaw(buf, buflen, prompt);
-}
-
-/* This is just a wrapper the user may want to call in order to make sure
- * the linenoise returned buffer is freed with the same allocator it was
- * created with. Useful when the main program is using an alternative
- * allocator. */
-void linenoiseFree(void *ptr) {
-    free(ptr);
 }
 
 /* ================================ History ================================= */
