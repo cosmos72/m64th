@@ -17,6 +17,7 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include "c/c_liblinenoise.h"
 #include "impl.h"
 #include "include/word_fwd.h"
 #include "m4th.h"
@@ -32,6 +33,7 @@ int main(int argc, char *argv[]) {
     m->in->handle = (m4cell) "m4th> "; /* prompt */
     m->out->func = WORD_SYM(c_fwrite_fflush).code;
     m->out->handle = (m4cell)stdout;
+    linenoiseSetCompletionCallback(m4th_c_complete_word, m);
 
     ret = m4th_repl(m);
     m4th_del(m);

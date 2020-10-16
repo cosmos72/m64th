@@ -20,9 +20,14 @@
 #ifndef M4TH_C_LIBLINENOISE_H
 #define M4TH_C_LIBLINENOISE_H
 
+#include "../linenoise/linenoise.h"
 #include "../m4th.h"
 
 /** wrapper around liblinenoise C function linenoise() */
 m4pair m4th_c_linenoise(const char *prompt, char *addr, size_t len);
+
+/* callback invoked by linenoise() when user presses TAB to complete a word */
+void m4th_c_complete_word(linenoiseString currentInput, linenoiseCompletions *completions,
+                          void *userData);
 
 #endif /* M4TH_C_LIBLINENOISE_H */
