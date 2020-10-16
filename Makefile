@@ -18,7 +18,7 @@ clean:
 	rm -f gen m4th test *.out ./*.gprof ./*.o ./*~ */*.o */*~ linenoise/linenoise_example linenoise/history.txt
 
 asm.o:  asm.S  $(wildcard *.mh */*.mh */*.S)
-cffi.o: cffi.c $(wildcard *.h *.mh include/*.h include/*.mh c/*.h c/*.c linenoise/*.c)
+cffi.o: cffi.c $(wildcard *.h *.mh include/*.h include/*.mh c/*.h c/*.c linenoise/*.h linenoise/*.c)
 gen.o:  gen.c  $(wildcard *.h *.mh include/*.h include/*.mh)
 impl.o: impl.c $(wildcard *.h *.mh include/*.h include/*.mh)
 m4th.o: m4th.c $(wildcard *.h *.mh include/*.h include/*.mh)

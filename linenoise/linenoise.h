@@ -39,22 +39,32 @@
 #ifndef __LINENOISE_H
 #define __LINENOISE_H
 
+#include <stddef.h> /* size_t */
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+typedef struct linenoiseString {
+    size_t len;
+    const char *addr;
+} linenoiseString;
+
 typedef struct linenoiseCompletions {
-  size_t len;
-  char **cvec;
+    size_t size;
+    size_t capacity;
+    linenoiseString *vec;
 } linenoiseCompletions;
 
-typedef void(linenoiseCompletionCallback)(const char *, linenoiseCompletions *);
-typedef char*(linenoiseHintsCallback)(const char *, int *color, int *bold);
+typedef void(linenoiseCompletionCallback)(linenoiseString currentInput,
+                                          linenoiseCompletions *completions, void *userData);
+typedef char *(linenoiseHintsCallback)(const char *, int *color, int *bold);
 typedef void(linenoiseFreeHintsCallback)(void *);
-void linenoiseSetCompletionCallback(linenoiseCompletionCallback *);
-void linenoiseSetHintsCallback(linenoiseHintsCallback *);
-void linenoiseSetFreeHintsCallback(linenoiseFreeHintsCallback *);
-void linenoiseAddCompletion(linenoiseCompletions *, const char *);
+void linenoiseSetCompletionCallback(linenoiseCompletionCallback *fn, void *userData);
+void linenoiseSetHintsCallback(linenoiseHintsCallback *fn);
+void linenoiseSetFreeHintsCallback(linenoiseFreeHintsCallback *fn);
+/* does not make a copy of linenoiseString */
+void linenoiseAddCompletion(linenoiseCompletions *completions, linenoiseString toAdd);
 
 /* char *linenoise(const char *prompt); */
 int linenoise(char *buf, size_t buflen, const char *prompt);
