@@ -72,18 +72,18 @@ static void m4th_c_sort_completions(linenoiseStrings *completions) {
 }
 
 /* callback invoked by linenoise() when user presses TAB to complete a word */
-void m4th_c_complete_word(linenoiseString currentInput, linenoiseStrings *completions,
-                          void *userData) {
+linenoiseString m4th_c_complete_word(linenoiseString input, linenoiseStrings *completions,
+                                     void *userData) {
     m4th *m = (m4th *)userData;
     m4cell i, n;
-    for (n = currentInput.len, i = n; i > 0; i--) {
+    for (n = input.len, i = n; i > 0; i--) {
         /* find last non-blank word in current input */
-        if ((unsigned char)currentInput.addr[i - 1] <= (unsigned char)' ') {
+        if ((unsigned char)input.addr[i - 1] <= (unsigned char)' ') {
             break;
         }
     }
-    currentInput.len -= i;
-    currentInput.addr += i;
+    input.len -= i;
+    input.addr += i;
 
     for (n = m->searchorder.n, i = n - 1; i >= 0; i--) {
         const m4wordlist *wid = m->searchorder.addr[i];
@@ -91,11 +91,12 @@ void m4th_c_complete_word(linenoiseString currentInput, linenoiseStrings *comple
         while (w != NULL) {
             const m4string str = m4word_name(w);
             const linenoiseString completion = {str.n, (const char *)str.addr};
-            if (m4th_c_is_prefix_of_string(currentInput, completion)) {
+            if (m4th_c_is_prefix_of_string(input, completion)) {
                 linenoiseAddCompletion(completions, completion);
             }
             w = m4word_prev(w);
         }
     }
     m4th_c_sort_completions(completions);
+    return input;
 }

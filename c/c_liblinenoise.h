@@ -27,7 +27,7 @@
 m4pair m4th_c_linenoise(const char *prompt, char *addr, size_t len);
 
 /* callback invoked by linenoise() when user presses TAB to complete a word */
-void m4th_c_complete_word(linenoiseString currentInput, linenoiseStrings *completions,
-                          void *userData);
+linenoiseString m4th_c_complete_word(linenoiseString input, linenoiseStrings *completions,
+                                     void *userData);
 
 #endif /* M4TH_C_LIBLINENOISE_H */
