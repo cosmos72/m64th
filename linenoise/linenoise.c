@@ -705,7 +705,7 @@ static void refreshLine(linenoiseState *l) {
 /* Insert the character 'c' at cursor current position.
  *
  * On error writing to the terminal -1 is returned, otherwise 0. */
-int linenoiseEditInsert(linenoiseState *l, char c) {
+static int linenoiseEditInsert(linenoiseState *l, char c) {
     /* leave space for ENTER */
     if (l->len + 1 < l->buflen) {
         if (l->len == l->pos) {
@@ -734,7 +734,7 @@ int linenoiseEditInsert(linenoiseState *l, char c) {
 }
 
 /* Move cursor on the left. */
-void linenoiseEditMoveLeft(linenoiseState *l) {
+static void moveLeft(linenoiseState *l) {
     if (l->pos > 0) {
         l->pos--;
         refreshLine(l);
@@ -742,7 +742,7 @@ void linenoiseEditMoveLeft(linenoiseState *l) {
 }
 
 /* Move cursor on the right. */
-void linenoiseEditMoveRight(linenoiseState *l) {
+static void moveRight(linenoiseState *l) {
     if (l->pos != l->len) {
         l->pos++;
         refreshLine(l);
@@ -750,7 +750,7 @@ void linenoiseEditMoveRight(linenoiseState *l) {
 }
 
 /* Move cursor to the start of the line. */
-void linenoiseEditMoveHome(linenoiseState *l) {
+static void moveHome(linenoiseState *l) {
     if (l->pos != 0) {
         l->pos = 0;
         refreshLine(l);
@@ -758,9 +758,31 @@ void linenoiseEditMoveHome(linenoiseState *l) {
 }
 
 /* Move cursor to the end of the line. */
-void linenoiseEditMoveEnd(linenoiseState *l) {
+static void moveEnd(linenoiseState *l) {
     if (l->pos != l->len) {
         l->pos = l->len;
+        refreshLine(l);
+    }
+}
+
+/* Move cursor to beginning of previous word. */
+static void movePrevWord(linenoiseState *l) {
+    if (l->pos != 0) {
+        while (l->pos > 0 && l->buf[l->pos - 1] == ' ')
+            l->pos--;
+        while (l->pos > 0 && l->buf[l->pos - 1] != ' ')
+            l->pos--;
+        refreshLine(l);
+    }
+}
+
+/* Move cursor to beginning of next word. */
+static void moveNextWord(linenoiseState *l) {
+    if (l->pos < l->len) {
+        while (l->pos < l->len && l->buf[l->pos] != ' ')
+            l->pos++;
+        while (l->pos < l->len && l->buf[l->pos] == ' ')
+            l->pos++;
         refreshLine(l);
     }
 }
@@ -813,7 +835,7 @@ void linenoiseEditBackspace(linenoiseState *l) {
     }
 }
 
-/* Delete the previosu word, maintaining the cursor at the start of the
+/* Delete the previous word, maintaining the cursor at the start of the
  * current word. */
 void linenoiseEditDeletePrevWord(linenoiseState *l) {
     size_t old_pos = l->pos;
@@ -908,7 +930,7 @@ static int linenoiseEdit(int stdin_fd, int stdout_fd, char *buf, size_t buflen,
             history_len--;
             free(history[history_len]);
             if (mlmode)
-                linenoiseEditMoveEnd(&l);
+                moveEnd(&l);
             if (hintsCallback) {
                 /* Force a refresh without hints to leave the previous
                  * line as the user typed it after a newline. */
@@ -950,10 +972,10 @@ static int linenoiseEdit(int stdin_fd, int stdout_fd, char *buf, size_t buflen,
             }
             break;
         case CTRL_B: /* ctrl-b */
-            linenoiseEditMoveLeft(&l);
+            moveLeft(&l);
             break;
         case CTRL_F: /* ctrl-f */
-            linenoiseEditMoveRight(&l);
+            moveRight(&l);
             break;
         case CTRL_P: /* ctrl-p */
             linenoiseEditHistoryNext(&l, LINENOISE_HISTORY_PREV);
@@ -965,11 +987,22 @@ static int linenoiseEdit(int stdin_fd, int stdout_fd, char *buf, size_t buflen,
             /* Read the next two bytes representing the escape sequence.
              * Use two calls to handle slow terminals returning the two
              * chars at different times. */
-            if (read(l.ifd, seq, 1) == -1)
+            if (read(l.ifd, seq, 1) == -1) {
                 break;
-            if (read(l.ifd, seq + 1, 1) == -1)
+            }
+            switch (seq[0]) {
+            case 'B':
+            case 'b': /* Alt+F move to next word */
+                movePrevWord(&l);
+                continue;
+            case 'F':
+            case 'f': /* Alt+F move to next word */
+                moveNextWord(&l);
+                continue;
+            }
+            if (read(l.ifd, seq + 1, 1) == -1) {
                 break;
-
+            }
             /* ESC [ sequences. */
             if (seq[0] == '[') {
                 if (seq[1] >= '0' && seq[1] <= '9') {
@@ -979,13 +1012,13 @@ static int linenoiseEdit(int stdin_fd, int stdout_fd, char *buf, size_t buflen,
                     if (seq[2] == '~') {
                         switch (seq[1]) {
                         case '1': /* Home key. */
-                            linenoiseEditMoveHome(&l);
+                            moveHome(&l);
                             break;
                         case '3': /* Delete key. */
                             linenoiseEditDelete(&l);
                             break;
                         case '4': /* End key. */
-                            linenoiseEditMoveEnd(&l);
+                            moveEnd(&l);
                             break;
                         }
                     }
@@ -998,16 +1031,16 @@ static int linenoiseEdit(int stdin_fd, int stdout_fd, char *buf, size_t buflen,
                         linenoiseEditHistoryNext(&l, LINENOISE_HISTORY_NEXT);
                         break;
                     case 'C': /* Right */
-                        linenoiseEditMoveRight(&l);
+                        moveRight(&l);
                         break;
                     case 'D': /* Left */
-                        linenoiseEditMoveLeft(&l);
+                        moveLeft(&l);
                         break;
                     case 'H': /* Home */
-                        linenoiseEditMoveHome(&l);
+                        moveHome(&l);
                         break;
                     case 'F': /* End*/
-                        linenoiseEditMoveEnd(&l);
+                        moveEnd(&l);
                         break;
                     }
                 }
@@ -1017,10 +1050,10 @@ static int linenoiseEdit(int stdin_fd, int stdout_fd, char *buf, size_t buflen,
             else if (seq[0] == 'O') {
                 switch (seq[1]) {
                 case 'H': /* Home */
-                    linenoiseEditMoveHome(&l);
+                    moveHome(&l);
                     break;
                 case 'F': /* End */
-                    linenoiseEditMoveEnd(&l);
+                    moveEnd(&l);
                     break;
                 }
             }
@@ -1036,10 +1069,10 @@ static int linenoiseEdit(int stdin_fd, int stdout_fd, char *buf, size_t buflen,
             refreshLine(&l);
             break;
         case CTRL_A: /* Ctrl+a, go to the start of the line */
-            linenoiseEditMoveHome(&l);
+            moveHome(&l);
             break;
         case CTRL_E: /* ctrl+e, go to the end of the line */
-            linenoiseEditMoveEnd(&l);
+            moveEnd(&l);
             break;
         case CTRL_L: /* ctrl+l, clear screen */
             linenoiseClearScreen();
