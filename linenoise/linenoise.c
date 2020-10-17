@@ -153,6 +153,7 @@ enum KEY_ACTION {
     CTRL_U = 21,    /* Ctrl+u */
     CTRL_W = 23,    /* Ctrl+w */
     ESC = 27,       /* Escape */
+    CTRL_BACK = 31, /* Ctrl+backspace */
     BACKSPACE = 127 /* Backspace */
 };
 
@@ -422,28 +423,24 @@ static int completeLine(linenoiseState *ls) {
                 if (i == lc->size)
                     linenoiseBeep();
                 break;
-            case ESC:
-                /* Re-show original buffer */
-                if (i < lc->size)
-                    refreshLine(ls);
-                stop = 1;
-                break;
             default:
                 /* accept current completion: Update buffer and return */
                 if (i < lc->size) {
                     abuf *ab = &ls->abuf;
+                    size_t cursor;
                     ab->len = 0;
 
                     ls->stem = stem;
                     ls->completion = lc->vec[i];
-                    abAppendInputAndCompletion(ab, ls);
+                    cursor = abAppendInputAndCompletion(ab, ls);
                     clearCompletion(ls);
 
                     nwritten = min2(ls->buflen, ab->len);
                     memcpy(ls->buf, ab->addr, nwritten);
                     ab->len = 0;
                     ls->buf[nwritten] = '\0';
-                    ls->len = ls->pos = nwritten;
+                    ls->len = nwritten;
+                    ls->pos = cursor;
                 }
                 stop = 1;
                 break;
@@ -574,12 +571,14 @@ void refreshShowHints(abuf *ab, linenoiseString input, linenoiseState *l) {
  * cursor position, and number of columns of the terminal. */
 static void refreshSingleLine(linenoiseState *l) {
     char seq[64];
-    int fd = l->ofd;
-    int plen = l->prompt.len;
+    abuf *ab = &l->abuf;
     char *buf = l->buf;
     size_t len = l->len;
     size_t pos = l->pos;
-    abuf *ab = &l->abuf;
+    size_t cursor;
+    int fd = l->ofd;
+    int plen = l->prompt.len;
+    int abstart;
 
     while ((plen + pos) >= l->cols) {
         buf++;
@@ -594,13 +593,15 @@ static void refreshSingleLine(linenoiseState *l) {
     abAppend(ab, "\r", 1);
     /* Write the prompt and the current buffer content */
     abAppend(ab, l->prompt.addr, l->prompt.len);
-    abAppend(ab, buf, len);
+    abstart = ab->len;
+    cursor = abAppendInputAndCompletion(ab, l);
     /* Show hits if any. */
-    refreshShowHints(ab, makeString(len, buf), l);
+    refreshShowHints(ab, makeString(ab->len - abstart, ab->addr + abstart), l);
     /* Erase to right */
     abAppend(ab, "\x1b[0K", 4);
     /* Move cursor to original position. */
-    snprintf(seq, 64, "\r\x1b[%dC", (int)(pos + plen));
+    cursor -= l->pos - pos;
+    snprintf(seq, 64, "\r\x1b[%dC", (int)(cursor + plen));
     abAppend(ab, seq, strlen(seq));
     if (write(fd, ab->addr, ab->len) == -1) {
     } /* Can't recover from write error. */
@@ -977,8 +978,14 @@ static int linenoiseEdit(int stdin_fd, int stdout_fd, char *buf, size_t buflen,
                         break;
                     if (seq[2] == '~') {
                         switch (seq[1]) {
+                        case '1': /* Home key. */
+                            linenoiseEditMoveHome(&l);
+                            break;
                         case '3': /* Delete key. */
                             linenoiseEditDelete(&l);
+                            break;
+                        case '4': /* End key. */
+                            linenoiseEditMoveEnd(&l);
                             break;
                         }
                     }
@@ -1012,7 +1019,7 @@ static int linenoiseEdit(int stdin_fd, int stdout_fd, char *buf, size_t buflen,
                 case 'H': /* Home */
                     linenoiseEditMoveHome(&l);
                     break;
-                case 'F': /* End*/
+                case 'F': /* End */
                     linenoiseEditMoveEnd(&l);
                     break;
                 }
@@ -1038,7 +1045,8 @@ static int linenoiseEdit(int stdin_fd, int stdout_fd, char *buf, size_t buflen,
             linenoiseClearScreen();
             refreshLine(&l);
             break;
-        case CTRL_W: /* ctrl+w, delete previous word */
+        case CTRL_W:    /* ctrl+w, delete previous word */
+        case CTRL_BACK: /* ctrl+backspace, delete previous word */
             linenoiseEditDeletePrevWord(&l);
             break;
         default:
