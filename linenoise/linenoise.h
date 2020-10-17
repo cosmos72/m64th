@@ -50,23 +50,17 @@ typedef struct linenoiseString {
     const char *addr;
 } linenoiseString;
 
-typedef struct linenoiseCompletions {
+typedef struct linenoiseStrings {
     size_t size;
     size_t capacity;
     linenoiseString *vec;
-} linenoiseCompletions;
+} linenoiseStrings;
 
-typedef void(linenoiseCompletionCallback)(linenoiseString currentInput,
-                                          linenoiseCompletions *completions, void *userData);
-typedef char *(linenoiseHintsCallback)(linenoiseString currentInput, int *color, int *bold);
-typedef void(linenoiseFreeHintsCallback)(void *);
-void linenoiseSetCompletionCallback(linenoiseCompletionCallback *fn, void *userData);
-void linenoiseSetHintsCallback(linenoiseHintsCallback *fn);
-void linenoiseSetFreeHintsCallback(linenoiseFreeHintsCallback *fn);
-/* does not make a copy of linenoiseString */
-void linenoiseAddCompletion(linenoiseCompletions *completions, linenoiseString toAdd);
-
-/* char *linenoise(const char *prompt); */
+/**
+ * main entry point: read up to buflen bytes from standard input with line-editing,
+ * and store them into buf. Shows prompt at start of input line.
+ * Returns number of bytes actually read, or < 0 on error.
+ */
 int linenoise(char *buf, size_t buflen, const char *prompt);
 int linenoiseHistoryAdd(const char *line);
 int linenoiseHistorySetMaxLen(int len);
@@ -75,6 +69,28 @@ int linenoiseHistoryLoad(const char *filename);
 void linenoiseClearScreen(void);
 void linenoiseSetMultiLine(int ml);
 void linenoisePrintKeyCodes(void);
+
+/**
+ * signature of programmer-provided completion callback. it receives as arguments:
+ * currentInput: text received from standard input, up to the cursor
+ * completions:  a buffer where to add possible completions
+ * userData:     a opaque pointer to programmer-configured data:
+ *               the additional value passed to linenoiseSetCompletionCallback()
+ *
+ * a callback is expected to call linenoiseAddCompletion(completions, ...)
+ * filling possible completions, then return the substring of currentInput
+ * that was used as stem for all completions.
+ */
+typedef linenoiseString(linenoiseCompletionCallback)(linenoiseString currentInput,
+                                                     linenoiseStrings *completions, void *userData);
+void linenoiseSetCompletionCallback(linenoiseCompletionCallback *fn, void *userData);
+/* does not make a copy of toAdd */
+void linenoiseAddCompletion(linenoiseStrings *completions, linenoiseString toAdd);
+
+typedef char *(linenoiseHintsCallback)(linenoiseString currentInput, int *color, int *bold);
+typedef void(linenoiseFreeHintsCallback)(void *);
+void linenoiseSetHintsCallback(linenoiseHintsCallback *fn);
+void linenoiseSetFreeHintsCallback(linenoiseFreeHintsCallback *fn);
 
 #ifdef __cplusplus
 }

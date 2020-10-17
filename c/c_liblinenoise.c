@@ -64,7 +64,7 @@ static int m4th_c_compare_string(const void *left, const void *right) {
     return alen < blen ? -1 : alen > blen ? 1 : 0;
 }
 
-static void m4th_c_sort_completions(linenoiseCompletions *completions) {
+static void m4th_c_sort_completions(linenoiseStrings *completions) {
     const size_t n = completions->size;
     if (n > 1) {
         qsort(completions->vec, n, sizeof(linenoiseString), m4th_c_compare_string);
@@ -72,7 +72,7 @@ static void m4th_c_sort_completions(linenoiseCompletions *completions) {
 }
 
 /* callback invoked by linenoise() when user presses TAB to complete a word */
-void m4th_c_complete_word(linenoiseString currentInput, linenoiseCompletions *completions,
+void m4th_c_complete_word(linenoiseString currentInput, linenoiseStrings *completions,
                           void *userData) {
     m4th *m = (m4th *)userData;
     m4cell i, n;

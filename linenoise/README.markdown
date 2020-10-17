@@ -141,15 +141,19 @@ The following is an example of registering a completion callback:
 
 The completion must be a function returning `void` and getting as input
 a `const char` pointer, which is the line the user has typed so far, and
-a `linenoiseCompletions` object pointer, which is used as argument of
+a `linenoiseStrings` object pointer, which is used as argument of
 `linenoiseAddCompletion` in order to add completions inside the callback.
 An example will make it more clear:
 
-    void completion(const char *buf, linenoiseCompletions *lc) {
-        if (buf[0] == 'h') {
-            linenoiseAddCompletion(lc,"hello");
-            linenoiseAddCompletion(lc,"hello there");
+    linenoiseString completion(linenoiseString input, linenoiseStrings *lc) {
+        if (input.len > 0 && input.addr[0] == 'h') {
+	    linenoiseString s1 = { 5, "hello" };
+	    linenoiseString s2 = { 11, "hello there" };
+            linenoiseAddCompletion(lc, s1);
+            linenoiseAddCompletion(lc, s2);
         }
+	currentInput.len = 1;
+	return currentInput;
     }
 
 Basically in your completion callback, you inspect the input, and return

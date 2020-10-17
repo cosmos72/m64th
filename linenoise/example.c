@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-void completion(const linenoiseString currentInput, linenoiseCompletions *lc, void *unused) {
+void completion(const linenoiseString currentInput, linenoiseStrings *lc, void *unused) {
     (void)unused;
     if (currentInput.len > 0 && currentInput.addr[0] == 'h') {
         linenoiseString helloThere = {11, "hello there"};
