@@ -134,23 +134,6 @@ static int history_max_len = LINENOISE_DEFAULT_HISTORY_MAX_LEN;
 static int history_len = 0;
 static char **history = NULL;
 
-/* The linenoiseState structure represents the state during line editing.
- * We pass this state to functions implementing specific editing
- * functionalities. */
-typedef struct linenoiseState {
-    int ifd;                /* Terminal stdin file descriptor. */
-    int ofd;                /* Terminal stdout file descriptor. */
-    char *buf;              /* Edited line buffer. */
-    size_t buflen;          /* Edited line buffer size. */
-    linenoiseString prompt; /* Prompt to display. */
-    size_t pos;             /* Current cursor position. */
-    size_t oldpos;          /* Previous refresh cursor position. */
-    size_t len;             /* Current edited line length. */
-    size_t cols;            /* Number of columns in terminal. */
-    size_t maxrows;         /* Maximum num of rows used so far (multiline mode) */
-    int history_index;      /* The history index we are currently editing. */
-} linenoiseState;
-
 enum KEY_ACTION {
     KEY_NULL = 0,   /* NULL */
     CTRL_A = 1,     /* Ctrl+a */
@@ -172,6 +155,34 @@ enum KEY_ACTION {
     ESC = 27,       /* Escape */
     BACKSPACE = 127 /* Backspace */
 };
+
+/* We define a very simple "append buffer" structure, that is an heap
+ * allocated string where we can append to. This is useful in order to
+ * write all the escape sequences in a buffer and flush them to the standard
+ * output in a single call, to avoid flickering effects. */
+typedef struct abuf {
+    int len;
+    int cap;
+    char *addr;
+} abuf;
+
+/* The linenoiseState structure represents the state during line editing.
+ * We pass this state to functions implementing specific editing
+ * functionalities. */
+typedef struct linenoiseState {
+    int ifd;                /* Terminal stdin file descriptor. */
+    int ofd;                /* Terminal stdout file descriptor. */
+    char *buf;              /* Edited line buffer. */
+    size_t buflen;          /* Edited line buffer size. */
+    linenoiseString prompt; /* Prompt to display. */
+    abuf abuf;              /* Write buffer. */
+    size_t pos;             /* Current cursor position. */
+    size_t oldpos;          /* Previous refresh cursor position. */
+    size_t len;             /* Current edited line length. */
+    size_t cols;            /* Number of columns in terminal. */
+    size_t maxrows;         /* Maximum num of rows used so far (multiline mode) */
+    int history_index;      /* The history index we are currently editing. */
+} linenoiseState;
 
 static void linenoiseAtExit(void);
 int linenoiseHistoryAdd(const char *line);
@@ -468,20 +479,10 @@ void linenoiseAddCompletion(linenoiseStrings *lc, linenoiseString str) {
 
 /* =========================== Line editing ================================= */
 
-/* We define a very simple "append buffer" structure, that is an heap
- * allocated string where we can append to. This is useful in order to
- * write all the escape sequences in a buffer and flush them to the standard
- * output in a single call, to avoid flickering effects. */
-typedef struct abuf {
-    int len;
-    int cap;
-    char *addr;
-} abuf;
-
 static void abAppend(abuf *ab, const char *s, int len) {
     char *addr = ab->addr;
     if (len > ab->cap - ab->len) {
-        int capacity = imax2(ab->len + len, ab->cap ? ab->cap * 2 : 10);
+        int capacity = imax2(ab->len + len, ab->cap ? ab->cap * 2 : 40);
         addr = realloc(addr, capacity);
         if (addr == NULL) {
             return;
@@ -537,7 +538,7 @@ static void refreshSingleLine(linenoiseState *l) {
     char *buf = l->buf;
     size_t len = l->len;
     size_t pos = l->pos;
-    abuf ab = {};
+    abuf *ab = &l->abuf;
 
     while ((plen + pos) >= l->cols) {
         buf++;
@@ -549,20 +550,20 @@ static void refreshSingleLine(linenoiseState *l) {
     }
 
     /* Cursor to left edge */
-    abAppend(&ab, "\r", 1);
+    abAppend(ab, "\r", 1);
     /* Write the prompt and the current buffer content */
-    abAppend(&ab, l->prompt.addr, l->prompt.len);
-    abAppend(&ab, buf, len);
+    abAppend(ab, l->prompt.addr, l->prompt.len);
+    abAppend(ab, buf, len);
     /* Show hits if any. */
-    refreshShowHints(&ab, l, plen);
+    refreshShowHints(ab, l, plen);
     /* Erase to right */
-    abAppend(&ab, "\x1b[0K", 4);
+    abAppend(ab, "\x1b[0K", 4);
     /* Move cursor to original position. */
     snprintf(seq, 64, "\r\x1b[%dC", (int)(pos + plen));
-    abAppend(&ab, seq, strlen(seq));
-    if (write(fd, ab.addr, ab.len) == -1) {
+    abAppend(ab, seq, strlen(seq));
+    if (write(fd, ab->addr, ab->len) == -1) {
     } /* Can't recover from write error. */
-    abFree(&ab);
+    ab->len = 0;
 }
 
 /* Multi line low level line refresh.
@@ -578,7 +579,7 @@ static void refreshMultiLine(linenoiseState *l) {
     int col;                                            /* colum position, zero-based. */
     int old_rows = l->maxrows;
     int fd = l->ofd, j;
-    abuf ab = {};
+    abuf *ab = &l->abuf;
 
     /* Update maxrows if needed. */
     if (rows > (int)l->maxrows)
@@ -589,33 +590,31 @@ static void refreshMultiLine(linenoiseState *l) {
     if (old_rows - rpos > 0) {
         lndebug("go down %d", old_rows - rpos);
         snprintf(seq, 64, "\x1b[%dB", old_rows - rpos);
-        abAppend(&ab, seq, strlen(seq));
+        abAppend(ab, seq, strlen(seq));
     }
 
     /* Now for every row clear it, go up. */
     for (j = 0; j < old_rows - 1; j++) {
         lndebug("clear+up");
-        snprintf(seq, 64, "\r\x1b[0K\x1b[1A");
-        abAppend(&ab, seq, strlen(seq));
+        abAppend(ab, "\r\x1b[0K\x1b[1A", 9);
     }
 
     /* Clean the top line. */
     lndebug("clear");
-    snprintf(seq, 64, "\r\x1b[0K");
-    abAppend(&ab, seq, strlen(seq));
+    abAppend(ab, "\r\x1b[0K", 5);
 
     /* Write the prompt and the current buffer content */
-    abAppend(&ab, l->prompt.addr, l->prompt.len);
-    abAppend(&ab, l->buf, l->len);
+    abAppend(ab, l->prompt.addr, l->prompt.len);
+    abAppend(ab, l->buf, l->len);
 
     /* Show hits if any. */
-    refreshShowHints(&ab, l, plen);
+    refreshShowHints(ab, l, plen);
 
     /* If we are at the very end of the screen with our prompt, we need to
      * emit a newline and move the prompt to the first column. */
     if (l->pos && l->pos == l->len && (l->pos + plen) % l->cols == 0) {
         lndebug("<newline>");
-        abAppend(&ab, "\n\r", 2);
+        abAppend(ab, "\r\n", 2);
         rows++;
         if (rows > (int)l->maxrows)
             l->maxrows = rows;
@@ -629,24 +628,24 @@ static void refreshMultiLine(linenoiseState *l) {
     if (rows - rpos2 > 0) {
         lndebug("go-up %d", rows - rpos2);
         snprintf(seq, 64, "\x1b[%dA", rows - rpos2);
-        abAppend(&ab, seq, strlen(seq));
+        abAppend(ab, seq, strlen(seq));
     }
 
     /* Set column. */
     col = (plen + (int)l->pos) % (int)l->cols;
     lndebug("set col %d", 1 + col);
-    if (col)
-        snprintf(seq, 64, "\r\x1b[%dC", col);
-    else
-        snprintf(seq, 64, "\r");
-    abAppend(&ab, seq, strlen(seq));
+    abAppend(ab, "\r", 1);
+    if (col) {
+        snprintf(seq, 64, "\x1b[%dC", col);
+        abAppend(ab, seq, strlen(seq));
+    }
 
     lndebug("\n");
     l->oldpos = l->pos;
 
-    if (write(fd, ab.addr, ab.len) == -1) {
+    if (write(fd, ab->addr, ab->len) == -1) {
     } /* Can't recover from write error. */
-    abFree(&ab);
+    ab->len = 0;
 }
 
 /* Calls the two low level functions refreshSingleLine() or
@@ -796,7 +795,11 @@ void linenoiseEditDeletePrevWord(linenoiseState *l) {
 static int linenoiseEdit(int stdin_fd, int stdout_fd, char *buf, size_t buflen,
                          const char *prompt) {
     linenoiseState l;
+    int ret;
 
+    if (buflen == 0) {
+        return 0;
+    }
     /* Populate the linenoise state that we pass to functions implementing
      * specific editing functionalities. */
     l.ifd = stdin_fd;
@@ -805,6 +808,8 @@ static int linenoiseEdit(int stdin_fd, int stdout_fd, char *buf, size_t buflen,
     l.buflen = buflen;
     l.prompt.addr = prompt;
     l.prompt.len = strlen(prompt);
+    l.abuf.cap = l.abuf.len = 0;
+    l.abuf.addr = NULL;
     l.oldpos = l.pos = 0;
     l.len = 0;
     l.cols = getColumns(stdin_fd, stdout_fd);
@@ -822,14 +827,16 @@ static int linenoiseEdit(int stdin_fd, int stdout_fd, char *buf, size_t buflen,
     if (write(l.ofd, prompt, l.prompt.len) == -1) {
         return -1;
     }
-    while (1) {
+    for (;;) {
         int nread;
         char seq[3];
         char c;
 
         nread = read(l.ifd, &c, 1);
-        if (nread <= 0)
-            return l.len;
+        if (nread <= 0) {
+            ret = l.len;
+            goto out;
+        }
 
         /* Only autocomplete when the callback is set. It returns < 0 when
          * there was an error reading from fd. Otherwise it will return the
@@ -837,8 +844,10 @@ static int linenoiseEdit(int stdin_fd, int stdout_fd, char *buf, size_t buflen,
         if (c == TAB && completionCallback != NULL) {
             int n = completeLine(&l);
             /* Return on errors */
-            if (n < 0)
-                return l.len;
+            if (n < 0) {
+                ret = l.len;
+                goto out;
+            }
             /* Read next character when 0 */
             if (n == 0)
                 continue;
@@ -859,10 +868,12 @@ static int linenoiseEdit(int stdin_fd, int stdout_fd, char *buf, size_t buflen,
                 refreshLine(&l);
                 hintsCallback = hc;
             }
-            return (int)l.len;
+            ret = l.len;
+            goto out;
         case CTRL_C: /* ctrl-c */
             errno = EAGAIN;
-            return -1;
+            ret = -1;
+            goto out;
         case BACKSPACE: /* backspace */
         case CTRL_H:    /* ctrl-h */
             linenoiseEditBackspace(&l);
@@ -875,7 +886,8 @@ static int linenoiseEdit(int stdin_fd, int stdout_fd, char *buf, size_t buflen,
                 history_len--;
                 free(history[history_len]);
                 errno = 0;
-                return -1; /* EOF */
+                ret = -1; /* EOF */
+                goto out;
             }
             break;
         case CTRL_T: /* ctrl-t, swaps current character with previous. */
@@ -982,12 +994,16 @@ static int linenoiseEdit(int stdin_fd, int stdout_fd, char *buf, size_t buflen,
             linenoiseEditDeletePrevWord(&l);
             break;
         default:
-            if (linenoiseEditInsert(&l, c))
-                return -1;
+            if (linenoiseEditInsert(&l, c)) {
+                ret = -1;
+                goto out;
+            }
             break;
         }
     }
-    return l.len;
+out:
+    abFree(&l.abuf);
+    return ret;
 }
 
 /* This special mode is used by linenoise in order to print scan codes

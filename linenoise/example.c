@@ -3,18 +3,20 @@
 #include <stdlib.h>
 #include <string.h>
 
-void completion(const linenoiseString currentInput, linenoiseStrings *lc, void *unused) {
+linenoiseString completion(linenoiseString input, linenoiseStrings *lc, void *unused) {
     (void)unused;
-    if (currentInput.len > 0 && currentInput.addr[0] == 'h') {
+    if (input.len > 0 && input.addr[0] == 'h') {
         linenoiseString helloThere = {11, "hello there"};
         linenoiseString hello = {5, helloThere.addr};
         linenoiseAddCompletion(lc, hello);
         linenoiseAddCompletion(lc, helloThere);
     }
+    input.len = 1;
+    return input;
 }
 
-char *hints(const linenoiseString currentInput, int *color, int *bold) {
-    if (currentInput.len == 5 && !strncasecmp(currentInput.addr, "hello", 5)) {
+char *hints(const linenoiseString input, int *color, int *bold) {
+    if (input.len == 5 && !strncasecmp(input.addr, "hello", 5)) {
         *color = 35;
         *bold = 0;
         return " World";
