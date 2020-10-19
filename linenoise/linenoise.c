@@ -368,6 +368,12 @@ static void linenoiseBeep(void) {
 
 /* ============================== Completion ================================ */
 
+/* set current completion in linenoiseState */
+static void setCompletion(linenoiseState *ls, linenoiseString stem, linenoiseString completion) {
+    ls->stem = stem;
+    ls->completion = completion;
+}
+
 /* remove current completion from linenoiseState */
 static void clearCompletion(linenoiseState *ls) {
     ls->completion.len = ls->stem.len = 0;
@@ -405,8 +411,7 @@ static int completeLine(linenoiseState *ls) {
         while (!stop) {
             /* Show completion or original buffer */
             if (i < lc->size) {
-                ls->stem = stem;
-                ls->completion = lc->vec[i];
+                setCompletion(ls, stem, lc->vec[i]);
             }
             refreshLine(ls);
             clearCompletion(ls);
@@ -430,8 +435,7 @@ static int completeLine(linenoiseState *ls) {
                     size_t cursor;
                     ab->len = 0;
 
-                    ls->stem = stem;
-                    ls->completion = lc->vec[i];
+                    setCompletion(ls, stem, lc->vec[i]);
                     cursor = abAppendInputAndCompletion(ab, ls);
                     clearCompletion(ls);
 

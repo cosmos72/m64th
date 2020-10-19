@@ -148,7 +148,7 @@ WORD_START(_call_xt_,  _call_native_)
 WORD_END(_call_xt_)
 WORD_START(_catch_beg_,  _call_xt_)
     WORD_DSTACK(-1,-1) /* stack effect of called word */
-    WORD_RSTACK(0,2)   /* one cell consumed by word's 'exit' */
+    WORD_RSTACK(0,3)
     WORD_DSTACK(1,0)   /* stack effect when jumping */
     WORD_RSTACK(0,3)
     WORD_NATIVE_NONE()
@@ -157,7 +157,7 @@ WORD_START(_catch_beg_,  _call_xt_)
 WORD_END(_catch_beg_)
 WORD_START(_catch_end_,  _catch_beg_)
     WORD_DSTACK(-1,-1) /* stack effect of called word */
-    WORD_RSTACK(2,0)   /* one cell consumed by word's 'exit' */
+    WORD_RSTACK(3,0)   /* one cell consumed by word's 'exit' */
     WORD_STACK_NONE()
     WORD_NATIVE_LEN(_catch_end_)
     WORD_FLAGS(M4FLAG_INLINE_ALWAYS)
