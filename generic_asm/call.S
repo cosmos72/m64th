@@ -37,6 +37,22 @@ FUNC_RAWEND(_call_xt_)
  * ...  old-RTOP  RSTK-depth  old-m4th.handler  RTOP=IP
  */
 FUNC_START(_catch_beg_)
+        /* check for stack underflow */
+        LOAD(  REG1,   AT(M4TH, M4TH_OFF_DEND))
+        MOVI(  M4ERR_STACK_UNDERFLOW,  REG0)
+        JA(    DSTK,   REG1,   FUNC(_throw_reg0_))
+        SUB2(  DSTK,   REG1)                       /* a  = dend - dstk   */
+
+        /* check for impossible XT values: (xt & 7) must be == 0 */
+#ifdef __aarch64__
+        and    REG2,   DTOP,   IMM(SZ-1);
+#else
+        MOVE(  DTOP,   REG2)
+        AND2(IMM(SZ-1),REG2)
+#endif
+        MOVI(  M4ERR_INVALID_MEMORY_ADDRESS, REG0)
+        JNZ(   REG2,   FUNC(_throw_reg0_))
+
         RPUSH( RTOP)/* save current RTOP */
 
         /* pop XT */
@@ -44,8 +60,6 @@ FUNC_START(_catch_beg_)
         DPOP___DTOP()
 
         /* save dstk depth to rstk */
-        LOAD(  REG1,   AT(M4TH, M4TH_OFF_DEND))
-        SUB2(  DSTK,   REG1)                       /* a  = dend - dstk   */
         RPUSH( REG1)                               /* save dend - dstk   */
 
         /* save m4th.handler to rstk */

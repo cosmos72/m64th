@@ -625,8 +625,8 @@ static m4testexecute testexecute_d[] = {
      {}},
     {"1 ' throw catch",
      {m4_catch_beg_, m4_catch_end_, m4bye},
-     {{3, {19, 1, DXT(throw)}}, {1, {0xfed3}}},
-     {{3, {19, -1 /*clobbered*/, 1}}, {1, {0xfed3}}},
+     {{3, {19, 1, DXT(throw)}}, {1, {0xfed4}}},
+     {{4, {19, 1, -1 /*clobbered*/, 1}}, {1, {0xfed4}}},
      {}},
     /* ----------------------------- (optimize-literal) --------------------- */
     {"-1 (optimize-literal)",
