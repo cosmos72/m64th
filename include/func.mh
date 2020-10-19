@@ -25,7 +25,7 @@
 
 #define FUNC(name) m4f##name
 
-#define FUNC_NEXT(name) .L.FUNC(name).next
+#define FUNC_RET(name) .L.FUNC(name).next
 
 #define FUNC_DECL(name)                                                                            \
     .globl FUNC(name);                                                                             \
@@ -44,7 +44,7 @@
     .cfi_endproc;                                                                                  \
     .size FUNC(name), .- FUNC(name);
 
-#define FUNC_END(name) FUNC_NEXT(name) : NEXT() FUNC_RAWEND(name)
+#define FUNC_END(name) FUNC_RET(name) : NEXT() FUNC_RAWEND(name)
 
 /* clang-format on */
 

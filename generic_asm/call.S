@@ -128,7 +128,7 @@ FUNC_RAWEND(_check_lit_)
 FUNC_START(throw)
         MOVE(  DTOP,   REG0)
         DPOP___DTOP()
-        JZ(    REG0,   FUNC_NEXT(throw))             /* 0 means 'do not throw'             */
+        JZ(    REG0,   FUNC_RET(throw))             /* 0 means 'do not throw'             */
 FUNC_DEF(_throw_reg0_)
         STOR(  REG0,   AT(M4TH, M4TH_OFF_EX))        /* save exception to m4th.ex          */
         LOAD(  REG2,   AT(M4TH, M4TH_OFF_HANDLER))   /* b = m4th.handler = rend - rstk     */

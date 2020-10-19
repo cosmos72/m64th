@@ -238,7 +238,7 @@ FUNC_END(state)
  */
 FUNC_START(left_bracket)
         LOAD(  REG2,       AT(M4TH, M4TH_OFF_XT))
-        JZ(    REG2,       FUNC_NEXT(left_bracket))    /* noop if interpreting  */
+        JZ(    REG2,       FUNC_RET(left_bracket))    /* noop if interpreting  */
 
         XSUB2( HERE,       REG2)                       /* b = here - m4th.xt    */
         LOAD(  REG1,       AT(M4TH, M4TH_OFF_LASTW))   /* a = m4th.lastw        */

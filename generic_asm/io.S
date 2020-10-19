@@ -128,7 +128,7 @@ FUNC_START(key)
         LOAD(  REG3,   AT(REG1, IOBUF_OFF_END))
         MOVE(  IMM_1,  DTOP)
         /* TODO refill input buffer */
-        JAE(   REG2,   REG3,  FUNC_NEXT(key))
+        JAE(   REG2,   REG3,  FUNC_RET(key))
         LOAD(  REG4,   AT(REG1, IOBUF_OFF_ADDR))   /* d = iobuf.addr    */
         LD_ub( DTOP,   AT(REG4, REG2, 1))
         INC1(  REG2)

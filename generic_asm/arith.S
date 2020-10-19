@@ -289,7 +289,7 @@ FUNC_END(eight_div)
 
 
 FUNC_START(question_dup)   /* ?dup */
-        JZ(    DTOP,   FUNC_NEXT(question_dup))
+        JZ(    DTOP,   FUNC_RET(question_dup))
         DPUSH__DTOP()
 FUNC_END(question_dup)
 

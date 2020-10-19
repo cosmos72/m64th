@@ -1030,6 +1030,11 @@ static m4testexecute testexecute_f[] = {
      {{4, {(m4cell) "abcdefgh0", (m4cell) "abcdefgh1", 9, tfalse}}, {}},
      {}},
     /* ----------------------------- string-ci= ----------------------------- */
+    {"\"abcdef@\" \"abcdef@\" string-ci=",
+     {CALL(string_ci_equal), m4bye},
+     {{3, {(m4cell) "abcdef@+", (m4cell) "abcdef@+ ", 8}}, {}},
+     {{4, {(m4cell) "abcdef@+", (m4cell) "abcdef@+ ", 8, ttrue}}, {}},
+     {}},
     {"\"abcdef@\" \"abCdeF@\" string-ci=",
      {CALL(string_ci_equal), m4bye},
      {{3, {(m4cell) "abcdef@+", (m4cell) "abCdeF@", 7}}, {}},

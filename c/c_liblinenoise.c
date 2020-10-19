@@ -78,7 +78,7 @@ linenoiseString m4th_c_complete_word(linenoiseString input, linenoiseStrings *co
     m4cell i, n;
     for (n = input.len, i = n; i > 0; i--) {
         /* find last non-blank word in current input */
-        if ((unsigned char)input.addr[i - 1] <= (unsigned char)' ') {
+        if ((m4char)input.addr[i - 1] <= (m4char)' ') {
             break;
         }
     }

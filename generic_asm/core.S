@@ -92,15 +92,15 @@ FUNC_START(flags_to_consumed_tokens)
 /* LABEL(flags_to_consumed_tokens.2) */
         JNE(   DTOP,   IMM(M4FLAG_CONSUMES_IP_2),  TO(flags_to_consumed_tokens.4))
         MOVI(  2/SZt,  DTOP)
-        JUMP(  FUNC_NEXT(flags_to_consumed_tokens))
+        JUMP(  FUNC_RET(flags_to_consumed_tokens))
 LABEL(flags_to_consumed_tokens.4)
         JNE(   DTOP,   IMM(M4FLAG_CONSUMES_IP_4),  TO(flags_to_consumed_tokens.8))
         MOVI(  4/SZt,  DTOP)
-        JUMP(  FUNC_NEXT(flags_to_consumed_tokens))
+        JUMP(  FUNC_RET(flags_to_consumed_tokens))
 LABEL(flags_to_consumed_tokens.8)
         JNE(   DTOP,   IMM(M4FLAG_CONSUMES_IP_8),  TO(flags_to_consumed_tokens.0))
         MOVI(  8/SZt,  DTOP)
-        JUMP(  FUNC_NEXT(flags_to_consumed_tokens))
+        JUMP(  FUNC_RET(flags_to_consumed_tokens))
 LABEL(flags_to_consumed_tokens.0)
         ZERO(  DTOP)
 FUNC_END(flags_to_consumed_tokens)
@@ -179,7 +179,7 @@ FUNC_END(name_to_flags_store)
 FUNC_START(name_to_ident) /* ( nt -- c-addr u ) */
         TOKEN_CALL(FUNC(name_to_string), name_to_ident.0)
         LOAD(  REG1,       AT(DSTK))   /* a = name.addr           */
-        JZ(    REG1,       FUNC_NEXT(name_to_ident))
+        JZ(    REG1,       FUNC_RET(name_to_ident))
         ADD2(  REG1,       DTOP)       /* dtop = m4countedstring* */
         ADDI(  DTOP,       1,  REG1)   /* a = ident.addr          */
         LD_ub( DTOP,       AT(DTOP))   /* dtop = ident.len        */

@@ -235,17 +235,33 @@ FUNC_START(string_ci_equal)
         JEQ(   REG1,   REG2,    TO(string_ci_equal.true))   /* addr1 == addr2 */
         JZ(    DTOP,            TO(string_ci_equal.true))   /* u == 0         */
         ZERO(  REG0)
+        JB(    DTOP,   IMM(SZ), TO(string_ci_equal.byte))
+
+        SUB2(IMM(SZ),  DTOP)
+LABEL(string_ci_equal.cell)
+        LOAD(  REG3,   AT(REG1, REG0, 1))
+        LOAD(  REG4,   AT(REG2, REG0, 1))
+        JNE(   REG3,   REG4,    TO(string_ci_equal.cell.fallback))
+        ADD2(  IMM(SZ),REG0)
+        JBE(   REG0,   DTOP,    TO(string_ci_equal.cell))
+LABEL(string_ci_equal.true)
+        MOVE(  IMM_1,  DTOP)
+        JUMP(  FUNC_RET(string_ci_equal))
+
+LABEL(string_ci_equal.cell.fallback)
+        ADD2(IMM(SZ),  DTOP)
+
 LABEL(string_ci_equal.byte)
         LD_ub( REG3,   AT(REG1, REG0, 1))
         LD_ub( REG4,   AT(REG2, REG0, 1))
-        JNE(   REG3w,  REG4w,   TO(string_ci_equal.cmp))
-LABEL(string_ci_equal.next)
+        JNE(   REG3w,  REG4w,   TO(string_ci_equal.slow))
+LABEL(string_ci_equal.byte.next)
         INC1(  REG0)
         JB(    REG0,   DTOP,    TO(string_ci_equal.byte))
-LABEL(string_ci_equal.true)
         MOVE(  IMM_1,  DTOP)
-        NEXT()
-LABEL(string_ci_equal.cmp)
+        JUMP(  FUNC_RET(string_ci_equal))
+
+LABEL(string_ci_equal.slow)
         ORR2(  IMM('a'-'A'), REG3w)
         ORR2(  IMM('a'-'A'), REG4w)
         JNE(   REG3w,  REG4w,   TO(string_ci_equal.false))
@@ -253,7 +269,8 @@ LABEL(string_ci_equal.cmp)
         JA(    REG3w,  IMM('z'),TO(string_ci_equal.false))
         JB(    REG4w,  IMM('a'),TO(string_ci_equal.false))
         JA(    REG4w,  IMM('z'),TO(string_ci_equal.false))
-        JUMP(  TO(string_ci_equal.next))
+        JUMP(  TO(string_ci_equal.byte.next))
+
 LABEL(string_ci_equal.false)
         ZERO(  DTOP)
 FUNC_END(string_ci_equal)
@@ -265,7 +282,7 @@ FUNC_END(string_ci_equal)
  */
 FUNC_START(string_find_blank)
         DPOP(  REG2)                                   /* b = addr */
-        JZ(    DTOP,   FUNC_NEXT(string_find_blank))   /* u == 0   */
+        JZ(    DTOP,   FUNC_RET(string_find_blank))   /* u == 0   */
         ZERO(  REG1)
 LABEL(string_find_blank.loop)
         LD_ub( REG3,   AT(REG2, REG1, 1))
@@ -300,7 +317,7 @@ FUNC_END(string_find_char)
  */
 FUNC_START(string_find_nonblank)
         DPOP(  REG2)                                   /* b = addr      */
-        JZ(    DTOP,   FUNC_NEXT(string_find_nonblank))/* u == 0       */
+        JZ(    DTOP,   FUNC_RET(string_find_nonblank))/* u == 0       */
         ZERO(  REG1)                                   /* a = index = 0 */
 LABEL(string_find_nonblank.loop)
         LD_ub( REG3,   AT(REG2, REG1, 1))              /* c = addr[index] */

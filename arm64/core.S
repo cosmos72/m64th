@@ -17,9 +17,9 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include "../dispatch/asm.mh"
 #include "../include/dict.mh"
 #include "../include/wordlist.mh"
-#include "../dispatch/asm.mh"
 
 /* clang-format off */
 
@@ -45,7 +45,7 @@ FUNC_START(wordlist_last) /* ( wid -- nt ) */
         LOAD(  REG1,       AT(DTOP, WORDLIST_OFF_LAST))     /* b = nt = wid.last      */
         cmp    REG1,       IMM(0);
         csel   DTOP,       REG1,   DTOP,   ne;              /* dtop = nt|wid          */
-        b.ne               FUNC_NEXT(wordlist_last);
+        b.ne               FUNC_RET(wordlist_last);
         LOAD(  DTOP,       AT(DTOP, WORDLIST_OFF_DICT))     /* dtop = wid.dict        */
         LOAD(  REG1_uw,    AT(DTOP, DICT_OFF_LASTWORD_OFF)) /* a = dict.last_word_off */
         SUB2(  REG1,       DTOP)                            /* dtop = nt              */
