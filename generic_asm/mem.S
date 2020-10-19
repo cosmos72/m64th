@@ -232,12 +232,18 @@ FUNC_START(string_ci_equal)
         LOAD(  REG2,   AT(DSTK))       /* b = addr2 */
         LOAD(  REG1,   AT(DSTK, SZ))   /* a = addr1 */
         DPUSH__DTOP()
+#ifdef __x86_64__
+        RPUSH( RTOP)   /* we need an additional register */
+#endif
         JEQ(   REG1,   REG2,    TO(string_ci_equal.true))   /* addr1 == addr2 */
         JZ(    DTOP,            TO(string_ci_equal.true))   /* u == 0         */
         ZERO(  REG0)
         JB(    DTOP,   IMM(SZ), TO(string_ci_equal.byte))
 
         SUB2(IMM(SZ),  DTOP)
+#ifdef __x86_64__
+        movabs IMM(0x2020202020202020), RTOP;
+#endif
 LABEL(string_ci_equal.cell)
         LOAD(  REG3,   AT(REG1, REG0, 1))
         LOAD(  REG4,   AT(REG2, REG0, 1))
@@ -246,9 +252,17 @@ LABEL(string_ci_equal.cell)
         JBE(   REG0,   DTOP,    TO(string_ci_equal.cell))
 LABEL(string_ci_equal.true)
         MOVE(  IMM_1,  DTOP)
-        JUMP(  FUNC_RET(string_ci_equal))
+        JUMP(  TO(string_ci_equal.done))
 
 LABEL(string_ci_equal.cell.fallback)
+#ifdef __x86_64__
+        ORR2(  RTOP,   REG3)
+        ORR2(  RTOP,   REG4)
+#else
+        ORR2(  IMM(0x2020202020202020), REG3)
+        ORR2(  IMM(0x2020202020202020), REG4)
+#endif
+        JNE(   REG3,   REG4,    TO(string_ci_equal.false))
         ADD2(IMM(SZ),  DTOP)
 
 LABEL(string_ci_equal.byte)
@@ -259,7 +273,7 @@ LABEL(string_ci_equal.byte.next)
         INC1(  REG0)
         JB(    REG0,   DTOP,    TO(string_ci_equal.byte))
         MOVE(  IMM_1,  DTOP)
-        JUMP(  FUNC_RET(string_ci_equal))
+        JUMP(  TO(string_ci_equal.done))
 
 LABEL(string_ci_equal.slow)
         ORR2(  IMM('a'-'A'), REG3w)
@@ -273,6 +287,11 @@ LABEL(string_ci_equal.slow)
 
 LABEL(string_ci_equal.false)
         ZERO(  DTOP)
+
+LABEL(string_ci_equal.done)
+#ifdef __x86_64__
+        RPOP(  RTOP)          /* restore RTOP */
+#endif
 FUNC_END(string_ci_equal)
 
 

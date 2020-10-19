@@ -324,27 +324,30 @@ FUNC_START(string_equal)   /* string=  ( addr1 addr2 u -- addr1 addr2 u t|f ) m4
         JEQ(   REG1,   REG2,    TO(string_equal.true))   /* addr1 == addr2 */
         JZ(    DTOP,            TO(string_equal.true))   /* u == 0         */
         ZERO(  REG0)
-        JB(    DTOP,   IMM(8),  TO(string_equal.byte))   /* < 8 bytes */
-        SUB2(  IMM(8), DTOP)
+        JB(    DTOP,   IMM(SZ), TO(string_equal.byte))   /* < SZ bytes */
+        SUB2(IMM(SZ), DTOP)
 LABEL(string_equal.cell)
         LOAD(  REG3,   AT(REG1, REG0, 1))
         LOAD(  REG4,   AT(REG2, REG0, 1))
         JNE(   REG3,   REG4,    TO(string_equal.false))
         ADD2(  IMM(8), REG0)
-        JB(    REG0,   DTOP,    TO(string_equal.cell))  /* > 8 bytes left ? */
-        LOAD(  REG3,   AT(REG1, DTOP, 1))                  /* compare last 8 bytes */
+        JB(    REG0,   DTOP,    TO(string_equal.cell))  /* >= SZ bytes left ? */
+        LOAD(  REG3,   AT(REG1, DTOP, 1))               /* compare last SZ bytes */
         LOAD(  REG4,   AT(REG2, DTOP, 1))
         JNE(   REG3,   REG4,    TO(string_equal.false))
-        JUMP(                   TO(string_equal.true))
+LABEL(string_equal.true)
+        MOVE(  IMM_1,  DTOP)
+        JUMP(                   FUNC_RET(string_equal))
+
 LABEL(string_equal.byte)
         LD_ub( REG3,   AT(REG1, REG0, 1))
         LD_ub( REG4,   AT(REG2, REG0, 1))
         JNE(   REG3,   REG4,    TO(string_equal.false))
         INC1(  REG0)
         JB(    REG0,   DTOP,    TO(string_equal.byte))
-LABEL(string_equal.true)
         MOVE(  IMM_1,  DTOP)
-        NEXT()
+        JUMP(                   FUNC_RET(string_equal))
+
 LABEL(string_equal.false)
         ZERO(  DTOP)
 FUNC_END(string_equal)
