@@ -144,8 +144,8 @@
 #define M4TH x25 /* pointer to C struct field &m4th->user            */
 #define HERE x26 /* pointer to first available code/data location    */
 #define FTBL x27 /* pointer to table m4func[m4token] containing asm function addresses */
-#define IP   x28 /* forth bytecode instruction pointer               */
-#define VM   x19 /* pointer to '(vm)' bytecode interpreter           */
+#define IP x28   /* forth bytecode instruction pointer               */
+#define VM x19   /* pointer to '(vm)' bytecode interpreter           */
 
 #define R000 xzr  /* 64 bit, always 0 */
 #define R000b wzr /*  8 bit, always 0 */
@@ -158,6 +158,7 @@
 #define ADD4(a,b,shl,dst) add   dst, a, b, lsl shl; /* dst  = a_reg + (b_reg << shl) */
 #define ADDI(a,b,dst)     add   dst, a, IMM(b);     /* dst  = a_reg + b_imm */
 #define AND2(src,dst)     and   dst, dst, src;      /* dst &= src     */
+#define AND3(a,b,dst)     and   dst, a, b;          /* dst  = a & b   */
 #define AT0(reg)                [reg]               /* mem[reg]       */
 #define ATx(reg,imm)            [reg,imm]           /* mem[reg+imm]   */
 #define ATxy(reg1,reg2,rmul) CAT2(ATxy_,rmul)(reg1,reg2) /* mem[reg1+reg2*rmul] */
@@ -211,16 +212,15 @@
 #define ASM_RET() ret;               /* raw/native assembly: return from function */
 
 #define TOKEN_CALL_PREPARE(ret)                                                                    \
-    RPUSH(VM)                 /* cheat slightly to reduce code size: reorder rstack    */          \
-    ADDROF_1M(TO(ret), VM)    /* acceptable, functions must not access caller's rstack */
-#define TOKEN_CALL_CLEANUP(ret)  /* __________________________________________________ */          \
-    RPOP(VM)
+    RPUSH(VM)              /* cheat slightly to reduce code size: reorder rstack    */             \
+    ADDROF_1M(TO(ret), VM) /* acceptable, functions must not access caller's rstack */
+#define TOKEN_CALL_CLEANUP(ret) /* __________________________________________________ */ RPOP(VM)
 #define TOKEN_CALL_BODY(func, ret) /* raw/native assembly: call token->token           */          \
     b func;                                                                                        \
     LABEL(ret)
-#define TOKEN_CALL(func, ret)               /* call token from another token          */           \
-    TOKEN_CALL_PREPARE(ret)                 /*                                        */           \
-    TOKEN_CALL_BODY(func, ret)              /*                                        */           \
+#define TOKEN_CALL(func, ret)  /* call token from another token          */                        \
+    TOKEN_CALL_PREPARE(ret)    /*                                        */                        \
+    TOKEN_CALL_BODY(func, ret) /*                                        */                        \
     TOKEN_CALL_CLEANUP(ret)
 
 #define JA(reg, val, label) /*  if reg u>  val jump to label */                                    \
@@ -306,8 +306,8 @@
 #define NEXTCELL() CAT2(NEXT, SZ)() /* skip SZ bytes,    jump to following instruction */
 
 #define RELJUMP()                                                                                  \
-    LD_st( REG0,   AT(IP), IMM(SZt)) /* REG0 = IP jump offset; IP += SZt       */                  \
-    ADD4(  IP, REG0, PSZt, IP)       /* IP = TARGET_IP - SZt                   */                  \
-    NEXT0()                          /* jump to TARGET_IP                      */
+    LD_st(REG0, AT(IP), IMM(SZt)) /* REG0 = IP jump offset; IP += SZt       */                     \
+        ADD4(IP, REG0, PSZt, IP)  /* IP = TARGET_IP - SZt                   */                     \
+        NEXT0()                   /* jump to TARGET_IP                      */
 
 #endif /* M4TH_ARM64_ASM_MH */

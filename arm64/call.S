@@ -184,7 +184,7 @@ FUNC_START(_c_call_)
 LABEL(_c_call_.stack_c)
         /* m4th->rstack.curr == 0 thus RSTK points to C stack, below sp:     */
         /* update sp before call, and restore it after call                  */
-        and    sp, RSTK,  IMM(-SZ2);   /* set sp = RSTK, then align it       */
+        AND3(  RSTK,IMM(-SZ2), sp)     /* set sp = RSTK, then align it       */
         blr    x9;                     /* call C func, overwrites lr         */
         /* decrease sp to ensure we do not write below it                    */
         SUB2(IMM(4096),   sp)

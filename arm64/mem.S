@@ -261,7 +261,7 @@ FUNC_END(crc_string_simd)
 FUNC_START(fill)
         LOAD(  REG1,   AT(DSTK, SZ))            /* a = c-addr                  */
         LOAD(  REG2,   AT(DSTK))                /* b = u = count               */
-        and    DTOPw,  DTOPw,   IMM(255);
+        AND3(  DTOPw,  IMM(255),DTOPw)
         orr    DTOPw,  DTOPw,   DTOPw,  lsl 8;
         orr    DTOPw,  DTOPw,   DTOPw,  lsl 16;
         orr    DTOP,   DTOP,    DTOP,   lsl 32; /* DTOP = ch<<56|ch<<48 ... | ch<<8|ch */
