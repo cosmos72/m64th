@@ -2,7 +2,7 @@
 m4th is a forth compiler, interpreter and REPL
 
 ## Current status
-**BETA** REPL and many simple words are implemented, including `:` to define new words.
+**BETA** i.e. REPL and many simple words are implemented, including `:` to define new words.
 
 It has line editing and autocompletion.
 
