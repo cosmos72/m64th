@@ -252,9 +252,9 @@ static int enableRawMode(int fd) {
         atexit(linenoiseAtExit);
         atexit_registered = 1;
     }
-    if (tcgetattr(fd, &orig_termios) == -1)
+    if (tcgetattr(fd, &orig_termios) == -1) {
         return -1;
-
+    }
     raw = orig_termios; /* modify the original mode */
     /* input modes: no break, no CR to NL, no parity check, no strip char,
      * no start/stop output control. */
@@ -272,16 +272,18 @@ static int enableRawMode(int fd) {
     raw.c_cc[VTIME] = 0; /* 1 byte, no timer */
 
     /* put terminal in raw mode */
-    if (tcsetattr(fd, TCSANOW, &raw) < 0)
+    if (tcsetattr(fd, TCSANOW, &raw) < 0) {
         return -1;
+    }
     rawmode = 1;
     return 0;
 }
 
 static void disableRawMode(int fd) {
     /* Don't even check the return value as it's too late. */
-    if (rawmode && tcsetattr(fd, TCSANOW, &orig_termios) != -1)
+    if (rawmode && tcsetattr(fd, TCSANOW, &orig_termios) != -1) {
         rawmode = 0;
+    }
 }
 
 /* Use the ESC [6n escape sequence to query the horizontal cursor position
@@ -369,20 +371,28 @@ static void linenoiseBeep(void) {
 /* ============================== Completion ================================ */
 
 /* set current completion in linenoiseState */
-static void setCompletion(linenoiseState *ls, linenoiseString stem, linenoiseString completion) {
+static void setCurrentCompletion(linenoiseState *ls, linenoiseString stem,
+                                 linenoiseString completion) {
     ls->stem = stem;
     ls->completion = completion;
 }
 
 /* remove current completion from linenoiseState */
-static void clearCompletion(linenoiseState *ls) {
+static void clearCurrentCompletion(linenoiseState *ls) {
     ls->completion.len = ls->stem.len = 0;
     ls->completion.addr = ls->stem.addr = NULL;
 }
 
-/* Free a list of completion option populated by linenoiseAddCompletion(). */
-static void freeCompletions(linenoiseStrings *lc) {
+/* clear the completion options populated by linenoiseAddCompletion(). */
+static void clearCompletions(linenoiseStrings *lc) {
     lc->size = 0;
+}
+
+/* free the completion options populated by linenoiseAddCompletion(). */
+static void freeCompletions(linenoiseStrings *lc) {
+    lc->capacity = lc->size = 0;
+    free(lc->vec);
+    lc->vec = NULL;
 }
 
 static linenoiseString makeString(size_t len, const char *addr) {
@@ -411,14 +421,14 @@ static int completeLine(linenoiseState *ls) {
         while (!stop) {
             /* Show completion or original buffer */
             if (i < lc->size) {
-                setCompletion(ls, stem, lc->vec[i]);
+                setCurrentCompletion(ls, stem, lc->vec[i]);
             }
             refreshLine(ls);
-            clearCompletion(ls);
+            clearCurrentCompletion(ls);
 
             nread = read(ls->ifd, &c, 1);
             if (nread <= 0) {
-                freeCompletions(lc);
+                clearCompletions(lc);
                 return -1;
             }
 
@@ -435,9 +445,9 @@ static int completeLine(linenoiseState *ls) {
                     size_t cursor;
                     ab->len = 0;
 
-                    setCompletion(ls, stem, lc->vec[i]);
+                    setCurrentCompletion(ls, stem, lc->vec[i]);
                     cursor = abAppendInputAndCompletion(ab, ls);
-                    clearCompletion(ls);
+                    clearCurrentCompletion(ls);
 
                     nwritten = min2(ls->buflen, ab->len);
                     memcpy(ls->buf, ab->addr, nwritten);
@@ -452,7 +462,7 @@ static int completeLine(linenoiseState *ls) {
         }
     }
 
-    freeCompletions(lc);
+    clearCompletions(lc);
     return c; /* Return last read character */
 }
 
@@ -462,7 +472,7 @@ void linenoiseSetCompletionCallback(linenoiseCompletionCallback *fn, void *userD
     completionCallbackUserData = userData;
 }
 
-/* Register a hits function to be called to show hits to the user at the
+/* Register a hints function to be called to show hints to the user at the
  * right of the prompt. */
 void linenoiseSetHintsCallback(linenoiseHintsCallback *fn) {
     hintsCallback = fn;
@@ -599,7 +609,7 @@ static void refreshSingleLine(linenoiseState *l) {
     abAppend(ab, l->prompt.addr, l->prompt.len);
     abstart = ab->len;
     cursor = abAppendInputAndCompletion(ab, l);
-    /* Show hits if any. */
+    /* Show hints if any. */
     refreshShowHints(ab, makeString(ab->len - abstart, ab->addr + abstart), l);
     /* Erase to right */
     abAppend(ab, "\x1b[0K", 4);
@@ -656,7 +666,7 @@ static void refreshMultiLine(linenoiseState *l) {
     abstart = ab->len;
     cursor = abAppendInputAndCompletion(ab, l);
 
-    /* Show hits if any. */
+    /* Show hints if any. */
     refreshShowHints(ab, makeString(ab->len - abstart, ab->addr + abstart), l);
 
     /* If we are at the very end of the screen with our prompt, we need to
@@ -1194,6 +1204,7 @@ static void freeHistory(void) {
 static void linenoiseAtExit(void) {
     disableRawMode(STDIN_FILENO);
     freeHistory();
+    freeCompletions(&completions);
 }
 
 /* This is the API call to add a new entry in the linenoise history.
