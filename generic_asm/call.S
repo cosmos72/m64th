@@ -56,6 +56,7 @@ FUNC_START(_catch_beg_)
         RPUSH( RTOP)/* save current RTOP */
 
         /* pop XT */
+        SUB2(IMM(SZ),  REG1)                       /* update stack depth */
         MOVE(  DTOP,   REG2)                       /* b = XT to execute  */
         DPOP___DTOP()
 
