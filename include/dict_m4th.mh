@@ -437,7 +437,7 @@
     X(11, "(eval-name)", _eval_name_)                                                              \
     X(13, "(eval-number)", _eval_number_) /* ( x -- ) interpret or compile number */               \
     /* ( vec pos -- key val next ) fetch entry from map bucket index */                            \
-    X(18, "hashmap-entry@/int", _hashmap_entry_fetch_int_)                                         \
+    X(20, "(hashmap-entry@/int)", _hashmap_entry_fetch_int_)                                       \
     /* ( map key -- pos ) convert map key to bucket index */                                       \
     X(21, "(hashmap-indexof/int)", _hashmap_indexof_int_)                                          \
     /* ( src dst src-end -- src' dst' ) optimize single tokens being compiled  */                  \

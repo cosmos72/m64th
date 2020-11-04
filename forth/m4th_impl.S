@@ -306,7 +306,8 @@ WORD_START(_exec_xt_from_native_, _exec_token_)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_MAY_JUMP)
     WORD_CODE(_exec_xt_from_native_, exit)
 WORD_END(_exec_xt_from_native_)
-/* (hashmap-entry@/int) ( vec u -- key val next ) fetch u-th entry in hashmap buckets */
+/* (hashmap-entry@/int) ( vec u -- key val next ) fetch u-th entry in hashmap buckets. */
+/* next is -1 for 'no_entry', or -2 for 'no_next_entry' */
 WORD_START(_hashmap_entry_fetch_int_, _exec_xt_from_native_)
     WORD_DSTACK(2,3)
     WORD_RSTACK(0,0)
@@ -328,17 +329,19 @@ WORD_START(_hashmap_entry_fetch_int_, _exec_xt_from_native_)
 #endif
         fetch, r_from,                                     /* ( key val vec  )           */
 #if M4HASHMAP_ENTRY_OFF_NEXT_INT == 12
-        int_fetch_3,                                       /* ( key val next )           */
+        uint_fetch_3,                                      /* ( key val next )           */
 #else
-        _lit_, T(M4HASHMAP_ENTRY_OFF_NEXT_INT), plus, int_fetch, /* same */
+        _lit_, T(M4HASHMAP_ENTRY_OFF_NEXT_INT), plus, uint_fetch, /* same */
 #endif
-        /* if no_entry, next is -1. if no_next, next is -2  */
-        /* we must truncate all other values to unsigned 32-bit i.e. uint */
-        dup, one_plus, dup, zero_ne,                      /* ( key val next next+1 t|f ) */
-        swap, one_plus, and,                              /* ( key val next flag       ) */
+#if SZ > 4
+        /* if no_entry, next is 0xffffffff. if no_next_entry, next is 0xfffffffe */
+        /* we must sign-extend ONLY these two values to a cell                   */
+        dup, two_plus, _lit_, T(32), rshift,              /* ( key val next flag       ) */
         _if_, T(2),                                       /* ( key val next            ) */
-            to_uint,       /* truncate next to unsigned 32-bit */
-        then, exit                                        /* ( key val next            ) */
+            to_int,       /* sign-extend from 32-bit to cell */
+        then,                                             /* ( key val next            ) */
+#endif /* SZ > 4 */
+        exit
     )
 WORD_END(_hashmap_entry_fetch_int_)
 /* (hashmap-index-of/int) ( map key -- pos ) get bucket position for key  */
