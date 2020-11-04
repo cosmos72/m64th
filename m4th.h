@@ -353,7 +353,7 @@ m4xt m4word_xt(const m4word *w);
 void m4word_print(const m4word *w, FILE *out);
 void m4word_print_stdout(const m4word *w);
 void m4word_code_print(const m4word *w, FILE *out);
-void m4word_data_print(const m4word *w, m4cell data_start_n, FILE *out);
+void m4word_data_print(const m4word *w, m4cell data_offset_n, FILE *out);
 
 m4string m4wordlist_name(const m4wordlist *d);
 const m4word *m4wordlist_lastword(const m4wordlist *d);

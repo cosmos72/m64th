@@ -314,14 +314,14 @@ WORD_START(_hashmap_entry_fetch_int_, _exec_xt_from_native_)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
     WORD_CODE(
-        _lit_, T(M4HASHMAP_ENTRY_SIZE_INT), times, plus,  /* ( vec'         )           */
+        _lit_, T(M4HASHMAP_ENTRY_SIZE_INT), times, plus,   /* ( vec'         )           */
         dup_to_r,                                          /* ( vec          ) (R: vec ) */
                                                            /* ( key          ) (R: vec ) */
         _lit_, T(M4HASHMAP_ENTRY_OFF_KEY_INT), plus, int_fetch,
                                                            /* ( key val      ) (R: vec ) */
         _lit_, T(M4HASHMAP_ENTRY_OFF_VAL_INT), r_fetch, plus, fetch,
                                                            /* ( key val next )           */
-        _lit_, T(M4HASHMAP_ENTRY_OFF_NEXT_INT), r_from, plus, int_fetch,
+        _lit_, T(M4HASHMAP_ENTRY_OFF_NEXT_INT), r_from, plus, uint_fetch,
         exit
     )
 WORD_END(_hashmap_entry_fetch_int_)
@@ -333,18 +333,19 @@ WORD_START(_hashmap_indexof_int_, _hashmap_entry_fetch_int_)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
     WORD_CODE(
-        /* return (hash ^ (hash >> lcap)) & (cap - 1); */
-        crc_cell, swap,                                /* ( hash map                    ) */
+        /* given x = key^hash, return (x ^ (x >> lcap)) & (cap - 1); */
+        dup, crc_cell, xor, swap,                      /* ( x=key^hash map              ) */
 #if M4HASHMAP_OFF_LCAP_INT == 4
-        four_plus,
+        uint_fetch_1,                                  /* ( x lcap                      ) */
 #else
-        _lit_, T(M4HASHMAP_OFF_LCAP_INT), plus,       /* ( hash &map.lcap              ) */
+        _lit_, T(M4HASHMAP_OFF_LCAP_INT), plus,        /* ( x &map.lcap                 ) */
+        uint_fetch,                                    /* ( x lcap                      ) */
 #endif
-        int_fetch, one, over, lshift, one_minus,       /* ( hash lcap cap-1             ) */
-        minus_rot, trail,                              /* ( cap-1 hash hash lcap        ) */
-        rshift,                                        /* ( cap-1 hash hash>>lcap       ) */
-        xor,                                           /* ( cap-1 hash^(hash>>lcap)     ) */
-        and, exit                                      /* ( cap-1 & (hash^(hash>>lcap)) ) */
+        one, over, lshift, one_minus,                  /* ( x lcap cap-1                ) */
+        minus_rot, trail,                              /* ( cap-1 x x lcap              ) */
+        rshift,                                        /* ( cap-1 x x>>lcap             ) */
+        xor,                                           /* ( cap-1 x^(x>>lcap)           ) */
+        and, exit                                      /* ( cap-1 & (x^(x>>lcap))       ) */
     )
 WORD_END(_hashmap_indexof_int_)
 WORD_START(_if_, _hashmap_indexof_int_)

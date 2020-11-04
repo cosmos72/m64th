@@ -29,6 +29,26 @@
 
 /* -------------- m4th_testhashmap_int -------------- */
 
+m4cell m4th_testhashmap_int_opt2_rules(FILE *out) {
+    m4ucell fail = 0;
+    const m4string data = m4word_data(&WORD_SYM(_optimize_2token_), 0);
+    const m4hashmap_int *map = (const m4hashmap_int *)data.addr;
+    const m4int key = M4two | (M4pick << 16);
+    const m4cell val = 1 | (M4hop << 16);
+    const m4hashmap_entry_int *e = m4hashmap_find_int(map, key);
+    if (e == NULL) {
+        fprintf(out,
+                "m4th_testhashmap_int_opt2_rules() returned NULL instead of expected value %u\n",
+                (unsigned)val);
+        fail++;
+    } else if (e->val != val) {
+        fprintf(out, "m4th_testhashmap_int_opt2_rules() returned %u instead of expected value %u\n",
+                (unsigned)e->val, (unsigned)val);
+        fail++;
+    }
+    return fail;
+}
+
 m4cell m4th_testhashmap_int(FILE *out) {
     m4ucell i, n = 512, cap = 256, fail = 0;
     m4hashmap_int *map = m4hashmap_new_int(cap);
@@ -61,6 +81,7 @@ m4cell m4th_testhashmap_int(FILE *out) {
             continue;
         }
     }
+    n++, fail += m4th_testhashmap_int_opt2_rules(out);
     if (fail == 0) {
         fprintf(out, "all %3u hashmap/i tests passed\n", (unsigned)n);
     }
@@ -70,11 +91,11 @@ m4cell m4th_testhashmap_int(FILE *out) {
 
 /* -------------- m4th_testhashmap_string -------------- */
 
-static void m4th_testhashmap_fill(m4string *key, m4ucell i) {
-    m4char *addr = (m4char *)m4mem_allocate(i);
-    memset(addr, (m4char)i | ' ', i);
+static void m4th_testhashmap_fill(m4string *key, m4ucell len) {
+    m4char *addr = (m4char *)m4mem_allocate(len);
+    memset(addr, (m4char)len | ' ', len);
     key->addr = addr;
-    key->n = i;
+    key->n = len;
 }
 
 m4cell m4th_testhashmap_string(FILE *out) {

@@ -165,9 +165,15 @@ WORD_START(hashmap_find_int, flip)
     WORD_NATIVE_NONE()
     WORD_FLAGS(0)
     WORD_CODE(
-        dup_to_r,                                      /* ( map key            ) (R: key     ) */
-        over, _lit_, T(M4HASHMAP_OFF_VEC_INT), plus,   /* ( map key &map.vec   ) (R: key     ) */
-        fetch, to_r,                                   /* ( map key            ) (R: key vec ) */
+        dup_to_r, over,                                /* ( map key map        ) (R: key     ) */
+#if M4HASHMAP_OFF_VEC_INT == 8 && SZ == 8
+        cell_fetch_1,                                  /* ( map key vec        ) (R: key     ) */
+#elif M4HASHMAP_OFF_VEC_INT == 8
+        eight_plus, fetch                              /* ( map key vec        ) (R: key     ) */
+#else
+        _lit_, T(M4HASHMAP_OFF_VEC_INT), plus, fetch,  /* ( map key vec        ) (R: key     ) */
+#endif
+        to_r,                                          /* ( map key            ) (R: key vec ) */
         CALL(_hashmap_indexof_int_),                   /* ( pos                ) (R: key vec ) */
         begin,                                         /* ( pos                ) (R: key vec ) */
             r_fetch, swap,                             /* ( vec pos            ) (R: key vec ) */

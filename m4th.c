@@ -768,11 +768,11 @@ m4code m4word_code(const m4word *w) {
     return ret;
 }
 
-m4string m4word_data(const m4word *w, m4cell data_start_n) {
+m4string m4word_data(const m4word *w, m4cell data_offset_n) {
     m4string ret = {};
-    if (w->data_n != 0 && w->data_n >= data_start_n) {
-        ret.addr = m4_aligned_at(w->code + w->code_n, SZ) + data_start_n;
-        ret.n = (m4cell)w->data_n - data_start_n;
+    if (w->data_n != 0 && w->data_n >= data_offset_n) {
+        ret.addr = m4_aligned_at(w->code + w->code_n, SZ) + data_offset_n;
+        ret.n = (m4cell)w->data_n - data_offset_n;
     }
     return ret;
 }
@@ -796,11 +796,11 @@ void m4word_code_print(const m4word *w, FILE *out) {
     m4code_print(m4word_code(w), out);
 }
 
-void m4word_data_print(const m4word *w, m4cell data_start_n, FILE *out) {
+void m4word_data_print(const m4word *w, m4cell data_offset_n, FILE *out) {
     if (w == NULL || out == NULL) {
         return;
     }
-    m4string data = m4word_data(w, data_start_n);
+    m4string data = m4word_data(w, data_offset_n);
     if (w->flags & m4flag_data_tokens) {
         m4code code = {(m4token *)data.addr, data.n / (m4cell)SZt};
         m4code_print(code, out);
