@@ -316,12 +316,22 @@ WORD_START(_hashmap_entry_fetch_int_, _exec_xt_from_native_)
     WORD_CODE(
         _lit_, T(M4HASHMAP_ENTRY_SIZE_INT), times, plus,   /* ( vec'         )           */
         dup_to_r,                                          /* ( vec          ) (R: vec ) */
-                                                           /* ( key          ) (R: vec ) */
-        _lit_, T(M4HASHMAP_ENTRY_OFF_KEY_INT), plus, int_fetch,
-                                                           /* ( key val      ) (R: vec ) */
-        _lit_, T(M4HASHMAP_ENTRY_OFF_VAL_INT), r_fetch, plus, fetch,
-                                                           /* ( key val next )           */
-        _lit_, T(M4HASHMAP_ENTRY_OFF_NEXT_INT), r_from, plus, uint_fetch,
+
+#if M4HASHMAP_ENTRY_OFF_KEY_INT == 8
+        int_fetch_2,                                       /* ( key          ) (R: vec ) */
+#else
+        _lit_, T(M4HASHMAP_ENTRY_OFF_KEY_INT), plus, int_fetch, /* same */
+#endif
+        r_fetch,                                           /* ( key vec      ) (R: vec ) */
+#if M4HASHMAP_ENTRY_OFF_VAL_INT != 0
+        _lit_, T(M4HASHMAP_ENTRY_OFF_VAL_INT), plus,
+#endif
+        fetch, r_from,                                     /* ( key val vec  )           */
+#if M4HASHMAP_ENTRY_OFF_NEXT_INT == 12
+        uint_fetch_3,                                      /* ( key val next )           */
+#else
+        _lit_, T(M4HASHMAP_ENTRY_OFF_NEXT_INT), plus, uint_fetch, /* same */
+#endif
         exit
     )
 WORD_END(_hashmap_entry_fetch_int_)
