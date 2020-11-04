@@ -1115,6 +1115,28 @@ static m4testexecute testexecute_f[] = {
      {{2, {(m4cell) " \r\n ", 4}}, {}},
      {{1, {4}}, {}},
      {}},
+    /* ---------------------------- cmove, move ----------------------------- */
+    {"cmove",
+     {m4dp0, m4one_plus, m4dup, m4cell_plus, m4two, m4cmove, m4bye},
+     {{2, {0, 'a' | 'b' << 8 | 'c' << 16 | 'd' << 24}}, {}},
+     {{2, {'b' << 8 | 'c' << 16, 'a' | 'b' << 8 | 'c' << 16 | 'd' << 24}}, {}},
+     {}},
+    {"cmove \\ with copy propagation",
+     {m4dp0, m4dup, m4one_plus, m4two, m4cmove, m4bye},
+     {{1, {'w' | 'x' << 8 | 'y' << 16 | 'z' << 24}}, {}},
+     {{1, {'w' | 'w' << 8 | 'w' << 16 | 'z' << 24}}, {}},
+     {}},
+    {"move",
+     {m4dp0, m4dup, m4four, m4cells, m4plus, m4three, m4move, m4bye},
+     {{8, {-4, -3, -2, -1, 0, 11, 12, 13}}, {}},
+     {{8, {-4, 11, 12, 13, 0, 11, 12, 13}}, {}},
+     {}},
+    {"move \\ overlapping source and destination",
+     {m4dp0, m4cell_plus, m4dup, m4cell_plus, m4swap, m4_lit_, T(5), m4move, m4bye},
+     {{8, {0, 1, 2, 3, 4, 5, 6, 7}}, {}},
+     {{8, {0, 1, 1, 2, 3, 4, 5, 7}}, {}},
+     {}},
+
 };
 
 static void test_noop(void) {

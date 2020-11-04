@@ -21,13 +21,6 @@
 
 /* clang-format off */
 
-/* cmove ( src-c-addr dst-c-addr u -- ) 'string' word set */
-FUNC_START(cmove)
-        TOKEN_CALL(      FUNC(cmove_star), cmove.0)
-        LOAD(  DTOP,   AT(DSTK, SZ))
-        ADD2(IMM(SZ2), DSTK)
-FUNC_END(cmove)
-
 
 /* cmove* ( src-addr dst-addr u -- src-addr+u dst-addr+u ) m4th-user */
 FUNC_START(cmove_star)
@@ -67,6 +60,7 @@ FUNC_END(cmove_star)
 
 
 /* -cmove* ( src-addr dst-addr u -- src-addr-u dst-addr-u ) m4th-user */
+/* backward copy u bytes from src-1..src-u to dst-1..dst-u and return updated addresses */
 FUNC_START(minus_cmove_star)
         NEG1(  DTOP)                       /* dtop = -u               */
         LOAD(  REG1,   AT(DSTK, SZ))       /* a = src                 */

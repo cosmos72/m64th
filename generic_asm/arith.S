@@ -345,8 +345,14 @@ FUNC_START(depth)          /* ( -- n ) get stack depth */
         DPUSH__DTOP()
         LOAD(  DTOP,   AT(M4TH, M4TH_OFF_DEND))
         SUB2(  DSTK,   DTOP)
-        SAR2(  IMM(PSZ),   DTOP)
+        SAR2(IMM(PSZ), DTOP)
 FUNC_END(depth)
+
+
+FUNC_START(dp0)           /* dp0       m4th-user ( x -- x addr-of-x ) get address of stack bottom */
+        DPUSH__DTOP()
+        MOVE(  DSTK,   DTOP)
+FUNC_END(dp0)
 
 
 FUNC_START(dup)

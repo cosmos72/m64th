@@ -64,10 +64,10 @@
 #undef M4____gap                         /*                                         */
 #undef M4____gap                         /*                                         */
 #undef M4____gap                         /*                                         */
+#define M4crc_cell M4_u(37)              /* ( x -- crc32 ) compute CRC32c of a cell           */
+#define M4crc_string M4_u(38)            /* ( c-addr u -- crc32 ) compute CRC32c of a string  */
 #undef M4____gap                         /*                                         */
-#define M4crc_cell M4_u(38)              /* ( x -- crc32 ) compute CRC32c of a cell           */
-#define M4crc_string M4_u(39)            /* ( c-addr u -- crc32 ) compute CRC32c of a string  */
-#undef M4____gap                         /*                                         */
+#define M4dp0 M4_u(40)                   /* dp0 ( x -- x addr-of-x ) get data stack bottom    */
 #define M4dup_to_r M4_u(41)              /* dup>r                   equivalent to: dup  >r    */
 #define M4ex_message_store M4_u(42)      /* ( c-addr u -- ) save string as exception message  */
 #define M4ex_message_fetch M4_u(43)      /* ( -- c-addr u ) fetch exception message string    */
@@ -101,52 +101,166 @@
 #define M4sub M4_u(81)                   /* sub       equivalent to: swap -         */
 #define M4trail M4_u(82)                 /* trail     equivalent to: over swap      */
 #undef M4____gap                         /*                                         */
+#define M4u_less_equal M4_u(84)          /* u<=                                     */
+#define M4u_more_equal M4_u(85)          /* u>=                                     */
 #undef M4____gap                         /*                                         */
-#define M4u_less_equal M4_u(85)          /* u<=                                     */
-#define M4u_more_equal M4_u(86)          /* u>=                                     */
+#define M4to_byte M4_u(87)               /* >byte   truncate dtop to   int8_t, then sign-extend */
+#define M4to_char M4_u(88)               /* >char   truncate dtop to  uint8_t, then zero-extend */
+#define M4to_short M4_u(89)              /* >short  truncate dtop to  int16_t, then sign-extend */
+#define M4to_ushort M4_u(90)             /* >ushort truncate dtop to uint16_t, then zero-extend */
+#define M4to_int M4_u(91)                /* >int    truncate dtop to  int32_t, then sign-extend */
+#define M4to_uint M4_u(92)               /* >uint   truncate dtop to uint32_t, then zero-extend */
 #undef M4____gap                         /*                                         */
+#undef M4____gap                         /* ----------- fetch[n] --------------------------- */
+#define M4byte_fetch M4_u(95)            /* byte@     read   ((*int8_t)dtop)[0], sign-extend */
+#define M4byte_fetch_1 M4_u(96)          /* byte[1]   read   ((*int8_t)dtop)[1], sign-extend */
+#define M4byte_fetch_2 M4_u(97)          /* byte[2]   read   ((*int8_t)dtop)[2], sign-extend */
+#define M4byte_fetch_3 M4_u(98)          /* byte[3]   read   ((*int8_t)dtop)[3], sign-extend */
+#define M4byte_fetch_4 M4_u(99)          /* byte[4]   read   ((*int8_t)dtop)[4], sign-extend */
+#define M4byte_fetch_5 M4_u(100)         /* byte[5]   read   ((*int8_t)dtop)[5], sign-extend */
+#define M4byte_fetch_6 M4_u(101)         /* byte[6]   read   ((*int8_t)dtop)[6], sign-extend */
+#define M4byte_fetch_7 M4_u(102)         /* byte[7]   read   ((*int8_t)dtop)[7], sign-extend */
 #undef M4____gap                         /*                                         */
-#define M4to_byte M4_u(89)      /* to-byte   truncate dtop to   int8_t, sign-extend high bits  */
-#define M4to_char M4_u(90)      /* to-char   truncate dtop to  uint8_t, zero-extend high bits  */
-#define M4to_short M4_u(91)     /* to-short  truncate dtop to  int16_t, sign-extend high bits  */
-#define M4to_ushort M4_u(92)    /* to-ushort truncate dtop to uint16_t, zero-extend high bits  */
-#define M4to_int M4_u(93)       /* to-int    truncate dtop to  int32_t, sign-extend high bits  */
-#define M4to_uint M4_u(94)      /* to-uint   truncate dtop to uint32_t, zero-extend high bits  */
-#define M4byte_fetch M4_u(95)   /* byte@     read   int8_t at address dtop, sign-extend */
-#define M4char_fetch M4c_fetch  /* char@     read  uint8_t at address dtop, sign-extend */
-#define M4short_fetch M4_u(96)  /* short@    read  int16_t at address dtop, sign-extend */
-#define M4ushort_fetch M4_u(97) /* ushort@   read uint16_t at address dtop, sign-extend */
-#define M4int_fetch M4_u(98)    /* int@      read  int32_t at address dtop, sign-extend */
-#define M4uint_fetch M4_u(99)   /* uint@     read uint32_t at address dtop, sign-extend */
-#define M4byte_store M4c_store  /* byte!     write   (int8_t)dtop at address d2         */
-#define M4char_store M4c_store  /* char!     write  (uint8_t)dtop at address d2         */
-#define M4short_store M4_u(100) /* short!    write  (int16_t)dtop at address d2         */
-#define M4ushort_store M4short_store     /* ushort!   write (uint16_t)dtop at address d2 */
-#define M4int_store M4_u(101)            /* int!      write  (int32_t)dtop at address d2 */
-#define M4uint_store M4int_store         /* uint!     write (uint32_t)dtop at address d2 */
-#define M4byte_comma M4c_comma           /* byte,   append    (int8_t)dtop to HERE   */
-#define M4char_comma M4c_comma           /* char,   append   (uint8_t)dtop to HERE   */
-#define M4short_comma M4_u(102)          /* short,  append   (int16_t)dtop to HERE   */
-#define M4ushort_comma M4short_comma     /* ushort, append  (uint16_t)dtop to HERE   */
-#define M4int_comma M4_u(103)            /* int,    append   (int32_t)dtop to HERE   */
-#define M4uint_comma M4int_comma         /* uint,   append  (uint32_t)dtop to HERE   */
-#define M4countedstring_comma M4_u(104)  /* ( c-addr u -- ) append countedstring to HERE */
+#define M4char_fetch M4c_fetch           /* char@     read  ((*uint8_t)dtop)[0], zero-extend */
+#define M4char_fetch_1 M4_u(105)         /* char[1]   read  ((*uint8_t)dtop)[1], zero-extend */
+#define M4char_fetch_2 M4_u(106)         /* char[2]   read  ((*uint8_t)dtop)[2], zero-extend */
+#define M4char_fetch_3 M4_u(107)         /* char[3]   read  ((*uint8_t)dtop)[3], zero-extend */
+#define M4char_fetch_4 M4_u(108)         /* char[4]   read  ((*uint8_t)dtop)[4], zero-extend */
+#define M4char_fetch_5 M4_u(109)         /* char[5]   read  ((*uint8_t)dtop)[5], zero-extend */
+#define M4char_fetch_6 M4_u(110)         /* char[6]   read  ((*uint8_t)dtop)[6], zero-extend */
+#define M4char_fetch_7 M4_u(111)         /* char[7]   read  ((*uint8_t)dtop)[7], zero-extend */
 #undef M4____gap                         /*                                         */
+#define M4short_fetch M4_u(113)          /* short@    read  ((*int16_t)dtop)[0], sign-extend */
+#define M4short_fetch_1 M4_u(114)        /* short[1]  read  ((*int16_t)dtop)[1], sign-extend */
+#define M4short_fetch_2 M4_u(115)        /* short[2]  read  ((*int16_t)dtop)[2], sign-extend */
+#define M4short_fetch_3 M4_u(116)        /* short[3]  read  ((*int16_t)dtop)[3], sign-extend */
+#define M4short_fetch_4 M4_u(117)        /* short[4]  read  ((*int16_t)dtop)[4], sign-extend */
+#define M4short_fetch_5 M4_u(118)        /* short[5]  read  ((*int16_t)dtop)[5], sign-extend */
+#define M4short_fetch_6 M4_u(119)        /* short[6]  read  ((*int16_t)dtop)[6], sign-extend */
+#define M4short_fetch_7 M4_u(120)        /* short[7]  read  ((*int16_t)dtop)[7], sign-extend */
 #undef M4____gap                         /*                                         */
+#define M4ushort_fetch M4_u(122)         /* ushort@   read ((*uint16_t)dtop)[0], zero-extend */
+#define M4ushort_fetch_1 M4_u(123)       /* ushort[1] read ((*uint16_t)dtop)[1], zero-extend */
+#define M4ushort_fetch_2 M4_u(124)       /* ushort[2] read ((*uint16_t)dtop)[2], zero-extend */
+#define M4ushort_fetch_3 M4_u(125)       /* ushort[3] read ((*uint16_t)dtop)[3], zero-extend */
+#define M4ushort_fetch_4 M4_u(126)       /* ushort[4] read ((*uint16_t)dtop)[4], zero-extend */
+#define M4ushort_fetch_5 M4_u(127)       /* ushort[5] read ((*uint16_t)dtop)[5], zero-extend */
+#define M4ushort_fetch_6 M4_u(128)       /* ushort[6] read ((*uint16_t)dtop)[6], zero-extend */
+#define M4ushort_fetch_7 M4_u(129)       /* ushort[7] read ((*uint16_t)dtop)[7], zero-extend */
 #undef M4____gap                         /*                                         */
-#define M4short_align M4_u(107)          /*  short-align  align HERE to sizeof(short)       */
+#define M4int_fetch M4_u(131)            /* int@      read  ((*int32_t)dtop)[0], sign-extend */
+#define M4int_fetch_1 M4_u(132)          /* int[1]    read  ((*int32_t)dtop)[1], sign-extend */
+#define M4int_fetch_2 M4_u(133)          /* int[2]    read  ((*int32_t)dtop)[2], sign-extend */
+#define M4int_fetch_3 M4_u(134)          /* int[3]    read  ((*int32_t)dtop)[3], sign-extend */
+#define M4int_fetch_4 M4_u(135)          /* int[4]    read  ((*int32_t)dtop)[4], sign-extend */
+#define M4int_fetch_5 M4_u(136)          /* int[5]    read  ((*int32_t)dtop)[5], sign-extend */
+#define M4int_fetch_6 M4_u(137)          /* int[6]    read  ((*int32_t)dtop)[6], sign-extend */
+#define M4int_fetch_7 M4_u(138)          /* int[7]    read  ((*int32_t)dtop)[7], sign-extend */
+#undef M4____gap                         /*                                         */
+#define M4uint_fetch M4_u(140)           /* uint@     read ((*uint32_t)dtop)[1], zero-extend */
+#define M4uint_fetch_1 M4_u(141)         /* uint[1]   read ((*uint32_t)dtop)[1], zero-extend */
+#define M4uint_fetch_2 M4_u(142)         /* uint[2]   read ((*uint32_t)dtop)[2], zero-extend */
+#define M4uint_fetch_3 M4_u(143)         /* uint[3]   read ((*uint32_t)dtop)[3], zero-extend */
+#define M4uint_fetch_4 M4_u(144)         /* uint[4]   read ((*uint32_t)dtop)[4], zero-extend */
+#define M4uint_fetch_5 M4_u(145)         /* uint[5]   read ((*uint32_t)dtop)[5], zero-extend */
+#define M4uint_fetch_6 M4_u(146)         /* uint[6]   read ((*uint32_t)dtop)[6], zero-extend */
+#define M4uint_fetch_7 M4_u(147)         /* uint[7]   read ((*uint32_t)dtop)[7], zero-extend */
+#undef M4____gap                         /*                                         */
+#define M4cell_fetch M4fetch             /* cell@     read   ((*m4cell)dtop)[0]              */
+#define M4cell_fetch_1 M4_u(150)         /* cell[1]   read   ((*m4cell)dtop)[1]              */
+#define M4cell_fetch_2 M4_u(151)         /* cell[2]   read   ((*m4cell)dtop)[2]              */
+#define M4cell_fetch_3 M4_u(152)         /* cell[3]   read   ((*m4cell)dtop)[3]              */
+#define M4cell_fetch_4 M4_u(153)         /* cell[4]   read   ((*m4cell)dtop)[4]              */
+#define M4cell_fetch_5 M4_u(154)         /* cell[5]   read   ((*m4cell)dtop)[5]              */
+#define M4cell_fetch_6 M4_u(155)         /* cell[6]   read   ((*m4cell)dtop)[6]              */
+#define M4cell_fetch_7 M4_u(156)         /* cell[7]   read   ((*m4cell)dtop)[7]              */
+#undef M4____gap                         /*                                         */
+#undef M4____gap                         /* ----------- store[n] --------------------------- */
+#define M4byte_store M4c_store           /* byte!     write   (int8_t)d2 at address dtop     */
+#define M4byte_store_1 M4_u(160)         /* byte[1]!   write   ((*int8_t)dtop)[1]   */
+#define M4byte_store_2 M4_u(161)         /* byte[2]!   write   ((*int8_t)dtop)[2]   */
+#define M4byte_store_3 M4_u(162)         /* byte[3]!   write   ((*int8_t)dtop)[3]   */
+#define M4byte_store_4 M4_u(163)         /* byte[4]!   write   ((*int8_t)dtop)[4]   */
+#define M4byte_store_5 M4_u(164)         /* byte[5]!   write   ((*int8_t)dtop)[5]   */
+#define M4byte_store_6 M4_u(165)         /* byte[6]!   write   ((*int8_t)dtop)[6]   */
+#define M4byte_store_7 M4_u(166)         /* byte[7]!   write   ((*int8_t)dtop)[7]   */
+#undef M4____gap                         /*                                         */
+#define M4char_store M4c_store           /* char!      write (uint8_t)d2 at address dtop     */
+#define M4char_store_1 M4_u(169)         /* char[1]!   write   ((*int8_t)dtop)[1]   */
+#define M4char_store_2 M4_u(170)         /* char[2]!   write   ((*int8_t)dtop)[2]   */
+#define M4char_store_3 M4_u(171)         /* char[3]!   write   ((*int8_t)dtop)[3]   */
+#define M4char_store_4 M4_u(172)         /* char[4]!   write   ((*int8_t)dtop)[4]   */
+#define M4char_store_5 M4_u(173)         /* char[5]!   write   ((*int8_t)dtop)[5]   */
+#define M4char_store_6 M4_u(174)         /* char[6]!   write   ((*int8_t)dtop)[6]   */
+#define M4char_store_7 M4_u(175)         /* char[7]!   write   ((*int8_t)dtop)[7]   */
+#undef M4____gap                         /*                                         */
+#define M4short_store M4_u(177)          /* short!    write  (int16_t)d2 at address dtop     */
+#define M4short_store_1 M4_u(178)        /* short[1]!  write  ((*int16_t)dtop)[1]   */
+#define M4short_store_2 M4_u(179)        /* short[2]!  write  ((*int16_t)dtop)[2]   */
+#define M4short_store_3 M4_u(180)        /* short[3]!  write  ((*int16_t)dtop)[3]   */
+#define M4short_store_4 M4_u(181)        /* short[4]!  write  ((*int16_t)dtop)[4]   */
+#define M4short_store_5 M4_u(182)        /* short[5]!  write  ((*int16_t)dtop)[5]   */
+#define M4short_store_6 M4_u(183)        /* short[6]!  write  ((*int16_t)dtop)[6]   */
+#define M4short_store_7 M4_u(184)        /* short[7]!  write  ((*int16_t)dtop)[7]   */
+/* */                                    /*                                         */
+#define M4ushort_store M4short_store     /* ushort!   write (uint16_t)d2 at address dtop     */
+#define M4ushort_store_1 M4short_store_1 /* ushort[1]!  write ((*uint16_t)dtop)[1]   */
+#define M4ushort_store_2 M4short_store_2 /* ushort[2]!  write ((*uint16_t)dtop)[2]   */
+#define M4ushort_store_3 M4short_store_3 /* ushort[3]!  write ((*uint16_t)dtop)[3]   */
+#define M4ushort_store_4 M4short_store_4 /* ushort[4]!  write ((*uint16_t)dtop)[4]   */
+#define M4ushort_store_5 M4short_store_5 /* ushort[5]!  write ((*uint16_t)dtop)[5]   */
+#define M4ushort_store_6 M4short_store_6 /* ushort[6]!  write ((*uint16_t)dtop)[6]   */
+#define M4ushort_store_7 M4short_store_7 /* ushort[7]!  write ((*uint16_t)dtop)[7]   */
+#undef M4____gap                         /*                                         */
+/* */                                    /*                                         */
+#define M4int_store M4_u(186)            /* int!      write  (int32_t)d2 at address dtop     */
+#define M4int_store_1 M4_u(187)          /* int[1]!    write  ((*int32_t)dtop)[1]   */
+#define M4int_store_2 M4_u(188)          /* int[2]!    write  ((*int32_t)dtop)[2]   */
+#define M4int_store_3 M4_u(189)          /* int[3]!    write  ((*int32_t)dtop)[3]   */
+#define M4int_store_4 M4_u(190)          /* int[4]!    write  ((*int32_t)dtop)[4]   */
+#define M4int_store_5 M4_u(191)          /* int[5]!    write  ((*int32_t)dtop)[5]   */
+#define M4int_store_6 M4_u(192)          /* int[6]!    write  ((*int32_t)dtop)[6]   */
+#define M4int_store_7 M4_u(193)          /* int[7]!    write  ((*int32_t)dtop)[7]   */
+/* */                                    /*                                         */
+#define M4uint_store M4int_store         /* uint!     write (uint32_t)d2 at address dtop     */
+#define M4uint_store_1 M4int_store_1     /* uint[1]!    write ((*uint32_t)dtop)[1]  */
+#define M4uint_store_2 M4int_store_2     /* uint[2]!    write ((*uint32_t)dtop)[2]  */
+#define M4uint_store_3 M4int_store_3     /* uint[3]!    write ((*uint32_t)dtop)[3]  */
+#define M4uint_store_4 M4int_store_4     /* uint[4]!    write ((*uint32_t)dtop)[4]  */
+#define M4uint_store_5 M4int_store_5     /* uint[5]!    write ((*uint32_t)dtop)[5]  */
+#define M4uint_store_6 M4int_store_6     /* uint[6]!    write ((*uint32_t)dtop)[6]  */
+#define M4uint_store_7 M4int_store_7     /* uint[7]!    write ((*uint32_t)dtop)[7]  */
+#undef M4____gap                         /*                                         */
+#define M4cell_store M4store             /* cell!     write    d2 at address dtop   */
+#define M4cell_store_1 M4_u(195)         /* cell[1]!   write   ((*m4cell)dtop)[1]   */
+#define M4cell_store_2 M4_u(196)         /* cell[2]!   write   ((*m4cell)dtop)[2]   */
+#define M4cell_store_3 M4_u(197)         /* cell[3]!   write   ((*m4cell)dtop)[3]   */
+#define M4cell_store_4 M4_u(198)         /* cell[4]!   write   ((*m4cell)dtop)[4]   */
+#define M4cell_store_5 M4_u(199)         /* cell[5]!   write   ((*m4cell)dtop)[5]   */
+#define M4cell_store_6 M4_u(200)         /* cell[6]!   write   ((*m4cell)dtop)[6]   */
+#define M4cell_store_7 M4_u(201)         /* cell[7]!   write   ((*m4cell)dtop)[7]   */
+#undef M4____gap                         /*                                         */
+#define M4byte_comma M4c_comma           /* byte,   append    (int8_t)dtop to HERE  */
+#define M4char_comma M4c_comma           /* char,   append   (uint8_t)dtop to HERE  */
+#define M4short_comma M4_u(203)          /* short,  append   (int16_t)dtop to HERE  */
+#define M4ushort_comma M4short_comma     /* ushort, append  (uint16_t)dtop to HERE  */
+#define M4int_comma M4_u(204)            /* int,    append   (int32_t)dtop to HERE  */
+#define M4uint_comma M4int_comma         /* uint,   append  (uint32_t)dtop to HERE  */
+#define M4countedstring_comma M4_u(205)  /* ( c-addr u -- ) append countedstring to HERE */
+#undef M4____gap                         /*                                         */
+#define M4short_align M4_u(207)          /*  short-align  align HERE to sizeof(short)       */
 #define M4ushort_align M4short_align     /* ushort-align  align HERE to sizeof(ushort)      */
-#define M4int_align M4_u(108)            /*    int-align  align HERE to sizeof(int)         */
+#define M4int_align M4_u(208)            /*    int-align  align HERE to sizeof(int)         */
 #define M4uint_align M4int_align         /*   uint-align  align HERE to sizeof(uint)        */
-#define M4short_aligned M4_u(109)        /*      short-aligned  align dtop to sizeof(short) */
+#define M4short_aligned M4_u(209)        /*      short-aligned  align dtop to sizeof(short) */
 #define M4ushort_aligned M4short_aligned /* ushort-aligned  align dtop to sizeof(ushort)    */
-#define M4int_aligned M4_u(110)          /*    int-aligned  align dtop to sizeof(int)       */
+#define M4int_aligned M4_u(210)          /*    int-aligned  align dtop to sizeof(int)       */
 #define M4uint_aligned M4int_aligned     /*   uint-aligned  align dtop to sizeof(uint)      */
 #undef M4____gap                         /*                                         */
-#define M4do_i_plus_loop M4_u(116)       /* do i + loop           */
+#define M4do_i_plus_loop M4_u(212)       /* do i + loop           */
 
 /* 'm4th-c' wordlist */
-#define M4_c(x) ((x) + 630)
+#define M4_c(x) ((x) + 725)
 #define M4_c_arg_0_ M4_c(0)  /* prepare 0 args for C function call    */
 #define M4_c_arg_1_ M4_c(1)  /* prepare 1 arg  for C function call    */
 #define M4_c_arg_2_ M4_c(2)  /* prepare 2 args for C function call    */
@@ -172,58 +286,64 @@
 #define M4_c_ret_2_ M4_c(22) /* push 2 values returned by C function call */
 
 /* 'm4th-core' wordlist */
-#define M4_(x) ((x) + 650)
+#define M4_(x) ((x) + 750)
 #undef M4____gap                          /*                                         */
-#define M4flags_to_consumed_tokens M4_(7) /* ( flags -- u ) get # consumed tokens from flags */
+#define M4flags_to_consumed_tokens M4_(1) /* ( flags -- u ) get # consumed tokens from flags */
 #undef M4____gap                          /*                                         */
 #undef M4____gap                          /*                                         */
 #undef M4____gap                          /*                                         */
-#define M4in_to_ibuf M4_(11) /* in>ibuf      (    -- io     ) get current input as iobuf       */
-#undef M4____gap             /*                                         */
-#define M4iobuf_addr M4_(13) /* iobuf>addr   ( io -- c-addr ) get start of iobuf data buffer */
-#define M4iobuf_all_data M4_(14) /* ( io -- c-addr u ) get all data, from 0 to size */
-#define M4iobuf_data M4_(15)   /* iobuf>data   ( io -- c-addr u ) get data, from position to size*/
-#define M4iobuf_data_n M4_(16) /* iobuf>data>n ( io -- u    ) get data length = size - position */
-#define M4iobuf_free_data M4_(17)   /* ( io -- c-addr u ) get free data, from size to max */
-#define M4iobuf_empty_query M4_(18) /* iobuf-empty? ( io -- t|f  ) true if iobuf data is empty */
-#define M4iobuf_err M4_(19)    /* iobuf>err    ( io -- addr ) get address of iobuf.err           */
-#define M4iobuf_func M4_(20)   /* iobuf>func   ( io -- addr ) get address of iobuf I/O function  */
-#define M4iobuf_handle M4_(21) /* iobuf>handle ( io -- addr ) get address of iobuf handle  */
-#define M4iobuf_max M4_(22)    /* iobuf>max    ( io -- u    ) get iobuf max size i.e. capacity   */
-#define M4iobuf_pos M4_(23)    /* iobuf>pos    ( io -- addr ) get address of iobuf position      */
-#define M4iobuf_end M4_(24)    /* iobuf>end    ( io -- addr ) get address of iobuf end position  */
+#define M4in_to_ibuf M4_(5)     /* in>ibuf      (    -- io     ) get current input as iobuf     */
+#undef M4____gap                /*                                         */
+#define M4iobuf_addr M4_(7)     /* iobuf>addr   ( io -- c-addr ) get start of iobuf data buffer */
+#define M4iobuf_all_data M4_(8) /* ( io -- c-addr u ) get all data, from 0 to size */
+#define M4iobuf_data M4_(9)     /* iobuf>data   ( io -- c-addr u ) get data, from position to size*/
+#define M4iobuf_data_n M4_(10)  /* iobuf>data>n ( io -- u    ) get data length = size - position */
+#define M4iobuf_free_data M4_(11)   /* ( io -- c-addr u ) get free data, from size to max        */
+#define M4iobuf_empty_query M4_(12) /* iobuf-empty? ( io -- t|f  ) true if iobuf data is empty  */
+#define M4iobuf_err M4_(13)    /* iobuf>err    ( io -- addr ) get address of iobuf.err           */
+#define M4iobuf_func M4_(14)   /* iobuf>func   ( io -- addr ) get address of iobuf I/O function  */
+#define M4iobuf_handle M4_(15) /* iobuf>handle ( io -- addr ) get address of iobuf handle  */
+#define M4iobuf_max M4_(16)    /* iobuf>max    ( io -- u    ) get iobuf max size i.e. capacity   */
+#define M4iobuf_pos M4_(17)    /* iobuf>pos    ( io -- addr ) get address of iobuf position      */
+#define M4iobuf_end M4_(18)    /* iobuf>end    ( io -- addr ) get address of iobuf end position  */
 #undef M4____gap               /*                                         */
-#define M4latest M4_(26)       /* latest       (    -- nt   ) get last defined word              */
 #undef M4____gap               /*                                         */
-#define M4name_comma M4_(28)   /* name,       ( c-addr u --   ) create a new name        */
+#define M4latest M4_(21)       /* latest       (    -- nt   ) get last defined word              */
 #undef M4____gap               /*                                         */
-#define M4name_to_code M4_(30) /* ( nt -- addr u  ) get code array from name */
-#define M4name_to_code_n M4_(31)      /* ( nt -- u       ) get code size from name */
-#define M4name_to_data M4_(32)        /* ( nt -- addr u  ) get data array from name */
-#define M4name_to_flags M4_(33)       /* ( nt -- m4flags ) get m4flags from name   */
-#define M4name_to_flags_store M4_(34) /* ( m4flags nt -- ) set m4flags of name     */
-#define M4name_to_ident M4_(35)       /* ( nt -- c-addr u ) convert name to asm/C identifier */
-#define M4name_to_prev M4_(36)        /* ( nt -- nt'|0    ) get previous name                */
-#define M4name_to_xt M4_(37)          /* ( nt -- XT       ) get XT == code address from name */
+#undef M4____gap               /*                                         */
+#undef M4____gap               /*                                         */
+#define M4name_comma M4_(25)   /* name,       ( c-addr u --   ) create a new name        */
+#undef M4____gap               /*                                         */
+#undef M4____gap               /*                                         */
+#define M4name_to_code M4_(28) /* ( nt -- addr u  ) get code array from name */
+#define M4name_to_code_n M4_(29)      /* ( nt -- u       ) get code size from name */
+#define M4name_to_data M4_(30)        /* ( nt -- addr u  ) get data array from name */
+#define M4name_to_flags M4_(31)       /* ( nt -- m4flags ) get m4flags from name   */
+#define M4name_to_flags_store M4_(32) /* ( m4flags nt -- ) set m4flags of name     */
+#define M4name_to_ident M4_(33)       /* ( nt -- c-addr u ) convert name to asm/C identifier */
+#define M4name_to_prev M4_(34)        /* ( nt -- nt'|0    ) get previous name                */
+#define M4name_to_xt M4_(35)          /* ( nt -- XT       ) get XT == code address from name */
 #undef M4____gap                      /*                                         */
-#define M4obuf_write_char M4_(39)   /* obuf-write-char   ( io c -- err ) write one char to iobuf */
-#define M4obuf_write_string M4_(40) /* obuf-write-string ( io c -- err ) write string to iobuf */
-#define M4out_to_obuf M4_(41)   /* out>obuf          (      -- io  ) get current output as iobuf  */
-#define M4set_latest M4_(42)    /* set-latest        ( nt --       ) set last defined word        */
-#define M4searchorder_i M4_(43) /* ( u -- addr ) get address of searchorder i-th element  */
-#define M4searchorder_n M4_(44) /* (   -- addr ) get address of searchorder count         */
-#undef M4____gap                /*                                         */
-#define M4token_to_name M4_(46) /* token>name ( token -- nt|0 ) convert token to name */
-#define M4user_var M4_(47)      /* user-var ( -- addr ) must be followed by index of user var */
-#undef M4____gap                /*                                         */
-#define M4wordlist_add M4_(49)  /* ( wid nt -- ) add name to wordlist                     */
-#define M4wordlist_last M4_(50) /* ( wid -- nt ) get last name in a wordlist              */
-#define M4wordlist_reset M4_(51) /* ( wid --    ) remove all user-defined names from wid   */
+#undef M4____gap                      /*                                         */
+#define M4obuf_write_char M4_(38)   /* obuf-write-char   ( io c -- err ) write one char to iobuf */
+#define M4obuf_write_string M4_(39) /* obuf-write-string ( io c -- err ) write string to iobuf  */
+#define M4out_to_obuf M4_(40)    /* out>obuf         (      -- io  ) get current output as iobuf */
+#define M4set_latest M4_(41)     /* set-latest       ( nt --       ) set last defined word       */
+#define M4searchorder_i M4_(42)  /* ( u -- addr ) get address of searchorder i-th element  */
+#define M4searchorder_n M4_(43)  /* (   -- addr ) get address of searchorder count         */
 #undef M4____gap                 /*                                         */
-#define M4xt_to_name M4_(53)     /* xt>name       ( XT -- nt ) get name from XT */
+#define M4token_to_name M4_(45)  /* token>name ( token -- nt|0 ) convert token to name */
+#define M4user_var M4_(46)       /* user-var ( -- addr ) must be followed by index of user var */
+#undef M4____gap                 /*                                         */
+#define M4wordlist_add M4_(48)   /* ( wid nt -- ) add name to wordlist                     */
+#define M4wordlist_last M4_(49)  /* ( wid -- nt ) get last name in a wordlist              */
+#define M4wordlist_reset M4_(50) /* ( wid --    ) remove all user-defined names from wid   */
+#undef M4____gap                 /*                                         */
+#define M4xt_to_name M4_(52)     /* xt>name       ( XT -- nt ) get name from XT */
 
 /* 'm4th-impl' wordlist */
-#define M4_i(x) ((x) + 700)
+#define M4_i(x) ((x) + 800)
+#undef M4____gap                    /*                                         */
 #define M4minus_one M4_i(7)         /* -1                    */
 #define M4zero M4_i(8)              /* 0                     */
 #define M4one M4_i(9)               /* 1                     */
@@ -333,7 +453,7 @@
 #define M4_to_local_d_ M4_i(113)       /* set 13-th local variable                */
 #define M4_to_local_e_ M4_i(114)       /* set 14-th local variable                */
 #define M4_to_local_f_ M4_i(115)       /* set 15-th local variable                */
-#define M4_to_local_n_ M4_i(119)       /* followed by T(n), set n-th local variable */
+#define M4_to_local_n_ M4_i(116)       /* followed by T(n), set n-th local variable */
 #undef M4____gap                       /*                                         */
 #undef M4____gap                       /*                                         */
 #undef M4____gap                       /*                                         */

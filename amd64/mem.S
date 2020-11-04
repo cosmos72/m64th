@@ -21,40 +21,6 @@
 
 /* clang-format off */
 
-#define M4FSTORE
-FUNC_START(store)          /* ! */
-        LOAD(  REG1,  AT(DSTK))
-        STOR(  REG1,  AT(DTOP))
-        LOAD(  DTOP,  AT(DSTK, SZ))
-        ADD2(  IMM(SZ2), DSTK)
-FUNC_END(store)
-
-#define M4FC_STORE
-FUNC_START(c_store)        /* c! */
-        LOAD(  REG1,  AT(DSTK))
-        STORb( REG1,  AT(DTOP))
-        LOAD(  DTOP,  AT(DSTK, SZ))
-        ADD2(  IMM(SZ2), DSTK)
-FUNC_END(c_store)
-
-
-#define M4FSHORT_STORE
-FUNC_START(short_store)    /* short! */
-        LOAD(  REG1,  AT(DSTK))
-        STORh( REG1,  AT(DTOP))
-        LOAD(  DTOP,  AT(DSTK, SZ))
-        ADD2(  IMM(SZ2), DSTK)
-FUNC_END(short_store)
-
-
-#define M4FINT_STORE
-FUNC_START(int_store)      /* int! */
-        LOAD(  REG1,  AT(DSTK))
-        STORw( REG1,  AT(DTOP))
-        LOAD(  DTOP,  AT(DSTK, SZ))
-        ADD2(  IMM(SZ2), DSTK)
-FUNC_END(int_store)
-
 
 #define M4FDIV_STRING
 /* /string ( c-addr u n -- c-addr' u' )  'string' word set */
@@ -66,6 +32,7 @@ FUNC_START(div_string)
 FUNC_END(div_string)
 
 
+#define M4FCMOVE /* defined near cmove* to encode a shorter jump */
 /* cmove ( src_addr dst_addr u -- ) 'string' word set */
 FUNC_START(cmove)
         TOKEN_CALL(    FUNC(cmove_star), cmove.0)   /* ( src' dst'    ) */
@@ -76,69 +43,69 @@ FUNC_END(cmove)
 
 /* cmove* ( src_addr dst_addr u -- src_addr+u dst_addr+u ) m4th-user */
 FUNC_START(cmove_star)
-        MOVE(  DSTK,   %rdx)           /* save DSTK == %rsi */
-        LOAD(  %rsi,   AT(%rdx, SZ))   /* src               */
-        LOAD(  %rdi,   AT(%rdx))       /* dst               */
-        MOVE(  DTOP,   %rcx)           /* n                 */
+        ADDI(  DSTK,   SZ,     %rdx)   /* %rdx = DSTK + SZ           */
+        LOAD(  %rdi,   AT(DSTK))       /* %rdi = dst                 */
+        LOAD(  %rsi,   AT(DSTK, SZ))   /* %rsi = src: clobbers DSTK  */
+        MOVE(  DTOP,   %rcx)           /* %rcx = u                   */
 
-        cld;                           /* forward direction */
-        rep    movsb (%rsi), (%rdi);   /* copy string       */
+        cld;                           /* forward direction          */
+        rep    movsb (%rsi), (%rdi);   /* copy bytes                 */
 
-        STOR(  %rsi,   AT(%rdx, SZ))   /* ( src' dst u    ) */
-        MOVE(  %rdi,   DTOP)           /* ( src' _ dst'   ) */
-        ADDI(  %rdx,   SZ,     DSTK)   /* reload DSTK       */
+        STOR(  %rsi,   AT(%rdx))       /* ( src' dst u  )            */
+        MOVE(  %rdi,   DTOP)           /* ( src' _ dst' )            */
+        MOVE(  %rdx,   DSTK)           /* reload DSTK                */
 FUNC_END(cmove_star)
 
 
 /* -cmove* ( src_addr dst_addr u -- src_addr-u dst_addr-u ) m4th-user */
+/* backward copy u bytes from src-1..src-u to dst-1..dst-u and return updated addresses */
 FUNC_START(minus_cmove_star)
-        MOVE(  DSTK,   %rdx)           /* save DSTK == %rsi */
-        LOAD(  %rsi,   AT(%rdx, SZ))   /* src               */
-        LOAD(  %rdi,   AT(%rdx))       /* dst               */
-        MOVE(  DTOP,   %rcx)           /* n                 */
+        ADDI(  DSTK,   SZ,     %rdx)   /* %rdx = DSTK + SZ           */
+        LOAD(  %rdi,   AT(DSTK))       /* %rdi = dst                 */
+        LOAD(  %rsi,   AT(DSTK, SZ))   /* %rsi = src: clobbers DSTK  */
+        MOVE(  DTOP,   %rcx)           /* %rcx = u                   */
         DEC1(  %rsi)
         DEC1(  %rdi)
 
-        std;                           /* backward direction     */
-        rep    movsb (%rsi), (%rdi);   /* copy string            */
-        cld;                           /* restore direction flag */
+        std;                           /* backward direction         */
+        rep    movsb (%rsi), (%rdi);   /* copy bytes                 */
+        cld;                           /* restore direction flag     */
 
         INC1(  %rsi)
-        INC1(  %rdi)
-        STOR(  %rsi,   AT(%rdx, SZ))   /* ( src' dst u    ) */
-        MOVE(  %rdi,   DTOP)           /* ( src' _ dst'   ) */
-        ADDI(  %rdx,   SZ,     DSTK)   /* reload DSTK       */
+        ADDI(  %rdi,   1, DTOP)        /* ( src  _ dst' )            */
+        STOR(  %rsi,   AT(%rdx))       /* ( src' _ dst' )            */
+        MOVE(  %rdx,   DSTK)           /* reload DSTK                */
 FUNC_END(minus_cmove_star)
 
 
 /* move ( src_addr dst_addr u -- ) */
 FUNC_START(move)
-        MOVE(  DSTK,   %rdx)           /* save DSTK == %rsi */
-        LOAD(  %rsi,   AT(%rdx, SZ))   /* src               */
-        LOAD(  %rdi,   AT(%rdx))       /* dst               */
-        MOVE(  DTOP,   %rcx)           /* n                 */
+        MOVE(  DSTK,   %rdx)           /* save DSTK == %rsi          */
+        LOAD(  %rdi,   AT(DSTK))       /* %rdi = dst                 */
+        LOAD(  %rsi,   AT(DSTK, SZ))   /* %rsi = src: clobbers DSTK  */
+        MOVE(  DTOP,   %rcx)           /* n                          */
 
-        cld;                           /* forward direction */
+        cld;                           /* forward direction          */
         JAE(   %rsi,   %rdi,    TO(move.loop))
-        lea    -SZ(%rsi, %rcx, SZ),    %r8; /* src top      */
-        JB(    %r8,    %rdi,    TO(move.loop)) /* overlapping? */
+        lea    -SZ(%rsi, %rcx, SZ),    %r8;    /* %r8 = src top      */
+        JB(    %r8,    %rdi,    TO(move.loop)) /* overlapping?       */
 
-        std;                           /* backward direction*/
-        MOVE(  %r8,    %rsi)                /* copy from top*/
-        lea    -SZ(%rdi, %rcx, SZ),    %rdi;/* copy to top  */
+        std;                           /* backward direction         */
+        MOVE(  %r8,    %rsi)           /*      copy from src top     */
+        lea    -SZ(%rdi, %rcx, SZ),    %rdi;/* copy to   dst top     */
 
 LABEL(move.loop)
         rep    movsq (%rsi), (%rdi);   /* copy 8 bytes per iteration */
         cld;
-        ADDI(  %rdx,   SZ3,    DSTK)   /* reload DSTK       */
-        LOAD(  DTOP,   AT(%rdx,SZ2))   /* reload dstack top */
+        ADDI(  %rdx,   SZ3,    DSTK)   /* reload DSTK                */
+        LOAD(  DTOP,   AT(%rdx,SZ2))   /* reload dstack top          */
 FUNC_END(move)
 
 
 /* crc-cell/simd ( x -- crc ) m4th-user: compute CRC32c of a cell */
 FUNC_START(crc_cell_simd)
         MOVE(  DTOP,   REG1)
-        MOVE(  RFFFw,  DTOPw)              /* dtop = 0xffffffff        */
+        MOVE(  RFFFw,  DTOPw)          /* dtop = 0xffffffff          */
         crc32q REG1,   DTOP;
         NOT1(  DTOPw)
 FUNC_END(crc_cell_simd)
@@ -167,6 +134,7 @@ LABEL(crc_string.done)
 FUNC_END(crc_string)
 
 
+/* crc-string/simd ( c-addr u -- crc ) m4th-user: compute CRC32c of a string */
 FUNC_START(crc_string_simd)
         ZERO(  REG1)                       /* a = 0                    */
         MOVE(  DTOP,       REG2)           /* b = u                    */
@@ -180,7 +148,7 @@ FUNC_START(crc_string_simd)
         SUB2(  IMM(64),    REG2)
 FUNC_ALIGN()
 LABEL(crc_string_simd.by64.loop)
-        crc32q (REG3,     REG1, 1),     DTOP;
+        crc32q (REG3,      REG1, 1),    DTOP;
         crc32q 8(REG3,     REG1, 1),    DTOP;
         crc32q 16(REG3,    REG1, 1),    DTOP;
         crc32q 24(REG3,    REG1, 1),    DTOP;

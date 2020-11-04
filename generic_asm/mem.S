@@ -22,8 +22,63 @@
 /* clang-format off */
 
 
+/* ----------------------- fetch ----------------------- */
+
+/* byte@    ( addr -- n )   m4th-user */
+FUNC_START(byte_fetch)
+        LD_sb(DTOP,    AT(DTOP))
+FUNC_END(byte_fetch)
+
+
+/* c@       ( addr -- u )   forth-core */
+FUNC_START(c_fetch)
+        LD_ub(DTOP,    AT(DTOP))
+FUNC_END(c_fetch)
+
+
+/* short@   ( addr -- n )   m4th-user */
+FUNC_START(short_fetch)
+        LD_sh(DTOP,    AT(DTOP))
+FUNC_END(short_fetch)
+
+
+/* ushort@  ( addr -- u )  m4th-user */
+FUNC_START(ushort_fetch)
+        LD_uh(DTOP,    AT(DTOP))
+FUNC_END(ushort_fetch)
+
+
+/* int@     ( addr -- n )  m4th-user */
+FUNC_START(int_fetch)
+        LD_sw(DTOP,    AT(DTOP))
+FUNC_END(int_fetch)
+
+
+/* uint@    ( addr -- u )  m4th-user */
+FUNC_START(uint_fetch)
+        LD_uw(DTOP,    AT(DTOP))
+FUNC_END(uint_fetch)
+
+
+/* @        ( addr -- n )  forth-core */
+FUNC_START(fetch)
+        LOAD(  DTOP, AT(DTOP))
+FUNC_END(fetch)
+
+
+/* 2@     ( addr -- y x )  forth-core */
+FUNC_START(two_fetch)
+        LOAD(  REG1, AT(DTOP, SZ))
+        LOAD(  DTOP, AT(DTOP))
+        DPUSH( REG1)
+FUNC_END(two_fetch)
+
+
+/* ----------------------- store ----------------------- */
+
 #ifndef M4FC_STORE
-FUNC_START(c_store)        /* c! */
+/* c!      ( u addr -- )    forth-core */
+FUNC_START(c_store)
         DPOP(  REG1)
         STORb( REG1,  AT(DTOP))
         DPOP___DTOP()
@@ -31,31 +86,38 @@ FUNC_END(c_store)
 #endif
 
 
-FUNC_START(count)          /* count */
+/* count    ( c-addr -- c-addr' u ) forth-core */
+FUNC_START(count)
         LD_ub( REG1,   AT(DTOP))
         INC1(  DTOP)
         DPUSH__DTOP()
         MOVE(  REG1,   DTOP)
 FUNC_END(count)
 
+
 #ifndef M4FSHORT_STORE
-FUNC_START(short_store)    /* short!   m4th-user */
+/* short!   ( n addr -- ) m4th-user */
+FUNC_START(short_store)
         DPOP(  REG1)
         STORh( REG1,  AT(DTOP))
         DPOP___DTOP()
 FUNC_END(short_store)
 #endif
 
+
 #ifndef M4FINT_STORE
-FUNC_START(int_store)      /* int!     m4th-user */
+/* int!     ( n addr -- )   m4th-user */
+FUNC_START(int_store)
         DPOP(  REG1)
         STORw( REG1,   AT(DTOP))
         DPOP___DTOP()
 FUNC_END(int_store)
 #endif
 
+
 #ifndef M4FSTORE
-FUNC_START(store)          /* ! */
+/* !        ( n addr -- )   forth-core */
+FUNC_START(store)
         DPOP(  REG1)
         STOR(  REG1,   AT(DTOP))
         DPOP___DTOP()
@@ -63,7 +125,8 @@ FUNC_END(store)
 #endif
 
 
-FUNC_START(two_store)      /* 2!  ( y x addr -- ) */
+/* 2!       ( y x addr -- ) forth-core */
+FUNC_START(two_store)
         LOAD(  REG1,   AT(DSTK))
         LOAD(  REG2,   AT(DSTK, SZ))
         STOR(  REG1,   AT(DTOP))
@@ -73,46 +136,69 @@ FUNC_START(two_store)      /* 2!  ( y x addr -- ) */
 FUNC_END(two_store)
 
 
-FUNC_START(byte_fetch)     /* byte@    m4th-user */
-        LD_sb(DTOP,    AT(DTOP))
-FUNC_END(byte_fetch)
+/* ----------------------- fetch[n] -------------------- */
 
+#define DEF_FUNC_FETCH_TYP_OFF(typ, offset, LD_xx, size) \
+FUNC_START(typ##_fetch_##offset)               \
+        LD_xx(DTOP,    AT(DTOP, offset*size))  \
+FUNC_END(typ##_fetch_##offset)
 
-FUNC_START(c_fetch)        /* c@ */
-        LD_ub(DTOP,    AT(DTOP))
-FUNC_END(c_fetch)
+#define DEF_FUNC_FETCH_TYP(typ, LD_xx, size) \
+        DEF_FUNC_FETCH_TYP_OFF(typ, 1, LD_xx, size) \
+        DEF_FUNC_FETCH_TYP_OFF(typ, 2, LD_xx, size) \
+        DEF_FUNC_FETCH_TYP_OFF(typ, 3, LD_xx, size) \
+        DEF_FUNC_FETCH_TYP_OFF(typ, 4, LD_xx, size) \
+        DEF_FUNC_FETCH_TYP_OFF(typ, 5, LD_xx, size) \
+        DEF_FUNC_FETCH_TYP_OFF(typ, 6, LD_xx, size) \
+        DEF_FUNC_FETCH_TYP_OFF(typ, 7, LD_xx, size)
 
+#define DEF_FUNC_FETCH() \
+        DEF_FUNC_FETCH_TYP(char,   LD_ub, 1) \
+        DEF_FUNC_FETCH_TYP(byte,   LD_sb, 1) \
+        DEF_FUNC_FETCH_TYP(short,  LD_sh, 2) \
+        DEF_FUNC_FETCH_TYP(ushort, LD_uh, 2) \
+        DEF_FUNC_FETCH_TYP(int,    LD_sw, 4) \
+        DEF_FUNC_FETCH_TYP(uint,   LD_uw, 4) \
+        DEF_FUNC_FETCH_TYP(cell,   LOAD, SZ)
 
-FUNC_START(short_fetch)    /* short@   m4th-user */
-        LD_sh(DTOP,    AT(DTOP))
-FUNC_END(short_fetch)
+DEF_FUNC_FETCH()
 
+/* ----------------------- store[n] -------------------- */
 
-FUNC_START(ushort_fetch)   /* ushort@  m4th-user */
-        LD_uh(DTOP,    AT(DTOP))
-FUNC_END(ushort_fetch)
+#define DEF_FUNC_STORE_TYP_OFF(typ, offset, ST_xx, size) \
+FUNC_START(typ##_store_##offset)                         \
+        DPOP(  REG1)                                     \
+        ST_xx( REG1, AT(DTOP, offset*size))              \
+        DPOP___DTOP()                                    \
+FUNC_END(typ##_store_##offset)
 
+#define DEF_FUNC_STORE_TYP(typ, ST_xx, size) \
+        DEF_FUNC_STORE_TYP_OFF(typ, 1, ST_xx, size) \
+        DEF_FUNC_STORE_TYP_OFF(typ, 2, ST_xx, size) \
+        DEF_FUNC_STORE_TYP_OFF(typ, 3, ST_xx, size) \
+        DEF_FUNC_STORE_TYP_OFF(typ, 4, ST_xx, size) \
+        DEF_FUNC_STORE_TYP_OFF(typ, 5, ST_xx, size) \
+        DEF_FUNC_STORE_TYP_OFF(typ, 6, ST_xx, size) \
+        DEF_FUNC_STORE_TYP_OFF(typ, 7, ST_xx, size)
 
-FUNC_START(int_fetch)      /* int@     m4th-user */
-        LD_sw(DTOP,    AT(DTOP))
-FUNC_END(int_fetch)
+#define DEF_FUNC_STORE() \
+        DEF_FUNC_STORE_TYP(char,   STORb, 1) \
+        DEF_FUNC_STORE_TYP(short,  STORh, 2) \
+        DEF_FUNC_STORE_TYP(int,    STORw, 4) \
+        DEF_FUNC_STORE_TYP(cell,   STOR, SZ)
 
+DEF_FUNC_STORE()
 
-FUNC_START(uint_fetch)     /* uint@    m4th-user */
-        LD_uw(DTOP,    AT(DTOP))
-FUNC_END(uint_fetch)
+/* ----------------------- misc ------------------------ */
 
-
-FUNC_START(fetch)          /* @ */
-        LOAD(  DTOP, AT(DTOP))
-FUNC_END(fetch)
-
-
-FUNC_START(two_fetch)      /* 2@ */
-        LOAD(  REG1, AT(DTOP, SZ))
-        LOAD(  DTOP, AT(DTOP))
-        DPUSH( REG1)
-FUNC_END(two_fetch)
+#ifndef M4FCMOVE
+/* cmove ( src_addr dst_addr u -- ) 'string' word set */
+FUNC_START(cmove)
+        TOKEN_CALL(    FUNC(cmove_star), cmove.0)   /* ( src' dst'    ) */
+        LOAD(  DTOP,   AT(DSTK, SZ))
+        ADD2(IMM(SZ2), DSTK)
+FUNC_END(cmove)
+#endif /* M4FCMOVE */
 
 
 /* crc-cell ( x -- crc ) m4th-user: compute CRC32c of a cell */
@@ -127,7 +213,7 @@ FUNC_END(crc_cell)
 
 
 #ifndef M4FDIV_STRING
-/* /string ( c-addr u n -- c-addr' u' )  'string' word set */
+/* /string ( c-addr u n -- c-addr' u' )  forth-string */
 FUNC_START(div_string)
         MOVE(  DTOP,   REG1)           /* a = n       */
         DPOP___DTOP()                  /* dtop = u    */
@@ -139,7 +225,8 @@ FUNC_END(div_string)
 #endif /* M4FDIV_STRING */
 
 
-FUNC_START(line_find_char) /* ( c-addr u ch -- u' ) get index of char or CR */
+/* ( c-addr u ch -- u' ) get index of char or CR */
+FUNC_START(line_find_char)
         ZERO(  REG1)                   /* a = index = 0 */
         DPOP2( REG2,   REG3)           /* b = max = u,  c = c-addr    */
         JZ(    REG2,   TO(line_find_char.done))
@@ -223,6 +310,8 @@ FUNC_START(minus_two_roll)
         JUMP(    FUNC(two_store))              /* ( d0 du ... d1                   ) */
 FUNC_RAWEND(minus_two_roll)
 
+
+/* ----------------------- string ---------------------- */
 
 /**
  * string-ci=  ( c-addr1 c-addr2 u -- c-addr1 c-addr2 u t|f ) m4th-user

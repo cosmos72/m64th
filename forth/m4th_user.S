@@ -86,7 +86,7 @@ WORD_END(break)
  */
 WORD(cmove_star,       break,          DSTACK(3,2), RSTACK(0,0), WORD_IMPURE)
 /**
- * cmove<* ( src dst u -- src-u dst-u ) backward copy u bytes from src-1..src-u to dst-1..dst-u
+ * -cmove* ( src dst u -- src-u dst-u ) backward copy u bytes from src-1..src-u to dst-1..dst-u
  * and return updated addresses
  */
 WORD(minus_cmove_star, cmove_star,     DSTACK(3,2), RSTACK(0,0), WORD_IMPURE)
@@ -126,8 +126,11 @@ WORD_START(minus_cs_roll,   continue)
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(minus_cs_roll, exit)
 WORD_END(minus_cs_roll)
+/* do-i+-loop  native-compiled version of do i+ loop */
 WORD(do_i_plus_loop,   minus_cs_roll,  DSTACK(2,1), RSTACK(0,0), WORD_IMPURE)
-WORD(dup_to_r,         do_i_plus_loop, DSTACK(1,1), RSTACK(0,1), WORD_R_PURE)
+/* dp0        ( x -- x addr-of-x ) get address of stack bottom */
+WORD(dp0,              do_i_plus_loop, DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
+WORD(dup_to_r,         dp0,            DSTACK(1,1), RSTACK(0,1), WORD_R_PURE)
 WORD(ex_message_store, dup_to_r,       DSTACK(2,0), RSTACK(0,0), WORD_IMPURE)
 WORD(ex_message_fetch,ex_message_store,DSTACK(0,2), RSTACK(0,0), WORD_IMPURE)
 /* ( ex -- c-addr u ) get exception name */
@@ -163,12 +166,12 @@ WORD_START(hashmap_find_int, flip)
     WORD_FLAGS(0)
     WORD_CODE(
         dup_to_r,                                      /* ( map key            ) (R: key     ) */
-        over, _lit_, T(M4HASHMAP_OFF_VEC_INT), plus,  /* ( map key &map.vec   ) (R: key     ) */
+        over, _lit_, T(M4HASHMAP_OFF_VEC_INT), plus,   /* ( map key &map.vec   ) (R: key     ) */
         fetch, to_r,                                   /* ( map key            ) (R: key vec ) */
-        CALL(_hashmap_indexof_int_),                  /* ( pos                ) (R: key vec ) */
+        CALL(_hashmap_indexof_int_),                   /* ( pos                ) (R: key vec ) */
         begin,                                         /* ( pos                ) (R: key vec ) */
             r_fetch, swap,                             /* ( vec pos            ) (R: key vec ) */
-            CALL(_hashmap_entry_fetch_int_),          /* ( key' val next      ) (R: key vec ) */
+            CALL(_hashmap_entry_fetch_int_),           /* ( key' val next      ) (R: key vec ) */
             dup, one_plus, /* 0 if no entry */         /* ( key' val next flag ) (R: key vec ) */
         _while_, T(19),                                /* ( key' val next      ) (R: key vec ) */
             hop, r2nd_fetch, equal,                    /* ( key' val next t|f  ) (R: key vec ) */
@@ -349,19 +352,35 @@ WORD(ushorts,          shorts,         DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(ints,             ushorts,        DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(uints,            ints,           DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 /* cells     already in forth 'core' word set */
-WORD(byte_store,       uints,          DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE) /* alias of c! */
+
+#define DEF_WORD_FETCH_TYP_OFF(typ, offset, prev_word) \
+  WORD(typ##_fetch##offset, prev_word, DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+#define DEF_WORD_FETCH_TYP(typ, prev_word)       \
+  DEF_WORD_FETCH_TYP_OFF(typ,/**/,prev_word)     \
+  DEF_WORD_FETCH_TYP_OFF(typ, _1, typ##_fetch)   \
+  DEF_WORD_FETCH_TYP_OFF(typ, _2, typ##_fetch_1) \
+  DEF_WORD_FETCH_TYP_OFF(typ, _3, typ##_fetch_2) \
+  DEF_WORD_FETCH_TYP_OFF(typ, _4, typ##_fetch_3) \
+  DEF_WORD_FETCH_TYP_OFF(typ, _5, typ##_fetch_4) \
+  DEF_WORD_FETCH_TYP_OFF(typ, _6, typ##_fetch_5) \
+  DEF_WORD_FETCH_TYP_OFF(typ, _7, typ##_fetch_6)
+#define DEF_WORD_FETCH(prev_word)                \
+  DEF_WORD_FETCH_TYP(byte,        prev_word)     \
+  DEF_WORD_FETCH_TYP(char,     byte_fetch_7)     \
+  DEF_WORD_FETCH_TYP(short,    char_fetch_7)     \
+  DEF_WORD_FETCH_TYP(ushort,  short_fetch_7)     \
+  DEF_WORD_FETCH_TYP(int,    ushort_fetch_7)     \
+  DEF_WORD_FETCH_TYP(uint,      int_fetch_7)     \
+  DEF_WORD_FETCH_TYP(cell,     uint_fetch_7)
+DEF_WORD_FETCH(uints)
+
+WORD(byte_store,       cell_fetch_7,   DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE) /* alias of c! */
 WORD(char_store,       byte_store,     DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE) /* alias of c! */
 WORD(short_store,      char_store,     DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE)
 WORD(ushort_store,     short_store,    DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE) /* alias of short! */
 WORD(int_store,        ushort_store,   DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE)
 WORD(uint_store,       int_store,      DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE) /* alias of int! */
-WORD(byte_fetch,       uint_store,     DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD(char_fetch,       byte_fetch,     DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH) /* alias of c@ */
-WORD(short_fetch,      char_fetch,     DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD(ushort_fetch,     short_fetch,    DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD(int_fetch,        ushort_fetch,   DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD(uint_fetch,       int_fetch,      DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD(one_byte,         uint_fetch,     DSTACK(0,1), RSTACK(0,0), WORD_PURE) /* 1 i.e. sizeof(byte)   */
+WORD(one_byte,         uint_store,     DSTACK(0,1), RSTACK(0,0), WORD_PURE) /* 1 i.e. sizeof(byte)   */
 WORD(one_char,         one_byte,       DSTACK(0,1), RSTACK(0,0), WORD_PURE) /* 1 i.e. sizeof(char)   */
 WORD(one_short,        one_char,       DSTACK(0,1), RSTACK(0,0), WORD_PURE) /* 2 i.e. sizeof(short)  */
 WORD(one_ushort,       one_short,      DSTACK(0,1), RSTACK(0,0), WORD_PURE) /* 2 i.e. sizeof(ushort) */

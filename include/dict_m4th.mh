@@ -52,10 +52,11 @@
     /* ( src dst u -- src-u dst-u ) backward copy u bytes, */                                      \
     /*  and pre-decrement addresses before copying each byte  */                                   \
     X(7, "-cmove*", minus_cmove_star)                                                              \
-    X(8, "crc-cell", crc_cell)      /* ( x -- crc32 ) compute CRC32c of a cell               */    \
-    X(10, "crc-string", crc_string) /* ( c-addr u -- crc32 ) compute CRC32c of a string      */    \
-    X(10, "do-i+-loop", do_i_plus_loop) /* do i + loop                                        */   \
-    X(5, "dup>r", dup_to_r)             /*                    equivalent to: dup >r           */   \
+    X(8, "crc-cell", crc_cell)          /* ( x -- crc32 ) compute CRC32c of a cell              */ \
+    X(10, "crc-string", crc_string)     /* ( c-addr u -- crc32 ) compute CRC32c of a string     */ \
+    X(10, "do-i+-loop", do_i_plus_loop) /* do i + loop                                          */ \
+    X(3, "dp0", dp0)        /* ( x --- x addr-of-x ) get address of data stack bottom           */ \
+    X(5, "dup>r", dup_to_r) /* ( x -- ) (R: -- x )               equivalent to: dup >r          */ \
     X(11, "ex-message!", ex_message_store) /* ( c-addr u --    ) store exception message string */ \
     X(11, "ex-message@", ex_message_fetch) /* (    -- c-addr u ) fetch exception message string */ \
     X(4, "flip", flip)                     /* ( a b c -- c b a ) equivalent to: swap rot        */ \
@@ -88,12 +89,70 @@
     X(7, ">ushort", to_ushort)                                                                     \
     X(4, ">int", to_int)                                                                           \
     X(5, ">uint", to_uint)                                                                         \
+    /*                              */ /*                                               */         \
     X(5, "byte@", byte_fetch)                                                                      \
+    X(7, "byte[1]", byte_fetch_1)                                                                  \
+    X(7, "byte[2]", byte_fetch_2)                                                                  \
+    X(7, "byte[3]", byte_fetch_3)                                                                  \
+    X(7, "byte[4]", byte_fetch_4)                                                                  \
+    X(7, "byte[5]", byte_fetch_5)                                                                  \
+    X(7, "byte[6]", byte_fetch_6)                                                                  \
+    X(7, "byte[7]", byte_fetch_7)                                                                  \
+    /*                              */ /*                                               */         \
     /* X(5, "char@", char_fetch)    */ /* alias of: c@                                  */         \
+    X(7, "char[1]", char_fetch_1)                                                                  \
+    X(7, "char[2]", char_fetch_2)                                                                  \
+    X(7, "char[3]", char_fetch_3)                                                                  \
+    X(7, "char[4]", char_fetch_4)                                                                  \
+    X(7, "char[5]", char_fetch_5)                                                                  \
+    X(7, "char[6]", char_fetch_6)                                                                  \
+    X(7, "char[7]", char_fetch_7)                                                                  \
+    /*                              */ /*                                               */         \
     X(6, "short@", short_fetch)                                                                    \
+    X(8, "short[1]", short_fetch_1)                                                                \
+    X(8, "short[2]", short_fetch_2)                                                                \
+    X(8, "short[3]", short_fetch_3)                                                                \
+    X(8, "short[4]", short_fetch_4)                                                                \
+    X(8, "short[5]", short_fetch_5)                                                                \
+    X(8, "short[6]", short_fetch_6)                                                                \
+    X(8, "short[7]", short_fetch_7)                                                                \
+    /*                              */ /*                                               */         \
     X(7, "ushort@", ushort_fetch)                                                                  \
+    X(9, "ushort[1]", ushort_fetch_1)                                                              \
+    X(9, "ushort[2]", ushort_fetch_2)                                                              \
+    X(9, "ushort[3]", ushort_fetch_3)                                                              \
+    X(9, "ushort[4]", ushort_fetch_4)                                                              \
+    X(9, "ushort[5]", ushort_fetch_5)                                                              \
+    X(9, "ushort[6]", ushort_fetch_6)                                                              \
+    X(9, "ushort[7]", ushort_fetch_7)                                                              \
+    /*                              */ /*                                               */         \
     X(4, "int@", int_fetch)                                                                        \
+    X(6, "int[1]", int_fetch_1)                                                                    \
+    X(6, "int[2]", int_fetch_2)                                                                    \
+    X(6, "int[3]", int_fetch_3)                                                                    \
+    X(6, "int[4]", int_fetch_4)                                                                    \
+    X(6, "int[5]", int_fetch_5)                                                                    \
+    X(6, "int[6]", int_fetch_6)                                                                    \
+    X(6, "int[7]", int_fetch_7)                                                                    \
+    /*                              */ /*                                               */         \
     X(5, "uint@", uint_fetch)                                                                      \
+    X(6, "uint[1]", uint_fetch_1)                                                                  \
+    X(6, "uint[2]", uint_fetch_2)                                                                  \
+    X(6, "uint[3]", uint_fetch_3)                                                                  \
+    X(6, "uint[4]", uint_fetch_4)                                                                  \
+    X(6, "uint[5]", uint_fetch_5)                                                                  \
+    X(6, "uint[6]", uint_fetch_6)                                                                  \
+    X(6, "uint[7]", uint_fetch_7)                                                                  \
+    /*                              */ /*                                               */         \
+    /* X(5, "cell@", cell_fetch)    */ /* alias of: @                                   */         \
+    X(7, "cell[1]", cell_fetch_1)                                                                  \
+    X(7, "cell[2]", cell_fetch_2)                                                                  \
+    X(7, "cell[3]", cell_fetch_3)                                                                  \
+    X(7, "cell[4]", cell_fetch_4)                                                                  \
+    X(7, "cell[5]", cell_fetch_5)                                                                  \
+    X(7, "cell[6]", cell_fetch_6)                                                                  \
+    X(7, "cell[7]", cell_fetch_7)                                                                  \
+    /*                              */ /*                                               */         \
     X(6, "short!", short_store)                                                                    \
     X(4, "int!", int_store)                                                                        \
     X(6, "short,", short_comma)                                                                    \
@@ -118,6 +177,7 @@
     X(5, "/cell", div_cell)           /* alias of SZ/                                   */         \
     /*                             */ /*                                                */         \
     X(5, "char@", char_fetch)         /* alias of c@                                    */         \
+    X(5, "cell@", cell_fetch)         /* alias of @                                     */         \
     X(5, "byte!", byte_store)         /* alias of c!                                    */         \
     X(5, "char!", char_store)         /* alias of c!                                    */         \
     X(7, "ushort!", ushort_store)     /* alias of short!                                */         \
