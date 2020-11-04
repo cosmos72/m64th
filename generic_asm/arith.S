@@ -485,4 +485,4 @@ FUNC_START(tuck)          /* tuck      core ( a b -- b a b ) */
         STOR(  DTOP,   AT(DSTK))
         DPUSH( REG1)
 FUNC_END(tuck)
-#endif // M4FTUCK
+#endif

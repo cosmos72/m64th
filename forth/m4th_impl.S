@@ -328,11 +328,17 @@ WORD_START(_hashmap_entry_fetch_int_, _exec_xt_from_native_)
 #endif
         fetch, r_from,                                     /* ( key val vec  )           */
 #if M4HASHMAP_ENTRY_OFF_NEXT_INT == 12
-        uint_fetch_3,                                      /* ( key val next )           */
+        int_fetch_3,                                       /* ( key val next )           */
 #else
-        _lit_, T(M4HASHMAP_ENTRY_OFF_NEXT_INT), plus, uint_fetch, /* same */
+        _lit_, T(M4HASHMAP_ENTRY_OFF_NEXT_INT), plus, int_fetch, /* same */
 #endif
-        exit
+        /* if no_entry, next is -1. if no_next, next is -2  */
+        /* we must truncate all other values to unsigned 32-bit i.e. uint */
+        dup, one_plus, dup, zero_ne,                      /* ( key val next next+1 t|f ) */
+        swap, one_plus, and,                              /* ( key val next flag       ) */
+        _if_, T(2),                                       /* ( key val next            ) */
+            to_uint,       /* truncate next to unsigned 32-bit */
+        then, exit                                        /* ( key val next            ) */
     )
 WORD_END(_hashmap_entry_fetch_int_)
 /* (hashmap-index-of/int) ( map key -- pos ) get bucket position for key  */

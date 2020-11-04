@@ -135,7 +135,7 @@ const H(m4hashmap_entry_) * H(m4hashmap_insert_)(H(m4hashmap_) * map, H(m4) key,
         H(m4hash_store_)(map, entry, key, val, H(m4hash_no_next_));
         return entry;
     } else if (H(m4hashmap_find_in_collision_list_)(map, key, entry)) {
-        // same key is already present, return NULL
+        /* same key is already present, return NULL */
         return NULL;
     }
     pos = H(m4hash_pick_collision_index_)(map, pos);

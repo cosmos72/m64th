@@ -226,7 +226,7 @@ LABEL(crc_string_simd.by64.loop)
         JB(    REG4,   IMM(8), TO(crc_string_simd.upto7))
 
 LABEL(crc_string_simd.by8)
-#endif // 1
+#endif /* 1 */
 
         SUB2(  IMM(8), DTOP)
 FUNC_ALIGN()
