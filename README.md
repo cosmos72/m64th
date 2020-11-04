@@ -2,9 +2,9 @@
 m4th is a forth compiler, interpreter and REPL
 
 ## Current status
-[BETA] REPL and many simple words are implemented, including ':' to define new words.
+**BETA** REPL and many simple words are implemented, including `:` to define new words.
 
-Line editing and autocompletion are implemented.
+It has line editing and autocompletion.
 
 ## Supported platforms
 
@@ -18,7 +18,7 @@ Windows is definitely not supported - volunteers welcome.
 
 ## Legal
 
-Hyperluminal-mem is released under the terms of the
+m4th is released under the terms of the
 [GNU Lesser General Public License](https://www.gnu.org/licenses/lgpl-3.0.en.html),
 as published by the Free Software Foundation, either version 3 of the License,
 or (at your option) any later version.
