@@ -42,7 +42,7 @@ WORD_START(cs_roll,      cs_pick)
     WORD_DSTACK(1,0) /* DSTACK(x+1,x) */
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE() /* uses %rip-relative TOKEN_CALL */
+    WORD_NATIVE_NONE() /* uses %rip-relative TOKEN_CALL_NOTHROW */
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_COMPILE_ONLY)
     WORD_CODE(cs_roll, exit)
 WORD_END(cs_roll)

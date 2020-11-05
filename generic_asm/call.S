@@ -37,7 +37,8 @@ FUNC_RAWEND(_call_xt_)
  * ...  old-RTOP  RSTK-depth  old-m4th.handler  RTOP=IP
  */
 FUNC_START(_catch_beg_)
-        TOKEN_CALL(FUNC(_validate_xt_), _catch_beg_.0)
+        TOKEN_CALL_NOTHROW(FUNC(_validate_xt_), _catch_beg_.0)
+        JNZ(   REG0,   FUNC(_throw_reg0_))
 
         RPUSH( RTOP)                               /* save current RTOP */
 
@@ -111,16 +112,18 @@ FUNC_START(_check_lit_)    /* [check] */
 FUNC_RAWEND(_check_lit_)
 
 
-/** validate XT at dtop. also sets REG1 = dend - dstk = stack depth */
+/* _validate_xt_ is invoked with TOKEN_CALL_NOTHROW => cannot throw   */
+/* thus set REG0 to validation error instead, and let caller throw it */
 FUNC_START(_validate_xt_)
         /* check for stack underflow */
         LOAD(  REG1,   AT(M4TH, M4TH_OFF_DEND))
         MOVI(  M4ERR_STACK_UNDERFLOW,  REG0)
-        JA(    DSTK,   REG1,   FUNC(_throw_reg0_))
+        JA(    DSTK,   REG1,   FUNC_RET(_validate_xt_))
         SUB2(  DSTK,   REG1)                       /* a  = dend - dstk   */
+        /* _catch_beg_ also needs that we set REG1 = stack depth */
 
         /* check for impossible XT values: */
-        /* 1. xt must be a multiple of SZ */
+        /* 1. XT must be a multiple of SZ */
 #ifdef AND3
         AND3(  DTOP,IMM(SZ-1), REG2)
 #else
@@ -128,22 +131,24 @@ FUNC_START(_validate_xt_)
         AND2(IMM(SZ-1),REG2)
 #endif
         MOVI(  M4ERR_INVALID_MEMORY_ADDRESS, REG0)
-        JNZ(   REG2,   FUNC(_throw_reg0_))
+        JNZ(   REG2,               FUNC_RET(_validate_xt_))
 
 #ifdef __linux__
-        /* 2. on Linux, xt must be >= 64k  */
-        JB(   DTOP,    IMM(1<<16), FUNC(_throw_reg0_))
+        /* 2. on Linux, XT must be >= 64k  */
+        JB(   DTOP,    IMM(1<<16), FUNC_RET(_validate_xt_))
 #endif
-        /* 3. xt must be < saved C stack  */
+        /* 3. XT must be < saved C stack  */
         LOAD( REG2,    AT(M4TH, M4TH_OFF_C_REG0))
-        JAE(  DTOP,    REG2,      FUNC(_throw_reg0_))
+        JAE(  DTOP,    REG2,       FUNC_RET(_validate_xt_))
 
+        ZERO( REG0)
 FUNC_END(_validate_xt_)
 
 
 /** pop XT from dstack and call it. */
 FUNC_START(execute)
-        TOKEN_CALL(FUNC(_validate_xt_), execute.0)
+        TOKEN_CALL_NOTHROW(FUNC(_validate_xt_), execute.0)
+        JNZ(   REG0,   FUNC(_throw_reg0_))
 
         RPUSH( RTOP)               /* save RTOP                */
         MOVE(  IP,     RTOP)       /* save return address = IP */

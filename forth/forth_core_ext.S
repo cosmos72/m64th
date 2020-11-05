@@ -101,7 +101,7 @@ WORD_START(roll,       pick)
     WORD_DSTACK(1,0) /* DSTACK(x+1,x)   */
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE() /* uses %rip-relative TOKEN_CALL, cannot inline in native code */
+    WORD_NATIVE_NONE() /* uses %rip-relative TOKEN_CALL_NOTHROW, cannot inline in native code */
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(roll, exit)
 WORD_END(roll)

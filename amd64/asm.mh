@@ -169,7 +169,7 @@
 #define SHL2(src, dst)        shl  src,     dst;   /* dst <<= src    */
 #define SHR2(src, dst)        shr  src,     dst;   /* dst >>= src    unsigned */
 #define SUB2(src, dst)        sub  src,     dst;   /* dst -= src     */
-#define STOR(reg, at)         mov  reg,     at;    /* *at  = reg     */
+#define STOR(reg, at)         movq reg,     at;    /* *at  = reg     */
 #define XOR2(src, dst)        xor  src,     dst;   /* dst ^= src     */
 #define XSUB2(a,b)            sub  a, b;  neg b;   /* b    = a - b   */
 #define ZERO(dst)             xor  dst##w, dst##w; /* dst  = 0       */
@@ -205,10 +205,10 @@
     jmp func;                                                                                      \
     LABEL(retlabel)
 
-#define TOKEN_CALL(func, retlabel)  /* call token from another token         */                    \
-    TOKEN_CALL_PREPARE()            /*                                       */                    \
-    TOKEN_CALL_BODY(func, retlabel) /*                                       */                    \
-    TOKEN_CALL_CLEANUP()            /*                                       */
+#define TOKEN_CALL_NOTHROW(func, retlabel) /* call token from another token.        */             \
+    TOKEN_CALL_PREPARE()                   /* the callee must NOT throw because     */             \
+    TOKEN_CALL_BODY(func, retlabel)        /* it will receive a mangled VM register */             \
+    TOKEN_CALL_CLEANUP()                   /*                                       */
 
 #define JA(reg, val, label) /*  if reg u> val jump to label */                                     \
     cmp val, reg;                                                                                  \

@@ -319,7 +319,7 @@ WORD_START(emit, else)
     WORD_DSTACK(1,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE() /* uses ip-relative ADDROF() and TOKEN_CALL(), cannot inline in native code */
+    WORD_NATIVE_NONE() /* uses ip-relative ADDROF() and TOKEN_CALL_NOTHROW(), cannot inline in native code */
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(emit, exit)
 WORD_END(emit)

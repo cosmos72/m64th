@@ -35,7 +35,7 @@ FUNC_END(div_string)
 #define M4FCMOVE /* defined near cmove* to encode a shorter jump */
 /* cmove ( src_addr dst_addr u -- ) 'string' word set */
 FUNC_START(cmove)
-        TOKEN_CALL(    FUNC(cmove_star), cmove.0)   /* ( src' dst'    ) */
+        TOKEN_CALL_NOTHROW(FUNC(cmove_star), cmove.0)   /* ( src' dst'    ) */
         LOAD(  DTOP,   AT(DSTK, SZ))
         ADD2(IMM(SZ2), DSTK)
 FUNC_END(cmove)

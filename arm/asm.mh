@@ -203,10 +203,10 @@
     ADDROF_1M(TO(retlabel), VM)                                                                    \
     jmp func;                                                                                      \
     LABEL(retlabel)
-#define TOKEN_CALL(func, retlabel)  /* call token from another token         */                    \
-    TOKEN_CALL_PREPARE()            /*                                       */                    \
-    TOKEN_CALL_BODY(func, retlabel) /*                                       */                    \
-    TOKEN_CALL_CLEANUP()            /*                                       */
+#define TOKEN_CALL_NOTHROW(func, retlabel) /* call token from another token         */             \
+    TOKEN_CALL_PREPARE()                   /* the callee must NOT throw because     */             \
+    TOKEN_CALL_BODY(func, retlabel)        /* it will receive a mangled VM register */             \
+    TOKEN_CALL_CLEANUP()                   /*                                       */
 
 #define JA(reg, val, label) /*  if reg u>  val jump to label */                                    \
     cmp reg, val;                                                                                  \

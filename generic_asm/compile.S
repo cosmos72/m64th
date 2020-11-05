@@ -82,7 +82,7 @@ FUNC_START(_compile_jump_lit_)
 FUNC_DEF(_compile_jump_)
 /* FUNC_START(_compile_jump_) */
                                                        /* ( token category         ) */
-        TOKEN_CALL(FUNC(_num_compiled_reg0_), _compile_jump_.0)  /* @ = #code_n                */
+        TOKEN_CALL_NOTHROW(FUNC(_num_compiled_reg0_), _compile_jump_.0)  /* @ = #code_n                */
         LOAD(  REG1,       AT(DSTK))                   /* a = token                  */
         ADD2(  IMM(2),     REG0)                       /* @ = jump_address           */
         init_RFFF_REG2()                               /* b = -1                     */

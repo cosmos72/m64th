@@ -299,7 +299,7 @@ WORD_START(name_to_ident,  name_to_flags_store)
     WORD_DSTACK(1,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE() /* uses %rip-relative TOKEN_CALL */
+    WORD_NATIVE_NONE() /* uses %rip-relative TOKEN_CALL_NOTHROW */
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
     WORD_CODE(name_to_ident, exit)
 WORD_END(name_to_ident)

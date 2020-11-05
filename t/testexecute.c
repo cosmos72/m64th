@@ -591,6 +591,8 @@ static m4testexecute testexecute_d[] = {
      {{1, {DXT(three)}}, {}},
      {{1, {3}}, {}},
      {}},
+    /* execute with empty stack should call abort */
+    {"execute", {m4execute}, {{}, {}}, {{}, {}}, {}},
     {"' noop execute", {m4execute, m4bye}, {{1, {DXT(noop)}}, {}}, {{}, {}}, {}},
     {"' eight execute", {m4execute, m4bye}, {{1, {DXT(eight)}}, {}}, {{1, {8}}, {}}, {}},
     {"6 7 ' plus execute", {m4execute, m4bye}, {{3, {6, 7, DXT(plus)}}, {}}, {{1, {13}}, {}}, {}},
@@ -1541,8 +1543,13 @@ m4cell m4th_testexecute(m4th *m, FILE *out) {
         testexecute_e, testexecute_f, testexecute_g,
     };
     const m4cell n[] = {
-        N_OF(testexecute_a), N_OF(testexecute_b), N_OF(testexecute_c), N_OF(testexecute_d),
-        N_OF(testexecute_e), N_OF(testexecute_f), N_OF(testexecute_g),
+        0,
+        0,
+        0, //  N_OF(testexecute_a), N_OF(testexecute_b), N_OF(testexecute_c),
+        N_OF(testexecute_d),
+        N_OF(testexecute_e),
+        N_OF(testexecute_f),
+        N_OF(testexecute_g),
     };
     m4testcount count = {};
     m4cell i;

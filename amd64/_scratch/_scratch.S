@@ -21,9 +21,9 @@ FUNC_END(loop_set_zero)
 
 #define m4fmain main
 FUNC_START(main)
-        MOVE(  IMM(1000000000), %rdi)
-        MOVE(  IMM(-1),         %r11)
-        TOKEN_CALL(      FUNC(loop_set_zero), main.0)
+        MOVE(IMM(1000000000),  %rdi)
+        MOVE(IMM(-1),          %r11)
+        TOKEN_CALL_NOTHROW(    FUNC(loop_set_zero), main.0)
 FUNC_END(main)
 
 
