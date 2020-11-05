@@ -329,16 +329,16 @@ WORD_START(_hashmap_entry_fetch_int_, _exec_xt_from_native_)
 #endif
         fetch, r_from,                                     /* ( key val vec  )           */
 #if M4HASHMAP_ENTRY_OFF_NEXT_INT == 12
-        uint_fetch_3,                                      /* ( key val next )           */
+        int_fetch_3,                                       /* ( key val next )           */
 #else
-        _lit_, T(M4HASHMAP_ENTRY_OFF_NEXT_INT), plus, uint_fetch, /* same */
+        _lit_, T(M4HASHMAP_ENTRY_OFF_NEXT_INT), plus, int_fetch, /* same */
 #endif
 #if SZ > 4
-        /* if no_entry, next is 0xffffffff. if no_next_entry, next is 0xfffffffe */
-        /* we must sign-extend ONLY these two values to a cell                   */
-        dup, two_plus, _lit_, T(32), rshift,              /* ( key val next flag       ) */
+        /* if no_entry, next is -1. if no_next_entry, next is -2 */
+        /* we must truncate all other values to unsigned 32-bit  */
+        dup, minus_two, u_less,                           /* ( key val next t|f        ) */
         _if_, T(2),                                       /* ( key val next            ) */
-            to_int,       /* sign-extend from 32-bit to cell */
+            to_uint,                                 /* truncate next to unsigned 32-bit */
         then,                                             /* ( key val next            ) */
 #endif /* SZ > 4 */
         exit
@@ -817,7 +817,8 @@ WORD_START(_optimize_literal_, _optimize_3token_)
         false, exit                                    /* ( x false )                */
       ),
       WORD_DATA_TOKENS(
-        T(-1), minus_one, T(0), zero, T(1), one, T(2), two, T(3), three, T(4), four, T(8), eight
+        T(-2), minus_two, T(-1), minus_one,
+        T(0), zero, T(1), one, T(2), two, T(3), three, T(4), four, T(8), eight
       )
     )
 WORD_END(_optimize_literal_)
@@ -1171,7 +1172,8 @@ WORD_START(_throw_if_not_compiling_, _throw_compile_only_xt_)
         exit
     )
 WORD_END(_throw_if_not_compiling_)
-WORD(minus_one,_throw_compile_only_xt_,DSTACK(0,1), RSTACK(0,0), WORD_PURE)
+WORD(minus_two,_throw_compile_only_xt_,DSTACK(0,1), RSTACK(0,0), WORD_PURE)
+WORD(minus_one,        minus_two,      DSTACK(0,1), RSTACK(0,0), WORD_PURE)
 WORD(zero,             minus_one,      DSTACK(0,1), RSTACK(0,0), WORD_PURE)
 WORD(one,              zero,           DSTACK(0,1), RSTACK(0,0), WORD_PURE)
 WORD(two,              one,            DSTACK(0,1), RSTACK(0,0), WORD_PURE)

@@ -37,23 +37,9 @@ FUNC_RAWEND(_call_xt_)
  * ...  old-RTOP  RSTK-depth  old-m4th.handler  RTOP=IP
  */
 FUNC_START(_catch_beg_)
-        /* check for stack underflow */
-        LOAD(  REG1,   AT(M4TH, M4TH_OFF_DEND))
-        MOVI(  M4ERR_STACK_UNDERFLOW,  REG0)
-        JA(    DSTK,   REG1,   FUNC(_throw_reg0_))
-        SUB2(  DSTK,   REG1)                       /* a  = dend - dstk   */
+        TOKEN_CALL(FUNC(_validate_xt_), _catch_beg_.0)
 
-        /* check for impossible XT values: (xt & 7) must be == 0 */
-#ifdef AND3
-        AND3(  DTOP,IMM(SZ-1), REG2)
-#else
-        MOVE(  DTOP,   REG2)
-        AND2(IMM(SZ-1),REG2)
-#endif
-        MOVI(  M4ERR_INVALID_MEMORY_ADDRESS, REG0)
-        JNZ(   REG2,   FUNC(_throw_reg0_))
-
-        RPUSH( RTOP)/* save current RTOP */
+        RPUSH( RTOP)                               /* save current RTOP */
 
         /* pop XT */
         SUB2(IMM(SZ),  REG1)                       /* update stack depth */
@@ -125,11 +111,61 @@ FUNC_START(_check_lit_)    /* [check] */
 FUNC_RAWEND(_check_lit_)
 
 
+/** validate XT at dtop. also sets REG1 = dend - dstk = stack depth */
+FUNC_START(_validate_xt_)
+        /* check for stack underflow */
+        LOAD(  REG1,   AT(M4TH, M4TH_OFF_DEND))
+        MOVI(  M4ERR_STACK_UNDERFLOW,  REG0)
+        JA(    DSTK,   REG1,   FUNC(_throw_reg0_))
+        SUB2(  DSTK,   REG1)                       /* a  = dend - dstk   */
+
+        /* check for impossible XT values: */
+        /* 1. xt must be a multiple of SZ */
+#ifdef AND3
+        AND3(  DTOP,IMM(SZ-1), REG2)
+#else
+        MOVE(  DTOP,   REG2)
+        AND2(IMM(SZ-1),REG2)
+#endif
+        MOVI(  M4ERR_INVALID_MEMORY_ADDRESS, REG0)
+        JNZ(   REG2,   FUNC(_throw_reg0_))
+
+#ifdef __linux__
+        /* 2. on Linux, xt must be >= 64k  */
+        JB(   DTOP,    IMM(1<<16), FUNC(_throw_reg0_))
+#endif
+        /* 3. xt must be < saved C stack  */
+        LOAD( REG2,    AT(M4TH, M4TH_OFF_C_REG0))
+        JAE(  DTOP,    REG2,      FUNC(_throw_reg0_))
+
+FUNC_END(_validate_xt_)
+
+
+/** pop XT from dstack and call it. */
+FUNC_START(execute)
+        TOKEN_CALL(FUNC(_validate_xt_), execute.0)
+
+        RPUSH( RTOP)               /* save RTOP                */
+        MOVE(  IP,     RTOP)       /* save return address = IP */
+        MOVE(  DTOP,   IP)         /* set IP = XT              */
+        DPOP___DTOP()              /* reload dstack top        */
+        NEXT0()
+FUNC_RAWEND(execute)
+
+
+/** exit from current XT being executed */
+FUNC_START(exit)
+        MOVE(  RTOP, IP)
+        RPOP(  RTOP)
+        NEXT0()
+FUNC_RAWEND(exit)
+
+
 /* ( ex -- ) throw exception if ex != 0 */
 FUNC_START(throw)
         MOVE(  DTOP,   REG0)
         DPOP___DTOP()
-        JZ(    REG0,   FUNC_RET(throw))             /* 0 means 'do not throw'             */
+        JZ(    REG0,   FUNC_RET(throw))              /* 0 means 'do not throw'             */
 FUNC_DEF(_throw_reg0_)
         STOR(  REG0,   AT(M4TH, M4TH_OFF_EX))        /* save exception to m4th.ex          */
         LOAD(  REG2,   AT(M4TH, M4TH_OFF_HANDLER))   /* b = m4th.handler = rend - rstk     */
@@ -181,38 +217,3 @@ LABEL(throw.dstk)
 LABEL(throw.dstk_ok)
         RPOP(  RTOP)                                 /* restore RTOP pushed by (catch-beg) */
 FUNC_END(throw)
-
-
-/** pop XT from dstack and call it. */
-FUNC_START(execute)
-        /* check for stack underflow */
-        LOAD(  REG1,   AT(M4TH, M4TH_OFF_DEND))
-        MOVI(  M4ERR_STACK_UNDERFLOW,  REG0)
-        JA(    DSTK,   REG1,   FUNC(_throw_reg0_))
-        SUB2(  DSTK,   REG1)                       /* a  = dend - dstk   */
-
-        /* check for impossible XT values: (xt & 7) must be == 0 */
-#ifdef AND3
-        AND3(  DTOP,IMM(SZ-1), REG2)
-#else
-        MOVE(  DTOP,   REG2)
-        AND2(IMM(SZ-1),REG2)
-#endif
-        MOVI(  M4ERR_INVALID_MEMORY_ADDRESS, REG0)
-        JNZ(   REG2,   FUNC(_throw_reg0_))
-
-
-        RPUSH( RTOP)               /* save RTOP                */
-        MOVE(  IP,     RTOP)       /* save return address = IP */
-        MOVE(  DTOP,   IP)         /* set IP = XT              */
-        DPOP___DTOP()              /* reload dstack top        */
-        NEXT0()
-FUNC_RAWEND(execute)
-
-
-/** exit from current XT being executed */
-FUNC_START(exit)
-        MOVE(  RTOP, IP)
-        RPOP(  RTOP)
-        NEXT0()
-FUNC_RAWEND(exit)

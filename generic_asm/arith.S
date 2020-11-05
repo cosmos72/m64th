@@ -179,6 +179,12 @@ FUNC_END(minus)
 #endif
 
 
+FUNC_START(minus_two)      /* -2   m4th-impl */
+        DPUSH__DTOP()
+        MOVI(  -2,     DTOP)
+FUNC_END(minus_two)
+
+
 FUNC_START(minus_one)      /* -1   m4th-impl */
         DPUSH__DTOP()
         MOVE(  IMM_1,  DTOP)

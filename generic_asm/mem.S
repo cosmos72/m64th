@@ -150,7 +150,8 @@ FUNC_END(typ##_fetch_##offset)
         DEF_FUNC_FETCH_TYP_OFF(typ, 4, LD_xx, size) \
         DEF_FUNC_FETCH_TYP_OFF(typ, 5, LD_xx, size) \
         DEF_FUNC_FETCH_TYP_OFF(typ, 6, LD_xx, size) \
-        DEF_FUNC_FETCH_TYP_OFF(typ, 7, LD_xx, size)
+        DEF_FUNC_FETCH_TYP_OFF(typ, 7, LD_xx, size) \
+        DEF_FUNC_FETCH_TYP_OFF(typ, 8, LD_xx, size)
 
 #define DEF_FUNC_FETCH() \
         DEF_FUNC_FETCH_TYP(char,   LD_ub, 1) \

@@ -200,15 +200,15 @@
     RPUSH(VM)
 #define TOKEN_CALL_CLEANUP() /* cleanup after call token->token _______________________________ */ \
     RPOP(VM)
-#define TOKEN_CALL_BODY(func, ret) /* actually call token->token ______________________________ */ \
-    ADDROF_1M(TO(ret), VM)                                                                         \
+#define TOKEN_CALL_BODY(func, retlabel) /* actually call token->token _________________________ */ \
+    ADDROF_1M(TO(retlabel), VM)                                                                    \
     jmp func;                                                                                      \
-    LABEL(ret)
+    LABEL(retlabel)
 
-#define TOKEN_CALL(func, ret)  /* call token from another token         */                         \
-    TOKEN_CALL_PREPARE()       /*                                       */                         \
-    TOKEN_CALL_BODY(func, ret) /*                                       */                         \
-    TOKEN_CALL_CLEANUP()
+#define TOKEN_CALL(func, retlabel)  /* call token from another token         */                    \
+    TOKEN_CALL_PREPARE()            /*                                       */                    \
+    TOKEN_CALL_BODY(func, retlabel) /*                                       */                    \
+    TOKEN_CALL_CLEANUP()            /*                                       */
 
 #define JA(reg, val, label) /*  if reg u> val jump to label */                                     \
     cmp val, reg;                                                                                  \

@@ -120,7 +120,8 @@
 #define M4byte_fetch_5 M4_u(100)         /* byte[5]   read   ((*int8_t)dtop)[5], sign-extend */
 #define M4byte_fetch_6 M4_u(101)         /* byte[6]   read   ((*int8_t)dtop)[6], sign-extend */
 #define M4byte_fetch_7 M4_u(102)         /* byte[7]   read   ((*int8_t)dtop)[7], sign-extend */
-#undef M4____gap                         /*                                         */
+#define M4byte_fetch_8 M4_u(103)         /* byte[8]   read   ((*int8_t)dtop)[8], sign-extend */
+/* */                                    /*                                         */
 #define M4char_fetch M4c_fetch           /* char@     read  ((*uint8_t)dtop)[0], zero-extend */
 #define M4char_fetch_1 M4_u(105)         /* char[1]   read  ((*uint8_t)dtop)[1], zero-extend */
 #define M4char_fetch_2 M4_u(106)         /* char[2]   read  ((*uint8_t)dtop)[2], zero-extend */
@@ -129,7 +130,8 @@
 #define M4char_fetch_5 M4_u(109)         /* char[5]   read  ((*uint8_t)dtop)[5], zero-extend */
 #define M4char_fetch_6 M4_u(110)         /* char[6]   read  ((*uint8_t)dtop)[6], zero-extend */
 #define M4char_fetch_7 M4_u(111)         /* char[7]   read  ((*uint8_t)dtop)[7], zero-extend */
-#undef M4____gap                         /*                                         */
+#define M4char_fetch_8 M4_u(112)         /* char[8]   read  ((*uint8_t)dtop)[8], zero-extend */
+/* */                                    /*                                         */
 #define M4short_fetch M4_u(113)          /* short@    read  ((*int16_t)dtop)[0], sign-extend */
 #define M4short_fetch_1 M4_u(114)        /* short[1]  read  ((*int16_t)dtop)[1], sign-extend */
 #define M4short_fetch_2 M4_u(115)        /* short[2]  read  ((*int16_t)dtop)[2], sign-extend */
@@ -138,7 +140,8 @@
 #define M4short_fetch_5 M4_u(118)        /* short[5]  read  ((*int16_t)dtop)[5], sign-extend */
 #define M4short_fetch_6 M4_u(119)        /* short[6]  read  ((*int16_t)dtop)[6], sign-extend */
 #define M4short_fetch_7 M4_u(120)        /* short[7]  read  ((*int16_t)dtop)[7], sign-extend */
-#undef M4____gap                         /*                                         */
+#define M4short_fetch_8 M4_u(121)        /* short[8]  read  ((*int16_t)dtop)[8], sign-extend */
+/* */                                    /*                                         */
 #define M4ushort_fetch M4_u(122)         /* ushort@   read ((*uint16_t)dtop)[0], zero-extend */
 #define M4ushort_fetch_1 M4_u(123)       /* ushort[1] read ((*uint16_t)dtop)[1], zero-extend */
 #define M4ushort_fetch_2 M4_u(124)       /* ushort[2] read ((*uint16_t)dtop)[2], zero-extend */
@@ -147,7 +150,8 @@
 #define M4ushort_fetch_5 M4_u(127)       /* ushort[5] read ((*uint16_t)dtop)[5], zero-extend */
 #define M4ushort_fetch_6 M4_u(128)       /* ushort[6] read ((*uint16_t)dtop)[6], zero-extend */
 #define M4ushort_fetch_7 M4_u(129)       /* ushort[7] read ((*uint16_t)dtop)[7], zero-extend */
-#undef M4____gap                         /*                                         */
+#define M4ushort_fetch_8 M4_u(130)       /* ushort[8] read ((*uint16_t)dtop)[8], zero-extend */
+/* */                                    /*                                         */
 #define M4int_fetch M4_u(131)            /* int@      read  ((*int32_t)dtop)[0], sign-extend */
 #define M4int_fetch_1 M4_u(132)          /* int[1]    read  ((*int32_t)dtop)[1], sign-extend */
 #define M4int_fetch_2 M4_u(133)          /* int[2]    read  ((*int32_t)dtop)[2], sign-extend */
@@ -156,7 +160,8 @@
 #define M4int_fetch_5 M4_u(136)          /* int[5]    read  ((*int32_t)dtop)[5], sign-extend */
 #define M4int_fetch_6 M4_u(137)          /* int[6]    read  ((*int32_t)dtop)[6], sign-extend */
 #define M4int_fetch_7 M4_u(138)          /* int[7]    read  ((*int32_t)dtop)[7], sign-extend */
-#undef M4____gap                         /*                                         */
+#define M4int_fetch_8 M4_u(139)          /* int[8]    read  ((*int32_t)dtop)[8], sign-extend */
+/* */                                    /*                                         */
 #define M4uint_fetch M4_u(140)           /* uint@     read ((*uint32_t)dtop)[1], zero-extend */
 #define M4uint_fetch_1 M4_u(141)         /* uint[1]   read ((*uint32_t)dtop)[1], zero-extend */
 #define M4uint_fetch_2 M4_u(142)         /* uint[2]   read ((*uint32_t)dtop)[2], zero-extend */
@@ -165,7 +170,8 @@
 #define M4uint_fetch_5 M4_u(145)         /* uint[5]   read ((*uint32_t)dtop)[5], zero-extend */
 #define M4uint_fetch_6 M4_u(146)         /* uint[6]   read ((*uint32_t)dtop)[6], zero-extend */
 #define M4uint_fetch_7 M4_u(147)         /* uint[7]   read ((*uint32_t)dtop)[7], zero-extend */
-#undef M4____gap                         /*                                         */
+#define M4uint_fetch_8 M4_u(148)         /* uint[8]   read ((*uint32_t)dtop)[8], zero-extend */
+/* */                                    /*                                         */
 #define M4cell_fetch M4fetch             /* cell@     read   ((*m4cell)dtop)[0]              */
 #define M4cell_fetch_1 M4_u(150)         /* cell[1]   read   ((*m4cell)dtop)[1]              */
 #define M4cell_fetch_2 M4_u(151)         /* cell[2]   read   ((*m4cell)dtop)[2]              */
@@ -174,7 +180,8 @@
 #define M4cell_fetch_5 M4_u(154)         /* cell[5]   read   ((*m4cell)dtop)[5]              */
 #define M4cell_fetch_6 M4_u(155)         /* cell[6]   read   ((*m4cell)dtop)[6]              */
 #define M4cell_fetch_7 M4_u(156)         /* cell[7]   read   ((*m4cell)dtop)[7]              */
-#undef M4____gap                         /*                                         */
+#define M4cell_fetch_8 M4_u(157)         /* cell[8]   read   ((*m4cell)dtop)[8]              */
+/* */                                    /*                                         */
 #undef M4____gap                         /* ----------- store[n] --------------------------- */
 #define M4byte_store M4c_store           /* byte!     write   (int8_t)d2 at address dtop     */
 #define M4byte_store_1 M4_u(160)         /* byte[1]!   write   ((*int8_t)dtop)[1]   */
@@ -343,7 +350,7 @@
 
 /* 'm4th-impl' wordlist */
 #define M4_i(x) ((x) + 800)
-#undef M4____gap                    /*                                         */
+#define M4minus_two M4_i(6)         /* -2                    */
 #define M4minus_one M4_i(7)         /* -1                    */
 #define M4zero M4_i(8)              /* 0                     */
 #define M4one M4_i(9)               /* 1                     */

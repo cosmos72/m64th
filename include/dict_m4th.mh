@@ -98,6 +98,7 @@
     X(7, "byte[5]", byte_fetch_5)                                                                  \
     X(7, "byte[6]", byte_fetch_6)                                                                  \
     X(7, "byte[7]", byte_fetch_7)                                                                  \
+    X(7, "byte[8]", byte_fetch_8)                                                                  \
     /*                              */ /*                                               */         \
     /* X(5, "char@", char_fetch)    */ /* alias of: c@                                  */         \
     X(7, "char[1]", char_fetch_1)                                                                  \
@@ -107,6 +108,7 @@
     X(7, "char[5]", char_fetch_5)                                                                  \
     X(7, "char[6]", char_fetch_6)                                                                  \
     X(7, "char[7]", char_fetch_7)                                                                  \
+    X(7, "char[8]", char_fetch_8)                                                                  \
     /*                              */ /*                                               */         \
     X(6, "short@", short_fetch)                                                                    \
     X(8, "short[1]", short_fetch_1)                                                                \
@@ -116,6 +118,7 @@
     X(8, "short[5]", short_fetch_5)                                                                \
     X(8, "short[6]", short_fetch_6)                                                                \
     X(8, "short[7]", short_fetch_7)                                                                \
+    X(8, "short[8]", short_fetch_8)                                                                \
     /*                              */ /*                                               */         \
     X(7, "ushort@", ushort_fetch)                                                                  \
     X(9, "ushort[1]", ushort_fetch_1)                                                              \
@@ -125,6 +128,7 @@
     X(9, "ushort[5]", ushort_fetch_5)                                                              \
     X(9, "ushort[6]", ushort_fetch_6)                                                              \
     X(9, "ushort[7]", ushort_fetch_7)                                                              \
+    X(9, "ushort[8]", ushort_fetch_8)                                                              \
     /*                              */ /*                                               */         \
     X(4, "int@", int_fetch)                                                                        \
     X(6, "int[1]", int_fetch_1)                                                                    \
@@ -134,15 +138,17 @@
     X(6, "int[5]", int_fetch_5)                                                                    \
     X(6, "int[6]", int_fetch_6)                                                                    \
     X(6, "int[7]", int_fetch_7)                                                                    \
+    X(6, "int[8]", int_fetch_8)                                                                    \
     /*                              */ /*                                               */         \
     X(5, "uint@", uint_fetch)                                                                      \
-    X(6, "uint[1]", uint_fetch_1)                                                                  \
-    X(6, "uint[2]", uint_fetch_2)                                                                  \
-    X(6, "uint[3]", uint_fetch_3)                                                                  \
-    X(6, "uint[4]", uint_fetch_4)                                                                  \
-    X(6, "uint[5]", uint_fetch_5)                                                                  \
-    X(6, "uint[6]", uint_fetch_6)                                                                  \
-    X(6, "uint[7]", uint_fetch_7)                                                                  \
+    X(7, "uint[1]", uint_fetch_1)                                                                  \
+    X(7, "uint[2]", uint_fetch_2)                                                                  \
+    X(7, "uint[3]", uint_fetch_3)                                                                  \
+    X(7, "uint[4]", uint_fetch_4)                                                                  \
+    X(7, "uint[5]", uint_fetch_5)                                                                  \
+    X(7, "uint[6]", uint_fetch_6)                                                                  \
+    X(7, "uint[7]", uint_fetch_7)                                                                  \
+    X(7, "uint[8]", uint_fetch_8)                                                                  \
     /*                              */ /*                                               */         \
     /* X(5, "cell@", cell_fetch)    */ /* alias of: @                                   */         \
     X(7, "cell[1]", cell_fetch_1)                                                                  \
@@ -152,6 +158,7 @@
     X(7, "cell[5]", cell_fetch_5)                                                                  \
     X(7, "cell[6]", cell_fetch_6)                                                                  \
     X(7, "cell[7]", cell_fetch_7)                                                                  \
+    X(7, "cell[8]", cell_fetch_8)                                                                  \
     /*                              */ /*                                               */         \
     X(6, "short!", short_store)                                                                    \
     X(4, "int!", int_store)                                                                        \
@@ -418,6 +425,7 @@
     /* ( -- sys ) compile an unresolved jump. must be followed by jump token and its category */   \
     X(18, "[compile-jump-lit]", _compile_jump_lit_)                                                \
     X(13, "[cs-find-lit]", _cs_find_lit_) /* ( sys+ -- sys+ cs-depth ) followed by category */     \
+    X(2, "-2", minus_two)                                                                          \
     X(2, "-1", minus_one)                                                                          \
     X(1, "0", zero)                                                                                \
     X(1, "1", one)                                                                                 \

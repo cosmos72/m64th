@@ -211,17 +211,18 @@
 #define ASM_CALL_BODY(func) bl func; /*                                           */
 #define ASM_RET() ret;               /* raw/native assembly: return from function */
 
-#define TOKEN_CALL_PREPARE(ret)                                                                    \
-    RPUSH(VM)              /* cheat slightly to reduce code size: reorder rstack    */             \
-    ADDROF_1M(TO(ret), VM) /* acceptable, functions must not access caller's rstack */
-#define TOKEN_CALL_CLEANUP(ret) /* __________________________________________________ */ RPOP(VM)
-#define TOKEN_CALL_BODY(func, ret) /* raw/native assembly: call token->token           */          \
+#define TOKEN_CALL_PREPARE() /* cheat slightly to reduce code size: reorder rstack    */           \
+    RPUSH(VM)                /* acceptable, functions must not access caller's rstack */
+#define TOKEN_CALL_CLEANUP() /* _______________________________________________________________ */ \
+    RPOP(VM)
+#define TOKEN_CALL_BODY(func, retlabel) /* raw/native assembly: call token->token           */     \
+    ADDROF_1M(TO(retlabel), VM)                                                                    \
     b func;                                                                                        \
-    LABEL(ret)
-#define TOKEN_CALL(func, ret)  /* call token from another token          */                        \
-    TOKEN_CALL_PREPARE(ret)    /*                                        */                        \
-    TOKEN_CALL_BODY(func, ret) /*                                        */                        \
-    TOKEN_CALL_CLEANUP(ret)
+    LABEL(retlabel)
+#define TOKEN_CALL(func, retlabel)  /* call token from another token          */                   \
+    TOKEN_CALL_PREPARE()            /*                                        */                   \
+    TOKEN_CALL_BODY(func, retlabel) /*                                        */                   \
+    TOKEN_CALL_CLEANUP()            /*                                       */
 
 #define JA(reg, val, label) /*  if reg u>  val jump to label */                                    \
     cmp reg, val;                                                                                  \
