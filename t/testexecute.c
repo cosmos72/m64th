@@ -591,11 +591,31 @@ static m4testexecute testexecute_d[] = {
      {{1, {DXT(three)}}, {}},
      {{1, {3}}, {}},
      {}},
-    /* execute with empty stack should call abort */
+    /* test that execute on empty stack calls abort */
     {"execute", {m4execute}, {{}, {}}, {{}, {}}, {}},
+    /* test that execute detects obviously invalid XT */
+    {"0 execute", {m4execute, m4bye}, {{1, {0}}, {}}, {{1, {0}}, {}}, {}},
+    {"1 execute", {m4execute, m4bye}, {{1, {1}}, {}}, {{1, {1}}, {}}, {}},
+    {"0xffff execute", {m4execute, m4bye}, {{1, {0xffff}}, {}}, {{1, {0xffff}}, {}}, {}},
+    {"' ! 8- execute",
+     {m4execute, m4bye},
+     {{1, {DXT(store) - SZ}}, {}},
+     {{1, {DXT(store) - SZ}}, {}},
+     {}},
+    /* test execute of simple words */
     {"' noop execute", {m4execute, m4bye}, {{1, {DXT(noop)}}, {}}, {{}, {}}, {}},
     {"' eight execute", {m4execute, m4bye}, {{1, {DXT(eight)}}, {}}, {{1, {8}}, {}}, {}},
     {"6 7 ' plus execute", {m4execute, m4bye}, {{3, {6, 7, DXT(plus)}}, {}}, {{1, {13}}, {}}, {}},
+#if 0 /* currently broken */
+    {"... ' store execute",
+     {m4dp0, m4cell_plus, /* ( 3 d1=7 store &d1 ) */
+      m4cell_plus,        /* ( d0=3 7 store &d0 ) */
+      m4swap,             /* ( d0=3 7 &d0 store ) */
+      m4execute, m4bye},  /* ( 7                ) */
+     {{3, {3, 7, DXT(store)}}, {}},
+     {{1, {3}}, {}},
+     {}},
+#endif
     {"(ip)", {m4_ip_, m4bye}, {{}, {}}, {{1, {-1 /* fixed by m4testexecute_fix() */}}, {}}, {}},
 #if 0 /* currently broken */
     {"(ip>data>addr)",

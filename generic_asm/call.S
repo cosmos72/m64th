@@ -122,7 +122,7 @@ FUNC_START(_validate_xt_)
         SUB2(  DSTK,   REG1)                       /* a  = dend - dstk   */
         /* _catch_beg_ also needs that we set REG1 = stack depth */
 
-        /* check for impossible XT values: */
+        /* check for obviously invalid XT: */
         /* 1. XT must be a multiple of SZ */
 #ifdef AND3
         AND3(  DTOP,IMM(SZ-1), REG2)
@@ -130,13 +130,14 @@ FUNC_START(_validate_xt_)
         MOVE(  DTOP,   REG2)
         AND2(IMM(SZ-1),REG2)
 #endif
-        MOVI(  M4ERR_INVALID_MEMORY_ADDRESS, REG0)
+        MOVI(  M4ERR_INVALID_MEMORY_ADDRESS,   REG0)
         JNZ(   REG2,               FUNC_RET(_validate_xt_))
 
-#ifdef __linux__
-        /* 2. on Linux, XT must be >= 64k  */
-        JB(   DTOP,    IMM(1<<16), FUNC_RET(_validate_xt_))
-#endif
+        /* 2. XT must be >= XT(store) */
+        ADDROF_4G(WORD_SYM(store), REG2)
+        ADD2(IMM(WORD_OFF_XT),     REG2)
+        JBE(  DTOP,    REG2,       FUNC_RET(_validate_xt_))
+
         /* 3. XT must be < saved C stack  */
         LOAD( REG2,    AT(M4TH, M4TH_OFF_C_REG0))
         JAE(  DTOP,    REG2,       FUNC_RET(_validate_xt_))
