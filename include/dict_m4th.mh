@@ -355,7 +355,7 @@
     X(9, "(call-xt)", _call_xt_)                                                                   \
     X(11, "(catch-beg)", _catch_beg_)                                                              \
     X(11, "(catch-end)", _catch_end_)                                                              \
-    X(11, "(check-lit)", _check_lit_) /* ( x -- x ) followed by expected x */                      \
+    X(15, "(check-lit-tok)", _check_lit_tok_) /* ( x -- x ) followed by expected x: a token */     \
     X(10, "(continue)", _continue_)                                                                \
     X(4, "(do)", _do_)                                                                             \
     X(11, "(does-exit)", _does_exit_) /* alias of exit. used immediately after (does) */           \
@@ -372,8 +372,9 @@
     X(8, "(lit-2s)", _lit2s_)                                                                      \
     X(8, "(lit-4s)", _lit4s_)                                                                      \
     X(8, "(lit-8s)", _lit8s_)                                                                      \
-    X(8, "(lit-xt)", _lit_xt_)                                                                     \
     X(12, "(lit-string)", _lit_string_)                                                            \
+    X(9, "(lit-tok)", _lit_tok_)                                                                   \
+    X(8, "(lit-xt)", _lit_xt_)                                                                     \
     X(9, "(local-0)", _local_0_) /* get 0-th local variable */                                     \
     X(9, "(local-1)", _local_1_) /* get 1-st local variable */                                     \
     X(9, "(local-2)", _local_2_) /* get 2-nd local variable */                                     \

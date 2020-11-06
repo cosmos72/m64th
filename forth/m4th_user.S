@@ -510,7 +510,7 @@ WORD_START(valid_base_q, u_more_equal)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
     WORD_CODE(
-        two, _lit2s_, T(37),       /* base 2 37                   */
+        two, _lit_, T(37),       /* base 2 37                   */
         within,                    /* caddr n base                */
         exit
     )

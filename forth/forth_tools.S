@@ -43,7 +43,7 @@ WORD_START(see, dot_s)
         CALL(parse_name), two_dup, CALL(string_to_name), drop,  /* ( c-addr u nt|0 ) */
         _q_if0_, T(6),                                          /* ( c-addr u nt|0 ) */
             drop, ex_message_store,                             /* (               ) */
-            _lit_, T(M4ERR_UNDEFINED_WORD), throw,              /* (               ) */
+            _lit_, T(M4ERR_UNDEFINED_WORD), throw,            /* (               ) */
         then,                                                   /* ( c-addr u nt   ) */
         nip, nip,                                               /* ( nt            ) */
         _c_arg_1_, _c_call_, CELL(m4word_print_stdout), _c_ret_0_, exit

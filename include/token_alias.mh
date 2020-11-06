@@ -34,9 +34,9 @@
 #define m4token_comma CAT3(m4_, SZt, s_comma)
 #define m4xt_comma CAT3(m4_, SZ, s_comma)
 
+#define m4_lit_ m4_lit2s_
 #define m4_lit_short_ m4_lit2s_
 #define m4_lit_int_ m4_lit4s_
-#define m4_lit_ CAT3(m4_lit, SZt, s_)
 #define m4_lit_cell_ CAT3(m4_lit, SZ, s_)
 
 #define m4char_fetch m4c_fetch       /* char@   is an alias for c@     - no dedicated m4token */
@@ -184,9 +184,9 @@
 #define M4token_comma CAT3(M4_, SZt, s_comma)
 #define M4xt_comma CAT3(M4_, SZ, s_comma)
 
+#define M4_lit_ M4_lit2s_
 #define M4_lit_short_ M4_lit2s_
 #define M4_lit_int_ M4_lit4s_
-#define M4_lit_ CAT3(M4_lit, SZt, s_)
 #define M4_lit_cell_ CAT3(M4_lit, SZ, s_)
 
 #define M4div_byte M4noop        /* /byte     divide dtop by sizeof(byte)   */

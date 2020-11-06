@@ -104,12 +104,12 @@ FUNC_END(_catch_end_)
 
 
 /* ( x -- x ) must be followed by e = expected x. throws x <> e */
-FUNC_START(_check_lit_)    /* [check] */
+FUNC_START(_check_lit_tok_)    /* [check] */
         LD_ut( REG1,   AT(IP))                       /* a = expected               */
         MOVI(  M4ERR_CONTROL_STRUCTURE_MISMATCH,   REG0)
         JNE(   REG1,   DTOP,   FUNC(_throw_reg0_))
         NEXTT()                                      /* skip m4token               */
-FUNC_RAWEND(_check_lit_)
+FUNC_RAWEND(_check_lit_tok_)
 
 
 /* _validate_xt_ is invoked with TOKEN_CALL_NOTHROW => cannot throw   */

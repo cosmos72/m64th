@@ -201,7 +201,7 @@ WORD_START(begin, base)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE)
     WORD_CODE(
-        _lit_comma_, begin, _num_compiled_, _lit_, begin, exit
+        _lit_comma_, begin, _num_compiled_, _lit_tok_, begin, exit
     )
 WORD_END(begin)
 WORD(bl,               begin,      DSTACK(0,1), RSTACK(0,0), WORD_PURE)
@@ -277,7 +277,7 @@ WORD_START(does,       do)
          * TODO
          */
         CALL(_throw_if_not_compiling_),
-        _check_lit_, colon,
+        _check_lit_tok_, colon,
         _lit_comma_, _call_xt_,                        /* compile '(call-xt)'    */
         _lit_xt_, XT(_does_), xt_comma,                /* compile XT of '(does)' */
         _lit_comma_, _does_exit_,                      /* compile '(does-exit)'  */
@@ -449,11 +449,11 @@ WORD_START(repeat,     r_fetch)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_CODE(
-        _check_lit_, begin,         /* ( while-sys begin-sys ) topmost must be 'begin'      */
+        _check_lit_tok_, begin,         /* ( while-sys begin-sys ) topmost must be 'begin'      */
         _compile_jump_lit_, _repeat_, _repeat_,
         cs_drop,                    /* we only need the compiled '(repeat)' not the cs data */
         CALL(_resolve_jump_there_), /* resolve jump from '(repeat)' to 'begin'              */
-        _check_lit_, _while_,       /* ( while-sys ) must be '(while)'                      */
+        _check_lit_tok_, _while_,       /* ( while-sys ) must be '(while)'                      */
         CALL(_resolve_jump_here_),  /* resolve jump from '(while)' to here                  */
         exit
     )
@@ -523,7 +523,7 @@ WORD_START(until,      unloop)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_CODE(
-        _check_lit_, begin,             /* ( sys ) must be 'begin' */
+        _check_lit_tok_, begin,             /* ( sys ) must be 'begin' */
         _compile_jump_lit_, _until_, _until_,
         cs_drop,                    /* we only need the compiled '(until)' not the cs data */
         CALL(_resolve_jump_there_), /* resolve jump offset from '(until)' to 'begin'       */
@@ -551,7 +551,7 @@ WORD_START(while,     variable)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_CODE(
-        _check_lit_, begin,             /* ( sys ) topmost must be 'begin' */
+        _check_lit_tok_, begin,             /* ( sys ) topmost must be 'begin' */
         _compile_jump_lit_, _while_, _while_,
         cs_swap, exit                   /* ( while-sys begin-sys )         */
     )
