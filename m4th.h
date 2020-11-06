@@ -329,6 +329,7 @@ void m4slice_to_word_code(const m4slice *src, m4word *dst);
 
 m4string m4string_make(const void *addr, const m4ucell n);
 m4cell m4string_equals(m4string a, m4string b);
+m4cell m4string_ci_equals(m4string a, m4string b); /* case insensitive comparison */
 void m4string_print(m4string str, FILE *out);
 void m4string_print_hex(m4string str, FILE *out);
 /** print, replacing non-printable chars with escape sequences */
@@ -355,9 +356,10 @@ void m4word_print_stdout(const m4word *w);
 void m4word_code_print(const m4word *w, FILE *out);
 void m4word_data_print(const m4word *w, m4cell data_offset_n, FILE *out);
 
-m4string m4wordlist_name(const m4wordlist *d);
-const m4word *m4wordlist_lastword(const m4wordlist *d);
-void m4wordlist_print(const m4wordlist *d, FILE *out);
+const m4word *m4wordlist_find(const m4wordlist *wid, m4string str);
+const m4word *m4wordlist_lastword(const m4wordlist *wid);
+m4string m4wordlist_name(const m4wordlist *wid);
+void m4wordlist_print(const m4wordlist *wid, FILE *out);
 
 #ifdef __cplusplus
 }

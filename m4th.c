@@ -747,6 +747,33 @@ void m4string_print_hex(m4string str, FILE *out) {
     }
 }
 
+/* case insensitive comparison */
+m4cell m4string_ci_equals(m4string a, m4string b) {
+    m4ucell i, n;
+    if (a.n != b.n || (a.addr == NULL) != (b.addr == NULL)) {
+        return tfalse;
+    }
+    if (a.addr == b.addr || a.n == 0) {
+        return ttrue;
+    }
+    for (i = 0, n = a.n; i < n; i++) {
+        m4char ai = a.addr[i];
+        m4char bi = b.addr[i];
+        if (ai != bi) {
+            if (ai >= 'A' && ai <= 'Z') {
+                ai += 'a' - 'A';
+            }
+            if (bi >= 'A' && bi <= 'Z') {
+                bi += 'a' - 'A';
+            }
+            if (ai != bi) {
+                return tfalse;
+            }
+        }
+    }
+    return ttrue;
+}
+
 m4cell m4string_equals(m4string a, m4string b) {
     if (a.n != b.n || (a.addr == NULL) != (b.addr == NULL)) {
         return tfalse;
@@ -890,6 +917,17 @@ m4wordlist m4wordlist_forth = {&m4dict_forth, NULL};
 m4wordlist m4wordlist_m4th_user = {&m4dict_m4th_user, NULL};
 m4wordlist m4wordlist_m4th_core = {&m4dict_m4th_core, NULL};
 m4wordlist m4wordlist_m4th_impl = {&m4dict_m4th_impl, NULL};
+
+const m4word *m4wordlist_find(const m4wordlist *wid, m4string str) {
+    const m4word *w = m4wordlist_lastword(wid);
+    while (w != NULL) {
+        if (m4string_ci_equals(str, m4word_name(w))) {
+            break;
+        }
+        w = m4word_prev(w);
+    }
+    return w;
+}
 
 const m4word *m4wordlist_lastword(const m4wordlist *wid) {
     if (wid == NULL) {
