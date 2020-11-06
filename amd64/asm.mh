@@ -249,8 +249,10 @@
 #define JUMP(label) /*     unconditional jump to label _______________________________________ */  \
     jmp label;
 
-#define ADDROF_4G(sym, dst) lea sym(RIP), dst; /* load symbol address into dst */
-#define ADDROF_1M(sym, dst) lea sym(RIP), dst; /* load symbol address into dst */
+#define ADDROF_4G(sym, dst) /* load symbol address into dst. symbol can be within +/- 4GB */       \
+    lea sym(RIP), dst;
+#define ADDROF_1M(sym, dst) /* load symbol address into dst. symbol can be within +/- 1MB */       \
+    lea sym(RIP), dst;
 
 #define DPUSH(reg) /* push reg to second data stack element */                                     \
     STOR(reg, AT(DSTK, -SZ))                                                                       \

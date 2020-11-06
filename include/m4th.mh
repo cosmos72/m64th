@@ -39,6 +39,7 @@
 #define M4TH_OFF_XT SZ2              /* offset of m4th->xt              */
 #define M4TH_OFF_LOCALNAMES SZ3      /* offset of m4th->localnames      */
 #define M4TH_OFF_BASE SZ4            /* offset of m4th->base            */
+#define M4TH_OFF_MEM_START SZ5       /* offset of m4th->mem.start       */
 #define M4TH_OFF_HERE SZ6            /* offset of m4th->mem.curr = HERE */
 #define M4TH_OFF_HANDLER SZ8         /* offset of m4th->handler         */
 #define M4TH_OFF_EX SZ9              /* offset of m4th->ex              */

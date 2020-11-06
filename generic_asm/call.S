@@ -124,35 +124,27 @@ FUNC_START(_validate_xt_)
 
         /* check for obviously invalid XT: */
         /* 1. XT must be a multiple of SZ */
-#ifdef AND3
-        AND3(  DTOP,IMM(SZ-1), REG2)
-#else
         MOVE(  DTOP,   REG2)
         AND2(IMM(SZ-1),REG2)
-#endif
         MOVI(  M4ERR_INVALID_MEMORY_ADDRESS,   REG0)
         JNZ(   REG2,               FUNC_RET(_validate_xt_))
 
-        /* 2. XT must be >= XT(store) */
+#if defined(__linux__) && !defined(__ANDROID__)
+        /* 2. on linux, XT must be >= XT(store) */
         ADDROF_4G(WORD_SYM(store), REG2)
         ADD2(IMM(WORD_OFF_XT),     REG2)
-        JBE(  DTOP,    REG2,       FUNC_RET(_validate_xt_))
-
-#if defined(__linux__) && !defined(__ANDROID__)
-        /* 3. on linux, XT must be < saved C stack  */
-        LOAD( REG2,    AT(M4TH, M4TH_OFF_C_REG0))
-#elif defined(__ANDROID__)
-        /* 4. on Android, user-space virtual addresses are limited to 47 bits */
-        MOVI( 1<<47,   REG2)
-#elif defined(__x86_64__)
-        /* 5. on x86 64-bit, virtual addresses are limited to 48 bits */
-        MOVI( 1<<48,   REG2)
-#elif defined(__aarch64__)
-        /* 6. on arm-v8.2, virtual addresses are limited to 52 bits */
-        MOVI( 1<<52,   REG2)
-#else   /* 7. no limit */
-        MOVI( -1,      REG2)
+#else
+        /* 3. some other systems, including at least Termux on Android, */
+        /*    place the heap BEFORE text segment and data segment.      */
+        /*    On such systems, use a conservative check XT >= 1MB       */
+        MOVI( 1<<20,   REG2)
 #endif
+        JB(   DTOP,    REG2,       FUNC_RET(_validate_xt_))
+
+
+        /* 4. XT must be < saved C stack, which is usually         */
+        /* the highest writeable virtual address                   */
+        LOAD( REG2,    AT(M4TH, M4TH_OFF_C_REG0))
         JAE(  DTOP,    REG2, FUNC_RET(_validate_xt_))
 
         ZERO( REG0)

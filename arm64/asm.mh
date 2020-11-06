@@ -261,11 +261,11 @@
 
 /* clang-format off */
 
-#define ADDROF_4G(sym, dst) /* load symbol address into dst. symbol must be within +/- 4GB */ \
+#define ADDROF_4G(sym, dst) /* load symbol address into dst. symbol can be within +/- 4GB */ \
     adrp  dst,  sym;             /* high 21 bits */ \
     add   dst,  dst,  :lo12:sym; /* low  12 bits */
 
-#define ADDROF_1M(sym, dst) /* load symbol address into dst. symbol must be within +/- 1MB */ \
+#define ADDROF_1M(sym, dst) /* load symbol address into dst. symbol can be within +/- 1MB */ \
     adr   dst,  sym;             /* low 21 bits */
 
 #define DPUSH(reg)        str   reg, [DSTK, -SZ]!;        /* push reg to second data stack element */
