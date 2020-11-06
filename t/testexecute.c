@@ -595,13 +595,21 @@ static m4testexecute testexecute_d[] = {
     {"execute", {m4execute}, {{}, {}}, {{}, {}}, {}},
     /* test that execute detects obviously invalid XT */
     {"0 execute", {m4execute, m4bye}, {{1, {0}}, {}}, {{1, {0}}, {}}, {}},
-    {"1 execute", {m4execute, m4bye}, {{1, {1}}, {}}, {{1, {1}}, {}}, {}},
-    {"0xffff execute", {m4execute, m4bye}, {{1, {0xffff}}, {}}, {{1, {0xffff}}, {}}, {}},
-    {"' ! 8- execute",
+    {"SZ execute", {m4execute, m4bye}, {{1, {SZ}}, {}}, {{1, {SZ}}, {}}, {}},
+    {"-SZ execute", {m4execute, m4bye}, {{1, {-SZ}}, {}}, {{1, {-SZ}}, {}}, {}},
+    {"0xffff8 execute", {m4execute, m4bye}, {{1, {0xffff8}}, {}}, {{1, {0xffff8}}, {}}, {}},
+    {"' ! 1+ execute",
+     {m4execute, m4bye},
+     {{1, {DXT(store) + 1}}, {}},
+     {{1, {DXT(store) + 1}}, {}},
+     {}},
+#if defined(__linux__) && !defined(__ANDROID__)
+    {"' ! SZ- execute",
      {m4execute, m4bye},
      {{1, {DXT(store) - SZ}}, {}},
      {{1, {DXT(store) - SZ}}, {}},
      {}},
+#endif
     /* test execute of simple words */
     {"' noop execute", {m4execute, m4bye}, {{1, {DXT(noop)}}, {}}, {{}, {}}, {}},
     {"' eight execute", {m4execute, m4bye}, {{1, {DXT(eight)}}, {}}, {{1, {8}}, {}}, {}},
