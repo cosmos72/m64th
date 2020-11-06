@@ -652,10 +652,13 @@ fail:
 
 void m4slice_print(m4slice slice, m4cell direction, FILE *out) {
     const m4cell *addr = slice.addr;
-    m4ucell n = slice.n;
+    m4cell n = slice.n;
     m4cell step = 1;
 
-    fprintf(out, "<%lu> ", (unsigned long)n);
+    fprintf(out, "<%ld> ", (long)n);
+    if (n <= 0) {
+        return;
+    }
     if (direction < 0) {
         addr += n - 1;
         step = -1;
@@ -706,13 +709,12 @@ void m4stack_free(m4stack *arg) {
 }
 
 void m4stack_print(const m4stack *stack, FILE *out) {
-    m4cell *lo = stack->curr;
-    const m4cell *hi = stack->end;
-    const m4ucell n = hi - lo;
-    if (lo < stack->start) {
+    m4cell *addr = stack->curr;
+    const m4ucell n = stack->end - addr;
+    if (addr < stack->start) {
         fprintf(out, "<%ld> ", (long)n);
     } else {
-        const m4slice slice = {lo, n};
+        const m4slice slice = {addr, n};
         m4slice_print(slice, -1, out);
     }
 }
