@@ -187,7 +187,7 @@ FUNC_START(name_to_ident) /* ( nt -- c-addr u ) */
 FUNC_END(name_to_ident)
 
 
-FUNC_START(name_to_string) /* ( nt -- c-addr u ) */
+FUNC_START(name_to_string) /* ( nt -- c-addr u ) forth-tools */
         LD_uh( REG1,       AT(DTOP, WORD_OFF_NAME_OFF)) /* a = w.name_off  */
         JNZ(   REG1,       TO(name_to_string.body))
         ZERO(  DTOP)                   /* dtop = 0                */

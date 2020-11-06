@@ -325,6 +325,13 @@ m4cell m4flags_consume_ip(m4flags fl);
 void m4flags_print(m4flags fl, FILE *out);
 
 void m4slice_copy_to_code(m4slice src, m4code *dst);
+/*
+ * print "<" src.n "> " followed by numeric value of cells
+ * (decimal if small, otherwise hexadecimal).
+ * if direction < 0, print cells at higher addresses first
+ */
+void m4slice_print(m4slice cells, m4cell direction, FILE *out);
+void m4slice_print_stdout(m4slice cells, m4cell direction);
 void m4slice_to_word_code(const m4slice *src, m4word *dst);
 
 m4string m4string_make(const void *addr, const m4ucell n);

@@ -650,6 +650,32 @@ fail:
     dst->n = 0;
 }
 
+void m4slice_print(m4slice slice, m4cell direction, FILE *out) {
+    const m4cell *addr = slice.addr;
+    m4ucell n = slice.n;
+    m4cell step = 1;
+
+    fprintf(out, "<%lu> ", (unsigned long)n);
+    if (direction < 0) {
+        addr += n - 1;
+        step = -1;
+    }
+    if (n > 100) {
+        n = 100;
+    }
+    for (; n; n--, addr += step) {
+        const long x = (long)*addr;
+        if (x > -1024 && x < 1024) {
+            fprintf(out, "%ld ", x);
+        } else {
+            fprintf(out, "0x%lx ", x);
+        }
+    }
+}
+void m4slice_print_stdout(m4slice slice, m4cell direction) {
+    m4slice_print(slice, direction, stdout);
+}
+
 /* ----------------------- m4iobuf ----------------------- */
 
 static m4iobuf *m4iobuf_new(m4ucell capacity) {
@@ -680,19 +706,14 @@ void m4stack_free(m4stack *arg) {
 }
 
 void m4stack_print(const m4stack *stack, FILE *out) {
-    const m4cell *lo = stack->curr;
+    m4cell *lo = stack->curr;
     const m4cell *hi = stack->end;
-    fprintf(out, "<%ld> ", (long)(hi - lo));
+    const m4ucell n = hi - lo;
     if (lo < stack->start) {
-        return;
-    }
-    while (hi > lo) {
-        long x = (long)*--hi;
-        if (x > -1024 && x < 1024) {
-            fprintf(out, "%ld ", x);
-        } else {
-            fprintf(out, "0x%lx ", x);
-        }
+        fprintf(out, "<%ld> ", (long)n);
+    } else {
+        const m4slice slice = {lo, n};
+        m4slice_print(slice, -1, out);
     }
 }
 

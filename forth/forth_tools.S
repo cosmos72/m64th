@@ -21,9 +21,21 @@
 
 DICT_WORDS_FORTH_TOOLS(WORDNAME)
 
-WORD_START(see, LASTWORD)
-    WORD_DSTACK(0,0)  /* data   stack may be altered from outside */
-    WORD_RSTACK(0,0)  /* return stack may be altered from outside */
+WORD_START(dot_s, LASTWORD)
+    WORD_DSTACK(0,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        dp0, depth, one_minus, minus_one,                       /* ( dstk depth -1 ) */
+        _c_arg_3_, _c_call_, CELL(m4slice_print_stdout), _c_ret_0_,
+        exit
+    )
+WORD_END(see)
+WORD_START(see, dot_s)
+    WORD_DSTACK(0,0)
+    WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
