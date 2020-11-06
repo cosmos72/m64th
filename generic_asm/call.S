@@ -138,9 +138,17 @@ FUNC_START(_validate_xt_)
         ADD2(IMM(WORD_OFF_XT),     REG2)
         JBE(  DTOP,    REG2,       FUNC_RET(_validate_xt_))
 
-        /* 3. XT must be < saved C stack  */
+#if defined(__linux__) && !defined(__ANDROID__)
+        /* 3. on linux, XT must be < saved C stack  */
         LOAD( REG2,    AT(M4TH, M4TH_OFF_C_REG0))
         JAE(  DTOP,    REG2,       FUNC_RET(_validate_xt_))
+#elif defined(__x86_64__)
+        /* 4. on x86 64-bit, virtual addresses are limited to 48 bits */
+        JAE(  DTOP,    IMM(1<<48), FUNC_RET(_validate_xt_))
+#elif defined(__aarch64__)
+        /* 5. on arm-v8.2, virtual addresses are limited to 52 bits */
+        JAE(  DTOP,    IMM(1<<52), FUNC_RET(_validate_xt_))
+#endif
 
         ZERO( REG0)
 FUNC_END(_validate_xt_)
