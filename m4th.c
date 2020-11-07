@@ -392,7 +392,7 @@ static m4cell m4token_print_xt(const m4token *code, FILE *out) {
 }
 
 static m4cell m4token_print_lit_xt(const m4token *code, FILE *out) {
-    fputs("LIT_", out);
+    fputs("(lit-xt) ", out);
     return m4token_print_xt(code, out);
 }
 
@@ -444,17 +444,17 @@ m4cell m4token_print_consumed_ip(m4token tok, const m4token *code, m4cell maxn, 
     const m4cell nbytes = m4token_consumes_ip(tok);
     if (nbytes == 0 || nbytes / SZt > maxn) {
         return 0;
-    } else if (nbytes == SZt) {
+    } else if (nbytes == SZt && (tok == m4_lit_tok_ || tok == m4_lit_comma_)) {
         fputc('\'', out);
         m4token_print(code[0], out);
         return 1;
-    } else if (tok == m4_compile_jump_lit_ && nbytes == 2 * SZt) {
+    } else if (nbytes == 2 * SZt && tok == m4_compile_jump_lit_) {
         fputc('\'', out);
         m4token_print(code[0], out);
         fputc('\'', out);
         m4token_print(code[1], out);
         return 2;
-    } else if (tok == m4_lit_xt_ && nbytes == SZ) {
+    } else if (nbytes == SZ && tok == m4_lit_xt_) {
         return m4token_print_xt(code, out);
     }
     switch (nbytes) {

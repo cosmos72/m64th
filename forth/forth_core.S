@@ -564,10 +564,10 @@ WORD_START(bracket_tick,  left_bracket)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_CODE(
-        CALL(tick),                    /* '                                  */
+        CALL(tick),                    /* '                                          */
         /* avoid CALL(literal) because it compiles (lit-[1248]s) instead of (lit-xt) */
-        _lit_comma_, _lit_xt_,         /* compiles (lit-xt)                  */
-        xt_comma, exit                 /* xt,                                */
+        _lit_comma_, _lit_xt_,         /* compiles (lit-xt)                          */
+        xt_comma, exit                 /* xt,                                        */
     )
 WORD_END(bracket_tick)
 WORD_START(right_bracket,  bracket_tick)
