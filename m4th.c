@@ -810,6 +810,8 @@ void m4stackeffects_print(m4stackeffects effs, const char *suffix, m4printmode m
         m4stackeffect_print(effs.rstack, mode, out);
     } else if (effs.dstack == 0 && effs.rstack == 0) {
         fputs("    WORD_STACK_NONE()", out);
+    } else if (effs.dstack == (m4stackeffect)-1 && effs.rstack == (m4stackeffect)-1) {
+        fputs("    WORD_STACK_ANY()", out);
     } else {
         fputs("    WORD_DSTACK(", out);
         m4stackeffect_print(effs.dstack, mode, out);

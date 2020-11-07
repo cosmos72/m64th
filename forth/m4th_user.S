@@ -126,8 +126,24 @@ WORD_START(minus_cs_roll,   continue)
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(minus_cs_roll, exit)
 WORD_END(minus_cs_roll)
+WORD_START(disassemble, minus_cs_roll)
+    WORD_DSTACK(0,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        CALL(parse_name), two_dup, CALL(string_to_name), drop,  /* ( c-addr u nt|0 ) */
+        _q_if0_, T(6),                                          /* ( c-addr u nt|0 ) */
+            drop, ex_message_store,                             /* (               ) */
+            _lit_, T(M4ERR_UNDEFINED_WORD), throw,              /* (               ) */
+        then,                                                   /* ( c-addr u nt   ) */
+        nip, nip, one,                                          /* ( nt 1          ) */
+        _c_arg_2_, _c_call_, CELL(m4word_print_stdout), _c_ret_0_, exit
+    )
+WORD_END(disassemble)
 /* do-i+-loop  native-compiled version of do i+ loop */
-WORD(do_i_plus_loop,   minus_cs_roll,  DSTACK(2,1), RSTACK(0,0), WORD_IMPURE)
+WORD(do_i_plus_loop,   disassemble,    DSTACK(2,1), RSTACK(0,0), WORD_IMPURE)
 /* dp0        ( x -- x addr-of-x ) get address of stack bottom */
 WORD(dp0,              do_i_plus_loop, DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 WORD(dup_to_r,         dp0,            DSTACK(1,1), RSTACK(0,1), WORD_R_PURE)

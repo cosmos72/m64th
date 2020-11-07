@@ -53,7 +53,8 @@
 #define WORD_NAME_OFF(name) /*      */ .2byte WORD_SYM(name) - COUNTEDSTRING_SYM(name);
 #define WORD_DSTACK(in, out) /*     */ .byte /**/ ((in)&0xF) | (((out)&0xF) << 4);
 #define WORD_RSTACK(in, out) /*     */ .byte /**/ ((in)&0xF) | (((out)&0xF) << 4);
-#define WORD_STACK_NONE() /*            */ WORD_DSTACK(0, 0) WORD_RSTACK(0, 0)
+#define WORD_STACK_NONE() /*        */ WORD_DSTACK(0, 0) WORD_RSTACK(0, 0)
+#define WORD_STACK_ANY() /*         */ WORD_DSTACK(-1, -1) WORD_RSTACK(-1, -1)
 #define WORD_NATIVE_LEN(name) /*    */ .2byte FUNC_RET(name) - FUNC(name);
 #define WORD_NATIVE_LEN_0() /*      */ .2byte 0;
 #define WORD_NATIVE_NONE() /*       */ .2byte 0xFFFF;

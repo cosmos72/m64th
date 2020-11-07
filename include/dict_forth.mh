@@ -178,7 +178,7 @@
 #define DICT_WORDS_FORTH_TOOLS(X)                                                                  \
     DICT_TOKENS_FORTH_TOOLS(X)                                                                     \
     X(2, ".s", dot_s)                                                                              \
-    X(3, "see", see)
+    X(3, "see", see) /* read name then show its definition */
 
 /* ------- forth 2012: tools ext ---------------------------------------------------------------- */
 #define DICT_TOKENS_FORTH_TOOLS_EXT(X)                                                             \

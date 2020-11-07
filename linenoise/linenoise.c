@@ -849,20 +849,38 @@ void linenoiseEditBackspace(linenoiseState *l) {
     }
 }
 
+/* Delete the next word, maintaining the cursor at the start of the
+ * current word. */
+void linenoiseEditDeleteNextWord(linenoiseState *l) {
+    size_t pos = l->pos, len = l->len;
+    size_t n = 0;
+    while (pos + n < len && l->buf[pos + n] == ' ')
+        n++;
+    while (pos + n < len && l->buf[pos + n] != ' ')
+        n++;
+    if (n != 0) {
+        memmove(l->buf + pos, l->buf + pos + n, len - pos + 1);
+        l->len -= n;
+        refreshLine(l);
+    }
+}
+
 /* Delete the previous word, maintaining the cursor at the start of the
  * current word. */
 void linenoiseEditDeletePrevWord(linenoiseState *l) {
-    size_t old_pos = l->pos;
-    size_t diff;
+    size_t pos = l->pos;
+    size_t n = 0;
 
-    while (l->pos > 0 && l->buf[l->pos - 1] == ' ')
-        l->pos--;
-    while (l->pos > 0 && l->buf[l->pos - 1] != ' ')
-        l->pos--;
-    diff = old_pos - l->pos;
-    memmove(l->buf + l->pos, l->buf + old_pos, l->len - old_pos + 1);
-    l->len -= diff;
-    refreshLine(l);
+    while (pos > n && l->buf[pos - n - 1] == ' ')
+        n++;
+    while (pos > n && l->buf[pos - n - 1] != ' ')
+        n++;
+    if (n != 0) {
+        memmove(l->buf + pos - n, l->buf + pos, l->len - pos + 1);
+        l->len -= n;
+        l->pos -= n;
+        refreshLine(l);
+    }
 }
 
 /* This function is the core of the line editing capability of linenoise.
@@ -1008,6 +1026,10 @@ static int linenoiseEdit(int stdin_fd, int stdout_fd, char *buf, size_t buflen,
             case 'B':
             case 'b': /* Alt+F move to next word */
                 movePrevWord(&l);
+                continue;
+            case 'D':
+            case 'd': /* Alt+D delete next word */
+                linenoiseEditDeleteNextWord(&l);
                 continue;
             case 'F':
             case 'f': /* Alt+F move to next word */
