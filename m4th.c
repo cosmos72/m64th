@@ -476,7 +476,7 @@ static m4cell m4token_print_consumed_ip(m4token tok, const m4token *code, m4cell
     const m4cell nbytes = m4token_consumes_ip(tok);
     if (nbytes == 0 || nbytes / SZt > maxn) {
         return 0;
-    } else if (nbytes == SZt && (tok == m4_lit_tok_ || tok == m4_lit_comma_)) {
+    } else if (nbytes == SZt && (tok == m4_lit_tok_ || tok == m4_lit_comma_ || tok == m4_check_lit_tok_)) {
         fputs(separator, out);
         if (mode == m4mode_user) {
             fputc('\'', out);
