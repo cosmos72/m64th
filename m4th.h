@@ -369,7 +369,7 @@ const m4word *m4word_prev(const m4word *w);
 m4xt m4word_xt(const m4word *w);
 void m4word_print(const m4word *w, m4printmode mode, FILE *out);
 void m4word_print_stdout(const m4word *w, m4printmode mode);
-void m4word_code_print(const m4word *w, m4printmode mode, FILE *out);
+void m4word_print_code(const m4word *w, m4printmode mode, FILE *out);
 void m4word_data_print(const m4word *w, m4cell data_offset_n, m4printmode mode, FILE *out);
 
 const m4word *m4wordlist_find(const m4wordlist *wid, m4string str);
