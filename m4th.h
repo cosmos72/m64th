@@ -251,6 +251,15 @@ typedef enum m4th_opt_e {
     m4opt_return_stack_is_private = 1,
 } m4th_opt;
 
+/* m4*_print* options */
+typedef enum m4printmode_e {
+    /* default: print user-readable disassembly */
+    m4mode_user = 0,
+    /* print machine-readable disassembly, usable as C compiler (actually assembler) input */
+    m4mode_exact = 1,
+    m4mode_default = m4mode_user,
+} m4printmode;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -313,16 +322,16 @@ void *m4mem_map(size_t bytes);               /** mmap() wrapper, calls exit(1) o
 void m4mem_unmap(void *ptr, size_t bytes);   /** munmap() wrapper */
 
 m4cell m4code_equal(m4code src, m4code dst);
-void m4code_print(m4code src, FILE *out);
+void m4code_print(m4code src, m4printmode mode, FILE *out);
 const m4word *m4xt_word(m4xt xt);
 
 const m4word *m4dict_lastword(const m4dict *dict);
 m4string m4dict_name(const m4dict *dict);
-void m4dict_print(const m4dict *dict, const m4word *override_lastw, FILE *out);
+void m4dict_print(const m4dict *dict, const m4word *override_lastw, m4printmode mode, FILE *out);
 
 /** return how many bytes of code are consumed by token or word marked with given flags */
 m4cell m4flags_consume_ip(m4flags fl);
-void m4flags_print(m4flags fl, FILE *out);
+void m4flags_print(m4flags fl, m4printmode mode, FILE *out);
 
 void m4slice_copy_to_code(m4slice src, m4code *dst);
 /*
@@ -330,25 +339,25 @@ void m4slice_copy_to_code(m4slice src, m4code *dst);
  * (decimal if small, otherwise hexadecimal).
  * if direction < 0, print cells at higher addresses first
  */
-void m4slice_print(m4slice cells, m4cell direction, FILE *out);
-void m4slice_print_stdout(m4slice cells, m4cell direction);
+void m4slice_print(m4slice cells, m4cell direction, m4printmode mode, FILE *out);
+void m4slice_print_stdout(m4slice cells, m4cell direction, m4printmode mode);
 void m4slice_to_word_code(const m4slice *src, m4word *dst);
 
 m4string m4string_make(const void *addr, const m4ucell n);
 m4cell m4string_equals(m4string a, m4string b);
 m4cell m4string_ci_equals(m4string a, m4string b); /* case insensitive comparison */
-void m4string_print(m4string str, FILE *out);
+void m4string_print(m4string str, m4printmode mode, FILE *out);
 void m4string_print_hex(m4string str, FILE *out);
 /** print, replacing non-printable chars with escape sequences */
 void m4string_print_escape(m4string str, FILE *out);
 
 m4stack m4stack_alloc(m4ucell size);
 void m4stack_free(m4stack *arg);
-void m4stack_print(const m4stack *stack, FILE *out);
+void m4stack_print(const m4stack *stack, m4printmode mode, FILE *out);
 
 /** return how many bytes of code are consumed by executing token */
 m4cell m4token_consumes_ip(m4token tok);
-void m4token_print(m4token val, FILE *out);
+void m4token_print(m4token val, m4printmode mode, FILE *out);
 /** try to find the m4word that describes given token */
 const m4word *m4token_to_word(m4token tok);
 
@@ -358,15 +367,15 @@ m4string m4word_name(const m4word *w);
 m4string m4word_ident(const m4word *w);
 const m4word *m4word_prev(const m4word *w);
 m4xt m4word_xt(const m4word *w);
-void m4word_print(const m4word *w, FILE *out);
-void m4word_print_stdout(const m4word *w);
-void m4word_code_print(const m4word *w, FILE *out);
-void m4word_data_print(const m4word *w, m4cell data_offset_n, FILE *out);
+void m4word_print(const m4word *w, m4printmode mode, FILE *out);
+void m4word_print_stdout(const m4word *w, m4printmode mode);
+void m4word_code_print(const m4word *w, m4printmode mode, FILE *out);
+void m4word_data_print(const m4word *w, m4cell data_offset_n, m4printmode mode, FILE *out);
 
 const m4word *m4wordlist_find(const m4wordlist *wid, m4string str);
 const m4word *m4wordlist_lastword(const m4wordlist *wid);
 m4string m4wordlist_name(const m4wordlist *wid);
-void m4wordlist_print(const m4wordlist *wid, FILE *out);
+void m4wordlist_print(const m4wordlist *wid, m4printmode mode, FILE *out);
 
 #ifdef __cplusplus
 }

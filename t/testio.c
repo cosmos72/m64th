@@ -449,12 +449,12 @@ static void m4testio_failed(const m4th *m, const m4testio *t, FILE *out) {
     fputs("\n    expected  data  stack ", out);
     m4countedstack_print(&t->after.d, out);
     fputs("\n      actual  data  stack ", out);
-    m4stack_print(&m->dstack, out);
+    m4stack_print(&m->dstack, m4mode_user, out);
 
     fputs("\n... expected return stack ", out);
     m4countedstack_print(&t->after.r, out);
     fputs("\n      actual return stack ", out);
-    m4stack_print(&m->rstack, out);
+    m4stack_print(&m->rstack, m4mode_user, out);
 
     fputs("\n... expected  in   buffer ", out);
     m4cstr_print_escape(t->ioafter.in, out);

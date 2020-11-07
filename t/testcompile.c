@@ -273,9 +273,9 @@ static void m4testcompile_failed(m4th *m, const m4testcompile *t, m4code t_codeg
     fputs("\n    initial   data  stack ", out);
     m4countedstack_print(&t->dbefore, out);
     fputs("\n    expected    codegen   ", out);
-    m4code_print(t_codegen, out);
+    m4code_print(t_codegen, m4mode_user, out);
     fputs("\n      actual    codegen   ", out);
-    m4word_code_print(m->lastw, out);
+    m4word_code_print(m->lastw, m4mode_user, out);
     if (t->dafter.len == 0 && m->dstack.curr == m->dstack.end /*__________*/ &&
         m->rstack.curr == m->rstack.end) {
         fputc('\n', out);
@@ -284,12 +284,12 @@ static void m4testcompile_failed(m4th *m, const m4testcompile *t, m4code t_codeg
     fputs("\n... expected  data  stack ", out);
     m4countedstack_print(&t->dafter, out);
     fputs("\n      actual  data  stack ", out);
-    m4stack_print(&m->dstack, out);
+    m4stack_print(&m->dstack, m4mode_user, out);
 
     fputs("\n... expected return stack ", out);
     m4countedstack_print(&empty, out);
     fputs("\n      actual return stack ", out);
-    m4stack_print(&m->rstack, out);
+    m4stack_print(&m->rstack, m4mode_user, out);
     fputc('\n', out);
 }
 

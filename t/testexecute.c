@@ -1525,21 +1525,21 @@ static void m4testexecute_failed(m4th *m, const m4testexecute *t, const m4code_p
     fputs("\n    expected  data  stack ", out);
     m4countedstack_print(&t->after.d, out);
     fputs("\n      actual  data  stack ", out);
-    m4stack_print(&m->dstack, out);
+    m4stack_print(&m->dstack, m4mode_user, out);
 
     fputs("\n... expected return stack ", out);
     m4countedstack_print(&t->after.r, out);
     fputs("\n      actual return stack ", out);
-    m4stack_print(&m->rstack, out);
+    m4stack_print(&m->rstack, m4mode_user, out);
 
     if (t->codegen.n == 0 && (!m->lastw || m->lastw->code_n == 0)) {
         fputc('\n', out);
         return;
     }
     fputs("\n... expected    codegen   ", out);
-    m4code_print(pair->second, out);
+    m4code_print(pair->second, m4mode_user, out);
     fputs("\n      actual    codegen   ", out);
-    m4word_code_print(m->lastw, out);
+    m4word_code_print(m->lastw, m4mode_user, out);
     fputc('\n', out);
 }
 

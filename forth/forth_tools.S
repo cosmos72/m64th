@@ -45,8 +45,8 @@ WORD_START(see, dot_s)
             drop, ex_message_store,                             /* (               ) */
             _lit_, T(M4ERR_UNDEFINED_WORD), throw,              /* (               ) */
         then,                                                   /* ( c-addr u nt   ) */
-        nip, nip,                                               /* ( nt            ) */
-        _c_arg_1_, _c_call_, CELL(m4word_print_stdout), _c_ret_0_, exit
+        nip, nip, zero,                                         /* ( nt 0          ) */
+        _c_arg_2_, _c_call_, CELL(m4word_print_stdout), _c_ret_0_, exit
     )
 WORD_END(see)
 

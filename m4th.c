@@ -223,8 +223,9 @@ m4cell m4flags_consume_ip(m4flags fl) {
     }
 }
 
-void m4flags_print(m4flags fl, FILE *out) {
+void m4flags_print(m4flags fl, m4printmode mode, FILE *out) {
     m4char printed = 0;
+    (void)mode;
     if (out == NULL) {
         return;
     }
@@ -336,12 +337,12 @@ const m4word *m4token_to_word(m4token tok) {
     return NULL;
 }
 
-void m4token_print(m4token tok, FILE *out) {
+void m4token_print(m4token tok, m4printmode mode, FILE *out) {
     const m4word *w = m4token_to_word(tok);
     if (w != NULL) {
         const m4string name = m4word_name(w);
         if (name.addr != NULL && name.n != 0) {
-            m4string_print(name, out);
+            m4string_print(name, mode, out);
             fputc(' ', out);
             return;
         }
@@ -349,15 +350,17 @@ void m4token_print(m4token tok, FILE *out) {
     fprintf(out, "T(%d) ", (int)(int16_t)tok);
 }
 
-static m4cell m4token_print_int16(const m4token *code, FILE *out) {
+static m4cell m4token_print_int16(const m4token *code, m4printmode mode, FILE *out) {
     int16_t val;
+    (void)mode;
     memcpy(&val, code, sizeof(val));
     fprintf(out, "%s(%d) ", (sizeof(val) == SZt ? "T" : "SHORT"), (int)val);
     return sizeof(val) / SZt;
 }
 
-static m4cell m4token_print_int32(const m4token *code, FILE *out) {
+static m4cell m4token_print_int32(const m4token *code, m4printmode mode, FILE *out) {
     int32_t val;
+    (void)mode;
     memcpy(&val, code, sizeof(val));
     if (val >= -1024 && val <= 1024) {
         fprintf(out, "INT(%ld) ", (long)val);
@@ -367,8 +370,9 @@ static m4cell m4token_print_int32(const m4token *code, FILE *out) {
     return sizeof(val) / SZt;
 }
 
-static m4cell m4token_print_int64(const m4token *code, FILE *out) {
+static m4cell m4token_print_int64(const m4token *code, m4printmode mode, FILE *out) {
     int64_t val;
+    (void)mode;
     memcpy(&val, code, sizeof(val));
     if (val >= -1024 && val <= 1024) {
         fprintf(out, "CELL(%ld) ", (long)val);
@@ -378,12 +382,12 @@ static m4cell m4token_print_int64(const m4token *code, FILE *out) {
     return sizeof(val) / SZt;
 }
 
-static m4cell m4token_print_xt(const m4token *code, FILE *out) {
+static m4cell m4token_print_xt(const m4token *code, m4printmode mode, FILE *out) {
     m4xt val;
     memcpy(&val, code, sizeof(val));
     if (val != NULL) {
         fputs("XT(", out);
-        m4string_print(m4word_name(m4xt_word(val)), out);
+        m4string_print(m4word_name(m4xt_word(val)), mode, out);
         fputs(") ", out);
     } else {
         fputs("XT() ", out);
@@ -391,19 +395,20 @@ static m4cell m4token_print_xt(const m4token *code, FILE *out) {
     return sizeof(val) / SZt;
 }
 
-static m4cell m4token_print_lit_xt(const m4token *code, FILE *out) {
+static m4cell m4token_print_lit_xt(const m4token *code, m4printmode mode, FILE *out) {
     fputs("(lit-xt) ", out);
-    return m4token_print_xt(code, out);
+    return m4token_print_xt(code, mode, out);
 }
 
-static m4cell m4token_print_lit_string(const m4string str, FILE *out) {
+static m4cell m4token_print_lit_string(const m4string str, m4printmode mode, FILE *out) {
+    (void)mode;
     fprintf(out, "LIT_STRING(%lu, \"", (unsigned long)str.n);
     m4string_print_escape(str, out);
     fputs("\") ", out);
     return 1 + (str.n + SZt - 1) / SZt;
 }
 
-static m4cell m4token_print_call(const m4token *code, FILE *out) {
+static m4cell m4token_print_call(const m4token *code, m4printmode mode, FILE *out) {
     m4cell val, ret = 0;
     memcpy(&val, code, sizeof(val));
     fputs("CALL(", out);
@@ -411,19 +416,19 @@ static m4cell m4token_print_call(const m4token *code, FILE *out) {
         const m4word *w = (const m4word *)(val - WORD_OFF_XT);
         const m4string name = m4word_name(w);
         if (name.addr && name.n > 0) {
-            m4string_print(name, out);
+            m4string_print(name, mode, out);
             ret = sizeof(val) / SZt;
         }
     }
     if (ret == 0) {
-        ret = m4token_print_int64(code, out);
+        ret = m4token_print_int64(code, mode, out);
     }
     fputs(") ", out);
     return ret;
 }
 
 #if 0 /* unused */
-static m4cell m4token_print_word(const m4token *code, FILE *out) {
+static m4cell m4token_print_word(const m4token *code, m4printmode mode, FILE *out) {
     m4cell val;
     memcpy(&val, code, sizeof(val));
     if (val > 4096) {
@@ -431,7 +436,7 @@ static m4cell m4token_print_word(const m4token *code, FILE *out) {
         const m4string name = m4word_name(w);
         if (name.addr && name.n > 0) {
             fputs("WADDR(", out);
-            m4string_print(name, out);
+            m4string_print(name, mode, out);
             fputs(") ", out);
             return sizeof(val) / SZt;
         }
@@ -440,30 +445,31 @@ static m4cell m4token_print_word(const m4token *code, FILE *out) {
 }
 #endif
 
-m4cell m4token_print_consumed_ip(m4token tok, const m4token *code, m4cell maxn, FILE *out) {
+m4cell m4token_print_consumed_ip(m4token tok, const m4token *code, m4cell maxn,
+                                 /**/ m4printmode mode, FILE *out) {
     const m4cell nbytes = m4token_consumes_ip(tok);
     if (nbytes == 0 || nbytes / SZt > maxn) {
         return 0;
     } else if (nbytes == SZt && (tok == m4_lit_tok_ || tok == m4_lit_comma_)) {
         fputc('\'', out);
-        m4token_print(code[0], out);
+        m4token_print(code[0], mode, out);
         return 1;
     } else if (nbytes == 2 * SZt && tok == m4_compile_jump_lit_) {
         fputc('\'', out);
-        m4token_print(code[0], out);
+        m4token_print(code[0], mode, out);
         fputc('\'', out);
-        m4token_print(code[1], out);
+        m4token_print(code[1], mode, out);
         return 2;
     } else if (nbytes == SZ && tok == m4_lit_xt_) {
-        return m4token_print_xt(code, out);
+        return m4token_print_xt(code, mode, out);
     }
     switch (nbytes) {
     case 2:
-        return m4token_print_int16(code, out);
+        return m4token_print_int16(code, mode, out);
     case 4:
-        return m4token_print_int32(code, out);
+        return m4token_print_int32(code, mode, out);
     case 8:
-        return m4token_print_int64(code, out);
+        return m4token_print_int64(code, mode, out);
     default:
         return 0;
     }
@@ -513,24 +519,24 @@ m4cell m4code_equal(m4code src, m4code dst) {
     return ttrue;
 }
 
-void m4code_print(m4code src, FILE *out) {
+void m4code_print(m4code src, m4printmode mode, FILE *out) {
     const m4token *const code = src.addr;
     m4ucell i, n = src.n;
     if (code == NULL || out == NULL) {
         return;
     }
-    fprintf(out, "<%ld> ", (long)n);
+    fprintf(out, (mode == m4mode_user ? "<%ld> " : "/*%ld*/"), (long)n);
     for (i = 0; i < n;) {
         const m4token tok = code[i++];
         if (tok == m4_call_xt_ && n - i >= SZ / SZt) {
-            i += m4token_print_call(code + i, out);
+            i += m4token_print_call(code + i, mode, out);
         } else if (tok == m4_lit_xt_ && n - i >= SZ / SZt) {
-            i += m4token_print_lit_xt(code + i, out);
+            i += m4token_print_lit_xt(code + i, mode, out);
         } else if (tok == m4_lit_string_ && n - i >= 2 + (m4ucell)(code[i] + SZt - 1) / SZt) {
-            i += m4token_print_lit_string(m4string_make(&code[i + 1], code[i]), out);
+            i += m4token_print_lit_string(m4string_make(&code[i + 1], code[i]), mode, out);
         } else {
-            m4token_print(tok, out);
-            i += m4token_print_consumed_ip(tok, code + i, n - i, out);
+            m4token_print(tok, mode, out);
+            i += m4token_print_consumed_ip(tok, code + i, n - i, mode, out);
         }
     }
 }
@@ -555,14 +561,14 @@ m4string m4dict_name(const m4dict *d) {
     return ret;
 }
 
-static void m4word_print_fwd_recursive(const m4word *w, FILE *out);
+static void m4word_print_fwd_recursive(const m4word *w, m4printmode mode, FILE *out);
 
-void m4dict_print(const m4dict *dict, const m4word *lastw, FILE *out) {
+void m4dict_print(const m4dict *dict, const m4word *lastw, m4printmode mode, FILE *out) {
     fputs("/* -------- ", out);
-    m4string_print(m4dict_name(dict), out);
+    m4string_print(m4dict_name(dict), mode, out);
     fputs(" -------- */\n", out);
 
-    m4word_print_fwd_recursive(lastw ? lastw : m4dict_lastword(dict), out);
+    m4word_print_fwd_recursive(lastw ? lastw : m4dict_lastword(dict), mode, out);
 }
 
 /* ----------------------- m4slice ----------------------- */
@@ -650,10 +656,11 @@ fail:
     dst->n = 0;
 }
 
-void m4slice_print(m4slice slice, m4cell direction, FILE *out) {
+void m4slice_print(m4slice slice, m4cell direction, m4printmode mode, FILE *out) {
     const m4cell *addr = slice.addr;
     m4cell n = slice.n;
     m4cell step = 1;
+    (void)mode;
 
     fprintf(out, "<%ld> ", (long)n);
     if (n <= 0) {
@@ -675,8 +682,8 @@ void m4slice_print(m4slice slice, m4cell direction, FILE *out) {
         }
     }
 }
-void m4slice_print_stdout(m4slice slice, m4cell direction) {
-    m4slice_print(slice, direction, stdout);
+void m4slice_print_stdout(m4slice slice, m4cell direction, m4printmode mode) {
+    m4slice_print(slice, direction, mode, stdout);
 }
 
 /* ----------------------- m4iobuf ----------------------- */
@@ -708,21 +715,22 @@ void m4stack_free(m4stack *arg) {
     }
 }
 
-void m4stack_print(const m4stack *stack, FILE *out) {
+void m4stack_print(const m4stack *stack, m4printmode mode, FILE *out) {
     m4cell *addr = stack->curr;
     const m4ucell n = stack->end - addr;
     if (addr < stack->start) {
         fprintf(out, "<%ld> ", (long)n);
     } else {
         const m4slice slice = {addr, n};
-        m4slice_print(slice, -1, out);
+        m4slice_print(slice, -1, mode, out);
     }
 }
 
 /* ----------------------- m4stackeffect ----------------------- */
 
-void m4stackeffect_print(m4stackeffect eff, FILE *out) {
+void m4stackeffect_print(m4stackeffect eff, m4printmode mode, FILE *out) {
     uint8_t n = eff & 0xF;
+    (void)mode;
     if (out == NULL) {
         return;
     } else if (n == 0xF) {
@@ -740,20 +748,25 @@ void m4stackeffect_print(m4stackeffect eff, FILE *out) {
 
 /* ----------------------- m4stackeffects ----------------------- */
 
-void m4stackeffects_print(m4stackeffects effs, const char *suffix, FILE *out) {
+void m4stackeffects_print(m4stackeffects effs, const char *suffix, m4printmode mode, FILE *out) {
     fprintf(out, " \n\tdata_stack%s: \t", suffix);
-    m4stackeffect_print(effs.dstack, out);
+    m4stackeffect_print(effs.dstack, mode, out);
     fprintf(out, " \n\treturn_stack%s:\t", suffix);
-    m4stackeffect_print(effs.rstack, out);
+    m4stackeffect_print(effs.rstack, mode, out);
 }
 
 /* ----------------------- m4string ----------------------- */
 
-void m4string_print(m4string str, FILE *out) {
-    if (out == NULL || str.addr == NULL || str.n == 0) {
-        return;
+void m4string_print(m4string str, m4printmode mode, FILE *out) {
+    if (out == NULL) {
+        /**/
+    } else if (mode == m4mode_exact) {
+        fputc('"', out);
+        m4string_print_escape(str, out);
+        fputc('"', out);
+    } else if (str.addr != NULL && str.n != 0) {
+        fwrite(str.addr, 1, str.n, out);
     }
-    fwrite(str.addr, 1, str.n, out);
 }
 
 void m4string_print_hex(m4string str, FILE *out) {
@@ -839,68 +852,68 @@ const m4word *m4xt_word(m4xt xt) {
     return (const m4word *)((m4cell)xt - WORD_OFF_XT);
 }
 
-void m4word_code_print(const m4word *w, FILE *out) {
+void m4word_code_print(const m4word *w, m4printmode mode, FILE *out) {
     if (w == NULL || out == NULL) {
         return;
     }
-    m4code_print(m4word_code(w), out);
+    m4code_print(m4word_code(w), mode, out);
 }
 
-void m4word_data_print(const m4word *w, m4cell data_offset_n, FILE *out) {
+void m4word_data_print(const m4word *w, m4cell data_offset_n, m4printmode mode, FILE *out) {
     if (w == NULL || out == NULL) {
         return;
     }
     m4string data = m4word_data(w, data_offset_n);
     if (w->flags & m4flag_data_tokens) {
         m4code code = {(m4token *)data.addr, data.n / (m4cell)SZt};
-        m4code_print(code, out);
+        m4code_print(code, mode, out);
     } else {
         fprintf(out, "<%ld> ", (long)data.n);
         m4string_print_hex(data, out);
     }
 }
 
-void m4word_print_stdout(const m4word *w) {
+void m4word_print_stdout(const m4word *w, m4printmode mode) {
     putchar('\n');
-    m4word_print(w, stdout);
+    m4word_print(w, mode, stdout);
 }
 
-void m4word_print(const m4word *w, FILE *out) {
+void m4word_print(const m4word *w, m4printmode mode, FILE *out) {
     m4flags jump_flags = (m4flags)(w->flags & m4flag_jump_mask);
     if (w == NULL || out == NULL) {
         return;
     }
-    m4string_print(m4word_name(w), out);
+    m4string_print(m4word_name(w), mode, out);
     fputs("\t/* ", out);
-    m4string_print(m4word_ident(w), out);
+    m4string_print(m4word_ident(w), mode, out);
     fputs(" */ {\n\tflags:\t", out);
-    m4flags_print((m4flags)w->flags, out);
+    m4flags_print((m4flags)w->flags, mode, out);
     if (jump_flags != m4flag_jump) {
-        m4stackeffects_print(w->eff, "", out);
+        m4stackeffects_print(w->eff, "", mode, out);
     }
     if (jump_flags == m4flag_jump || jump_flags == m4flag_may_jump) {
-        m4stackeffects_print(w->jump, "_jump", out);
+        m4stackeffects_print(w->jump, "_jump", mode, out);
     }
     if (w->native_len != (uint16_t)-1) {
         fprintf(out, "\n\tnative_len:  \t%d", (int)w->native_len);
     }
     if (w->code_n != 0) {
         fputs("\n\tcode:        \t", out);
-        m4word_code_print(w, out);
+        m4word_code_print(w, mode, out);
     }
     if (w->data_n != 0) {
         fputs((w->flags & m4flag_data_tokens) ? "\n\tdata_tokens: \t" : "\n\tdata:        \t", out);
-        m4word_data_print(w, 0, out);
+        m4word_data_print(w, 0, mode, out);
     }
     fputs("\n}\n", out);
 }
 
-static void m4word_print_fwd_recursive(const m4word *w, FILE *out) {
+static void m4word_print_fwd_recursive(const m4word *w, m4printmode mode, FILE *out) {
     if (w == NULL || out == NULL) {
         return;
     }
-    m4word_print_fwd_recursive(m4word_prev(w), out);
-    m4word_print(w, out);
+    m4word_print_fwd_recursive(m4word_prev(w), mode, out);
+    m4word_print(w, mode, out);
 }
 
 m4string m4word_name(const m4word *w) {
@@ -969,11 +982,11 @@ m4string m4wordlist_name(const m4wordlist *wid) {
     return m4dict_name(wid->dict);
 }
 
-void m4wordlist_print(const m4wordlist *wid, FILE *out) {
+void m4wordlist_print(const m4wordlist *wid, m4printmode mode, FILE *out) {
     if (out == NULL || wid == NULL) {
         return;
     }
-    m4dict_print(wid->dict, wid->last, out);
+    m4dict_print(wid->dict, wid->last, mode, out);
 }
 
 /* ----------------------- m4th ----------------------- */
