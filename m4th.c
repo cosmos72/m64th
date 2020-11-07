@@ -225,62 +225,76 @@ m4cell m4flags_consume_ip(m4flags fl) {
 
 void m4flags_print(m4flags fl, m4printmode mode, FILE *out) {
     m4char printed = 0;
-    (void)mode;
+    m4char skip;
     if (out == NULL) {
         return;
-    }
-    if (!fl) {
+    } else if (!fl) {
         fputc('0', out);
-    }
-    if (fl & m4flag_compile_only) {
-        fputs("compile_only", out);
+        return;
+    } else if (fl & m4flag_compile_only) {
+        fputs((mode == m4mode_user ? "compile_only" : "M4FLAG_COMPILE_ONLY"), out);
         printed++;
     }
     switch (m4flags_consume_ip(fl)) {
     case 2:
-        fputs(printed++ ? "|consumes_ip_2" : "consumes_ip_2", out);
+        skip = printed++ ? 0 : 1;
+        fputs((mode == m4mode_user ? "|consumes_ip_2" : "|M4FLAG_CONSUMES_IP_2") + skip, out);
         break;
     case 4:
-        fputs(printed++ ? "|consumes_ip_4" : "consumes_ip_4", out);
+        skip = printed++ ? 0 : 1;
+        fputs((mode == m4mode_user ? "|consumes_ip_4" : "|M4FLAG_CONSUMES_IP_4") + skip, out);
         break;
     case 8:
-        fputs(printed++ ? "|consumes_ip_8" : "consumes_ip_8", out);
+        skip = printed++ ? 0 : 1;
+        fputs((mode == m4mode_user ? "|consumes_ip_8" : "|M4FLAG_CONSUMES_IP_8") + skip, out);
         break;
     }
     if (fl & m4flag_inline_always) {
-        fputs(printed++ ? "|inline_always" : "inline_always", out);
+        skip = printed++ ? 0 : 1;
+        fputs((mode == m4mode_user ? "|inline_always" : "|M4FLAG_INLINE_ALWAYS") + skip, out);
     } else if (fl & m4flag_inline) {
-        fputs(printed++ ? "|inline" : "inline", out);
+        skip = printed++ ? 0 : 1;
+        fputs((mode == m4mode_user ? "|inline" : "|M4FLAG_INLINE") + skip, out);
     }
     if ((fl & m4flag_jump_mask) == m4flag_jump) {
-        fputs(printed++ ? "|jump" : "jump", out);
+        skip = printed++ ? 0 : 1;
+        fputs((mode == m4mode_user ? "|jump" : "|M4FLAG_JUMP") + skip, out);
     } else if ((fl & m4flag_jump_mask) == m4flag_may_jump) {
-        fputs(printed++ ? "|may_jump" : "may_jump", out);
+        skip = printed++ ? 0 : 1;
+        fputs((mode == m4mode_user ? "|may_jump" : "|M4FLAG_MAY_JUMP") + skip, out);
     }
     if (fl & m4flag_mem_fetch) {
-        fputs(printed++ ? "|mem_fetch" : "mem_fetch", out);
+        skip = printed++ ? 0 : 1;
+        fputs((mode == m4mode_user ? "|mem_fetch" : "|M4FLAG_MEM_FETCH") + skip, out);
     }
     if (fl & m4flag_mem_store) {
-        fputs(printed++ ? "|mem_store" : "mem_store", out);
+        skip = printed++ ? 0 : 1;
+        fputs((mode == m4mode_user ? "|mem_store" : "|M4FLAG_MEM_STORE") + skip, out);
     }
     if ((fl & m4flag_pure_mask) == m4flag_pure) {
-        fputs(printed++ ? "|pure" : "pure", out);
+        skip = printed++ ? 0 : 1;
+        fputs((mode == m4mode_user ? "|pure" : "|M4FLAG_PURE") + skip, out);
     }
     if (fl & m4flag_immediate) {
-        fputs(printed++ ? "|immediate" : "immediate", out);
+        skip = printed++ ? 0 : 1;
+        fputs((mode == m4mode_user ? "|immediate" : "|M4FLAG_IMMEDIATE") + skip, out);
     }
     if (fl & m4flag_data_tokens) {
-        fputs(printed++ ? "|data_tokens" : "data_tokens", out);
+        skip = printed++ ? 0 : 1;
+        fputs((mode == m4mode_user ? "|data_tokens" : "|M4FLAG_DATA_TOKENS") + skip, out);
     }
     switch (fl & m4flag_noopt_mask) {
     case m4flag_create:
-        fputs(printed++ ? "|create" : "create", out);
+        skip = printed++ ? 0 : 1;
+        fputs((mode == m4mode_user ? "|create" : "|M4FLAG_CREATE") + skip, out);
         break;
     case m4flag_defer:
-        fputs(printed++ ? "|defer" : "defer", out);
+        skip = printed++ ? 0 : 1;
+        fputs((mode == m4mode_user ? "|defer" : "|M4FLAG_DEFER") + skip, out);
         break;
     case m4flag_noopt:
-        fputs(printed++ ? "|noopt" : "noopt", out);
+        skip = printed++ ? 0 : 1;
+        fputs((mode == m4mode_user ? "|noopt" : "|M4FLAG_NOOPT") + skip, out);
     }
 }
 
