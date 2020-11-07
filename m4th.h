@@ -255,8 +255,8 @@ typedef enum m4th_opt_e {
 typedef enum m4printmode_e {
     /* default: print user-readable disassembly */
     m4mode_user = 0,
-    /* print machine-readable disassembly, usable as C compiler (actually assembler) input */
-    m4mode_exact = 1,
+    /* print machine-readable disassembly, usable as input to C compiler (actually assembler) */
+    m4mode_c_disasm = 1,
     m4mode_default = m4mode_user,
 } m4printmode;
 

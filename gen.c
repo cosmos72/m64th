@@ -72,7 +72,7 @@ static void genopt_print_1_token(m4token tok, unsigned index, FILE *out) {
     const m4string s = m4word_ident(m4token_to_word(tok));
     if (s.addr && s.n) {
         fputs(&"|(M4"[index ? 0 : 2], out);
-        m4string_print(s, m4mode_exact, out);
+        m4string_print(s, m4mode_c_disasm, out);
         if (index) {
             fprintf(out, "<<%u)", index * 16);
         }
@@ -153,14 +153,14 @@ static void genopt_with_file(const char *path, void (*gen)(FILE *out)) {
     fprintf(stdout, "# file '%s' updated\n", path);
 }
 
-static void run_show_words(FILE *out) {
+static void run_show_words(m4printmode mode, FILE *out) {
     const m4dict *dict[] = {
         &m4dict_forth, &m4dict_m4th_user, &m4dict_m4th_c, &m4dict_m4th_core, &m4dict_m4th_impl,
     };
     m4cell i;
     fputs(license, stdout);
     for (i = 0; i < (m4cell)N_OF(dict); i++) {
-        m4dict_print(dict[i], NULL, m4mode_user, out);
+        m4dict_print(dict[i], NULL, mode, out);
     }
 }
 
@@ -192,6 +192,7 @@ static void run_benchmark(FILE *out) {
 
 int main(int argc, char *argv[]) {
     m4cell show_words = argc >= 2 && !strcmp(argv[1], "words");
+    m4cell show_disasm = argc >= 2 && !strcmp(argv[1], "disasm");
     m4cell benchmark = argc >= 2 && !strcmp(argv[1], "bench");
     m4cell cpu_features_disable_mask = argc >= 3 && !strcmp(argv[2], "nosimd") ? ttrue : tfalse;
     m4cell cpu_features;
@@ -217,8 +218,8 @@ int main(int argc, char *argv[]) {
             fputs("# this " ARCH_STR_ "CPU does not have crc32c asm instructions\n", stdout);
         }
         run_benchmark(stdout);
-    } else if (show_words) {
-        run_show_words(stdout);
+    } else if (show_words || show_disasm) {
+        run_show_words(show_words ? m4mode_user : m4mode_c_disasm, stdout);
     } else {
         genopt_with_file("include/opt2_hash.mh", genopt2_run);
     }

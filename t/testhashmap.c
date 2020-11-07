@@ -122,16 +122,16 @@ m4cell m4th_testhashmap_string(FILE *out) {
                     "m4hashmap_find_string() failed after %u elements, returned NULL instead of "
                     "just-inserted key ",
                     (unsigned)i);
-            m4string_print(key, m4mode_exact, out);
+            m4string_print(key, m4mode_c_disasm, out);
             fputc('\n', out);
             fail++;
             continue;
         } else if (!m4string_equals(key, e->key) || e->val != val) {
             fprintf(out, "m4hashmap_find_string() failed after %u elements, returned wrong entry {",
                     (unsigned)i);
-            m4string_print(e->key, m4mode_exact, out);
+            m4string_print(e->key, m4mode_c_disasm, out);
             fprintf(out, ", 0x%lx} instead of just-inserted pair {", (long)e->val);
-            m4string_print(key, m4mode_exact, out);
+            m4string_print(key, m4mode_c_disasm, out);
             fprintf(out, ", 0x%lx}\n", (long)val);
             fail++;
             continue;
