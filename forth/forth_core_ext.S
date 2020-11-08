@@ -113,6 +113,17 @@ WORD(u_more,           tuck,       DSTACK(2,1), RSTACK(0,0), WORD_PURE)
  * : within over - -rot - u> ;
  */
 WORD(within,           u_more,     DSTACK(3,1), RSTACK(0,0), WORD_PURE)
+/* \      ( -- )   read and skip input until end-of-line. does not refill */
+WORD_START(backslash,  within)
+    WORD_DSTACK(0,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        in_to_ibuf, _lit_, T('\n'), CALL(ibuf_find_char), two_drop, exit
+    )
+WORD_END(backslash)
 
 #undef LASTWORD
-#define LASTWORD within
+#define LASTWORD backslash

@@ -839,7 +839,7 @@ void editDelete(linenoiseState *l) {
 }
 
 /* Backspace implementation. */
-void linenoiseEditBackspace(linenoiseState *l) {
+void editBackspace(linenoiseState *l) {
     if (l->pos > 0 && l->len > 0) {
         memmove(l->buf + l->pos - 1, l->buf + l->pos, l->len - l->pos);
         l->pos--;
@@ -958,6 +958,46 @@ static int linenoiseEdit(int stdin_fd, int stdout_fd, char *buf, size_t buflen,
         }
 
         switch (c) {
+        case CTRL_A: /* Ctrl+a, go to the start of the line */
+            moveHome(&l);
+            break;
+        case CTRL_B: /* ctrl-b */
+            moveLeft(&l);
+            break;
+        case CTRL_C: /* ctrl-c */
+            errno = EAGAIN;
+            ret = -1;
+            goto out;
+        case CTRL_D: /* ctrl-d, remove char at right of cursor, or if the
+                        line is empty, act as end-of-file. */
+            if (l.len > 0) {
+                editDelete(&l);
+            } else {
+                history_len--;
+                free(history[history_len]);
+                errno = 0;
+                ret = -1; /* EOF */
+                goto out;
+            }
+            break;
+        case CTRL_E: /* ctrl+e, go to the end of the line */
+            moveEnd(&l);
+            break;
+        case CTRL_F: /* ctrl-f */
+            moveRight(&l);
+            break;
+        case CTRL_H: /* ctrl-h */
+            editDeletePrevWord(&l);
+            break;
+        case CTRL_K: /* Ctrl+k, delete from current to end of line. */
+            buf[l.pos] = '\0';
+            l.len = l.pos;
+            refreshLine(&l);
+            break;
+        case CTRL_L: /* ctrl+l, clear screen */
+            linenoiseClearScreen();
+            refreshLine(&l);
+            break;
         case ENTER: /* enter */
             history_len--;
             free(history[history_len]);
@@ -973,25 +1013,11 @@ static int linenoiseEdit(int stdin_fd, int stdout_fd, char *buf, size_t buflen,
             }
             ret = l.len;
             goto out;
-        case CTRL_C: /* ctrl-c */
-            errno = EAGAIN;
-            ret = -1;
-            goto out;
-        case BACKSPACE: /* backspace */
-        case CTRL_H:    /* ctrl-h */
-            linenoiseEditBackspace(&l);
+        case CTRL_N: /* ctrl-n */
+            editHistoryNext(&l, LINENOISE_HISTORY_NEXT);
             break;
-        case CTRL_D: /* ctrl-d, remove char at right of cursor, or if the
-                        line is empty, act as end-of-file. */
-            if (l.len > 0) {
-                editDelete(&l);
-            } else {
-                history_len--;
-                free(history[history_len]);
-                errno = 0;
-                ret = -1; /* EOF */
-                goto out;
-            }
+        case CTRL_P: /* ctrl-p */
+            editHistoryNext(&l, LINENOISE_HISTORY_PREV);
             break;
         case CTRL_T: /* ctrl-t, swaps current character with previous. */
             if (l.pos > 0 && l.pos < l.len) {
@@ -1003,17 +1029,13 @@ static int linenoiseEdit(int stdin_fd, int stdout_fd, char *buf, size_t buflen,
                 refreshLine(&l);
             }
             break;
-        case CTRL_B: /* ctrl-b */
-            moveLeft(&l);
+        case CTRL_U: /* Ctrl+u, delete the whole line. */
+            buf[0] = '\0';
+            l.pos = l.len = 0;
+            refreshLine(&l);
             break;
-        case CTRL_F: /* ctrl-f */
-            moveRight(&l);
-            break;
-        case CTRL_P: /* ctrl-p */
-            editHistoryNext(&l, LINENOISE_HISTORY_PREV);
-            break;
-        case CTRL_N: /* ctrl-n */
-            editHistoryNext(&l, LINENOISE_HISTORY_NEXT);
+        case CTRL_W: /* ctrl+w, delete previous word */
+            editDeletePrevWord(&l);
             break;
         case ESC: /* escape sequence */
             /* Read the next two bytes representing the escape sequence.
@@ -1094,29 +1116,11 @@ static int linenoiseEdit(int stdin_fd, int stdout_fd, char *buf, size_t buflen,
                 }
             }
             break;
-        case CTRL_U: /* Ctrl+u, delete the whole line. */
-            buf[0] = '\0';
-            l.pos = l.len = 0;
-            refreshLine(&l);
-            break;
-        case CTRL_K: /* Ctrl+k, delete from current to end of line. */
-            buf[l.pos] = '\0';
-            l.len = l.pos;
-            refreshLine(&l);
-            break;
-        case CTRL_A: /* Ctrl+a, go to the start of the line */
-            moveHome(&l);
-            break;
-        case CTRL_E: /* ctrl+e, go to the end of the line */
-            moveEnd(&l);
-            break;
-        case CTRL_L: /* ctrl+l, clear screen */
-            linenoiseClearScreen();
-            refreshLine(&l);
-            break;
-        case CTRL_W:    /* ctrl+w, delete previous word */
         case CTRL_BACK: /* ctrl+backspace, delete previous word */
             editDeletePrevWord(&l);
+            break;
+        case BACKSPACE: /* backspace */
+            editBackspace(&l);
             break;
         default:
             if (editInsert(&l, c)) {

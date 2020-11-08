@@ -154,7 +154,8 @@
     X(3, "?do", question_do)                                                                       \
     X(5, "again", again)                                                                           \
     X(3, "hex", hex)                                                                               \
-    X(10, "parse-name", parse_name)
+    X(10, "parse-name", parse_name)                                                                \
+    X(1, "\\", backslash)
 
 /* ------- forth 2012: double ext --------------------------------------------------------------- */
 #define DICT_TOKENS_FORTH_DOUBLE_EXT(X) /*                                                      */ \

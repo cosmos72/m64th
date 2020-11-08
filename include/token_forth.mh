@@ -211,7 +211,7 @@
 #undef M4value /*181*/           /* value    */
 #define M4within 182             /* within   */
 #undef M4bracket_compile /*183*/ /* [compile]    */
-#undef M4backslash /*184*/       /* \        */
+#undef M4backslash /*184*/       /* \        implemented in forth, no dedicated m4token */
 #undef M4num_t_i_b               /* #tib     (removed in Forth 2012) */
 #undef M4convert                 /* convert  (removed in Forth 2012) */
 #undef M4expect                  /* expect   (removed in Forth 2012) */

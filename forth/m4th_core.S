@@ -71,7 +71,7 @@ WORD_END(compile_string_comma)
 /* flags>consumed-tokens ( flags -- u ) get # consumed tokens from flags */
 WORD(flags_to_consumed_tokens, compile_string_comma, DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 /**
- * ibuf-find-char ( io ch -- c-addr u ) get string before ch in iobuf.
+ * ibuf-find-char ( io ch -- c-addr u ) find ch in iobuf and return string before it.
  * if ch is present, consume it. does not refill.
  */
 WORD_START(ibuf_find_char, flags_to_consumed_tokens)
