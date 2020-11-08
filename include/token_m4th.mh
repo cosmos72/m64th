@@ -360,16 +360,16 @@
 #define M4out_to_obuf M4_(40) /* out>obuf         (      -- io  ) get current output as iobuf */
 #define M4set_latest M4_(41)  /* set-latest       ( nt --       ) set last defined word       */
 #undef M4____gap              /*                                         */
-#define M4searchorder_clear M4_(43)   /* (S: wid_u-1 .. wid_0 -- )                 */
-#define M4searchorder_depth M4_(44)   /* (S: wid_u-1 .. wid_0 -- same ) ( -- u )   */
-#define M4searchorder_drop M4_(45)    /* (S: wid -- )                              */
-#define M4searchorder_dup M4_(46)     /* (S: wid -- wid wid )                      */
+#define M4searchorder_clear M4_(43)   /* (S: wid_u-1 .. wid_0 -- )                   */
+#define M4searchorder_depth M4_(44)   /* (S: wid_u-1 .. wid_0 -- same ) ( -- u )     */
+#define M4searchorder_drop M4_(45)    /* (S: wid -- )                                */
+#define M4searchorder_dup M4_(46)     /* (S: wid -- wid wid )                        */
 #define M4searchorder_pick M4_(47)    /* (S: wid_u-1 .. wid_0 -- same ) ( -- wid_u ) */
-#define M4searchorder_store_0 M4_(48) /* (S: wid1 -- wid2 ) ( wid2 -- ) */
-#define M4searchorder_i M4_(49)  /* ( u -- addr ) get address of i-th wordlist in searchorder */
-#define M4searchorder_n M4_(50)  /* (   -- addr ) get address of searchorder count           */
-#define M4token_to_name M4_(51)  /* token>name ( token -- nt|0 ) convert token to name */
-#define M4user_var M4_(52)       /* user-var ( -- addr ) must be followed by index of user var */
+#define M4searchorder_store_0 M4_(48) /* (S: wid1 -- wid2 ) ( wid2 -- )              */
+#undef M4____gap                      /*                                         */
+#define M4token_to_name M4_(50)       /* token>name ( token -- nt|0 ) convert token to name */
+#define M4user_var M4_(51)       /* user-var ( -- addr ) must be followed by index of user var */
+#undef M4____gap                 /*                                         */
 #define M4wordlist_add M4_(53)   /* ( wid nt -- ) add name to wordlist                     */
 #define M4wordlist_last M4_(54)  /* ( wid -- nt ) get last name in a wordlist              */
 #define M4wordlist_reset M4_(55) /* ( wid --    ) remove all user-defined names from wid   */

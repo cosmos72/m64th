@@ -528,13 +528,8 @@ WORD(searchorder_drop,  searchorder_depth, DSTACK(0,0), RSTACK(0,0), WORD_IMPURE
 WORD(searchorder_dup,   searchorder_drop,  DSTACK(0,0), RSTACK(0,0), WORD_IMPURE)
 /* (S: wid_u .. wid_0 -- same ) ( u -- wid_u ) */
 WORD(searchorder_pick,  searchorder_dup,   DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
-
-/* searchorder-i ( u -- addr ) get address of ith wordlist in searchorder */
-WORD(searchorder_i,     searchorder_pick,  DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
-/* searchorder-n ( -- addr ) get address of searchorder count */
-WORD(searchorder_n,     searchorder_i,     DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 /* searchorder[0]! ( wid -- ) set first wid in searchorder */
-WORD(searchorder_store_0,   searchorder_n, DSTACK(1,0), RSTACK(0,0), WORD_IMPURE)
+WORD(searchorder_store_0,searchorder_pick, DSTACK(1,0), RSTACK(0,0), WORD_IMPURE)
 WORD(set_latest,      searchorder_store_0, DSTACK(1,0), RSTACK(0,0), WORD_IMPURE)
 /*
  * string>name ( c-addr u -- nt|0 -1|0|1 ) find name in current search order.
@@ -547,9 +542,9 @@ WORD_START(string_to_name, set_latest)
     WORD_NATIVE_NONE()
     WORD_FLAGS(0)
     WORD_CODE(
-        /* searchorder-n @ 0                       ( c-addr u n 0              )
+        /* searchorder-depth 0                     ( c-addr u n 0              )
          * ?do                                     ( c-addr u                  ) (R: n i )
-         *    2dup i searchorder-i @               ( c-addr u c-addr u wid     ) (R: n i )
+         *    2dup i searchorder-pick              ( c-addr u c-addr u wid     ) (R: n i )
          *    wordlist-find                        ( c-addr u w|0 -1|0|1       ) (R: n i )
          *    ?if
          *       2nip unloop exit                  ( w -1|1                    )
@@ -558,15 +553,15 @@ WORD_START(string_to_name, set_latest)
          * loop                                    ( c-addr u                  )
          * 2drop 0 0                               ( 0 0                       )
          */
-        searchorder_n, fetch, zero,
-        _q_do_, T(14+nCALLt),
-            two_dup, i, searchorder_i, fetch,
+        searchorder_depth, zero,
+        _q_do_, T(13+nCALLt),
+            two_dup, i, searchorder_pick,
             CALL(wordlist_find),
             _q_if_, T(4),
                 two_nip, unloop, exit,
             then,
             two_drop,
-        _loop_, T(-14-nCALLt),
+        _loop_, T(-13-nCALLt),
         two_drop, zero, zero, exit
     )
 WORD_END(string_to_name)

@@ -297,11 +297,8 @@
     X(15, "searchorder-dup", searchorder_dup)     /* (S: wid -- wid wid )                      */  \
     X(16, "searchorder-pick", searchorder_pick)   /* (S: wid_u .. wid_0 -- same ) ( -- wid_u ) */  \
     X(15, "searchorder[0]!", searchorder_store_0) /* ( wid -- ) overwrite searchorder 0-th elem */ \
-    /*                  searchorder-i ( u -- addr ) get address of searchorder i-th element  */    \
-    X(13, "searchorder-i", searchorder_i)                                                          \
-    X(13, "searchorder-n", searchorder_n) /* (    -- addr ) get address of searchorder count */    \
-    X(10, "set-latest", set_latest)       /* ( nt --      ) set last defined word            */    \
-    X(10, "token>name", token_to_name)    /* ( token -- nt|0 ) convert token to name */            \
+    X(10, "set-latest", set_latest)    /* ( nt --      ) set last defined word            */       \
+    X(10, "token>name", token_to_name) /* ( token -- nt|0 ) convert token to name */               \
     X(8, "user-var", user_var) /*     ( -- addr ) must be followed by index of user variable */    \
     X(12, "wordlist-add", wordlist_add)     /* ( nt wid -- ) add name to wordlist            */    \
     X(13, "wordlist-last", wordlist_last)   /* ( wid -- nt ) get last name in wordlist       */    \

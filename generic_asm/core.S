@@ -268,23 +268,7 @@ FUNC_START(searchorder_store_0)
 FUNC_END(searchorder_store_0)
 
 
-/* searchorder-i ( u -- addr ) get address of i-th wordlist in search order */
-FUNC_START(searchorder_i)
-        ADDI(  M4TH, M4TH_OFF_SEARCHORDER, REG1) /* a = &m->searchorder */
-        LOAD(  REG2,   AT(REG1))                 /* b = m->searchorder.n */
-        SUB2(  DTOP,   REG2)                     /* b = n - i */
-        ADD4(  REG1,   REG2, PSZ, DTOP) /* dtop = &a[n-i] = &m->searchorder.addr[n-i-1] */
-FUNC_END(searchorder_i)
-
-
-/* searchorder-n ( -- addr ) get address of searchorder count */
-FUNC_START(searchorder_n)
-        DPUSH__DTOP()
-        ADDI(  M4TH,   M4TH_OFF_SEARCHORDER, DTOP)
-FUNC_END(searchorder_n)
-
-
-/* set-current ( wid -- ) forth 'search order' word set */
+/* set-current ( wid -- ) forth-searchorder */
 FUNC_START(set_current)
         STOR(  DTOP,   AT(M4TH, M4TH_OFF_COMPILE_WID))
         DPOP___DTOP()
