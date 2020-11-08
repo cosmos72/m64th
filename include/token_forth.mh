@@ -476,7 +476,7 @@
 #undef M4bracket_undefined /*446*/ /* [undefined]  */
 
 /* 'forth' wordlist: 'search order' word set */
-#undef M4definitions /*449*/     /* definitions     */
+#undef M4definitions /*449*/     /* definitions     implemented in forth, no dedicated m4token */
 #undef M4find /*450*/            /* find            */
 #undef M4forth_wordlist /*451*/  /* forth-wordlist  implemented in forth, no dedicated m4token */
 #define M4get_current 452        /* get-current     */

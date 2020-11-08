@@ -32,8 +32,20 @@ WORD_START(also,       LASTWORD)
         searchorder_dup, exit
     )
 WORD_END(also)
+/* set compilation wordlist to first wordlist in search order */
+WORD_START(definitions,    also)
+    WORD_DSTACK(0,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        zero, searchorder_pick,                        /* ( wid              ) */
+        set_current, exit                              /* (                  ) */
+    )
+WORD_END(definitions)
 /* replace first wordlist in search order with forth wordlist (S: wid -- forth ) */
-WORD_START(forth,          also)
+WORD_START(forth,          definitions)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -41,7 +53,7 @@ WORD_START(forth,          also)
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
         CALL(forth_wordlist),                          /* ( wid              ) */
-        CALL(searchorder_store_0), exit                /* (                  ) */
+        searchorder_store_0, exit                      /* (                  ) */
     )
 WORD_END(forth)
 /* ( -- wid ) get forth wordlist */

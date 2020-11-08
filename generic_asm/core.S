@@ -222,8 +222,8 @@ FUNC_END(searchorder_depth)
 
 /* searchorder-drop (S: wid -- ) remove first element from searchorder list */
 FUNC_START(searchorder_drop)
+        LOAD(  REG2,   AT(M4TH,M4TH_OFF_SEARCHORDER))/* b = searchorder.n   */
         ADDI(  M4TH,   M4TH_OFF_SEARCHORDER, REG1) /* a = &m->searchorder */
-        LOAD(  REG2,   AT(REG1))                   /* b = searchorder.n   */
         MOVI(  M4ERR_WORDLIST_OVERFLOW,    REG0)
         JZ(    REG2,   FUNC(_throw_reg0_))
         DEC1(  REG2)                               /* b = searchorder.n-1 */
@@ -233,8 +233,8 @@ FUNC_END(searchorder_drop)
 
 /* searchorder-dup (S: wid -- wid wid ) duplicate first element of searchorder list */
 FUNC_START(searchorder_dup)
+        LOAD(  REG2,   AT(M4TH,M4TH_OFF_SEARCHORDER))/* b = searchorder.n   */
         ADDI(  M4TH,   M4TH_OFF_SEARCHORDER, REG1) /* a = &m->searchorder */
-        LOAD(  REG2,   AT(REG1))                   /* b = searchorder.n   */
         MOVI(  M4ERR_WORDLIST_OVERFLOW,    REG0)
         JAE(   REG2,   IMM(M4TH_SEARCHORDER_MAX),  FUNC(_throw_reg0_))
         LOAD(  REG3,   AT(REG1,REG2,SZ))           /* c = wid             */
@@ -248,7 +248,7 @@ FUNC_END(searchorder_dup)
 /* get i-th element of searchorder list */
 FUNC_START(searchorder_pick)
         ADDI(  M4TH,   M4TH_OFF_SEARCHORDER, REG1) /* a = &m->searchorder */
-        LOAD(  REG2,   AT(REG1))                   /* b = searchorder.n   */
+        LOAD(  REG2,   AT(M4TH,M4TH_OFF_SEARCHORDER))/* b = searchorder.n   */
         MOVI(  M4ERR_WORDLIST_OVERFLOW,    REG0)
         JAE(   DTOP,   REG2,   FUNC(_throw_reg0_))
         SUB2(  DTOP,   REG2)                       /* b = n - i           */
@@ -259,8 +259,8 @@ FUNC_END(searchorder_pick)
 /* searchorder[0]! (S: wid1 .. -- wid2 ) ( wid2 -- ) */
 /* get i-th element of searchorder list */
 FUNC_START(searchorder_store_0)
+        LOAD(  REG2,   AT(M4TH,M4TH_OFF_SEARCHORDER))/* b = searchorder.n   */
         ADDI(  M4TH,   M4TH_OFF_SEARCHORDER, REG1) /* a = &m->searchorder */
-        LOAD(  REG2,   AT(REG1))                   /* b = searchorder.n   */
         MOVI(  M4ERR_WORDLIST_OVERFLOW,    REG0)
         JZ(    REG2,   FUNC(_throw_reg0_))
         STOR(  DTOP,   AT(REG1, REG2, SZ)) /* a[n-i] = m->searchorder.addr[n-i-1] = dtop */
