@@ -986,8 +986,10 @@ static int linenoiseEdit(int stdin_fd, int stdout_fd, char *buf, size_t buflen,
         case CTRL_F: /* ctrl-f */
             moveRight(&l);
             break;
-        case CTRL_H: /* ctrl-h */
-            editDeletePrevWord(&l);
+        case CTRL_H:    /* ctrl-h */
+        case BACKSPACE: /* backspace */
+        case CTRL_BACK: /* backspace */
+            editBackspace(&l);
             break;
         case CTRL_K: /* Ctrl+k, delete from current to end of line. */
             buf[l.pos] = '\0';
@@ -1045,6 +1047,9 @@ static int linenoiseEdit(int stdin_fd, int stdout_fd, char *buf, size_t buflen,
                 break;
             }
             switch (seq[0]) {
+            case BACKSPACE: /* Alt+backspace, delete previous word */
+                editDeletePrevWord(&l);
+                continue;
             case 'B':
             case 'b': /* Alt+B move to prev word */
                 movePrevWord(&l);
@@ -1115,12 +1120,6 @@ static int linenoiseEdit(int stdin_fd, int stdout_fd, char *buf, size_t buflen,
                     break;
                 }
             }
-            break;
-        case CTRL_BACK: /* ctrl+backspace, delete previous word */
-            editDeletePrevWord(&l);
-            break;
-        case BACKSPACE: /* backspace */
-            editBackspace(&l);
             break;
         default:
             if (editInsert(&l, c)) {
