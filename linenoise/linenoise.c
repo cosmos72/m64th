@@ -719,7 +719,7 @@ static void refreshLine(linenoiseState *l) {
 /* Insert the character 'c' at cursor current position.
  *
  * On error writing to the terminal -1 is returned, otherwise 0. */
-static int linenoiseEditInsert(linenoiseState *l, char c) {
+static int editInsert(linenoiseState *l, char c) {
     /* leave space for ENTER */
     if (l->len + 1 < l->buflen) {
         if (l->len == l->pos) {
@@ -805,7 +805,7 @@ static void moveNextWord(linenoiseState *l) {
  * entry as specified by 'dir'. */
 #define LINENOISE_HISTORY_NEXT 0
 #define LINENOISE_HISTORY_PREV 1
-void linenoiseEditHistoryNext(linenoiseState *l, int dir) {
+void editHistoryNext(linenoiseState *l, int dir) {
     if (history_len > 1) {
         /* Update the current history entry before to
          * overwrite it with the next one. */
@@ -829,7 +829,7 @@ void linenoiseEditHistoryNext(linenoiseState *l, int dir) {
 
 /* Delete the character at the right of the cursor without altering the cursor
  * position. Basically this is what happens with the "Delete" keyboard key. */
-void linenoiseEditDelete(linenoiseState *l) {
+void editDelete(linenoiseState *l) {
     if (l->len > 0 && l->pos < l->len) {
         memmove(l->buf + l->pos, l->buf + l->pos + 1, l->len - l->pos - 1);
         l->len--;
@@ -851,7 +851,7 @@ void linenoiseEditBackspace(linenoiseState *l) {
 
 /* Delete the next word, maintaining the cursor at the start of the
  * current word. */
-void linenoiseEditDeleteNextWord(linenoiseState *l) {
+void editDeleteNextWord(linenoiseState *l) {
     size_t pos = l->pos, len = l->len;
     size_t n = 0;
     while (pos + n < len && l->buf[pos + n] == ' ')
@@ -867,7 +867,7 @@ void linenoiseEditDeleteNextWord(linenoiseState *l) {
 
 /* Delete the previous word, maintaining the cursor at the start of the
  * current word. */
-void linenoiseEditDeletePrevWord(linenoiseState *l) {
+void editDeletePrevWord(linenoiseState *l) {
     size_t pos = l->pos;
     size_t n = 0;
 
@@ -984,7 +984,7 @@ static int linenoiseEdit(int stdin_fd, int stdout_fd, char *buf, size_t buflen,
         case CTRL_D: /* ctrl-d, remove char at right of cursor, or if the
                         line is empty, act as end-of-file. */
             if (l.len > 0) {
-                linenoiseEditDelete(&l);
+                editDelete(&l);
             } else {
                 history_len--;
                 free(history[history_len]);
@@ -1010,10 +1010,10 @@ static int linenoiseEdit(int stdin_fd, int stdout_fd, char *buf, size_t buflen,
             moveRight(&l);
             break;
         case CTRL_P: /* ctrl-p */
-            linenoiseEditHistoryNext(&l, LINENOISE_HISTORY_PREV);
+            editHistoryNext(&l, LINENOISE_HISTORY_PREV);
             break;
         case CTRL_N: /* ctrl-n */
-            linenoiseEditHistoryNext(&l, LINENOISE_HISTORY_NEXT);
+            editHistoryNext(&l, LINENOISE_HISTORY_NEXT);
             break;
         case ESC: /* escape sequence */
             /* Read the next two bytes representing the escape sequence.
@@ -1024,12 +1024,12 @@ static int linenoiseEdit(int stdin_fd, int stdout_fd, char *buf, size_t buflen,
             }
             switch (seq[0]) {
             case 'B':
-            case 'b': /* Alt+F move to next word */
+            case 'b': /* Alt+B move to prev word */
                 movePrevWord(&l);
                 continue;
             case 'D':
             case 'd': /* Alt+D delete next word */
-                linenoiseEditDeleteNextWord(&l);
+                editDeleteNextWord(&l);
                 continue;
             case 'F':
             case 'f': /* Alt+F move to next word */
@@ -1051,7 +1051,7 @@ static int linenoiseEdit(int stdin_fd, int stdout_fd, char *buf, size_t buflen,
                             moveHome(&l);
                             break;
                         case '3': /* Delete key. */
-                            linenoiseEditDelete(&l);
+                            editDelete(&l);
                             break;
                         case '4': /* End key. */
                             moveEnd(&l);
@@ -1061,10 +1061,10 @@ static int linenoiseEdit(int stdin_fd, int stdout_fd, char *buf, size_t buflen,
                 } else {
                     switch (seq[1]) {
                     case 'A': /* Up */
-                        linenoiseEditHistoryNext(&l, LINENOISE_HISTORY_PREV);
+                        editHistoryNext(&l, LINENOISE_HISTORY_PREV);
                         break;
                     case 'B': /* Down */
-                        linenoiseEditHistoryNext(&l, LINENOISE_HISTORY_NEXT);
+                        editHistoryNext(&l, LINENOISE_HISTORY_NEXT);
                         break;
                     case 'C': /* Right */
                         moveRight(&l);
@@ -1116,10 +1116,10 @@ static int linenoiseEdit(int stdin_fd, int stdout_fd, char *buf, size_t buflen,
             break;
         case CTRL_W:    /* ctrl+w, delete previous word */
         case CTRL_BACK: /* ctrl+backspace, delete previous word */
-            linenoiseEditDeletePrevWord(&l);
+            editDeletePrevWord(&l);
             break;
         default:
-            if (linenoiseEditInsert(&l, c)) {
+            if (editInsert(&l, c)) {
                 ret = -1;
                 goto out;
             }
