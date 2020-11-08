@@ -119,7 +119,7 @@ WORD_START(backslash,  within)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
-    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_FLAGS(M4FLAG_INLINE|M4FLAG_IMMEDIATE)
     WORD_CODE(
         in_to_ibuf, _lit_, T('\n'), CALL(ibuf_find_char), two_drop, exit
     )
