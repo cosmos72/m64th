@@ -491,18 +491,18 @@ WORD_START(parse_xt,  out_to_obuf)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
-        /* parse-name                                   ( c-addr u                 )
-         * ?if0                                         ( c-addr u                 )
-         *    M4ERR_ZERO_LENGTH_NAME throw              (                          )
-         * then                                         ( c-addr u                 )
-         * 2dup                                         ( c-addr u c-addr u        )
-         * string>name                                  ( c-addr u nt|0 -1|0|1     )
-         * ?if0                     ( word not found )  ( c-addr u 0 0             )
-         *    2drop ex-message!                         (                          )
-         *    M4ERR_UNDEFINED_WORD throw                (                          )
-         * then                                         ( c-addr u nt -1|1         )
-         * 2nip                                         ( nt -1|1                  )
-         * swap name>xt swap                            ( xt -1|1                  )
+        /* parse-name                                  ( c-addr u                  )
+         * ?if0                                        ( c-addr u                  )
+         *    M4ERR_ZERO_LENGTH_NAME throw             (                           )
+         * then                                        ( c-addr u                  )
+         * 2dup                                        ( c-addr u c-addr u         )
+         * string>name                                 ( c-addr u nt|0 -1|0|1      )
+         * ?if0                     ( word not found ) ( c-addr u 0 0              )
+         *    2drop ex-message!                        (                           )
+         *    M4ERR_UNDEFINED_WORD throw               (                           )
+         * then                                        ( c-addr u nt -1|1          )
+         * 2nip                                        ( nt -1|1                   )
+         * swap name>xt swap                           ( xt -1|1                   )
          */
         CALL(parse_name),
         _q_if0_, T(4),
@@ -522,7 +522,21 @@ WORD_END(parse_xt)
 WORD(searchorder_i,    parse_xt,       DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
 /* searchorder-n ( -- addr ) get address of searchorder count */
 WORD(searchorder_n,    searchorder_i,  DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
-WORD(set_latest,       searchorder_n,  DSTACK(1,0), RSTACK(0,0), WORD_IMPURE)
+/* searchorder[0]! ( wid -- ) set first wid in searchorder */
+WORD_START(searchorder_store_0,    searchorder_n)
+    WORD_DSTACK(1,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        searchorder_n, fetch, zero_equal,           /* ( wid n                 ) */
+        _lit_, T(M4ERR_WORDLIST_OVERFLOW), and,     /* ( wid err|0             ) */
+        throw,                                      /* ( wid 0                 ) */
+        searchorder_i, store, exit                  /* (                       ) */
+    )
+WORD_END(searchorder_store_0)
+WORD(set_latest,  searchorder_store_0, DSTACK(1,0), RSTACK(0,0), WORD_IMPURE)
 /*
  * string>name ( c-addr u -- nt|0 -1|0|1 ) find name in current search order.
  * return 1 if name is immediate, else -1

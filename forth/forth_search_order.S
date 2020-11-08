@@ -39,8 +39,32 @@ WORD_START(also,       LASTWORD)
         exit
     )
 WORD_END(also)
-/* ( -- wid ) get compilation wordlist */
-WORD(get_current,      also,           DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
+/* replace first wordlist in search order with forth wordlist (S: wid -- forth ) */
+WORD_START(forth,          also)
+    WORD_DSTACK(0,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        CALL(forth_wordlist),                          /* ( wid              ) */
+        CALL(searchorder_store_0), exit                /* (                  ) */
+    )
+WORD_END(forth)
+/* ( -- wid ) get forth wordlist */
+WORD_START(forth_wordlist, forth)
+    WORD_DSTACK(0,1)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        _lit_cell_, CELL(m4wordlist_forth),            /* extern C symbol      */
+        exit
+    )
+WORD_END(forth_wordlist)
+/* ( -- wid ) get current compilation wordlist */
+WORD(get_current,      forth_wordlist, DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 /* ( c-addr u wid -- 0 | xt 1 | xt -1 ) */
 WORD_START(search_wordlist, get_current)
     WORD_DSTACK(3,-1)

@@ -199,6 +199,8 @@
 #define DICT_WORDS_FORTH_SEARCH_ORDER(X)                                                           \
     DICT_TOKENS_FORTH_SEARCH_ORDER(X)                                                              \
     X(4, "also", also)                                                                             \
+    /* X(5, "forth", forth) */ /* already defined as dict name */                                  \
+    X(14, "forth-wordlist", forth_wordlist)                                                        \
     X(9, "get-order", get_order)                                                                   \
     X(15, "search-wordlist", search_wordlist)
 

@@ -476,7 +476,8 @@ static m4cell m4token_print_consumed_ip(m4token tok, const m4token *code, m4cell
     const m4cell nbytes = m4token_consumes_ip(tok);
     if (nbytes == 0 || nbytes / SZt > maxn) {
         return 0;
-    } else if (nbytes == SZt && (tok == m4_lit_tok_ || tok == m4_lit_comma_ || tok == m4_check_lit_tok_)) {
+    } else if (nbytes == SZt &&
+               (tok == m4_lit_tok_ || tok == m4_lit_comma_ || tok == m4_check_lit_tok_)) {
         fputs(separator, out);
         if (mode == m4mode_user) {
             fputc('\'', out);
@@ -1190,7 +1191,9 @@ m4th *m4th_new(m4th_opt options) {
     m->handler = m->ex = 0;
     m->ex_message.addr = NULL;
     m->ex_message.n = 0;
-    m->compile_wid = &m4wordlist_m4th_user;
+    /* by forth 2012 specs, initial compilation wordlist must be m4wordlist_forth */
+    /* see https://forth-standard.org/standard/search/FORTH-WORDLIST */
+    m->compile_wid = &m4wordlist_forth;
     memset(&m->searchorder, '\0', sizeof(m->searchorder));
     m4th_also(m, &m4wordlist_forth);
     m4th_also(m, &m4wordlist_m4th_user);

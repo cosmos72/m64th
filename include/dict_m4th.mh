@@ -327,6 +327,7 @@
     X(15, "(obuf-overflow)", _obuf_overflow_)                                                      \
     /* parse-xt ( xt -1|1 ) throws if name not found. 1 if name is immediate, else -1 */           \
     X(8, "parse-xt", parse_xt)                                                                     \
+    X(15, "searchorder[0]!", searchorder_store_0) /* ( wid -- ) overwrite searchorder 0-th elem */ \
     /*( c-addr u -- nt|0 -1|0|1 ) find name in search order. 1 if name is immediate, else -1 */    \
     X(11, "string>name", string_to_name)                                                           \
     X(6, "/token", div_token)             /* alias of _SZt_div,      no dedicated m4token */       \

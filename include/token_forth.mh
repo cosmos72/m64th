@@ -478,7 +478,7 @@
 /* 'forth' wordlist: 'search order' word set */
 #undef M4definitions /*449*/     /* definitions     */
 #undef M4find /*450*/            /* find            */
-#undef M4forth_wordlist /*451*/  /* forth-wordlist  */
+#undef M4forth_wordlist /*451*/  /* forth-wordlist  implemented in forth, no dedicated m4token */
 #define M4get_current 452        /* get-current     */
 #undef M4get_order /*453*/       /* get-order       implemented in forth, no dedicated m4token */
 #undef M4search_wordlist /*454*/ /* search-wordlist implemented in forth, no dedicated m4token */

@@ -359,19 +359,19 @@
 #define M4obuf_write_string M4_(39) /* obuf-write-string ( io c -- err ) write string to iobuf  */
 #define M4out_to_obuf M4_(40)    /* out>obuf         (      -- io  ) get current output as iobuf */
 #define M4set_latest M4_(41)     /* set-latest       ( nt --       ) set last defined word       */
-#define M4searchorder_i M4_(42)  /* ( u -- addr ) get address of searchorder i-th element  */
-#define M4searchorder_n M4_(43)  /* (   -- addr ) get address of searchorder count         */
+#define M4searchorder_i M4_(42)  /* ( u -- addr ) get address of searchorder i-th element    */
+#define M4searchorder_n M4_(43)  /* (   -- addr ) get address of searchorder count           */
 #undef M4____gap                 /*                                         */
-#define M4token_to_name M4_(45)  /* token>name ( token -- nt|0 ) convert token to name */
-#define M4user_var M4_(46)       /* user-var ( -- addr ) must be followed by index of user var */
 #undef M4____gap                 /*                                         */
-#define M4wordlist_add M4_(48)   /* ( wid nt -- ) add name to wordlist                     */
-#define M4wordlist_last M4_(49)  /* ( wid -- nt ) get last name in a wordlist              */
-#define M4wordlist_reset M4_(50) /* ( wid --    ) remove all user-defined names from wid   */
+#define M4token_to_name M4_(46)  /* token>name ( token -- nt|0 ) convert token to name */
+#define M4user_var M4_(47)       /* user-var ( -- addr ) must be followed by index of user var */
 #undef M4____gap                 /*                                         */
-#define M4xt_to_name M4_(52)     /* xt>name       ( XT -- nt ) get name from XT */
+#define M4wordlist_add M4_(49)   /* ( wid nt -- ) add name to wordlist                     */
+#define M4wordlist_last M4_(50)  /* ( wid -- nt ) get last name in a wordlist              */
+#define M4wordlist_reset M4_(51) /* ( wid --    ) remove all user-defined names from wid   */
+#undef M4____gap                 /*                                         */
+#define M4xt_to_name M4_(53)     /* xt>name       ( XT -- nt ) get name from XT */
 
-/* */
 /* */
 /* */
 /* */
