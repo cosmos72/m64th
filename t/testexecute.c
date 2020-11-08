@@ -1278,11 +1278,7 @@ static m4testexecute testexecute_g[] = {
      {}},
     {";", {CALL(semi), m4bye}, {{2, {0, m4colon}}, {}}, {{}, {}}, {1, {m4exit}}},
     /* ----------------------------- search order --------------------------- */
-    {"get-current",
-     {m4get_current, m4bye},
-     {{}, {}},
-     {{1, {(m4cell)&m4wordlist_m4th_user}}, {}},
-     {}},
+    {"get-current", {m4get_current, m4bye}, {{}, {}}, {{1, {(m4cell)&m4wordlist_forth}}, {}}, {}},
     {"set-current",
      {m4get_current, m4swap, m4set_current, m4get_current, m4swap, m4set_current, m4bye},
      {{1, {(m4cell)&m4wordlist_m4th_impl}}, {}},

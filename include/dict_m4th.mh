@@ -290,7 +290,13 @@
     X(15, "obuf-write-char", obuf_write_char) /* ( io c -- err  ) write one char to iobuf    */    \
     /* ( io c-addr u -- err  ) write string to iobuf */                                            \
     X(17, "obuf-write-string", obuf_write_string)                                                  \
-    X(8, "out>obuf", out_to_obuf) /*  (   -- io   ) get current output as iobuf              */    \
+    X(8, "out>obuf", out_to_obuf) /*  (   -- io   ) get current output as iobuf                */  \
+    X(17, "searchorder-clear", searchorder_clear) /* (S: wid_u-1 .. wid_0 -- )                 */  \
+    X(17, "searchorder-depth", searchorder_depth) /* (S: wid_u-1 .. wid_0 -- same ) ( -- u )   */  \
+    X(16, "searchorder-drop", searchorder_drop)   /* (S: wid -- )                              */  \
+    X(15, "searchorder-dup", searchorder_dup)     /* (S: wid -- wid wid )                      */  \
+    X(16, "searchorder-pick", searchorder_pick)   /* (S: wid_u .. wid_0 -- same ) ( -- wid_u ) */  \
+    X(15, "searchorder[0]!", searchorder_store_0) /* ( wid -- ) overwrite searchorder 0-th elem */ \
     /*                  searchorder-i ( u -- addr ) get address of searchorder i-th element  */    \
     X(13, "searchorder-i", searchorder_i)                                                          \
     X(13, "searchorder-n", searchorder_n) /* (    -- addr ) get address of searchorder count */    \
@@ -327,7 +333,6 @@
     X(15, "(obuf-overflow)", _obuf_overflow_)                                                      \
     /* parse-xt ( xt -1|1 ) throws if name not found. 1 if name is immediate, else -1 */           \
     X(8, "parse-xt", parse_xt)                                                                     \
-    X(15, "searchorder[0]!", searchorder_store_0) /* ( wid -- ) overwrite searchorder 0-th elem */ \
     /*( c-addr u -- nt|0 -1|0|1 ) find name in search order. 1 if name is immediate, else -1 */    \
     X(11, "string>name", string_to_name)                                                           \
     X(6, "/token", div_token)             /* alias of _SZt_div,      no dedicated m4token */       \

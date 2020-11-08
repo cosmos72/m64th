@@ -518,25 +518,24 @@ WORD_START(parse_xt,  out_to_obuf)
         swap, name_to_xt, swap, exit
     )
 WORD_END(parse_xt)
-/* searchorder-i ( -- addr ) get address of ith wordlist in searchorder */
-WORD(searchorder_i,    parse_xt,       DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
+/* (S: wid_u-1 .. wid_0 -- )                 */
+WORD(searchorder_clear, parse_xt,          DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
+/* (S: wid_u-1 .. wid_0 -- same ) ( -- u )   */
+WORD(searchorder_depth, searchorder_clear, DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
+/* (S: wid -- )                              */
+WORD(searchorder_drop,  searchorder_depth, DSTACK(0,0), RSTACK(0,0), WORD_IMPURE)
+/* (S: wid -- wid wid )                      */
+WORD(searchorder_dup,   searchorder_drop,  DSTACK(0,0), RSTACK(0,0), WORD_IMPURE)
+/* (S: wid_u .. wid_0 -- same ) ( u -- wid_u ) */
+WORD(searchorder_pick,  searchorder_dup,   DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
+
+/* searchorder-i ( u -- addr ) get address of ith wordlist in searchorder */
+WORD(searchorder_i,     searchorder_pick,  DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
 /* searchorder-n ( -- addr ) get address of searchorder count */
-WORD(searchorder_n,    searchorder_i,  DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
+WORD(searchorder_n,     searchorder_i,     DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 /* searchorder[0]! ( wid -- ) set first wid in searchorder */
-WORD_START(searchorder_store_0,    searchorder_n)
-    WORD_DSTACK(1,0)
-    WORD_RSTACK(0,0)
-    WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
-    WORD_FLAGS(M4FLAG_INLINE)
-    WORD_CODE(
-        searchorder_n, fetch, zero_equal,           /* ( wid n                 ) */
-        _lit_, T(M4ERR_WORDLIST_OVERFLOW), and,     /* ( wid err|0             ) */
-        throw,                                      /* ( wid 0                 ) */
-        searchorder_i, store, exit                  /* (                       ) */
-    )
-WORD_END(searchorder_store_0)
-WORD(set_latest,  searchorder_store_0, DSTACK(1,0), RSTACK(0,0), WORD_IMPURE)
+WORD(searchorder_store_0,   searchorder_n, DSTACK(1,0), RSTACK(0,0), WORD_IMPURE)
+WORD(set_latest,      searchorder_store_0, DSTACK(1,0), RSTACK(0,0), WORD_IMPURE)
 /*
  * string>name ( c-addr u -- nt|0 -1|0|1 ) find name in current search order.
  * return 1 if name is immediate, else -1

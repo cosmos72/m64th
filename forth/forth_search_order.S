@@ -23,20 +23,13 @@ DICT_WORDS_FORTH_SEARCH_ORDER(WORDNAME)
 
 /* duplicate first wordlist in search order (S: wid -- wid wid ) */
 WORD_START(also,       LASTWORD)
-    WORD_DSTACK(0,1)
+    WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
-        searchorder_n, fetch,                          /* ( n                ) */
-        _lit_, T(M4TH_SEARCHORDER_MAX), more_equal,    /* ( t|f              ) */
-        _lit_, T(M4ERR_WORDLIST_OVERFLOW), and,        /* ( err|0            ) */
-        throw,                                         /* (                  ) */
-        one, searchorder_n, plus_store,                /* (                  ) */
-        one, searchorder_i, fetch,                     /* ( wid              ) */
-        zero, searchorder_i, store,                    /* (                  ) */
-        exit
+        searchorder_dup, exit
     )
 WORD_END(also)
 /* replace first wordlist in search order with forth wordlist (S: wid -- forth ) */
@@ -65,8 +58,19 @@ WORD_START(forth_wordlist, forth)
 WORD_END(forth_wordlist)
 /* ( -- wid ) get current compilation wordlist */
 WORD(get_current,      forth_wordlist, DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
+/* remove first wordlist in search order (S: wid -- ) */
+WORD_START(previous,   get_current)
+    WORD_DSTACK(0,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        searchorder_drop, exit
+    )
+WORD_END(previous)
 /* ( c-addr u wid -- 0 | xt 1 | xt -1 ) */
-WORD_START(search_wordlist, get_current)
+WORD_START(search_wordlist,    previous)
     WORD_DSTACK(3,-1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
