@@ -58,7 +58,19 @@ WORD_START(previous, get_order)
         ),
     )
 WORD_END(previous)
+WORD_START(set_order, previous)
+    WORD_DSTACK(-1, 0)
+    WORD_RSTACK(0, 0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE_AND_DATA(set_order,
+        WORD_CODE_TOKENS(
+            /*16*/ dup_to_r, searchorder_clear, zero, swap, _q_do_, T(7), i, pick, searchorder_dup, searchorder_store_0, minus_one, _plus_loop_, T(-7), r_from, n_to_drop, exit
+        ),
+    )
+WORD_END(set_order)
 
 
 #undef LASTWORD
-#define LASTWORD previous
+#define LASTWORD set_order

@@ -237,6 +237,10 @@ FUNC_START(searchorder_dup)
         ADDI(  M4TH,   M4TH_OFF_SEARCHORDER, REG1) /* a = &m->searchorder */
         MOVI(  M4ERR_WORDLIST_OVERFLOW,    REG0)
         JAE(   REG2,   IMM(M4TH_SEARCHORDER_MAX),  FUNC(_throw_reg0_))
+        /*
+         * if searchorder.n == 0 we read c = wid = searchorder->addr[-1]
+         * i.e. searchorder.n which is zero. good.
+         */
         LOAD(  REG3,   AT(REG1,REG2,SZ))           /* c = wid             */
         INC1(  REG2)                               /* b = searchorder.n+1 */
         STOR(  REG2,   AT(REG1))

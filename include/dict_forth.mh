@@ -204,7 +204,8 @@
     X(14, "forth-wordlist", forth_wordlist)                                                        \
     X(9, "get-order", get_order)                                                                   \
     X(8, "previous", previous)                                                                     \
-    X(15, "search-wordlist", search_wordlist)
+    X(15, "search-wordlist", search_wordlist)                                                      \
+    X(9, "set-order", set_order)
 
 /* ------- forth 2012: string ------------------------------------------------------------------- */
 #define DICT_TOKENS_FORTH_STRING(X)                                                                \

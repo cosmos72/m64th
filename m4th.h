@@ -190,7 +190,7 @@ struct m4slice_s { /**< array of m4cell, with size */
 /** compiled forth word. Execution token i.e. XT is at word + code_off */
 struct m4word_s {
     int64_t prev_off;    /**< offset of previous word,   in bytes. 0 = not present */
-    int16_t name_off;    /**< offset of m4countedstring, in bytes. 0 = not present */
+    uint16_t name_off;   /**< offset of m4countedstring, in bytes. 0 = not present */
     m4stackeffects eff;  /**< stack effects if not jumping                         */
     m4stackeffects jump; /**< stack effects if jumping                             */
     uint16_t native_len; /**< native code size, in bytes. 0xFFFF if not available  */

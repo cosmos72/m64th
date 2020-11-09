@@ -172,7 +172,19 @@ WORD_START(ex_to_string, ex_message_fetch)
         drop, LIT_STRING(9, "exception"), exit         /* ( c-addr u           ) */
     )
 WORD_END(ex_to_string)
-WORD(flip,             ex_to_string,   DSTACK(3,3), RSTACK(0,0), WORD_PURE)
+/* replace first wordlist in search order with forth_root wordlist (S: wid -- forth_root ) */
+WORD_START(forth_root, ex_to_string)
+    WORD_DSTACK(0,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        _lit_cell_, CELL(m4wordlist_forth_root),       /* ( wid              ) */
+        searchorder_store_0, exit                      /* (                  ) */
+    )
+WORD_END(forth_root)
+WORD(flip,             forth_root,     DSTACK(3,3), RSTACK(0,0), WORD_PURE)
 /* hashmap-find/int ( map key -- key val t|f ) find entry in hashmap/int  */
 WORD_START(hashmap_find_int, flip)
     WORD_DSTACK(2,3)
@@ -270,6 +282,7 @@ WORD_START(interpret,  i_minus)
 WORD_END(interpret)
 /* ( c-addr u ch -- u' ) get position of given char or CR/LF in string, whatever comes first */
 WORD(line_find_char,   interpret,      DSTACK(3,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+/* replace first wordlist in search order with m4th_c wordlist (S: wid -- m4th_c ) */
 WORD_START(m4th_c,     line_find_char)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)
@@ -281,6 +294,7 @@ WORD_START(m4th_c,     line_find_char)
         searchorder_store_0, exit                      /* (                    ) */
     )
 WORD_END(m4th_c)
+/* replace first wordlist in search order with m4th_core wordlist (S: wid -- m4th_core ) */
 WORD_START(m4th_core,  m4th_c)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)
@@ -292,6 +306,7 @@ WORD_START(m4th_core,  m4th_c)
         searchorder_store_0, exit                      /* (                    ) */
     )
 WORD_END(m4th_core)
+/* replace first wordlist in search order with m4th_impl wordlist (S: wid -- m4th_impl ) */
 WORD_START(m4th_impl,  m4th_core)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)
@@ -303,6 +318,7 @@ WORD_START(m4th_impl,  m4th_core)
         searchorder_store_0, exit                      /* (                    ) */
     )
 WORD_END(m4th_impl)
+/* replace first wordlist in search order with m4th_user wordlist (S: wid -- m4th_user ) */
 WORD_START(m4th_user,  m4th_impl)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)
@@ -315,7 +331,8 @@ WORD_START(m4th_user,  m4th_impl)
     )
 WORD_END(m4th_user)
 WORD(noop,             m4th_user,      DSTACK(0,0), RSTACK(0,0), WORD_PURE)
-WORD(r_store,          noop,           DSTACK(1,0), RSTACK(1,1), WORD_R_PURE)
+WORD(n_to_drop,        noop,           DSTACK(-1,0),RSTACK(0,0), WORD_PURE)
+WORD(r_store,          n_to_drop,      DSTACK(1,0), RSTACK(1,1), WORD_R_PURE)
 WORD(r_plus,           r_store,        DSTACK(1,0), RSTACK(1,1), WORD_R_PURE)
 WORD(r_from_drop,      r_plus,         DSTACK(0,0), RSTACK(1,0), WORD_R_PURE)
 WORD(rdepth,           r_from_drop,    DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)

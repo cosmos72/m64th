@@ -16,7 +16,7 @@
 \ You should have received a copy of the GNU Lesser General Public License
 \ along with m4th.  If not, see <https://www.gnu.org/licenses/>.
 
-also m4th-core \ words searchorder*
+also m4th-core \ searchorder*
 
 \ set compilation wordlist to first wordlist in search order
 : definitions \ ( -- )
@@ -25,11 +25,11 @@ also m4th-core \ words searchorder*
 
 
 \ get all wordlists in search order
-: get-order \ (S: wid_u-1 .. wid_0 -- idem ) ( -- wid_u-1 ... wid_0 u )
-   0 searchorder-depth 1-                  \ ( 0 u-1               )
+: get-order \ (S: widn .. wid1 -- idem ) ( -- widn ... wid1 n )
+   0 searchorder-depth 1-                  \ ( 0 n-1               )
    ?do                                     \ (                     ) (R: 0 i )
-      i searchorder-pick                   \ ( wid_i               ) (R: 0 i )
-   -1 +loop                                \ ( wid_u-1 .. wid_0    )
+      i searchorder-pick                   \ ( widi+1              ) (R: 0 i )
+   -1 +loop                                \ ( widn .. wid1        )
    searchorder-depth ;
 
 
@@ -38,6 +38,19 @@ also m4th-core \ words searchorder*
    searchorder-drop ;
 
 
+\ set the search order to ( widn ... wid1 )
+: set-order \ ( widn ... wid1 n -- ) (S: * -- widn ... wid1 )
+   dup>r                                   \ ( * n                 ) (R: n     )
+   searchorder-clear                       \ ( * n                 ) (R: n 0 i )
+   0 swap ?do                              \ ( *                   ) (R: n 0 i )
+      i pick                               \ ( * widi+1            ) (R: n 0 i )
+      also searchorder[0]!                 \ ( *                   ) (R: n 0 i )
+   -1 +loop                                \ ( *                   ) (R: n     )
+   r>                                      \ ( * n                 )
+   n>drop ;                                \ (                     )
+
+
 disassemble definitions
 disassemble get-order
 disassemble previous
+disassemble set-order

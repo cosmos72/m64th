@@ -68,6 +68,7 @@
     /* ( c-addr u ch -- u' ) get position of given char or CR/LF in string  */                     \
     X(14, "line-find-char", line_find_char)                                                        \
     X(4, "noop", noop)                   /* ( -- ) do nothing                           */         \
+    X(6, "n>drop", n_to_drop)            /* ( xn .. x1 n -- ) drop n cells              */         \
     X(2, "r!", r_store)                  /* ( a -- ) (R: b -- a   )                     */         \
     X(2, "r+", r_plus)                   /* ( a -- ) (R: b -- a+b )                     */         \
     X(6, "r>drop", r_from_drop)          /* (R: x -- ) equivalent to: r> drop           */         \
@@ -224,6 +225,7 @@
     X(11, "disassemble", disassemble) /* read name then show its disassembly            */         \
     X(9, "ex>string", ex_to_string)   /* ( ex -- c-addr u ) get exception name          */         \
                                       /* ( map key -- key val t|f ) find entry in hashmap/int  */  \
+    /* X(10, "forth-root", forth_root) */ /* set first wordlist in searchorder to forth-root   */  \
     X(16, "hashmap-find/int", hashmap_find_int)                                                    \
     X(9, "interpret", interpret)       /* one iteration of forth interpret/compile loop  */        \
     /* X(6, "m4th-c", m4th_c) */       /* set first wordlist in searchorder to m4th-c    */        \

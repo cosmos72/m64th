@@ -408,6 +408,17 @@ FUNC_START(noop)           /* no-op    m4th-user */
 FUNC_END(noop)
 
 
+FUNC_START(n_to_drop)      /* n>drop ( xn .. x1 n -- ) m4th-user: drop n cells  */
+#ifdef __x86_64__
+        leaq   -SZ(DSTK,  DTOP, SZ),  DSTK;
+#else
+        SUB2(IMM(SZ),  DTOP)
+        ADD4(  DSTK,   DTOP, PSZ,  DSTK)
+#endif
+        DPOP___DTOP()
+FUNC_END(n_to_drop)
+
+
 FUNC_START(or)
         DPOP(  REG1)
         ORR2(  REG1,   DTOP)

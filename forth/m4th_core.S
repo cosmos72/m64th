@@ -519,7 +519,7 @@ WORD_START(parse_xt,  out_to_obuf)
     )
 WORD_END(parse_xt)
 /* (S: wid_u-1 .. wid_0 -- )                 */
-WORD(searchorder_clear, parse_xt,          DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
+WORD(searchorder_clear, parse_xt,          DSTACK(0,0), RSTACK(0,0), WORD_IMPURE)
 /* (S: wid_u-1 .. wid_0 -- same ) ( -- u )   */
 WORD(searchorder_depth, searchorder_clear, DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 /* (S: wid -- )                              */

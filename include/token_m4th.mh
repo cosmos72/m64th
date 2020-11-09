@@ -81,7 +81,7 @@
 #undef M4____gap                         /*                                         */
 #define M4line_find_char M4_u(62)        /* ( c-addr u ch -- u' ) get index of char or CR */
 #define M4noop M4_u(63)                  /* noop                                    */
-#undef M4____gap                         /*                                         */
+#define M4n_to_drop M4_u(64)             /* n>drop ( xn .. x1 n -- ) drop n cells   */
 #define M4r_store M4_u(65)               /* r!        equivalent to: r>  drop >r    */
 #define M4r_plus M4_u(66)                /* r+        equivalent to: r>  +    >r    */
 #define M4r_from_drop M4_u(67)           /* r>drop    equivalent to: r>  drop       */
