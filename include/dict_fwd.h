@@ -27,10 +27,15 @@ extern "C" {
 typedef struct m4dict_s m4dict;
 
 /**
- * Contains all standard words from the ANS forth standard word sets
+ * Contains all words from the forth 2012 standard word sets
  * (core, core ext, tools ext ...) that are actually implemented in m4th.
  */
 extern const m4dict m4dict_forth;
+/**
+ * Contains a minimal subset of words from the forth 2012 standard word sets:
+ * the ones available after executing standard word 'only'
+ */
+extern const m4dict m4dict_forth_root;
 /**
  * Contains commonly found words that are not part of the standard.
  * Examples: 0<= 0>= <= >= bounds i* i+ i-

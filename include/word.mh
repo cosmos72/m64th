@@ -73,7 +73,7 @@
 #define WORD_CODE_START(name) /*    */ .L.WORD_SYM(name).code_start:
 #define WORD_CODE_END(name) /*      */ .L.WORD_SYM(name).code_end:
 #define WORD_CODE_RAW(...) /*       */ CAT3(., SZt, byte) __VA_ARGS__;
-#define WORD_CODE_TOKEN(token) /*   */ M4ASM_BYTES(token);
+#define WORD_CODE_TOKEN(token) /*   */ M4ASM_BYTES(token)
 #define WORD_CODE_TOKENS(...) /*    */ WRAP_ARGS(WORD_CODE_TOKEN, __VA_ARGS__)
 
 #define WORD_DATA_START(name) /*    */ ASM_ALIGN(PSZ, 0) /**/.L.WORD_SYM(name).data_start:

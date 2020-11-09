@@ -27,11 +27,15 @@
 
 #define DICT_SYM(name) m4dict_##name
 
+/* clang-format off */
+
 #define DICT_DEF_SYM(name)                                                                         \
-    DATA_ALIGN();                                                                                  \
+    DATA_ALIGN()                                                                                   \
     .globl DICT_SYM(name);                                                                         \
     .type DICT_SYM(name), @object;                                                                 \
     DICT_SYM(name) :
+
+/* clang-format on */
 
 #define DICT_START(name)
 

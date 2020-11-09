@@ -22,7 +22,7 @@
 #include "../include/dict.mh"
 #include "../include/dict_m4th.mh"
 #include "../include/err.mh"
-#include "../include/hashmap_number.mh"
+#include "../include/hashmap.mh"
 #include "../include/opt2_hash.mh"
 #include "../include/opt3_hash.mh"
 #include "../include/opt_rules.mh"
@@ -315,7 +315,7 @@ WORD_START(_hashmap_entry_fetch_int_, _exec_xt_from_native_)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
     WORD_CODE(
-        _lit_, T(M4HASHMAP_ENTRY_SIZE_INT), times, plus,   /* ( vec'         )           */
+        _lit_, T(M4HASHMAP_ENTRY_SZ_INT), times, plus,     /* ( vec'         )           */
         dup_to_r,                                          /* ( vec          ) (R: vec ) */
 
 #if M4HASHMAP_ENTRY_OFF_KEY_INT == 8

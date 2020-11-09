@@ -226,6 +226,7 @@
                                       /* ( map key -- key val t|f ) find entry in hashmap/int  */  \
     X(16, "hashmap-find/int", hashmap_find_int)                                                    \
     X(9, "interpret", interpret)       /* one iteration of forth interpret/compile loop  */        \
+    /* X(6, "m4th-c", m4th_c) */       /* set first wordlist in searchorder to m4th-c    */        \
     /* X(9, "m4th-core", m4th_core) */ /* set first wordlist in searchorder to m4th-core */        \
     /* X(9, "m4th-impl", m4th_impl) */ /* set first wordlist in searchorder to m4th-impl */        \
     /* X(9, "m4th-user", m4th_user) */ /* set first wordlist in searchorder to m4th-user */        \

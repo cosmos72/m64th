@@ -20,7 +20,32 @@
 #ifndef M4TH_INCLUDE_WORDLIST_MH
 #define M4TH_INCLUDE_WORDLIST_MH
 
-#define WORDLIST_OFF_DICT 0  /* offset of m4wordlist->dict     */
-#define WORDLIST_OFF_LAST SZ /* offset of m4wordlist->last     */
+#include "hashmap.mh"
+
+#define M4WORDLIST_OFF_DICT 0                     /* offset of m4wordlist->dict     */
+#define M4WORDLIST_OFF_LAST SZ                    /* offset of m4wordlist->last     */
+#define M4WORDLIST_OFF_MAP SZ2                    /* offset of m4wordlist->map      */
+#define M4WORDLIST_SZ (SZ2 + M4HASHMAP_SZ_STRING) /* sizeof(m4wordlist)             */
+
+#define WORDLIST_SYM(name) m4wordlist_##name
+
+/* clang-format off */
+
+#define WORDLIST_DEF_SYM(name)                                                                     \
+    DATA_ALIGN()                                                                                   \
+    .globl WORDLIST_SYM(name);                                                                     \
+    .type WORDLIST_SYM(name), @object;                                                             \
+    WORDLIST_SYM(name) :
+
+/* clang-format on */
+
+#define WORDLIST_WORD_OFF(name, wordname) .4byte WORDLIST_SYM(name) - WORD_SYM(wordname);
+#define WORDLIST_NAME_OFF(name) .2byte WORDLIST_SYM(name) - COUNTEDSTRING_SYM(name);
+#define WORDLIST_END(name) .size WORDLIST_SYM(name), .- WORDLIST_SYM(name);
+
+#define WORDLIST(name)                                                                             \
+    WORDLIST_DEF_SYM(name)                                                                         \
+    CAT3(., SZ, byte) DICT_SYM(name);                                                              \
+    .fill M4WORDLIST_SZ - M4WORDLIST_OFF_LAST, 1, 0;
 
 #endif /* M4TH_INCLUDE_WORDLIST_MH */

@@ -29,7 +29,7 @@ WORD(zero_ne,          LASTWORD,   DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(zero_more,        zero_ne,    DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(two_to_r,         zero_more,  DSTACK(2,0), RSTACK(0,2), WORD_R_PURE)
 WORD(two_r_fetch,      two_to_r,   DSTACK(0,2), RSTACK(2,2), WORD_R_PURE)
-WORD(two_r_from,      two_r_fetch, DSTACK(0,2), RSTACK(2,0), WORD_R_PURE)
+WORD(two_r_from,       two_r_fetch,DSTACK(0,2), RSTACK(2,0), WORD_R_PURE)
 WORD(ne,               two_r_from, DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD_START(question_do, ne)
     WORD_DSTACK(2,0)   /* stack effect when not jumping */

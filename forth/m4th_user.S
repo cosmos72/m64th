@@ -20,7 +20,7 @@
 #include "../include/asm.mh"
 #include "../include/dict.mh"
 #include "../include/dict_m4th.mh"
-#include "../include/hashmap_number.mh"
+#include "../include/hashmap.mh"
 
 /* clang-format off */
 
@@ -270,7 +270,18 @@ WORD_START(interpret,  i_minus)
 WORD_END(interpret)
 /* ( c-addr u ch -- u' ) get position of given char or CR/LF in string, whatever comes first */
 WORD(line_find_char,   interpret,      DSTACK(3,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD_START(m4th_core,  line_find_char)
+WORD_START(m4th_c,     line_find_char)
+    WORD_DSTACK(0,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        _lit_cell_, CELL(m4wordlist_m4th_c),           /* ( wid                ) */
+        searchorder_store_0, exit                      /* (                    ) */
+    )
+WORD_END(m4th_c)
+WORD_START(m4th_core,  m4th_c)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()

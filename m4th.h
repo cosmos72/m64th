@@ -200,10 +200,12 @@ struct m4word_s {
     m4token code[];
 };
 
-struct m4wordlist_s {   /**< wordlist                                                 */
-    const m4dict *dict; /**< pointer to read-only dictionary                          */
-    m4word *last;       /**< pointer to last word. if NULL, use m4dict_lastword(dict) */
-    /* TODO hash table of contained words */
+#include "include/hashmap_string.h" // needs m4cell, m4ucell, m4string
+
+struct m4wordlist_s {     /**< wordlist                                                 */
+    const m4dict *dict;   /**< pointer to read-only dictionary                          */
+    m4word *last;         /**< pointer to last word. if NULL, use m4dict_lastword(dict) */
+    m4hashmap_string map; /**< hash table of contained words. TODO: fill it             */
 };
 
 enum { m4searchorder_max = M4TH_SEARCHORDER_MAX };
@@ -297,6 +299,12 @@ const m4cell *m4th_state(const m4th *m);
 /* add wid to the top of search order */
 void m4th_also(m4th *m, m4wordlist *wid);
 
+extern m4wordlist m4wordlist_forth;
+extern m4wordlist m4wordlist_forth_root;
+extern m4wordlist m4wordlist_m4th_user;
+extern m4wordlist m4wordlist_m4th_core;
+extern m4wordlist m4wordlist_m4th_impl;
+
 /* start compiling a new word */
 void m4th_colon(m4th *m, m4string name);
 
@@ -347,7 +355,7 @@ m4string m4string_make(const void *addr, const m4ucell n);
 m4cell m4string_equals(m4string a, m4string b);
 m4cell m4string_ci_equals(m4string a, m4string b); /* case insensitive comparison */
 void m4string_print(m4string str, m4printmode mode, FILE *out);
-void m4string_print_hex(m4string str, FILE *out);
+void m4string_print_hex(m4string str, m4printmode mode, FILE *out);
 /** print, replacing non-printable chars with escape sequences */
 void m4string_print_escape(m4string str, FILE *out);
 

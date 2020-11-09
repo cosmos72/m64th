@@ -836,17 +836,19 @@ void m4string_print(m4string str, m4printmode mode, FILE *out) {
     }
 }
 
-void m4string_print_hex(m4string str, FILE *out) {
+void m4string_print_hex(m4string str, m4printmode mode, FILE *out) {
     static const char hexdigits[] = "0123456789abcdef";
     const m4char *data = str.addr;
+    const char *separator = (mode == m4mode_user ? "" : "0x");
     m4cell i, n = str.n;
     if (out == NULL || data == NULL) {
         return;
     }
     for (i = 0; i < n; i++) {
+        fputs(separator, out);
         fputc(hexdigits[(data[i] >> 4) & 0xF], out);
         fputc(hexdigits[(data[i] >> 0) & 0xF], out);
-        fputc(' ', out);
+        separator = (mode == m4mode_user ? " " : ", 0x");
     }
 }
 
@@ -974,9 +976,9 @@ void m4word_data_print(const m4word *w, m4cell data_offset_n, m4printmode mode, 
               out);
     } else {
         if (w->flags & m4flag_data_tokens) {
-            fputs(" WORD_DATA_TOKENS(\n        ", out);
+            fputs(" WORD_DATA_TOKENS(\n            ", out);
         } else {
-            fputs(" WORD_DATA_BYTES(\n        ", out);
+            fputs(" WORD_DATA_BYTES(\n            ", out);
         }
     }
     if (w->flags & m4flag_data_tokens) {
@@ -984,7 +986,7 @@ void m4word_data_print(const m4word *w, m4cell data_offset_n, m4printmode mode, 
         m4code_print(code, mode, out);
     } else {
         fprintf(out, (mode == m4mode_user ? "<%lu> " : "/*%lu*/ "), (long)data.n);
-        m4string_print_hex(data, out);
+        m4string_print_hex(data, mode, out);
     }
     if (mode != m4mode_user) {
         fputs("\n        )", out);
@@ -1108,11 +1110,6 @@ const m4word *m4word_prev(const m4word *w) {
 }
 
 /* ----------------------- m4wordlist ----------------------- */
-
-m4wordlist m4wordlist_forth = {&m4dict_forth, NULL};
-m4wordlist m4wordlist_m4th_user = {&m4dict_m4th_user, NULL};
-m4wordlist m4wordlist_m4th_core = {&m4dict_m4th_core, NULL};
-m4wordlist m4wordlist_m4th_impl = {&m4dict_m4th_impl, NULL};
 
 const m4word *m4wordlist_find(const m4wordlist *wid, m4string str) {
     const m4word *w = m4wordlist_lastword(wid);

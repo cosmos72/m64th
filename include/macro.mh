@@ -221,10 +221,10 @@
  * .8byte ...
  */
 #define M4ASM_BYTES(token) CAT2(M4ASM_BYTES_, M4UNITOF(token))(token)
-#define M4ASM_BYTES_1(token) .byte M4TOKEN_VAL(token)
-#define M4ASM_BYTES_2(token) .2byte M4TOKEN_VAL(token)
-#define M4ASM_BYTES_4(token) .4byte M4TOKEN_VAL(token)
-#define M4ASM_BYTES_8(token) .8byte M4TOKEN_VAL(token)
+#define M4ASM_BYTES_1(token) .byte M4TOKEN_VAL(token);
+#define M4ASM_BYTES_2(token) .2byte M4TOKEN_VAL(token);
+#define M4ASM_BYTES_4(token) .4byte M4TOKEN_VAL(token);
+#define M4ASM_BYTES_8(token) .8byte M4TOKEN_VAL(token);
 #define M4ASM_BYTES_CALL(token) M4TOKEN_VAL(token)       /* expands to M4CALL(word)           */
 #define M4ASM_BYTES_LIT_STRING(token) M4TOKEN_VAL(token) /* expands to M4LIT_STRING(len, str) */
 

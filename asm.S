@@ -69,6 +69,13 @@ MARKER(asm_data_start)
 #include "forth/m4th_impl.S"
 #include "forth/m4th_user.S"
 
+WORDLIST(forth)
+WORDLIST(forth_root)
+WORDLIST(m4th_c)
+WORDLIST(m4th_core)
+WORDLIST(m4th_impl)
+WORDLIST(m4th_user)
+
 MARKER(asm_data_end)
 
         .ident "m4th 0.0.0"

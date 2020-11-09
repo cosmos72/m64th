@@ -1305,7 +1305,7 @@ static m4testexecute testexecute_g[] = {
      {{1, {m4flag_mem_fetch}}, {}},
      {{1, {0}}, {}},
      {}},
-    /* ----------------------------- word.... ------------------------------- */
+    /* ----------------------------- name ------------------------------- */
     {"name>flags",
      {CALL(name_to_flags), m4bye},
      {{1, {(m4cell)&WORD_SYM(noop)}}, {}},
@@ -1341,6 +1341,7 @@ static m4testexecute testexecute_g[] = {
      {{1, {m4dup}}, {}},
      {{1, {(m4cell)&WORD_SYM(dup)}}, {}},
      {}},
+    /* ----------------------------- wordlist ------------------------------- */
     {"wordlist-last",
      {m4wordlist_last, m4bye},
      {{1, {(m4cell)&m4wordlist_forth}}, {}},
@@ -1385,6 +1386,12 @@ static m4testexecute testexecute_g[] = {
      {CALL(string_to_name), m4bye},
      {{2, {TESTSTR(_0az)}}, {}},
      {{2, {0, 0}}, {}},
+     {}},
+    /* --------------------------- search order ----------------------------- */
+    {"get-order",
+     {CALL(get_order), m4bye},
+     {{}, {}},
+     {{3, {(m4cell)&m4wordlist_forth, (m4cell)&m4wordlist_m4th_user, 2}}, {}},
      {}},
     {"' (if) name-inline?",
      {CALL(name_inline_query), m4bye},

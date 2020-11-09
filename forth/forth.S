@@ -24,26 +24,23 @@
 /* clang-format off */
 
 /* ---------------------------------------------------------------------------------------------- */
-DICT_START(forth)
+DICTNAME(10, "forth-root", forth_root)
+DICTNAME(5,  "forth", forth)
 
-DICTNAME(5, "forth", forth)
+DICT_START(forth_root)
+#include "forth_root.S"
+DICT_BODY(forth_root, LASTWORD)
+DICT_END(forth_root)
 
+DICT_START(forth_root)
 #include "forth_core.S"
-
 #include "forth_core_ext.S"
-
 #include "forth_double_ext.S"
-
 #include "forth_exception.S"
-
 #include "forth_tools.S"
-
 #include "forth_tools_ext.S"
-
 #include "forth_search_order.S"
-
+#include "forth_search_order_gen.S"
 #include "forth_string.S"
-
-
 DICT_BODY(forth, LASTWORD)
 DICT_END(forth)
