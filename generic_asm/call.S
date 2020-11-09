@@ -130,8 +130,8 @@ FUNC_START(_validate_xt_)
         JNZ(   REG2,               FUNC_RET(_validate_xt_))
 
 #if defined(__linux__) && !defined(__ANDROID__)
-        /* 2. on linux, XT must be >= XT(store) */
-        ADDROF_4G(WORD_SYM(store), REG2)
+        /* 2. on linux, XT must be >= XT(forth) */
+        ADDROF_4G(WORD_SYM(forth), REG2)
         ADD2(IMM(WORD_OFF_XT),     REG2)
 #else
         /* 3. some other systems, including at least Termux on Android, */

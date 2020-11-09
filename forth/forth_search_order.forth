@@ -33,6 +33,11 @@ also m4th-core \ searchorder*
    searchorder-depth ;
 
 
+\ set search order to the single wordlist forth-root
+: only \ (S: * -- forth-root )
+   searchorder-clear also forth-root ;
+
+
 \ remove first wordlist in search order
 : previous \ (S: wid -- )
    searchorder-drop ;
@@ -52,5 +57,6 @@ also m4th-core \ searchorder*
 
 disassemble definitions
 disassemble get-order
+disassemble only
 disassemble previous
 disassemble set-order

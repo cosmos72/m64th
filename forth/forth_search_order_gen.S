@@ -47,7 +47,18 @@ WORD_START(get_order, definitions)
         ),
     )
 WORD_END(get_order)
-WORD_START(previous, get_order)
+WORD_START(only, get_order)
+    WORD_STACK_NONE()
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE_AND_DATA(only,
+        WORD_CODE_TOKENS(
+            /*9*/ searchorder_clear, searchorder_dup, _lit_cell_, CELL(m4wordlist_forth_root), searchorder_store_0, exit
+        ),
+    )
+WORD_END(only)
+WORD_START(previous, only)
     WORD_STACK_NONE()
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()

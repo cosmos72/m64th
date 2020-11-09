@@ -20,6 +20,14 @@
 #ifndef M4TH_INCLUDE_DICT_FORTH_MH
 #define M4TH_INCLUDE_DICT_FORTH_MH
 
+/* ------- forth 2012 minimal search order ------------------------------------------------------ */
+#define DICT_TOKENS_FORTH_ROOT(X)
+
+#define DICT_WORDS_FORTH_ROOT(X)                                                                   \
+    DICT_TOKENS_FORTH_ROOT(X)                                                                      \
+    X(14, "forth-wordlist", forth_wordlist)                                                        \
+    X(9, "set-order", set_order)
+
 /* ------- forth 2012: core --------------------------------------------------------------------- */
 #define DICT_TOKENS_FORTH_CORE(X)                                                                  \
     X(1, "!", store)                                                                               \
@@ -200,12 +208,13 @@
     DICT_TOKENS_FORTH_SEARCH_ORDER(X)                                                              \
     X(4, "also", also)                                                                             \
     X(11, "definitions", definitions)                                                              \
-    /* X(5, "forth", forth) */ /* already defined as dict name */                                  \
-    X(14, "forth-wordlist", forth_wordlist)                                                        \
+    /* X(5, "forth", forth) */                    /* already defined as dict name */               \
+    /* X(14, "forth-wordlist", forth_wordlist) */ /* already defined in forth_root dict */         \
     X(9, "get-order", get_order)                                                                   \
+    X(4, "only", only)                                                                             \
     X(8, "previous", previous)                                                                     \
     X(15, "search-wordlist", search_wordlist)                                                      \
-    X(9, "set-order", set_order)
+    /* X(9, "set-order", set_order) */ /* already defined in forth_root dict */
 
 /* ------- forth 2012: string ------------------------------------------------------------------- */
 #define DICT_TOKENS_FORTH_STRING(X)                                                                \
@@ -217,6 +226,7 @@
 
 /* ------- forth 2012 --------------------------------------------------------------------------- */
 #define DICT_TOKENS_FORTH(X)                                                                       \
+    DICT_TOKENS_FORTH_ROOT(X)                                                                      \
     DICT_TOKENS_FORTH_CORE(X)                                                                      \
     DICT_TOKENS_FORTH_CORE_EXT(X)                                                                  \
     DICT_TOKENS_FORTH_DOUBLE_EXT(X)                                                                \
@@ -226,6 +236,7 @@
     DICT_TOKENS_FORTH_STRING(X)
 
 #define DICT_WORDS_FORTH(X)                                                                        \
+    DICT_WORDS_FORTH_ROOT(X)                                                                       \
     DICT_WORDS_FORTH_CORE(X)                                                                       \
     DICT_WORDS_FORTH_CORE_EXT(X)                                                                   \
     DICT_WORDS_FORTH_DOUBLE_EXT(X)                                                                 \

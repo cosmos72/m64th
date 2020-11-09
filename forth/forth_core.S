@@ -21,6 +21,8 @@
 
 #include "../include/err.mh" /* M4ERR_STACK_UNDERFLOW */
 
+DICT_WORDS_FORTH_CORE(WORDNAME)
+
 WORD(store,            LASTWORD,   DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE)
 WORD_START(tick,       store)
     WORD_DSTACK(0,1)

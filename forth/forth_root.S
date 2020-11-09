@@ -23,7 +23,7 @@
 
 /* words shared between forth wordlist and forth-root wordlist */
 
-DICT_WORDS_FORTH_CORE(WORDNAME)
+DICT_WORDS_FORTH_ROOT(WORDNAME)
 
 #define LASTWORD forth
 

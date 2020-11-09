@@ -603,13 +603,6 @@ static m4testexecute testexecute_d[] = {
      {{1, {DXT(store) + 1}}, {}},
      {{1, {DXT(store) + 1}}, {}},
      {}},
-#if defined(__linux__) && !defined(__ANDROID__)
-    {"' ! SZ- execute",
-     {m4execute, m4bye},
-     {{1, {DXT(store) - SZ}}, {}},
-     {{1, {DXT(store) - SZ}}, {}},
-     {}},
-#endif
     /* test execute of simple words */
     {"' noop execute", {m4execute, m4bye}, {{1, {DXT(noop)}}, {}}, {{}, {}}, {}},
     {"' eight execute", {m4execute, m4bye}, {{1, {DXT(eight)}}, {}}, {{1, {8}}, {}}, {}},

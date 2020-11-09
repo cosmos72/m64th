@@ -155,6 +155,7 @@ static void genopt_with_file(const char *path, void (*gen)(FILE *out)) {
 
 static void run_show_words(m4printmode mode, FILE *out) {
     const m4dict *dict[] = {
+        /* &m4dict_forth_root, */
         &m4dict_forth, &m4dict_m4th_user, &m4dict_m4th_c, &m4dict_m4th_core, &m4dict_m4th_impl,
     };
     m4cell i;
