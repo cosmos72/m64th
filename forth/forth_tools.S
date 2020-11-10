@@ -40,7 +40,8 @@ WORD_START(see, dot_s)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
-        CALL(parse_name), two_dup, CALL(string_to_name), drop,  /* ( c-addr u nt|0 ) */
+        CALL(parse_name), two_dup, CALL(string_to_name),        /* ( c-addr u nt|0 wid|0 -1|0|1 ) */
+        two_drop,                                               /* ( c-addr u nt|0 ) */
         _q_if0_, T(6),                                          /* ( c-addr u nt|0 ) */
             drop, ex_message_store,                             /* (               ) */
             _lit_, T(M4ERR_UNDEFINED_WORD), throw,              /* (               ) */

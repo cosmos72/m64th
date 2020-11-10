@@ -942,7 +942,7 @@ WORD_START(_finish_, _does_exit_)
             CALL(_optimize_),
         then,
         left_bracket, align, /* also align HERE to current word's data */
-        latest, get_current, wordlist_add, exit
+        latest, get_current, wordlist_add_name, exit
     )
 WORD_END(_finish_)
 WORD_START(_inline_, _finish_)

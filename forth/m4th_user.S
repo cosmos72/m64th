@@ -128,7 +128,8 @@ WORD_START(disassemble, minus_cs_roll)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
-        CALL(parse_name), two_dup, CALL(string_to_name), drop,  /* ( c-addr u nt|0 ) */
+        CALL(parse_name), two_dup, CALL(string_to_name),        /* ( c-addr u nt|0 wid|0 -1|0|1 ) */
+        two_drop,                                               /* ( c-addr u nt|0 ) */
         _q_if0_, T(6),                                          /* ( c-addr u nt|0 ) */
             drop, ex_message_store,                             /* (               ) */
             _lit_, T(M4ERR_UNDEFINED_WORD), throw,              /* (               ) */
@@ -259,7 +260,7 @@ WORD_START(interpret,  i_minus)
          *    2drop exit                                (                          )
          * then                                         ( c-addr u                 )
          * 2dup                                         ( c-addr u c-addr u        )
-         * string>name                                  ( c-addr u nt|0 -1|0|1     )
+         * string>name nip                              ( c-addr u nt|0 -1|0|1     )
          * ?if                      ( is a word )       ( c-addr u nt  -1|1        )
          *    2nip (eval-name) (check-stacks) exit      (                          )
          * then                                         ( c-addr u 0 0             )
@@ -275,7 +276,7 @@ WORD_START(interpret,  i_minus)
             two_drop, exit,
         then,
         two_dup,
-        CALL(string_to_name),
+        CALL(string_to_name), nip,
         _q_if_, T(5+2*nCALLt),
             two_nip, CALL(_eval_name_), CALL(_check_stacks_), exit,
         then,

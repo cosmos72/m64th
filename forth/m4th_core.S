@@ -478,38 +478,51 @@ WORD_START(obuf_write_string, obuf_write_char)
     )
 WORD_END(obuf_write_string)
 WORD(out_to_obuf,   obuf_write_string, DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
+/* parse-nt ( -- nt wid -1|1 ) throws if name is not found. 1 if name is immediate, else -1 */
+WORD_START(parse_nt,  out_to_obuf)
+    WORD_DSTACK(0,3)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        /* parse-name                                  ( c-addr u          )
+         * ?if0                                        ( c-addr u          )
+         *    M4ERR_ZERO_LENGTH_NAME throw             (                   )
+         * then                                        ( c-addr u          )
+         * 2dup 2>r                                    ( c-addr u          ) (R: c-addr u )
+         * string>name                                 ( nt|0 wid|0 -1|0|1 ) (R: c-addr u )
+         * ?if0                     ( word not found ) ( 0 0 0             ) (R: c-addr u )
+         *    2r> ex-message!                          ( 0 0 0             )
+         *    M4ERR_UNDEFINED_WORD throw               (                   )
+         * then                                        ( nt wid -1|1       ) (R: c-addr u )
+         * 2r> 2drop                                   ( nt wid -1|1       )
+         */
+        CALL(parse_name),
+        _q_if0_, T(4),
+            _lit_, T(M4ERR_ZERO_LENGTH_NAME), throw,
+        then,
+        two_dup_two_to_r,
+        CALL(string_to_name),
+        _q_if0_, T(6),
+            two_r_from, ex_message_store,
+            _lit_, T(M4ERR_UNDEFINED_WORD), throw,
+        then,
+        two_r_from_two_drop, exit
+    )
+WORD_END(parse_nt)
 /* parse-xt ( -- xt -1|1 ) throws if name is not found. 1 if xt is immediate, else -1 */
-WORD_START(parse_xt,  out_to_obuf)
+WORD_START(parse_xt,  parse_nt)
     WORD_DSTACK(0,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
-        /* parse-name                                  ( c-addr u                  )
-         * ?if0                                        ( c-addr u                  )
-         *    M4ERR_ZERO_LENGTH_NAME throw             (                           )
-         * then                                        ( c-addr u                  )
-         * 2dup                                        ( c-addr u c-addr u         )
-         * string>name                                 ( c-addr u nt|0 -1|0|1      )
-         * ?if0                     ( word not found ) ( c-addr u 0 0              )
-         *    2drop ex-message!                        (                           )
-         *    M4ERR_UNDEFINED_WORD throw               (                           )
-         * then                                        ( c-addr u nt -1|1          )
-         * 2nip                                        ( nt -1|1                   )
+        /* parse-nt nip                                ( nt -1|1                   )
          * swap name>xt swap                           ( xt -1|1                   )
          */
-        CALL(parse_name),
-        _q_if0_, T(4),
-            _lit_, T(M4ERR_ZERO_LENGTH_NAME), throw,
-        then,
-        two_dup,
-        CALL(string_to_name),
-        _q_if0_, T(6),
-            two_drop, ex_message_store,
-            _lit_, T(M4ERR_UNDEFINED_WORD), throw,
-        then,
-        two_nip,
+        CALL(parse_nt), nip,
         swap, name_to_xt, swap, exit
     )
 WORD_END(parse_xt)
@@ -527,11 +540,11 @@ WORD(searchorder_pick,  searchorder_dup,   DSTACK(1,1), RSTACK(0,0), WORD_IMPURE
 WORD(searchorder_store_0,searchorder_pick, DSTACK(1,0), RSTACK(0,0), WORD_IMPURE)
 WORD(set_latest,      searchorder_store_0, DSTACK(1,0), RSTACK(0,0), WORD_IMPURE)
 /*
- * string>name ( c-addr u -- nt|0 -1|0|1 ) find name in current search order.
+ * string>name ( c-addr u -- nt|0 wid|0 -1|0|1 ) find name in current search order.
  * return 1 if name is immediate, else -1
  */
 WORD_START(string_to_name, set_latest)
-    WORD_DSTACK(2,2)
+    WORD_DSTACK(2,3)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
@@ -540,24 +553,28 @@ WORD_START(string_to_name, set_latest)
         /* searchorder-depth 0                     ( c-addr u n 0              )
          * ?do                                     ( c-addr u                  ) (R: n i )
          *    2dup i searchorder-pick              ( c-addr u c-addr u wid     ) (R: n i )
-         *    wordlist-find                        ( c-addr u w|0 -1|0|1       ) (R: n i )
+         *    wordlist-find                        ( c-addr u nt|0 -1|0|1      ) (R: n i )
          *    ?if
-         *       2nip unloop exit                  ( w -1|1                    )
+         *       2nip                              ( nt -1|1                   ) (R: n i )
+         *       i searchorder-pick swap           ( nt wid -1|1               ) (R: n i )
+         *       unloop exit                       ( nt wid -1|1               )
          *    then                                 ( c-addr u 0 0              ) (R: n i )
          *    2drop                                ( c-addr u                  ) (R: n i )
          * loop                                    ( c-addr u                  )
-         * 2drop 0 0                               ( 0 0                       )
+         * 2drop 0 0 0                             ( 0 0 0                     )
          */
         searchorder_depth, zero,
-        _q_do_, T(13+nCALLt),
+        _q_do_, T(16+nCALLt),
             two_dup, i, searchorder_pick,
             CALL(wordlist_find),
-            _q_if_, T(4),
-                two_nip, unloop, exit,
+            _q_if_, T(7),
+                two_nip,
+                i, searchorder_pick, swap,
+                unloop, exit,
             then,
             two_drop,
-        _loop_, T(-13-nCALLt),
-        two_drop, zero, zero, exit
+        _loop_, T(-16-nCALLt),
+        two_drop, zero, zero, zero, exit
     )
 WORD_END(string_to_name)
 WORD(to_token,         string_to_name, DSTACK(1,1), RSTACK(0,0), WORD_PURE)
@@ -578,7 +595,7 @@ WORD_START(user_var,   token_to_name)
     WORD_CODE(user_var, T(-1), exit)
 WORD_END(user_var)
 /**
- * wordlist-find ( c-addr u wid -- w|0 -1|0|1 ) search word name in wordlist.
+ * wordlist-find ( c-addr u wid -- nt|0 -1|0|1 ) search word by name in wordlist.
  * return 0 if not found. return 1 if word is immediate, otherwise return -1
  */
 WORD_START(wordlist_find, user_var)
@@ -604,7 +621,7 @@ WORD_START(wordlist_find, user_var)
          * name>flags M4FLAG_IMMEDIATE and 0=                  ( nt t|f            )
          * 2* 1+ exit                                          ( nt -1|1           )
          */
-        wordlist_last,
+        wordlist_last_name,
         begin,
             _q_if0_, T(5),
                 nip, nip, zero, exit,
@@ -621,10 +638,10 @@ WORD_START(wordlist_find, user_var)
         two_times, one_plus, exit
     )
 WORD_END(wordlist_find)
-WORD(wordlist_add,   wordlist_find,    DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH | M4FLAG_MEM_STORE)
-WORD(wordlist_last,  wordlist_add,     DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD(wordlist_reset, wordlist_last,    DSTACK(1,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE)
-WORD(xt_to_name,     wordlist_reset,   DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD(wordlist_add_name,    wordlist_find,      DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH | M4FLAG_MEM_STORE)
+WORD(wordlist_last_name,   wordlist_add_name,  DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(wordlist_reset,       wordlist_last_name, DSTACK(1,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE)
+WORD(xt_to_name,           wordlist_reset,     DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 
 #undef LASTWORD
 #define LASTWORD xt_to_name

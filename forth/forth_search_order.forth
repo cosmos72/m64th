@@ -18,11 +18,11 @@
 
 also m4th-core \ searchorder*
 
+
 \ set compilation wordlist to first wordlist in search order
 : definitions \ ( -- )
    0 searchorder-pick                      \ ( wid                 )
-  set-current ;                            \ (                     )
-
+   set-current ;                           \ (                     )
 
 \ get all wordlists in search order
 : get-order \ (S: widn .. wid1 -- idem ) ( -- widn ... wid1 n )
@@ -41,6 +41,16 @@ also m4th-core \ searchorder*
 \ remove first wordlist in search order
 : previous \ (S: wid -- )
    searchorder-drop ;
+
+
+\ search for name in specified wordlist. return XT plus immediate flag, or zero
+: search-wordlist \ ( c-addr u wid -- 0 | xt 1 | xt -1 )
+   wordlist-find                           \ ( nt|0 -1|0|1         )
+   dup if                                  \ ( nt   -1|1           )
+      swap name>xt swap                    \ ( xt   -1|1           )
+   else                                    \ ( 0    0              )
+      nip                                  \ ( 0                   )
+   then ;                                  \ ( 0 | xt 1 | xt -1    )
 
 
 \ set the search order to ( widn ... wid1 )

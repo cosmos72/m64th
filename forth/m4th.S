@@ -51,5 +51,6 @@ DICT_START(m4th_user)
 DICTNAME(9, "m4th-user", m4th_user)
 DICT_WORDS_M4TH_USER(WORDNAME)
 #include "m4th_user.S"
+#include "m4th_user_gen.S"
 DICT_BODY(m4th_user, LASTWORD)
 DICT_END(m4th_user)

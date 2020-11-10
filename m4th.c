@@ -714,6 +714,7 @@ fail:
 
 void m4slice_print(m4slice slice, m4cell direction, m4printmode mode, FILE *out) {
     const m4cell *addr = slice.addr;
+    const char *dots = "";
     m4cell n = slice.n;
     m4cell step = 1;
     (void)mode;
@@ -728,15 +729,17 @@ void m4slice_print(m4slice slice, m4cell direction, m4printmode mode, FILE *out)
     }
     if (n > 100) {
         n = 100;
+        dots = "... ";
     }
     for (; n; n--, addr += step) {
         const long x = (long)*addr;
         if (x > -1024 && x < 1024) {
             fprintf(out, "%ld ", x);
         } else {
-            fprintf(out, "0x%lx ", x);
+            fprintf(out, "$%lx ", x);
         }
     }
+    fputs(dots, out);
 }
 void m4slice_print_stdout(m4slice slice, m4cell direction, m4printmode mode) {
     m4slice_print(slice, direction, mode, stdout);
@@ -1188,12 +1191,17 @@ m4th *m4th_new(m4th_opt options) {
     m->handler = m->ex = 0;
     m->ex_message.addr = NULL;
     m->ex_message.n = 0;
-    /* by forth 2012 specs, initial compilation wordlist must be m4wordlist_forth */
+    /* by forth 2012 specs, initial compilation wordlist must be 'forth' */
     /* see https://forth-standard.org/standard/search/FORTH-WORDLIST */
     m->compile_wid = &m4wordlist_forth;
     memset(&m->searchorder, '\0', sizeof(m->searchorder));
-    m4th_also(m, &m4wordlist_forth);
+    /* put 'm4th-user' wordlist at lower priority:                        */
+    /* compilation wordlist is initially 'forth' and newly-defined words  */
+    /* should shadow existing ones in either wordlist                     */
     m4th_also(m, &m4wordlist_m4th_user);
+    m4th_also(m, &m4wordlist_forth);
+    /* redundancy: help users against removing 'forth' wordlist accidentally */
+    m4th_also(m, &m4wordlist_forth);
 
     return m;
 }

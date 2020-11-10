@@ -223,7 +223,9 @@
     X(8, "-cs-roll", minus_cs_roll)   /* ( ... cs-depth -- ... )                        */         \
     X(7, "cs-swap", cs_swap)          /* ( a_sys b_sys -- b_sys a_sys )                 */         \
     X(11, "disassemble", disassemble) /* read name, find nt then show its disassembly   */         \
-    X(16, "disassemble-name", disassemble_name) /* ( nt -- ) show nt disassembly        */         \
+    X(16, "disassemble-name", disassemble_name) /* ( nt -- ) show disassembly of word   */         \
+    /* ( ntu ... nt2 nt1 u -- ) show disassembly of N words */                                     \
+    X(17, "disassemble-names", disassemble_names)                                                  \
     /*                          read name, find nt, show disassembly of all nt up to it */         \
     X(16, "disassemble-upto", disassemble_upto)                                                    \
     X(9, "ex>string", ex_to_string) /* ( ex -- c-addr u ) get exception name          */           \
@@ -243,7 +245,9 @@
     X(13, "string>number", string_to_number)                                                       \
     /*         ( ex|0 -- ) write cr exception and ex-message@ to current output          */        \
     X(14, "type-exception", type_exception)                                                        \
-    X(11, "valid-base?", valid_base_q) /* ( base -- t|f ) true if 2 <= base <= 36        */
+    X(11, "valid-base?", valid_base_q) /* ( base -- t|f ) true if 2 <= base <= 36        */        \
+    /* get all words in wordlist up to nt1. newer words are placed toward stack top */             \
+    X(18, "wordlist-upto-name", wordlist_upto_name) /* ( wid nt1 -- 0 | ntu ... nt2 nt1 u ) */
 
 /* ------- m4th-c ------------------------------------------------------------------------------- */
 #define DICT_TOKENS_M4TH_C(X)                                                                      \
@@ -308,11 +312,11 @@
     X(15, "searchorder[0]!", searchorder_store_0) /* ( wid -- ) overwrite searchorder 0-th elem */ \
     X(10, "set-latest", set_latest)    /* ( nt --      ) set last defined word            */       \
     X(10, "token>name", token_to_name) /* ( token -- nt|0 ) convert token to name */               \
-    X(8, "user-var", user_var) /*     ( -- addr ) must be followed by index of user variable */    \
-    X(12, "wordlist-add", wordlist_add)     /* ( nt wid -- ) add name to wordlist            */    \
-    X(13, "wordlist>last", wordlist_last)   /* ( wid -- nt ) get last name in wordlist       */    \
+    X(8, "user-var", user_var) /*        ( -- addr ) must be followed by index of user variable */ \
+    X(17, "wordlist-add-name", wordlist_add_name) /*   ( nt wid -- ) add name to wordlist       */ \
+    X(18, "wordlist-last-name", wordlist_last_name) /* ( wid -- nt ) get last name in wordlist  */ \
     X(14, "wordlist-reset", wordlist_reset) /* ( wid -- ) remove all user-defined names from wid*/ \
-    X(7, "xt>name", xt_to_name)             /* ( XT  -- nt ) convert XT to name              */
+    X(7, "xt>name", xt_to_name)             /* ( XT  -- nt ) convert XT to name                 */
 
 #define DICT_WORDS_M4TH_CORE(X)                                                                    \
     DICT_TOKENS_M4TH_CORE(X)                                                                       \
@@ -337,10 +341,12 @@
     /* ( io c-addr u -- c-addr' u' err  ) send string to iobuf I/O func, ignoring current data. */ \
     /* return string still to write - non-empty only on I/O error                               */ \
     X(15, "(obuf-overflow)", _obuf_overflow_)                                                      \
+    /* parse-nt ( nt wid -1|1 ) throws if name not found. 1 if name is immediate, else -1 */       \
+    X(8, "parse-nt", parse_nt)                                                                     \
     /* parse-xt ( xt -1|1 ) throws if name not found. 1 if name is immediate, else -1 */           \
     X(8, "parse-xt", parse_xt)                                                                     \
-    /*( c-addr u -- nt|0 -1|0|1 ) find name in search order. 1 if name is immediate, else -1 */    \
-    X(11, "string>name", string_to_name)                                                           \
+    /* find name in search order. 1 if name is immediate, else -1      */                          \
+    X(11, "string>name", string_to_name)  /* ( c-addr u -- nt|0 wid|0 -1|0|1 )            */       \
     X(6, "/token", div_token)             /* alias of _SZt_div,      no dedicated m4token */       \
     X(6, ">token", to_token)              /* alias of to_SZtu,       no dedicated m4token */       \
     X(6, "token!", token_store)           /* alias of _SZtu_store,   no dedicated m4token */       \
@@ -349,8 +355,8 @@
     X(6, "token+", token_plus)            /* alias of _SZt_plus,     no dedicated m4token */       \
     X(6, "tokens", tokens)                /* alias of _SZt_times,    no dedicated m4token */       \
     X(11, "token-align", token_align)     /* alias of _SZt_align,    no dedicated m4token */       \
-    X(13, "token-aligned", token_aligned) /* alias of _SZt_aligned, no dedicated m4token */        \
-    X(13, "wordlist-find", wordlist_find) /* ( c-addr u wid -- w|0 -1|0|1 ) search in wordlist */
+    X(13, "token-aligned", token_aligned) /* alias of _SZt_aligned,  no dedicated m4token */       \
+    X(13, "wordlist-find", wordlist_find) /* ( c-addr u wid -- nt|0 -1|0|1 ) search in wordlist */
 
 /* ------- m4th-impl ---------------------------------------------------------------------------- */
 #define DICT_TOKENS_M4TH_IMPL(X)                                                                   \

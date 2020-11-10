@@ -135,7 +135,7 @@ static int history_len = 0;
 static char **history = NULL;
 
 enum KEY_ACTION {
-    KEY_NULL = 0,   /* NULL */
+    CTRL_AT = 0,    /* Ctrl+@ i.e. NIL */
     CTRL_A = 1,     /* Ctrl+a */
     CTRL_B = 2,     /* Ctrl-b */
     CTRL_C = 3,     /* Ctrl-c */
@@ -144,6 +144,7 @@ enum KEY_ACTION {
     CTRL_F = 6,     /* Ctrl-f */
     CTRL_H = 8,     /* Ctrl-h */
     TAB = 9,        /* Tab */
+    CTRL_J = 10,    /* Ctrl+j i.e. LF */
     CTRL_K = 11,    /* Ctrl+k */
     CTRL_L = 12,    /* Ctrl+l */
     ENTER = 13,     /* Enter */
@@ -991,15 +992,7 @@ static int linenoiseEdit(int stdin_fd, int stdout_fd, char *buf, size_t buflen,
         case CTRL_BACK: /* backspace */
             editBackspace(&l);
             break;
-        case CTRL_K: /* Ctrl+k, delete from current to end of line. */
-            buf[l.pos] = '\0';
-            l.len = l.pos;
-            refreshLine(&l);
-            break;
-        case CTRL_L: /* ctrl+l, clear screen */
-            linenoiseClearScreen();
-            refreshLine(&l);
-            break;
+        case CTRL_J:
         case ENTER: /* enter */
             history_len--;
             free(history[history_len]);
@@ -1015,6 +1008,15 @@ static int linenoiseEdit(int stdin_fd, int stdout_fd, char *buf, size_t buflen,
             }
             ret = l.len;
             goto out;
+        case CTRL_K: /* Ctrl+k, delete from current to end of line. */
+            buf[l.pos] = '\0';
+            l.len = l.pos;
+            refreshLine(&l);
+            break;
+        case CTRL_L: /* ctrl+l, clear screen */
+            linenoiseClearScreen();
+            refreshLine(&l);
+            break;
         case CTRL_N: /* ctrl-n */
             editHistoryNext(&l, LINENOISE_HISTORY_NEXT);
             break;
@@ -1122,6 +1124,9 @@ static int linenoiseEdit(int stdin_fd, int stdout_fd, char *buf, size_t buflen,
             }
             break;
         default:
+            if (c >= 0 && c < ' ') {
+                c = ' ';
+            }
             if (editInsert(&l, c)) {
                 ret = -1;
                 goto out;
