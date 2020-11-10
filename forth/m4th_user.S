@@ -138,8 +138,8 @@ WORD_START(disassemble, minus_cs_roll)
             drop, ex_message_store,                             /* (               ) */
             _lit_, T(M4ERR_UNDEFINED_WORD), throw,              /* (               ) */
         then,                                                   /* ( c-addr u nt   ) */
-        nip, nip, one,                                          /* ( nt 1          ) */
-        _c_arg_2_, _c_call_, CELL(m4word_print_stdout), _c_ret_0_, exit
+        nip, nip,                                               /* ( nt            ) */
+        CALL(name_to_disassemble), exit                         /* (               ) */
     )
 WORD_END(disassemble)
 /* do-i+-loop  native-compiled version of do i+ loop */
@@ -330,7 +330,18 @@ WORD_START(m4th_user,  m4th_impl)
         searchorder_store_0, exit                      /* (                    ) */
     )
 WORD_END(m4th_user)
-WORD(noop,             m4th_user,      DSTACK(0,0), RSTACK(0,0), WORD_PURE)
+WORD_START(name_to_disassemble, m4th_user)
+    WORD_DSTACK(1,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        one,                                           /* ( nt 1          ) */
+        _c_arg_2_, _c_call_, CELL(m4word_print_stdout), _c_ret_0_, exit
+    )
+WORD_END(name_to_disassemble)
+WORD(noop,        name_to_disassemble, DSTACK(0,0), RSTACK(0,0), WORD_PURE)
 WORD(n_to_drop,        noop,           DSTACK(-1,0),RSTACK(0,0), WORD_PURE)
 WORD(r_store,          n_to_drop,      DSTACK(1,0), RSTACK(1,1), WORD_R_PURE)
 WORD(r_plus,           r_store,        DSTACK(1,0), RSTACK(1,1), WORD_R_PURE)
