@@ -27,11 +27,6 @@
 /* ---------------------------------------------------------------------------------------------- */
 /* --- m4th-core -------------------------------------------------------------------------------- */
 /* ---------------------------------------------------------------------------------------------- */
-DICT_START(m4th_core)
-
-DICTNAME(9, "m4th-core", m4th_core)
-
-DICT_WORDS_M4TH_CORE(WORDNAME)
 
 WORD(div_token,        div_token,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 /* always-eof ( handle c-addr u -- 0 M4ERR_UNEXPECTED_EOF ) always return EOF. usable for iobuf>func */
@@ -631,5 +626,5 @@ WORD(wordlist_last,  wordlist_add,     DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M
 WORD(wordlist_reset, wordlist_last,    DSTACK(1,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE)
 WORD(xt_to_name,     wordlist_reset,   DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 
-DICT_BODY(m4th_core, xt_to_name)
-DICT_END(m4th_core)
+#undef LASTWORD
+#define LASTWORD xt_to_name

@@ -27,11 +27,6 @@
 /* ---------------------------------------------------------------------------------------------- */
 /* --- m4th-user -------------------------------------------------------------------------------- */
 /* ---------------------------------------------------------------------------------------------- */
-DICT_START(m4th_user)
-
-DICTNAME(9, "m4th-user", m4th_user)
-
-DICT_WORDS_M4TH_USER(WORDNAME)
 
 WORD(less_equal,       less_equal,     DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(more_equal,       less_equal,     DSTACK(2,1), RSTACK(0,0), WORD_PURE)
@@ -604,5 +599,5 @@ WORD_START(valid_base_q, u_more_equal)
     )
 WORD_END(valid_base_q)
 
-DICT_BODY(m4th_user, valid_base_q)
-DICT_END(m4th_user)
+#undef LASTWORD
+#define LASTWORD valid_base_q

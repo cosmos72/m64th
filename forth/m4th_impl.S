@@ -32,11 +32,6 @@
 /* ---------------------------------------------------------------------------------------------- */
 /* --- m4th-impl -------------------------------------------------------------------------------- */
 /* ---------------------------------------------------------------------------------------------- */
-DICT_START(m4th_impl)
-
-DICTNAME(9, "m4th-impl", m4th_impl)
-
-DICT_WORDS_M4TH_IMPL(WORDNAME)
 
 WORD_START(_plus_loop_, _plus_loop_)
     WORD_DSTACK(1,0) /* stack effect when not jumping */
@@ -317,7 +312,6 @@ WORD_START(_hashmap_entry_fetch_int_, _exec_xt_from_native_)
     WORD_CODE(
         _lit_, T(M4HASHMAP_ENTRY_SZ_INT), times, plus,     /* ( vec'         )           */
         dup_to_r,                                          /* ( vec          ) (R: vec ) */
-
 #if M4HASHMAP_ENTRY_OFF_KEY_INT == 8
         int_fetch_2,                                       /* ( key          ) (R: vec ) */
 #else
@@ -1394,5 +1388,5 @@ WORD_START(string_to_sign, string_base_to_u)
     )
 WORD_END(string_to_sign)
 
-DICT_BODY(m4th_impl, string_to_sign)
-DICT_END(m4th_impl)
+#undef LASTWORD
+#define LASTWORD string_to_sign

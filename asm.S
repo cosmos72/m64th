@@ -64,10 +64,7 @@ SECTION_DATA() /* SECTION_RODATA() causes linker warning: relocation in read-onl
 MARKER(asm_data_start)
 
 #include "forth/forth.S"
-#include "forth/m4th_c.S"
-#include "forth/m4th_core.S"
-#include "forth/m4th_impl.S"
-#include "forth/m4th_user.S"
+#include "forth/m4th.S"
 
 WORDLIST(forth)
 WORDLIST(forth_root)

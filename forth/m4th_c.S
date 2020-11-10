@@ -26,11 +26,6 @@
 /* ---------------------------------------------------------------------------------------------- */
 /* --- m4th-user -------------------------------------------------------------------------------- */
 /* ---------------------------------------------------------------------------------------------- */
-DICT_START(m4th_c)
-
-DICTNAME(6, "m4th-c", m4th_c)
-
-DICT_WORDS_M4TH_C(WORDNAME)
 
 /* c-arg-[N] are marked inline-always because on x86_64 they clobber RSTK */
 WORD(_c_arg_0_,          _c_arg_0_,    DSTACK(0,0), RSTACK(0,0), M4FLAG_INLINE_ALWAYS)
@@ -78,5 +73,6 @@ WORD_START(c_linenoise,   c_fwrite_fflush)
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(_c_arg_3_, _c_call_, CELL(m4th_c_linenoise), _c_ret_2_, exit)
 WORD_END(c_linenoise)
-DICT_BODY(m4th_c, c_linenoise)
-DICT_END(m4th_c)
+
+#undef LASTWORD
+#define LASTWORD c_linenoise
