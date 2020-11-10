@@ -134,11 +134,23 @@ WORD_START(disassemble, minus_cs_roll)
             _lit_, T(M4ERR_UNDEFINED_WORD), throw,              /* (               ) */
         then,                                                   /* ( c-addr u nt   ) */
         nip, nip,                                               /* ( nt            ) */
-        CALL(name_to_disassemble), exit                         /* (               ) */
+        CALL(disassemble_name), exit                         /* (               ) */
     )
 WORD_END(disassemble)
+/* disassemble-name ( nt -- ) disassemble nt in machine-readable format */
+WORD_START(disassemble_name, disassemble)
+    WORD_DSTACK(1,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        one,                                           /* ( nt 1          ) */
+        _c_arg_2_, _c_call_, CELL(m4word_print_stdout), _c_ret_0_, exit
+    )
+WORD_END(disassemble_name)
 /* do-i+-loop  native-compiled version of do i+ loop */
-WORD(do_i_plus_loop,   disassemble,    DSTACK(2,1), RSTACK(0,0), WORD_IMPURE)
+WORD(do_i_plus_loop, disassemble_name, DSTACK(2,1), RSTACK(0,0), WORD_IMPURE)
 /* dp0        ( x -- x addr-of-x ) get address of stack bottom */
 WORD(dp0,              do_i_plus_loop, DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 WORD(dup_to_r,         dp0,            DSTACK(1,1), RSTACK(0,1), WORD_R_PURE)
@@ -325,18 +337,7 @@ WORD_START(m4th_user,  m4th_impl)
         searchorder_store_0, exit                      /* (                    ) */
     )
 WORD_END(m4th_user)
-WORD_START(name_to_disassemble, m4th_user)
-    WORD_DSTACK(1,0)
-    WORD_RSTACK(0,0)
-    WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
-    WORD_FLAGS(M4FLAG_INLINE)
-    WORD_CODE(
-        one,                                           /* ( nt 1          ) */
-        _c_arg_2_, _c_call_, CELL(m4word_print_stdout), _c_ret_0_, exit
-    )
-WORD_END(name_to_disassemble)
-WORD(noop,        name_to_disassemble, DSTACK(0,0), RSTACK(0,0), WORD_PURE)
+WORD(noop,             m4th_user,      DSTACK(0,0), RSTACK(0,0), WORD_PURE)
 WORD(n_to_drop,        noop,           DSTACK(-1,0),RSTACK(0,0), WORD_PURE)
 WORD(r_store,          n_to_drop,      DSTACK(1,0), RSTACK(1,1), WORD_R_PURE)
 WORD(r_plus,           r_store,        DSTACK(1,0), RSTACK(1,1), WORD_R_PURE)

@@ -1335,7 +1335,7 @@ static m4testexecute testexecute_g[] = {
      {{1, {(m4cell)&WORD_SYM(dup)}}, {}},
      {}},
     /* ----------------------------- wordlist ------------------------------- */
-    {"wordlist-last",
+    {"wordlist>last",
      {m4wordlist_last, m4bye},
      {{1, {(m4cell)&m4wordlist_forth}}, {}},
      {{1, {(m4cell)&WORD_SYM(cmove)}}, {}},

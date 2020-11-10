@@ -20,8 +20,8 @@ also m4th-core \ searchorder*
 
 \ set compilation wordlist to first wordlist in search order
 : definitions \ ( -- )
-   0 searchorder-pick                      \ ( wid                )
-  set-current ;                            \ (                    )
+   0 searchorder-pick                      \ ( wid                 )
+  set-current ;                            \ (                     )
 
 
 \ get all wordlists in search order

@@ -222,9 +222,12 @@
     X(6, "cs-dup", cs_dup)            /* ( sys -- sys sys )                             */         \
     X(8, "-cs-roll", minus_cs_roll)   /* ( ... cs-depth -- ... )                        */         \
     X(7, "cs-swap", cs_swap)          /* ( a_sys b_sys -- b_sys a_sys )                 */         \
-    X(11, "disassemble", disassemble) /* read name then show its disassembly            */         \
-    X(9, "ex>string", ex_to_string)   /* ( ex -- c-addr u ) get exception name          */         \
-                                      /* ( map key -- key val t|f ) find entry in hashmap/int  */  \
+    X(11, "disassemble", disassemble) /* read name, find nt then show its disassembly   */         \
+    X(16, "disassemble-name", disassemble_name) /* ( nt -- ) show nt disassembly        */         \
+    /*                          read name, find nt, show disassembly of all nt up to it */         \
+    X(16, "disassemble-upto", disassemble_upto)                                                    \
+    X(9, "ex>string", ex_to_string) /* ( ex -- c-addr u ) get exception name          */           \
+                                    /* ( map key -- key val t|f ) find entry in hashmap/int  */    \
     /* X(10, "forth-root", forth_root) */ /* set first wordlist in searchorder to forth-root   */  \
     X(16, "hashmap-find/int", hashmap_find_int)                                                    \
     X(9, "interpret", interpret)       /* one iteration of forth interpret/compile loop  */        \
@@ -232,8 +235,7 @@
     /* X(9, "m4th-core", m4th_core) */ /* set first wordlist in searchorder to m4th-core */        \
     /* X(9, "m4th-impl", m4th_impl) */ /* set first wordlist in searchorder to m4th-impl */        \
     /* X(9, "m4th-user", m4th_user) */ /* set first wordlist in searchorder to m4th-user */        \
-    X(16, "name>disassemble", name_to_disassemble) /* ( nt -- ) disassemble nt           */        \
-    X(4, "repl", repl)          /* call INTERPRET repeatedly until EOF or input error    */        \
+    X(4, "repl", repl)                 /* call INTERPRET repeatedly until EOF or input error    */ \
     X(5, "r2nd@", r2nd_fetch)   /* alias of '2r@ drop' i.e. fetch second item from return stack */ \
     X(8, "string<>", string_ne) /* ( addr1 addr2 u -- addr1 addr2 u t|f )                */        \
     X(11, "string-ci<>", string_ci_ne) /* ( addr1 addr2 u -- addr1 addr2 u t|f )         */        \
@@ -308,7 +310,7 @@
     X(10, "token>name", token_to_name) /* ( token -- nt|0 ) convert token to name */               \
     X(8, "user-var", user_var) /*     ( -- addr ) must be followed by index of user variable */    \
     X(12, "wordlist-add", wordlist_add)     /* ( nt wid -- ) add name to wordlist            */    \
-    X(13, "wordlist-last", wordlist_last)   /* ( wid -- nt ) get last name in wordlist       */    \
+    X(13, "wordlist>last", wordlist_last)   /* ( wid -- nt ) get last name in wordlist       */    \
     X(14, "wordlist-reset", wordlist_reset) /* ( wid -- ) remove all user-defined names from wid*/ \
     X(7, "xt>name", xt_to_name)             /* ( XT  -- nt ) convert XT to name              */
 
