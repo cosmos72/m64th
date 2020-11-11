@@ -499,15 +499,12 @@ WORD_START(spaces, space)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
-        /*                    TODO: optimize                             */
-        dup, zero_less_equal,                       /* ( n t|f         ) */
-        _if_, T(3),                                 /* ( n             ) */
-            drop,                                   /* (               ) */
-        _else_, T(6),                               /* ( u             ) */
-            zero, do,                               /* (               ) (R: u i ) */
-                bl, emit,                           /* (               ) (R: u i ) */
-            _loop_, T(-4),                          /* (               ) */
-        then, exit
+        /*                    TODO: optimize                                       */
+        zero, max, zero,                            /* ( u 0           )           */
+        _q_do_, T(4),                               /* (               ) (R: u i ) */
+            bl, emit,                               /* (               ) (R: u i ) */
+        _loop_, T(-4),                              /* (               )           */
+        exit
     )
 WORD_END(spaces)
 WORD(swap,             spaces,     DSTACK(2,2), RSTACK(0,0), WORD_PURE)
