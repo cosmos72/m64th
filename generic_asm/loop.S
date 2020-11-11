@@ -157,13 +157,13 @@ FUNC_START(i_prime)            /* i' and r2nd@ m4th-user */
 FUNC_END(i_prime)
 
 
-FUNC_START(r_store)            /* r!   m4th-user */
+FUNC_START(r_store)            /* r!   ( x -- ) (R: y -- x ) m4th-user */
         MOVE(  DTOP, RTOP)
         DPOP___DTOP()
 FUNC_END(r_store)
 
 
-FUNC_START(r_plus)             /* r+   m4th-user */
+FUNC_START(r_plus)             /* r+   ( i -- ) (R: n -- n+i ) m4th-user */
         ADD2(  DTOP, RTOP)
         DPOP___DTOP()
 FUNC_END(r_plus)

@@ -498,13 +498,17 @@ WORD_START(spaces, space)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
-    WORD_CODE(
-        /*                    TODO: optimize                                       */
-        zero, max, zero,                            /* ( u 0           )           */
-        _q_do_, T(4),                               /* (               ) (R: u i ) */
-            bl, emit,                               /* (               ) (R: u i ) */
-        _loop_, T(-4),                              /* (               )           */
-        exit
+    WORD_CODE(                                      /* ( n                 )             */
+        LIT_STRING(128, "                                                                                                                                "),
+        rot,                                        /* ( c-addr u n        )             */
+        zero, max, to_r,                            /* ( c-addr u          ) (R: n     ) */
+        begin,                                      /* ( c-addr u          ) (R: left  ) */
+            two_dup, r_fetch, min,                  /* ( c-addr u c-addr v ) (R: left  ) */
+            dup, negate, r_plus,                    /* ( c-addr u c-addr v ) (R: left' ) */
+            type,                                   /* ( c-addr u          ) (R: left  ) */
+            r_fetch, zero_equal,                    /* ( c-addr u t|f      ) (R: left  ) */
+        _until_, T(-11),                            /* ( c-addr u          ) (R: 0     ) */
+        two_drop, r_from_drop, exit                 /* (                   )             */
     )
 WORD_END(spaces)
 WORD(swap,             spaces,     DSTACK(2,2), RSTACK(0,0), WORD_PURE)

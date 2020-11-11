@@ -412,7 +412,7 @@ static m4cell m4token_print_lit_string(const m4string str, m4printmode mode, FIL
     } else {
         fprintf(out, "LIT_STRING(%lu, \"", (unsigned long)str.n);
         m4string_print_escape(str, out);
-        fputc('"', out);
+        fputs("\")", out);
     }
     return 1 + (str.n + SZt - 1) / SZt;
 }
