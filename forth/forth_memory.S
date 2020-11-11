@@ -41,7 +41,7 @@ WORD_START(free, allocate)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
-        _c_arg_1_, _c_call_, CELL(malloc), _c_ret_0_,           /* (                   ) */
+        _c_arg_1_, _c_call_, CELL(free), _c_ret_0_,           /* (                   ) */
         zero, exit                                              /* ( 0                 ) */
     )
 WORD_END(free)
