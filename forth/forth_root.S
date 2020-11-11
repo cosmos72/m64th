@@ -37,6 +37,22 @@ WORD_START(forth_wordlist, forth_wordlist)
         exit
     )
 WORD_END(forth_wordlist)
+/*
+ * replace first wordlist in search order with m4th_user wordlist (S: * wid -- * m4th_user )
+ * it is included in forth-root wordlist to allow adding m4th* wordlists to searchorder
+ * after they have been removed for any reason
+ */
+WORD_START(m4th_user,  forth_wordlist)
+    WORD_DSTACK(0,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        _lit_cell_, CELL(m4wordlist_m4th_user),        /* ( wid                ) */
+        searchorder_store_0, exit                      /* (                    ) */
+    )
+WORD_END(m4th_user)
 
 #undef LASTWORD
-#define LASTWORD forth_wordlist
+#define LASTWORD m4th_user

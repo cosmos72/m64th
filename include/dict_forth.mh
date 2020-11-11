@@ -25,8 +25,9 @@
 
 #define DICT_WORDS_FORTH_ROOT(X)                                                                   \
     DICT_TOKENS_FORTH_ROOT(X)                                                                      \
-    X(5, "forth", forth)                                                                           \
-    X(14, "forth-wordlist", forth_wordlist)                                                        \
+    X(5, "forth", forth) /*              set first wordlist in searchorder to 'forth'     */       \
+    X(14, "forth-wordlist", forth_wordlist) /* ( -- wid ) get 'forth' wordlist            */       \
+    X(9, "m4th-user", m4th_user) /*      set first wordlist in searchorder to 'm4th-user' */       \
     X(9, "get-order", get_order)                                                                   \
     X(5, "order", order)                                                                           \
     X(9, "set-order", set_order)
@@ -224,7 +225,6 @@
     /* X(5, "forth", forth) */                    /* already defined in forth_root dict */         \
     /* X(14, "forth-wordlist", forth_wordlist) */ /* already defined in forth_root dict */         \
     /* X(9, "get-order", get_order) */            /* already defined in forth_root dict */         \
-    X(9, "m4th-user", m4th_user) /*      set first wordlist in searchorder to m4th-user */         \
     X(4, "only", only)                                                                             \
     X(8, "previous", previous)                                                                     \
     X(15, "search-wordlist", search_wordlist)                                                      \
