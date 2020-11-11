@@ -36,6 +36,7 @@ DICT_START(forth_root)
 #include "forth_core_ext.S"
 #include "forth_double_ext.S"
 #include "forth_exception.S"
+#include "forth_memory.S"
 #include "forth_tools.S"
 #include "forth_tools_ext.S"
 #include "forth_search_order.S"

@@ -440,9 +440,9 @@
 #undef M4brace_colon /*410*/ /* {: */
 
 /* 'forth' wordlist: 'memory' word set */
-#undef M4allocate /*413*/ /* allocate */
-#undef M4free /*414*/     /* free     */
-#undef M4resize /*415*/   /* resize   */
+#undef M4allocate /*413*/ /* allocate no dedicated m4token */
+#undef M4free /*414*/     /* free     no dedicated m4token */
+#undef M4resize /*415*/   /* resize   no dedicated m4token */
 
 /* 'forth' wordlist: 'tools' word set */
 #undef M4dot_s /*418*/    /* .s       */

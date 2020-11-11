@@ -19,7 +19,7 @@
 
 /* clang-format off */
 
-DICT_WORDS_FORTH_SEARCH_ORDER(WORDNAME)
+DICT_WORDS_FORTH_SEARCHORDER(WORDNAME)
 
 /* duplicate first wordlist in search order (S: wid -- wid wid ) */
 WORD_START(also,       LASTWORD)

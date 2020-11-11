@@ -185,6 +185,15 @@
     X(5, "abort", abort)                                                                           \
     X(5, "catch", catch)
 
+/* ------- forth 2012: memory ------------------------------------------------------------------- */
+#define DICT_TOKENS_FORTH_MEMORY(X) /*                                                       */
+
+#define DICT_WORDS_FORTH_MEMORY(X)                                                                 \
+    DICT_TOKENS_FORTH_MEMORY(X)                                                                    \
+    X(8, "allocate", allocate) /* ( u        -- a-addr ior  ) allocate u bytes of memory */        \
+    X(4, "free", free)         /* ( a-addr   -- ior         ) free memory */                       \
+    X(6, "resize", resize)     /* ( a-addr u -- a-addr' ior ) resize allocated memory to u bytes */
+
 /* ------- forth 2012: tools -------------------------------------------------------------------- */
 #define DICT_TOKENS_FORTH_TOOLS(X)
 
@@ -204,12 +213,12 @@
     X(7, "cs-roll", cs_roll)
 
 /* ------- forth 2012: search order ------------------------------------------------------------- */
-#define DICT_TOKENS_FORTH_SEARCH_ORDER(X)                                                          \
+#define DICT_TOKENS_FORTH_SEARCHORDER(X)                                                           \
     X(11, "get-current", get_current)                                                              \
     X(11, "set-current", set_current)
 
-#define DICT_WORDS_FORTH_SEARCH_ORDER(X)                                                           \
-    DICT_TOKENS_FORTH_SEARCH_ORDER(X)                                                              \
+#define DICT_WORDS_FORTH_SEARCHORDER(X)                                                            \
+    DICT_TOKENS_FORTH_SEARCHORDER(X)                                                               \
     X(4, "also", also)                                                                             \
     X(11, "definitions", definitions)                                                              \
     /* X(5, "forth", forth) */                    /* already defined in forth_root dict */         \
@@ -237,7 +246,7 @@
     DICT_TOKENS_FORTH_DOUBLE_EXT(X)                                                                \
     DICT_TOKENS_FORTH_EXCEPTION(X)                                                                 \
     DICT_TOKENS_FORTH_TOOLS_EXT(X)                                                                 \
-    DICT_TOKENS_FORTH_SEARCH_ORDER(X)                                                              \
+    DICT_TOKENS_FORTH_SEARCHORDER(X)                                                               \
     DICT_TOKENS_FORTH_STRING(X)
 
 #define DICT_WORDS_FORTH(X)                                                                        \
@@ -247,7 +256,7 @@
     DICT_WORDS_FORTH_DOUBLE_EXT(X)                                                                 \
     DICT_WORDS_FORTH_EXCEPTION(X)                                                                  \
     DICT_WORDS_FORTH_TOOLS_EXT(X)                                                                  \
-    DICT_WORDS_FORTH_SEARCH_ORDER(X)                                                               \
+    DICT_WORDS_FORTH_SEARCHORDER(X)                                                                \
     DICT_WORDS_FORTH_STRING(X)
 
 #endif /* M4TH_INCLUDE_DICT_FORTH_MH */
