@@ -133,7 +133,7 @@ struct m4countedstring_s { /**< counted string                   */
 
 struct m4dict_s {         /**< dictionary. used to implement wordlist                */
     int32_t lastword_off; /**< offset of last m4word*,     in bytes. 0 = not present */
-    int16_t name_off;     /**< offset of m4countedstring*, in bytes. 0 = not present */
+    int32_t name_off;     /**< offset of m4countedstring*, in bytes. 0 = not present */
 };
 
 #if 0 /* unused */

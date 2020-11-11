@@ -37,5 +37,22 @@ WORD(get_current,      also,           DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 /* ( wid -- ) set compilation wordlist */
 WORD(set_current,      get_current,    DSTACK(1,0), RSTACK(0,0), WORD_IMPURE)
 
+/*
+ * replace first wordlist in search order with m4th_user wordlist (S: * wid -- * m4th_user )
+ * it is included in forth wordlist to allow adding m4th* wordlists to searchorder
+ * after they have been removed for any reason
+ */
+WORD_START(m4th_user,  set_current)
+    WORD_DSTACK(0,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        _lit_cell_, CELL(m4wordlist_m4th_user),        /* ( wid                ) */
+        searchorder_store_0, exit                      /* (                    ) */
+    )
+WORD_END(m4th_user)
+
 #undef LASTWORD
-#define LASTWORD set_current
+#define LASTWORD m4th_user

@@ -25,22 +25,8 @@
 
 DICT_WORDS_FORTH_ROOT(WORDNAME)
 
-#define LASTWORD forth
-
-/* replace first wordlist in search order with forth wordlist (S: wid -- forth ) */
-WORD_START(forth,          LASTWORD)
-    WORD_DSTACK(0,0)
-    WORD_RSTACK(0,0)
-    WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
-    WORD_FLAGS(M4FLAG_INLINE)
-    WORD_CODE(
-        CALL(forth_wordlist),                          /* ( wid              ) */
-        searchorder_store_0, exit                      /* (                  ) */
-    )
-WORD_END(forth)
 /* ( -- wid ) get forth wordlist */
-WORD_START(forth_wordlist, forth)
+WORD_START(forth_wordlist, forth_wordlist)
     WORD_DSTACK(0,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()

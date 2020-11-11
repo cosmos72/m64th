@@ -18,11 +18,10 @@
 
 also m4th-core \ searchorder*
 
-
-\ set compilation wordlist to first wordlist in search order
-: definitions \ ( -- )
-   0 searchorder-pick                      \ ( wid                 )
-   set-current ;                           \ (                     )
+\ replace first wordlist in search order with 'forth' wordlist
+: forth \ (S: wid -- forth )
+   forth-wordlist                          \ ( wid                 )
+   searchorder[0]! ;                       \ (                     )
 
 
 \ get all wordlists in search order
@@ -35,27 +34,15 @@ also m4th-core \ searchorder*
    searchorder-depth ;                     \ ( widn .. wid1 n      )
 
 
-\ set search order to the single wordlist forth-root
-: only \ (S: * -- forth-root )
-   searchorder-clear also forth-root ;
+\ type the wordlists in search order
+: order
+   get-order 0                             \ ( widn .. wid1 n 0    )
+   ?do                                     \ ( widn .. widi        ) (R: n i )
+      space wordlist>string type           \ ( widn .. widi+1      ) (R: n i )
+   loop                                    \ (                     )
+   4 spaces get-current                    \ ( wid                 )
+   wordlist>string type ;                  \ (                     )
 
-
-\ remove first wordlist in search order
-: previous \ (S: wid -- )
-   searchorder-drop ;
-
-
-\ search for name in specified wordlist. return XT plus immediate flag, or zero
-: search-wordlist \ ( c-addr u wid -- 0 | xt 1 | xt -1 )
-   wordlist-find                           \ ( nt|0 -1|0|1         )
-   dup if                                  \ ( nt   -1|1           )
-      swap name>xt swap                    \ ( xt   -1|1           )
-   else                                    \ ( 0    0              )
-      nip                                  \ ( 0                   )
-   then ;                                  \ ( 0 | xt 1 | xt -1    )
-
-
-disassemble-upto definitions
 
 \ set the search order to exactly ( widn ... wid1 )
 \ if n is -1, set implementation-defined minimum search order
@@ -73,4 +60,5 @@ disassemble-upto definitions
    r>                                      \ ( * n                 )
    n>drop ;                                \ (                     )
 
-\ set-order is included in m4wordlist_forth_root : do not disassemble it here
+
+disassemble-upto forth

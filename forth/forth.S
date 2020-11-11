@@ -24,11 +24,10 @@
 /* clang-format off */
 
 /* ---------------------------------------------------------------------------------------------- */
-DICTNAME(10, "forth-root", forth_root)
-DICTNAME(5,  "forth", forth)
 
 DICT_START(forth_root)
 #include "forth_root.S"
+#include "forth_root_gen.S"
 DICT_BODY(forth_root, LASTWORD)
 DICT_END(forth_root)
 

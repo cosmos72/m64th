@@ -63,7 +63,7 @@ static inline m4cell dpop(m4th *m) {
 
 static void m4char_print_escape(const m4char ch, FILE *out) {
     const char *seq = NULL;
-    if (ch >= ' ' && ch <= '~' && ch != '\\') {
+    if (ch >= ' ' && ch <= '~' && ch != '\\' && ch != '\'' && ch != '"') {
         fputc((char)ch, out);
         return;
     }
@@ -406,7 +406,7 @@ static m4cell m4token_print_lit_xt(const m4token *code, m4printmode mode, FILE *
 
 static m4cell m4token_print_lit_string(const m4string str, m4printmode mode, FILE *out) {
     if (mode == m4mode_user) {
-        fputs("s\" ", out);
+        fputs("s\\\" ", out);
         m4string_print_escape(str, out);
         fputs("\" ", out);
     } else {

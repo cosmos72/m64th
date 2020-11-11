@@ -32,7 +32,7 @@
 #undef M4number_sign /*2*/        /* #        */
 #undef M4num_end /*3*/            /* #>       */
 #undef M4num_s /*4*/              /* #s       */
-#undef M4tick /*5*/               /* '        implemented in forth, no dedicated m4token */
+#undef M4tick /*5*/               /* '        no dedicated m4token */
 #undef M4paren /*6*/              /* (        */
 #define M4times 7                 /* *        */
 #define M4times_div 8             /* * /      */
@@ -42,7 +42,7 @@
 #define M4plus_loop 12            /* +loop    */
 #define M4comma 13                /* ,        */
 #define M4minus 14                /* -        */
-#undef M4dot /*15*/               /* .        implemented in forth, no dedicated m4token */
+#undef M4dot /*15*/               /* .        no dedicated m4token */
 #undef M4dot_quote /*16*/         /* ."       */
 #define M4div 17                  /* /        */
 #define M4div_mod 18              /* /mod     */
@@ -59,18 +59,18 @@
 #define M4two_over 29             /* 2over    */
 #define M4two_swap 30             /* 2swap    */
 #define M4colon 31                /* :        implemented in forth, this is just a marker */
-#undef M4semi /*32*/              /* ;        implemented in forth, no dedicated m4token */
+#undef M4semi /*32*/              /* ;        no dedicated m4token */
 #define M4less 33                 /* <        */
 #undef M4num_start /*34*/         /* <#       */
 #define M4equal 35                /* =        */
 #define M4more 36                 /* >        */
 #undef M4to_body /*37*/           /* >body    */
-#undef M4to_in /*38*/             /* >in      implemented in forth, no dedicated m4token */
-#undef M4to_number /*39*/         /* >number  implemented in forth, no dedicated m4token */
+#undef M4to_in /*38*/             /* >in      no dedicated m4token */
+#undef M4to_number /*39*/         /* >number  no dedicated m4token */
 #define M4to_r 40                 /* >r       */
 #define M4question_dup 41         /* ?dup     */
 #define M4fetch 42                /* @        */
-#undef M4abort /*43*/             /* abort    implemented in forth, no dedicated m4token */
+#undef M4abort /*43*/             /* abort    no dedicated m4token */
 #undef M4abort_quote /*44*/       /* abort"   */
 #define M4abs 45                  /* abs      */
 #undef M4accept /*46*/            /* accept   */
@@ -89,9 +89,9 @@
 #define M4char 59                 /* char     */
 #define M4char_plus 60            /* char+    */
 #define M4chars 61                /* chars    */
-#undef M4constant /*62*/          /* constant implemented in forth, no dedicated m4token */
+#undef M4constant /*62*/          /* constant no dedicated m4token */
 #define M4count 63                /* count    */
-#undef M4cr /*64*/                /* cr       implemented in forth, no dedicated m4token */
+#undef M4cr /*64*/                /* cr       no dedicated m4token */
 #undef M4create /*65*/            /* create   */
 #undef M4decimal /*66*/           /* decimal  */
 #define M4depth 67                /* depth    */
@@ -99,24 +99,24 @@
 #undef M4does /*69*/              /* does     */
 #define M4drop 70                 /* drop     */
 #define M4dup 71                  /* dup      */
-#undef M4else /*72*/              /* else     implemented in forth, no dedicated m4token */
+#undef M4else /*72*/              /* else     no dedicated m4token */
 #define M4emit 73                 /* emit     */
 #undef M4environment_query /*74*/ /* environment? */
 #undef M4evaluate /*75*/          /* evaluate */
 #define M4execute 76              /* execute  */
 #define M4exit 77                 /* exit     */
 #define M4fill 78                 /* fill     */
-#undef M4find /*79*/              /* find     implemented in forth, no dedicated m4token */
+#undef M4find /*79*/              /* find     no dedicated m4token */
 #define M4f_m_div_mod 80          /* fm/mod   */
 #define M4here 81                 /* here     */
 #undef M4hold /*82*/              /* hold     */
 #define M4i 83                    /* i        */
-#undef M4if /*84*/                /* if       implemented in forth, no dedicated m4token */
+#undef M4if /*84*/                /* if       no dedicated m4token */
 #define M4immediate 85            /* immediate*/
 #define M4invert 86               /* invert   */
 #define M4j 87                    /* j        */
 #undef M4key /*88*/               /* key      */
-#undef M4leave /*89*/             /* leave    implemented in forth, no dedicated m4token */
+#undef M4leave /*89*/             /* leave    no dedicated m4token */
 #undef M4literal /*90*/           /* literal  defineimplemented in forth, no dedicated m4token */
 #undef M4loop /*91*/              /* loop     defineimplemented in forth, no dedicated m4token */
 #define M4lshift 92               /* lshift   */
@@ -128,21 +128,21 @@
 #define M4negate 98               /* negate   */
 #define M4or 99                   /* or       */
 #define M4over 100                /* over     */
-#undef M4postpone /*101*/         /* postpone implemented in forth, no dedicated m4token */
+#undef M4postpone /*101*/         /* postpone no dedicated m4token */
 #undef M4quit /*102*/             /* quit     */
 #define M4r_from 103              /* r>       */
 #define M4r_fetch 104             /* r@       */
 #undef M4recurse /*105*/          /* recurse  */
-#undef M4repeat /*106*/           /* repeat   implemented in forth, no dedicated m4token */
+#undef M4repeat /*106*/           /* repeat   no dedicated m4token */
 #define M4rot 107                 /* rot      ( a b c -- b c a ) */
 #define M4rshift 108              /* rshift   */
-#undef M4s_quote /*109*/          /* s"       implemented in forth, no dedicated m4token */
+#undef M4s_quote /*109*/          /* s"       no dedicated m4token */
 #undef M4s_to_d /*110*/           /* s>d      */
 #undef M4sign /*111*/             /* sign     */
 #undef M4s_m_div_rem /*112*/      /* sm/rem   */
-#undef M4source /*113*/           /* source   implemented in forth, no dedicated m4token */
+#undef M4source /*113*/           /* source   no dedicated m4token */
 #undef M4space /*114*/            /* space    */
-#undef M4spaces /*115*/           /* spaces   */
+#undef M4spaces /*115*/           /* spaces   no dedicated m4token */
 #define M4state 116               /* state    */
 #define M4swap 117                /* swap     */
 #define M4then 118                /* then     */
@@ -152,13 +152,13 @@
 #undef M4u_m_times /*122*/        /* um*      */
 #undef M4u_m_div_mod /*123*/      /* um/mod   */
 #define M4unloop 124              /* unloop   */
-#undef M4until /*125*/            /* until    implemented in forth, no dedicated m4token */
+#undef M4until /*125*/            /* until    no dedicated m4token */
 #undef M4variable /*126*/         /* variable */
-#undef M4while /*127*/            /* while    implemented in forth, no dedicated m4token */
+#undef M4while /*127*/            /* while    no dedicated m4token */
 #undef M4word /*128*/             /* word     */
 #define M4xor 129                 /* xor      */
 #define M4left_bracket 130        /* [        */
-#undef M4bracket_tick /*131*/     /* [']      implemented in forth, no dedicated m4token */
+#undef M4bracket_tick /*131*/     /* [']      no dedicated m4token */
 #undef M4bracket_char /*132*/     /* [char]   */
 #define M4right_bracket 133       /* ]        */
 
@@ -172,13 +172,13 @@
 #define M4two_r_fetch 142        /* 2r@      */
 #undef M4colon_noname /*143*/    /* :noname  */
 #define M4ne 144                 /* <>       */
-#undef M4question_do /*145*/     /* ?do      implemented in forth, no dedicated m4token */
+#undef M4question_do /*145*/     /* ?do      no dedicated m4token */
 #undef M4action_of /*146*/       /* action_of    */
-#undef M4again /*147*/           /* again    implemented in forth, no dedicated m4token */
+#undef M4again /*147*/           /* again    no dedicated m4token */
 #undef M4buffer_colon /*148*/    /* buffer:  */
 #undef M4c_quote /*149*/         /* c"       */
 #undef M4case /*150*/            /* case     */
-#undef M4compile_comma /*151*/   /* compile, implemented in forth, no dedicated m4token */
+#undef M4compile_comma /*151*/   /* compile, no dedicated m4token */
 #undef M4defer /*152*/           /* defer    */
 #undef M4defer_store /*153*/     /* defer!   */
 #undef M4defer_fetch /*154*/     /* defer@   */
@@ -186,7 +186,7 @@
 #undef M4endof /*156*/           /* endof    */
 #undef M4erase /*157*/           /* erase    */
 #define M4false 158              /* false    */
-#undef M4hex /*159*/             /* hex      implemented in forth, no dedicated m4token */
+#undef M4hex /*159*/             /* hex      no dedicated m4token */
 #undef M4holds /*160*/           /* holds    */
 #undef M4is /*161*/              /* is       */
 #undef M4marker /*162*/          /* marker   */
@@ -194,7 +194,7 @@
 #undef M4of /*164*/              /* of       */
 #undef M4pad /*165*/             /* pad      */
 #undef M4parse /*166*/           /* parse    */
-#undef M4parse_name /*167*/      /* parse-name   implemented in forth, no dedicated m4token */
+#undef M4parse_name /*167*/      /* parse-name   no dedicated m4token */
 #define M4pick 168               /* pick     */
 #undef M4refill /*169*/          /* refill   */
 #undef M4restore_input /*170*/   /* restore-input    */
@@ -211,7 +211,7 @@
 #undef M4value /*181*/           /* value    */
 #define M4within 182             /* within   */
 #undef M4bracket_compile /*183*/ /* [compile]    */
-#undef M4backslash /*184*/       /* \        implemented in forth, no dedicated m4token */
+#undef M4backslash /*184*/       /* \        no dedicated m4token */
 #undef M4num_t_i_b               /* #tib     (removed in Forth 2012) */
 #undef M4convert                 /* convert  (removed in Forth 2012) */
 #undef M4expect                  /* expect   (removed in Forth 2012) */
@@ -265,7 +265,7 @@
 #undef M4d_u_less /*235*/  /* du<      */
 
 /* 'forth' wordlist: 'exception' word set */
-#undef M4catch /*238*/ /* catch    implemented in forth, no dedicated m4token */
+#undef M4catch /*238*/ /* catch    no dedicated m4token */
 #define M4throw 239    /* throw    */
 
 /* 'forth' wordlist: 'exception ext' word set */
@@ -464,7 +464,7 @@
 #undef M4n_to_r /*434*/            /* n>r      */
 #undef M4name_to_compile /*435*/   /* name>compile */
 #undef M4name_to_interpret /*436*/ /* name>interpret   */
-#define M4name_to_string 437       /* name>string ( nt -- addr u  ) convert name to string */
+#define M4name_to_string 437       /* name>string ( nt -- c-addr u  ) convert name to string */
 #undef M4nr_from /*438*/           /* nr>      */
 /*extends M4state*/ /*439*/        /* state    */
 #undef M4synonym /*440*/           /* synonym  */
@@ -476,22 +476,22 @@
 #undef M4bracket_undefined /*446*/ /* [undefined]  */
 
 /* 'forth' wordlist: 'search order' word set */
-#undef M4definitions /*449*/     /* definitions     implemented in forth, no dedicated m4token */
+#undef M4definitions /*449*/     /* definitions     no dedicated m4token */
 #undef M4find /*450*/            /* find            */
-#undef M4forth_wordlist /*451*/  /* forth-wordlist  implemented in forth, no dedicated m4token */
+#undef M4forth_wordlist /*451*/  /* forth-wordlist  no dedicated m4token */
 #define M4get_current 452        /* get-current     */
-#undef M4get_order /*453*/       /* get-order       implemented in forth, no dedicated m4token */
-#undef M4search_wordlist /*454*/ /* search-wordlist implemented in forth, no dedicated m4token */
+#undef M4get_order /*453*/       /* get-order       no dedicated m4token */
+#undef M4search_wordlist /*454*/ /* search-wordlist no dedicated m4token */
 #define M4set_current 455        /* set-current     */
-#undef M4set_order /*456*/       /* set-order       */
+#undef M4set_order /*456*/       /* set-order       no dedicated m4token */
 #undef M4wordlist /*457*/        /* wordlist        */
 
 /* 'forth' wordlist: 'search order ext' word set */
-#undef M4also /*460*/     /* also       */
-#undef M4forth /*461*/    /* forth      */
-#undef M4only /*462*/     /* only       */
-#undef M4order /*463*/    /* order      */
-#undef M4previous /*464*/ /* previous   */
+#undef M4also /*460*/     /* also       no dedicated m4token */
+#undef M4forth /*461*/    /* forth      no dedicated m4token */
+#undef M4only /*462*/     /* only       no dedicated m4token */
+#undef M4order /*463*/    /* order      no dedicated m4token */
+#undef M4previous /*464*/ /* previous   no dedicated m4token */
 
 /* 'forth' wordlist: 'string' word set */
 #undef M4minus_trailing /*467*/ /* -trailing  */

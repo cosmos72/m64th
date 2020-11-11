@@ -49,11 +49,21 @@ m4pair m4th_c_linenoise(const char *prompt, char *addr, size_t len) {
     return ret;
 }
 
-static int m4th_c_is_prefix_of_string(linenoiseString prefix, linenoiseString str) {
+static int m4th_c_string_is_prefix_of(linenoiseString prefix, linenoiseString str) {
     return str.len > prefix.len && !strncasecmp(str.addr, prefix.addr, prefix.len);
 }
 
-static int m4th_c_compare_string(const void *left, const void *right) {
+static m4cell m4th_c_string_equals(const linenoiseString a, const linenoiseString b) {
+    if (a.len != b.len) {
+        return tfalse;
+    } else if (a.addr == b.addr || a.len == 0) {
+        return ttrue;
+    } else {
+        return memcmp(a.addr, b.addr, a.len) == 0 ? ttrue : tfalse;
+    }
+}
+
+static int m4th_c_string_compare(const void *left, const void *right) {
     const linenoiseString *a = (const linenoiseString *)left;
     const linenoiseString *b = (const linenoiseString *)right;
     const size_t alen = a->len, blen = b->len;
@@ -64,16 +74,41 @@ static int m4th_c_compare_string(const void *left, const void *right) {
     return alen < blen ? -1 : alen > blen ? 1 : 0;
 }
 
-static void m4th_c_sort_completions(linenoiseStrings *completions) {
-    const size_t n = completions->size;
+static void m4th_c_strings_sort(linenoiseStrings *strings) {
+    const size_t n = strings->size;
     if (n > 1) {
-        qsort(completions->vec, n, sizeof(linenoiseString), m4th_c_compare_string);
+        qsort(strings->vec, n, sizeof(linenoiseString), m4th_c_string_compare);
     }
+}
+
+/* remove duplicates. note: strings must be already sorted */
+static void m4th_c_strings_unique(linenoiseStrings *strings) {
+    linenoiseString last = {};
+    const size_t n = strings->size;
+    size_t i = 0, j = 0;
+    for (; i < n; i++) {
+        linenoiseString curr = strings->vec[i];
+        if (!m4th_c_string_equals(last, curr)) {
+            strings->vec[j++] = last = curr;
+        }
+    }
+    strings->size = j;
+}
+
+/* return != 0 if wid is present in searchorder */
+static m4cell m4th_c_searchorder_find(const m4searchorder *searchorder, const m4wordlist *wid) {
+    for (m4cell i = 0, n = searchorder->n; i < n; i++) {
+        if (searchorder->addr[i] == wid) {
+            return ttrue;
+        }
+    }
+    return tfalse;
 }
 
 /* callback invoked by linenoise() when user presses TAB to complete a word */
 linenoiseString m4th_c_complete_word(linenoiseString input, linenoiseStrings *completions,
                                      void *userData) {
+    m4searchorder searchorder = {};
     m4th *m = (m4th *)userData;
     m4cell i, n;
     for (n = input.len, i = n; i > 0; i--) {
@@ -85,18 +120,30 @@ linenoiseString m4th_c_complete_word(linenoiseString input, linenoiseStrings *co
     input.len -= i;
     input.addr += i;
 
-    for (n = m->searchorder.n, i = n - 1; i >= 0; i--) {
-        const m4wordlist *wid = m->searchorder.addr[i];
+    /* copy m->searchorder ignoring repeated wordlists */
+    for (i = 0, n = m->searchorder.n; i < n; i++) {
+        m4wordlist *wid = m->searchorder.addr[i];
+        if (!m4th_c_searchorder_find(&searchorder, wid)) {
+            searchorder.addr[searchorder.n++] = wid;
+        }
+    }
+
+    /* priority of each wordlist in searchorder does not matter here:  */
+    /* we simply collect all words, and any duplicate due to shadowing */
+    /* will be merged by m4th_c_strings_unique() below                 */
+    for (i = 0, n = searchorder.n; i < n; i++) {
+        const m4wordlist *wid = searchorder.addr[i];
         const m4word *w = m4wordlist_lastword(wid);
         while (w != NULL) {
             const m4string str = m4word_name(w);
             const linenoiseString completion = {str.n, (const char *)str.addr};
-            if (m4th_c_is_prefix_of_string(input, completion)) {
+            if (m4th_c_string_is_prefix_of(input, completion)) {
                 linenoiseAddCompletion(completions, completion);
             }
             w = m4word_prev(w);
         }
     }
-    m4th_c_sort_completions(completions);
+    m4th_c_strings_sort(completions);
+    m4th_c_strings_unique(completions);
     return input;
 }

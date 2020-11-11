@@ -230,14 +230,13 @@
     X(16, "disassemble-upto", disassemble_upto)                                                    \
     X(9, "ex>string", ex_to_string) /* ( ex -- c-addr u ) get exception name          */           \
                                     /* ( map key -- key val t|f ) find entry in hashmap/int  */    \
-    /* X(10, "forth-root", forth_root) */ /* set first wordlist in searchorder to forth-root   */  \
+    X(10, "forth-root", forth_root) /* set first wordlist in searchorder to forth-root   */        \
     X(16, "hashmap-find/int", hashmap_find_int)                                                    \
-    X(9, "interpret", interpret)       /* one iteration of forth interpret/compile loop  */        \
-    /* X(6, "m4th-c", m4th_c) */       /* set first wordlist in searchorder to m4th-c    */        \
-    /* X(9, "m4th-core", m4th_core) */ /* set first wordlist in searchorder to m4th-core */        \
-    /* X(9, "m4th-impl", m4th_impl) */ /* set first wordlist in searchorder to m4th-impl */        \
-    /* X(9, "m4th-user", m4th_user) */ /* set first wordlist in searchorder to m4th-user */        \
-    X(4, "repl", repl)                 /* call INTERPRET repeatedly until EOF or input error    */ \
+    X(9, "interpret", interpret) /* one iteration of forth interpret/compile loop  */              \
+    X(6, "m4th-c", m4th_c)       /* set first wordlist in searchorder to m4th-c    */              \
+    X(9, "m4th-core", m4th_core) /* set first wordlist in searchorder to m4th-core */              \
+    X(9, "m4th-impl", m4th_impl) /* set first wordlist in searchorder to m4th-impl */              \
+    X(4, "repl", repl)           /* call INTERPRET repeatedly until EOF or input error    */       \
     X(5, "r2nd@", r2nd_fetch)   /* alias of '2r@ drop' i.e. fetch second item from return stack */ \
     X(8, "string<>", string_ne) /* ( addr1 addr2 u -- addr1 addr2 u t|f )                */        \
     X(11, "string-ci<>", string_ci_ne) /* ( addr1 addr2 u -- addr1 addr2 u t|f )         */        \
@@ -316,7 +315,8 @@
     X(17, "wordlist-add-name", wordlist_add_name) /*   ( nt wid -- ) add name to wordlist       */ \
     X(18, "wordlist-last-name", wordlist_last_name) /* ( wid -- nt ) get last name in wordlist  */ \
     X(14, "wordlist-reset", wordlist_reset) /* ( wid -- ) remove all user-defined names from wid*/ \
-    X(7, "xt>name", xt_to_name)             /* ( XT  -- nt ) convert XT to name                 */
+    X(15, "wordlist>string", wordlist_to_string) /* ( wid -- c-addr u ) convert wid to string   */ \
+    X(7, "xt>name", xt_to_name) /*                  ( XT  -- nt ) convert XT to name            */
 
 #define DICT_WORDS_M4TH_CORE(X)                                                                    \
     DICT_TOKENS_M4TH_CORE(X)                                                                       \

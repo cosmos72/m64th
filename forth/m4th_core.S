@@ -641,7 +641,8 @@ WORD_END(wordlist_find)
 WORD(wordlist_add_name,    wordlist_find,      DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH | M4FLAG_MEM_STORE)
 WORD(wordlist_last_name,   wordlist_add_name,  DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 WORD(wordlist_reset,       wordlist_last_name, DSTACK(1,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE)
-WORD(xt_to_name,           wordlist_reset,     DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD(wordlist_to_string,   wordlist_last_name, DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(xt_to_name,           wordlist_to_string, DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 
 #undef LASTWORD
 #define LASTWORD xt_to_name

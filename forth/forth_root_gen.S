@@ -24,51 +24,53 @@
  * with some manual fixes to stack effects and flags
  */
 
-WORD_START(definitions, LASTWORD)
-    WORD_STACK_NONE()
-    WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
-    WORD_FLAGS(M4FLAG_INLINE)
-    WORD_CODE_AND_DATA(definitions,
-        WORD_CODE_TOKENS(
-            /*4*/ zero, searchorder_pick, set_current, exit
-        ),
-    )
-WORD_END(definitions)
-WORD_START(only, definitions)
-    WORD_STACK_NONE()
-    WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
-    WORD_FLAGS(M4FLAG_INLINE)
-    WORD_CODE_AND_DATA(only,
-        WORD_CODE_TOKENS(
-            /*9*/ searchorder_clear, searchorder_dup, _lit_cell_, CELL(m4wordlist_forth_root), searchorder_store_0, exit
-        ),
-    )
-WORD_END(only)
-WORD_START(previous, only)
-    WORD_STACK_NONE()
-    WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
-    WORD_FLAGS(M4FLAG_INLINE)
-    WORD_CODE_AND_DATA(previous,
-        WORD_CODE_TOKENS(
-            /*2*/ searchorder_drop, exit
-        ),
-    )
-WORD_END(previous)
-WORD_START(search_wordlist,    previous)
-    WORD_DSTACK(3,-1)
+/* replace first wordlist in search order with forth wordlist (S: wid -- forth ) */
+WORD_START(forth,          LASTWORD)
+    WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
-    WORD_FLAGS(M4FLAG_INLINE|M4FLAG_MEM_FETCH)
-    WORD_CODE_AND_DATA(search_wordlist,
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        /*6*/ CALL(forth_wordlist), searchorder_store_0, exit
+    )
+WORD_END(forth)
+WORD_START(get_order, forth)
+    WORD_DSTACK(0,-1)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE_AND_DATA(get_order,
         WORD_CODE_TOKENS(
-            /*16*/ CALL(wordlist_find), dup, _if_, T(5), swap, name_to_xt, swap, _else_, T(2), nip, then, exit
+            /*13*/ searchorder_depth, zero, _q_do_, T(7), i_prime, i, minus, one_minus, searchorder_pick, _loop_, T(-7), searchorder_depth, exit
         ),
     )
-WORD_END(search_wordlist)
+WORD_END(get_order)
+WORD_START(order, get_order)
+    WORD_DSTACK(0,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE_AND_DATA(order,
+        WORD_CODE_TOKENS(
+            /*24*/ CALL(get_order), zero, _q_do_, T(6), bl, emit, wordlist_to_string, type, _loop_, T(-6), four, CALL(spaces), get_current, wordlist_to_string, type, exit
+        ),
+    )
+WORD_END(order)
+WORD_START(set_order, order)
+    WORD_DSTACK(-1, 0)
+    WORD_RSTACK(0, 0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(0)
+    WORD_CODE_AND_DATA(set_order,
+        WORD_CODE_TOKENS(
+            /*28*/ dup, zero_less, _if_, T(8), CALL(only), drop, exit, then, searchorder_clear, dup_to_r, zero, swap, _q_do_, T(7), i, pick, searchorder_dup, searchorder_store_0, minus_one, _plus_loop_, T(-7), r_from, n_to_drop, exit
+        ),
+    )
+WORD_END(set_order)
 
 #undef LASTWORD
-#define LASTWORD search_wordlist
+#define LASTWORD set_order

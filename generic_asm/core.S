@@ -324,6 +324,22 @@ FUNC_START(wordlist_reset) /* ( wid -- ) */
 FUNC_END(wordlist_reset)
 
 
+FUNC_START(wordlist_to_string) /* ( wid -- c-addr u ) */
+        LOAD(  REG1,       AT(DTOP, M4WORDLIST_OFF_DICT))   /* a = dict               */
+        ZERO(  DTOP)                                        /* u = dtop = 0           */
+        LD_sw( REG2,       AT(REG1, DICT_OFF_NAME_OFF))     /* b = dict.name_off      */
+        ZERO(  REG3)                                        /* c-addr = c = 0         */
+        JZ(    REG2,       TO(wordlist_to_string.done))
+
+        SUB2(  REG2,       REG1)                            /* a = m4countedstring*   */
+        LD_ub( DTOP,       AT(REG1))                        /* u = dtop = string.n    */
+        ADDI(  REG1,   1,  REG3)                            /* c-addr = c = string.addr */
+
+LABEL(wordlist_to_string.done)
+        DPUSH( REG3)                                        /* ( c-addr u           ) */
+FUNC_END(wordlist_to_string)
+
+
 FUNC_START(xt_to_name)     /* ( xt -- nt ) */
         SUB2(  IMM(WORD_OFF_XT), DTOP)                 /* dtop = w               */
 FUNC_END(xt_to_name)

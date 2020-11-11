@@ -373,9 +373,15 @@
 #define M4wordlist_add_name M4_(53)   /* ( nt wid -- ) add name to wordlist                     */
 #define M4wordlist_last_name M4_(54)  /* ( wid -- nt ) get last name in a wordlist              */
 #define M4wordlist_reset M4_(55)      /* ( wid --    ) remove all user-defined names from wid   */
+#define M4wordlist_to_string M4_(56)  /* ( wid -- c-addr u ) convert wid to string */
 #undef M4____gap                      /*                                         */
-#define M4xt_to_name M4_(57)          /* xt>name       ( XT -- nt ) get name from XT */
+#define M4xt_to_name M4_(58)          /* xt>name       ( XT -- nt ) get name from XT */
+#undef M4____gap                      /*                                         */
+#undef M4____gap                      /*                                         */
 
+/* */
+/* */
+/* */
 /* */
 /* */
 /* */

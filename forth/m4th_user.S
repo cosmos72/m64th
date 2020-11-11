@@ -248,7 +248,7 @@ WORD(i_prime,          i_minus,        DSTACK(0,1), RSTACK(2,2), WORD_R_PURE)
  *         that when executed will place the number on the data stack
  *    otherwise, throw
  */
-WORD_START(interpret,  i_minus)
+WORD_START(interpret,  i_prime)
     WORD_DSTACK(-1,-1)
     WORD_RSTACK(-1,-1)
     WORD_STACK_NONE()
@@ -326,19 +326,7 @@ WORD_START(m4th_impl,  m4th_core)
         searchorder_store_0, exit                      /* (                    ) */
     )
 WORD_END(m4th_impl)
-/* replace first wordlist in search order with m4th_user wordlist (S: wid -- m4th_user ) */
-WORD_START(m4th_user,  m4th_impl)
-    WORD_DSTACK(0,0)
-    WORD_RSTACK(0,0)
-    WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
-    WORD_FLAGS(M4FLAG_INLINE)
-    WORD_CODE(
-        _lit_cell_, CELL(m4wordlist_m4th_user),        /* ( wid                ) */
-        searchorder_store_0, exit                      /* (                    ) */
-    )
-WORD_END(m4th_user)
-WORD(noop,             m4th_user,      DSTACK(0,0), RSTACK(0,0), WORD_PURE)
+WORD(noop,             m4th_impl,      DSTACK(0,0), RSTACK(0,0), WORD_PURE)
 WORD(n_to_drop,        noop,           DSTACK(-1,0),RSTACK(0,0), WORD_PURE)
 WORD(r_store,          n_to_drop,      DSTACK(1,0), RSTACK(1,1), WORD_R_PURE)
 WORD(r_plus,           r_store,        DSTACK(1,0), RSTACK(1,1), WORD_R_PURE)

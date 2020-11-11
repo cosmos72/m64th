@@ -21,7 +21,6 @@
 #include "../include/dict_m4th.mh"
 
 DICT_START(m4th_c)
-DICTNAME(6, "m4th-c", m4th_c)
 DICT_WORDS_M4TH_C(WORDNAME)
 #include "m4th_c.S"
 DICT_BODY(m4th_c, LASTWORD)
@@ -30,7 +29,6 @@ DICT_END(m4th_c)
 /**/
 
 DICT_START(m4th_core)
-DICTNAME(9, "m4th-core", m4th_core)
 DICT_WORDS_M4TH_CORE(WORDNAME)
 #include "m4th_core.S"
 DICT_BODY(m4th_core, LASTWORD)
@@ -39,7 +37,6 @@ DICT_END(m4th_core)
 /**/
 
 DICT_START(m4th_impl)
-DICTNAME(9, "m4th-impl", m4th_impl)
 DICT_WORDS_M4TH_IMPL(WORDNAME)
 #include "m4th_impl.S"
 DICT_BODY(m4th_impl, LASTWORD)
@@ -48,7 +45,6 @@ DICT_END(m4th_impl)
 /**/
 
 DICT_START(m4th_user)
-DICTNAME(9, "m4th-user", m4th_user)
 DICT_WORDS_M4TH_USER(WORDNAME)
 #include "m4th_user.S"
 #include "m4th_user_gen.S"

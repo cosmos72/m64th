@@ -25,7 +25,10 @@
 
 #define DICT_WORDS_FORTH_ROOT(X)                                                                   \
     DICT_TOKENS_FORTH_ROOT(X)                                                                      \
+    X(5, "forth", forth)                                                                           \
     X(14, "forth-wordlist", forth_wordlist)                                                        \
+    X(9, "get-order", get_order)                                                                   \
+    X(5, "order", order)                                                                           \
     X(9, "set-order", set_order)
 
 /* ------- forth 2012: core --------------------------------------------------------------------- */
@@ -139,6 +142,7 @@
     X(2, "s\"", s_quote)                                                                           \
     X(6, "source", source)                                                                         \
     X(5, "space", space)                                                                           \
+    X(6, "spaces", spaces)                                                                         \
     X(5, "until", until)                                                                           \
     X(8, "variable", variable)                                                                     \
     X(5, "while", while)                                                                           \
@@ -192,7 +196,7 @@
 /* ------- forth 2012: tools ext ---------------------------------------------------------------- */
 #define DICT_TOKENS_FORTH_TOOLS_EXT(X)                                                             \
     X(3, "bye", bye)                                                                               \
-    X(11, "name>string", name_to_string) /* ( nt -- addr n  ) convert name to string           */
+    X(11, "name>string", name_to_string) /* ( nt -- c-addr u  ) convert name to string */
 
 #define DICT_WORDS_FORTH_TOOLS_EXT(X)                                                              \
     DICT_TOKENS_FORTH_TOOLS_EXT(X)                                                                 \
@@ -208,9 +212,10 @@
     DICT_TOKENS_FORTH_SEARCH_ORDER(X)                                                              \
     X(4, "also", also)                                                                             \
     X(11, "definitions", definitions)                                                              \
-    /* X(5, "forth", forth) */                    /* already defined as dict name */               \
+    /* X(5, "forth", forth) */                    /* already defined in forth_root dict */         \
     /* X(14, "forth-wordlist", forth_wordlist) */ /* already defined in forth_root dict */         \
-    X(9, "get-order", get_order)                                                                   \
+    /* X(9, "get-order", get_order) */            /* already defined in forth_root dict */         \
+    X(9, "m4th-user", m4th_user) /*      set first wordlist in searchorder to m4th-user */         \
     X(4, "only", only)                                                                             \
     X(8, "previous", previous)                                                                     \
     X(15, "search-wordlist", search_wordlist)                                                      \

@@ -474,15 +474,7 @@ WORD_START(s_quote, rshift)
         CALL(compile_string_comma), exit
     )
 WORD_END(s_quote)
-WORD_START(space, s_quote)
-    WORD_DSTACK(0,0)
-    WORD_RSTACK(0,0)
-    WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
-    WORD_FLAGS(M4FLAG_INLINE)
-    WORD_CODE(bl, emit, exit)
-WORD_END(space)
-WORD(state,            space,     DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
+WORD(state,            s_quote,    DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 /* source ( -- c-addr u ) get entire content of input buffer (including already parsed data) */
 WORD_START(source,     state)
     WORD_DSTACK(0,2)
@@ -492,7 +484,33 @@ WORD_START(source,     state)
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(in_to_ibuf, iobuf_all_data, exit)
 WORD_END(source)
-WORD(swap,             source,     DSTACK(2,2), RSTACK(0,0), WORD_PURE)
+WORD_START(space, source)
+    WORD_DSTACK(0,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(bl, emit, exit)
+WORD_END(space)
+WORD_START(spaces, space)
+    WORD_DSTACK(1,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        /*                    TODO: optimize                             */
+        dup, zero_less_equal,                       /* ( n t|f         ) */
+        _if_, T(3),                                 /* ( n             ) */
+            drop,                                   /* (               ) */
+        _else_, T(6),                               /* ( u             ) */
+            zero, do,                               /* (               ) (R: u i ) */
+                bl, emit,                           /* (               ) (R: u i ) */
+            _loop_, T(-4),                          /* (               ) */
+        then, exit
+    )
+WORD_END(spaces)
+WORD(swap,             spaces,     DSTACK(2,2), RSTACK(0,0), WORD_PURE)
 WORD_START(then, swap)
     WORD_DSTACK(2,0)  /* stack effect when compiling */
     WORD_RSTACK(0,0)
