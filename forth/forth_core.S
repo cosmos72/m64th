@@ -497,9 +497,10 @@ WORD_START(spaces, space)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
-    WORD_FLAGS(M4FLAG_INLINE)
-    WORD_CODE(                                      /* ( n                 )             */
-        LIT_STRING(128, "                                                                                                                                "),
+    WORD_FLAGS(0)
+    WORD_CODE_AND_DATA(spaces,
+      WORD_CODE_TOKENS(                             /* ( n                 )             */
+        _ip_to_data_,                               /* ( n c-addr u        )             */
         rot,                                        /* ( c-addr u n        )             */
         zero, max, to_r,                            /* ( c-addr u          ) (R: n     ) */
         begin,                                      /* ( c-addr u          ) (R: left  ) */
@@ -509,6 +510,9 @@ WORD_START(spaces, space)
             r_fetch, zero_equal,                    /* ( c-addr u t|f      ) (R: left  ) */
         _until_, T(-11),                            /* ( c-addr u          ) (R: 0     ) */
         two_drop, r_from_drop, exit                 /* (                   )             */
+      ), WORD_DATA_STRINGS(
+        "                                                                                                                                "
+      )
     )
 WORD_END(spaces)
 WORD(swap,             spaces,     DSTACK(2,2), RSTACK(0,0), WORD_PURE)

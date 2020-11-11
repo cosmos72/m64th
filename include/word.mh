@@ -82,6 +82,7 @@
 #define WORD_DATA_SHORTS(...) /*    */ .2byte __VA_ARGS__;
 #define WORD_DATA_INTS(...) /*      */ .4byte __VA_ARGS__;
 #define WORD_DATA_CELLS(...) /*     */ CAT3(., SZ, byte) __VA_ARGS__;
+#define WORD_DATA_STRINGS(...) /*   */ .ascii __VA_ARGS__;
 #define WORD_DATA_TOKEN(token) /*   */ CAT3(., M4SIZEOF(token), byte) M4TOKEN_VAL(token);
 #define WORD_DATA_TOKENS(...) /*    */ WRAP_ARGS(WORD_DATA_TOKEN, __VA_ARGS__)
 
