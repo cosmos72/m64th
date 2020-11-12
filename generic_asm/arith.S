@@ -86,11 +86,9 @@ FUNC_END(two_nip)
 
 
 FUNC_START(two_over)       /* 2over    ( a b c d -- a b c d a b ) */
-        STOR(  DTOP,   AT(DSTK, -SZ))  /* save d   */
         LOAD(  REG1,   AT(DSTK, SZ2))  /* a        */
-        LOAD(  DTOP,   AT(DSTK, SZ))   /* dtop = b */
-        STOR(  REG1,   AT(DSTK, -SZ2)) /* save a   */
-        SUB2(  IMM(SZ2), DSTK)         /* update dstk */
+        DPUSH2(DTOP,   REG1)           /* ( a b c d a _ ) */
+        LOAD(  DTOP,   AT(DSTK, SZ3))  /* ( a b c d a b ) */
 FUNC_END(two_over)
 
 
