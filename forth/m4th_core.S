@@ -56,7 +56,7 @@ WORD_START(compile_string_comma, always_eof)
          */
         dup, dup, to_token, ne,
         _lit_, T(M4ERR_DEFINITION_NAME_TOO_LONG), and, throw,
-        _lit_, _lit_string_, token_comma,
+        _lit_tok_, _lit_string_, token_comma,
         dup, token_comma,
         here, swap,
         dup, allot, token_align,
