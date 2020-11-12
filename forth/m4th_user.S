@@ -514,7 +514,7 @@ WORD(string_find_blank, to_uint,      DSTACK(2,1), RSTACK(0,0), WORD_IMPURE | M4
  * string-find-char ( c-addr u ch -- u' ) return index of first ch in string.
  * return string length if not found.
  */
-WORD(string_find_char,  to_uint,      DSTACK(3,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(string_find_char,string_find_blank,DSTACK(3,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 /**
  * string-find-nonblank ( c-addr u -- u' ) return index of first non-blank (i.e. char > 32) in string.
  * return string length if not found.
