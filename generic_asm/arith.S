@@ -72,9 +72,7 @@ FUNC_END(two_drop)
 
 FUNC_START(two_dup)        /* 2dup     */
         LOAD(  REG1,   AT(DSTK))
-        STOR(  DTOP,   AT(DSTK, -SZ))
-        STOR(  REG1,   AT(DSTK, -SZ2))
-        SUB2(  IMM(SZ2),   DSTK)
+        DPUSH2(DTOP,   REG1)
 FUNC_END(two_dup)
 
 
