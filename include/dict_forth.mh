@@ -184,6 +184,7 @@
 #define DICT_WORDS_FORTH_EXCEPTION(X)                                                              \
     DICT_TOKENS_FORTH_EXCEPTION(X)                                                                 \
     X(5, "abort", abort)                                                                           \
+    X(6, "abort\"", abort_quote)                                                                   \
     X(5, "catch", catch)
 
 /* ------- forth 2012: memory ------------------------------------------------------------------- */

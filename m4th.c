@@ -414,7 +414,7 @@ static m4cell m4token_print_lit_string(const m4string str, m4printmode mode, FIL
     if (mode == m4mode_user) {
         fputs("s\\\" ", out);
         m4string_print_escape(str, out);
-        fputs("\" ", out);
+        fputc('"', out);
     } else {
         fprintf(out, "LIT_STRING(%lu, \"", (unsigned long)str.n);
         m4string_print_escape(str, out);

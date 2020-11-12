@@ -29,7 +29,19 @@ WORD_START(abort,      LASTWORD)
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_JUMP)
     WORD_CODE(minus_one, throw, exit)
 WORD_END(abort)
-WORD_START(catch,      abort)
+WORD_START(abort_quote, abort)
+    WORD_STACK_NONE()
+    WORD_DSTACK(0,-1) /* stack effect when throwing */
+    WORD_RSTACK(0,-1)
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE)
+    WORD_CODE(
+        CALL(s_quote),                                    /* reads and compiles literal string */
+        _lit_xt_, XT(_abort_quote_), CALL(compile_comma), /* compiles (abort-quote)            */
+        exit
+    )
+WORD_END(abort_quote)
+WORD_START(catch,      abort_quote)
     WORD_DSTACK(-1,-1) /* stack effect of called word */
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()

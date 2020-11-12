@@ -105,7 +105,23 @@ WORD_START(_q_while0_, _q_while_)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_MAY_JUMP | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_CODE(_compile_jump_lit_, _q_while0_, _while_, exit)
 WORD_END(_q_while0_)
-WORD_START(_again_,      _q_while0_)
+/* ( x c-addr u -- ) runtime part of abort" - if x is not zero, stores string as exception message and throws -2 */
+WORD_START(_abort_quote_,  _q_while0_)
+    WORD_DSTACK(3,0)   /* stack effect if not jumping */
+    WORD_RSTACK(0,0)
+    WORD_DSTACK(0,-1)   /* stack effect if jumping */
+    WORD_RSTACK(0,-1)
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_MAY_JUMP | M4FLAG_INLINE)
+    WORD_CODE(
+        rot,                                       /* ( c-addr u x     ) */
+        _if_, T(4),                                /* ( c-addr u       ) */
+            ex_message_store, minus_two, throw,    /* (                ) */
+        then,                                      /* ( c-addr u       ) */
+        two_drop, exit                             /* (                ) */
+    )
+WORD_END(_abort_quote_)
+WORD_START(_again_,        _abort_quote_)
     WORD_STACK_NONE()  /* stack effect if not jumping */
     WORD_DSTACK(0,0)   /* stack effect if jumping */
     WORD_RSTACK(0,0)
@@ -113,7 +129,7 @@ WORD_START(_again_,      _q_while0_)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_JUMP | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_CODE(CALL(again), exit)
 WORD_END(_again_)
-WORD_START(_break_,    _again_)
+WORD_START(_break_,        _again_)
     WORD_STACK_NONE()  /* stack effect if not jumping */
     WORD_DSTACK(0,0)   /* stack effect if jumping */
     WORD_RSTACK(0,0)

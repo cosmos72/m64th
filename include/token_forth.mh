@@ -71,7 +71,7 @@
 #define M4question_dup 41         /* ?dup     */
 #define M4fetch 42                /* @        */
 #undef M4abort /*43*/             /* abort    no dedicated m4token */
-#undef M4abort_quote /*44*/       /* abort"   */
+#undef M4abort_quote /*44*/       /* abort"   no dedicated m4token */
 #define M4abs 45                  /* abs      */
 #undef M4accept /*46*/            /* accept   */
 #define M4align 47                /* align    */

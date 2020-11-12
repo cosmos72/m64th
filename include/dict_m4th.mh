@@ -67,17 +67,17 @@
     X(2, "i'", i_prime)                                                                            \
     /* ( c-addr u ch -- u' ) get position of given char or CR/LF in string  */                     \
     X(14, "line-find-char", line_find_char)                                                        \
-    X(4, "noop", noop)                   /* ( -- ) do nothing                           */         \
-    X(6, "n>drop", n_to_drop)            /* ( xn .. x1 n -- ) drop n cells              */         \
-    X(2, "r!", r_store)                  /* ( a -- ) (R: b -- a   )                     */         \
-    X(2, "r+", r_plus)                   /* ( a -- ) (R: b -- a+b )                     */         \
-    X(6, "r>drop", r_from_drop)          /* (R: x -- ) equivalent to: r> drop           */         \
-    X(6, "rdepth", rdepth)               /* ( -- n ) get return stack depth             */         \
-    X(5, "-roll", minus_roll)            /* rotate in opposite direction than 'roll'    */         \
-    X(4, "-rot", minus_rot)              /* equivalent to: rot rot                      */         \
-    X(7, "squared", squared)             /* equivalent to: dup *                        */         \
-    X(7, "string=", string_equal)        /* ( addr1 addr2 u -- addr1 addr2 u t|f )      */         \
-    X(10, "string-ci=", string_ci_equal) /* ( addr1 addr2 u -- addr1 addr2 u t|f )      */         \
+    X(4, "noop", noop)                   /* ( -- ) do nothing                               */     \
+    X(6, "n>drop", n_to_drop)            /* ( xn .. x1 n -- ) drop n cells                  */     \
+    X(2, "r!", r_store)                  /* ( a -- ) (R: b -- a   )                         */     \
+    X(2, "r+", r_plus)                   /* ( a -- ) (R: b -- a+b )                         */     \
+    X(6, "r>drop", r_from_drop)          /* (R: x -- ) equivalent to: r> drop               */     \
+    X(6, "rdepth", rdepth)               /* ( -- n ) get return stack depth                 */     \
+    X(5, "-roll", minus_roll)            /* rotate in opposite direction than 'roll'        */     \
+    X(4, "-rot", minus_rot)              /* equivalent to: rot rot                          */     \
+    X(7, "squared", squared)             /* equivalent to: dup *                            */     \
+    X(7, "string=", string_equal)        /* ( addr1 addr2 u -- addr1 addr2 u t|f )          */     \
+    X(10, "string-ci=", string_ci_equal) /* ( addr1 addr2 u -- addr1 addr2 u t|f )          */     \
     X(17, "string-find-blank", string_find_blank) /* ( c-addr u -- u' )                     */     \
     X(16, "string-find-char", string_find_char)   /* ( c-addr u -- u' )                     */     \
     X(20, "string-find-nonblank", string_find_nonblank) /* ( c-addr u -- u' )               */     \
@@ -232,11 +232,12 @@
                                     /* ( map key -- key val t|f ) find entry in hashmap/int  */    \
     X(10, "forth-root", forth_root) /* set first wordlist in searchorder to forth-root   */        \
     X(16, "hashmap-find/int", hashmap_find_int)                                                    \
-    X(9, "interpret", interpret) /* one iteration of forth interpret/compile loop  */              \
-    X(6, "m4th-c", m4th_c)       /* set first wordlist in searchorder to m4th-c    */              \
-    X(9, "m4th-core", m4th_core) /* set first wordlist in searchorder to m4th-core */              \
-    X(9, "m4th-impl", m4th_impl) /* set first wordlist in searchorder to m4th-impl */              \
-    X(4, "repl", repl)           /* call INTERPRET repeatedly until EOF or input error    */       \
+    X(9, "interpret", interpret)      /* one iteration of forth interpret/compile loop  */         \
+    X(6, "m4th-c", m4th_c)            /* set first wordlist in searchorder to m4th-c    */         \
+    X(9, "m4th-core", m4th_core)      /* set first wordlist in searchorder to m4th-core */         \
+    X(9, "m4th-impl", m4th_impl)      /* set first wordlist in searchorder to m4th-impl */         \
+    X(11, "parse-quote", parse_quote) /* ( -- c-addr u ) read a string ended by quote   */         \
+    X(4, "repl", repl)                /* call INTERPRET repeatedly until EOF or input error    */  \
     X(5, "r2nd@", r2nd_fetch)   /* alias of '2r@ drop' i.e. fetch second item from return stack */ \
     X(8, "string<>", string_ne) /* ( addr1 addr2 u -- addr1 addr2 u t|f )                */        \
     X(11, "string-ci<>", string_ci_ne) /* ( addr1 addr2 u -- addr1 addr2 u t|f )         */        \
@@ -456,7 +457,8 @@
 
 #define DICT_WORDS_M4TH_IMPL(X)                                                                    \
     DICT_TOKENS_M4TH_IMPL(X)                                                                       \
-    X(14, "(check-stacks)", _check_stacks_) /* throw on stack underflow */                         \
+    X(13, "(abort-quote)", _abort_quote_)   /* ( x c-addr u ) runtime part of abort" */            \
+    X(14, "(check-stacks)", _check_stacks_) /* throw on stack underflow              */            \
     /* ( m4flags -- sys ) read non-blanks string, create new word for it. set LATEST */            \
     X(8, "(create)", _create_)                                                                     \
     X(21, "(defer-uninitialized)", _defer_uninitialized_) /* throw M4ERR_DEFER_UNINITIALIZED */    \
