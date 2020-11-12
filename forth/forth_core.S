@@ -289,15 +289,10 @@ WORD_START(find, dup)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
-    WORD_FLAGS(0) /* multiple exits => cannot inline */
+    WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
-#if 0 /* TODO */
-        dup, count, CALL(string_to_name), nip,         /* ( c-addr nt|0 -1|0|1 ) */
-        _q_if0_, T(5), nip, exit,                      /* ( c-addr 0           ) */
-        then,                                          /* ( c-addr nt -1|1     ) */
-        to_r, nip, name_to_xt, r_from,                 /* ( xt     -1|1        ) */
-#endif /* 0 */
-        exit
+        /* disassembly of forth_core.forth */
+        /*22*/ dup, count, _lit_xt_, XT(parse_nt), _catch_beg_, _catch_end_, nip, _if_, T(3), two_drop, _else_, T(6), rot, drop, swap, name_to_xt, swap, then, exit
     )
 WORD_END(find)
 WORD_START(else,       find)

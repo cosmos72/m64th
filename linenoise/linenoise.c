@@ -106,6 +106,7 @@
 #include "linenoise.h"
 #include <ctype.h>
 #include <errno.h>
+#include <limits.h> // CHAR_MIN
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -1124,7 +1125,12 @@ static int linenoiseEdit(int stdin_fd, int stdout_fd, char *buf, size_t buflen,
             }
             break;
         default:
-            if (c >= 0 && c < ' ') {
+#if CHAR_MIN < 0
+            if (c >= 0 && c < ' ')
+#else
+            if (c < ' ')
+#endif
+            {
                 c = ' ';
             }
             if (editInsert(&l, c)) {

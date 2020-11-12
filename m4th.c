@@ -388,19 +388,25 @@ static m4cell m4token_print_int64(const m4token *code, m4printmode mode, FILE *o
 
 static m4cell m4token_print_xt(const m4token *code, m4printmode mode, FILE *out) {
     m4xt val;
+    const m4word *w;
     memcpy(&val, code, sizeof(val));
     if (val != NULL) {
-        fputs("XT(", out);
-        m4string_print(m4word_name(m4xt_word(val)), mode, out);
-        fputc(')', out);
+        w = m4xt_word(val);
     } else {
-        fputs("XT(missing)", out);
+        w = &WORD_SYM(_missing_);
+    }
+    if (mode == m4mode_user) {
+        m4string_print(m4word_name(w), m4mode_user, out);
+    } else {
+        fputs("XT(", out);
+        m4string_print(m4word_ident(w), m4mode_user, out);
+        fputc(')', out);
     }
     return sizeof(val) / SZt;
 }
 
 static m4cell m4token_print_lit_xt(const m4token *code, m4printmode mode, FILE *out) {
-    fputs((mode == m4mode_user ? "' " : "(lit-xt) "), out);
+    fputs((mode == m4mode_user ? "['] " : "_lit_xt_, "), out);
     return m4token_print_xt(code, mode, out);
 }
 
@@ -438,6 +444,17 @@ static m4cell m4token_print_call(const m4token *code, m4printmode mode, FILE *ou
         fputc(')', out);
     }
     return ret;
+}
+
+static m4cell m4token_print_catch(m4token catch_end, m4printmode mode, FILE *out) {
+    if (mode == m4mode_user && catch_end == m4_catch_end_) {
+        fputs("catch", out);
+    } else {
+        m4token_print(m4_catch_beg_, mode, out);
+        fputs((mode == m4mode_user ? " " : ", "), out);
+        m4token_print(catch_end, mode, out);
+    }
+    return 1;
 }
 
 void m4token_print(m4token tok, m4printmode mode, FILE *out) {
@@ -584,6 +601,8 @@ void m4code_print(m4code src, m4printmode mode, FILE *out) {
         separator = next_separator;
         if (tok == m4_call_xt_ && n - i >= SZ / SZt) {
             i += m4token_print_call(code + i, mode, out);
+        } else if (tok == m4_catch_beg_ && i < n) {
+            i += m4token_print_catch(code[i], mode, out);
         } else if (tok == m4_lit_xt_ && n - i >= SZ / SZt) {
             i += m4token_print_lit_xt(code + i, mode, out);
         } else if (tok == m4_lit_string_ && n - i >= 2 + (m4ucell)(code[i] + SZt - 1) / SZt) {
