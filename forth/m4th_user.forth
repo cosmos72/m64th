@@ -19,6 +19,11 @@
 also m4th-core \ wordlist-last-name string>name ex-message!
 also m4th-user definitions
 
+\ clear data stack
+: clearstack \ ( ... -- )
+   depth n>drop ;
+
+
 \ get all names in wordlist up to given name.
 \ newer names are placed toward top of the stack
 : wordlist-upto-name \ ( wid nt1 -- 0 | ntu ... nt2 nt1 u )

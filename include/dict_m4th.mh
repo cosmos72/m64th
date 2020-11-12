@@ -218,6 +218,7 @@
     /*                             */ /*                                                */         \
     X(5, "break", break)              /* TODO jump after 'loop', 'repeat'...            */         \
     X(8, "continue", continue)        /* TODO jump to 'loop', 'repeat'...               */         \
+    X(10, "clearstack", clearstack)   /* ( ... -- ) clear data stack                    */         \
     X(7, "cs-drop", cs_drop)          /* ( sys -- )                                     */         \
     X(6, "cs-dup", cs_dup)            /* ( sys -- sys sys )                             */         \
     X(8, "-cs-roll", minus_cs_roll)   /* ( ... cs-depth -- ... )                        */         \

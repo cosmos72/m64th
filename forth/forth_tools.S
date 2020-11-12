@@ -50,6 +50,18 @@ WORD_START(see, dot_s)
         _c_arg_2_, _c_call_, CELL(m4word_print_stdout), _c_ret_0_, exit
     )
 WORD_END(see)
+WORD_START(words, see)
+    WORD_DSTACK(0,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        user_var, T(0),                                        /* ( m4th+M4TH_OFF_ ) */
+        _c_arg_1_, _c_call_, CELL(m4th_c_print_all_words), _c_ret_0_,
+        exit
+    )
+WORD_END(words)
 
 #undef LASTWORD
-#define LASTWORD see
+#define LASTWORD words

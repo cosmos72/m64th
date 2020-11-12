@@ -92,6 +92,10 @@ typedef void(linenoiseFreeHintsCallback)(void *);
 void linenoiseSetHintsCallback(linenoiseHintsCallback *fn);
 void linenoiseSetFreeHintsCallback(linenoiseFreeHintsCallback *fn);
 
+/* Try to get the number of columns in the current terminal, or assume 80
+ * if it fails. */
+int linenoiseGetTerminalColumns(void);
+
 #ifdef __cplusplus
 }
 #endif

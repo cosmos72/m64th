@@ -19,6 +19,7 @@
 
 #include "c_liblinenoise.h"
 #include "../include/err.h"
+#include "../include/m4th.mh" // M4TH_OFF_
 #include "../linenoise/linenoise.h"
 
 #include <errno.h>   /* errno    */
@@ -105,6 +106,32 @@ static m4cell m4th_c_searchorder_find(const m4searchorder *searchorder, const m4
     return tfalse;
 }
 
+/* reverse searchorder */
+static void searchorder_reverse(m4searchorder *s) {
+    m4cell i, n;
+    for (i = 0, n = s->n; i < n / 2; i++) {
+        m4wordlist **wid1 = &s->addr[i];
+        m4wordlist **wid2 = &s->addr[n - i - 1];
+        m4wordlist *tmp = wid1[0];
+        wid1[0] = wid2[0];
+        wid2[0] = tmp;
+    }
+}
+
+/* copy searchorder src to dst, ignoring repeated wordlists.
+ * preserves wordlists priority i.e. relative ordering */
+static void searchorder_copy_unique(const m4searchorder *src, m4searchorder *dst) {
+    m4cell i, n;
+    /* start from higher priority wordlists i.e. higher indexes */
+    for (n = src->n, i = n - 1; i >= 0; i--) {
+        m4wordlist *wid = src->addr[i];
+        if (!m4th_c_searchorder_find(dst, wid)) {
+            dst->addr[dst->n++] = wid;
+        }
+    }
+    searchorder_reverse(dst);
+}
+
 /* callback invoked by linenoise() when user presses TAB to complete a word */
 linenoiseString m4th_c_complete_word(linenoiseString input, linenoiseStrings *completions,
                                      void *userData) {
@@ -120,13 +147,7 @@ linenoiseString m4th_c_complete_word(linenoiseString input, linenoiseStrings *co
     input.len -= i;
     input.addr += i;
 
-    /* copy m->searchorder ignoring repeated wordlists */
-    for (i = 0, n = m->searchorder.n; i < n; i++) {
-        m4wordlist *wid = m->searchorder.addr[i];
-        if (!m4th_c_searchorder_find(&searchorder, wid)) {
-            searchorder.addr[searchorder.n++] = wid;
-        }
-    }
+    searchorder_copy_unique(&m->searchorder, &searchorder);
 
     /* priority of each wordlist in searchorder does not matter here:  */
     /* we simply collect all words, and any duplicate due to shadowing */
@@ -146,4 +167,57 @@ linenoiseString m4th_c_complete_word(linenoiseString input, linenoiseStrings *co
     m4th_c_strings_sort(completions);
     m4th_c_strings_unique(completions);
     return input;
+}
+
+/* print all words in wordlist, using linenoiseStrings as a qsort buffer */
+static void m4th_c_wordlist_print_all_words(const m4wordlist *wid, linenoiseStrings *strings,
+                                            size_t columns, FILE *out) {
+    const m4word *w = m4wordlist_lastword(wid);
+    size_t i, n, line;
+    strings->size = 0;
+    while (w != NULL) {
+        const m4string str = m4word_name(w);
+        const linenoiseString lstr = {str.n, (const char *)str.addr};
+        linenoiseAddCompletion(strings, lstr);
+        w = m4word_prev(w);
+    }
+    m4th_c_strings_sort(strings);
+    m4th_c_strings_unique(strings);
+
+    fputs("\\ ------------- ", out);
+    m4string_print(m4wordlist_name(wid), m4mode_user, out);
+    fputs(" -------------\n", out);
+    line = 0;
+    for (i = 0, n = strings->size; i < n; i++) {
+        linenoiseString str = strings->vec[i];
+        if (line > 0 && line + str.len + 1 >= columns) {
+            fputc('\n', out);
+            line = 0;
+        }
+        fwrite(str.addr, sizeof(char), str.len, out);
+        fputc(' ', out);
+        line += 1 + str.len;
+    }
+    strings->size = 0;
+}
+
+/** temporary C implementation of 'words' */
+void m4th_c_searchorder_print_all_words(const m4searchorder *searchorder, FILE *out) {
+    m4searchorder s = {};
+    linenoiseStrings strings = {};
+    m4cell i, n;
+    size_t columns = linenoiseGetTerminalColumns();
+
+    searchorder_copy_unique(searchorder, &s);
+
+    /* print wordlists with higher priority first */
+    for (n = s.n, i = n - 1; i >= 0; i--) {
+        fputs((i == n - 1 ? "\n" : "\n\n"), out);
+        m4th_c_wordlist_print_all_words(s.addr[i], &strings, columns, out);
+    }
+}
+
+void m4th_c_print_all_words(const m4char *user_var_0) {
+    const m4th *m = (const m4th *)(user_var_0 - M4TH_OFF_);
+    m4th_c_searchorder_print_all_words(&m->searchorder, stdout);
 }

@@ -202,7 +202,8 @@
 #define DICT_WORDS_FORTH_TOOLS(X)                                                                  \
     DICT_TOKENS_FORTH_TOOLS(X)                                                                     \
     X(2, ".s", dot_s)                                                                              \
-    X(3, "see", see) /* read name then show its definition */
+    X(3, "see", see)     /* read name then show its definition */                                  \
+    X(5, "words", words) /* show all words in search order     */
 
 /* ------- forth 2012: tools ext ---------------------------------------------------------------- */
 #define DICT_TOKENS_FORTH_TOOLS_EXT(X)                                                             \

@@ -356,6 +356,12 @@ failed:
     return 80;
 }
 
+/* Try to get the number of columns in the current terminal, or assume 80
+ * if it fails. */
+int linenoiseGetTerminalColumns(void) {
+    return getColumns(STDIN_FILENO, STDOUT_FILENO);
+}
+
 /* Clear the screen. Used to handle ctrl+l */
 void linenoiseClearScreen(void) {
     if (write(STDOUT_FILENO, "\x1b[H\x1b[2J", 7) <= 0) {

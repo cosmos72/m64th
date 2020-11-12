@@ -22,6 +22,7 @@
 #include "include/hashmap_number.h"
 #include "include/token.h"
 #include "include/word_fwd.h"
+#include "linenoise/linenoise.h" // linenoiseStrings
 
 #include <assert.h> /* assert()                   */
 #include <errno.h>  /* errno                      */

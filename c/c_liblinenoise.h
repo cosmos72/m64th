@@ -23,11 +23,16 @@
 #include "../linenoise/linenoise.h"
 #include "../m4th.h"
 
+#include <stdio.h>
+
 /** wrapper around liblinenoise C function linenoise() */
 m4pair m4th_c_linenoise(const char *prompt, char *addr, size_t len);
 
 /* callback invoked by linenoise() when user presses TAB to complete a word */
 linenoiseString m4th_c_complete_word(linenoiseString input, linenoiseStrings *completions,
                                      void *userData);
+
+/** temporary C implementation of 'words' */
+void m4th_c_searchorder_print_all_words(const m4searchorder *s, FILE *out);
 
 #endif /* M4TH_C_LIBLINENOISE_H */

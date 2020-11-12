@@ -50,8 +50,8 @@
 /**
  * results are a fixed arithmetic algorithm depending only
  * on numeric value of arguments:
- * the word does not dereference any pointer (not even variables)
- * and does not use the instruction pointer or any other external status or data.
+ * the word does not dereference any pointer (not even local, global or user variables)
+ * and does not use the instruction pointer or any other external state or data.
  *
  * incompatible with M4FLAG_CONSUMES_IP_* and M4FLAG_*JUMP
  */
