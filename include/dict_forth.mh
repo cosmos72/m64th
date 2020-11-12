@@ -166,6 +166,7 @@
     /* the following words are implemented in forth, thus no dedicated m4token value */            \
     X(3, "?do", question_do)                                                                       \
     X(5, "again", again)                                                                           \
+    X(7, "buffer:", buffer_colon)                                                                  \
     X(3, "hex", hex)                                                                               \
     X(10, "parse-name", parse_name)                                                                \
     X(1, "\\", backslash)

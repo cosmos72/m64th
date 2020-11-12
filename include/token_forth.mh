@@ -175,7 +175,7 @@
 #undef M4question_do /*145*/     /* ?do      no dedicated m4token */
 #undef M4action_of /*146*/       /* action_of    */
 #undef M4again /*147*/           /* again    no dedicated m4token */
-#undef M4buffer_colon /*148*/    /* buffer:  */
+#undef M4buffer_colon /*148*/    /* buffer:  no dedicated m4token */
 #undef M4c_quote /*149*/         /* c"       */
 #undef M4case /*150*/            /* case     */
 #undef M4compile_comma /*151*/   /* compile, no dedicated m4token */
