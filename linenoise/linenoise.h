@@ -86,6 +86,12 @@ typedef linenoiseString(linenoiseCompletionCallback)(linenoiseString currentInpu
 void linenoiseSetCompletionCallback(linenoiseCompletionCallback *fn, void *userData);
 /* does not make a copy of toAdd */
 void linenoiseAddCompletion(linenoiseStrings *completions, linenoiseString toAdd);
+/*
+ * deallocate internal linenoiseString[] array.
+ * does not deallocate each linenoiseString,
+ * does not deallocate linenoiseString*
+*/
+void linenoiseFreeCompletions(linenoiseStrings *completions);
 
 typedef char *(linenoiseHintsCallback)(linenoiseString currentInput, int *color, int *bold);
 typedef void(linenoiseFreeHintsCallback)(void *);
