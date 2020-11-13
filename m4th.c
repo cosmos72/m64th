@@ -858,8 +858,12 @@ void m4string_print(m4string str, m4printmode mode, FILE *out) {
     }
 }
 
-void m4string_print_hex(m4string str, m4printmode mode, FILE *out) {
+static m4char hexdigit(m4ucell u) {
     static const char hexdigits[] = "0123456789abcdef";
+    return hexdigits[u & 0xF];
+}
+
+void m4string_print_hex(m4string str, m4printmode mode, FILE *out) {
     const m4char *data = str.addr;
     const char *separator = (mode == m4mode_user ? "" : "0x");
     m4cell i, n = str.n;
@@ -868,8 +872,8 @@ void m4string_print_hex(m4string str, m4printmode mode, FILE *out) {
     }
     for (i = 0; i < n; i++) {
         fputs(separator, out);
-        fputc(hexdigits[(data[i] >> 4) & 0xF], out);
-        fputc(hexdigits[(data[i] >> 0) & 0xF], out);
+        fputc(hexdigit(data[i] >> 4), out);
+        fputc(hexdigit(data[i] >> 0), out);
         separator = (mode == m4mode_user ? " " : ", 0x");
     }
 }
@@ -1132,6 +1136,38 @@ const m4word *m4word_prev(const m4word *w) {
 }
 
 /* ----------------------- m4wordlist ----------------------- */
+
+m4wordlist *m4wordlist_new(void) {
+    typedef struct {
+        m4char name_n; /**< # of characters                  */
+        m4char name[15];
+        m4dict dict;
+        m4wordlist wid;
+    } m4tuple;
+    m4tuple *t;
+    m4cell i;
+    uint32_t crc;
+
+    // allocate m4countedstring + m4dict + m4wordlist in a single call
+    t = (m4tuple *)malloc(sizeof(m4tuple));
+    if (t == NULL) {
+        return NULL;
+    }
+    memset(t, 0, sizeof(m4tuple));
+    crc = m4th_crc_cell((m4cell)t);
+    t->name_n = 12;
+    memcpy(t->name, "wid-", 4);
+    for (i = 0; i < 8; i++) {
+        t->name[i + 4] = hexdigit(crc);
+        crc >>= 4;
+    }
+    t->dict.lastword_off = 0; // no words in m4dict
+    t->dict.name_off = (m4char *)&t->dict - (m4char *)&t->name_n;
+    t->wid.dict = &t->dict;
+    t->wid.last = NULL;
+
+    return &t->wid;
+}
 
 const m4word *m4wordlist_find(const m4wordlist *wid, m4string str) {
     const m4word *w = m4wordlist_lastword(wid);

@@ -141,7 +141,8 @@ m4cell m4th_cpu_features_detect(void) {
 #elif defined(__aarch64__) && defined(__ANDROID__)
 
 #include <cpu-features.h>
-/* arm64+Android: use Android specific android_getCpuFeatures() to detect CRC32c CPU instructions */
+/* arm64+Android: use Android specific android_getCpuFeatures() to detect CRC32c CPU
+   instructions */
 m4cell m4th_cpu_features_detect(void) {
     uint64_t features = android_getCpuFeatures();
     return (features & ANDROID_CPU_ARM64_FEATURE_CRC32) ? m4th_cpu_feature_crc32c : 0;

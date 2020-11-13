@@ -36,6 +36,20 @@ WORD_END(also)
 WORD(get_current,      also,           DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 /* ( wid -- ) set compilation wordlist */
 WORD(set_current,      get_current,    DSTACK(1,0), RSTACK(0,0), WORD_IMPURE)
+/* ( -- wid ) create a new, initially empty wordlist */
+WORD_START(wordlist,   set_current)
+    WORD_DSTACK(0,1)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        _c_arg_0_, _c_call_, CELL(m4wordlist_new), _c_ret_1_,   /* ( wid|0      ) */
+        dup, zero_equal,                                           /* ( wid|0 t|f  ) */
+        _lit_, T(M4ERR_OUT_OF_MEMORY), and, throw,                 /* ( wid        ) */
+        exit
+    )
+WORD_END(wordlist)
 
 #undef LASTWORD
-#define LASTWORD set_current
+#define LASTWORD wordlist

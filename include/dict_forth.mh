@@ -231,7 +231,8 @@
     X(4, "only", only)                                                                             \
     X(8, "previous", previous)                                                                     \
     X(15, "search-wordlist", search_wordlist)                                                      \
-    /* X(9, "set-order", set_order) */ /* already defined in forth_root dict */
+    /* X(9, "set-order", set_order) */ /* already defined in forth_root dict                */     \
+    X(8, "wordlist", wordlist)         /* ( -- wid ) create a new, initially empty wordlist */
 
 /* ------- forth 2012: string ------------------------------------------------------------------- */
 #define DICT_TOKENS_FORTH_STRING(X)                                                                \

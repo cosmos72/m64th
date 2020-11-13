@@ -24,6 +24,7 @@
 
 #define DICT_OFF_LASTWORD_OFF 0 /**< offset of last m4word*,     in bytes. 0 = not present */
 #define DICT_OFF_NAME_OFF 4     /**< offset of m4countedstring*, in bytes. 0 = not present */
+#define DICT_SZ 8               /* sizeof(m4dict)                                          */
 
 #define DICT_SYM(name) m4dict_##name
 
