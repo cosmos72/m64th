@@ -215,6 +215,7 @@ void m4th_c_searchorder_print_all_words(const m4searchorder *searchorder, FILE *
         fputs((i == n - 1 ? "\n" : "\n\n"), out);
         m4th_c_wordlist_print_all_words(s.addr[i], &strings, columns, out);
     }
+    linenoiseFreeCompletions(&strings);
 }
 
 void m4th_c_print_all_words(const m4char *user_var_0) {

@@ -397,7 +397,7 @@ static void clearCompletions(linenoiseStrings *lc) {
 }
 
 /* free the completion options populated by linenoiseAddCompletion(). */
-static void freeCompletions(linenoiseStrings *lc) {
+void linenoiseFreeCompletions(linenoiseStrings *lc) {
     lc->capacity = lc->size = 0;
     free(lc->vec);
     lc->vec = NULL;
@@ -1246,7 +1246,7 @@ static void freeHistory(void) {
 static void linenoiseAtExit(void) {
     disableRawMode(STDIN_FILENO);
     freeHistory();
-    freeCompletions(&completions);
+    linenoiseFreeCompletions(&completions);
 }
 
 /* This is the API call to add a new entry in the linenoise history.
