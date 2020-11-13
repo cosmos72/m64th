@@ -836,7 +836,8 @@ WORD_START(_optimize_literal_, _optimize_3token_)
       ),
       WORD_DATA_TOKENS(
         T(-2), minus_two, T(-1), minus_one,
-        T(0), zero, T(1), one, T(2), two, T(3), three, T(4), four, T(8), eight
+        T(0), zero, T(1), one, T(2), two, T(3), three,
+        T(4), four, T(8), eight, T(32), bl
       )
     )
 WORD_END(_optimize_literal_)
