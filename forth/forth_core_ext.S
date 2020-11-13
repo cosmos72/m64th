@@ -42,8 +42,7 @@ WORD_START(question_do, ne)
 WORD_END(question_do)
 WORD_START(again,      question_do)
     WORD_STACK_NONE()  /* stack effect if not jumping */
-    WORD_DSTACK(0,0)   /* stack effect if jumping */
-    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()  /* stack effect if jumping */
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_JUMP | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_CODE(
@@ -65,8 +64,7 @@ WORD_START(buffer_colon,       again)
     )
 WORD_END(buffer_colon)
 WORD_START(hex,      buffer_colon)
-    WORD_DSTACK(0,0)   /* stack effect if not jumping */
-    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()  /* stack effect if not jumping */
     WORD_STACK_NONE()  /* stack effect if jumping */
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE)

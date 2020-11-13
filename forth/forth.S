@@ -39,8 +39,8 @@ DICT_START(forth_root)
 #include "forth_memory.S"
 #include "forth_tools.S"
 #include "forth_tools_ext.S"
-#include "forth_search_order.S"
-#include "forth_search_order_gen.S"
+#include "forth_searchorder.S"
+#include "forth_searchorder_gen.S"
 #include "forth_string.S"
 DICT_BODY(forth, LASTWORD)
 DICT_END(forth)
