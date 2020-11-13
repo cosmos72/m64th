@@ -47,16 +47,15 @@ also m4th-core \ searchorder*
 \ set the search order to exactly ( widn ... wid1 )
 \ if n is -1, set implementation-defined minimum search order
 : set-order \ ( widn ... wid1 n -- ) (S: * -- widn ... wid1 )
-   dup 0< if                               \ ( -1                 )
-      only
-      drop exit
+   dup 0< if                               \ ( -u                  )
+      drop only exit
    then                                    \ ( * n                 )
    searchorder-clear                       \ ( * n                 )
    dup>r                                   \ ( * n                 ) (R: n     )
-   0 swap ?do                              \ ( *                   ) (R: n 0 i )
-      i pick                               \ ( * widi+1            ) (R: n 0 i )
-      also searchorder[0]!                 \ ( *                   ) (R: n 0 i )
-   -1 +loop                                \ ( *                   ) (R: n     )
+   0 ?do                                   \ ( *                   ) (R: n n i )
+      i' i - 1- pick                       \ ( * wid(n-i-1)        ) (R: n n i )
+      also searchorder[0]!                 \ ( *                   ) (R: n n i )
+   loop                                    \ ( *                   ) (R: n     )
    r>                                      \ ( * n                 )
    n>drop ;                                \ (                     )
 

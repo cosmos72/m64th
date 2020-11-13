@@ -67,7 +67,7 @@ WORD_START(set_order, order)
     WORD_FLAGS(0)
     WORD_CODE_AND_DATA(set_order,
         WORD_CODE_TOKENS(
-            /*28*/ dup, zero_less, _if_, T(8), CALL(only), drop, exit, then, searchorder_clear, dup_to_r, zero, swap, _q_do_, T(7), i, pick, searchorder_dup, searchorder_store_0, minus_one, _plus_loop_, T(-7), r_from, n_to_drop, exit
+            /*29*/ dup, zero_less, _if_, T(8), drop, CALL(only), exit, then, searchorder_clear, dup_to_r, zero, _q_do_, T(9), i_prime, i, minus, one_minus, pick, searchorder_dup, searchorder_store_0, _loop_, T(-9), r_from, n_to_drop, exit
         ),
     )
 WORD_END(set_order)
