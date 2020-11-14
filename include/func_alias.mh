@@ -88,9 +88,17 @@
 #define m4fcells CAT3(m4f_, SZ, _times)   /* cells   */
 #define m4ftokens CAT3(m4f_, SZt, _times) /* tokens  */
 
-#define m4ftoken_fetch CAT3(m4f_, SZt, u_fetch)    /* token@        */
-#define m4ftoken_align CAT3(m4f_, SZt, _align)     /* token-align   */
-#define m4ftoken_aligned CAT3(m4f_, SZt, _aligned) /* token-aligned */
+#define m4ftoken_align CAT3(m4f_, SZt, _align)      /* token-align   */
+#define m4ftoken_aligned CAT3(m4f_, SZt, _aligned)  /* token-aligned */
+#define m4ftoken_fetch CAT3(m4f_, SZt, u_fetch)     /* token@        */
+#define m4ftoken_fetch_1 CAT3(m4f_, SZt, u_fetch_1) /* token[1]      */
+#define m4ftoken_fetch_2 CAT3(m4f_, SZt, u_fetch_2) /* token[2]      */
+#define m4ftoken_fetch_3 CAT3(m4f_, SZt, u_fetch_3) /* token[3]      */
+#define m4ftoken_fetch_4 CAT3(m4f_, SZt, u_fetch_4) /* token[4]      */
+#define m4ftoken_fetch_5 CAT3(m4f_, SZt, u_fetch_5) /* token[5]      */
+#define m4ftoken_fetch_6 CAT3(m4f_, SZt, u_fetch_6) /* token[6]      */
+#define m4ftoken_fetch_7 CAT3(m4f_, SZt, u_fetch_7) /* token[7]      */
+#define m4ftoken_fetch_8 CAT3(m4f_, SZt, u_fetch_8) /* token[8]      */
 
 #define m4fdiv_byte m4fnoop                /* /byte    =>      */
 #define m4fdiv_char m4fnoop                /* /char    =>      */
@@ -140,6 +148,15 @@
 #define m4f_2u_fetch m4fushort_fetch
 #define m4f_4u_fetch m4fuint_fetch
 #define m4f_8u_fetch m4ffetch
+
+#define m4f_2u_fetch_1 m4fushort_fetch_1
+#define m4f_2u_fetch_2 m4fushort_fetch_2
+#define m4f_2u_fetch_3 m4fushort_fetch_3
+#define m4f_2u_fetch_4 m4fushort_fetch_4
+#define m4f_2u_fetch_5 m4fushort_fetch_5
+#define m4f_2u_fetch_6 m4fushort_fetch_6
+#define m4f_2u_fetch_7 m4fushort_fetch_7
+#define m4f_2u_fetch_8 m4fushort_fetch_8
 
 /* needed by m4ftoken_align */
 #define m4f_1_align m4fnoop

@@ -20,6 +20,31 @@
 #include "../include/dict.mh"
 #include "../include/dict_m4th.mh"
 
+/* helper macros to define words {byte,char,short,ushort,int,uint,cell,token}_fetch* */
+
+#define DEF_WORD_FETCH_TYP_OFF(typ, offset, prev_word)                                             \
+    WORD(typ##_fetch##offset, prev_word, DSTACK(1, 1), RSTACK(0, 0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+#define DEF_WORD_FETCH_TYP(typ, prev_word)                                                         \
+    DEF_WORD_FETCH_TYP_OFF(typ, /**/, prev_word)                                                   \
+    DEF_WORD_FETCH_TYP_OFF(typ, _1, typ##_fetch)                                                   \
+    DEF_WORD_FETCH_TYP_OFF(typ, _2, typ##_fetch_1)                                                 \
+    DEF_WORD_FETCH_TYP_OFF(typ, _3, typ##_fetch_2)                                                 \
+    DEF_WORD_FETCH_TYP_OFF(typ, _4, typ##_fetch_3)                                                 \
+    DEF_WORD_FETCH_TYP_OFF(typ, _5, typ##_fetch_4)                                                 \
+    DEF_WORD_FETCH_TYP_OFF(typ, _6, typ##_fetch_5)                                                 \
+    DEF_WORD_FETCH_TYP_OFF(typ, _7, typ##_fetch_6)                                                 \
+    DEF_WORD_FETCH_TYP_OFF(typ, _8, typ##_fetch_7)
+#define DEF_WORD_FETCH(prev_word)                                                                  \
+    DEF_WORD_FETCH_TYP(byte, prev_word)                                                            \
+    DEF_WORD_FETCH_TYP(char, byte_fetch_8)                                                         \
+    DEF_WORD_FETCH_TYP(short, char_fetch_8)                                                        \
+    DEF_WORD_FETCH_TYP(ushort, short_fetch_8)                                                      \
+    DEF_WORD_FETCH_TYP(int, ushort_fetch_8)                                                        \
+    DEF_WORD_FETCH_TYP(uint, int_fetch_8)                                                          \
+    DEF_WORD_FETCH_TYP(cell, uint_fetch_8)
+
+/**/
+
 DICT_START(m4th_c)
 DICT_WORDS_M4TH_C(WORDNAME)
 #include "m4th_c.S"

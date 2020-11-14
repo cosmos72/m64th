@@ -353,6 +353,14 @@
     X(6, ">token", to_token)              /* alias of to_SZtu,       no dedicated m4token */       \
     X(6, "token!", token_store)           /* alias of _SZtu_store,   no dedicated m4token */       \
     X(6, "token@", token_fetch)           /* alias of _SZtu_fetch,   no dedicated m4token */       \
+    X(8, "token[1]", token_fetch_1)       /* alias of _SZtu_fetch_1, no dedicated m4token */       \
+    X(8, "token[2]", token_fetch_2)       /* alias of _SZtu_fetch_2, no dedicated m4token */       \
+    X(8, "token[3]", token_fetch_3)       /* alias of _SZtu_fetch_3, no dedicated m4token */       \
+    X(8, "token[4]", token_fetch_4)       /* alias of _SZtu_fetch_4, no dedicated m4token */       \
+    X(8, "token[5]", token_fetch_5)       /* alias of _SZtu_fetch_5, no dedicated m4token */       \
+    X(8, "token[6]", token_fetch_6)       /* alias of _SZtu_fetch_6, no dedicated m4token */       \
+    X(8, "token[7]", token_fetch_7)       /* alias of _SZtu_fetch_7, no dedicated m4token */       \
+    X(8, "token[8]", token_fetch_8)       /* alias of _SZtu_fetch_8, no dedicated m4token */       \
     X(6, "1token", one_token)             /* alias of _SZt,          no dedicated m4token */       \
     X(6, "token+", token_plus)            /* alias of _SZt_plus,     no dedicated m4token */       \
     X(6, "tokens", tokens)                /* alias of _SZt_times,    no dedicated m4token */       \

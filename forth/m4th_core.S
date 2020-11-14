@@ -582,8 +582,10 @@ WORD(one_token,        to_token,       DSTACK(0,1), RSTACK(0,0), WORD_PURE)
 WORD(token_plus,       one_token,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(tokens,           token_plus,     DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(token_store,      tokens,         DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE)
-WORD(token_fetch,      token_store,    DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD(token_align,      token_store,    DSTACK(0,0), RSTACK(0,0), WORD_IMPURE)
+
+DEF_WORD_FETCH_TYP(token,        token_store)
+
+WORD(token_align,      token_fetch_8,  DSTACK(0,0), RSTACK(0,0), WORD_IMPURE)
 WORD(token_aligned,    token_align,    DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(token_to_name,    token_aligned,  DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
 WORD_START(user_var,   token_to_name)
