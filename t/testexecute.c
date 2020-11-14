@@ -701,7 +701,7 @@ static m4testexecute testexecute_d[] = {
     {"5 (optimize-literal)",
      {CALL(_optimize_literal_), m4bye},
      {{1, {5}}, {}},
-     {{2, {5, tfalse}}, {}},
+     {{2, {m4five, ttrue}}, {}},
      {}},
     {"8 (optimize-literal)",
      {CALL(_optimize_literal_), m4bye},
