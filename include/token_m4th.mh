@@ -383,19 +383,19 @@
 /* */
 /* */
 /* */
-/* */
-/* */
 /* 'm4th-impl' wordlist */
-#define M4_i(x) ((x) + 825)
-#define M4minus_two M4_i(0)         /* -2                    */
-#define M4minus_one M4_i(1)         /* -1                    */
-#define M4zero M4_i(2)              /* 0                     */
-#define M4one M4_i(3)               /* 1                     */
-#define M4two M4_i(4)               /* 2                     */
-#define M4three M4_i(5)             /* 3                     */
-#define M4four M4_i(6)              /* 4                     */
-#define M4eight M4_i(7)             /* 8                     */
-#undef M4____gap                    /*                                         */
+#define M4_i(x) ((x) + 830)
+#define M4minus_two M4_i(-2)        /* -2                    */
+#define M4minus_one M4_i(-1)        /* -1                    */
+#define M4zero M4_i(0)              /* 0                     */
+#define M4one M4_i(1)               /* 1                     */
+#define M4two M4_i(2)               /* 2                     */
+#define M4three M4_i(3)             /* 3                     */
+#define M4four M4_i(4)              /* 4                     */
+#define M4five M4_i(5)              /* 5                     */
+#define M4six M4_i(6)               /* 6                     */
+#define M4seven M4_i(7)             /* 7                     */
+#define M4eight M4_i(8)             /* 8                     */
 #undef M4____gap                    /*                                         */
 #define M4_plus_loop_ M4_i(10)      /* (+loop)  followed by IP offset to jump          */
 #define M4_q_break_if_ M4_i(11)     /* (?break-if)     followed by IP offset to jump if dtop <> 0 */

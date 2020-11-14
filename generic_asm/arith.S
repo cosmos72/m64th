@@ -269,6 +269,24 @@ FUNC_START(four_div)       /* 4/   m4th-user floored divide by 4 */
 FUNC_END(four_div)
 
 
+FUNC_START(five)           /* 5   m4th-impl */
+        DPUSH__DTOP()
+        MOVI(  5,      DTOP)
+FUNC_END(five)
+
+
+FUNC_START(six)            /* 6   m4th-impl */
+        DPUSH__DTOP()
+        MOVI(  6,      DTOP)
+FUNC_END(six)
+
+
+FUNC_START(seven)          /* 7   m4th-impl */
+        DPUSH__DTOP()
+        MOVI(  7,      DTOP)
+FUNC_END(seven)
+
+
 FUNC_START(eight)          /* 8   m4th-impl */
         DPUSH__DTOP()
         MOVI(  8,      DTOP)

@@ -462,6 +462,9 @@
     X(1, "2", two)                                                                                 \
     X(1, "3", three)                                                                               \
     X(1, "4", four)                                                                                \
+    X(1, "5", five)                                                                                \
+    X(1, "6", six)                                                                                 \
+    X(1, "7", seven)                                                                               \
     X(1, "8", eight)
 
 #define DICT_WORDS_M4TH_IMPL(X)                                                                    \
