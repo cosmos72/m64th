@@ -79,4 +79,10 @@
 /**< instruct the compiler not to optimize word */
 #define M4FLAG_NOOPT (3 << 11)
 
+/**
+ * < instruct the compiler to re-execute (immediate) word after optimization.
+ * needed to recompute jump offsets
+ */
+#define M4FLAG_REEXEC_AFTER_OPTIMIZE (1 << 13)
+
 #endif /* M4TH_M4TH_MH */

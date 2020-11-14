@@ -77,6 +77,7 @@ typedef enum m4flags_e {
     m4flag_noopt = M4FLAG_NOOPT,
     m4flag_pure_mask = M4FLAG_PURE_MASK,
     m4flag_pure = M4FLAG_PURE,
+    m4flag_reexec_after_optimize = M4FLAG_REEXEC_AFTER_OPTIMIZE,
 } m4flags;
 
 /** m4th state */

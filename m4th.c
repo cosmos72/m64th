@@ -295,6 +295,13 @@ void m4flags_print(m4flags fl, m4printmode mode, FILE *out) {
     case m4flag_noopt:
         skip = printed++ ? 0 : 1;
         fputs((mode == m4mode_user ? "|noopt" : "|M4FLAG_NOOPT") + skip, out);
+        break;
+    }
+    if (fl & m4flag_reexec_after_optimize) {
+        skip = printed++ ? 0 : 1;
+        fputs((mode == m4mode_user ? "|reexec_after_optimize" : "|M4FLAG_REEXEC_AFTER_OPTIMIZE") +
+                  skip,
+              out);
     }
 }
 
