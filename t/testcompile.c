@@ -279,7 +279,7 @@ static void m4testcompile_failed(m4th *m, const m4testcompile *t, m4code t_codeg
     fputs("\n    expected    codegen   ", out);
     m4code_print(t_codegen, m4mode_user, out);
     fputs("\n      actual    codegen   ", out);
-    m4word_print_code(m->lastw, m4mode_user, out);
+    m4code_print(m4word_code(m->lastw), m4mode_user, out);
     if (t->dafter.len == 0 && m->dstack.curr == m->dstack.end /*__________*/ &&
         m->rstack.curr == m->rstack.end) {
         fputc('\n', out);
