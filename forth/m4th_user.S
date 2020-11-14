@@ -204,6 +204,7 @@ WORD_START(hashmap_find_cell, flip)
         dup_to_r, over,                                /* ( map key map        ) (R: key     ) */
 #if M4HASHMAP_OFF_VEC_CELL == SZ2
         cell_fetch_2,                                  /* ( map key vec        ) (R: key     ) */
+#else
         _lit_, T(M4HASHMAP_OFF_VEC_CELL), plus, fetch, /* ( map key vec        ) (R: key     ) */
 #endif
         to_r,                                          /* ( map key            ) (R: key vec ) */

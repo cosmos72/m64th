@@ -729,10 +729,10 @@ static const m4hashmap_entry_cell test_hash_entry_cell0[2] = {
     {5 /*val*/, 4 /*key*/, 6 /*next*/},
 };
 static const m4hashmap_entry_cell test_hash_entry_cell1[8] = {
-    {123 /*val*/, 1 /*key*/, -2 /*next*/}, {0 /*val*/, 0 /*key*/, -1 /*next*/},
-    {0 /*val*/, 0 /*key*/, -1 /*next*/},   {456 /*val*/, -1 /*key*/, -2 /*next*/},
-    {0 /*val*/, 0 /*key*/, -1 /*next*/},   {0 /*val*/, 0 /*key*/, -1 /*next*/},
-    {0 /*val*/, 0 /*key*/, -1 /*next*/},   {0 /*val*/, 0 /*key*/, -1 /*next*/},
+    {0 /*val*/, 0 /*key*/, -1 /*next*/},    {0 /*val*/, 0 /*key*/, -1 /*next*/},
+    {456 /*val*/, -1 /*key*/, -2 /*next*/}, {123 /*val*/, 1 /*key*/, -2 /*next*/},
+    {0 /*val*/, 0 /*key*/, -1 /*next*/},    {0 /*val*/, 0 /*key*/, -1 /*next*/},
+    {0 /*val*/, 0 /*key*/, -1 /*next*/},    {0 /*val*/, 0 /*key*/, -1 /*next*/},
 };
 static const m4hashmap_cell test_hashmap_cell1 = {
     2 /*size*/, 2 /*lcap*/, (m4hashmap_entry_cell *)test_hash_entry_cell1 /*vec*/
@@ -769,13 +769,16 @@ static m4testexecute testexecute_e[] = {
      {{2, {(m4cell)&test_hash_entry_cell0, 1}}, {}},
      {{3, {4, 5, 6}}, {}},
      {}},
-#if 0 /* crashes */
     {"{1:123, -1:456} 1 hashmap-find/cell",
      {CALL(hashmap_find_cell), m4bye},
      {{2, {(m4cell)&test_hashmap_cell1, 1}}, {}},
      {{3, {1, 123, ttrue}}, {}},
      {}},
-#endif
+    {"{1:123, -1:456} -1 hashmap-find/cell",
+     {CALL(hashmap_find_cell), m4bye},
+     {{2, {(m4cell)&test_hashmap_cell1, -1}}, {}},
+     {{3, {-1, 456, ttrue}}, {}},
+     {}},
     /* ---------------------- hashmap/int ---------------------- */
     {"(hashmap-indexof/int)",
      {CALL(_hashmap_indexof_int_), m4bye},
