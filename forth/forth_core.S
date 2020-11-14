@@ -110,7 +110,7 @@ WORD_START(colon,      two_swap)
          */
         state, fetch, zero_ne,
             _lit_, T(M4ERR_COMPILER_NESTING), and, throw,
-#if 1
+#if 0
         /* temporarily disable optimizer, it does not recompute jump offsets */
         _lit_, T(M4FLAG_NOOPT),
 #else
