@@ -718,6 +718,28 @@ static m4testexecute testexecute_d[] = {
 static const m4token testoptimize_noop[] = {m4noop};
 static const m4token testoptimize_zero[] = {m4zero, m4noop};
 static const m4token testoptimize_nip_dup[] = {m4nip, m4dup, m4noop};
+
+/* ---------------------- test data for hashmap/cell -------------------- */
+
+static const m4hashmap_cell test_hashmap_cell0 = {
+    0 /*size*/, 31 /*lcap*/, NULL /*vec*/
+};
+static const m4hashmap_entry_cell test_hash_entry_cell0[2] = {
+    {2 /*val*/, 1 /*key*/, 3 /*next*/},
+    {5 /*val*/, 4 /*key*/, 6 /*next*/},
+};
+static const m4hashmap_entry_cell test_hash_entry_cell1[8] = {
+    {123 /*val*/, 1 /*key*/, -2 /*next*/}, {0 /*val*/, 0 /*key*/, -1 /*next*/},
+    {0 /*val*/, 0 /*key*/, -1 /*next*/},   {456 /*val*/, -1 /*key*/, -2 /*next*/},
+    {0 /*val*/, 0 /*key*/, -1 /*next*/},   {0 /*val*/, 0 /*key*/, -1 /*next*/},
+    {0 /*val*/, 0 /*key*/, -1 /*next*/},   {0 /*val*/, 0 /*key*/, -1 /*next*/},
+};
+static const m4hashmap_cell test_hashmap_cell1 = {
+    2 /*size*/, 2 /*lcap*/, (m4hashmap_entry_cell *)test_hash_entry_cell1 /*vec*/
+};
+
+/* ---------------------- test data for hashmap/int --------------------- */
+
 static const m4hashmap_int test_hashmap_int0 = {
     0 /*size*/, 31 /*lcap*/, NULL /*vec*/
 };
@@ -732,10 +754,29 @@ static const m4hashmap_entry_int test_hash_entry_int1[8] = {
     {0 /*val*/, 0 /*key*/, -1 /*next*/},   {0 /*val*/, 0 /*key*/, -1 /*next*/},
 };
 static const m4hashmap_int test_hashmap_int1 = {
-    0 /*size*/, 2 /*lcap*/, (m4hashmap_entry_int *)test_hash_entry_int1 /*vec*/
+    2 /*size*/, 2 /*lcap*/, (m4hashmap_entry_int *)test_hash_entry_int1 /*vec*/
 };
 
 static m4testexecute testexecute_e[] = {
+    /* ---------------------- hashmap/cell --------------------- */
+    {"(hashmap-indexof/cell)",
+     {CALL(_hashmap_indexof_cell_), m4bye},
+     {{2, {(m4cell)&test_hashmap_cell0, 0x12345678}}, {}},
+     {{1, {(0xd45689e5ul ^ (0xd45689e5ul >> 31)) & ((1ul << 31) - 1)}}, {}},
+     {}},
+    {"(hashmap-entry@/cell)",
+     {CALL(_hashmap_entry_fetch_cell_), m4bye},
+     {{2, {(m4cell)&test_hash_entry_cell0, 1}}, {}},
+     {{3, {4, 5, 6}}, {}},
+     {}},
+#if 0 /* crashes */
+    {"{1:123, -1:456} 1 hashmap-find/cell",
+     {CALL(hashmap_find_cell), m4bye},
+     {{2, {(m4cell)&test_hashmap_cell1, 1}}, {}},
+     {{3, {1, 123, ttrue}}, {}},
+     {}},
+#endif
+    /* ---------------------- hashmap/int ---------------------- */
     {"(hashmap-indexof/int)",
      {CALL(_hashmap_indexof_int_), m4bye},
      {{2, {(m4cell)&test_hashmap_int0, 0x12345678}}, {}},
@@ -761,6 +802,7 @@ static m4testexecute testexecute_e[] = {
      {{2, {M4two | (M4pick << 16), (m4cell)&WORD_SYM(_optimize_2token_)}}, {}},
      {{3, {M4two | (M4pick << 16), 1 | (M4hop << 16), ttrue}}, {}},
      {}},
+    /* ---------------------- optimize* ---------------------- */
     {"{noop} (optimize-1token)",
      {m4here, m4dup, m4_lit_comma_, m4noop, /* ( here here   ) original:  noop     */
       m4false, CALL(_optimize_1token_),     /* ( src' dst' n ) optimized:          */

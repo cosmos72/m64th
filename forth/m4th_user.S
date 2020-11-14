@@ -193,8 +193,8 @@ WORD_START(forth_root, ex_to_string)
     )
 WORD_END(forth_root)
 WORD(flip,             forth_root,     DSTACK(3,3), RSTACK(0,0), WORD_PURE)
-/* hashmap-find/int ( map key -- key val t|f ) find entry in hashmap/int  */
-WORD_START(hashmap_find_int, flip)
+/* hashmap-find/cell ( map key -- key val t|f ) find entry in hashmap/cell  */
+WORD_START(hashmap_find_cell, flip)
     WORD_DSTACK(2,3)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -202,7 +202,40 @@ WORD_START(hashmap_find_int, flip)
     WORD_FLAGS(0)
     WORD_CODE(
         dup_to_r, over,                                /* ( map key map        ) (R: key     ) */
-#if M4HASHMAP_OFF_VEC_INT == 8 && SZ == 8
+#if M4HASHMAP_OFF_VEC_CELL == SZ2
+        cell_fetch_2,                                  /* ( map key vec        ) (R: key     ) */
+        _lit_, T(M4HASHMAP_OFF_VEC_CELL), plus, fetch, /* ( map key vec        ) (R: key     ) */
+#endif
+        to_r,                                          /* ( map key            ) (R: key vec ) */
+        CALL(_hashmap_indexof_cell_),                  /* ( pos                ) (R: key vec ) */
+        begin,                                         /* ( pos                ) (R: key vec ) */
+            r_fetch, swap,                             /* ( vec pos            ) (R: key vec ) */
+            CALL(_hashmap_entry_fetch_cell_),          /* ( key' val next      ) (R: key vec ) */
+            dup, one_plus, /* 0 if no entry */         /* ( key' val next flag ) (R: key vec ) */
+        _while_, T(19),                                /* ( key' val next      ) (R: key vec ) */
+            hop, r2nd_fetch, equal,                    /* ( key' val next t|f  ) (R: key vec ) */
+            _if_, T(5),                                /* ( key' val next      ) (R: key vec ) */
+                two_r_from_two_drop, drop, true, exit, /* ( key' val t         )               */
+            then,                                      /* ( key' val next      ) (R: key vec ) */
+            dup, two_plus, /* 0 if no next entry */    /* ( key' val next flag ) (R: key vec ) */
+        _while_, T(4),                                 /* ( key' val next      ) (R: key vec ) */
+            nip, nip,                                  /* ( next               ) (R: key vec ) */
+        _repeat_, T(-25-nCALLt),                       /* ( key' val next      ) (R: key vec ) */
+        then,              /* matches 1st 'while' */   /* ( key' val next      ) (R: key vec ) */
+        two_drop, r_from_drop, r_from,                 /* ( key' key           )               */
+        nip, zero, zero, exit                          /* ( key 0 false        )               */
+    )
+WORD_END(hashmap_find_int)
+/* hashmap-find/int ( map key -- key val t|f ) find entry in hashmap/int  */
+WORD_START(hashmap_find_int, hashmap_find_cell)
+    WORD_DSTACK(2,3)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(0)
+    WORD_CODE(
+        dup_to_r, over,                                /* ( map key map        ) (R: key     ) */
+#if M4HASHMAP_OFF_VEC_INT == SZ
         cell_fetch_1,                                  /* ( map key vec        ) (R: key     ) */
 #elif M4HASHMAP_OFF_VEC_INT == 8
         eight_plus, fetch                              /* ( map key vec        ) (R: key     ) */

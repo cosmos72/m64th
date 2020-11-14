@@ -229,16 +229,16 @@
     X(17, "disassemble-names", disassemble_names)                                                  \
     /*                          read name, find nt, show disassembly of all nt up to it */         \
     X(16, "disassemble-upto", disassemble_upto)                                                    \
-    X(9, "ex>string", ex_to_string) /* ( ex -- c-addr u ) get exception name          */           \
-                                    /* ( map key -- key val t|f ) find entry in hashmap/int  */    \
-    X(10, "forth-root", forth_root) /* set first wordlist in searchorder to forth-root   */        \
-    X(16, "hashmap-find/int", hashmap_find_int)                                                    \
+    X(9, "ex>string", ex_to_string) /* ( ex -- c-addr u ) get exception name            */         \
+    X(10, "forth-root", forth_root) /* set first wordlist in searchorder to forth-root  */         \
+    X(17, "hashmap-find/cell", hashmap_find_cell) /* ( map key -- key val t|f ) find key in map */ \
+    X(16, "hashmap-find/int", hashmap_find_int)   /* ( map key -- key val t|f ) find key in map */ \
     X(9, "interpret", interpret)      /* one iteration of forth interpret/compile loop  */         \
     X(6, "m4th-c", m4th_c)            /* set first wordlist in searchorder to m4th-c    */         \
     X(9, "m4th-core", m4th_core)      /* set first wordlist in searchorder to m4th-core */         \
     X(9, "m4th-impl", m4th_impl)      /* set first wordlist in searchorder to m4th-impl */         \
     X(11, "parse-quote", parse_quote) /* ( -- c-addr u ) read a string ended by quote   */         \
-    X(4, "repl", repl)                /* call INTERPRET repeatedly until EOF or input error    */  \
+    X(4, "repl", repl)                /* call INTERPRET repeatedly until EOF or input error     */ \
     X(5, "r2nd@", r2nd_fetch)   /* alias of '2r@ drop' i.e. fetch second item from return stack */ \
     X(8, "string<>", string_ne) /* ( addr1 addr2 u -- addr1 addr2 u t|f )                */        \
     X(11, "string-ci<>", string_ci_ne) /* ( addr1 addr2 u -- addr1 addr2 u t|f )         */        \
@@ -478,9 +478,13 @@
     X(6, "(does)", _does_) /* ( -- ) replace execution semantics of latest word */                 \
     X(11, "(eval-name)", _eval_name_)                                                              \
     X(13, "(eval-number)", _eval_number_) /* ( x -- ) interpret or compile number */               \
-    /* ( vec pos -- key val next ) fetch entry from map bucket index */                            \
+    /* ( vec pos -- key val next ) fetch entry from hashmap/cell bucket index */                   \
+    X(21, "(hashmap-entry@/cell)", _hashmap_entry_fetch_cell_)                                     \
+    /* ( vec pos -- key val next ) fetch entry from hashmap/int bucket index */                    \
     X(20, "(hashmap-entry@/int)", _hashmap_entry_fetch_int_)                                       \
-    /* ( map key -- pos ) convert map key to bucket index */                                       \
+    /* ( map key -- pos ) get bucket index for key in hashmap/cell */                              \
+    X(22, "(hashmap-indexof/cell)", _hashmap_indexof_cell_)                                        \
+    /* ( map key -- pos ) get bucket index for key in hashmap/int */                               \
     X(21, "(hashmap-indexof/int)", _hashmap_indexof_int_)                                          \
     /* ( src dst src-end -- src' dst' ) optimize single tokens being compiled  */                  \
     X(12, "(optimize-1)", _optimize_1_)                                                            \

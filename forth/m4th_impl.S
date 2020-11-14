@@ -317,9 +317,39 @@ WORD_START(_exec_xt_from_native_, _exec_token_)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_MAY_JUMP)
     WORD_CODE(_exec_xt_from_native_, exit)
 WORD_END(_exec_xt_from_native_)
+/* (hashmap-entry@/cell) ( vec u -- key val next ) fetch u-th entry in hashmap buckets. */
+/* next is -1 for 'no_entry', or -2 for 'no_next_entry' */
+WORD_START(_hashmap_entry_fetch_cell_, _exec_xt_from_native_)
+    WORD_DSTACK(2,3)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
+    WORD_CODE(
+        _lit_, T(M4HASHMAP_ENTRY_SZ_CELL), times, plus,    /* ( vec'         )           */
+        dup_to_r,                                          /* ( vec          ) (R: vec ) */
+#if M4HASHMAP_ENTRY_OFF_KEY_CELL == 12
+        cell_fetch_3,                                      /* ( key          ) (R: vec ) */
+#else
+        _lit_, T(M4HASHMAP_ENTRY_OFF_KEY_CELL), plus, fetch, /* same */
+#endif
+        r_fetch,                                           /* ( key vec      ) (R: vec ) */
+#if M4HASHMAP_ENTRY_OFF_VAL_CELL != 0
+        _lit_, T(M4HASHMAP_ENTRY_OFF_VAL_CELL), plus,
+#endif
+        fetch, r_from,                                     /* ( key val vec  )           */
+#if M4HASHMAP_ENTRY_OFF_NEXT_CELL == SZ2
+        cell_fetch_2,                                      /* ( key val next )           */
+#else
+        _lit_, T(M4HASHMAP_ENTRY_OFF_NEXT_CELL), plus, fetch, /* same */
+#endif
+        /* if no_entry, next is -1. if no_next_entry, next is -2 */
+        exit
+    )
+WORD_END(_hashmap_entry_fetch_int_)
 /* (hashmap-entry@/int) ( vec u -- key val next ) fetch u-th entry in hashmap buckets. */
 /* next is -1 for 'no_entry', or -2 for 'no_next_entry' */
-WORD_START(_hashmap_entry_fetch_int_, _exec_xt_from_native_)
+WORD_START(_hashmap_entry_fetch_int_, _hashmap_entry_fetch_cell_)
     WORD_DSTACK(2,3)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -354,8 +384,30 @@ WORD_START(_hashmap_entry_fetch_int_, _exec_xt_from_native_)
         exit
     )
 WORD_END(_hashmap_entry_fetch_int_)
-/* (hashmap-index-of/int) ( map key -- pos ) get bucket position for key  */
-WORD_START(_hashmap_indexof_int_, _hashmap_entry_fetch_int_)
+/* (hashmap-indexof/cell) ( map key -- pos ) get bucket index for key in hashmap/cell */
+WORD_START(_hashmap_indexof_cell_, _hashmap_entry_fetch_int_)
+    WORD_DSTACK(2,1)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
+    WORD_CODE(
+        /* given x = key^hash, return (x ^ (x >> lcap)) & (cap - 1); */
+        dup, crc_cell, xor, swap,                      /* ( x=key^hash map              ) */
+#if M4HASHMAP_OFF_LCAP_CELL == SZ
+        cell_fetch_1,                                  /* ( x lcap                      ) */
+#else
+        _lit_, T(M4HASHMAP_OFF_LCAP_CELL), plus, fetch /* ( x lcap                      ) */
+#endif
+        one, over, lshift, one_minus,                  /* ( x lcap cap-1                ) */
+        minus_rot, trail,                              /* ( cap-1 x x lcap              ) */
+        rshift,                                        /* ( cap-1 x x>>lcap             ) */
+        xor,                                           /* ( cap-1 x^(x>>lcap)           ) */
+        and, exit                                      /* ( cap-1 & (x^(x>>lcap))       ) */
+    )
+WORD_END(_hashmap_indexof_cell_)
+/* (hashmap-indexof/int) ( map key -- pos ) get bucket index for key in hashmap/int  */
+WORD_START(_hashmap_indexof_int_, _hashmap_indexof_cell_)
     WORD_DSTACK(2,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -748,42 +800,13 @@ WORD_START(_optimize_2token_, _optimize_2_)
     WORD_CODE_N_AUTO(_optimize_2token_)
     WORD_DATA_N_AUTO(_optimize_2token_)
     WORD_CODE_START(_optimize_2token_)
-      WORD_CODE_TOKENS(
-        /* (ip>data>addr) >r                           ( src dst               ) (R: hashmap )
-         * over token@ hop token+ token@               ( src dst tok0 tok1     ) (R: hashmap )
-         * 8 tokens lshift or                          ( src dst tok0|tok1<<16 ) (R: hashmap )
-         * r> swap                                     ( src dst hashmap key  )
-         * hashmap-find/int                            ( src dst key' val' t|f )
-         * 0= if                                       ( src dst key' val'     )
-         *    2drop 1token                             ( src dst SZt           )
-         *    cmove/count false exit                   ( src' dst' false       )
-         * then                                        ( src dst key val       )
-         * nip dup 8 tokens rshift swap to-token 0     ( src dst val>>16 len 0 )
-         * ?do                                         ( src dst toks          ) (R: len 0    )
-         *    tuck to-token                            ( src toks dst toki     ) (R: len i    )
-         *    over token!                              ( src toks dst          ) (R: len i    )
-         *    token+                                   ( src toks dst'         ) (R: len i    )
-         *    swap 8 tokens rshift                     ( src dst toks>>16      ) (R: len i    )
-         * loop                                        ( src dst 0             )
-         * drop swap token+ token+ swap true           ( src' dst true         )
-         */
-        _ip_to_data_addr_, to_r,
-        over, token_fetch, hop, token_plus, token_fetch,
-        eight, tokens, lshift, or,
-        r_from, swap,
-        CALL(hashmap_find_int),
-        _if0_, T(6),
-            two_drop, one_token,
-            cmove_count, false, exit,
-        then,
-        nip, dup, eight, tokens, rshift, swap, to_token, zero,
-        _q_do_, T(11),
-            tuck, to_token,
-            over, token_store,
-            token_plus,
-            swap, eight, tokens, rshift,
-        _loop_, T(-11),
-        drop, swap, token_plus, token_plus, swap, true, exit
+      WORD_CODE_TOKENS( /* generated from file m4th_impl.forth - see source and comments there */
+        /*54*/
+        _ip_to_data_addr_, to_r, over, token_fetch, hop, token_fetch_1, eight, two_times, lshift, or,
+        r_from, swap, CALL(hashmap_find_int), zero_equal, _if_, T(6), two_drop, two, cmove_count, false, exit,
+        then, nip, dup, eight, two_times, rshift, swap, to_token, zero, _q_do_, T(11), tuck, to_token, over,
+        short_store, two_plus, swap, eight, two_times, rshift, _loop_, T(-11),
+        drop, swap, two_plus, two_plus, swap, true, exit
       )
     WORD_CODE_END(_optimize_2token_)
     WORD_DATA_START(_optimize_2token_)
