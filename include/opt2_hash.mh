@@ -517,4 +517,3 @@ entry(M4equal|(M4zero_less_equal<<16),	3|(M4drop<<16)|(M4drop<<32)|(M4minus_one<
 entry(0,	0,	-1)	\
 entry(M4tuck|(M4drop<<16),	1|(M4swap<<16),	-2)	\
 entry(M4pick|(M4drop<<16),	1|(M4drop<<16),	478)
-
