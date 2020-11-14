@@ -32,17 +32,17 @@ FUNC_START(div_string)
 FUNC_END(div_string)
 
 
-#define M4FCMOVE /* defined near cmove* to encode a shorter jump */
+#define M4FCMOVE /* defined near cmove/count to encode a shorter jump */
 /* cmove ( src_addr dst_addr u -- ) 'string' word set */
 FUNC_START(cmove)
-        TOKEN_CALL_NOTHROW(FUNC(cmove_star), cmove.0)   /* ( src' dst'    ) */
+        TOKEN_CALL_NOTHROW(FUNC(cmove_count), cmove.0)   /* ( src' dst'    ) */
         LOAD(  DTOP,   AT(DSTK, SZ))
         ADD2(IMM(SZ2), DSTK)
 FUNC_END(cmove)
 
 
-/* cmove* ( src_addr dst_addr u -- src_addr+u dst_addr+u ) m4th-user */
-FUNC_START(cmove_star)
+/* cmove/count ( src_addr dst_addr u -- src_addr+u dst_addr+u ) m4th-user */
+FUNC_START(cmove_count)
         ADDI(  DSTK,   SZ,     %rdx)   /* %rdx = DSTK + SZ           */
         LOAD(  %rdi,   AT(DSTK))       /* %rdi = dst                 */
         LOAD(  %rsi,   AT(DSTK, SZ))   /* %rsi = src: clobbers DSTK  */
@@ -54,12 +54,12 @@ FUNC_START(cmove_star)
         STOR(  %rsi,   AT(%rdx))       /* ( src' dst u  )            */
         MOVE(  %rdi,   DTOP)           /* ( src' _ dst' )            */
         MOVE(  %rdx,   DSTK)           /* reload DSTK                */
-FUNC_END(cmove_star)
+FUNC_END(cmove_count)
 
 
-/* -cmove* ( src_addr dst_addr u -- src_addr-u dst_addr-u ) m4th-user */
+/* -cmove/count ( src_addr dst_addr u -- src_addr-u dst_addr-u ) m4th-user */
 /* backward copy u bytes from src-1..src-u to dst-1..dst-u and return updated addresses */
-FUNC_START(minus_cmove_star)
+FUNC_START(minus_cmove_count)
         ADDI(  DSTK,   SZ,     %rdx)   /* %rdx = DSTK + SZ           */
         LOAD(  %rdi,   AT(DSTK))       /* %rdi = dst                 */
         LOAD(  %rsi,   AT(DSTK, SZ))   /* %rsi = src: clobbers DSTK  */
@@ -75,7 +75,7 @@ FUNC_START(minus_cmove_star)
         ADDI(  %rdi,   1, DTOP)        /* ( src  _ dst' )            */
         STOR(  %rsi,   AT(%rdx))       /* ( src' _ dst' )            */
         MOVE(  %rdx,   DSTK)           /* reload DSTK                */
-FUNC_END(minus_cmove_star)
+FUNC_END(minus_cmove_count)
 
 
 /* move ( src_addr dst_addr u -- ) */

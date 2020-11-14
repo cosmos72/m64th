@@ -22,8 +22,8 @@
 /* clang-format off */
 
 
-/* cmove* ( src-addr dst-addr u -- src-addr+u dst-addr+u ) m4th-user */
-FUNC_START(cmove_star)
+/* cmove/count ( src-addr dst-addr u -- src-addr+u dst-addr+u ) m4th-user */
+FUNC_START(cmove_count)
         LOAD(  REG1,   AT(DSTK, SZ))       /* a = src                 */
         DPOP(  REG2)                       /* b = dst                 */
         ZERO(  REG0)                       /* @ = index               */
@@ -56,12 +56,12 @@ LABEL(cmove.done)
         ADD2(  DTOP,   REG1)               /* src += u       */
         ADD2(  REG2,   DTOP)               /* dtop = dst + u */
         STOR(  REG1,   AT(DSTK))           /* ( src+u dst+u )*/
-FUNC_END(cmove_star)
+FUNC_END(cmove_count)
 
 
-/* -cmove* ( src-addr dst-addr u -- src-addr-u dst-addr-u ) m4th-user */
+/* -cmove/count ( src-addr dst-addr u -- src-addr-u dst-addr-u ) m4th-user */
 /* backward copy u bytes from src-1..src-u to dst-1..dst-u and return updated addresses */
-FUNC_START(minus_cmove_star)
+FUNC_START(minus_cmove_count)
         NEG1(  DTOP)                       /* dtop = -u               */
         LOAD(  REG1,   AT(DSTK, SZ))       /* a = src                 */
         DPOP(  REG2)                       /* b = dst                 */
@@ -95,7 +95,7 @@ LABEL(minus_cmove.done)
         ADD2(  DTOP,   REG1)               /* src -= u       */
         ADD2(  REG2,   DTOP)               /* dtop = dst - u */
         STOR(  REG1,   AT(DSTK))           /* ( src-u dst-u )*/
-FUNC_END(minus_cmove_star)
+FUNC_END(minus_cmove_count)
 
 
 /* move ( src-addr dst-addr u -- ) */

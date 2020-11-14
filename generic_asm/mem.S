@@ -195,7 +195,7 @@ DEF_FUNC_STORE()
 #ifndef M4FCMOVE
 /* cmove ( src_addr dst_addr u -- ) 'string' word set */
 FUNC_START(cmove)
-        TOKEN_CALL_NOTHROW(FUNC(cmove_star), cmove.0)   /* ( src' dst'    ) */
+        TOKEN_CALL_NOTHROW(FUNC(cmove_count), cmove.0)   /* ( src' dst'    ) */
         LOAD(  DTOP,   AT(DSTK, SZ))
         ADD2(IMM(SZ2), DSTK)
 FUNC_END(cmove)

@@ -215,6 +215,10 @@ static const m4testcompile testcompile[] = {
     {"1+ 1+ ;", {2, {0, m4colon}}, {}, {2, {m4two_plus, m4exit}}},
     {"1+ noop 1+ ;", {2, {0, m4colon}}, {}, {2, {m4two_plus, m4exit}}},
     {"swap drop ;", {2, {0, m4colon}}, {}, {2, {m4nip, m4exit}}},
+#if 0
+    /* ------------------------------- (optimize-3) ------------------------- */
+    {"if then ;", {2, {0, m4colon}}, {}, {1, {m4exit}}},
+#endif
     /* ------------------------------- [recompile] -------------------------- */
     /* test [recompile] to correctly update jump offsets after optimization */
     {"if chars then ;", {2, {0, m4colon}}, {}, {4, {m4_if_, T(1), m4then, m4exit}}},

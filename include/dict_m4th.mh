@@ -48,10 +48,10 @@
     X(6, "bounds", bounds)       /* ( c-addr u -- c-addr+u c-addr ) get string bounds        */    \
     /* ( src dst u -- src+u dst+u ) forward copy u bytes, */                                       \
     /*  and post-increment addresses after copying each byte  */                                   \
-    X(6, "cmove*", cmove_star)                                                                     \
+    X(11, "cmove/count", cmove_count)                                                              \
     /* ( src dst u -- src-u dst-u ) backward copy u bytes, */                                      \
     /*  and pre-decrement addresses before copying each byte  */                                   \
-    X(7, "-cmove*", minus_cmove_star)                                                              \
+    X(12, "-cmove/count", minus_cmove_count)                                                       \
     X(8, "crc-cell", crc_cell)          /* ( x -- crc32 ) compute CRC32c of a cell              */ \
     X(10, "crc-string", crc_string)     /* ( c-addr u -- crc32 ) compute CRC32c of a string     */ \
     X(10, "do-i+-loop", do_i_plus_loop) /* do i + loop                                          */ \

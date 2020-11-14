@@ -618,7 +618,7 @@ WORD_START(_optimize_1_, _while0_)
          * while                                       ( src dst      ) (R: src-end )
          *    false (optimize-1token)                  ( src' dst' n  ) (R: src-end )
          *    0< 1token and                            ( src dst SZt|0) (R: src-end )
-         *    cmove*                                   ( src' dst'    ) (R: src-end )
+         *    cmove/count                                   ( src' dst'    ) (R: src-end )
          * repeat                                      ( src' dst'    ) (R: src-end )
          * r> drop  ( optimized code is at dst...dst' )
          */
@@ -628,7 +628,7 @@ WORD_START(_optimize_1_, _while0_)
         _while_, T(8+nCALLt),
             false, CALL(_optimize_1token_),
             zero_less, one_token, and,
-            cmove_star,
+            cmove_count,
         _repeat_, T(-13-nCALLt),
         r_from_drop, exit
     )
@@ -665,10 +665,10 @@ WORD_START(_optimize_1token_, _optimize_1_)
          *       if                                    ( src dst opt-toks        ) (R: u )
          *         r@ tokens +                         ( src dst opt-toks'       ) (R: u )
          *         swap r@ tokens                      ( src opt-toks dst u'     ) (R: u )
-         *         cmove*                              ( src opt-toks' dst'      ) (R: u )
+         *         cmove/count                              ( src opt-toks' dst'      ) (R: u )
          *       else                                  ( src dst opt-toks        ) (R: u )
          *         swap r@ tokens                      ( src opt-toks dst u'     ) (R: u )
-         *         -cmove*                             ( src opt-toks' dst'      ) (R: u )
+         *         -cmove/count                             ( src opt-toks' dst'      ) (R: u )
          *       then                                  ( src opt-toks' dst'      ) (R: u )
          *       nip                                   ( src dst                 ) (R: u )
          *       swap token+ swap                      ( src' dst                ) (R: u )
@@ -693,10 +693,10 @@ WORD_START(_optimize_1token_, _optimize_1_)
                 _if_, T(9),
                     r_fetch, tokens, plus,
                     swap, r_fetch, tokens,
-                    minus_cmove_star,
+                    minus_cmove_count,
                 _else_, T(5),
                     swap, r_fetch, tokens,
-                    cmove_star,
+                    cmove_count,
                 then,
                 nip,
                 swap, token_plus, swap,
@@ -726,7 +726,7 @@ WORD_START(_optimize_2_, _optimize_1token_)
          *    (optimize-2token) drop                   ( src' dst'    ) (R: src-end )
          * repeat                                      ( src dst      ) (R: src-end )
          * over r> sub                                 ( src dst u    )
-         * cmove*                                      ( src' dst'    )
+         * cmove/count                                      ( src' dst'    )
          */
         to_r,
         begin,
@@ -735,7 +735,7 @@ WORD_START(_optimize_2_, _optimize_1token_)
             CALL(_optimize_2token_), drop,
         _repeat_, T(-10-nCALLt),
         over, r_from, sub,
-        cmove_star, exit
+        cmove_count, exit
     )
 WORD_END(_optimize_2_)
 /* ( src-addr dst-addr -- src-addr' dst-addr' t|f ) optimize token pairs being compiled */
@@ -756,7 +756,7 @@ WORD_START(_optimize_2token_, _optimize_2_)
          * hashmap-find/int                            ( src dst key' val' t|f )
          * 0= if                                       ( src dst key' val'     )
          *    2drop 1token                             ( src dst SZt           )
-         *    cmove* false exit                        ( src' dst' false       )
+         *    cmove/count false exit                   ( src' dst' false       )
          * then                                        ( src dst key val       )
          * nip dup 8 tokens rshift swap to-token 0     ( src dst val>>16 len 0 )
          * ?do                                         ( src dst toks          ) (R: len 0    )
@@ -774,7 +774,7 @@ WORD_START(_optimize_2token_, _optimize_2_)
         CALL(hashmap_find_int),
         _if0_, T(6),
             two_drop, one_token,
-            cmove_star, false, exit,
+            cmove_count, false, exit,
         then,
         nip, dup, eight, tokens, rshift, swap, to_token, zero,
         _q_do_, T(11),
