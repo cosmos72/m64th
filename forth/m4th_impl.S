@@ -1007,7 +1007,7 @@ WORD_START(_optimize_, _inline_)
         CALL(_recompile_), exit
     )
 WORD_END(_optimize_)
-/* rebuild jump offsets after optimization */
+/* rebuild XT jump offsets after optimization */
 WORD_START(_recompile_, _optimize_)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)
@@ -1046,16 +1046,16 @@ WORD_START(_recompile_token_, _recompile_)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
-    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE)
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY)
     WORD_CODE(
         /* here token@ token>name                      ( nt|0            )
          * dup 0= if                                   ( 0               )
          *   drop 1token allot exit                    (                 )
          * then                                        ( nt              )
          * dup name>flags                              ( nt flags        )
-         * M4FLAG_IMMEDIATE and                        ( nt immediate    )
+         * M4FLAG_REEXEC_AFTER_OPTIMIZE and            ( nt reexec-flag  )
          * if                                          ( nt              )
-         *    name>xt execute execute exit             ( ...             )
+         *    name>xt execute exit                     ( ...             )
          * then                                        ( nt              )
          * name>flags flags>consumed-tokens            ( u               )
          * 1+ tokens allot                             (                 )
@@ -1065,7 +1065,7 @@ WORD_START(_recompile_token_, _recompile_)
             drop, one_token, allot, exit,
         then,
         dup, name_to_flags,
-        _lit_, T(M4FLAG_IMMEDIATE), and,
+        _lit_, T(M4FLAG_REEXEC_AFTER_OPTIMIZE), and,
         _if_, T(4),
             name_to_xt, execute, exit,
         then,

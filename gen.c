@@ -20,7 +20,7 @@
 #include "impl.h"
 #include "include/dict_fwd.h"       /* m4dict_... */
 #include "include/hashmap_number.h" /* m4dict_... */
-#include "include/opt_rules.mh"     /* OPT2_RULES */
+#include "include/opt_rules.mh"     /* OPT*_RULES */
 #include "include/word_fwd.h"       /* m4w_...    */
 #include "m4th.h"
 
@@ -99,17 +99,6 @@ static void genopt_print_n_tokens(uint64_t x, unsigned n, unsigned index, FILE *
     }
 }
 
-static void genopt2_add(m4hashmap_int *map, const m4token opt[6]) {
-    m4cell key = opt[1] | ((m4cell)opt[2] << 16);
-    m4cell val = opt[0] | ((m4cell)opt[3] << 16) | ((m4cell)opt[4] << 32) | ((m4cell)opt[5] << 48);
-    const m4hashmap_entry_int *e;
-    assert(opt[0] <= 3);
-    e = m4hashmap_find_int(map, key);
-    assert(e == NULL);
-    e = m4hashmap_insert_int(map, key, val);
-    assert(e != NULL);
-}
-
 static void genopt_dump(const m4hashmap_int *map, unsigned key_n, FILE *out) {
     m4ucell i, cap = 2u << map->lcap;
     fprintf(out,
@@ -136,6 +125,28 @@ static void genopt_dump(const m4hashmap_int *map, unsigned key_n, FILE *out) {
     fputs("\n", out);
 }
 
+static void genopt2_add(m4hashmap_int *map, const m4token opt[6]) {
+    m4cell key = opt[1] | ((m4cell)opt[2] << 16);
+    m4cell val = opt[0] | ((m4cell)opt[3] << 16) | ((m4cell)opt[4] << 32) | ((m4cell)opt[5] << 48);
+    const m4hashmap_entry_int *e;
+    assert(opt[0] <= 3);
+    e = m4hashmap_find_int(map, key);
+    assert(e == NULL);
+    e = m4hashmap_insert_int(map, key, val);
+    assert(e != NULL);
+}
+
+static void genopt3_add(m4hashmap_int *map, const m4token opt[6]) {
+    m4cell key = opt[1] | ((m4cell)opt[2] << 16) | ((m4cell)opt[3] << 32);
+    m4cell val = opt[0] | ((m4cell)opt[4] << 16) | ((m4cell)opt[5] << 32);
+    const m4hashmap_entry_int *e;
+    assert(opt[0] <= 3);
+    e = m4hashmap_find_int(map, key);
+    assert(e == NULL);
+    e = m4hashmap_insert_int(map, key, val);
+    assert(e != NULL);
+}
+
 static void genopt2_run(FILE *out) {
     static const m4token opt[][6] = {OPT2_RULES(OPT2_TO_TOKENS)};
     m4hashmap_int *map = m4hashmap_new_int(N_OF(opt) / 2);
@@ -146,7 +157,17 @@ static void genopt2_run(FILE *out) {
     genopt_dump(map, 2, out);
 }
 
-static void genopt_with_file(const char *path, void (*gen)(FILE *out)) {
+static void genopt3_run(FILE *out) {
+    static const m4token opt[][6] = {OPT3_RULES(OPT3_TO_TOKENS)};
+    m4hashmap_int *map = m4hashmap_new_int(N_OF(opt) / 2);
+    m4cell i;
+    for (i = 0; i < (m4cell)N_OF(opt); i++) {
+        genopt3_add(map, opt[i]);
+    }
+    genopt_dump(map, 3, out);
+}
+
+static void genopt_to_file(const char *path, void (*gen)(FILE *out)) {
     FILE *f = fopen(path, "w");
     gen(f);
     fclose(f);
@@ -222,7 +243,8 @@ int main(int argc, char *argv[]) {
     } else if (show_words || show_disasm) {
         run_show_words(show_words ? m4mode_user : m4mode_c_disasm, stdout);
     } else {
-        genopt_with_file("include/opt2_hash.mh", genopt2_run);
+        genopt_to_file("include/opt2_hash.mh", genopt2_run);
+        genopt_to_file("include/opt3_hash.mh", genopt3_run);
     }
     return 0;
 }
