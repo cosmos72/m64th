@@ -486,16 +486,16 @@
     X(22, "(hashmap-indexof/cell)", _hashmap_indexof_cell_)                                        \
     /* ( map key -- pos ) get bucket index for key in hashmap/int */                               \
     X(21, "(hashmap-indexof/int)", _hashmap_indexof_int_)                                          \
-    /* ( src dst src-end -- src' dst' ) optimize single tokens being compiled  */                  \
-    X(12, "(optimize-1)", _optimize_1_)                                                            \
-    /* ( src-addr dst-addr -- src-addr' dst-addr' t|f ) optimize a single token being compiled  */ \
-    X(17, "(optimize-1token)", _optimize_1token_)                                                  \
-    /* ( src dst src-end -- src' dst' ) optimize tokens pairs being compiled  */                   \
-    X(12, "(optimize-2)", _optimize_2_)                                                            \
-    /* ( src-addr dst-addr -- src-addr' dst-addr' t|f ) optimize a token pair being compiled */    \
-    X(17, "(optimize-2token)", _optimize_2token_)                                                  \
-    /* ( src-addr dst-addr -- src-addr' dst-addr' t|f ) optimize a token triplet being compiled */ \
-    X(17, "(optimize-3token)", _optimize_3token_)                                                  \
+    /*  optimize single tokens being compiled. return t if something was optimized */              \
+    X(12, "(optimize-1)", _optimize_1_) /* ( src dst src-end -- src' dst' t|f ) */                 \
+    /*  optimize a single token being compiled. return t if a token was optimized */               \
+    X(17, "(optimize-1token)", _optimize_1token_) /* ( src dst -- src' dst' t|f ) */               \
+    /*  optimize tokens pairs being compiled */                                                    \
+    X(12, "(optimize-2)", _optimize_2_) /* ( src dst src-end -- src' dst' ) */                     \
+    /* optimize a token pair being compiled */                                                     \
+    X(17, "(optimize-2token)", _optimize_2token_) /* ( src dst -- src' dst' t|f ) */               \
+    /* optimize a token triplet being compiled */                                                  \
+    X(17, "(optimize-3token)", _optimize_3token_) /* ( src dst -- src' dst' t|f ) */               \
     /* ( x -- token t | x f ) try to optimize '[ x ] literal' */                                   \
     X(18, "(optimize-literal)", _optimize_literal_)                                                \
     X(15, "(repl-type-ack)", _repl_type_ack_)                                                      \
