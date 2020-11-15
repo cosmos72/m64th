@@ -1024,7 +1024,16 @@ WORD_START(_optimize_, _inline_)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE)
     WORD_CODE(
-        /* state @ here                                ( xt here           )
+#if 1
+        state, fetch, here,                         /* ( xt here            ) */
+        /*                  \ code to optimize is at xt...here                */
+        _c_arg_2_, _c_call_, CELL(m4th_c_optimize), _c_ret_2_, /* ( xt here') */
+        nip,                                        /* ( here'              ) */
+        here,                                       /* ( here' here         ) */
+        minus, allot,                               /* (                    ) */
+        CALL(_recompile_), exit                     /* (                    ) */
+#else /* 0 */
+        /* state @ here                                ( xt here            )
          *                  \ code to optimize is at xt...here
          * 2>r                                         (                    ) (R: beg end )
          * begin                                       (                    ) (R: beg end )
@@ -1064,6 +1073,7 @@ WORD_START(_optimize_, _inline_)
         here,
         minus, allot,
         CALL(_recompile_), exit
+#endif /* 0 */
     )
 WORD_END(_optimize_)
 /* rebuild XT jump offsets after optimization */

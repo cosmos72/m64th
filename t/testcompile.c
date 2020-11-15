@@ -239,6 +239,11 @@ static m4cell m4testcompile_run(m4th *m, const m4testcompile *t, m4code t_codege
     m4ucell input_n = strlen(t->input);
     const m4countedstack empty = {};
 
+#undef M4TH_TEST_VERBOSE
+#ifdef M4TH_TEST_VERBOSE
+    printf("%s\n", t->input);
+#endif
+
     m4th_clear(m);
 
     w = m->lastw = (m4word *)m->mem.start;

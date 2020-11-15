@@ -60,6 +60,113 @@ void m4th_dot(m4cell n, m4iobuf *io) {
     }
 }
 
+typedef struct {
+    m4short n; /* -1 if not optimized sequence was found */
+    m4token tok[3];
+} m4token3;
+
+/* find optimized sequence for a single token */
+m4token3 find_opt1(m4token tok) {
+    m4string str = m4word_data(&WORD_SYM(_optimize_1token_), 0);
+    const m4token3 *optv = (const m4token3 *)str.addr;
+    m4token3 ret = {-1, {}};
+    m4ucell i, n = str.n / sizeof(m4token3);
+    for (i = 0; i < n; i++) {
+        const m4token3 *opt = &optv[i];
+        if (opt->tok[0] == tok) {
+            ret.n = opt->n;
+            ret.tok[0] = opt->tok[1];
+            ret.tok[1] = opt->tok[2];
+            break;
+        }
+    }
+    return ret;
+}
+
+/* find optimized sequence for a token pair */
+m4token3 find_opt2(const m4token tok[2]) {
+    const m4hashmap_int *map =
+        (const m4hashmap_int *)m4word_data(&WORD_SYM(_optimize_2token_), 0).addr;
+    const m4int key = tok[0] | ((m4int)tok[1] << 16);
+    const m4hashmap_entry_int *entry = m4hashmap_find_int(map, key);
+    union {
+        m4ucell val;
+        m4token3 tok3;
+    } ret;
+    if (entry == NULL) {
+        ret.tok3.n = -1;
+    } else {
+        ret.val = (m4ucell)entry->val;
+    }
+    return ret.tok3;
+}
+
+typedef struct {
+    m4token *start;
+    m4token *end;
+} m4code_range;
+
+typedef struct {
+    m4code_range code;
+    m4ucell flag;
+} m4code_range_flag;
+
+static m4token *copy_tok3(m4token3 src, m4token *dst) {
+    memcpy(dst, src.tok, src.n * sizeof(m4token));
+    return dst + src.n;
+}
+
+static m4code_range_flag optimize_once(m4code_range in) {
+    m4code_range out = {in.end, in.end};
+    const m4token *p = in.start;
+    m4cell n;
+    m4ucell flag = tfalse;
+    while (p < in.end) {
+        const m4token tok1 = *p;
+        m4token3 opt = find_opt1(tok1);
+        if (opt.n >= 0) {
+            p++;
+            out.end = copy_tok3(opt, out.end);
+            flag = ttrue;
+            continue;
+        }
+        n = m4token_consumes_ip(tok1) / sizeof(m4token);
+        if (n == 0 && p + 2 <= in.end) {
+            opt = find_opt2(p);
+            if (opt.n >= 0) {
+                p += 2;
+                out.end = copy_tok3(opt, out.end);
+                flag = ttrue;
+                continue;
+            }
+        }
+        /* no optimization found, just copy a single token */
+        n++;
+        memmove(out.end, p, n * sizeof(m4token));
+        p += n;
+        out.end += n;
+    }
+    /* move back code to [in.start, ...] */
+    n = out.end - out.start;
+    memmove(in.start, out.start, n * sizeof(m4token));
+    {
+        const m4code_range_flag ret = {{in.start, in.start + n}, flag};
+        return ret;
+    }
+}
+
+/* temporary C implementation of [optimize] */
+m4code_range m4th_c_optimize(m4token *xt, m4token *xt_end) {
+    m4code_range_flag ret = {{xt, xt_end}, tfalse};
+    for (;;) {
+        ret = optimize_once(ret.code);
+        if (!ret.flag) {
+            break;
+        }
+    }
+    return ret.code;
+}
+
 /******************************************************************************/
 /* C implementation of CRC32c                                                 */
 /******************************************************************************/
