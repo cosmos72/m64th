@@ -768,7 +768,8 @@ WORD_START(_optimize_1token_, _optimize_1_)
       )
     )
 WORD_END(_optimize_1token_)
-/* ( src dst src-end -- src' dst' ) optimize tokens pairs being compiled  */                  \
+/* optimize tokens pairs being compiled. return t if something was optimized */
+/* ( src dst src-end -- src' dst' t|f ) */
 WORD_START(_optimize_2_, _optimize_1token_)
     WORD_DSTACK(3,2)
     WORD_RSTACK(0,0)
@@ -776,23 +777,27 @@ WORD_START(_optimize_2_, _optimize_1token_)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
-        /* >r                                          ( src dst      ) (R: src-end )
-         * begin                                       ( src dst      ) (R: src-end )
-         *    over token+ r@ <                         ( src dst t|f  ) (R: src-end )
-         * while                                       ( src dst      ) (R: src-end )
-         *    (optimize-2token) drop                   ( src' dst'    ) (R: src-end )
-         * repeat                                      ( src dst      ) (R: src-end )
-         * over r> sub                                 ( src dst u    )
-         * cmove/count                                      ( src' dst'    )
+        /* false 2>r                                   ( src dst       ) (R: src-end f   )
+         * begin                                       ( src dst       ) (R: src-end t|f )
+         *    over token+ r2nd@ <                      ( src dst t|f   ) (R: src-end t|f )
+         * while                                       ( src dst       ) (R: src-end t|f )
+         *    (optimize-2token)                        ( src' dst' t|f ) (R: src-end t|f )
+         *    r@ or r!                                 ( src dst       ) (R: src-end t|f')
+         * repeat                                      ( src dst       ) (R: src-end t|f )
+         * over r2nd@ sub                              ( src dst u     ) (R: src-end t|f )
+         * cmove/count                                 ( src' dst'     ) (R: src-end t|f )
+         * r> r>drop                                   ( src' dst' t|f )
          */
-        to_r,
+        false, two_to_r,
         begin,
-            over, token_plus, r_fetch, less,
-        _while_, T(4+nCALLt),
-            CALL(_optimize_2token_), drop,
-        _repeat_, T(-10-nCALLt),
-        over, r_from, sub,
-        cmove_count, exit
+            over, token_plus, r2nd_fetch, less,
+        _while_, T(6+nCALLt),
+            CALL(_optimize_2token_),
+            r_fetch, or, r_store,
+        _repeat_, T(-12-nCALLt),
+        over, r2nd_fetch, sub,
+        cmove_count,
+        r_from, r_from_drop, exit
     )
 WORD_END(_optimize_2_)
 /* ( src-addr dst-addr -- src-addr' dst-addr' t|f ) optimize token pairs being compiled */
@@ -1024,7 +1029,7 @@ WORD_START(_optimize_, _inline_)
          * (optimize-1) drop                           ( xt' here' t|f )
          *    ( optimized code is at here...here'  )
          * nip here state @ rot                        ( here xt here' )
-         * (optimize-2)                                ( here' xt'     )
+         * (optimize-2) drop                           ( here' xt'     )
          *    ( optimized code is now at xt...xt'  )
          * nip here                                    ( xt' here     )
          * - allot        \ update HERE, set it to xt' (              )
@@ -1033,7 +1038,7 @@ WORD_START(_optimize_, _inline_)
         state, fetch, here, dup,
         CALL(_optimize_1_), drop,
         nip, here, state, fetch, rot,
-        CALL(_optimize_2_),
+        CALL(_optimize_2_), drop,
         nip, here,
         minus, allot,
         CALL(_recompile_), exit
