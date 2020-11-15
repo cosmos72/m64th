@@ -198,11 +198,7 @@ static m4code_range_flag optimize_once(m4code_range in) {
 /* temporary C implementation of [optimize] */
 m4code_range m4th_c_optimize(m4token *xt, m4token *xt_end) {
     m4code_range_flag ret = {{xt, xt_end}, tfalse};
-    for (;;) {
-        ret = optimize_once(ret.code);
-        if (!ret.flag) {
-            break;
-        }
+    while ((ret = optimize_once(ret.code)).flag) {
     }
     return ret.code;
 }
