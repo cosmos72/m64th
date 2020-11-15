@@ -656,33 +656,38 @@ WORD_START(_while0_, _while_)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_MAY_JUMP | M4FLAG_IMMEDIATE | M4FLAG_REEXEC_AFTER_OPTIMIZE)
     WORD_CODE(_compile_jump_lit_, _while0_, _while_, exit)
 WORD_END(_while0_)
-/* ( src dst src-end -- src' dst' ) optimize single tokens being compiled  */                  \
+/* optimize single tokens being compiled. return t if something was optimized */
+/* ( src dst src-end -- src' dst' t|f ) */
 WORD_START(_optimize_1_, _while0_)
-    WORD_DSTACK(3,2)
+    WORD_DSTACK(3,3)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
-        /* >r                                          ( src dst      ) (R: src-end )
-         * begin                                       ( src dst      ) (R: src-end )
-         *    over r@ <                                ( src dst t|f  ) (R: src-end )
-         * while                                       ( src dst      ) (R: src-end )
-         *    false (optimize-1token)                  ( src' dst' n  ) (R: src-end )
-         *    0< 1token and                            ( src dst SZt|0) (R: src-end )
-         *    cmove/count                                   ( src' dst'    ) (R: src-end )
-         * repeat                                      ( src' dst'    ) (R: src-end )
-         * r> drop  ( optimized code is at dst...dst' )
+        /* false 2>r                                   ( src dst      ) (R: src-end f   )
+         * begin                                       ( src dst      ) (R: src-end t|f )
+         *    over r2nd@ <                             ( src dst t|f  ) (R: src-end t|f )
+         * while                                       ( src dst      ) (R: src-end t|f )
+         *    false (optimize-1token)                  ( src' dst' n  ) (R: src-end t|f )
+         *    0<                                       ( src dst t|f  ) (R: src-end t|f )
+         *    dup r@ or r!                             ( src dst t|f  ) (R: src-end t|f')
+         *    1token and                               ( src dst SZt|0) (R: src-end t|f )
+         *    cmove/count                              ( src' dst'    ) (R: src-end t|f )
+         * repeat                                      ( src' dst'    ) (R: src-end t|f )
+         * r>drop r>              ( optimized code is at dst...dst' )
          */
-        to_r,
+        false, two_to_r,
         begin,
-            over, r_fetch, less,
-        _while_, T(8+nCALLt),
+            over, r2nd_fetch, less,
+        _while_, T(12+nCALLt),
             false, CALL(_optimize_1token_),
-            zero_less, one_token, and,
+            zero_less,
+            dup, r_fetch, or, r_store,
+            one_token, and,
             cmove_count,
-        _repeat_, T(-13-nCALLt),
-        r_from_drop, exit
+        _repeat_, T(-17-nCALLt),
+        r_from_drop, r_from, exit
     )
 WORD_END(_optimize_1_)
 /*
@@ -1015,8 +1020,8 @@ WORD_START(_optimize_, _inline_)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE)
     WORD_CODE(
         /* state @ here dup                            ( xt here here  )
-         *    ( original code is at xt...xt' )
-         * (optimize-1)                                ( xt' here'     )
+         *    ( original code is at xt...here )
+         * (optimize-1) drop                           ( xt' here' t|f )
          *    ( optimized code is at here...here'  )
          * nip here state @ rot                        ( here xt here' )
          * (optimize-2)                                ( here' xt'     )
@@ -1026,7 +1031,7 @@ WORD_START(_optimize_, _inline_)
          * [recompile]
          */
         state, fetch, here, dup,
-        CALL(_optimize_1_),
+        CALL(_optimize_1_), drop,
         nip, here, state, fetch, rot,
         CALL(_optimize_2_),
         nip, here,
