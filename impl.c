@@ -101,22 +101,36 @@ m4token3 find_opt2(const m4token tok[2]) {
     return ret.tok3;
 }
 
+/* find optimized sequence for '_*if*_ T(*) then' */
+static m4token3 find_opt3_if(const m4token tok[3]) {
+    const m4token tok0 = tok[0], tok2 = tok[2];
+    m4token3 ret = {-1, {}};
+    if (tok2 == m4then) {
+        if (tok0 == m4_if_ || tok0 == m4_if0_) {
+            ret.n = 1;
+            ret.tok[0] = m4drop;
+        }
+        if (tok0 == m4_q_if_ || tok0 == m4_q_if0_) {
+            ret.n = 0;
+        }
+    }
+    return ret;
+}
+
 /* find optimized sequence for a token triple */
 m4token3 find_opt3(const m4token tok[3]) {
     const m4hashmap_cell *map =
         (const m4hashmap_cell *)m4word_data(&WORD_SYM(_optimize_3token_), 0).addr;
     const m4cell key = tok[0] | ((m4cell)tok[1] << 16) | ((m4cell)tok[2] << 32);
     const m4hashmap_entry_cell *entry = m4hashmap_find_cell(map, key);
-    union {
-        m4ucell val;
-        m4token3 tok3;
-    } ret;
-    if (entry == NULL) {
-        ret.tok3.n = -1;
-    } else {
-        ret.val = (m4ucell)entry->val;
+    if (entry != NULL) {
+        union {
+            m4ucell val;
+            m4token3 tok3;
+        } ret = {(m4ucell)entry->val};
+        return ret.tok3;
     }
-    return ret.tok3;
+    return find_opt3_if(tok);
 }
 
 typedef struct {
