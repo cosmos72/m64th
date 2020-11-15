@@ -215,15 +215,22 @@ static const m4testcompile testcompile[] = {
     {"1+ 1+ ;", {2, {0, m4colon}}, {}, {2, {m4two_plus, m4exit}}},
     {"1+ noop 1+ ;", {2, {0, m4colon}}, {}, {2, {m4two_plus, m4exit}}},
     {"swap drop ;", {2, {0, m4colon}}, {}, {2, {m4nip, m4exit}}},
-#if 0
-    /* ------------------------------- (optimize-3) ------------------------- */
-    {"if then ;", {2, {0, m4colon}}, {}, {1, {m4exit}}},
-#endif
     /* ------------------------------- [recompile] -------------------------- */
     /* test [recompile] to correctly update jump offsets after optimization */
     {"if chars then ;", {2, {0, m4colon}}, {}, {4, {m4_if_, T(1), m4then, m4exit}}},
     {"if noop 1+ then ;", {2, {0, m4colon}}, {}, {5, {m4_if_, T(2), m4one_plus, m4then, m4exit}}},
     {"if 1+ 1+ then ;", {2, {0, m4colon}}, {}, {5, {m4_if_, T(2), m4two_plus, m4then, m4exit}}},
+    /* ------------------------------- [optimize] --------------------------- */
+    {"if then ;", {2, {0, m4colon}}, {}, {2, {m4drop, m4exit}}},
+#if 0  /* currently broken */
+    {"if 1+ 1- then ;", {2, {0, m4colon}}, {}, {2, {m4drop, m4exit}}},
+#endif /* 0 */
+    {"0= if then ;", {2, {0, m4colon}}, {}, {2, {m4drop, m4exit}}},
+    {"0= if 1 then ;", {2, {0, m4colon}}, {}, {5, {m4_if0_, T(2), m4one, m4then, m4exit}}},
+    {"dup if then ;", {2, {0, m4colon}}, {}, {1, {m4exit}}},
+    {"dup if nop then ;", {2, {0, m4colon}}, {}, {1, {m4exit}}},
+    {"dup if 1 then ;", {2, {0, m4colon}}, {}, {5, {m4_q_if_, T(2), m4one, m4then, m4exit}}},
+    {"dup 0= if 2 then ;", {2, {0, m4colon}}, {}, {5, {m4_q_if0_, T(2), m4two, m4then, m4exit}}},
 };
 
 static m4code m4testcompile_init(const m4testcompile *t, m4countedcode *codegen_buf) {
