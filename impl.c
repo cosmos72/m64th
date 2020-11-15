@@ -101,6 +101,24 @@ m4token3 find_opt2(const m4token tok[2]) {
     return ret.tok3;
 }
 
+/* find optimized sequence for a token triple */
+m4token3 find_opt3(const m4token tok[3]) {
+    const m4hashmap_cell *map =
+        (const m4hashmap_cell *)m4word_data(&WORD_SYM(_optimize_3token_), 0).addr;
+    const m4cell key = tok[0] | ((m4cell)tok[1] << 16) | ((m4cell)tok[2] << 32);
+    const m4hashmap_entry_cell *entry = m4hashmap_find_cell(map, key);
+    union {
+        m4ucell val;
+        m4token3 tok3;
+    } ret;
+    if (entry == NULL) {
+        ret.tok3.n = -1;
+    } else {
+        ret.val = (m4ucell)entry->val;
+    }
+    return ret.tok3;
+}
+
 typedef struct {
     m4token *start;
     m4token *end;
@@ -122,29 +140,37 @@ static m4code_range_flag optimize_once(m4code_range in) {
     m4cell n;
     m4ucell flag = tfalse;
     while (p < in.end) {
-        const m4token tok1 = *p;
-        m4token3 opt = find_opt1(tok1);
-        if (opt.n >= 0) {
+        m4token tok1 = *p;
+        m4token3 opt;
+        if ((opt = find_opt1(tok1)).n >= 0) {
+            n = 1;
+        } else if (p + 2 <= in.end && (opt = find_opt2(p)).n >= 0) {
+            n = 2;
+        } else if (p + 3 <= in.end && (opt = find_opt3(p)).n >= 0) {
+            n = 3;
+        } else {
+            n = 0;
+            /* no optimization found, just copy a single token */
+            *out.end++ = tok1;
             p++;
+        }
+        if (n > 0) {
+            p += n;
             out.end = copy_tok3(opt, out.end);
             flag = ttrue;
-            continue;
-        }
-        n = m4token_consumes_ip(tok1) / sizeof(m4token);
-        if (n == 0 && p + 2 <= in.end) {
-            opt = find_opt2(p);
-            if (opt.n >= 0) {
-                p += 2;
-                out.end = copy_tok3(opt, out.end);
-                flag = ttrue;
+            if (opt.n == 0) {
                 continue;
             }
+            /* optimized sequence may end with '_if_' */
+            /* or some other token that consumes IP */
+            tok1 = out.end[-1];
         }
-        /* no optimization found, just copy a single token */
-        n++;
-        memmove(out.end, p, n * sizeof(m4token));
-        p += n;
-        out.end += n;
+        n = m4token_consumes_ip(tok1) / sizeof(m4token);
+        if (n) {
+            memmove(out.end, p, n * sizeof(m4token));
+            p += n;
+            out.end += n;
+        }
     }
     /* move back code to [in.start, ...] */
     n = out.end - out.start;
