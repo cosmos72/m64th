@@ -670,24 +670,24 @@ WORD_START(_optimize_1_, _while0_)
          *    over r2nd@ <                             ( src dst t|f  ) (R: src-end t|f )
          * while                                       ( src dst      ) (R: src-end t|f )
          *    false (optimize-1token)                  ( src' dst' n  ) (R: src-end t|f )
-         *    0<                                       ( src dst t|f  ) (R: src-end t|f )
+         *    0>=                                      ( src dst t|f  ) (R: src-end t|f )
          *    dup r@ or r!                             ( src dst t|f  ) (R: src-end t|f')
-         *    1token and                               ( src dst SZt|0) (R: src-end t|f )
+         *    invert 1token and                        ( src dst SZt|0) (R: src-end t|f )
          *    cmove/count                              ( src' dst'    ) (R: src-end t|f )
          * repeat                                      ( src' dst'    ) (R: src-end t|f )
-         * r>drop r>              ( optimized code is at dst...dst' )
+         * r> r>drop             ( optimized code is at dst...dst' )
          */
         false, two_to_r,
         begin,
             over, r2nd_fetch, less,
-        _while_, T(12+nCALLt),
+        _while_, T(13+nCALLt),
             false, CALL(_optimize_1token_),
-            zero_less,
+            zero_more_equal,
             dup, r_fetch, or, r_store,
-            one_token, and,
+            invert, one_token, and,
             cmove_count,
-        _repeat_, T(-17-nCALLt),
-        r_from_drop, r_from, exit
+        _repeat_, T(-18-nCALLt),
+        r_from, r_from_drop, exit
     )
 WORD_END(_optimize_1_)
 /*
@@ -720,12 +720,12 @@ WORD_START(_optimize_1token_, _optimize_1_)
          *       drop i token+ token+                  ( src dst opt-toks        ) (R: dir data-end data )
          *       i token@ unloop r> swap >r            ( src dst opt-toks dir    ) (R: u )
          *       if                                    ( src dst opt-toks        ) (R: u )
-         *         r@ tokens +                         ( src dst opt-toks'       ) (R: u )
-         *         swap r@ tokens                      ( src opt-toks dst u'     ) (R: u )
-         *         cmove/count                              ( src opt-toks' dst'      ) (R: u )
+         *          r@ tokens +                        ( src dst opt-toks'       ) (R: u )
+         *          swap r@ tokens                     ( src opt-toks dst u'     ) (R: u )
+         *          cmove/count                        ( src opt-toks' dst'      ) (R: u )
          *       else                                  ( src dst opt-toks        ) (R: u )
-         *         swap r@ tokens                      ( src opt-toks dst u'     ) (R: u )
-         *         -cmove/count                             ( src opt-toks' dst'      ) (R: u )
+         *          swap r@ tokens                     ( src opt-toks dst u'     ) (R: u )
+         *          -cmove/count                       ( src opt-toks' dst'      ) (R: u )
          *       then                                  ( src opt-toks' dst'      ) (R: u )
          *       nip                                   ( src dst                 ) (R: u )
          *       swap token+ swap                      ( src' dst                ) (R: u )
@@ -1024,22 +1024,44 @@ WORD_START(_optimize_, _inline_)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE)
     WORD_CODE(
-        /* state @ here dup                            ( xt here here  )
-         *    ( original code is at xt...here )
-         * (optimize-1) drop                           ( xt' here' t|f )
-         *    ( optimized code is at here...here'  )
-         * nip here state @ rot                        ( here xt here' )
-         * (optimize-2) drop                           ( here' xt'     )
-         *    ( optimized code is now at xt...xt'  )
-         * nip here                                    ( xt' here     )
-         * - allot        \ update HERE, set it to xt' (              )
+        /* state @ here                                ( xt here           )
+         *                  \ code to optimize is at xt...here
+         * 2>r                                         (                    ) (R: beg end )
+         * begin                                       (                    ) (R: beg end )
+         *    2r@ dup                                  ( beg end end        ) (R: beg end )
+         *    (optimize-1)                             ( beg' end' t|f'     ) (R: beg end )
+         *                  \ optimized code is now at end...end'
+         *    flip drop                                ( t|f end'           ) (R: beg end )
+         *    r@ swap                                  ( t|f end end'       ) (R: beg end )
+         *    r2nd@ swap                               ( t|f end beg end'   ) (R: beg end )
+         *    (optimize-2)                             ( t|f end' beg' t|f' ) (R: beg end )
+         *                  \ optimized code is now at beg...beg'
+         *    flip drop                                ( t|f t|f' beg'      ) (R: beg end )
+         *    -rot or swap                             ( t|f beg'           ) (R: beg end )
+         *    r!                                       ( t|f                ) (R: beg beg')
+         * while                                       (                    ) (R: beg beg')
+         * repeat                                      (                    ) (R: beg beg')
+         * r> r>drop                                   ( beg'               )
+         * here                                        ( beg' here          )
+         * - allot          \ update HERE, set it to beg'
          * [recompile]
          */
-        state, fetch, here, dup,
-        CALL(_optimize_1_), drop,
-        nip, here, state, fetch, rot,
-        CALL(_optimize_2_), drop,
-        nip, here,
+        state, fetch, here,
+        two_to_r,
+        begin,
+            two_r_fetch, dup,
+            CALL(_optimize_1_),
+            flip, drop,
+            r_fetch, swap,
+            r2nd_fetch, swap,
+            CALL(_optimize_2_),
+            flip, drop,
+            minus_rot, or, swap,
+            r_store,
+        _while_, T(2),
+        _repeat_, T(-20-2*nCALLt),
+        r_from, r_from_drop,
+        here,
         minus, allot,
         CALL(_recompile_), exit
     )

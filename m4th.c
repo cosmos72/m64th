@@ -473,7 +473,7 @@ void m4token_print(m4token tok, m4printmode mode, FILE *out) {
             return;
         }
     }
-    // FIXME: this assumes sizeof(m4token) == 2
+    /* FIXME: this assumes sizeof(m4token) == 2 */
     m4token_print_int16(&tok, mode, out);
 }
 
@@ -1155,7 +1155,7 @@ m4wordlist *m4wordlist_new(void) {
     m4cell i;
     uint32_t crc;
 
-    // allocate m4countedstring + m4dict + m4wordlist in a single call
+    /* allocate m4countedstring + m4dict + m4wordlist in a single call */
     t = (m4tuple *)malloc(sizeof(m4tuple));
     if (t == NULL) {
         return NULL;
@@ -1168,7 +1168,7 @@ m4wordlist *m4wordlist_new(void) {
         t->name[i + 4] = hexdigit(crc);
         crc >>= 4;
     }
-    t->dict.lastword_off = 0; // no words in m4dict
+    t->dict.lastword_off = 0; /* no words in m4dict */
     t->dict.name_off = (m4char *)&t->dict - (m4char *)&t->name_n;
     t->wid.dict = &t->dict;
     t->wid.last = NULL;

@@ -1587,7 +1587,7 @@ static void m4testexecute_failed(m4th *m, const m4testexecute *t, const m4code_p
     fputs("\n... expected    codegen   ", out);
     m4code_print(pair->second, m4mode_user, out);
     fputs("\n      actual    codegen   ", out);
-    m4word_print_code(m->lastw, m4mode_user, out);
+    m4code_print(m4word_code(m->lastw), m4mode_user, out);
     fputc('\n', out);
 }
 

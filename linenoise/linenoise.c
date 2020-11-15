@@ -106,7 +106,7 @@
 #include "linenoise.h"
 #include <ctype.h>
 #include <errno.h>
-#include <limits.h> // CHAR_MIN
+#include <limits.h> /* CHAR_MIN */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

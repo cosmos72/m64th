@@ -201,7 +201,7 @@ struct m4word_s {
     m4token code[];
 };
 
-#include "include/hashmap_string.h" // needs m4cell, m4ucell, m4string
+#include "include/hashmap_string.h" /* needs m4cell, m4ucell, m4string */
 
 struct m4wordlist_s {     /**< wordlist                                                 */
     const m4dict *dict;   /**< pointer to read-only dictionary                          */

@@ -128,7 +128,7 @@ WORD_START(semi,       colon)
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE)
     WORD_CODE(
         /* [throw-if-not-compiling]    ( colon-sys       )
-         * [finish]                 ( name is now findable by parse-name )
+         * [finish]                    ( name is now findable by parse-name )
          */
         CALL(_throw_if_not_compiling_),
         CALL(_finish_), exit
