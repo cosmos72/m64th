@@ -267,6 +267,9 @@ FUNC_END(string_equal)
  * return cell old value.
  */
 FUNC_START(atomic_one_plus_store)
+        MOVI(  1,      REG1)
+        lock xadd REG1,AT(DTOP);
+        MOVE(  REG1,   DTOP)
 FUNC_END(atomic_one_plus_store)
 
 
@@ -275,4 +278,7 @@ FUNC_END(atomic_one_plus_store)
  * return cell old value.
  */
 FUNC_START(atomic_plus_store)
+        DPOP(  REG1)
+        lock xadd REG1,AT(DTOP);
+        MOVE(  REG1,   DTOP)
 FUNC_END(atomic_plus_store)

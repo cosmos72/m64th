@@ -364,6 +364,11 @@ static m4testexecute testexecute_b[] = {
      {}},
     /* ----------------------------- atomic --------------------------------- */
     {"atomic1+!", {m4dp0, m4atomic_one_plus_store, m4bye}, {{1, {7}}, {}}, {{2, {8, 7}}, {}}, {}},
+    {"atomic+!",
+     {m4dp0, m4two, m4swap, m4atomic_plus_store, m4bye},
+     {{1, {7}}, {}},
+     {{2, {9, 7}}, {}},
+     {}},
     /* ----------------------------- local ---------------------------------- */
     {"(local-alloc)",
      {m4_local_alloc_, T(3), m4_to_local_0_, m4_to_local_1_, m4_to_local_2_, m4bye},

@@ -365,7 +365,7 @@ FUNC_END(atomic_one_plus_store)
  * return cell old value.
  */
 FUNC_START(atomic_plus_store)
-        LOAD(  REG0,   AT(DSTK))               /* @ = n = delta              */
+        DPOP(  REG0)                           /* @ = n = delta              */
         MOVE(  DTOP,   REG1)                   /* a = addr                   */
 LABEL(atomic_plus_store.retry)
         ldaxr  DTOP,   AT(REG1);               /* dtop = addr[0] atomic fetch*/
