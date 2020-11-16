@@ -373,3 +373,16 @@ LABEL(atomic_plus_store.retry)
         stlxr  REG3w,  REG2,   AT(REG1);       /* try atomic store           */
         JNZ(   REG3w,  TO(atomic_plus_store.retry))
 FUNC_END(atomic_plus_store)
+
+
+
+FUNC_START(atomic_one_plus_store_simd)
+        MOVI(  1,      REG1)
+        .4byte 0xf8210294; /* ldadd  REG1,   DTOP, AT(DTOP); */
+FUNC_END(atomic_one_plus_store_simd)
+
+
+FUNC_START(atomic_plus_store_simd)
+        DPOP(  REG1)
+        .4byte 0xf8210294; /* ldadd  REG1,   DTOP, AT(DTOP); */
+FUNC_END(atomic_plus_store_simd)
