@@ -94,7 +94,11 @@ WORD_START(_q_while_, _q_until0_)
     WORD_RSTACK(0,0)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_MAY_JUMP | M4FLAG_INLINE | M4FLAG_IMMEDIATE | M4FLAG_REEXEC_AFTER_OPTIMIZE)
-    WORD_CODE(_compile_jump_lit_, _q_while_, _while_, exit)
+    WORD_CODE(
+        _check_lit_tok_, begin,             /* ( sys ) topmost must be 'begin' */
+        _compile_jump_lit_, _q_while_, _while_,
+        cs_swap, exit                       /* ( while-sys begin-sys )         */
+    )
 WORD_END(_q_while_)
 WORD_START(_q_while0_, _q_while_)
     WORD_DSTACK(1,1) /* token stack effect when not jumping */
@@ -103,7 +107,11 @@ WORD_START(_q_while0_, _q_while_)
     WORD_RSTACK(0,0)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_MAY_JUMP | M4FLAG_INLINE | M4FLAG_IMMEDIATE | M4FLAG_REEXEC_AFTER_OPTIMIZE)
-    WORD_CODE(_compile_jump_lit_, _q_while0_, _while_, exit)
+    WORD_CODE(
+        _check_lit_tok_, begin,             /* ( sys ) topmost must be 'begin' */
+        _compile_jump_lit_, _q_while0_, _while_,
+        cs_swap, exit                       /* ( while-sys begin-sys )         */
+    )
 WORD_END(_q_while0_)
 /* ( x c-addr u -- ) runtime part of abort" - if x is not zero, stores string as exception message and throws -2 */
 WORD_START(_abort_quote_,  _q_while0_)
