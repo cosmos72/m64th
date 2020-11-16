@@ -61,12 +61,17 @@ void m4th_dot(m4cell n, m4iobuf *io) {
 }
 
 typedef struct {
-    m4short n; /* -1 if not optimized sequence was found */
+    m4short n; /* -1 if no optimized sequence was found */
     m4token tok[3];
 } m4token3;
 
+static m4token *copy_tok3(m4token3 src, m4token *dst) {
+    memcpy(dst, src.tok, src.n * sizeof(m4token));
+    return dst + src.n;
+}
+
 /* find optimized sequence for a single token */
-m4token3 find_opt1(m4token tok) {
+static m4token3 find_opt1(m4token tok) {
     m4string str = m4word_data(&WORD_SYM(_optimize_1token_), 0);
     const m4token3 *optv = (const m4token3 *)str.addr;
     m4token3 ret = {-1, {}};
@@ -83,8 +88,8 @@ m4token3 find_opt1(m4token tok) {
     return ret;
 }
 
-/* find optimized sequence for a token pair */
-m4token3 find_opt2(const m4token tok[2]) {
+/* find optimized sequence for 2 tokens */
+static m4token3 find_opt2(const m4token tok[2]) {
     const m4hashmap_int *map =
         (const m4hashmap_int *)m4word_data(&WORD_SYM(_optimize_2token_), 0).addr;
     const m4int key = tok[0] | ((m4int)tok[1] << 16);
@@ -101,24 +106,45 @@ m4token3 find_opt2(const m4token tok[2]) {
     return ret.tok3;
 }
 
-/* find optimized sequence for '_*if*_ T(*) then' */
+/* find optimized sequence for '_*if*_ T(n) then' and '_*if*_ T(n) _else_' */
 static m4token3 find_opt3_if(const m4token tok[3]) {
     const m4token tok0 = tok[0], tok2 = tok[2];
     m4token3 ret = {-1, {}};
     if (tok2 == m4then) {
         if (tok0 == m4_if_ || tok0 == m4_if0_) {
+            /* _if_  T(n) then => drop */
+            /* _if0_ T(n) then => drop */
             ret.n = 1;
             ret.tok[0] = m4drop;
-        }
-        if (tok0 == m4_q_if_ || tok0 == m4_q_if0_) {
+        } else if (tok0 == m4_q_if_ || tok0 == m4_q_if0_) {
+            /* _q_if_  T(n) then => */
+            /* _q_if0_ T(n) then => */
             ret.n = 0;
+        }
+    } else if (tok2 == m4_else_) {
+        if (tok0 == m4_if_) {
+            /* _if_  T(n) _else_ => _if0_ */
+            ret.n = 1;
+            ret.tok[0] = m4_if0_;
+        } else if (tok0 == m4_if0_) {
+            /* _if0_ T(n) _else_ => _if_  */
+            ret.n = 1;
+            ret.tok[0] = m4_if_;
+        } else if (tok0 == m4_q_if_) {
+            /* _q_if_  T(n) _else_ => _q_if0_ */
+            ret.n = 1;
+            ret.tok[0] = m4_q_if0_;
+        } else if (tok0 == m4_q_if0_) {
+            /* _q_if0_ T(n) _else_ => _q_if_ */
+            ret.n = 1;
+            ret.tok[0] = m4_q_if0_;
         }
     }
     return ret;
 }
 
-/* find optimized sequence for a token triple */
-m4token3 find_opt3(const m4token tok[3]) {
+/* find optimized sequence for 3 tokens */
+static m4token3 find_opt3(const m4token tok[3]) {
     const m4hashmap_cell *map =
         (const m4hashmap_cell *)m4word_data(&WORD_SYM(_optimize_3token_), 0).addr;
     const m4cell key = tok[0] | ((m4cell)tok[1] << 16) | ((m4cell)tok[2] << 32);
@@ -133,6 +159,63 @@ m4token3 find_opt3(const m4token tok[3]) {
     return find_opt3_if(tok);
 }
 
+/* find optimized sequence for 4 tokens */
+static m4token3 find_opt4(const m4token tok[4]) {
+    m4token3 ret = {-1, {}};
+    if (tok[0] == m4_q_if_ && tok[2] == m4dup && tok[3] == m4then) {
+        /* _q_if_ T(n) dup then => ?dup */
+        ret.n = 1;
+        ret.tok[0] = m4question_dup;
+    }
+    return ret;
+}
+
+/* find optimized sequence for 10 tokens */
+static m4token3 find_opt10(const m4token tok[10]) {
+    m4token3 ret = {-1, {}};
+
+    if (tok[0] == m4over && tok[1] == m4over && tok[3] == m4_if_ && tok[6] == m4_else_ &&
+        tok[9] == m4then) {
+        if (tok[2] == m4less || tok[2] == m4less_equal) {
+            if (tok[5] == m4nip && tok[8] == m4drop) {
+                ret.n = 1;
+                ret.tok[0] = m4max;
+            } else if (tok[5] == m4drop && tok[8] == m4nip) {
+                ret.n = 1;
+                ret.tok[0] = m4min;
+            }
+        } else if (tok[2] == m4more || tok[2] == m4more_equal) {
+            if (tok[5] == m4nip && tok[8] == m4drop) {
+                ret.n = 1;
+                ret.tok[0] = m4min;
+            } else if (tok[5] == m4drop && tok[8] == m4nip) {
+                ret.n = 1;
+                ret.tok[0] = m4max;
+            }
+        }
+    }
+    return ret;
+}
+
+/* find optimized sequence for up to in_n tokens */
+static m4token3 find_opt(const m4token *tok, m4cell in_n, m4cell *consumed_n) {
+    m4token3 opt = {-1, {}};
+    if (in_n >= 1 && (opt = find_opt1(tok[0])).n >= 0) {
+        *consumed_n = 1;
+    } else if (in_n >= 2 && (opt = find_opt2(tok)).n >= 0) {
+        *consumed_n = 2;
+    } else if (in_n >= 3 && (opt = find_opt3(tok)).n >= 0) {
+        *consumed_n = 3;
+    } else if (in_n >= 4 && (opt = find_opt4(tok)).n >= 0) {
+        *consumed_n = 4;
+    } else if (in_n >= 10 && (opt = find_opt10(tok)).n >= 0) {
+        *consumed_n = 10;
+    } else {
+        *consumed_n = 0;
+    }
+    return opt;
+}
+
 typedef struct {
     m4token *start;
     m4token *end;
@@ -143,32 +226,17 @@ typedef struct {
     m4ucell flag;
 } m4code_range_flag;
 
-static m4token *copy_tok3(m4token3 src, m4token *dst) {
-    memcpy(dst, src.tok, src.n * sizeof(m4token));
-    return dst + src.n;
-}
-
 static m4code_range_flag optimize_once(m4code_range in) {
     m4code_range out = {in.end, in.end};
     const m4token *p = in.start;
     m4cell n;
     m4ucell flag = tfalse;
     while (p < in.end) {
-        m4token tok1 = *p;
-        m4token3 opt;
-        if ((opt = find_opt1(tok1)).n >= 0) {
-            n = 1;
-        } else if (p + 2 <= in.end && (opt = find_opt2(p)).n >= 0) {
-            n = 2;
-        } else if (p + 3 <= in.end && (opt = find_opt3(p)).n >= 0) {
-            n = 3;
-        } else {
-            n = 0;
-            /* no optimization found, just copy a single token */
-            *out.end++ = tok1;
-            p++;
-        }
+        m4token3 opt = find_opt(p, in.end - p, &n);
+        m4token tok1;
         if (n > 0) {
+            /* optimized sequence found: */
+            /* it is opt.n tokens long and replaces n tokens */
             p += n;
             out.end = copy_tok3(opt, out.end);
             flag = ttrue;
@@ -178,7 +246,11 @@ static m4code_range_flag optimize_once(m4code_range in) {
             /* optimized sequence may end with '_if_' */
             /* or some other token that consumes IP */
             tok1 = out.end[-1];
+        } else {
+            /* no optimization found, just copy a single token */
+            *out.end++ = tok1 = *p++;
         }
+        /* if last token copied consumes IP, also copy the appropriate bytes */
         n = m4token_consumes_ip(tok1) / sizeof(m4token);
         if (n) {
             memmove(out.end, p, n * sizeof(m4token));

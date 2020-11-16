@@ -764,6 +764,9 @@ WORD_START(_optimize_1token_, _optimize_1_)
         drop, r_from_drop, minus_one, exit
       ),
       WORD_DATA_TOKENS(
+#define OPT1_TO_ASM_TOKENS(...)                                                                    \
+    T(COUNT_ARGS(__VA_ARGS__) - 1), FIRST_3_ARGS(__VA_ARGS__, noop, noop),
+
         OPT1_RULES(OPT1_TO_ASM_TOKENS) _missing_
       )
     )
