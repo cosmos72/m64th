@@ -260,3 +260,19 @@ LABEL(string_equal.byte)
 LABEL(string_equal.false)
         ZERO(  DTOP)
 FUNC_END(string_equal)
+
+
+/*
+ * atomic1+! ( addr -- n' ) atomically increment cell at addr by 1.
+ * return cell old value.
+ */
+FUNC_START(atomic_one_plus_store)
+FUNC_END(atomic_one_plus_store)
+
+
+/*
+ * atomic+! ( n addr -- n' ) atomically increment cell at addr by n.
+ * return cell old value.
+ */
+FUNC_START(atomic_plus_store)
+FUNC_END(atomic_plus_store)

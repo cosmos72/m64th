@@ -38,10 +38,14 @@ uint32_t m4th_crc_cell(m4cell key);
 uint32_t m4th_crc_string(m4string str);
 uint32_t m4th_crc_array(const void *addr, const m4ucell nbytes);
 
-/** detect and enable/disable optional CPU features: CRC32c asm instructions... */
+/**
+ * detect and enable/disable optional CPU features:
+ * CRC32c asm instructions, atomic increment instructions...
+ */
 enum {
     m4th_cpu_feature_cannot_detect = 1,
     m4th_cpu_feature_crc32c = 2,
+    m4th_cpu_feature_atomic_add = 4,
 };
 m4cell m4th_cpu_features_detect(void);
 void m4th_cpu_features_autoenable();

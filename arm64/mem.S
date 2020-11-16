@@ -259,52 +259,52 @@ FUNC_END(crc_string_simd)
 
 /* fill ( c-addr u char -- ) core */
 FUNC_START(fill)
-        LOAD(  REG1,   AT(DSTK, SZ))            /* a = c-addr                  */
-        LOAD(  REG2,   AT(DSTK))                /* b = u = count               */
+        LOAD(  REG1,   AT(DSTK, SZ))           /* a = c-addr                  */
+        LOAD(  REG2,   AT(DSTK))               /* b = u = count               */
         AND3(  DTOPw,  IMM(255),DTOPw)
         orr    DTOPw,  DTOPw,   DTOPw,  lsl 8;
         orr    DTOPw,  DTOPw,   DTOPw,  lsl 16;
-        orr    DTOP,   DTOP,    DTOP,   lsl 32; /* DTOP = ch<<56|ch<<48 ... | ch<<8|ch */
+        orr    DTOP,   DTOP,    DTOP,   lsl 32;/* DTOP = ch<<56|ch<<48 ... | ch<<8|ch */
         JB(    REG2,   IMM(16), TO(fill.tiny))
         JB(    REG2,   IMM(64), TO(fill.small))
 
-        SUB2(IMM(16),  REG1)                    /* c-addr -= 16                */
-        SUB2(IMM(64),  REG2)                    /* count  -= 64                */
+        SUB2(IMM(16),  REG1)                   /* c-addr -= 16                */
+        SUB2(IMM(64),  REG2)                   /* count  -= 64                */
 FUNC_ALIGN()
 LABEL(fill.large.loop)
         stp    DTOP,   DTOP, AT(REG1, 16);
         stp    DTOP,   DTOP, AT(REG1, 32);
         stp    DTOP,   DTOP, AT(REG1, 48);
-        stp    DTOP,   DTOP, [REG1, 64]!;       /* pre-increment c-addr        */
-        subs   REG2,   REG2, IMM(64);           /* count -= 64; update flags   */
+        stp    DTOP,   DTOP, [REG1, 64]!;      /* pre-increment c-addr        */
+        subs   REG2,   REG2, IMM(64);          /* count -= 64; update flags   */
         b.hs   TO(fill.large.loop);
-        ADD2(IMM(64),  REG2)                    /* count  += 64                */
-        ADD2(IMM(16),  REG1)                    /* c-addr += 16                */
+        ADD2(IMM(64),  REG2)                   /* count  += 64                */
+        ADD2(IMM(16),  REG1)                   /* c-addr += 16                */
         JB(    REG2,   IMM(16), TO(fill.small.tail)) /* jump if count < 16     */
 
 FUNC_ALIGN()
 LABEL(fill.small)
-        SUB2(IMM(16),  REG2)                    /* count -= 16                 */
-        stp    DTOP,   DTOP, AT(REG1), 16;      /* post-increment c-addr       */
-        JAE(   REG2,   IMM(16), TO(fill.small)) /* loop while count >= 16      */
+        SUB2(IMM(16),  REG2)                   /* count -= 16                 */
+        stp    DTOP,   DTOP, AT(REG1), 16;     /* post-increment c-addr       */
+        JAE(   REG2,   IMM(16), TO(fill.small))/* loop while count >= 16      */
 
 LABEL(fill.small.tail)
         /* store 16 bytes at c-addr[u - 16] */
-        add    REG1,   REG1, REG2;              /* a = c-addr + u              */
+        add    REG1,   REG1, REG2;             /* a = c-addr + u              */
         stp    DTOP,   DTOP, AT(REG1, IMM(-16));
         JUMP(  TO(fill.done))
 
 LABEL(fill.tiny)
-        tbz    REG2,   IMM(3),  TO(fill.upto7); /* jump if count & (1<<3) == 0 */
+        tbz    REG2,   IMM(3),  TO(fill.upto7);/* jump if count & (1<<3) == 0 */
         str    DTOP,   AT(REG1),  8;
 LABEL(fill.upto7)
-        tbz    REG2,   IMM(2),  TO(fill.upto3); /* jump if count & (1<<2) == 0 */
+        tbz    REG2,   IMM(2),  TO(fill.upto3);/* jump if count & (1<<2) == 0 */
         str    DTOPw,  AT(REG1),  4;
 LABEL(fill.upto3)
-        tbz    REG2,   IMM(1),  TO(fill.upto1); /* jump if count & (1<<1) == 0 */
+        tbz    REG2,   IMM(1),  TO(fill.upto1);/* jump if count & (1<<1) == 0 */
         strh   DTOPh,  AT(REG1),  2;
 LABEL(fill.upto1)
-        tbz    REG2,   IMM(0),  TO(fill.done);  /* jump if count & (1<<0) == 0 */
+        tbz    REG2,   IMM(0),  TO(fill.done); /* jump if count & (1<<0) == 0 */
         strb   DTOPb,  AT(REG1);
 LABEL(fill.done)
         LOAD(  DTOP,   AT(DSTK, SZ2))
@@ -313,20 +313,20 @@ FUNC_END(fill)
 
 
 FUNC_START(string_equal)   /* string=  ( addr1 addr2 u -- addr1 addr2 u t|f ) m4th-user */
-        ldp    REG2,   REG1,    AT(DSTK);                /* b = addr2, a = addr1 */
+        ldp    REG2,   REG1,    AT(DSTK);              /* b = addr2, a = addr1 */
         DPUSH__DTOP()
-        JEQ(   REG1,   REG2,    TO(string_equal.true))   /* addr1 == addr2 */
-        JZ(    DTOP,            TO(string_equal.true))   /* u == 0         */
+        JEQ(   REG1,   REG2,    TO(string_equal.true)) /* addr1 == addr2 */
+        JZ(    DTOP,            TO(string_equal.true)) /* u == 0         */
         ZERO(  REG0)
-        JB(    DTOP,   IMM(SZ), TO(string_equal.byte))   /* < SZ bytes */
+        JB(    DTOP,   IMM(SZ), TO(string_equal.byte)) /* < SZ bytes */
         SUB2(IMM(SZ), DTOP)
 LABEL(string_equal.cell)
         LOAD(  REG3,   AT(REG1, REG0, 1))
         LOAD(  REG4,   AT(REG2, REG0, 1))
         JNE(   REG3,   REG4,    TO(string_equal.false))
         ADD2(  IMM(8), REG0)
-        JB(    REG0,   DTOP,    TO(string_equal.cell))  /* >= SZ bytes left ? */
-        LOAD(  REG3,   AT(REG1, DTOP, 1))               /* compare last SZ bytes */
+        JB(    REG0,   DTOP,    TO(string_equal.cell)) /* >= SZ bytes left ? */
+        LOAD(  REG3,   AT(REG1, DTOP, 1))              /* compare last SZ bytes */
         LOAD(  REG4,   AT(REG2, DTOP, 1))
         JNE(   REG3,   REG4,    TO(string_equal.false))
 LABEL(string_equal.true)
@@ -345,3 +345,31 @@ LABEL(string_equal.byte)
 LABEL(string_equal.false)
         ZERO(  DTOP)
 FUNC_END(string_equal)
+
+
+/*
+ * atomic1+! ( addr -- n' ) atomically increment cell at addr by 1.
+ * return cell old value.
+ */
+FUNC_START(atomic_one_plus_store)
+        ldaxr  REG1,   AT(REG0);               /* a = dtop[0] atomic fetch   */
+        ADDI(  REG1,   1,      REG2)           /* b = a + 1                  */
+        stlxr  REG3w,  REG2,   AT(DTOP);       /* try atomic store           */
+        JNZ(   REG3w,  FUNC(atomic_one_plus_store))
+        MOVE(  REG1,   DTOP)
+FUNC_END(atomic_one_plus_store)
+
+
+/*
+ * atomic+! ( n addr -- n' ) atomically increment cell at addr by n.
+ * return cell old value.
+ */
+FUNC_START(atomic_plus_store)
+        LOAD(  REG0,   AT(DSTK))               /* @ = n = delta              */
+        MOVE(  DTOP,   REG1)                   /* a = addr                   */
+LABEL(atomic_plus_store.retry)
+        ldaxr  DTOP,   AT(REG1);               /* dtop = addr[0] atomic fetch*/
+        ADD4(  DTOP,   REG0,0, REG2)           /* b = dtop + 1               */
+        stlxr  REG3w,  REG2,   AT(REG1);       /* try atomic store           */
+        JNZ(   REG3w,  TO(atomic_plus_store.retry))
+FUNC_END(atomic_plus_store)

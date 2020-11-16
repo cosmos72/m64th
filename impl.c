@@ -340,17 +340,28 @@ static void m4th_cpuid(unsigned level, unsigned count, unsigned ret[4]) {
 m4cell m4th_cpu_features_detect(void) {
     unsigned ret[4];
     m4th_cpuid(1, 0, ret);
-    return (ret[2] & bit_SSE4_2) ? m4th_cpu_feature_crc32c : 0;
+    return (ret[2] & bit_SSE4_2) ? m4th_cpu_feature_crc32c | m4th_cpu_feature_atomic_add
+                                 : m4th_cpu_feature_atomic_add;
 }
 
 #elif defined(__aarch64__) && defined(__linux__)
 
 #include <asm/hwcap.h>
 #include <sys/auxv.h>
-/* arm64+Linux: use Linux specific getauxval(AT_HWCAP) to detect CRC32c CPU instructions */
+/*
+ * arm64+Linux: use Linux specific getauxval(AT_HWCAP)
+ * to detect CRC32c and atomic CPU instructions
+ */
 m4cell m4th_cpu_features_detect(void) {
     unsigned long hwcap = getauxval(AT_HWCAP);
-    return (hwcap & HWCAP_CRC32) ? m4th_cpu_feature_crc32c : 0;
+    m4cell ret = 0;
+    if (hwcap & HWCAP_CRC32) {
+        ret |= m4th_cpu_feature_crc32c;
+    }
+    if (hwcap & HWCAP_ATOMICS) {
+        ret |= m4th_cpu_feature_atomic_add;
+    }
+    return ret;
 }
 
 #elif defined(__aarch64__) && defined(__ANDROID__)

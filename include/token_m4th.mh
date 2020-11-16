@@ -57,12 +57,12 @@
 #define M4minus_two_rot M4_u(27)         /* -2rot     equivalent to: 2rot 2rot      */
 #define M4two_r_from_two_drop M4_u(28)   /* 2r>2drop  equivalent to: 2r>  2drop     */
 #undef M4____gap                         /*                                         */
+#define M4atomic_plus_store M4_u(30)     /* ( n addr -- n' ) atomically increment cell by n   */
+#define M4atomic_one_plus_store M4_u(31) /* (   addr -- n' ) atomically increment cell by 1   */
 #undef M4____gap                         /*                                         */
-#define M4bounds M4_u(31)                /* ( c-addr u -- c-addr+u c-addr ) get string bounds */
-#define M4cmove_count M4_u(32)           /* ( src_addr dst_addr u -- src_addr+u dst-addr+u )  */
-#define M4minus_cmove_count M4_u(33)     /* ( src_addr dst_addr u -- src_addr-u dst_addr-u )  */
-#undef M4____gap                         /*                                         */
-#undef M4____gap                         /*                                         */
+#define M4bounds M4_u(33)                /* ( c-addr u -- c-addr+u c-addr ) get string bounds */
+#define M4cmove_count M4_u(34)           /* ( src_addr dst_addr u -- src_addr+u dst-addr+u )  */
+#define M4minus_cmove_count M4_u(35)     /* ( src_addr dst_addr u -- src_addr-u dst_addr-u )  */
 #undef M4____gap                         /*                                         */
 #define M4crc_cell M4_u(37)              /* ( x -- crc32 ) compute CRC32c of a cell           */
 #define M4crc_string M4_u(38)            /* ( c-addr u -- crc32 ) compute CRC32c of a string  */
