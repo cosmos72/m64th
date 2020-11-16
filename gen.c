@@ -183,7 +183,7 @@ static void genopt2_run(FILE *out) {
 
 static void genopt3_run(FILE *out) {
     static const m4token opt[][6] = {OPT3_RULES(OPT3_TO_TOKENS)};
-    m4hashmap_cell *map = m4hashmap_new_cell(N_OF(opt));
+    m4hashmap_cell *map = m4hashmap_new_cell(N_OF(opt) / 2);
     m4cell i;
     for (i = 0; i < (m4cell)N_OF(opt); i++) {
         genopt3_add(map, opt[i]);

@@ -129,10 +129,13 @@
         /*x(two_times, two_sm_div => )*/                     /* 2* 2sm/       =>      OVERFLOW! */ \
         x(two_times, two_times, /*=>*/ four_times)           /* 2* 2*         => 4*             */ \
         x(two_times, four_times, /*=>*/ eight_times)         /* 2* 4*         => 8*             */ \
+        x(two_plus, four_minus, /*=>*/ two_minus)            /* 2+ 4-         => 2-             */ \
         x(two_plus, two_minus /*=>*/)                        /* 2+ 2-         =>                */ \
         x(two_plus, one_minus, /*=>*/ one_plus)              /* 2+ 1-         => 1+             */ \
         x(two_plus, two_plus, /*=>*/ four_plus)              /* 2+ 2+         => 4+             */ \
-        x(two_minus, two_plus /*=>*/)                        /* 2- 2+         => 4+             */ \
+        x(two_minus, two_minus, /*=>*/ four_minus)           /* 2- 2-         => 4-             */ \
+        x(two_minus, one_plus, /*=>*/ one_minus)             /* 2- 1+         => 1-             */ \
+        x(two_minus, two_plus /*=>*/)                        /* 2- 2+         =>                */ \
         x(two_minus, four_plus, /*=>*/ two_plus)             /* 2- 4+         => 2+             */ \
         x(two_div, four_div, /*=>*/ eight_div)               /* 2/ 4/         => 8/             */ \
         x(two_div, two_div, /*=>*/ four_div)                 /* 2/ 2/         => 4/             */ \
@@ -149,8 +152,14 @@
         /*x(four_times, four_sm_div => )*/                   /* 4* 4sm/       =>      OVERFLOW! */ \
         /*x(four_times, two_sm_div, => eight_times)*/        /* 4* 2sm/       => 2*   OVERFLOW! */ \
         x(four_times, two_times, /*=>*/ eight_times)         /* 4* 2*         => 8*             */ \
+        x(four_plus, eight_minus, /*=>*/ four_minus)         /* 4+ 8-         => 4-             */ \
+        x(four_plus, four_minus /*=>*/)                      /* 4+ 4-         =>                */ \
         x(four_plus, two_minus, /*=>*/ two_plus)             /* 4+ 2-         => 2+             */ \
         x(four_plus, four_plus, /*=>*/ eight_plus)           /* 4+ 4+         => 8+             */ \
+        x(four_minus, four_minus, /*=>*/ eight_minus)        /* 4- 4-         => 8-             */ \
+        x(four_minus, two_plus, /*=>*/ two_minus)            /* 4- 2+         => 2-             */ \
+        x(four_minus, four_plus /*=>*/)                      /* 4- 4+         =>                */ \
+        x(four_minus, eight_plus, /*=>*/ four_plus)          /* 4- 8+         => 4+             */ \
         x(four_div, two_div, /*=>*/ four_div)                /* 4/ 2/         => 8/             */ \
         x(four_sm_div, two_sm_div, /*=>*/ four_sm_div)       /* 4sm/ 2sm/     => 8sm/           */ \
         x(eight, times, /*=>*/ eight_times)                  /* 8  *          => 8*             */ \
@@ -161,6 +170,10 @@
         /*x(eight_times, eight_sm_div => )*/                 /* 8* 8sm/       =>      OVERFLOW! */ \
         /*x(eight_times, four_sm_div, => two_times)*/        /* 8* 4sm/       => 2*   OVERFLOW! */ \
         /*x(eight_times, two_sm_div, => four_times)*/        /* 8* 2sm/       => 4*   OVERFLOW! */ \
+        x(eight_plus, eight_minus /*=>*/)                    /* 8+ 8-         =>                */ \
+        x(eight_plus, four_minus, /*=>*/ four_plus)          /* 8+ 4-         => 4+             */ \
+        x(eight_minus, four_plus, /*=>*/ four_minus)         /* 8- 4+         => 4-             */ \
+        x(eight_minus, eight_plus /*=>*/)                    /* 8- 8+         =>                */ \
         /*____ 0<=>  0<  _____ redundant 0< ______________*/ /*                                 */ \
         x(zero_less, zero_less, /*=>*/ zero_less)            /* 0<    0<      => 0<             */ \
         x(zero_less_equal, zero_less, /*=>*/ zero_less)      /* 0<=   0<      => 0<=            */ \
@@ -497,10 +510,6 @@
 
 #define OPT3_RULES(x)                                /* note: '_' represents noop         */       \
     x(r_from, plus, to_r, /*=>*/ r_plus)             /* r>     +   >r      => r+          */       \
-        x(_if_, T(1), then, /*=>*/ drop)             /* if     then        => drop        */       \
-        x(_if0_, T(1), then, /*=>*/ drop)            /* (if0)  then        => drop        */       \
-        x(_q_if_, T(1), then /*=>*/)                 /* (?if)  then        =>             */       \
-        x(_q_if0_, T(1), then /*=>*/)                /* (?if0) then        =>             */       \
         x(_lit_, T(0xff), and, /*=>*/ to_char)       /* 0xff   and         => to-char     */       \
         x(_lit_, T(0xffff), and, /*=>*/ to_ushort)   /* 0xffff and         => to-ushort   */       \
         x(two_swap, drop, drop, /*=>*/ two_nip)      /* 2swap  drop drop   => 2nip        */       \
