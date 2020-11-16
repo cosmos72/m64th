@@ -197,7 +197,7 @@ WORD_START(begin, base)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
-    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE)
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE | M4FLAG_REEXEC_AFTER_OPTIMIZE)
     WORD_CODE(
         _lit_comma_, begin, _num_compiled_, _lit_tok_, begin, exit
     )
@@ -440,11 +440,11 @@ WORD_START(repeat,     r_fetch)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_CODE(
-        _check_lit_tok_, begin,         /* ( while-sys begin-sys ) topmost must be 'begin'      */
+        _check_lit_tok_, begin,     /* ( while-sys begin-sys ) topmost must be 'begin'      */
         _compile_jump_lit_, _repeat_, _repeat_,
         cs_drop,                    /* we only need the compiled '(repeat)' not the cs data */
         CALL(_resolve_jump_there_), /* resolve jump from '(repeat)' to 'begin'              */
-        _check_lit_tok_, _while_,       /* ( while-sys ) must be '(while)'                      */
+        _check_lit_tok_, _while_,   /* ( while-sys ) must be '(while)'                      */
         CALL(_resolve_jump_here_),  /* resolve jump from '(while)' to here                  */
         exit
     )
@@ -562,7 +562,7 @@ WORD_START(while,     variable)
     WORD_CODE(
         _check_lit_tok_, begin,             /* ( sys ) topmost must be 'begin' */
         _compile_jump_lit_, _while_, _while_,
-        cs_swap, exit                   /* ( while-sys begin-sys )         */
+        cs_swap, exit                       /* ( while-sys begin-sys )         */
     )
 WORD(xor,              while,      DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(left_bracket,     xor,        DSTACK(0,0), RSTACK(0,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)

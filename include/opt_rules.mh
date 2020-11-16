@@ -467,7 +467,7 @@
         x(trail, nip /*=>*/)                               /* trail  nip    =>                */   \
         x(trail, rot, /*=>*/ over)                         /* trail  rot    => over           */   \
         x(trail, swap, /*=>*/ over)                        /* trail  swap   => over           */   \
-        x(trail, tuck, /*=>*/ two_dup)                     /* trail  tuck   => 2dup           */   \
+        x(trail, tuck, /*=>*/ over, over)                  /* trail  tuck   => over over      */   \
         x(tuck, drop, /*=>*/ swap)                         /* tuck   drop   => swap           */   \
         x(tuck, hop, /*=>*/ tuck, dup)                     /* tuck   hop    => tuck dup       */   \
         x(tuck, nip, /*=>*/ nip, dup)                      /* tuck   nip    => nip dup        */   \

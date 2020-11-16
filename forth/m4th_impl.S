@@ -645,7 +645,11 @@ WORD_START(_while_, _until_)
     WORD_RSTACK(0,0)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_MAY_JUMP | M4FLAG_IMMEDIATE | M4FLAG_REEXEC_AFTER_OPTIMIZE)
-    WORD_CODE(_compile_jump_lit_, _while_, _while_, exit)
+    WORD_CODE(
+        _check_lit_tok_, begin,             /* ( sys ) topmost must be 'begin' */
+        _compile_jump_lit_, _while_, _while_,
+        cs_swap, exit                       /* ( while-sys begin-sys )         */
+    )
 WORD_END(_while_)
 WORD_START(_while0_, _while_)
     WORD_DSTACK(1,0) /* token stack effect when not jumping */
@@ -654,7 +658,11 @@ WORD_START(_while0_, _while_)
     WORD_RSTACK(0,0)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_MAY_JUMP | M4FLAG_IMMEDIATE | M4FLAG_REEXEC_AFTER_OPTIMIZE)
-    WORD_CODE(_compile_jump_lit_, _while0_, _while_, exit)
+    WORD_CODE(
+        _check_lit_tok_, begin,             /* ( sys ) topmost must be 'begin' */
+        _compile_jump_lit_, _while0_, _while_,
+        cs_swap, exit                       /* ( while-sys begin-sys )         */
+    )
 WORD_END(_while0_)
 /* optimize single tokens being compiled. return t if something was optimized */
 /* ( src dst src-end -- src' dst' t|f ) */
