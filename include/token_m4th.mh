@@ -39,14 +39,14 @@
 #undef M4____gap                         /*                                         */
 #define M4four_times M4_u(10)            /* 4*                                      */
 #define M4four_plus M4_u(11)             /* 4+                                      */
-#define M4four_div M4_u(12)              /* 4/   floored divide by 4                */
-#define M4four_sm_div M4_u(13)           /* 4sm/ symmetric divide by 4              */
-#undef M4____gap                         /*                                         */
+#define M4four_minus M4_u(12)            /* 4-                                      */
+#define M4four_div M4_u(13)              /* 4/   floored divide by 4                */
+#define M4four_sm_div M4_u(14)           /* 4sm/ symmetric divide by 4              */
 #define M4eight_times M4_u(15)           /* 8*                                      */
 #define M4eight_plus M4_u(16)            /* 8+                                      */
-#define M4eight_div M4_u(17)             /* 8/   floored divide by 8                */
-#define M4eight_sm_div M4_u(18)          /* 8/sm symmetric divide by 8              */
-#undef M4____gap                         /*                                         */
+#define M4eight_minus M4_u(17)           /* 8-                                      */
+#define M4eight_div M4_u(18)             /* 8/   floored divide by 8                */
+#define M4eight_sm_div M4_u(19)          /* 8/sm symmetric divide by 8              */
 #undef M4____gap                         /*                                         */
 #define M4two_dup_two_to_r M4_u(21)      /* 2dup_2>r  equivalent to: 2dup 2>r       */
 #define M4two_nip M4_u(22)               /* 2nip      equivalent to: 2swap 2drop    */

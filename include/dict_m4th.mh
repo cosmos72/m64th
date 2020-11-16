@@ -31,10 +31,12 @@
     X(4, "2sm/", two_sm_div) /* symmetric divide by 2 */                                           \
     X(2, "4*", four_times)                                                                         \
     X(2, "4+", four_plus)                                                                          \
+    X(2, "4-", four_minus)                                                                         \
     X(2, "4/", four_div)      /* floored divide by 4 */                                            \
     X(4, "4sm/", four_sm_div) /* symmetric divide by 4 */                                          \
     X(2, "8*", eight_times)                                                                        \
     X(2, "8+", eight_plus)                                                                         \
+    X(2, "8-", eight_minus)                                                                        \
     X(2, "8/", eight_div)             /* floored divide by 4 */                                    \
     X(4, "8sm/", eight_sm_div)        /* symmetric divide by 8 */                                  \
     /*                             */ /*                                                */         \

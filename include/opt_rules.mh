@@ -45,11 +45,15 @@
         x(minus_two, plus, /*=>*/ two_minus)                 /* -2 +          => 2-             */ \
         x(minus_two, minus, /*=>*/ two_plus)                 /* -2 -          => 2+             */ \
         /* x(minus_two, div, => two_div, negate) */          /* -2 /    => 2/ negate  OVERFLOW! */ \
+        x(minus_two, ne, /*=>*/ two_plus, zero_ne)           /* -2 <>         => 2+ 0<>         */ \
+        x(minus_two, equal, /*=>*/ two_plus, zero_equal)     /* -2 =          => 2+ 0=          */ \
         x(minus_one, times, /*=>*/ negate)                   /* -1 *          => negate         */ \
         x(minus_one, plus, /*=>*/ one_minus)                 /* -1 +          => 1-             */ \
         x(minus_one, minus, /*=>*/ one_plus)                 /* -1 -          => 1+             */ \
         x(minus_one, div, /*=>*/ negate)                     /* -1 /          => negate         */ \
         x(minus_one, div_mod, /*=>*/ negate, zero)           /* -1 /mod       => negate 0       */ \
+        x(minus_one, ne, /*=>*/ invert, zero_ne)             /* -1 <>         => invert 0<>     */ \
+        x(minus_one, equal, /*=>*/ invert, zero_equal)       /* -1 =          => invert 0=      */ \
         x(minus_one, and/*=>*/)                              /* -1 and        =>                */ \
         x(minus_one, mod, /*=>*/ drop, zero)                 /* -1 mod        => drop 0         */ \
         x(minus_one, or, /*=>*/ drop, minus_one)             /* -1 or         => drop -1        */ \
@@ -84,6 +88,8 @@
         x(one, minus, /*=>*/ one_minus)                      /* 1  -          => 1-             */ \
         x(one, div /*=>*/)                                   /* 1  /          =>                */ \
         x(one, div_mod, /*=>*/ drop, zero)                   /* 1  /mod       => drop 0         */ \
+        x(one, ne, /*=>*/ one_minus, zero_ne)                /* 1  <>         => 1- 0<>         */ \
+        x(one, equal, /*=>*/ one_minus, zero_equal)          /* 1  =          => 1- 0=          */ \
         x(one, two_roll, /*=>*/ two_swap)                    /* 1  2roll      => 2swap          */ \
         x(one, minus_two_roll, /*=>*/ two_swap)              /* 1  -2roll     => 2swap          */ \
         x(one, lshift, /*=>*/ two_times)                     /* 1  lshift     => 2*             */ \
@@ -109,6 +115,8 @@
         x(two, plus, /*=>*/ two_plus)                        /* 2  +          => 2+             */ \
         x(two, minus, /*=>*/ two_minus)                      /* 2  -          => 2-             */ \
         x(two, div, /*=>*/ two_sm_div)                       /* 2  /          => 2sm/           */ \
+        x(two, ne, /*=>*/ two_minus, zero_ne)                /* 2  <>         => 2- 0<>         */ \
+        x(two, equal, /*=>*/ two_minus, zero_equal)          /* 2  =          => 2- 0=          */ \
         x(two, two_roll, /*=>*/ two_rot)                     /* 2  2roll      => 2rot           */ \
         x(two, minus_two_roll, /*=>*/ minus_two_rot)         /* 2  -2roll     => -2rot          */ \
         x(two, lshift, /*=>*/ four_times)                    /* 2  lshift     => 4*             */ \
@@ -135,6 +143,8 @@
         x(four, times, /*=>*/ four_times)                    /* 4  *          => 4*             */ \
         x(four, plus, /*=>*/ four_plus)                      /* 4  +          => 4+             */ \
         x(four, div, /*=>*/ four_sm_div)                     /* 4  /          => 4sm/           */ \
+        x(four, ne, /*=>*/ four_minus, zero_ne)              /* 4  <>         => 4- 0<>         */ \
+        x(four, equal, /*=>*/ four_minus, zero_equal)        /* 4  =          => 4- 0=          */ \
         /*x(four_times, eight_sm_div, => two_sm_div)*/       /* 4* 8sm/       => 2sm/ OVERFLOW! */ \
         /*x(four_times, four_sm_div => )*/                   /* 4* 4sm/       =>      OVERFLOW! */ \
         /*x(four_times, two_sm_div, => eight_times)*/        /* 4* 2sm/       => 2*   OVERFLOW! */ \
@@ -146,6 +156,8 @@
         x(eight, times, /*=>*/ eight_times)                  /* 8  *          => 8*             */ \
         x(eight, plus, /*=>*/ eight_plus)                    /* 8  +          => 8+             */ \
         x(eight, div, /*=>*/ eight_sm_div)                   /* 8  /          => 8sm/           */ \
+        x(eight, ne, /*=>*/ eight_minus, zero_ne)            /* 8  <>         => 8- 0<>         */ \
+        x(eight, equal, /*=>*/ eight_minus, zero_equal)      /* 8  =          => 8- 0=          */ \
         /*x(eight_times, eight_sm_div => )*/                 /* 8* 8sm/       =>      OVERFLOW! */ \
         /*x(eight_times, four_sm_div, => two_times)*/        /* 8* 4sm/       => 2*   OVERFLOW! */ \
         /*x(eight_times, two_sm_div, => four_times)*/        /* 8* 2sm/       => 4*   OVERFLOW! */ \

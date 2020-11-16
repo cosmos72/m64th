@@ -264,6 +264,11 @@ FUNC_START(four_plus)      /* 4+  m4th-user */
 FUNC_END(four_plus)
 
 
+FUNC_START(four_minus)     /* 4-  m4th-user */
+        SUB2(  IMM(4), DTOP)
+FUNC_END(four_minus)
+
+
 FUNC_START(four_div)       /* 4/   m4th-user floored divide by 4 */
         SAR2(  IMM(2), DTOP)  /* SAR2 rounds toward -infinity */
 FUNC_END(four_div)
@@ -301,6 +306,11 @@ FUNC_END(eight_times)
 FUNC_START(eight_plus)     /* 8+  m4th-user */
         ADD2(  IMM(8), DTOP)
 FUNC_END(eight_plus)
+
+
+FUNC_START(eight_minus)    /* 8-  m4th-user */
+        SUB2(  IMM(8), DTOP)
+FUNC_END(eight_minus)
 
 
 FUNC_START(eight_div)      /* 8/   m4th-user floored divide by 8 */
