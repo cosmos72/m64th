@@ -399,10 +399,6 @@
         x(invert, one_plus, /*=>*/ negate)                   /* invert 1+     => negate         */ \
         x(invert, invert /*=>*/)                             /* invert invert =>                */ \
         x(invert, negate, /*=>*/ one_plus)                   /* invert negate => 1+             */ \
-        x(invert, _if_, /*=>*/ _if0_)                        /* invert (if)     => (if0)        */ \
-        x(invert, _if0_, /*=>*/ _if_)                        /* invert (if0)    => (if)         */ \
-        x(invert, _while_, /*=>*/ _while0_)                  /* invert (while)  => (while0)     */ \
-        x(invert, _while0_, /*=>*/ _while_)                  /* invert (while0) => (while)      */ \
         x(_ip_, drop /*=>*/)                                 /* (ip)      drop =>               */ \
         x(_ip_to_data_, drop, /*=>*/ _ip_to_data_addr_)      /* (ip>data) drop => (ip>data>addr)*/ \
         x(_ip_to_data_addr_, drop /*=>*/)                    /* (ip>data>addr) drop  =>         */ \
