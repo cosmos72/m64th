@@ -414,6 +414,7 @@
         x(negate, negate /*=>*/)                             /* negate negate =>                */ \
         x(negate, invert, /*=>*/ one_minus)                  /* negate invert => 1-             */ \
         x(negate, squared, /*=>*/ squared)                   /* negate squared => squared       */ \
+        x(over, plus, /*=>*/ bounds, swap)                   /* over   +      => bounds swap    */ \
         x(over, minus, /*=>*/ trail, sub)                    /* over   -      => trail sub      */ \
         x(over, drop /*=>*/)                                 /* over   drop   =>                */ \
         x(over, flip, /*=>*/ over)                           /* over   flip   => over           */ \
@@ -461,6 +462,7 @@
         x(swap, u_more, /*=>*/ u_less)                     /* swap   u>     => u<             */   \
         x(swap, u_more_equal, /*=>*/ u_less_equal)         /* swap   u>=    => u<=            */   \
         x(swap, xor, /*=>*/ xor)                           /* swap   xor    => xor            */   \
+        x(trail, plus, /*=>*/ bounds, swap)                /* trail  +      => bounds swap    */   \
         x(trail, drop, /*=>*/ drop, dup)                   /* trail  drop   => drop dup       */   \
         x(trail, nip /*=>*/)                               /* trail  nip    =>                */   \
         x(trail, rot, /*=>*/ over)                         /* trail  rot    => over           */   \
@@ -505,7 +507,6 @@
         x(two_swap, drop, drop, /*=>*/ two_nip)           /* 2swap  drop drop   => 2nip        */  \
         x(to_r, dup, r_from, /*=>*/ trail)                /* >r     dup  r>     => trail       */  \
         x(to_r, over, r_from, /*=>*/ hop, swap)           /* >r     over r>     => hop  swap   */  \
-        x(over, plus, swap, /*=>*/ bounds)                /* over   +     swap  => bounds      */  \
         x(over, trail, two_nip, /*=>*/ swap)              /* over   trail 2nip  => swap        */  \
         x(over, trail, two_swap, /*=>*/ tuck, trail)      /* over   trail 2swap => tuck trail  */  \
         x(over, trail, swap, /*=>*/ two_dup)              /* over   trail swap  => 2dup        */  \
@@ -513,10 +514,7 @@
         x(over, over, two_nip /*=>*/)                     /* over   over  2nip  =>             */  \
         x(over, over, two_over, /*=>*/ two_dup, two_dup)  /* over   over  2over => 2dup 2dup   */  \
         x(over, over, two_swap, /*=>*/ two_dup)           /* over   over  2swap => 2dup        */  \
-        x(swap, over, plus, /*=>*/ bounds)                /* swap   over  +     => bounds      */  \
-        x(swap, over, over, /*=>*/ tuck, over)            /* swap   over  over  => tuck over   */  \
-        x(trail, plus, swap, /*=>*/ bounds)               /* trail  +     swap  => bounds      */  \
-        /* ______________  */                             /*                                 */    \
+        /* ______________  */                             /*                                   */  \
         x(three, plus, byte_fetch, /*=>*/ byte_fetch_3)   /* 3   +  byte@        => byte[3]    */  \
         x(five, plus, byte_fetch, /*=>*/ byte_fetch_5)    /* 5   +  byte@        => byte[5]    */  \
         x(six, plus, byte_fetch, /*=>*/ byte_fetch_6)     /* 6   +  byte@        => byte[6]    */  \
