@@ -352,7 +352,7 @@ FUNC_END(string_equal)
  * return cell old value.
  */
 FUNC_START(atomic_one_plus_store)
-        ldaxr  REG1,   AT(REG0);               /* a = dtop[0] atomic fetch   */
+        ldaxr  REG1,   AT(DTOP);               /* a = dtop[0] atomic fetch   */
         ADDI(  REG1,   1,      REG2)           /* b = a + 1                  */
         stlxr  REG3w,  REG2,   AT(DTOP);       /* try atomic store           */
         JNZ(   REG3w,  FUNC(atomic_one_plus_store))
