@@ -34,7 +34,7 @@
 
 /* -------------- m4testcompile -------------- */
 
-static const m4testcompile testcompile[] = {
+static const m4testcompile testcompile_a[] = {
     /* ------------------------------- numbers ------------------------------ */
     {"", {}, {}, {}},
     {"0", {}, {}, {1, {m4zero}}},
@@ -201,6 +201,9 @@ static const m4testcompile testcompile[] = {
      {2, {0, m4colon}},
      {},
      {3 + 2 * nCALLt, {m4_lit_xt_, XT(and), CALL(compile_comma), m4exit}}},
+};
+
+static const m4testcompile testcompile_b[] = {
     /* ------------------------------- (optimize-1) ------------------------- */
     {"2drop ;", {2, {0, m4colon}}, {}, {3, {m4drop, m4drop, m4exit}}},
     {"cell+ ;", {2, {0, m4colon}}, {}, {2, {m4_SZ_plus, m4exit}}},
@@ -219,7 +222,7 @@ static const m4testcompile testcompile[] = {
     /* test [recompile] to correctly update jump offsets after optimization */
     {"if noop 1+ then ;", {2, {0, m4colon}}, {}, {5, {m4_if_, T(2), m4one_plus, m4then, m4exit}}},
     {"if 1+ 1+ then ;", {2, {0, m4colon}}, {}, {5, {m4_if_, T(2), m4two_plus, m4then, m4exit}}},
-    /* ------------------------------- [optimize] --------------------------- */
+    /* ------------------------------- [optimize] if ------------------------ */
     {"if then ;", {2, {0, m4colon}}, {}, {2, {m4drop, m4exit}}},
     {"if chars then ;", {2, {0, m4colon}}, {}, {2, {m4drop, m4exit}}},
     {"if 1+ 1- then ;", {2, {0, m4colon}}, {}, {2, {m4drop, m4exit}}},
@@ -230,6 +233,31 @@ static const m4testcompile testcompile[] = {
     {"dup if 1+ 1- then ;", {2, {0, m4colon}}, {}, {1, {m4exit}}},
     {"dup if 1 then ;", {2, {0, m4colon}}, {}, {5, {m4_q_if_, T(2), m4one, m4then, m4exit}}},
     {"dup 0= if 2 then ;", {2, {0, m4colon}}, {}, {5, {m4_q_if0_, T(2), m4two, m4then, m4exit}}},
+    /* ------------------------------- [optimize] begin --------------------- */
+    {"begin while nop repeat ;",
+     {2, {0, m4colon}},
+     {},
+     {6, {m4begin, m4_while_, T(2), m4_repeat_, T(-4), m4exit}}},
+    {"begin dup while nop repeat ;",
+     {2, {0, m4colon}},
+     {},
+     {6, {m4begin, m4_q_while_, T(2), m4_repeat_, T(-4), m4exit}}},
+    {"begin dup while dup if then repeat ;",
+     {2, {0, m4colon}},
+     {},
+     {6, {m4begin, m4_q_while_, T(2), m4_repeat_, T(-4), m4exit}}},
+    {"begin dup 0<> while nop repeat ;",
+     {2, {0, m4colon}},
+     {},
+     {6, {m4begin, m4_q_while_, T(2), m4_repeat_, T(-4), m4exit}}},
+    {"begin dup 0= while nop repeat ;",
+     {2, {0, m4colon}},
+     {},
+     {6, {m4begin, m4_q_while0_, T(2), m4_repeat_, T(-4), m4exit}}},
+    {"begin dup 0= while dup if then repeat ;",
+     {2, {0, m4colon}},
+     {},
+     {6, {m4begin, m4_q_while0_, T(2), m4_repeat_, T(-4), m4exit}}},
 };
 
 static m4code m4testcompile_init(const m4testcompile *t, m4countedcode *codegen_buf) {
@@ -309,27 +337,33 @@ static void m4testcompile_failed(m4th *m, const m4testcompile *t, m4code t_codeg
 }
 
 m4cell m4th_testcompile(m4th *m, FILE *out) {
+    const m4testcompile *t[] = {testcompile_a, testcompile_b};
+    const m4cell n[] = {N_OF(testcompile_a), N_OF(testcompile_b)};
+
     m4countedcode codegen_buf;
-    m4cell i, fail = 0;
+    m4cell i, j, run = 0, fail = 0;
 
     if (!m4th_knows(m, &m4wordlist_m4th_core)) {
         m4th_also(m, &m4wordlist_m4th_core);
     }
 
-    for (i = 0; i < (m4cell)N_OF(testcompile); i++) {
-        const m4testcompile *t = &testcompile[i];
-        m4code t_codegen = m4testcompile_init(t, &codegen_buf);
+    for (i = 0; i < (m4cell)N_OF(t); i++) {
+        for (j = 0; j < n[i]; j++) {
+            const m4testcompile *tc = &t[i][j];
+            m4code t_codegen = m4testcompile_init(tc, &codegen_buf);
 
-        if (!m4testcompile_run(m, t, t_codegen)) {
-            fail++, m4testcompile_failed(m, t, t_codegen, out);
+            if (!m4testcompile_run(m, tc, t_codegen)) {
+                fail++, m4testcompile_failed(m, tc, t_codegen, out);
+            }
+            m4test_forget_all(m);
+            run++;
         }
-        m4test_forget_all(m);
     }
     if (out != NULL) {
         if (fail == 0) {
-            fprintf(out, "all %3u compile tests passed\n", (unsigned)i);
+            fprintf(out, "all %3u compile tests passed\n", (unsigned)run);
         } else {
-            fprintf(out, "\ncompile tests failed: %3u of %3u\n", (unsigned)fail, (unsigned)i);
+            fprintf(out, "\ncompile tests failed: %3u of %3u\n", (unsigned)fail, (unsigned)run);
         }
     }
     return fail;
