@@ -621,16 +621,14 @@ static m4testexecute testexecute_d[] = {
     {"' noop execute", {m4execute, m4bye}, {{1, {DXT(noop)}}, {}}, {{}, {}}, {}},
     {"' eight execute", {m4execute, m4bye}, {{1, {DXT(eight)}}, {}}, {{1, {8}}, {}}, {}},
     {"6 7 ' plus execute", {m4execute, m4bye}, {{3, {6, 7, DXT(plus)}}, {}}, {{1, {13}}, {}}, {}},
-#if 0 /* currently broken */
     {"... ' store execute",
      {m4dp0, m4cell_plus, /* ( 3 d1=7 store &d1 ) */
       m4cell_plus,        /* ( d0=3 7 store &d0 ) */
       m4swap,             /* ( d0=3 7 &d0 store ) */
       m4execute, m4bye},  /* ( 7                ) */
      {{3, {3, 7, DXT(store)}}, {}},
-     {{1, {3}}, {}},
+     {{1, {7}}, {}},
      {}},
-#endif
     {"(ip)", {m4_ip_, m4bye}, {{}, {}}, {{1, {-1 /* fixed by m4testexecute_fix() */}}, {}}, {}},
 #if 0 /* currently broken */
     {"(ip>data>addr)",
@@ -832,21 +830,18 @@ static m4testexecute testexecute_e[] = {
      {{1, {m4two_drop}}, {}},
      {{1, {m4two_drop}}, {}},
      {2, {m4drop, m4drop}}},
-#if 0  /* currently broken */
     {"{false} (optimize-1token)",
-     {m4here, m4dup, m4_lit_comma_, m4false, /* ( here here   ) original:  false    */
-      m4false, CALL(_optimize_1token_),      /* ( src' dst' n ) optimized: 0        */
-      m4minus_rot, m4sub, m4allot, m4bye},   /* ( n           ) update HERE         */
-     {{}, {}},
-     {{1, {1}}, {}},
+     {m4dp0, CALL(_optimize_1token_),             /* ( false counted-tokens ) */
+      m4count_tokens, CALL(tokens_comma), m4bye}, /* ( false                ) */
+     {{1, {m4false}}, {}},
+     {{1, {m4false}}, {}},
      {1, {m4zero}}},
     {"{1+} (optimize-1token)",
-     {m4here, m4dup, m4_lit_comma_, m4one_plus, /* ( here here   ) original:  1+       */
-      m4false, CALL(_optimize_1token_),         /* ( src' dst' n ) optimized: 1+       */
-      m4minus_rot, m4sub, m4allot, m4bye},      /* ( n           ) update HERE         */
-     {{}, {}},
-     {{1, {-1}}, {}},
-     {1, {m4one_plus}}},
+     {m4dp0, CALL(_optimize_1token_), /* ( 1+ counted-tokens ) */
+      m4bye},                         /* ( 1+ 0 ) i.e. 1+ is not optimized */
+     {{1, {m4one_plus}}, {}},
+     {{2, {m4one_plus, 0}}, {}},
+     {}},
     {"{swap drop} (optimize-2token)",
      {m4here, m4dup, m4_lit_comma_, m4swap, /* ( here here     )                      */
       m4_lit_comma_, m4drop,                /* ( here here     ) original:  swap drop */
@@ -863,7 +858,6 @@ static m4testexecute testexecute_e[] = {
      {{}, {}},
      {{1, {ttrue}}, {}},
      {3, {m4drop, m4drop, m4zero}}},
-#endif /* 0 */
 };
 
 static const char teststr_empty[] = "";

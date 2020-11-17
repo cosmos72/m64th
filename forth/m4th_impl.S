@@ -714,8 +714,12 @@ WORD_START(_optimize_2token_, _optimize_1token_)
     WORD_CODE_N_AUTO(_optimize_2token_)
     WORD_DATA_N_AUTO(_optimize_2token_)
     WORD_CODE_START(_optimize_2token_)
-      WORD_CODE_TOKENS(
-          exit
+      WORD_CODE_TOKENS(/* TODO: rewrite similarly to _optimize_1token_ */
+          /*53*/ _ip_to_data_addr_, to_r, over, ushort_fetch, hop, ushort_fetch_1, eight, two_times, lshift, or,
+          r_from, swap, CALL(hashmap_find_int), _if0_, T(7), drop, drop, two, cmove_count, zero, exit, then,
+          nip, dup, eight, two_times, rshift, swap, to_ushort, zero,
+          _q_do_, T(11), tuck, to_ushort, over, short_store, two_plus, swap, eight, two_times, rshift, _loop_, T(-11),
+          drop, swap, four_plus, swap, minus_one, exit
       )
     WORD_CODE_END(_optimize_2token_)
     WORD_DATA_START(_optimize_2token_)

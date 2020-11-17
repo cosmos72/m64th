@@ -36,22 +36,6 @@ also m4th-impl definitions
 ;
 
 
-\ optimize single tokens being compiled. return t if something was optimized
-: (optimize-1) \ ( src dst src-end -- src' dst' t|f )
-   false 2>r                                  \ ( src dst      ) (R: src-end f   )
-   begin                                      \ ( src dst      ) (R: src-end t|f )
-      over r2nd@ <                            \ ( src dst t|f  ) (R: src-end t|f )
-   while                                      \ ( src dst      ) (R: src-end t|f )
-      false (optimize-1token)                 \ ( src' dst' n  ) (R: src-end t|f )
-      0<                                      \ ( src dst t|f  ) (R: src-end t|f )
-      dup r@ or r!                            \ ( src dst t|f  ) (R: src-end t|f')
-      1token and                              \ ( src dst SZt|0) (R: src-end t|f )
-      cmove/count                             \ ( src' dst'    ) (R: src-end t|f )
-   repeat                                     \ ( src' dst'    ) (R: src-end t|f )
-   r>drop r>                                  \ ( optimized code is at dst...dst')
-;
-
-
 \ optimize token pairs being compiled
 : (optimize-2token)    \ ( src-addr dst-addr -- src-addr' dst-addr' t|f )
    (ip>data>addr) >r                          \ ( src dst               ) (R: hashmap )
@@ -74,4 +58,4 @@ also m4th-impl definitions
 ;
 
 
-disassemble-upto (optimize-2token)
+disassemble-upto (optimize-1token)
