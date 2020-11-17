@@ -339,7 +339,7 @@
 #undef M4____gap               /*                                         */
 #undef M4____gap               /*                                         */
 #define M4latest M4_(21)       /* latest       (    -- nt   ) get last defined word              */
-#define M4latest_store M4_(22) /* latest!       ( nt --       ) set last defined word       */
+#define M4to_latest M4_(22)    /* to-latest      ( nt --       ) set last defined word       */
 #undef M4____gap               /*                                         */
 #undef M4____gap               /*                                         */
 #define M4name_comma M4_(25)   /* name,       ( c-addr u --   ) create a new name        */

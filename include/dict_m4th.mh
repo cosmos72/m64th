@@ -297,7 +297,7 @@
     X(9, "iobuf>pos", iobuf_pos)         /* ( io -- addr ) get address of iobuf position     */    \
     X(9, "iobuf>end", iobuf_end)         /* ( io -- addr ) get address of iobuf end position */    \
     X(6, "latest", latest)               /* (    -- nt   ) get last defined word             */    \
-    X(7, "latest!", latest_store)        /* ( nt --      ) set last defined word            */       \
+    X(9, "to-latest", to_latest)         /* ( nt --      ) set last defined word            */       \
     X(5, "name,", name_comma)            /* ( c-addr u -- nt ) create a new name             */    \
     X(9, "name>code", name_to_code)      /* ( nt  -- taddr n ) get code array from name      */    \
     X(11, "name>code>n", name_to_code_n) /* ( nt -- u        ) get code size from name       */    \
