@@ -215,16 +215,16 @@ FUNC_END(latest)
 
 
 /* set-latest ( nt -- ) set last defined word */
-FUNC_START(set_latest)
+FUNC_START(latest_store)
         STOR(  DTOP,   AT(M4TH, M4TH_OFF_LASTW))   /* m4th.lastw = nt       */
         /* we really should NOT be compiling now, but in some tests we are  */
         LOAD(  REG1,   AT(M4TH, M4TH_OFF_XT))      /* a = m4th.xt           */
-        JZ(    REG1,   TO(set_latest.done))
+        JZ(    REG1,   TO(latest_store.done))
         ADD2(  IMM(WORD_OFF_XT),   DTOP)           /* dtop = nt.code        */
         STOR(  DTOP,   AT(M4TH, M4TH_OFF_XT))      /* m4th.xt = dtop        */
-LABEL(set_latest.done)
+LABEL(latest_store.done)
         DPOP___DTOP()
-FUNC_END(set_latest)
+FUNC_END(latest_store)
 
 
 FUNC_START(state)

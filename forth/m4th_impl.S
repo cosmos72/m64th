@@ -223,7 +223,7 @@ WORD_START(_create_, _continue_)
         dup, CALL(parse_name),                         /* ( m4flags m4flags c-addr u     ) */
         dup, zero_equal,                               /* ( m4flags m4flags c-addr u t|f ) */
             _lit_, T(M4ERR_ZERO_LENGTH_NAME), and, throw,
-        name_comma, dup, set_latest,                   /* ( m4flags m4flags nt           ) */
+        name_comma, dup, latest_store,                   /* ( m4flags m4flags nt           ) */
         name_to_flags_store,                           /* ( m4flags                      ) */
         _lit_tok_, colon, exit                         /* ( colon-sys                    ) */
     )

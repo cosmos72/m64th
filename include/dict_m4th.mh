@@ -297,6 +297,7 @@
     X(9, "iobuf>pos", iobuf_pos)         /* ( io -- addr ) get address of iobuf position     */    \
     X(9, "iobuf>end", iobuf_end)         /* ( io -- addr ) get address of iobuf end position */    \
     X(6, "latest", latest)               /* (    -- nt   ) get last defined word             */    \
+    X(7, "latest!", latest_store)        /* ( nt --      ) set last defined word            */       \
     X(5, "name,", name_comma)            /* ( c-addr u -- nt ) create a new name             */    \
     X(9, "name>code", name_to_code)      /* ( nt  -- taddr n ) get code array from name      */    \
     X(11, "name>code>n", name_to_code_n) /* ( nt -- u        ) get code size from name       */    \
@@ -317,7 +318,6 @@
     X(15, "searchorder-dup", searchorder_dup)     /* (S: wid -- wid wid )                      */  \
     X(16, "searchorder-pick", searchorder_pick)   /* (S: wid_u .. wid_0 -- same ) ( -- wid_u ) */  \
     X(15, "searchorder[0]!", searchorder_store_0) /* ( wid -- ) overwrite searchorder 0-th elem */ \
-    X(10, "set-latest", set_latest)    /* ( nt --      ) set last defined word            */       \
     X(10, "token>name", token_to_name) /* ( token -- nt|0 ) convert token to name */               \
     X(8, "user-var", user_var) /*        ( -- addr ) must be followed by index of user variable */ \
     X(17, "wordlist-add-name", wordlist_add_name) /*   ( nt wid -- ) add name to wordlist       */ \

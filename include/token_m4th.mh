@@ -339,7 +339,7 @@
 #undef M4____gap               /*                                         */
 #undef M4____gap               /*                                         */
 #define M4latest M4_(21)       /* latest       (    -- nt   ) get last defined word              */
-#undef M4____gap               /*                                         */
+#define M4latest_store M4_(22) /* latest!       ( nt --       ) set last defined word       */
 #undef M4____gap               /*                                         */
 #undef M4____gap               /*                                         */
 #define M4name_comma M4_(25)   /* name,       ( c-addr u --   ) create a new name        */
@@ -358,7 +358,7 @@
 #define M4obuf_write_char M4_(38)   /* obuf-write-char   ( io c -- err ) write one char to iobuf */
 #define M4obuf_write_string M4_(39) /* obuf-write-string ( io c -- err ) write string to iobuf  */
 #define M4out_to_obuf M4_(40) /* out>obuf         (      -- io  ) get current output as iobuf */
-#define M4set_latest M4_(41)  /* set-latest       ( nt --       ) set last defined word       */
+#undef M4____gap              /*                                         */
 #undef M4____gap              /*                                         */
 #define M4searchorder_clear M4_(43)   /* (S: wid_u-1 .. wid_0 -- )                   */
 #define M4searchorder_depth M4_(44)   /* (S: wid_u-1 .. wid_0 -- same ) ( -- u )     */
