@@ -176,6 +176,7 @@
 #define NOT1(dst)         mvn   dst, dst;           /* dst  = ~dst    */
 #define NOT2(src,dst)     mvn   dst, src;           /* dst  = ~src    */
 #define ORR2(src,dst)     orr   dst, dst, src;      /* dst |= src     */
+#define ORR3(a,b,dst)     orr   dst, a,   b;        /* dst  = a | b   */
 #define SAR2(src,dst)     asr   dst, dst, src;      /* dst >>= src    signed   */
 #define SHL2(src,dst)     lsl   dst, dst, src;      /* dst <<= src    */
 #define SHR2(src,dst)     lsr   dst, dst, src;      /* dst >>= src    unsigned */

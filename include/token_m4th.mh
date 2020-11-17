@@ -99,7 +99,7 @@
 #define M4string_find_blank M4_u(79)     /* ( c-addr u -- u' ) get index of first char <= ' ' */
 #define M4string_find_char M4_u(80)      /* ( c-addr u ch -- u' ) get index of first ch       */
 #define M4string_find_nonblank M4_u(81)  /* ( c-addr u -- u' ) get index of first char > ' '  */
-#undef M4____gap                         /*                                         */
+#define M4string_to_lower M4_u(82)       /* ( src dst u -- dst u ) copy and convert to lowercase */
 #undef M4____gap                         /*                                         */
 #define M4sub M4_u(84)                   /* sub       equivalent to: swap -         */
 #define M4trail M4_u(85)                 /* trail     equivalent to: over swap      */

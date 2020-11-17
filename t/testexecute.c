@@ -873,6 +873,8 @@ static const char teststr_quoted_00[] = "'00'";
 
 static const char teststr_minus_123[] = "-123";
 
+static const char teststr_abc[] = "abc";
+static const char teststr_aBcDefGH[] = "aBcDefGH";
 static const char teststr_z_[] = "z:";
 static const char teststr_0az[] = "0az";
 static const char teststr_percent_1011[] = "%1011";
@@ -924,6 +926,7 @@ static m4testexecute testexecute_f[] = {
      {{2, {TESTSTR(_0)}}, {}},
      {{3, {TESTSTR(_0), 10}}, {}},
      {}},
+    /* ----------------------------- string>char ---------------------------- */
     {"\"''\" string>char",
      {CALL(string_to_char), m4bye},
      {{2, {TESTSTR(_quoted)}}, {}},
@@ -949,6 +952,26 @@ static m4testexecute testexecute_f[] = {
      {{2, {TESTSTR(_quoted_00)}}, {}},
      {{3, {TESTSTR(_quoted_00), -1}}, {}},
      {}},
+#if defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+    /* ----------------------------- string>lower --------------------------- */
+    {"\"abc\" string>lower",
+     {m4zero, m4minus_rot, m4dp0, m4cell_plus, m4cell_plus, m4swap, m4string_to_lower, m4two_drop,
+      m4bye},
+     {{2, {TESTSTR(_abc)}}, {}},
+     {{1, {'a' | ('b' << 8) | ('c' << 16)}}, {}},
+     {}},
+#if SZ >= 8
+    {"\"aBcDefGH\" string>lower",
+     {m4zero, m4minus_rot, m4dp0, m4cell_plus, m4cell_plus, m4swap, m4string_to_lower, m4two_drop,
+      m4bye},
+     {{2, {TESTSTR(_aBcDefGH)}}, {}},
+     {{1,
+       {'a' | 'b' << 8 | 'c' << 16 | 'd' << 24 |
+        (m4cell)('e' | 'f' << 8 | 'g' << 16 | 'h' << 24) << 32}},
+      {}},
+     {}},
+#endif /* SZ */
+#endif /* __BYTE_ORDER__ */
     /* ----------------------------- string>sign ---------------------------- */
     {"\"\" string>sign",
      {CALL(string_to_sign), m4bye},

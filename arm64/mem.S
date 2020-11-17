@@ -22,6 +22,46 @@
 /* clang-format off */
 
 
+/*
+ * atomic1+! ( addr -- n' ) atomically increment cell at addr by 1.
+ * return cell old value.
+ */
+FUNC_START(atomic_one_plus_store)
+        ldaxr  REG1,   AT(DTOP);               /* a = dtop[0] atomic fetch   */
+        ADDI(  REG1,   1,      REG2)           /* b = a + 1                  */
+        stlxr  REG3w,  REG2,   AT(DTOP);       /* try atomic store           */
+        JNZ(   REG3w,  FUNC(atomic_one_plus_store))
+        MOVE(  REG1,   DTOP)
+FUNC_END(atomic_one_plus_store)
+
+
+/*
+ * atomic+! ( n addr -- n' ) atomically increment cell at addr by n.
+ * return cell old value.
+ */
+FUNC_START(atomic_plus_store)
+        DPOP(  REG0)                           /* @ = n = delta              */
+        MOVE(  DTOP,   REG1)                   /* a = addr                   */
+LABEL(atomic_plus_store.retry)
+        ldaxr  DTOP,   AT(REG1);               /* dtop = addr[0] atomic fetch*/
+        ADD4(  DTOP,   REG0,0, REG2)           /* b = dtop + 1               */
+        stlxr  REG3w,  REG2,   AT(REG1);       /* try atomic store           */
+        JNZ(   REG3w,  TO(atomic_plus_store.retry))
+FUNC_END(atomic_plus_store)
+
+
+FUNC_START(atomic_one_plus_store_simd)
+        MOVI(  1,      REG1)
+        .4byte 0xf8210294;                 /* ldadd  REG1,   DTOP, AT(DTOP); */
+FUNC_END(atomic_one_plus_store_simd)
+
+
+FUNC_START(atomic_plus_store_simd)
+        DPOP(  REG1)
+        .4byte 0xf8210294;                 /* ldadd  REG1,   DTOP, AT(DTOP); */
+FUNC_END(atomic_plus_store_simd)
+
+
 /* cmove/count ( src-addr dst-addr u -- src-addr+u dst-addr+u ) m4th-user */
 FUNC_START(cmove_count)
         LOAD(  REG1,   AT(DSTK, SZ))       /* a = src                 */
@@ -345,44 +385,3 @@ LABEL(string_equal.byte)
 LABEL(string_equal.false)
         ZERO(  DTOP)
 FUNC_END(string_equal)
-
-
-/*
- * atomic1+! ( addr -- n' ) atomically increment cell at addr by 1.
- * return cell old value.
- */
-FUNC_START(atomic_one_plus_store)
-        ldaxr  REG1,   AT(DTOP);               /* a = dtop[0] atomic fetch   */
-        ADDI(  REG1,   1,      REG2)           /* b = a + 1                  */
-        stlxr  REG3w,  REG2,   AT(DTOP);       /* try atomic store           */
-        JNZ(   REG3w,  FUNC(atomic_one_plus_store))
-        MOVE(  REG1,   DTOP)
-FUNC_END(atomic_one_plus_store)
-
-
-/*
- * atomic+! ( n addr -- n' ) atomically increment cell at addr by n.
- * return cell old value.
- */
-FUNC_START(atomic_plus_store)
-        DPOP(  REG0)                           /* @ = n = delta              */
-        MOVE(  DTOP,   REG1)                   /* a = addr                   */
-LABEL(atomic_plus_store.retry)
-        ldaxr  DTOP,   AT(REG1);               /* dtop = addr[0] atomic fetch*/
-        ADD4(  DTOP,   REG0,0, REG2)           /* b = dtop + 1               */
-        stlxr  REG3w,  REG2,   AT(REG1);       /* try atomic store           */
-        JNZ(   REG3w,  TO(atomic_plus_store.retry))
-FUNC_END(atomic_plus_store)
-
-
-
-FUNC_START(atomic_one_plus_store_simd)
-        MOVI(  1,      REG1)
-        .4byte 0xf8210294; /* ldadd  REG1,   DTOP, AT(DTOP); */
-FUNC_END(atomic_one_plus_store_simd)
-
-
-FUNC_START(atomic_plus_store_simd)
-        DPOP(  REG1)
-        .4byte 0xf8210294; /* ldadd  REG1,   DTOP, AT(DTOP); */
-FUNC_END(atomic_plus_store_simd)

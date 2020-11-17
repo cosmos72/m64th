@@ -85,9 +85,10 @@
     X(17, "string-find-blank", string_find_blank) /* ( c-addr u -- u' )                     */     \
     X(16, "string-find-char", string_find_char)   /* ( c-addr u -- u' )                     */     \
     X(20, "string-find-nonblank", string_find_nonblank) /* ( c-addr u -- u' )               */     \
-    X(3, "sub", sub)                                    /* equivalent to: swap -            */     \
-    X(5, "trail", trail)                                /* equivalent to: over swap         */     \
-    /*                              */ /*                                               */         \
+    X(12, "string>lower", string_to_lower) /* ( c-addr-src c-addr-dst u -- c-addr-dst u )   */     \
+    X(3, "sub", sub)                       /* equivalent to: swap -                         */     \
+    X(5, "trail", trail)                   /* equivalent to: over swap                      */     \
+    /*                              */     /*                                               */     \
     X(5, ">byte", to_byte)                                                                         \
     X(5, ">char", to_char)                                                                         \
     X(6, ">short", to_short)                                                                       \

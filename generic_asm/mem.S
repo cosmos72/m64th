@@ -315,8 +315,8 @@ FUNC_RAWEND(minus_two_roll)
 /* ----------------------- string ---------------------- */
 
 /**
- * string-ci=  ( c-addr1 c-addr2 u -- c-addr1 c-addr2 u t|f ) m4th-user
- * compare two strings, ignoring case
+ * string-ci=  ( c-addr1 c-addr2 u -- c-addr1 c-addr2 u t|f )
+ * m4th-user: compare two strings, ignoring case
  */
 FUNC_START(string_ci_equal)
         LOAD(  REG2,   AT(DSTK))       /* b = addr2 */
@@ -391,7 +391,8 @@ FUNC_END(string_ci_equal)
 
 
 /**
- * string-find-blank ( c-addr u -- u' ) return index of first blank (i.e. char <= 32) in string.
+ * string-find-blank ( c-addr u -- u' )
+ * m4th-user: return index of first blank (i.e. char <= 32) in string.
  * return string length if not found.
  */
 FUNC_START(string_find_blank)
@@ -409,7 +410,8 @@ FUNC_END(string_find_blank)
 
 
 /**
- * string-find-char ( c-addr u ch -- u' ) return index of first ch in string.
+ * string-find-char ( c-addr u ch -- u' )
+ * m4th-user: return index of first ch in string.
  * return string length if not found.
  */
 FUNC_START(string_find_char)
@@ -426,7 +428,8 @@ LABEL(string_find_char.found)
 FUNC_END(string_find_char)
 
 /*
- * string-find-nonblank ( c-addr u -- u' ) get index of first non-blank (i.e. char > 32) in string.
+ * string-find-nonblank ( c-addr u -- u' )
+ * m4th-user: get index of first non-blank (i.e. char > 32) in string.
  * return string length if not found.
  */
 FUNC_START(string_find_nonblank)
@@ -441,3 +444,66 @@ LABEL(string_find_nonblank.loop)
 LABEL(string_find_nonblank.found)
         MOVE(  REG1,   DTOP)
 FUNC_END(string_find_nonblank)
+
+
+/*
+ * string>lower ( c-addr-src c-addr-dst u -- c-addr-dst u )
+ * m4th-user: copy a string converting it to lower case
+ */
+FUNC_START(string_to_lower)
+        LOAD(  REG2,   AT(DSTK))           /* b = dst = c-addr-dst   */
+        LOAD(  REG1,   AT(DSTK, SZ))       /* a = src = c-addr-src   */
+        STOR(  DTOP,   AT(DSTK))           /* ( c-addr-src u u     ) */
+        STOR(  REG2,   AT(DSTK, SZ))       /* ( c-addr-dst u u     ) */
+        JZ(    DTOP,            TO(string_to_lower.done))
+        ADD2(  DTOP,   REG2)               /* b = dst + u            */
+        ADD2(  DTOP,   REG1)               /* a = src + u            */
+        NEG1(  DTOP)                       /* n = -u                 */
+        JA(    DTOP,   IMM(-SZ),TO(string_to_lower.byte))   /* < SZ bytes         */
+#ifdef __x86_64__
+#define M4FSTRING_TO_LOWER_USE_REG0
+        movabs IMM(0x2020202020202020), REG0;
+#endif
+LABEL(string_to_lower.cell)
+        /* copy SZ bytes at time */
+#ifdef M4FSTRING_TO_LOWER_USE_REG0
+        MOVE(  REG0,   REG4)               /* d = mask               */
+        LOAD(  REG3,   AT(REG1, DTOP, 1))  /* c = src[i..i+7]        */
+        ORR2(  REG3,   REG4)               /* d = src[i..i+7] | mask */
+#elif defined(ORR3)
+        LOAD(  REG3,   AT(REG1, DTOP, 1))  /* c = src[i..i+7]        */
+        ORR3(  REG3,   IMM(0x2020202020202020),REG4) /* d = src[i..i+7] | mask */
+#else
+#error unsupported architecture, please fix 'string_to_lower'
+#endif
+        JNE(   REG3,   REG4,    TO(string_to_lower.byte))
+        STOR(  REG3,   AT(REG2, DTOP, 1))  /* dst[i..i+7] = src[i..i+7] */
+        ADD2(IMM(SZ),  DTOP)               /* n += SZ                */
+        JAE(   DTOP,   IMM(-SZ),TO(string_to_lower.cell))
+        JZ(    DTOP,            TO(string_to_lower.done))
+
+LABEL(string_to_lower.byte)
+        /* copy 1 byte at time */
+        MOVI(  0x20,   REG4)               /* d = mask               */
+        LD_ub( REG3,   AT(REG1, DTOP, 1))  /* c = ch = src[i]        */
+        ORR2(  REG3,   REG4)               /* d = ch | mask          */
+        JNE(   REG3,   REG4,    TO(string_to_lower.slow))
+        STORb( REG3,   AT(REG2, DTOP, 1))  /* dst[i] = ch            */
+        INC1(  DTOP)                       /* n++                    */
+        JNZ(   DTOP,            TO(string_to_lower.byte))
+        JUMP(                   TO(string_to_lower.done))
+
+LABEL(string_to_lower.slow)
+        /* lowercase and copy 1 byte at time */
+        LD_ub( REG3,   AT(REG1, DTOP, 1))  /* c = ch = src[i]        */
+        JB(    REG3,   IMM('A'),TO(string_to_lower.copy))
+        JA(    REG3,   IMM('Z'),TO(string_to_lower.copy))
+        ORR2(IMM(0x20),REG3)               /* c = lower(ch)          */
+LABEL(string_to_lower.copy)
+        STORb( REG3,   AT(REG2, DTOP, 1))  /* dst[i] = lower(ch)     */
+        INC1(  DTOP)                       /* n++                    */
+        JNZ(   DTOP,            TO(string_to_lower.slow))
+
+LABEL(string_to_lower.done)
+        DPOP___DTOP()                      /* ( c-addr-dst u       ) */
+FUNC_END(string_to_lower)

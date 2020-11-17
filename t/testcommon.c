@@ -57,7 +57,7 @@ void m4countedstack_print(const m4countedstack *src, FILE *out) {
         if (x > -1024 && x < 1024) {
             fprintf(out, "%ld ", x);
         } else {
-            fprintf(out, "0x%lx ", x);
+            fprintf(out, "$%lx ", x);
         }
     }
 }

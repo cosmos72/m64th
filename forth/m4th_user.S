@@ -528,23 +528,28 @@ WORD(to_uint,          to_int,         DSTACK(1,1), RSTACK(0,0), WORD_PURE)
  * string-find-blank ( c-addr u -- u' ) return index of first blank (i.e. char <= 32) in string.
  * return string length if not found.
  */
-WORD(string_find_blank, to_uint,      DSTACK(2,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(string_find_blank,    to_uint,            DSTACK(2,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 /**
  * string-find-char ( c-addr u ch -- u' ) return index of first ch in string.
  * return string length if not found.
  */
-WORD(string_find_char,string_find_blank,DSTACK(3,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(string_find_char,     string_find_blank,  DSTACK(3,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 /**
  * string-find-nonblank ( c-addr u -- u' ) return index of first non-blank (i.e. char > 32) in string.
  * return string length if not found.
  */
-WORD(string_find_nonblank, string_find_char, DSTACK(2,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(string_find_nonblank, string_find_char,   DSTACK(2,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+/*
+ * string>lower ( c-addr-src c-addr-dst u -- c-addr-dst u )
+ * copy a string converting it to lower case
+ */
+WORD(string_to_lower,  string_find_nonblank,   DSTACK(3,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH | M4FLAG_MEM_STORE)
 /**
  * string>number ( c-addr u -- x t|f )
  * convert string to number, recognizing base prefixes # $ % and sign prefix '-'
  * Also convert any single-quoted char 'x' to ASCII code of x
  */
-WORD_START(string_to_number, string_find_nonblank)
+WORD_START(string_to_number, string_to_lower)
     WORD_DSTACK(2,4)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()

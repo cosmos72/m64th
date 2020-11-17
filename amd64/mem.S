@@ -32,6 +32,28 @@ FUNC_START(div_string)
 FUNC_END(div_string)
 
 
+/*
+ * atomic1+! ( addr -- n' ) atomically increment cell at addr by 1.
+ * return cell old value.
+ */
+FUNC_START(atomic_one_plus_store)
+        MOVE(  DTOP,   REG1)
+        MOVI(  1,      DTOP)
+        lock xadd DTOP,AT(REG1);
+FUNC_END(atomic_one_plus_store)
+
+
+/*
+ * atomic+! ( n addr -- n' ) atomically increment cell at addr by n.
+ * return cell old value.
+ */
+FUNC_START(atomic_plus_store)
+        MOVE(  DTOP,   REG1)
+        DPOP___DTOP()
+        lock xadd DTOP,AT(REG1);
+FUNC_END(atomic_plus_store)
+
+
 #define M4FCMOVE /* defined near cmove/count to encode a shorter jump */
 /* cmove ( src_addr dst_addr u -- ) 'string' word set */
 FUNC_START(cmove)
@@ -229,14 +251,16 @@ FUNC_START(fill)
 FUNC_END(fill)
 
 
-FUNC_START(string_equal)   /* string=  ( addr1 addr2 u -- addr1 addr2 u t|f ) m4th-user */
-        LOAD(  REG2,   AT(DSTK))       /* b = addr2 */
-        LOAD(  REG1,   AT(DSTK, SZ))   /* a = addr1 */
+/* string= m4th-user: compare two strings */
+/* ( c-addr1 c-addr2 u -- c-addr1 c-addr2 u t|f ) */
+FUNC_START(string_equal)
+        LOAD(  REG2,   AT(DSTK))       /* b = c-addr2 */
+        LOAD(  REG1,   AT(DSTK, SZ))   /* a = c-addr1 */
         DPUSH__DTOP()
-        JEQ(   REG1,   REG2,    TO(string_equal.true))   /* addr1 == addr2 */
-        JZ(    DTOP,            TO(string_equal.true))   /* u == 0         */
+        JEQ(   REG1,   REG2,    TO(string_equal.true))   /* c-addr1 == c-addr2 */
+        JZ(    DTOP,            TO(string_equal.true))   /* u == 0             */
         ZERO(  REG4)
-        JB(    DTOP,   IMM(SZ), TO(string_equal.byte))   /* < SZ bytes     */
+        JB(    DTOP,   IMM(SZ), TO(string_equal.byte))   /* < SZ bytes         */
         SUB2(IMM(SZ),  DTOP)
 LABEL(string_equal.cell)
         LOAD(  REG3,   AT(REG1, REG4, 1))
@@ -260,25 +284,3 @@ LABEL(string_equal.byte)
 LABEL(string_equal.false)
         ZERO(  DTOP)
 FUNC_END(string_equal)
-
-
-/*
- * atomic1+! ( addr -- n' ) atomically increment cell at addr by 1.
- * return cell old value.
- */
-FUNC_START(atomic_one_plus_store)
-        MOVI(  1,      REG1)
-        lock xadd REG1,AT(DTOP);
-        MOVE(  REG1,   DTOP)
-FUNC_END(atomic_one_plus_store)
-
-
-/*
- * atomic+! ( n addr -- n' ) atomically increment cell at addr by n.
- * return cell old value.
- */
-FUNC_START(atomic_plus_store)
-        DPOP(  REG1)
-        lock xadd REG1,AT(DTOP);
-        MOVE(  REG1,   DTOP)
-FUNC_END(atomic_plus_store)
