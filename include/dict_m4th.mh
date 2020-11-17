@@ -332,6 +332,7 @@
     X(10, "always-eof", always_eof)                                                                \
     /* compile-string, ( c-addr u -- ) runtime effect: ( -- c-addr' u ) */                         \
     X(15, "compile-string,", compile_string_comma)                                                 \
+    X(14, "countedtokens,", countedtokens_comma) /* ( counted-tokens -- ) */                       \
     /*   ( io ch -- c-addr u ) get string before ch in iobuf (no refilling) */                     \
     X(14, "ibuf-find-char", ibuf_find_char)                                                        \
     /*   ( io -- c-addr u ) find non-blank string in iobuf (no refilling) */                       \

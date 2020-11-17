@@ -65,8 +65,23 @@ WORD_START(compile_string_comma, always_eof)
 WORD_END(compile_string_comma)
 /* count-tokens ( counted-tokens -- tok-addr u ) */
 WORD(count_tokens,     compile_string_comma, DSTACK(1,2), RSTACK(0,0), WORD_IMPURE|M4FLAG_MEM_FETCH)
+/**
+ * compile u tokens. the address counted-tokens contains
+ * the number u - which occupies 1 token - followed by u tokens
+ * ( counted-tokens -- )
+ */
+WORD_START(countedtokens_comma,   count_tokens)
+    WORD_DSTACK(1,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        count_tokens, CALL(tokens_comma), exit
+    )
+WORD_END(countedtokens_comma)
 /* flags>consumed-tokens ( flags -- u ) get # consumed tokens from flags */
-WORD(flags_to_consumed_tokens, count_tokens, DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD(flags_to_consumed_tokens, countedtokens_comma, DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 /**
  * ibuf-find-char ( io ch -- c-addr u ) find ch in iobuf and return string before it.
  * if ch is present, consume it. does not refill.

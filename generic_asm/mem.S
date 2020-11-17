@@ -88,10 +88,9 @@ FUNC_END(c_store)
 
 /* count    ( c-addr -- c-addr' u ) forth-core */
 FUNC_START(count)
-        LD_ub( REG1,   AT(DTOP))
-        INC1(  DTOP)
-        DPUSH__DTOP()
-        MOVE(  REG1,   DTOP)
+        ADDI(  DTOP,   1,      REG1)                  /* a = c-addr'                 */
+        LD_ut( DTOP,   AT(DTOP))                      /* dtop = u                    */
+        DPUSH( REG1)                                  /* ( c-addr' u               ) */
 FUNC_END(count)
 
 

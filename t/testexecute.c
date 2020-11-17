@@ -630,13 +630,6 @@ static m4testexecute testexecute_d[] = {
      {{1, {7}}, {}},
      {}},
     {"(ip)", {m4_ip_, m4bye}, {{}, {}}, {{1, {-1 /* fixed by m4testexecute_fix() */}}, {}}, {}},
-#if 0 /* currently broken */
-    {"(ip>data>addr)",
-     {m4_ip_to_data_addr_, m4bye},
-     {{}, {}},
-     {{1, {-1 /* fixed by m4testexecute_fix() */}}, {}},
-     {}},
-#endif
     {"(lit-string)",
      {m4_ip_, LIT_STRING(3, "abc"), m4minus_rot, m4minus, m4bye},
      {{}, {}},
@@ -664,6 +657,7 @@ static m4testexecute testexecute_d[] = {
      {{3, {19, -1 /*clobbered*/, 1}}, {1, {0xfed4}}},
      {}},
     /* ----------------------------- (optimize-literal) --------------------- */
+    /* these also test (ip>data) and (ip>data>addr) */
     {"-3 (optimize-literal)",
      {CALL(_optimize_literal_), m4bye},
      {{1, {-3}}, {}},
@@ -826,13 +820,13 @@ static m4testexecute testexecute_e[] = {
      {}},
     {"{2drop} (optimize-1token)",
      {m4dp0, CALL(_optimize_1token_), /* ( 2drop counted-tokens )                     */
-      m4count_tokens, CALL(tokens_comma), m4bye},
+      CALL(countedtokens_comma), m4bye},
      {{1, {m4two_drop}}, {}},
      {{1, {m4two_drop}}, {}},
      {2, {m4drop, m4drop}}},
     {"{false} (optimize-1token)",
-     {m4dp0, CALL(_optimize_1token_),             /* ( false counted-tokens ) */
-      m4count_tokens, CALL(tokens_comma), m4bye}, /* ( false                ) */
+     {m4dp0, CALL(_optimize_1token_),    /* ( false counted-tokens ) */
+      CALL(countedtokens_comma), m4bye}, /* ( false                ) */
      {{1, {m4false}}, {}},
      {{1, {m4false}}, {}},
      {1, {m4zero}}},
