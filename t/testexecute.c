@@ -813,15 +813,14 @@ static m4testexecute testexecute_e[] = {
      {{2, {M4two | (M4pick << 16), (m4cell)&WORD_SYM(_optimize_2token_)}}, {}},
      {{3, {M4two | (M4pick << 16), 1 | (M4hop << 16), ttrue}}, {}},
      {}},
-#if 0  /* currently broken */
     /* ---------------------- optimize* ---------------------- */
     {"{noop} (optimize-1token)",
-     {m4dp0,                   /* ( noop &noop          )                     */
-      CALL(_optimize_1token_), /* ( noop counted-tokens )                     */
-      m4nip, m4token_fetch},   /* ( 0                   ) i.e. noop optimizes to zero tokens */
+     {m4dp0, CALL(_optimize_1token_), /* ( noop counted-tokens )                  */
+      m4nip, m4token_fetch, m4bye},   /* ( 0 ) i.e. noop optimizes to zero tokens */
      {{1, {m4noop}}, {}},
      {{1, {0}}, {}},
-     {0, {}}},
+     {}},
+#if 0  /* currently broken */
     {"{2drop} (optimize-1token)",
      {m4here, m4dup, m4_lit_comma_, m4two_drop, /* ( here here   ) original:  2drop     */
       m4false, CALL(_optimize_1token_),         /* ( src' dst' n ) optimized: drop drop */

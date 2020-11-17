@@ -688,9 +688,9 @@ WORD_START(_optimize_1token_, _while0_)
     WORD_DATA_N_AUTO(_optimize_1token_)
     WORD_CODE_START(_optimize_1token_)
       WORD_CODE_TOKENS(/* generated from file m4th_impl.forth - see source and comments there */
-        /*26*/ _ip_to_data_, two_minus, bounds, rot, token_fetch, minus_rot,
-        _do_, T(15), dup, i, token_fetch_1, equal, _if_, T(5), drop, i, unloop, exit,
-        then, four, tokens, _plus_loop_, T(-15), drop, zero, exit
+        /*28*/ _ip_to_data_, one_token, minus, bounds, rot, token_fetch, minus_rot,
+        _do_, T(16), dup, i, token_fetch, equal, _if_, T(6), drop, i, token_plus, unloop, exit,
+        then, four, tokens, _plus_loop_, T(-16), drop, zero, exit
       )
     WORD_CODE_END(_optimize_1token_)
     WORD_DATA_START(_optimize_1token_)
