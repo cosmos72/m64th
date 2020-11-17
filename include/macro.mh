@@ -41,6 +41,12 @@
                 33, 32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14,    \
                 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1)
 
+#define FIRST_ARG_(a, ...) a
+#define FIRST_ARG(a, ...) FIRST_ARG_(a)
+
+#define SKIP_FIRST_ARG_(a, ...) __VA_ARGS__
+#define SKIP_FIRST_ARG(...) SKIP_FIRST_ARG_(__VA_ARGS__)
+
 #define SECOND_ARG_(a, b, ...) b
 #define SECOND_ARG(a, b, ...) SECOND_ARG_(a, b)
 

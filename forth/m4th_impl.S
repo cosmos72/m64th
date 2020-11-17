@@ -672,155 +672,40 @@ WORD_START(_while0_, _while_)
         cs_swap, exit                       /* ( while-sys begin-sys )         */
     )
 WORD_END(_while0_)
-/* optimize single tokens being compiled. return t if something was optimized */
-/* ( src dst src-end -- src' dst' t|f ) */
-WORD_START(_optimize_1_, _while0_)
-    WORD_DSTACK(3,3)
-    WORD_RSTACK(0,0)
-    WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
-    WORD_FLAGS(M4FLAG_INLINE)
-    WORD_CODE(
-        /* false 2>r                                   ( src dst      ) (R: src-end f   )
-         * begin                                       ( src dst      ) (R: src-end t|f )
-         *    over r2nd@ <                             ( src dst t|f  ) (R: src-end t|f )
-         * while                                       ( src dst      ) (R: src-end t|f )
-         *    false (optimize-1token)                  ( src' dst' n  ) (R: src-end t|f )
-         *    0>=                                      ( src dst t|f  ) (R: src-end t|f )
-         *    dup r@ or r!                             ( src dst t|f  ) (R: src-end t|f')
-         *    invert 1token and                        ( src dst SZt|0) (R: src-end t|f )
-         *    cmove/count                              ( src' dst'    ) (R: src-end t|f )
-         * repeat                                      ( src' dst'    ) (R: src-end t|f )
-         * r> r>drop             ( optimized code is at dst...dst' )
-         */
-        false, two_to_r,
-        begin,
-            over, r2nd_fetch, less,
-        _while_, T(13+nCALLt),
-            false, CALL(_optimize_1token_),
-            zero_more_equal,
-            dup, r_fetch, or, r_store,
-            invert, one_token, and,
-            cmove_count,
-        _repeat_, T(-18-nCALLt),
-        r_from, r_from_drop, exit
-    )
-WORD_END(_optimize_1_)
-/*
- * (optimize-1token) ( src-addr dst-addr direction-flag -- src-addr' dst-addr' n )
- * fetch a single token from src-addr, and store at dst-addr an optimized token sequence
- * equivalent to it.
+/**
+ * find an optimized sequence to replace a single token being compiled.
+ * ( tok-addr -- counted-tokens | 0 )
  *
- * if direction-flag = 0, dst-addr is post-incremented after each stored token,
- * otherwise (if direction-flag <> 0), dst-addr is pre-decremented after each stored token.
- *
- * n is the length of the optimized sequence, in tokens.
- * if no optimized sequence was found, returns n = -1 and does not copy any token,
- * thus src-addr and dst-addr are returned verbatim.
+ * if no optimized sequence was found, returns 0
  */
-WORD_START(_optimize_1token_, _optimize_1_)
-    WORD_DSTACK(3,3)
+WORD_START(_optimize_1token_, _while0_)
+    WORD_DSTACK(1,-1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_DATA_TOKENS)
-    WORD_CODE_AND_DATA(
-      _optimize_1token_,
-      WORD_CODE_TOKENS(
-        /* (ip>data) rot >r 2>r                        ( src dst                 ) (R: dir data u        )
-         * over token@                                 ( src dst tok             ) (R: dir data u        )
-         * 2r> 1token - bounds                         ( src dst tok data-end data ) (R: dir             )
-         * do                                          ( src dst tok             ) (R: dir data-end data )
-         *    dup i token+ token@ =                    ( src dst tok t|f         ) (R: dir data-end data )
-         *    if                                       ( src dst tok             ) (R: dir data-end data )
-         *       drop i token+ token+                  ( src dst opt-toks        ) (R: dir data-end data )
-         *       i token@ unloop r> swap >r            ( src dst opt-toks dir    ) (R: u )
-         *       if                                    ( src dst opt-toks        ) (R: u )
-         *          r@ tokens +                        ( src dst opt-toks'       ) (R: u )
-         *          swap r@ tokens                     ( src opt-toks dst u'     ) (R: u )
-         *          cmove/count                        ( src opt-toks' dst'      ) (R: u )
-         *       else                                  ( src dst opt-toks        ) (R: u )
-         *          swap r@ tokens                     ( src opt-toks dst u'     ) (R: u )
-         *          -cmove/count                       ( src opt-toks' dst'      ) (R: u )
-         *       then                                  ( src opt-toks' dst'      ) (R: u )
-         *       nip                                   ( src dst                 ) (R: u )
-         *       swap token+ swap                      ( src' dst                ) (R: u )
-         *       r> exit                               ( src' dst u              )
-         *    then                                     ( src dst tok             ) (R: dir data-end data )
-         *    4 tokens                                 ( src dst tok 4*SZt       ) (R: dir data-end data )
-         * +loop                                       ( src dst tok             ) (R: dir               )
-         *              \ no optimization available, just return -1
-         * drop r> drop -1                             ( src dst -1              )
-         */
-#if 0 /* do not optimize */
-        drop, minus_one, exit,                            /* ( src dst -1          ) */
-#endif
-        _ip_to_data_, rot, to_r, two_to_r,
-        over, token_fetch,
-        two_r_from, one_token, minus, bounds,
-        do,
-            dup, i, token_plus, token_fetch, equal,
-            _if_, T(33),
-                drop, i, token_plus, token_plus,
-                i, token_fetch, unloop, r_from, swap, to_r,
-                _if_, T(9),
-                    r_fetch, tokens, plus,
-                    swap, r_fetch, tokens,
-                    minus_cmove_count,
-                _else_, T(5),
-                    swap, r_fetch, tokens,
-                    cmove_count,
-                then,
-                nip,
-                swap, token_plus, swap,
-                r_from, exit,
-            then,
-            four, tokens,
-        _plus_loop_, T(-44),
-        drop, r_from_drop, minus_one, exit
-      ),
-      WORD_DATA_TOKENS(
-#define OPT1_TO_ASM_TOKENS(...)                                                                    \
-    T(COUNT_ARGS(__VA_ARGS__) - 1), FIRST_3_ARGS(__VA_ARGS__, noop, noop),
-
-        OPT1_RULES(OPT1_TO_ASM_TOKENS) _missing_
+    WORD_CODE_N_AUTO(_optimize_1token_)
+    WORD_DATA_N_AUTO(_optimize_1token_)
+    WORD_CODE_START(_optimize_1token_)
+      WORD_CODE_TOKENS(/* generated from file m4th_impl.forth - see source and comments there */
+        /*26*/ _ip_to_data_, two_minus, bounds, rot, token_fetch, minus_rot,
+        _do_, T(15), dup, i, token_fetch_1, equal, _if_, T(5), drop, i, unloop, exit,
+        then, four, tokens, _plus_loop_, T(-15), drop, zero, exit
       )
-    )
+    WORD_CODE_END(_optimize_1token_)
+    WORD_DATA_START(_optimize_1token_)
+#define OPT1_TO_ASM_TOKENS(...)                                                                    \
+        WRAP_ARGS(M4TOKEN_VAL_COMMA,                                                               \
+              FIRST_ARG(__VA_ARGS__),                                                              \
+              T(COUNT_ARGS(__VA_ARGS__) - 1),                                                      \
+              SKIP_FIRST_ARG(FIRST_3_ARGS(__VA_ARGS__, _missing_, _missing_, _missing_)))
+
+        CAT3(.,SZt,byte) OPT1_RULES(OPT1_TO_ASM_TOKENS) M4TOKEN_VAL(_missing_);
+
+    WORD_DATA_END(_optimize_1token_)
 WORD_END(_optimize_1token_)
-/* optimize tokens pairs being compiled. return t if something was optimized */
-/* ( src dst src-end -- src' dst' t|f ) */
-WORD_START(_optimize_2_, _optimize_1token_)
-    WORD_DSTACK(3,2)
-    WORD_RSTACK(0,0)
-    WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
-    WORD_FLAGS(M4FLAG_INLINE)
-    WORD_CODE(
-        /* false 2>r                                   ( src dst       ) (R: src-end f   )
-         * begin                                       ( src dst       ) (R: src-end t|f )
-         *    over token+ r2nd@ <                      ( src dst t|f   ) (R: src-end t|f )
-         * while                                       ( src dst       ) (R: src-end t|f )
-         *    (optimize-2token)                        ( src' dst' t|f ) (R: src-end t|f )
-         *    r@ or r!                                 ( src dst       ) (R: src-end t|f')
-         * repeat                                      ( src dst       ) (R: src-end t|f )
-         * over r2nd@ sub                              ( src dst u     ) (R: src-end t|f )
-         * cmove/count                                 ( src' dst'     ) (R: src-end t|f )
-         * r> r>drop                                   ( src' dst' t|f )
-         */
-        false, two_to_r,
-        begin,
-            over, token_plus, r2nd_fetch, less,
-        _while_, T(6+nCALLt),
-            CALL(_optimize_2token_),
-            r_fetch, or, r_store,
-        _repeat_, T(-12-nCALLt),
-        over, r2nd_fetch, sub,
-        cmove_count,
-        r_from, r_from_drop, exit
-    )
-WORD_END(_optimize_2_)
 /* ( src-addr dst-addr -- src-addr' dst-addr' t|f ) optimize token pairs being compiled */
-WORD_START(_optimize_2token_, _optimize_2_)
+WORD_START(_optimize_2token_, _optimize_1token_)
     WORD_DSTACK(2,3)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -829,13 +714,8 @@ WORD_START(_optimize_2token_, _optimize_2_)
     WORD_CODE_N_AUTO(_optimize_2token_)
     WORD_DATA_N_AUTO(_optimize_2token_)
     WORD_CODE_START(_optimize_2token_)
-      WORD_CODE_TOKENS( /* generated from file m4th_impl.forth - see source and comments there */
-        /*54*/
-        _ip_to_data_addr_, to_r, over, token_fetch, hop, token_fetch_1, eight, two_times, lshift, or,
-        r_from, swap, CALL(hashmap_find_int), zero_equal, _if_, T(6), two_drop, two, cmove_count, false, exit,
-        then, nip, dup, eight, two_times, rshift, swap, to_token, zero, _q_do_, T(11), tuck, to_token, over,
-        short_store, two_plus, swap, eight, two_times, rshift, _loop_, T(-11),
-        drop, swap, two_plus, two_plus, swap, true, exit
+      WORD_CODE_TOKENS(
+          exit
       )
     WORD_CODE_END(_optimize_2token_)
     WORD_DATA_START(_optimize_2token_)
@@ -856,9 +736,10 @@ WORD_START(_optimize_3token_, _optimize_2token_)
     WORD_CODE_N_AUTO(_optimize_3token_)
     WORD_DATA_N_AUTO(_optimize_3token_)
     WORD_CODE_START(_optimize_3token_)
-      WORD_CODE_TOKENS(
-          /* TODO */
-          exit
+      WORD_CODE_TOKENS(/* generated from file m4th_impl.forth - see source and comments there */
+        /*26*/ _ip_to_data_, two_minus, bounds, rot, ushort_fetch, minus_rot,
+        _do_, T(15), dup, i, ushort_fetch_1, equal, _if_, T(5), drop, i, unloop, exit,
+        then, four, two_times, _plus_loop_, T(-15), drop, zero, exit
       )
     WORD_CODE_END(_optimize_3token_)
     WORD_DATA_START(_optimize_3token_)
@@ -1078,11 +959,9 @@ WORD_START(_optimize_, _inline_)
         two_to_r,
         begin,
             two_r_fetch, dup,
-            CALL(_optimize_1_),
             flip, drop,
             r_fetch, swap,
             r2nd_fetch, swap,
-            CALL(_optimize_2_),
             flip, drop,
             minus_rot, or, swap,
             r_store,

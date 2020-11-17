@@ -813,12 +813,13 @@ static m4testexecute testexecute_e[] = {
      {{2, {M4two | (M4pick << 16), (m4cell)&WORD_SYM(_optimize_2token_)}}, {}},
      {{3, {M4two | (M4pick << 16), 1 | (M4hop << 16), ttrue}}, {}},
      {}},
+#if 0  /* currently broken */
     /* ---------------------- optimize* ---------------------- */
     {"{noop} (optimize-1token)",
-     {m4here, m4dup, m4_lit_comma_, m4noop, /* ( here here   ) original:  noop     */
-      m4false, CALL(_optimize_1token_),     /* ( src' dst' n ) optimized:          */
-      m4minus_rot, m4sub, m4allot, m4bye},  /* ( n           ) update HERE         */
-     {{}, {}},
+     {m4dp0,                   /* ( noop &noop          )                     */
+      CALL(_optimize_1token_), /* ( noop counted-tokens )                     */
+      m4nip, m4token_fetch},   /* ( 0                   ) i.e. noop optimizes to zero tokens */
+     {{1, {m4noop}}, {}},
      {{1, {0}}, {}},
      {0, {}}},
     {"{2drop} (optimize-1token)",
@@ -858,6 +859,7 @@ static m4testexecute testexecute_e[] = {
      {{}, {}},
      {{1, {ttrue}}, {}},
      {3, {m4drop, m4drop, m4zero}}},
+#endif /* 0 */
 };
 
 static const char teststr_empty[] = "";

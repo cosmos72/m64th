@@ -28,6 +28,7 @@
 #define M4TOKEN_SYM(name) m4##name
 #define M4TOKEN_SYM_COMMA(name) M4TOKEN_SYM(name),
 #define M4TOKEN_VAL(name) M4##name
+#define M4TOKEN_VAL_COMMA(name) M4TOKEN_VAL(name),
 
 /* assembler macro: insert an int as wide as m4token in a sequence of m4token */
 #define m4T(x) ((x)&0xFFFF)

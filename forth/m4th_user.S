@@ -66,10 +66,10 @@ WORD(eight_plus,       eight_times,    DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(eight_minus,      eight_plus,     DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(eight_div,        eight_minus,    DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(eight_sm_div,     eight_div,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(atomic_plus_store,eight_sm_div,   DSTACK(2,1), RSTACK(0,0), M4FLAG_MEM_FETCH|M4FLAG_MEM_STORE)
+WORD(atomic_plus_store,eight_sm_div,   DSTACK(2,1), RSTACK(0,0), WORD_IMPURE|M4FLAG_MEM_FETCH|M4FLAG_MEM_STORE)
 WORD(atomic_one_plus_store,     atomic_plus_store,
-                                       DSTACK(1,1), RSTACK(0,0), M4FLAG_MEM_FETCH|M4FLAG_MEM_STORE)
-WORD(bounds,    atomic_one_plus_store, DSTACK(2,2), RSTACK(0,0), M4FLAG_PURE)
+                                       DSTACK(1,1), RSTACK(0,0), WORD_IMPURE|M4FLAG_MEM_FETCH|M4FLAG_MEM_STORE)
+WORD(bounds,    atomic_one_plus_store, DSTACK(2,2), RSTACK(0,0), WORD_PURE)
 WORD_START(break,      bounds)
     WORD_STACK_NONE()  /* stack effect if not jumping */
     WORD_DSTACK(0,0)   /* stack effect if jumping */

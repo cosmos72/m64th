@@ -20,6 +20,22 @@ also m4th-core
 also m4th-impl definitions
 
 
+\ find an optimized sequence to replace a single token being compiled.
+: (optimize-1token) \ ( tok-addr -- counted-tokens | 0 )
+   (ip>data) 1token - bounds                  \ ( tok-addr data-end data  )
+   rot token@ -rot                            \ ( tok      data-end data  )
+   do                                         \ ( tok                     ) (R: data-end data )
+      dup i token[1] =                        \ ( tok t|f                 ) (R: data-end data )
+      if                                      \ ( tok                     ) (R: data-end data )
+         drop i unloop                        \ ( counted-tokens          )
+         exit                                 \ ( counted-tokens          )
+      then                                    \ ( tok                     ) (R: data-end data )
+      4 tokens                                \ ( tok 4*SZt               ) (R: data-end data )
+   +loop                                      \ ( tok                     )
+   drop 0      \ no optimization found        \ ( 0                       )
+;
+
+
 \ optimize single tokens being compiled. return t if something was optimized
 : (optimize-1) \ ( src dst src-end -- src' dst' t|f )
    false 2>r                                  \ ( src dst      ) (R: src-end f   )

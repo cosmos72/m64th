@@ -470,7 +470,7 @@ LABEL(string_to_lower.cell)
         MOVE(  REG0,   REG4)               /* d = mask               */
         LOAD(  REG3,   AT(REG1, DTOP, 1))  /* c = src[i..i+7]        */
         ORR2(  REG3,   REG4)               /* d = src[i..i+7] | mask */
-#elif defined(ORR3)
+#elif defined(ORR3) && SZ == 8
         LOAD(  REG3,   AT(REG1, DTOP, 1))  /* c = src[i..i+7]        */
         ORR3(  REG3,   IMM(0x2020202020202020),REG4) /* d = src[i..i+7] | mask */
 #else
