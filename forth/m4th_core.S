@@ -63,8 +63,10 @@ WORD_START(compile_string_comma, always_eof)
         cmove, exit
     )
 WORD_END(compile_string_comma)
+/* count-tokens ( counted-tokens -- tok-addr u ) */
+WORD(count_tokens,     compile_string_comma, DSTACK(1,2), RSTACK(0,0), WORD_IMPURE|M4FLAG_MEM_FETCH)
 /* flags>consumed-tokens ( flags -- u ) get # consumed tokens from flags */
-WORD(flags_to_consumed_tokens, compile_string_comma, DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD(flags_to_consumed_tokens, count_tokens, DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 /**
  * ibuf-find-char ( io ch -- c-addr u ) find ch in iobuf and return string before it.
  * if ch is present, consume it. does not refill.
@@ -588,7 +590,18 @@ DEF_WORD_FETCH_TYP(token,        token_store)
 WORD(token_align,      token_fetch_8,  DSTACK(0,0), RSTACK(0,0), WORD_IMPURE)
 WORD(token_aligned,    token_align,    DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(token_to_name,    token_aligned,  DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
-WORD_START(user_var,   token_to_name)
+WORD(token_comma,      token_to_name,  DSTACK(1,0), RSTACK(0,0), WORD_IMPURE)
+WORD_START(tokens_comma,   token_comma)
+    WORD_DSTACK(2,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(/* generated from file m4th_core.forth - see source and comments there */
+        /*11*/ tokens, bounds, _q_do_, T(6), i, token_fetch, token_comma, one_token, _plus_loop_, T(-6), exit
+    )
+WORD_END(tokens_comma)
+WORD_START(user_var,   tokens_comma)
     WORD_DSTACK(0,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()

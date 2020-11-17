@@ -314,10 +314,10 @@
 
 /* */
 /* */
-/* */
 /* 'm4th-core' wordlist */
 #define M4_(x) ((x) + 765)
-#undef M4____gap                          /*                                         */
+/* ( counted-tokens -- tok-addr u ) get address and count of countedtokens */
+#define M4count_tokens M4_(0)
 #define M4flags_to_consumed_tokens M4_(1) /* ( flags -- u ) get # consumed tokens from flags */
 #undef M4____gap                          /*                                         */
 #undef M4____gap                          /*                                         */

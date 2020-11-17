@@ -61,6 +61,17 @@ FUNC_START(_ip_to_data_addr_)
 FUNC_END(_ip_to_data_addr_)
 
 
+/**
+  * get address and count of countedtokens
+  * ( counted-tokens -- tok-addr u )
+ */
+FUNC_START(count_tokens)
+        ADDI(  DTOP,   SZt,    REG1)                  /* a = tok-addr                */
+        LD_ut( DTOP,   AT(DTOP))                      /* dtop = u                    */
+        DPUSH( REG1)                                  /* ( tok-addr u              ) */
+FUNC_END(count_tokens)
+
+
 #ifndef M4FEX_STRING_STORE
 FUNC_START(ex_message_store)
         STOR(  DTOP,   AT(M4TH, M4TH_OFF_EX_STRING_N))

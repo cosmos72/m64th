@@ -277,6 +277,7 @@
 
 /* ------- m4th-core ---------------------------------------------------------------------------- */
 #define DICT_TOKENS_M4TH_CORE(X)                                                                   \
+    X(12, "count-tokens", count_tokens) /* ( counted-tokens -- tok-addr u ) */                     \
     X(21, "flags>consumed-tokens", flags_to_consumed_tokens) /* ( flags -- u ) # consumed tokens*/ \
     X(7, "in>ibuf", in_to_ibuf)     /* (    -- io       ) get current input as iobuf     */        \
     X(10, "iobuf>addr", iobuf_addr) /* ( io -- c-addr   ) get start of iobuf data buffer */        \
@@ -369,6 +370,8 @@
     X(6, "1token", one_token)             /* alias of _SZt,          no dedicated m4token */       \
     X(6, "token+", token_plus)            /* alias of _SZt_plus,     no dedicated m4token */       \
     X(6, "tokens", tokens)                /* alias of _SZt_times,    no dedicated m4token */       \
+    X(6, "token,", token_comma)           /* ( token      -- )       compile one token    */       \
+    X(7, "tokens,", tokens_comma)         /* ( tok-addr u -- )       compile u tokens     */       \
     X(11, "token-align", token_align)     /* alias of _SZt_align,    no dedicated m4token */       \
     X(13, "token-aligned", token_aligned) /* alias of _SZt_aligned,  no dedicated m4token */       \
     X(13, "wordlist-find", wordlist_find) /* ( c-addr u wid -- nt|0 -1|0|1 ) search in wordlist */

@@ -23,6 +23,13 @@
 #include "../dispatch/sz.mh" /* SZ */
 #include "macro.mh"          /* CAT3() */
 
+#define m4f_1s_comma m4fc_comma
+#define m4f_2s_comma m4fshort_comma
+#define m4f_4s_comma m4fint_comma
+#define m4f_8s_comma m4fcomma
+#define m4ftoken_comma CAT3(m4f_, SZt, s_comma)
+#define m4fxt_comma CAT3(m4f_, SZ, s_comma)
+
 #define m4fbegin m4fnoop         /* begin      noop, used as compile marker   */
 #define m4f_again_ m4f_jump_     /* (again)    unconditional jump             */
 #define m4f_break_ m4f_jump_     /* (break)    unconditional jump             */

@@ -814,20 +814,25 @@ static m4testexecute testexecute_e[] = {
      {{3, {M4two | (M4pick << 16), 1 | (M4hop << 16), ttrue}}, {}},
      {}},
     /* ---------------------- optimize* ---------------------- */
-    {"{noop} (optimize-1token)",
-     {m4dp0, CALL(_optimize_1token_), /* ( noop counted-tokens )                  */
-      m4nip, m4token_fetch, m4bye},   /* ( 0 ) i.e. noop optimizes to zero tokens */
-     {{1, {m4noop}}, {}},
-     {{1, {0}}, {}},
+    {"{_missing_} (optimize-1token)",
+     {m4dp0, CALL(_optimize_1token_), /* ( _missing_ counted-tokens )                    */
+      m4bye},                         /* ( _missing_ 0 ) i.e. _missing_ is not optimized */
+     {{1, {m4_missing_}}, {}},
+     {{2, {m4_missing_, 0}}, {}},
      {}},
-#if 0  /* currently broken */
+    {"{noop} (optimize-1token)",
+     {m4dp0, CALL(_optimize_1token_), /* ( nop counted-tokens )                       */
+      m4token_fetch, m4bye},          /* ( nop 0 ) i.e. noop optimizes to zero tokens */
+     {{1, {m4noop}}, {}},
+     {{2, {m4noop, 0}}, {}},
+     {}},
     {"{2drop} (optimize-1token)",
-     {m4here, m4dup, m4_lit_comma_, m4two_drop, /* ( here here   ) original:  2drop     */
-      m4false, CALL(_optimize_1token_),         /* ( src' dst' n ) optimized: drop drop */
-      m4minus_rot, m4sub, m4allot, m4bye},      /* ( n           ) update HERE          */
-     {{}, {}},
-     {{1, {2}}, {}},
+     {m4dp0, CALL(_optimize_1token_), /* ( 2drop counted-tokens )                     */
+      m4count_tokens, CALL(tokens_comma), m4bye},
+     {{1, {m4two_drop}}, {}},
+     {{1, {m4two_drop}}, {}},
      {2, {m4drop, m4drop}}},
+#if 0  /* currently broken */
     {"{false} (optimize-1token)",
      {m4here, m4dup, m4_lit_comma_, m4false, /* ( here here   ) original:  false    */
       m4false, CALL(_optimize_1token_),      /* ( src' dst' n ) optimized: 0        */
