@@ -892,17 +892,18 @@ static m4testexecute testexecute_e[] = {
      {{1, {3}}, {}},
      {1, {m4to_ushort}}},
     {"(optimize-tokens,)",
-     {m4token_comma, m4token_comma, m4state, m4fetch, m4dup, m4two, /* ( xt xt  u  ) */
-      CALL(_optimize_tokens_comma_),                                /* ( xt xt' u' ) */
-      m4minus_rot, m4sub, m4bye},                                   /* ( u' xt'-xt ) */
+     {m4token_comma, m4token_comma, m4state, m4fetch, m4dup, m4two, /* ( xt xt  u  )           */
+      CALL(_optimize_tokens_comma_), m4to_r,                        /* ( xt xt' u' ) (R: t|f ) */
+      m4minus_rot, m4sub,                                           /* ( u' xt'-xt ) (R: t|f ) */
+      m4r_from, m4bye},                                             /* ( u' xt'-xt t|f )       */
      {{2, {m4minus, m4one}}, {}},
-     {{2, {0, 4}}, {}},
+     {{3, {0, 4, -1}}, {}},
      {3, {m4one, m4minus, /* followed by optimized sequence */ m4one_minus}}},
     {"(optimize,)",
      {m4token_comma, m4token_comma, m4state, m4fetch, m4two, /* ( xt u  ) */
-      CALL(_optimize_comma_), m4bye},                        /* (       ) */
+      CALL(_optimize_comma_), m4bye},                        /* ( t|f   ) */
      {{2, {m4times, m4two}}, {}},
-     {{}, {}},
+     {{1, {ttrue}}, {}},
      {3, {m4two, m4times, /* followed by optimized sequence */ m4two_times}}},
 };
 

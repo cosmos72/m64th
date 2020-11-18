@@ -45,6 +45,7 @@ also m4th-impl definitions
    nip                                         \ ( &val|0                  )
 ;
 
+
 \ find an optimized sequence to replace three tokens being compiled.
 : (optimize-3token)    \ ( tok-addr -- counted-tokens | 0 )
    (ip>data>addr) swap dup>r                   \ ( hashmap tok-addr               ) (R: tok-addr )
@@ -55,6 +56,7 @@ also m4th-impl definitions
    hashmap-find/cell                           \ ( key' &val|0                    )
    nip                                         \ ( &val|0                         )
 ;
+
 
 \ find an optimized sequence to replace N tokens being compiled.
 \ return address of optimized sequence and u' = number of consumed tokens, or 0 0
@@ -85,8 +87,10 @@ also m4th-impl definitions
    2drop 0 0                                   \ ( 0 0                            )
 ;
 
+
 \ copy and optimize at least one token from src to HERE. updates HERE src and u
-: (optimize-tokens,)  \ ( src u -- src' u' )
+\ return true if an optimized sequence was found, else false
+: (optimize-tokens,)  \ ( src u -- src' u' t|f )
    dup 0=                                      \ ( src u t|f                )
    if                                          \ ( src u                    )
       exit                                     \ ( src u                    )
@@ -95,17 +99,31 @@ also m4th-impl definitions
    (optimize-tokens)                           \ ( countedtokens|0 iu|0     ) (R: src u )
    dup if                                      \ ( countedtokens iu         ) (R: src u )
       swap countedtokens,                      \ ( iu                       ) (R: src u )
+      true swap                                \ ( true iu                  ) (R: src u )
    else                                        \ ( 0 0                      ) (R: src u )
-      2drop                                    \ (                          ) (R: src u )
-      r2nd@ token@ token,                      \ (                          ) (R: src u )
-      1                                        \ ( 1                        ) (R: src u )
-   then                                        \ ( iu                       ) (R: src u )
-   dup tokens r2nd@ +                          \ ( iu src'                  ) (R: src u )
-   swap r@ -                                   \ ( src' u'                  ) (R: src u )
-   2r> 2drop                                   \ ( src' u'                  )
+      nip                                      \ ( false                    ) (R: src u )
+      r2nd@ token@ token,                      \ ( false                    ) (R: src u )
+      1                                        \ ( false 1                  ) (R: src u )
+   then                                        \ ( t|f iu                   ) (R: src u )
+   dup tokens r2nd@ +                          \ ( t|f iu src'              ) (R: src u )
+   swap r@ -                                   \ ( t|f src' u'              ) (R: src u )
+   2r> 2drop                                   \ ( t|f src' u'              )
+   rot                                         \ ( src' u' t|f              )
 ;
 
 
+\ copy and optimize exactly u tokens from src to HERE. updates HERE.
+\ return true if something was optimized, else false
+: (optimize,)
+  false >r                                     \ (               ) (R: false )
+  begin                                        \ ( src u         ) (R: t|f   )
+     dup                                       \ ( src u u       ) (R: t|f   )
+  while                                        \ ( src u         ) (R: t|f   )
+     (optimize-tokens,)                        \ ( src' u' t|f'  ) (R: t|f   )
+     r@ or r!                                  \ ( src' u'       ) (R: t|f'  )
+  repeat                                       \ ( src' u'       ) (R: t|f   )
+  2drop r>                                     \ ( t|f           )
+;
 
 
 disassemble-upto (optimize-1token)
