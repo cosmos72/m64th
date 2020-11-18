@@ -746,7 +746,7 @@ WORD_START(_optimize_3token_, _optimize_2token_)
     WORD_CODE_START(_optimize_3token_)
       WORD_CODE_TOKENS(/* generated from file m4th_impl.forth - see source and comments there */
         /*24*/ _ip_to_data_addr_, swap, dup_to_r, token_fetch, i, token_fetch_1, eight, tokens, lshift, or,
-        r_from, token_fetch_2, _lit2s_, T(16), tokens, lshift, or, CALL(hashmap_find_cell), nip, exit
+        r_from, token_fetch_2, _lit2s_, T(12+nCALLt), tokens, lshift, or, CALL(hashmap_find_cell), nip, exit
       )
     WORD_CODE_END(_optimize_3token_)
     WORD_DATA_START(_optimize_3token_)
@@ -769,9 +769,9 @@ WORD_START(_optimize_tokens_, _optimize_3token_)
     WORD_NATIVE_NONE()
     WORD_FLAGS(0)
     WORD_CODE(/* generated from file m4th_impl.forth - see source and comments there */
-        /*62*/ _q_if_, T(15), over, CALL(_optimize_1token_), _q_if_, T(5), nip, nip, one, exit, then, drop, then, dup, two,
-        u_more_equal, _if_, T(15), over, CALL(_optimize_2token_), _q_if_, T(5), nip, nip, two, exit, then, drop, then, dup, three,
-        u_more_equal, _if_, T(15), over, CALL(_optimize_3token_), _q_if_, T(5), nip, nip, three, exit, then, drop, then,
+        /*62*/ _q_if_, T(11+nCALLt), over, CALL(_optimize_1token_), _q_if_, T(5), nip, nip, one, exit, then, drop, then, dup, two,
+        u_more_equal, _if_, T(11+nCALLt), over, CALL(_optimize_2token_), _q_if_, T(5), nip, nip, two, exit, then, drop, then, dup, three,
+        u_more_equal, _if_, T(11+nCALLt), over, CALL(_optimize_3token_), _q_if_, T(5), nip, nip, three, exit, then, drop, then,
         drop, drop, zero, zero, exit
     )
 WORD_END(_optimize_tokens_)
@@ -787,11 +787,29 @@ WORD_START(_optimize_tokens_comma_, _optimize_tokens_)
     WORD_FLAGS(0)
     WORD_CODE(/* generated from file m4th_impl.forth - see source and comments there */
         /*34*/ _q_if0_, T(2), exit, then, two_dup_two_to_r, CALL(_optimize_tokens_),
-        _q_if_, T(8), swap, CALL(countedtokens_comma),
+        _q_if_, T(4+nCALLt), swap, CALL(countedtokens_comma),
         _else_, T(6), two_drop, i_prime, token_fetch, token_comma, one,
         then, dup, tokens, i_prime, plus, swap, i_minus, two_r_from_two_drop, exit
     )
 WORD_END(_optimize_tokens_comma_)
+/**
+ * copy and optimize exactly u tokens from src to HERE. updates HERE.
+ * ( src u -- )
+ */
+WORD_START(_optimize_comma_, _optimize_tokens_comma_)
+    WORD_DSTACK(2,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(0)
+    WORD_CODE(
+        begin,                                         /* ( src u                  ) */
+            _q_while_, T(3+nCALLt),                    /* ( src u                  ) */
+            CALL(_optimize_tokens_comma_),             /* ( src' u'                ) */
+        _repeat_, T(-5-nCALLt),                        /* ( src' u'                ) */
+        two_drop, exit                                 /* (                        ) */
+    )
+WORD_END(_optimize_comma_)
 /* ( x -- token t | x f ) try to optimize '[ x ] literal' */
 WORD_START(_optimize_literal_, _optimize_tokens_comma_)
     WORD_DSTACK(1,2)
