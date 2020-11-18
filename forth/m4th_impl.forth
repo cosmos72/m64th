@@ -114,7 +114,7 @@ also m4th-impl definitions
 
 \ copy and optimize exactly u tokens from src to HERE. updates HERE.
 \ return true if something was optimized, else false
-: (optimize,)
+: (optimize,)   \ ( src u -- t|f )
   false >r                                     \ (               ) (R: false )
   begin                                        \ ( src u         ) (R: t|f   )
      dup                                       \ ( src u u       ) (R: t|f   )
