@@ -88,7 +88,7 @@ also m4th-impl definitions
 ;
 
 
-\ copy and optimize at least one token from src to HERE. updates HERE src and u
+\ copy and optimize at least one token from src to HERE. updates HERE src and u.
 \ return true if an optimized sequence was found, else false
 : (optimize-tokens,)  \ ( src u -- src' u' t|f )
    dup 0=                                      \ ( src u t|f                )

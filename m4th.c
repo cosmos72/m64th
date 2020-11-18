@@ -43,7 +43,7 @@ enum {
     code_n = 1024,
     inbuf_n = 1024,
     outbuf_n = 1024,
-    dataspace_n = 4096,
+    dataspace_n = 65536,
 };
 
 typedef char m4th_assert_sizeof_m4token_equal_SZt[(sizeof(m4token) == SZt) ? 1 : -1];
