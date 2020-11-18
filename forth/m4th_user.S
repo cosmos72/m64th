@@ -198,77 +198,77 @@ WORD_START(forth_root, ex_to_string)
     )
 WORD_END(forth_root)
 WORD(flip,             forth_root,     DSTACK(3,3), RSTACK(0,0), WORD_PURE)
-/* hashmap-find/cell ( map key -- key val t|f ) find entry in hashmap/cell  */
+/* hashmap-find/cell ( map key -- key' &val|0 ) find entry in hashmap/cell  */
 WORD_START(hashmap_find_cell, flip)
-    WORD_DSTACK(2,3)
+    WORD_DSTACK(2,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_FLAGS(0)
     WORD_CODE(
-        dup_to_r, over,                                /* ( map key map        ) (R: key     ) */
+        dup_to_r, over,                                /* ( map key map         ) (R: key     ) */
 #if M4HASHMAP_OFF_VEC_CELL == SZ2
-        cell_fetch_2,                                  /* ( map key vec        ) (R: key     ) */
+        cell_fetch_2,                                  /* ( map key vec         ) (R: key     ) */
 #else
-        _lit_, T(M4HASHMAP_OFF_VEC_CELL), plus, fetch, /* ( map key vec        ) (R: key     ) */
+        _lit_, T(M4HASHMAP_OFF_VEC_CELL), plus, fetch, /* ( map key vec         ) (R: key     ) */
 #endif
-        to_r,                                          /* ( map key            ) (R: key vec ) */
-        CALL(_hashmap_indexof_cell_),                  /* ( pos                ) (R: key vec ) */
-        begin,                                         /* ( pos                ) (R: key vec ) */
-            r_fetch, swap,                             /* ( vec pos            ) (R: key vec ) */
-            CALL(_hashmap_entry_fetch_cell_),          /* ( key' val next      ) (R: key vec ) */
-            dup, one_plus, /* 0 if no entry */         /* ( key' val next flag ) (R: key vec ) */
-        _while_, T(19),                                /* ( key' val next      ) (R: key vec ) */
-            hop, r2nd_fetch, equal,                    /* ( key' val next t|f  ) (R: key vec ) */
-            _if_, T(5),                                /* ( key' val next      ) (R: key vec ) */
-                two_r_from_two_drop, drop, true, exit, /* ( key' val t         )               */
-            then,                                      /* ( key' val next      ) (R: key vec ) */
-            dup, two_plus, /* 0 if no next entry */    /* ( key' val next flag ) (R: key vec ) */
-        _while_, T(4),                                 /* ( key' val next      ) (R: key vec ) */
-            nip, nip,                                  /* ( next               ) (R: key vec ) */
-        _repeat_, T(-25-nCALLt),                       /* ( key' val next      ) (R: key vec ) */
-        then,              /* matches 1st 'while' */   /* ( key' val next      ) (R: key vec ) */
-        two_drop, r_from_drop, r_from,                 /* ( key' key           )               */
-        nip, zero, zero, exit                          /* ( key 0 false        )               */
+        to_r,                                          /* ( map key             ) (R: key vec ) */
+        CALL(_hashmap_indexof_cell_),                  /* ( pos                 ) (R: key vec ) */
+        begin,                                         /* ( pos                 ) (R: key vec ) */
+            r_fetch, swap,                             /* ( vec pos             ) (R: key vec ) */
+            CALL(_hashmap_entry_fetch_cell_),          /* ( key' &val next      ) (R: key vec ) */
+            dup, one_plus, /* 0 if no entry */         /* ( key' &val next flag ) (R: key vec ) */
+        _while_, T(18),                                /* ( key' &val next      ) (R: key vec ) */
+            hop, r2nd_fetch, equal,                    /* ( key' &val next t|f  ) (R: key vec ) */
+            _if_, T(4),                                /* ( key' &val next      ) (R: key vec ) */
+                two_r_from_two_drop, drop, exit,       /* ( key' &val           )               */
+            then,                                      /* ( key' &val next      ) (R: key vec ) */
+            dup, two_plus, /* 0 if no next entry */    /* ( key' &val next flag ) (R: key vec ) */
+        _while_, T(4),                                 /* ( key' &val next      ) (R: key vec ) */
+            nip, nip,                                  /* ( next                ) (R: key vec ) */
+        _repeat_, T(-24-nCALLt),                       /* ( key' &val next      ) (R: key vec ) */
+        then,              /* matches 1st 'while' */   /* ( key' &val next      ) (R: key vec ) */
+        two_drop, r_from_drop, r_from,                 /* ( key' key            )               */
+        nip, zero, exit                                /* ( key  0              )               */
     )
-WORD_END(hashmap_find_int)
-/* hashmap-find/int ( map key -- key val t|f ) find entry in hashmap/int  */
+WORD_END(hashmap_find_cell)
+/* hashmap-find/int ( map key -- key' &val|0 ) find entry in hashmap/int  */
 WORD_START(hashmap_find_int, hashmap_find_cell)
-    WORD_DSTACK(2,3)
+    WORD_DSTACK(2,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
-    WORD_FLAGS(0)
+    WORD_FLAGS(M4FLAG_MEM_FETCH)
     WORD_CODE(
-        dup_to_r, over,                                /* ( map key map        ) (R: key     ) */
+        dup_to_r, over,                                /* ( map key map         ) (R: key     ) */
 #if M4HASHMAP_OFF_VEC_INT == SZ
-        cell_fetch_1,                                  /* ( map key vec        ) (R: key     ) */
+        cell_fetch_1,                                  /* ( map key vec         ) (R: key     ) */
 #elif M4HASHMAP_OFF_VEC_INT == 8
-        eight_plus, fetch                              /* ( map key vec        ) (R: key     ) */
+        eight_plus, fetch                              /* ( map key vec         ) (R: key     ) */
 #else
-        _lit_, T(M4HASHMAP_OFF_VEC_INT), plus, fetch,  /* ( map key vec        ) (R: key     ) */
+        _lit_, T(M4HASHMAP_OFF_VEC_INT), plus, fetch,  /* ( map key vec         ) (R: key     ) */
 #endif
-        to_r,                                          /* ( map key            ) (R: key vec ) */
-        CALL(_hashmap_indexof_int_),                   /* ( pos                ) (R: key vec ) */
-        begin,                                         /* ( pos                ) (R: key vec ) */
-            r_fetch, swap,                             /* ( vec pos            ) (R: key vec ) */
-            CALL(_hashmap_entry_fetch_int_),           /* ( key' val next      ) (R: key vec ) */
-            dup, one_plus, /* 0 if no entry */         /* ( key' val next flag ) (R: key vec ) */
-        _while_, T(19),                                /* ( key' val next      ) (R: key vec ) */
-            hop, r2nd_fetch, equal,                    /* ( key' val next t|f  ) (R: key vec ) */
-            _if_, T(5),                                /* ( key' val next      ) (R: key vec ) */
-                two_r_from_two_drop, drop, true, exit, /* ( key' val t         )               */
-            then,                                      /* ( key' val next      ) (R: key vec ) */
-            dup, two_plus, /* 0 if no next entry */    /* ( key' val next flag ) (R: key vec ) */
-        _while_, T(4),                                 /* ( key' val next      ) (R: key vec ) */
-            nip, nip,                                  /* ( next               ) (R: key vec ) */
-        _repeat_, T(-25-nCALLt),                       /* ( key' val next      ) (R: key vec ) */
-        then,              /* matches 1st 'while' */   /* ( key' val next      ) (R: key vec ) */
-        two_drop, r_from_drop, r_from,                 /* ( key' key           )               */
-        nip, zero, zero, exit                          /* ( key 0 false        )               */
+        to_r,                                          /* ( map key             ) (R: key vec ) */
+        CALL(_hashmap_indexof_int_),                   /* ( pos                 ) (R: key vec ) */
+        begin,                                         /* ( pos                 ) (R: key vec ) */
+            r_fetch, swap,                             /* ( vec pos             ) (R: key vec ) */
+            CALL(_hashmap_entry_fetch_int_),           /* ( key' &val next      ) (R: key vec ) */
+            dup, one_plus, /* 0 if no entry */         /* ( key' &val next flag ) (R: key vec ) */
+        _while_, T(18),                                /* ( key' &val next      ) (R: key vec ) */
+            hop, r2nd_fetch, equal,                    /* ( key' &val next t|f  ) (R: key vec ) */
+            _if_, T(4),                                /* ( key' &val next      ) (R: key vec ) */
+                two_r_from_two_drop, drop, exit,       /* ( key' &val           )               */
+            then,                                      /* ( key' &val next      ) (R: key vec ) */
+            dup, two_plus, /* 0 if no next entry */    /* ( key' &val next flag ) (R: key vec ) */
+        _while_, T(4),                                 /* ( key' &val next      ) (R: key vec ) */
+            nip, nip,                                  /* ( next                ) (R: key vec ) */
+        _repeat_, T(-24-nCALLt),                       /* ( key' &val next      ) (R: key vec ) */
+        then,              /* matches 1st 'while' */   /* ( key' &val next      ) (R: key vec ) */
+        two_drop, r_from_drop, r_from,                 /* ( key' key            )               */
+        nip, zero, exit                                /* ( key  0              )               */
     )
 WORD_END(hashmap_find_int)
-WORD(hop,           hashmap_find_int, DSTACK(3,4), RSTACK(0,0), WORD_PURE)
+WORD(hop,            hashmap_find_int, DSTACK(3,4), RSTACK(0,0), WORD_PURE)
 WORD(i_times,          hop,            DSTACK(1,1), RSTACK(1,1), WORD_R_PURE)
 WORD(i_plus,           i_times,        DSTACK(1,1), RSTACK(1,1), WORD_R_PURE)
 WORD(i_minus,          i_plus,         DSTACK(1,1), RSTACK(1,1), WORD_R_PURE)
@@ -383,8 +383,8 @@ WORD_START(parse_quote,n_to_drop)
     )
 WORD_END(m4th_impl)
 WORD(r_store,          parse_quote,    DSTACK(1,0), RSTACK(1,1), WORD_R_PURE)
-WORD(r_plus,           r_store,        DSTACK(1,0), RSTACK(1,1), WORD_R_PURE)
-WORD(r_from_drop,      r_plus,         DSTACK(0,0), RSTACK(1,0), WORD_R_PURE)
+WORD(r_plus_store,     r_store,        DSTACK(1,0), RSTACK(1,1), WORD_R_PURE)
+WORD(r_from_drop,      r_plus_store,   DSTACK(0,0), RSTACK(1,0), WORD_R_PURE)
 WORD(rdepth,           r_from_drop,    DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 /**
  * forth interpreter/compiler loop:
@@ -524,11 +524,23 @@ WORD(to_short,         to_char,        DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(to_ushort,        to_short,       DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(to_int,           to_ushort,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(to_uint,          to_int,         DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+/* see-name ( nt -- ) show definition of nt */
+WORD_START(see_name,   to_uint)
+    WORD_DSTACK(1,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        zero,                                                  /* ( nt 0          ) */
+        _c_arg_2_, _c_call_, CELL(m4word_print_stdout), _c_ret_0_, exit
+    )
+WORD_END(see_name)
 /**
  * string-find-blank ( c-addr u -- u' ) return index of first blank (i.e. char <= 32) in string.
  * return string length if not found.
  */
-WORD(string_find_blank,    to_uint,            DSTACK(2,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(string_find_blank,    see_name,           DSTACK(2,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 /**
  * string-find-char ( c-addr u ch -- u' ) return index of first ch in string.
  * return string length if not found.

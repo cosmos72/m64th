@@ -493,7 +493,7 @@ WORD_START(spaces, space)
         zero, max, to_r,                            /* ( c-addr u          ) (R: n     ) */
         begin,                                      /* ( c-addr u          ) (R: left  ) */
             two_dup, r_fetch, min,                  /* ( c-addr u c-addr v ) (R: left  ) */
-            dup, negate, r_plus,                    /* ( c-addr u c-addr v ) (R: left' ) */
+            dup, negate, r_plus_store,              /* ( c-addr u c-addr v ) (R: left' ) */
             type,                                   /* ( c-addr u          ) (R: left  ) */
             r_fetch, zero_equal,                    /* ( c-addr u t|f      ) (R: left  ) */
         _until_, T(-11),                            /* ( c-addr u          ) (R: 0     ) */

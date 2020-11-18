@@ -312,6 +312,7 @@
         x(two_swap, two_nip, /*=>*/ drop, drop)              /* 2swap 2nip    => 2drop          */ \
         x(two_swap, two_swap /*=>*/)                         /* 2swap 2swap   =>                */ \
         /*________________________________________________*/ /*                                 */ \
+        x(to_r, r_fetch, /*=>*/ dup_to_r)                    /* >r   r@       => dup>r          */ \
         x(to_r, r_from /*=>*/)                               /* >r   r>       =>                */ \
         x(plus, negate, /*=>*/ negate, sub)                  /* +    negate   => negate sub     */ \
         x(minus, negate, /*=>*/ sub)                         /* -    negate   => sub            */ \
@@ -358,6 +359,7 @@
         x(dup, equal, /*=>*/ drop, minus_one)                /* dup  =        => drop -1        */ \
         x(dup, more, /*=>*/ drop, zero)                      /* dup  >        => drop 0         */ \
         x(dup, more_equal, /*=>*/ drop, minus_one)           /* dup  >=       => drop -1        */ \
+        x(dup, to_r, /*=>*/ dup_to_r)                        /* dup  >r       => dup>r          */ \
         x(dup, and/*=>*/)                                    /* dup  and      =>                */ \
         x(dup, drop /*=>*/)                                  /* dup  drop     =>                */ \
         x(dup, max /*=>*/)                                   /* dup  max      =>                */ \
@@ -388,7 +390,7 @@
         x(i, times, /*=>*/ i_times)                          /* i    *        => i*             */ \
         x(i, plus, /*=>*/ i_plus)                            /* i    +        => i+             */ \
         x(i, minus, /*=>*/ i_minus)                          /* i    -        => i-             */ \
-        x(i_plus, r_store, /*=>*/ r_plus)                    /* i+   r!       => r+             */ \
+        x(i_plus, r_store, /*=>*/ r_plus_store)              /* i+   r!       => r+!            */ \
         x(invert, zero_less, /*=>*/ zero_more_equal)         /* invert 0<     => 0>=            */ \
         x(invert, zero_more_equal, /*=>*/ zero_less)         /* invert 0>=    => 0<             */ \
         x(invert, one_plus, /*=>*/ negate)                   /* invert 1+     => negate         */ \
@@ -501,7 +503,7 @@
         x(over, over, /*=>*/ two_dup) /* over over       => 2dup         */
 
 #define OPT3_RULES(x)                                     /*                                   */  \
-    x(r_from, plus, to_r, /*=>*/ r_plus)                  /* r>     +   >r      => r+          */  \
+    x(r_from, plus, to_r, /*=>*/ r_plus_store)            /* r>     +   >r      => r+!         */  \
         x(_lit_, T(0xff), and, /*=>*/ to_char)            /* 0xff   and         => to-char     */  \
         x(_lit_, T(0xffff), and, /*=>*/ to_ushort)        /* 0xffff and         => to-ushort   */  \
         x(two_swap, drop, drop, /*=>*/ two_nip)           /* 2swap  drop drop   => 2nip        */  \
@@ -510,10 +512,10 @@
         x(over, trail, two_nip, /*=>*/ swap)              /* over   trail 2nip  => swap        */  \
         x(over, trail, two_swap, /*=>*/ tuck, trail)      /* over   trail 2swap => tuck trail  */  \
         x(over, trail, swap, /*=>*/ two_dup)              /* over   trail swap  => 2dup        */  \
-        x(over, over, two_to_r, /*=>*/ two_dup_two_to_r)  /* over   over  2>r   => 2dup2>r     */  \
+        x(over, over, two_to_r, /*=>*/ two_dup_two_to_r)  /* over   over  2>r   => 2dup_2>r    */  \
         x(over, over, two_nip /*=>*/)                     /* over   over  2nip  =>             */  \
         x(over, over, two_over, /*=>*/ two_dup, two_dup)  /* over   over  2over => 2dup 2dup   */  \
-        x(over, over, two_swap, /*=>*/ two_dup)           /* over   over  2swap => 2dup        */  \
+        x(over, over, two_swap, /*=>*/ over, over)        /* over   over  2swap => over over   */  \
         /* ______________  */                             /*                                   */  \
         x(three, plus, byte_fetch, /*=>*/ byte_fetch_3)   /* 3   +  byte@        => byte[3]    */  \
         x(five, plus, byte_fetch, /*=>*/ byte_fetch_5)    /* 5   +  byte@        => byte[5]    */  \

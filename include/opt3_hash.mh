@@ -14,10 +14,10 @@ entry(M4over|(M4over<<16)|(M4two_nip<<32),	0,	28)	\
 entry(0,	0,	-1)	\
 entry(M4over|(M4trail<<16)|(M4two_nip<<32),	1|(M4swap<<16),	-2)	\
 entry(M4_lit2s_|(65535<<16)|(M4and<<32),	1|(M4to_ushort<<16),	29)	\
-entry(M4over|(M4over<<16)|(M4two_swap<<32),	1|(M4two_dup<<16),	25)	\
+entry(M4over|(M4over<<16)|(M4two_swap<<32),	2|(M4over<<16)|(M4over<<32),	25)	\
 entry(M4six|(M4plus<<16)|(M4byte_fetch<<32),	1|(M4byte_fetch_6<<16),	26)	\
 entry(M4over|(M4trail<<16)|(M4two_swap<<32),	2|(M4tuck<<16)|(M4trail<<32),	-2)	\
-entry(M4r_from|(M4plus<<16)|(M4to_r<<32),	1|(M4r_plus<<16),	-2)	\
+entry(M4r_from|(M4plus<<16)|(M4to_r<<32),	1|(M4r_plus_store<<16),	-2)	\
 entry(0,	0,	-1)	\
 entry(M4seven|(M4plus<<16)|(M4byte_fetch<<32),	1|(M4byte_fetch_7<<16),	-2)	\
 entry(0,	0,	-1)	\

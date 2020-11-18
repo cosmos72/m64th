@@ -325,7 +325,7 @@ WORD_START(_exec_xt_from_native_, _exec_token_)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_MAY_JUMP)
     WORD_CODE(_exec_xt_from_native_, exit)
 WORD_END(_exec_xt_from_native_)
-/* (hashmap-entry@/cell) ( vec u -- key val next ) fetch u-th entry in hashmap buckets. */
+/* (hashmap-entry@/cell) ( vec u -- key &val next ) fetch u-th entry in hashmap buckets. */
 /* next is -1 for 'no_entry', or -2 for 'no_next_entry' */
 WORD_START(_hashmap_entry_fetch_cell_, _exec_xt_from_native_)
     WORD_DSTACK(2,3)
@@ -345,9 +345,9 @@ WORD_START(_hashmap_entry_fetch_cell_, _exec_xt_from_native_)
 #if M4HASHMAP_ENTRY_OFF_VAL_CELL != 0
         _lit_, T(M4HASHMAP_ENTRY_OFF_VAL_CELL), plus,
 #endif
-        fetch, r_from,                                     /* ( key val vec  )           */
+        r_from,                                            /* ( key &val vec )          */
 #if M4HASHMAP_ENTRY_OFF_NEXT_CELL == SZ2
-        cell_fetch_2,                                      /* ( key val next )           */
+        cell_fetch_2,                                      /* ( key &val next)          */
 #else
         _lit_, T(M4HASHMAP_ENTRY_OFF_NEXT_CELL), plus, fetch, /* same */
 #endif
@@ -355,7 +355,7 @@ WORD_START(_hashmap_entry_fetch_cell_, _exec_xt_from_native_)
         exit
     )
 WORD_END(_hashmap_entry_fetch_int_)
-/* (hashmap-entry@/int) ( vec u -- key val next ) fetch u-th entry in hashmap buckets. */
+/* (hashmap-entry@/int) ( vec u -- key &val next ) fetch u-th entry in hashmap buckets. */
 /* next is -1 for 'no_entry', or -2 for 'no_next_entry' */
 WORD_START(_hashmap_entry_fetch_int_, _hashmap_entry_fetch_cell_)
     WORD_DSTACK(2,3)
@@ -375,19 +375,19 @@ WORD_START(_hashmap_entry_fetch_int_, _hashmap_entry_fetch_cell_)
 #if M4HASHMAP_ENTRY_OFF_VAL_INT != 0
         _lit_, T(M4HASHMAP_ENTRY_OFF_VAL_INT), plus,
 #endif
-        fetch, r_from,                                     /* ( key val vec  )           */
+        r_from,                                            /* ( key &val vec )           */
 #if M4HASHMAP_ENTRY_OFF_NEXT_INT == 12
-        int_fetch_3,                                       /* ( key val next )           */
+        int_fetch_3,                                       /* ( key &val next)           */
 #else
         _lit_, T(M4HASHMAP_ENTRY_OFF_NEXT_INT), plus, int_fetch, /* same */
 #endif
 #if SZ > 4
         /* if no_entry, next is -1. if no_next_entry, next is -2 */
         /* we must truncate all other values to unsigned 32-bit  */
-        dup, minus_two, u_less,                           /* ( key val next t|f        ) */
-        _if_, T(2),                                       /* ( key val next            ) */
+        dup, minus_two, u_less,                           /* ( key &val next t|f       ) */
+        _if_, T(2),                                       /* ( key &val next           ) */
             to_uint,                                 /* truncate next to unsigned 32-bit */
-        then,                                             /* ( key val next            ) */
+        then,                                             /* ( key &val next           ) */
 #endif /* SZ > 4 */
         exit
     )
@@ -674,12 +674,11 @@ WORD_START(_while0_, _while_)
 WORD_END(_while0_)
 /**
  * find an optimized sequence to replace a single token being compiled.
+ * if no optimized sequence was found, return 0
  * ( tok-addr -- counted-tokens | 0 )
- *
- * if no optimized sequence was found, returns 0
  */
 WORD_START(_optimize_1token_, _while0_)
-    WORD_DSTACK(1,-1)
+    WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
@@ -704,22 +703,23 @@ WORD_START(_optimize_1token_, _while0_)
 
     WORD_DATA_END(_optimize_1token_)
 WORD_END(_optimize_1token_)
-/* ( src-addr dst-addr -- src-addr' dst-addr' t|f ) optimize token pairs being compiled */
+/**
+ * find an optimized sequence to replace two tokens being compiled.
+ * if no optimized sequence was found, return 0
+ * ( tok-addr -- counted-tokens | 0 )
+ */
 WORD_START(_optimize_2token_, _optimize_1token_)
-    WORD_DSTACK(2,3)
+    WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
-    WORD_FLAGS(M4FLAG_DATA_TOKENS)
+    WORD_FLAGS(M4FLAG_INLINE|M4FLAG_DATA_TOKENS)
     WORD_CODE_N_AUTO(_optimize_2token_)
     WORD_DATA_N_AUTO(_optimize_2token_)
     WORD_CODE_START(_optimize_2token_)
-      WORD_CODE_TOKENS(/* TODO: rewrite similarly to _optimize_1token_ */
-          /*53*/ _ip_to_data_addr_, to_r, over, ushort_fetch, hop, ushort_fetch_1, eight, two_times, lshift, or,
-          r_from, swap, CALL(hashmap_find_int), _if0_, T(7), drop, drop, two, cmove_count, zero, exit, then,
-          nip, dup, eight, two_times, rshift, swap, to_ushort, zero,
-          _q_do_, T(11), tuck, to_ushort, over, short_store, two_plus, swap, eight, two_times, rshift, _loop_, T(-11),
-          drop, swap, four_plus, swap, minus_one, exit
+      WORD_CODE_TOKENS(/* generated from file m4th_impl.forth - see source and comments there */
+        /*17*/ _ip_to_data_addr_, swap, dup, token_fetch, swap, token_fetch_1,
+        eight, tokens, lshift, or, CALL(hashmap_find_int), nip, exit
       )
     WORD_CODE_END(_optimize_2token_)
     WORD_DATA_START(_optimize_2token_)
@@ -730,7 +730,11 @@ WORD_START(_optimize_2token_, _optimize_1token_)
 #undef H2_ENTRY
     WORD_DATA_END(_optimize_2token_)
 WORD_END(_optimize_2token_)
-/* ( src-addr dst-addr -- src-addr' dst-addr' t|f ) optimize token triplets being compiled */
+/**
+ * find an optimized sequence to replace three tokens being compiled.
+ * if no optimized sequence was found, return 0
+ * ( tok-addr -- counted-tokens | 0 )
+ */
 WORD_START(_optimize_3token_, _optimize_2token_)
     WORD_DSTACK(2,3)
     WORD_RSTACK(0,0)
@@ -741,9 +745,8 @@ WORD_START(_optimize_3token_, _optimize_2token_)
     WORD_DATA_N_AUTO(_optimize_3token_)
     WORD_CODE_START(_optimize_3token_)
       WORD_CODE_TOKENS(/* generated from file m4th_impl.forth - see source and comments there */
-        /*26*/ _ip_to_data_, two_minus, bounds, rot, ushort_fetch, minus_rot,
-        _do_, T(15), dup, i, ushort_fetch_1, equal, _if_, T(5), drop, i, unloop, exit,
-        then, four, two_times, _plus_loop_, T(-15), drop, zero, exit
+        /*24*/ _ip_to_data_addr_, swap, dup_to_r, token_fetch, i, token_fetch_1, eight, tokens, lshift, or,
+        r_from, token_fetch_2, _lit2s_, T(16), tokens, lshift, or, CALL(hashmap_find_cell), nip, exit
       )
     WORD_CODE_END(_optimize_3token_)
     WORD_DATA_START(_optimize_3token_)
@@ -754,8 +757,43 @@ WORD_START(_optimize_3token_, _optimize_2token_)
 #undef H3_ENTRY
     WORD_DATA_END(_optimize_3token_)
 WORD_END(_optimize_3token_)
+/**
+ * find an optimized sequence to replace N tokens being compiled.
+ * if no optimized sequence was found, return 0
+ * ( tok-addr u -- counted-tokens u' | 0 0 )
+ */
+WORD_START(_optimize_tokens_, _optimize_3token_)
+    WORD_DSTACK(2,2)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(0)
+    WORD_CODE(/* generated from file m4th_impl.forth - see source and comments there */
+        /*62*/ _q_if_, T(15), over, CALL(_optimize_1token_), _q_if_, T(5), nip, nip, one, exit, then, drop, then, dup, two,
+        u_more_equal, _if_, T(15), over, CALL(_optimize_2token_), _q_if_, T(5), nip, nip, two, exit, then, drop, then, dup, three,
+        u_more_equal, _if_, T(15), over, CALL(_optimize_3token_), _q_if_, T(5), nip, nip, three, exit, then, drop, then,
+        drop, drop, zero, zero, exit
+    )
+WORD_END(_optimize_tokens_)
+/**
+ * copy and optimize at least one token from src to HERE. updates HERE src and u
+ * ( src u -- src' u' )
+ */
+WORD_START(_optimize_tokens_comma_, _optimize_tokens_)
+    WORD_DSTACK(2,2)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(0)
+    WORD_CODE(/* generated from file m4th_impl.forth - see source and comments there */
+        /*34*/ _q_if0_, T(2), exit, then, two_dup_two_to_r, CALL(_optimize_tokens_),
+        _q_if_, T(8), swap, CALL(countedtokens_comma),
+        _else_, T(6), two_drop, i_prime, token_fetch, token_comma, one,
+        then, dup, tokens, i_prime, plus, swap, i_minus, two_r_from_two_drop, exit
+    )
+WORD_END(_optimize_tokens_comma_)
 /* ( x -- token t | x f ) try to optimize '[ x ] literal' */
-WORD_START(_optimize_literal_, _optimize_3token_)
+WORD_START(_optimize_literal_, _optimize_tokens_comma_)
     WORD_DSTACK(1,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()

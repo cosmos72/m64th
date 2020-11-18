@@ -31,6 +31,7 @@
 #include "testcommon.h"
 
 #include <assert.h> /* assert()          */
+#include <endian.h> /* __BYTE_ORDER      */
 #include <string.h> /* memset()          */
 
 /* -------------- m4cell[] -> m4token[] conversion -------------- */
@@ -460,7 +461,7 @@ static m4testexecute testexecute_c[] = {
     {"j", {m4j, m4bye}, {{}, {3, {12, 13, 14}}}, {{1, {12}}, {3, {12, 13, 14}}}, {}},
     {"r@", {m4r_fetch, m4bye}, {{}, {1, {4}}}, {{1, {4}}, {1, {4}}}, {}},
     {"r!", {m4r_store, m4bye}, {{1, {11}}, {1, {0}}}, {{}, {1, {11}}}, {}},
-    {"r+", {m4r_plus, m4bye}, {{1, {30}}, {1, {4}}}, {{}, {1, {34}}}, {}},
+    {"r+!", {m4r_plus_store, m4bye}, {{1, {30}}, {1, {4}}}, {{}, {1, {34}}}, {}},
     {"r>", {m4r_from, m4bye}, {{}, {1, {99}}}, {{1, {99}}, {}}, {}},
     {"dup>r", {m4dup_to_r, m4bye}, {{1, {33}}, {}}, {{1, {33}}, {1, {33}}}, {}},
     {"r>drop", {m4r_from_drop, m4bye}, {{}, {1, {99}}}, {{}, {}}, {}},
@@ -757,6 +758,19 @@ static const m4hashmap_int test_hashmap_int1 = {
     2 /*size*/, 2 /*lcap*/, (m4hashmap_entry_int *)test_hash_entry_int1 /*vec*/
 };
 
+/* ---------------------- test data for (optimize-*) --------------------- */
+
+static const m4token tokens__missing_[] = {m4_missing_};
+static const m4token tokens_noop[] = {m4noop};
+static const m4token tokens_two_drop[] = {m4two_drop};
+static const m4token tokens_false[] = {m4false};
+static const m4token tokens_one_plus[] = {m4one_plus};
+static const m4token tokens_swap_drop[] = {m4swap, m4drop};
+static const m4token tokens_ne_zero_more[] = {m4ne, m4zero_more};
+static const m4token tokens_r_from_plus_to_r[] = {m4r_from, m4plus, m4to_r};
+static const m4token tokens__lit__0xffff_and[] = {m4_lit_, 0xffff, m4and};
+/*
+ */
 static m4testexecute testexecute_e[] = {
     /* ---------------------- hashmap/cell --------------------- */
     {"(hashmap-indexof/cell)",
@@ -765,19 +779,19 @@ static m4testexecute testexecute_e[] = {
      {{1, {(0xd45689e5ul ^ (0xd45689e5ul >> 31)) & ((1ul << 31) - 1)}}, {}},
      {}},
     {"(hashmap-entry@/cell)",
-     {CALL(_hashmap_entry_fetch_cell_), m4bye},
+     {CALL(_hashmap_entry_fetch_cell_), m4swap, m4fetch, m4swap, m4bye},
      {{2, {(m4cell)&test_hash_entry_cell0, 1}}, {}},
      {{3, {4, 5, 6}}, {}},
      {}},
     {"{1:123, -1:456} 1 hashmap-find/cell",
-     {CALL(hashmap_find_cell), m4bye},
+     {CALL(hashmap_find_cell), m4fetch, m4bye},
      {{2, {(m4cell)&test_hashmap_cell1, 1}}, {}},
-     {{3, {1, 123, ttrue}}, {}},
+     {{2, {1, 123}}, {}},
      {}},
     {"{1:123, -1:456} -1 hashmap-find/cell",
-     {CALL(hashmap_find_cell), m4bye},
+     {CALL(hashmap_find_cell), m4fetch, m4bye},
      {{2, {(m4cell)&test_hashmap_cell1, -1}}, {}},
-     {{3, {-1, 456, ttrue}}, {}},
+     {{2, {-1, 456}}, {}},
      {}},
     /* ---------------------- hashmap/int ---------------------- */
     {"(hashmap-indexof/int)",
@@ -786,72 +800,104 @@ static m4testexecute testexecute_e[] = {
      {{1, {(0xd45689e5ul ^ (0xd45689e5ul >> 31)) & ((1ul << 31) - 1)}}, {}},
      {}},
     {"(hashmap-entry@/int)",
-     {CALL(_hashmap_entry_fetch_int_), m4bye},
+     {CALL(_hashmap_entry_fetch_int_), m4swap, m4fetch, m4swap, m4bye},
      {{2, {(m4cell)&test_hash_entry_int0, 1}}, {}},
      {{3, {4, 5, 6}}, {}},
      {}},
     {"{1:987, 3:654} 1 hashmap-find/int",
-     {CALL(hashmap_find_int), m4bye},
+     {CALL(hashmap_find_int), m4fetch, m4bye},
      {{2, {(m4cell)&test_hashmap_int1, 1}}, {}},
-     {{3, {1, 987, ttrue}}, {}},
+     {{2, {1, 987}}, {}},
      {}},
     {"{1:987, 3:654} 3 hashmap-find/int",
-     {CALL(hashmap_find_int), m4bye},
+     {CALL(hashmap_find_int), m4fetch, m4bye},
      {{2, {(m4cell)&test_hashmap_int1, 3}}, {}},
-     {{3, {3, 654, ttrue}}, {}},
+     {{2, {3, 654}}, {}},
      {}},
     {"{...} hashmap-find/int",
-     {m4name_to_data, m4drop, m4swap, CALL(hashmap_find_int), m4bye},
+     {m4name_to_data, m4drop, m4swap, CALL(hashmap_find_int), m4fetch, m4bye},
      {{2, {M4two | (M4pick << 16), (m4cell)&WORD_SYM(_optimize_2token_)}}, {}},
-     {{3, {M4two | (M4pick << 16), 1 | (M4hop << 16), ttrue}}, {}},
+     {{2, {M4two | (M4pick << 16), 1 | (M4hop << 16)}}, {}},
      {}},
     /* ---------------------- optimize* ---------------------- */
     {"{_missing_} (optimize-1token)",
-     {m4dp0, CALL(_optimize_1token_), /* ( _missing_ counted-tokens )                    */
-      m4bye},                         /* ( _missing_ 0 ) i.e. _missing_ is not optimized */
-     {{1, {m4_missing_}}, {}},
-     {{2, {m4_missing_, 0}}, {}},
+     {CALL(_optimize_1token_), /* ( counted-tokens )                    */
+      m4bye},                  /* ( 0 ) i.e. _missing_ is not optimized */
+     {{1, {(m4cell)tokens__missing_}}, {}},
+     {{1, {0}}, {}},
      {}},
     {"{noop} (optimize-1token)",
-     {m4dp0, CALL(_optimize_1token_), /* ( nop counted-tokens )                       */
-      m4token_fetch, m4bye},          /* ( nop 0 ) i.e. noop optimizes to zero tokens */
-     {{1, {m4noop}}, {}},
-     {{2, {m4noop, 0}}, {}},
+     {CALL(_optimize_1token_), /* ( counted-tokens )                       */
+      m4token_fetch, m4bye},   /* ( 0 ) i.e. noop optimizes to zero tokens */
+     {{1, {(m4cell)tokens_noop}}, {}},
+     {{1, {0}}, {}},
      {}},
     {"{2drop} (optimize-1token)",
-     {m4dp0, CALL(_optimize_1token_), /* ( 2drop counted-tokens )                     */
-      CALL(countedtokens_comma), m4bye},
-     {{1, {m4two_drop}}, {}},
-     {{1, {m4two_drop}}, {}},
+     {CALL(_optimize_1token_),           /* ( counted-tokens ) */
+      CALL(countedtokens_comma), m4bye}, /* (                ) */
+     {{1, {(m4cell)tokens_two_drop}}, {}},
+     {{}, {}},
      {2, {m4drop, m4drop}}},
     {"{false} (optimize-1token)",
-     {m4dp0, CALL(_optimize_1token_),    /* ( false counted-tokens ) */
-      CALL(countedtokens_comma), m4bye}, /* ( false                ) */
-     {{1, {m4false}}, {}},
-     {{1, {m4false}}, {}},
+     {CALL(_optimize_1token_),           /* ( counted-tokens ) */
+      CALL(countedtokens_comma), m4bye}, /* (                ) */
+     {{1, {(m4cell)tokens_false}}, {}},
+     {{}, {}},
      {1, {m4zero}}},
     {"{1+} (optimize-1token)",
-     {m4dp0, CALL(_optimize_1token_), /* ( 1+ counted-tokens ) */
-      m4bye},                         /* ( 1+ 0 ) i.e. 1+ is not optimized */
-     {{1, {m4one_plus}}, {}},
-     {{2, {m4one_plus, 0}}, {}},
+     {CALL(_optimize_1token_), /* ( counted-tokens ) */
+      m4bye},                  /* ( 0 ) i.e. 1+ is not optimized */
+     {{1, {(m4cell)tokens_one_plus}}, {}},
+     {{1, {0}}, {}},
      {}},
     {"{swap drop} (optimize-2token)",
-     {m4here, m4dup, m4_lit_comma_, m4swap, /* ( here here     )                      */
-      m4_lit_comma_, m4drop,                /* ( here here     ) original:  swap drop */
-      CALL(_optimize_2token_),              /* ( src' dst' t|f ) optimized: nip       */
-      m4minus_rot, m4sub, m4allot, m4bye},  /* ( t|f           ) update HERE          */
+     {CALL(_optimize_2token_),           /* ( counted-tokens ) */
+      CALL(countedtokens_comma), m4bye}, /* (                ) */
+     {{1, {(m4cell)tokens_swap_drop}}, {}},
      {{}, {}},
-     {{1, {ttrue}}, {}},
      {1, {m4nip}}},
     {"{<> 0>} (optimize-2token)",
-     {m4here, m4dup, m4_lit_comma_, m4ne,  /* ( here here     )                        */
-      m4_lit_comma_, m4zero_more,          /* ( here here     ) original:  <> 0>       */
-      CALL(_optimize_2token_),             /* ( src' dst' t|f ) optimized: drop drop 0 */
-      m4minus_rot, m4sub, m4allot, m4bye}, /* ( t|f           ) update HERE            */
+     {CALL(_optimize_2token_),           /* ( counted-tokens ) */
+      CALL(countedtokens_comma), m4bye}, /* (                ) */
+     {{1, {(m4cell)tokens_ne_zero_more}}, {}},
      {{}, {}},
-     {{1, {ttrue}}, {}},
      {3, {m4drop, m4drop, m4zero}}},
+    {"{r> + >r} (optimize-3token)",
+     {CALL(_optimize_3token_),           /* ( counted-tokens ) */
+      CALL(countedtokens_comma), m4bye}, /* (                ) */
+     {{1, {(m4cell)tokens_r_from_plus_to_r}}, {}},
+     {{}, {}},
+     {1, {m4r_plus_store}}},
+    {"{_missing_} 1 (optimize-tokens)",
+     {CALL(_optimize_tokens_), m4bye}, /* ( counted-tokens u' ) */
+     {{2, {(m4cell)tokens__missing_, 1}}, {}},
+     {{2, {0, 0}}, {}},
+     {}},
+    {"{false} 1 (optimize-tokens)",
+     {CALL(_optimize_tokens_),                   /* ( counted-tokens u' ) */
+      m4swap, CALL(countedtokens_comma), m4bye}, /* ( u'                ) */
+     {{2, {(m4cell)tokens_false, 1}}, {}},
+     {{1, {1}}, {}},
+     {1, {m4zero}}},
+    {"{swap drop} 2 (optimize-tokens)",
+     {CALL(_optimize_tokens_),                   /* ( counted-tokens u' ) */
+      m4swap, CALL(countedtokens_comma), m4bye}, /* ( u'                ) */
+     {{2, {(m4cell)tokens_swap_drop, 2}}, {}},
+     {{1, {2}}, {}},
+     {1, {m4nip}}},
+    {"{$ffff and} (optimize-tokens)",
+     {CALL(_optimize_tokens_),                   /* ( counted-tokens u' ) */
+      m4swap, CALL(countedtokens_comma), m4bye}, /* ( u'                ) */
+     {{2, {(m4cell)tokens__lit__0xffff_and, 3}}, {}},
+     {{1, {3}}, {}},
+     {1, {m4to_ushort}}},
+    {"(optimize-tokens,)",
+     {m4token_comma, m4token_comma, m4state, m4fetch, m4dup, m4two, /* ( xt xt  u  ) */
+      CALL(_optimize_tokens_comma_),                                /* ( xt xt' u' ) */
+      m4minus_rot, m4sub, m4bye},                                   /* ( u' xt'-xt ) */
+     {{2, {m4minus, m4one}}, {}},
+     {{2, {0, 4}}, {}},
+     {3, {m4one, m4minus, /* followed by optimized sequence */ m4one_minus}}},
 };
 
 static const char teststr_empty[] = "";
@@ -946,26 +992,34 @@ static m4testexecute testexecute_f[] = {
      {{2, {TESTSTR(_quoted_00)}}, {}},
      {{3, {TESTSTR(_quoted_00), -1}}, {}},
      {}},
-#if defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
     /* ----------------------------- string>lower --------------------------- */
     {"\"abc\" string>lower",
      {m4zero, m4minus_rot, m4dp0, m4cell_plus, m4cell_plus, m4swap, m4string_to_lower, m4two_drop,
       m4bye},
      {{2, {TESTSTR(_abc)}}, {}},
-     {{1, {'a' | ('b' << 8) | ('c' << 16)}}, {}},
+#if __BYTE_ORDER == __BIG_ENDIAN
+     {{1, {'a' << 16 | 'b' << 8 | 'c'}}, {}},
+#else
+     {{1, {'a' | 'b' << 8 | 'c' << 16}}, {}},
+#endif /* __BYTE_ORDER */
      {}},
 #if SZ >= 8
     {"\"aBcDefGH\" string>lower",
      {m4zero, m4minus_rot, m4dp0, m4cell_plus, m4cell_plus, m4swap, m4string_to_lower, m4two_drop,
       m4bye},
      {{2, {TESTSTR(_aBcDefGH)}}, {}},
+#if __BYTE_ORDER == __BIG_ENDIAN
+     {{1,
+       {(m4cell)('a' << 24 | 'b' << 16 | 'c' << 8 | 'd') << 32 |
+        ('e' << 24 | 'f' << 16 | 'g' << 8 | 'h')}},
+#else
      {{1,
        {'a' | 'b' << 8 | 'c' << 16 | 'd' << 24 |
         (m4cell)('e' | 'f' << 8 | 'g' << 16 | 'h' << 24) << 32}},
+#endif /* __BYTE_ORDER */
       {}},
      {}},
 #endif /* SZ */
-#endif /* __BYTE_ORDER__ */
     /* ----------------------------- string>sign ---------------------------- */
     {"\"\" string>sign",
      {CALL(string_to_sign), m4bye},
@@ -1304,7 +1358,7 @@ static m4testexecute testexecute_g[] = {
      {{1, {0xcdef}}, {}},
      {{2, {0, 1}}, {}},
      {1, {0xcdef}}},
-#if defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+#if __BYTE_ORDER == __LITTLE_ENDIAN
     {"1 c, 2 c,", {m4c_comma, m4c_comma, m4bye}, {{2, {2, 1}}, {}}, {{}, {}}, {1, {0x0201}}},
 #if SZt == 2
     {"0x12345678 int,",
@@ -1339,7 +1393,7 @@ static m4testexecute testexecute_g[] = {
     {"0x0c0d0e0f ,", {m4comma, m4bye}, {{1, {0x0c0d0e0f}}, {}}, {{}, {}}, {2, {0x0e0f, 0x0c0d}}},
 #endif /* SZ */
 #endif /* SZt == 2 */
-#endif /* __BYTE_ORDER__ */
+#endif /* __BYTE_ORDER */
     {"\"\" 0 name,",
      {m4name_comma, m4here, m4minus, m4bye},
      {{2, {(m4cell) "bar", 0}}, {}},

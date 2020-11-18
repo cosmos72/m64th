@@ -74,7 +74,7 @@
     X(4, "noop", noop)                   /* ( -- ) do nothing                               */     \
     X(6, "n>drop", n_to_drop)            /* ( xn .. x1 n -- ) drop n cells                  */     \
     X(2, "r!", r_store)                  /* ( a -- ) (R: b -- a   )                         */     \
-    X(2, "r+", r_plus)                   /* ( a -- ) (R: b -- a+b )                         */     \
+    X(3, "r+!", r_plus_store)            /* ( a -- ) (R: b -- a+b )                         */     \
     X(6, "r>drop", r_from_drop)          /* (R: x -- ) equivalent to: r> drop               */     \
     X(6, "rdepth", rdepth)               /* ( -- n ) get return stack depth                 */     \
     X(5, "-roll", minus_roll)            /* rotate in opposite direction than 'roll'        */     \
@@ -236,8 +236,8 @@
     X(16, "disassemble-upto", disassemble_upto)                                                    \
     X(9, "ex>string", ex_to_string) /* ( ex -- c-addr u ) get exception name            */         \
     X(10, "forth-root", forth_root) /* set first wordlist in searchorder to forth-root  */         \
-    X(17, "hashmap-find/cell", hashmap_find_cell) /* ( map key -- key val t|f ) find key in map */ \
-    X(16, "hashmap-find/int", hashmap_find_int)   /* ( map key -- key val t|f ) find key in map */ \
+    X(17, "hashmap-find/cell", hashmap_find_cell) /* ( map key -- key' &val|0 ) find key in map */ \
+    X(16, "hashmap-find/int", hashmap_find_int)   /* ( map key -- key' &val|0 ) find key in map */ \
     X(9, "interpret", interpret)      /* one iteration of forth interpret/compile loop  */         \
     X(6, "m4th-c", m4th_c)            /* set first wordlist in searchorder to m4th-c    */         \
     X(9, "m4th-core", m4th_core)      /* set first wordlist in searchorder to m4th-core */         \
@@ -245,6 +245,7 @@
     X(11, "parse-quote", parse_quote) /* ( -- c-addr u ) read a string ended by quote   */         \
     X(4, "repl", repl)                /* call INTERPRET repeatedly until EOF or input error     */ \
     X(5, "r2nd@", r2nd_fetch)   /* alias of '2r@ drop' i.e. fetch second item from return stack */ \
+    X(8, "see-name", see_name)  /* ( nt -- ) show definition of nt                       */        \
     X(8, "string<>", string_ne) /* ( addr1 addr2 u -- addr1 addr2 u t|f )                */        \
     X(11, "string-ci<>", string_ci_ne) /* ( addr1 addr2 u -- addr1 addr2 u t|f )         */        \
     /* ( caddr n -- caddr' n' x t|f ) convert string to number, recognizing base & sign  */        \
@@ -297,7 +298,7 @@
     X(9, "iobuf>pos", iobuf_pos)         /* ( io -- addr ) get address of iobuf position     */    \
     X(9, "iobuf>end", iobuf_end)         /* ( io -- addr ) get address of iobuf end position */    \
     X(6, "latest", latest)               /* (    -- nt   ) get last defined word             */    \
-    X(9, "to-latest", to_latest)         /* ( nt --      ) set last defined word            */       \
+    X(9, "to-latest", to_latest)         /* ( nt --      ) set last defined word            */     \
     X(5, "name,", name_comma)            /* ( c-addr u -- nt ) create a new name             */    \
     X(9, "name>code", name_to_code)      /* ( nt  -- taddr n ) get code array from name      */    \
     X(11, "name>code>n", name_to_code_n) /* ( nt -- u        ) get code size from name       */    \
@@ -318,7 +319,7 @@
     X(15, "searchorder-dup", searchorder_dup)     /* (S: wid -- wid wid )                      */  \
     X(16, "searchorder-pick", searchorder_pick)   /* (S: wid_u .. wid_0 -- same ) ( -- wid_u ) */  \
     X(15, "searchorder[0]!", searchorder_store_0) /* ( wid -- ) overwrite searchorder 0-th elem */ \
-    X(10, "token>name", token_to_name) /* ( token -- nt|0 ) convert token to name */               \
+    X(10, "token>name", token_to_name)            /* ( token -- nt|0 ) convert token to name */    \
     X(8, "user-var", user_var) /*        ( -- addr ) must be followed by index of user variable */ \
     X(17, "wordlist-add-name", wordlist_add_name) /*   ( nt wid -- ) add name to wordlist       */ \
     X(18, "wordlist-last-name", wordlist_last_name) /* ( wid -- nt ) get last name in wordlist  */ \
@@ -487,9 +488,9 @@
     X(6, "(does)", _does_) /* ( -- ) replace execution semantics of latest word */                 \
     X(11, "(eval-name)", _eval_name_)                                                              \
     X(13, "(eval-number)", _eval_number_) /* ( x -- ) interpret or compile number */               \
-    /* ( vec pos -- key val next ) fetch entry from hashmap/cell bucket index */                   \
+    /* ( vec pos -- key &val next ) fetch entry from hashmap/cell bucket index */                  \
     X(21, "(hashmap-entry@/cell)", _hashmap_entry_fetch_cell_)                                     \
-    /* ( vec pos -- key val next ) fetch entry from hashmap/int bucket index */                    \
+    /* ( vec pos -- key &val next ) fetch entry from hashmap/int bucket index */                   \
     X(20, "(hashmap-entry@/int)", _hashmap_entry_fetch_int_)                                       \
     /* ( map key -- pos ) get bucket index for key in hashmap/cell */                              \
     X(22, "(hashmap-indexof/cell)", _hashmap_indexof_cell_)                                        \
@@ -501,6 +502,10 @@
     X(17, "(optimize-2token)", _optimize_2token_) /* ( tok-addr -- counted-tokens | 0 ) */         \
     /*  find an optimized sequence to replace 3 tokens being compiled. */                          \
     X(17, "(optimize-3token)", _optimize_3token_) /* ( tok-addr -- counted-tokens | 0 ) */         \
+    /*  find an optimized sequence to replace N tokens being compiled. */                          \
+    X(17, "(optimize-tokens)", _optimize_tokens_) /* ( tok-addr u -- counted-tokens u' | 0 0 ) */  \
+    /* copy and optimize at least one token from src to HERE. updates HERE src and u */            \
+    X(18, "(optimize-tokens,)", _optimize_tokens_comma_) /* ( src u -- src' u' ) */                \
     /* find an optimized sequence to replace '[ x ] literal' */                                    \
     X(18, "(optimize-literal)", _optimize_literal_) /* ( x -- token t | x f ) */                   \
     X(15, "(repl-type-ack)", _repl_type_ack_)                                                      \

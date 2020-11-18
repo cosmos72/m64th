@@ -32,7 +32,7 @@ WORD_START(dot_s, LASTWORD)
         _c_arg_3_, _c_call_, CELL(m4slice_print_stdout), _c_ret_0_,
         exit
     )
-WORD_END(see)
+WORD_END(dot_s)
 WORD_START(see, dot_s)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)
@@ -40,14 +40,14 @@ WORD_START(see, dot_s)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
-        CALL(parse_name), two_dup, CALL(string_to_name),        /* ( c-addr u nt|0 wid|0 -1|0|1 ) */
-        two_drop,                                               /* ( c-addr u nt|0 ) */
-        _q_if0_, T(6),                                          /* ( c-addr u nt|0 ) */
-            drop, ex_message_store,                             /* (               ) */
-            _lit_, T(M4ERR_UNDEFINED_WORD), throw,              /* (               ) */
-        then,                                                   /* ( c-addr u nt   ) */
-        nip, nip, zero,                                         /* ( nt 0          ) */
-        _c_arg_2_, _c_call_, CELL(m4word_print_stdout), _c_ret_0_, exit
+        CALL(parse_name), two_dup, CALL(string_to_name),       /* ( c-addr u nt|0 wid|0 -1|0|1 ) */
+        two_drop,                                              /* ( c-addr u nt|0 ) */
+        _q_if0_, T(6),                                         /* ( c-addr u nt|0 ) */
+            drop, ex_message_store,                            /* (               ) */
+            _lit_, T(M4ERR_UNDEFINED_WORD), throw,             /* (               ) */
+        then,                                                  /* ( c-addr u nt   ) */
+        nip, nip,                                              /* ( nt            ) */
+        CALL(see_name), exit
     )
 WORD_END(see)
 WORD_START(words, see)

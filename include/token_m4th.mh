@@ -83,7 +83,7 @@
 #define M4noop M4_u(63)                  /* noop                                    */
 #define M4n_to_drop M4_u(64)             /* n>drop ( xn .. x1 n -- ) drop n cells   */
 #define M4r_store M4_u(65)               /* r!        equivalent to: r>  drop >r    */
-#define M4r_plus M4_u(66)                /* r+        equivalent to: r>  +    >r    */
+#define M4r_plus_store M4_u(66)          /* r+!       equivalent to: r>  +    >r    */
 #define M4r_from_drop M4_u(67)           /* r>drop    equivalent to: r>  drop       */
 #define M4rdepth M4_u(68)                /* rdepth    get return stack depth        */
 #undef M4____gap                         /*                                         */
