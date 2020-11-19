@@ -760,15 +760,15 @@ static const m4hashmap_int test_hashmap_int1 = {
 
 /* ---------------------- test data for (optimize-*) --------------------- */
 
-static const m4token tokens__missing_[] = {m4_missing_};
-static const m4token tokens_noop[] = {m4noop};
-static const m4token tokens_two_drop[] = {m4two_drop};
-static const m4token tokens_false[] = {m4false};
-static const m4token tokens_one_plus[] = {m4one_plus};
-static const m4token tokens_swap_drop[] = {m4swap, m4drop};
-static const m4token tokens_ne_zero_more[] = {m4ne, m4zero_more};
-static const m4token tokens_r_from_plus_to_r[] = {m4r_from, m4plus, m4to_r};
-static const m4token tokens__lit__0xffff_and[] = {m4_lit_, 0xffff, m4and};
+static const m4token test_tokens__missing_[] = {m4_missing_};
+static const m4token test_tokens_noop[] = {m4noop};
+static const m4token test_tokens_two_drop[] = {m4two_drop};
+static const m4token test_tokens_false[] = {m4false};
+static const m4token test_tokens_one_plus[] = {m4one_plus};
+static const m4token test_tokens_swap_drop[] = {m4swap, m4drop};
+static const m4token test_tokens_ne_zero_more[] = {m4ne, m4zero_more};
+static const m4token test_tokens_r_from_plus_to_r[] = {m4r_from, m4plus, m4to_r};
+static const m4token test_tokens__lit__0xffff_and[] = {m4_lit_, 0xffff, m4and};
 /*
  */
 static m4testexecute testexecute_e[] = {
@@ -823,88 +823,94 @@ static m4testexecute testexecute_e[] = {
     {"{_missing_} (optimize-1token)",
      {CALL(_optimize_1token_), /* ( counted-tokens )                    */
       m4bye},                  /* ( 0 ) i.e. _missing_ is not optimized */
-     {{1, {(m4cell)tokens__missing_}}, {}},
+     {{1, {(m4cell)test_tokens__missing_}}, {}},
      {{1, {0}}, {}},
      {}},
     {"{noop} (optimize-1token)",
      {CALL(_optimize_1token_), /* ( counted-tokens )                       */
       m4token_fetch, m4bye},   /* ( 0 ) i.e. noop optimizes to zero tokens */
-     {{1, {(m4cell)tokens_noop}}, {}},
+     {{1, {(m4cell)test_tokens_noop}}, {}},
      {{1, {0}}, {}},
      {}},
     {"{2drop} (optimize-1token)",
      {CALL(_optimize_1token_),           /* ( counted-tokens ) */
       CALL(countedtokens_comma), m4bye}, /* (                ) */
-     {{1, {(m4cell)tokens_two_drop}}, {}},
+     {{1, {(m4cell)test_tokens_two_drop}}, {}},
      {{}, {}},
      {2, {m4drop, m4drop}}},
     {"{false} (optimize-1token)",
      {CALL(_optimize_1token_),           /* ( counted-tokens ) */
       CALL(countedtokens_comma), m4bye}, /* (                ) */
-     {{1, {(m4cell)tokens_false}}, {}},
+     {{1, {(m4cell)test_tokens_false}}, {}},
      {{}, {}},
      {1, {m4zero}}},
     {"{1+} (optimize-1token)",
      {CALL(_optimize_1token_), /* ( counted-tokens ) */
       m4bye},                  /* ( 0 ) i.e. 1+ is not optimized */
-     {{1, {(m4cell)tokens_one_plus}}, {}},
+     {{1, {(m4cell)test_tokens_one_plus}}, {}},
      {{1, {0}}, {}},
      {}},
     {"{swap drop} (optimize-2token)",
      {CALL(_optimize_2token_),           /* ( counted-tokens ) */
       CALL(countedtokens_comma), m4bye}, /* (                ) */
-     {{1, {(m4cell)tokens_swap_drop}}, {}},
+     {{1, {(m4cell)test_tokens_swap_drop}}, {}},
      {{}, {}},
      {1, {m4nip}}},
     {"{<> 0>} (optimize-2token)",
      {CALL(_optimize_2token_),           /* ( counted-tokens ) */
       CALL(countedtokens_comma), m4bye}, /* (                ) */
-     {{1, {(m4cell)tokens_ne_zero_more}}, {}},
+     {{1, {(m4cell)test_tokens_ne_zero_more}}, {}},
      {{}, {}},
      {3, {m4drop, m4drop, m4zero}}},
     {"{r> + >r} (optimize-3token)",
      {CALL(_optimize_3token_),           /* ( counted-tokens ) */
       CALL(countedtokens_comma), m4bye}, /* (                ) */
-     {{1, {(m4cell)tokens_r_from_plus_to_r}}, {}},
+     {{1, {(m4cell)test_tokens_r_from_plus_to_r}}, {}},
      {{}, {}},
      {1, {m4r_plus_store}}},
     {"{_missing_} 1 (optimize-tokens)",
      {CALL(_optimize_tokens_), m4bye}, /* ( counted-tokens u' ) */
-     {{2, {(m4cell)tokens__missing_, 1}}, {}},
+     {{2, {(m4cell)test_tokens__missing_, 1}}, {}},
      {{2, {0, 0}}, {}},
      {}},
     {"{false} 1 (optimize-tokens)",
      {CALL(_optimize_tokens_),                   /* ( counted-tokens u' ) */
       m4swap, CALL(countedtokens_comma), m4bye}, /* ( u'                ) */
-     {{2, {(m4cell)tokens_false, 1}}, {}},
+     {{2, {(m4cell)test_tokens_false, 1}}, {}},
      {{1, {1}}, {}},
      {1, {m4zero}}},
     {"{swap drop} 2 (optimize-tokens)",
      {CALL(_optimize_tokens_),                   /* ( counted-tokens u' ) */
       m4swap, CALL(countedtokens_comma), m4bye}, /* ( u'                ) */
-     {{2, {(m4cell)tokens_swap_drop, 2}}, {}},
+     {{2, {(m4cell)test_tokens_swap_drop, 2}}, {}},
      {{1, {2}}, {}},
      {1, {m4nip}}},
     {"{$ffff and} (optimize-tokens)",
      {CALL(_optimize_tokens_),                   /* ( counted-tokens u' ) */
       m4swap, CALL(countedtokens_comma), m4bye}, /* ( u'                ) */
-     {{2, {(m4cell)tokens__lit__0xffff_and, 3}}, {}},
+     {{2, {(m4cell)test_tokens__lit__0xffff_and, 3}}, {}},
      {{1, {3}}, {}},
      {1, {m4to_ushort}}},
     {"(optimize-tokens,)",
-     {m4token_comma, m4token_comma, m4state, m4fetch, m4dup, m4two, /* ( xt xt  u  )           */
-      CALL(_optimize_tokens_comma_), m4to_r,                        /* ( xt xt' u' ) (R: t|f ) */
-      m4minus_rot, m4sub,                                           /* ( u' xt'-xt ) (R: t|f ) */
-      m4r_from, m4bye},                                             /* ( u' xt'-xt t|f )       */
+     {m4token_comma, m4token_comma, m4state, m4fetch, m4two, /* ( xt u    ) */
+      CALL(_optimize_tokens_comma_), m4bye},                 /* ( u' t|f  ) */
      {{2, {m4minus, m4one}}, {}},
-     {{3, {0, 4, -1}}, {}},
+     {{2, {2, ttrue}}, {}},
      {3, {m4one, m4minus, /* followed by optimized sequence */ m4one_minus}}},
-    {"(optimize,)",
-     {m4token_comma, m4token_comma, m4state, m4fetch, m4two, /* ( xt u  ) */
-      CALL(_optimize_comma_), m4bye},                        /* ( t|f   ) */
-     {{2, {m4times, m4two}}, {}},
+    {"{2 * dup} (optimize-xt,)",
+     {m4token_comma, m4token_comma, m4token_comma, /* (            ) */
+      m4zero, m4three,                             /* ( offset u   ) */
+      CALL(_optimize_xt_comma_), m4bye},           /* ( t|f        ) */
+     {{3, {m4dup, m4times, m4two}}, {}},
      {{1, {ttrue}}, {}},
-     {3, {m4two, m4times, /* followed by optimized sequence */ m4two_times}}},
+     {5, {m4two, m4times, m4dup, /* followed by optimized sequence */ m4two_times, m4dup}}},
+    {"{dup * exit} (optimize-xt,)",
+     {m4token_comma, m4token_comma, m4token_comma, /* (            ) */
+      m4zero, m4three,                             /* ( offset u   ) */
+      CALL(_optimize_xt_comma_), m4bye},           /* ( t|f        ) */
+     {{3, {m4exit, m4times, m4dup}}, {}},
+     {{1, {ttrue}}, {}},
+     {5, {m4dup, m4times, m4exit, /* followed by optimized sequence */ m4squared, m4exit}}},
 };
 
 static const char teststr_empty[] = "";

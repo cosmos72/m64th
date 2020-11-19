@@ -769,16 +769,16 @@ WORD_START(_optimize_tokens_, _optimize_3token_)
     WORD_NATIVE_NONE()
     WORD_FLAGS(0)
     WORD_CODE(/* generated from file m4th_impl.forth - see source and comments there */
-        /*62*/ _q_if_, T(11+nCALLt), over, CALL(_optimize_1token_), _q_if_, T(5), nip, nip, one, exit, then, drop, then, dup, two,
-        u_more_equal, _if_, T(11+nCALLt), over, CALL(_optimize_2token_), _q_if_, T(5), nip, nip, two, exit, then, drop, then, dup, three,
-        u_more_equal, _if_, T(11+nCALLt), over, CALL(_optimize_3token_), _q_if_, T(5), nip, nip, three, exit, then, drop, then,
-        drop, drop, zero, zero, exit
+        /*60*/ two_to_r, i, _if_, T(10+nCALLt), i_prime, CALL(_optimize_1token_), question_dup, _if_, T(4), two_r_from_two_drop, one, exit,
+        then, then, i, two, u_more_equal, _if_, T(10+nCALLt), i_prime, CALL(_optimize_2token_), question_dup, _if_, T(4), two_r_from_two_drop, two, exit,
+        then, then, i, three, u_more_equal, _if_, T(10+nCALLt), i_prime, CALL(_optimize_3token_), question_dup, _if_, T(4), two_r_from_two_drop, three, exit,
+        then, then, two_r_from_two_drop, zero, zero, exit
     )
 WORD_END(_optimize_tokens_)
 /**
- * copy and optimize at least one token from src to HERE. updates HERE src and u
- * return true if an optimized sequence was found, else false
- * ( src u -- src' u' t|f )
+ * copy and optimize at least one token from src to HERE. updates HERE.
+ * return number of consumed tokens, and true if an optimized sequence was found, else false.
+ * ( src u -- u' t|f )
  */
 WORD_START(_optimize_tokens_comma_, _optimize_tokens_)
     WORD_DSTACK(2,3)
@@ -787,35 +787,40 @@ WORD_START(_optimize_tokens_comma_, _optimize_tokens_)
     WORD_NATIVE_NONE()
     WORD_FLAGS(0)
     WORD_CODE(/* generated from file m4th_impl.forth - see source and comments there */
-        /*38*/ _q_if0_, T(2), exit, then, two_dup_two_to_r, CALL(_optimize_tokens_),
-        _q_if_, T(7+nCALLt), swap, count_tokens, CALL(tokens_comma), minus_one, swap,
-        _else_, T(6), nip, i_prime, token_fetch, token_comma, one,
-        then, dup, tokens, i_prime, plus, swap, i_minus, two_r_from_two_drop, rot, exit
+        /*31*/ _q_if0_, T(4), nip, zero, exit, then, trail, CALL(_optimize_tokens_),
+        _q_if_, T(7+nCALLt), swap, count_tokens, CALL(tokens_comma), nip, minus_one,
+        _else_, T(5), one_plus, flip, token_fetch, token_comma, then, exit
     )
 WORD_END(_optimize_tokens_comma_)
 /**
- * copy and optimize exactly u tokens from src to HERE. updates HERE.
+ * copy and optimize exactly u tokens from XT+offset to HERE. updates HERE.
  * return true if something was optimized, else false
- * ( src u -- t|f )
+ * ( offset u -- t|f )
  */
-WORD_START(_optimize_comma_, _optimize_tokens_comma_)
+WORD_START(_optimize_xt_comma_, _optimize_tokens_comma_)
     WORD_DSTACK(2,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_FLAGS(0)
     WORD_CODE(
-        false, to_r,                                   /* (               ) (R: false ) */
-        begin,                                         /* ( src u         ) (R: t|f   ) */
-            _q_while_, T(6+nCALLt),                    /* ( src u         ) (R: t|f   ) */
-            CALL(_optimize_tokens_comma_),             /* ( src' u' t|f'  ) (R: t|f   ) */
-            r_fetch, or, r_store,                      /* ( src' u'       ) (R: t|f'  ) */
-        _repeat_, T(-8-nCALLt),                        /* ( src' u'       ) (R: t|f   ) */
-        two_drop, r_from, exit                         /* ( t|f           )             */
+        false, to_r,                                   /* ( offset u         ) (R: false ) */
+        begin,                                         /* ( offset u         ) (R: t|f   ) */
+            _q_while_, T(17+nCALLt),                   /* ( offset u         ) (R: t|f   ) */
+                               /* tricky: XT may move, because compiling can reallocate it */
+            over, tokens, state, fetch, plus,          /* ( offset u src     ) (R: t|f   ) */
+            over,                                      /* ( offset u src u   ) (R: t|f   ) */
+            CALL(_optimize_tokens_comma_),             /* ( offset u n t|f'  ) (R: t|f   ) */
+            r_fetch, or, r_store,                      /* ( offset u n       ) (R: t|f'  ) */
+            tuck, minus,                               /* ( offset n u'      ) (R: t|f   ) */
+            flip, plus,                                /* ( u offset'        ) (R: t|f   ) */
+            swap,                                      /* ( offset u         ) (R: t|f   ) */
+        _repeat_, T(-19-nCALLt),                       /* ( offset 0         ) (R: t|f   ) */
+        two_drop, r_from, exit                         /* ( t|f              )             */
     )
-WORD_END(_optimize_comma_)
+WORD_END(_optimize_xt_comma_)
 /* ( x -- token t | x f ) try to optimize '[ x ] literal' */
-WORD_START(_optimize_literal_, _optimize_tokens_comma_)
+WORD_START(_optimize_literal_, _optimize_xt_comma_)
     WORD_DSTACK(1,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
