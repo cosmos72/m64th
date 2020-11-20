@@ -45,16 +45,42 @@ also m4th-impl definitions
    nip                                         \ ( &val|0                  )
 ;
 
+\ find an optimized sequence to replace an 'if' or 'else' being compiled.
+\ if no optimized sequence was found, return 0
+: (optimize-if-else) \ ( tok0|tok1<<16|tok2<<32 -- counted-tokens|0 )
+   (ip>data>addr) swap                         \ ( &data key           )
+   dup >token swap                             \ ( &data tok0 key      )
+   16 tokens rshift                            \ ( &data tok0 tok2     )
+   8 tokens lshift                             \ ( &data tok0 tok2<<16 )
+   or >r                                       \ ( &data               ) (R: key )
+   begin                                       \ ( &data               ) (R: key )
+      dup token@ dup                           \ ( &data tok0 tok0     ) (R: key )
+   while                                       \ ( &data tok0          ) (R: key )
+      over token[1]                            \ ( &data tok0 tok2     ) (R: key )
+      8 tokens lshift or                       \ ( &data tok0|tok2<<16 ) (R: key )
+      r@ <>                                    \ ( &data t|f           ) (R: key )
+   while                                       \ ( &data               ) (R: key )
+      4 tokens +                               \ ( &data'              ) (R: key )
+   repeat                                      \ ( &data               ) (R: key )
+      0 swap token+ token+                     \ ( 0 counted-tokens    ) (R: key )
+   then                                        \ ( _ counted-tokens|0  ) (R: key )
+   nip r> drop                                 \ ( counted-tokens|0    )
+;
+
 
 \ find an optimized sequence to replace three tokens being compiled.
 : (optimize-3token)    \ ( tok-addr -- counted-tokens | 0 )
-   (ip>data>addr) swap dup>r                   \ ( hashmap tok-addr               ) (R: tok-addr )
+   (ip>data>addr) swap dup >r                  \ ( hashmap tok-addr               ) (R: tok-addr )
    token@ r@ token[1]                          \ ( hashmap tok0 tok1              ) (R: tok-addr )
    8 tokens lshift or                          \ ( hashmap tok0|tok1<<16          ) (R: tok-addr )
    r> token[2]                                 \ ( hashmap tok0|tok1<<16 tok2     )
    16 tokens lshift or                         \ ( hashmap tok0|tok1<<16|tok2<<32 )
    hashmap-find/cell                           \ ( key' &val|0                    )
-   nip                                         \ ( &val|0                         )
+   dup if                                      \ ( key  &val                      )
+      nip exit                                 \ ( &val                           )
+   then                                        \ ( key  &val                      )
+   drop                                        \ ( key                            )
+   (optimize-if-else)                          \ ( &val|0                         )
 ;
 
 
