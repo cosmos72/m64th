@@ -673,11 +673,54 @@ WORD_START(_while0_, _while_)
     )
 WORD_END(_while0_)
 /**
+ * find an optimized sequence to replace an 'if' or 'else' being compiled.
+ * if no optimized sequence was found, return 0
+ * ( tok0|tok1<<16|tok2<<32 -- counted-tokens|0 )
+ */
+WORD_START(_optimize_if_else_, _while0_)
+    WORD_DSTACK(1,1)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_DATA_TOKENS)
+    WORD_CODE_AND_DATA(_optimize_if_else_,
+      WORD_CODE_TOKENS(/* generated from file m4th_impl.forth - see source and comments there */
+        _ip_to_data_addr_, swap, dup, to_token, swap,
+        _lit2s_, T(16), tokens, rshift,
+        eight, tokens, lshift, or, to_r,
+        begin,
+            dup, token_fetch,
+        _q_while_, T(19),
+            over, token_fetch_1,
+            eight, tokens, lshift, or,
+            r_fetch, ne,
+        _while_, T(5),
+            four, tokens, plus,
+        _repeat_, T(-19),
+            zero, swap, token_plus, token_plus,
+        then,
+        nip, r_from_drop, exit
+      ),
+      WORD_DATA_TOKENS(
+          _if_,    /*T(n)*/ then, /*=>*/ T(1), drop,
+          _if0_,   /*T(n)*/ then, /*=>*/ T(1), drop,
+          _q_if_,  /*T(n)*/ then, /*=>*/ T(0), _missing_,
+          _q_if0_, /*T(n)*/ then, /*=>*/ T(0), _missing_,
+          _else_,  /*T(n)*/ then, /*=>*/ T(1), then,
+          _if_,    /*T(n)*/ _else_, /*=>*/ T(1), _if0_,
+          _if0_,   /*T(n)*/ _else_, /*=>*/ T(1), _if_,
+          _q_if_,  /*T(n)*/ _else_, /*=>*/ T(1), _q_if0_,
+          _q_if0_, /*T(n)*/ _else_, /*=>*/ T(1), _q_if_,
+          T(0)
+      )
+    )
+WORD_END(_optimize_if_else_)
+/**
  * find an optimized sequence to replace a single token being compiled.
  * if no optimized sequence was found, return 0
  * ( tok-addr -- counted-tokens | 0 )
  */
-WORD_START(_optimize_1token_, _while0_)
+WORD_START(_optimize_1token_, _optimize_if_else_)
     WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -759,54 +802,48 @@ WORD_START(_optimize_3token_, _optimize_2token_)
     WORD_DATA_END(_optimize_3token_)
 WORD_END(_optimize_3token_)
 /**
- * find an optimized sequence to replace an 'if' or 'else' being compiled.
+ * find an optimized sequence to replace four tokens being compiled.
  * if no optimized sequence was found, return 0
- * ( tok0|tok1<<16|tok2<<32 -- counted-tokens|0 )
+ * ( tok-addr -- counted-tokens | 0 )
  */
-WORD_START(_optimize_if_else_, _optimize_3token_)
+WORD_START(_optimize_4token_, _optimize_3token_)
     WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_DATA_TOKENS)
-    WORD_CODE_AND_DATA(_optimize_if_else_,
-      WORD_CODE_TOKENS(/* generated from file m4th_impl.forth - see source and comments there */
-        _ip_to_data_addr_, swap, dup, to_token, swap,
-        _lit2s_, T(16), tokens, rshift,
-        eight, tokens, lshift, or, to_r,
-        begin,
-            dup, token_fetch,
-        _q_while_, T(19),
-            over, token_fetch_1,
-            eight, tokens, lshift, or,
-            r_fetch, ne,
-        _while_, T(5),
-            four, tokens, plus,
-        _repeat_, T(-19),
-            zero, swap, token_plus, token_plus,
-        then,
-        nip, r_from_drop, exit
+    WORD_CODE_AND_DATA(_optimize_4token_,
+      WORD_CODE_TOKENS(
+        /* _q_if_ T(n) dup then => ?dup */
+        _ip_to_data_addr_, zero, flip,                 /* ( 0 &data tok-addr       ) */
+        dup, token_fetch,                              /* ( 0 &data tok-addr tok0  ) */
+        _lit_tok_, _q_if_, ne,                         /* ( 0 &data tok-addr t|f   ) */
+        _if_, T(3),                                    /* ( 0 &data tok-addr       ) */
+            two_drop, exit,                            /* ( 0                      ) */
+        then,                                          /* ( 0 &data tok-addr       ) */
+        dup, token_fetch_2,                            /* ( 0 &data tok-addr tok1  ) */
+        _lit_tok_, dup, ne,                            /* ( 0 &data tok-addr t|f   ) */
+        _if_, T(3),                                    /* ( 0 &data tok-addr       ) */
+            two_drop, exit,                            /* ( 0                      ) */
+        then,                                          /* ( 0 &data tok-addr       ) */
+        dup, token_fetch_3,                            /* ( 0 &data tok-addr tok1  ) */
+        _lit_tok_, then, ne,                           /* ( 0 &data tok-addr t|f   ) */
+        _if_, T(3),                                    /* ( 0 &data tok-addr       ) */
+            two_drop, exit,                            /* ( 0                      ) */
+        then,                                          /* ( 0 &data tok-addr       ) */
+        drop, nip, exit                                /* ( &data                  ) */
       ),
       WORD_DATA_TOKENS(
-          _if_,    /*T(n)*/ then, /*=>*/ T(1), drop,
-          _if0_,   /*T(n)*/ then, /*=>*/ T(1), drop,
-          _q_if_,  /*T(n)*/ then, /*=>*/ T(0), _missing_,
-          _q_if0_, /*T(n)*/ then, /*=>*/ T(0), _missing_,
-          _else_,  /*T(n)*/ then, /*=>*/ T(1), then,
-          _if_,    /*T(n)*/ _else_, /*=>*/ T(1), _if0_,
-          _if0_,   /*T(n)*/ _else_, /*=>*/ T(1), _if_,
-          _q_if_,  /*T(n)*/ _else_, /*=>*/ T(1), _q_if0_,
-          _q_if0_, /*T(n)*/ _else_, /*=>*/ T(1), _q_if_,
-          T(0)
+        T(1), question_dup
       )
     )
-WORD_END(_optimize_if_else_)
+WORD_END(_optimize_4token_)
 /**
  * find an optimized sequence to replace N tokens being compiled.
  * if no optimized sequence was found, return 0
  * ( tok-addr u -- counted-tokens u' | 0 0 )
  */
-WORD_START(_optimize_tokens_, _optimize_if_else_)
+WORD_START(_optimize_tokens_, _optimize_4token_)
     WORD_DSTACK(2,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -816,6 +853,7 @@ WORD_START(_optimize_tokens_, _optimize_if_else_)
         /*60*/ two_to_r, i, _if_, T(10+nCALLt), i_prime, CALL(_optimize_1token_), question_dup, _if_, T(4), two_r_from_two_drop, one, exit,
         then, then, i, two, u_more_equal, _if_, T(10+nCALLt), i_prime, CALL(_optimize_2token_), question_dup, _if_, T(4), two_r_from_two_drop, two, exit,
         then, then, i, three, u_more_equal, _if_, T(10+nCALLt), i_prime, CALL(_optimize_3token_), question_dup, _if_, T(4), two_r_from_two_drop, three, exit,
+        then, then, i, four, u_more_equal, _if_, T(10+nCALLt), i_prime, CALL(_optimize_4token_), question_dup, _if_, T(4), two_r_from_two_drop, four, exit,
         then, then, two_r_from_two_drop, zero, zero, exit
     )
 WORD_END(_optimize_tokens_)

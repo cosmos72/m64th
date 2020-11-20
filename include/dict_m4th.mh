@@ -505,6 +505,8 @@
     X(17, "(optimize-2token)", _optimize_2token_) /* ( tok-addr -- counted-tokens|0 ) */           \
     /*  find an optimized sequence to replace 3 tokens being compiled. */                          \
     X(17, "(optimize-3token)", _optimize_3token_) /* ( tok-addr -- counted-tokens|0 ) */           \
+    /*  find an optimized sequence to replace 4 tokens being compiled. */                          \
+    X(17, "(optimize-4token)", _optimize_4token_) /* ( tok-addr -- counted-tokens|0 ) */           \
     /*  find an optimized sequence to replace N tokens being compiled. */                          \
     X(17, "(optimize-tokens)", _optimize_tokens_) /* ( tok-addr u -- counted-tokens u' | 0 0 ) */  \
     /* copy and optimize at least one token from src to HERE. updates HERE src and u */            \
