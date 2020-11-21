@@ -787,12 +787,27 @@ static void moveEnd(linenoiseState *l) {
     }
 }
 
+/* return non-zero if ch is alphanumeric i.e.
+ * an uppercase letter A...Z
+ * or a lower case letter a..z
+ * or a decimal digit 0...9
+ * or is part of an UTF-8 sequence
+ */
+static int isAlphaOrDigit(char ch) {
+    return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || (ch >= '0' && ch <= '9') ||
+#if CHAR_MIN < 0
+           ch < 0;
+#else
+           ch >= 128;
+#endif
+}
+
 /* Move cursor to beginning of previous word. */
 static void movePrevWord(linenoiseState *l) {
     if (l->pos != 0) {
-        while (l->pos > 0 && l->buf[l->pos - 1] == ' ')
+        while (l->pos > 0 && !isAlphaOrDigit(l->buf[l->pos - 1]))
             l->pos--;
-        while (l->pos > 0 && l->buf[l->pos - 1] != ' ')
+        while (l->pos > 0 && isAlphaOrDigit(l->buf[l->pos - 1]))
             l->pos--;
         refreshLine(l);
     }
@@ -801,9 +816,9 @@ static void movePrevWord(linenoiseState *l) {
 /* Move cursor to beginning of next word. */
 static void moveNextWord(linenoiseState *l) {
     if (l->pos < l->len) {
-        while (l->pos < l->len && l->buf[l->pos] != ' ')
+        while (l->pos < l->len && !isAlphaOrDigit(l->buf[l->pos]))
             l->pos++;
-        while (l->pos < l->len && l->buf[l->pos] == ' ')
+        while (l->pos < l->len && isAlphaOrDigit(l->buf[l->pos]))
             l->pos++;
         refreshLine(l);
     }
@@ -862,9 +877,9 @@ void editBackspace(linenoiseState *l) {
 void editDeleteNextWord(linenoiseState *l) {
     size_t pos = l->pos, len = l->len;
     size_t n = 0;
-    while (pos + n < len && l->buf[pos + n] == ' ')
+    while (pos + n < len && !isAlphaOrDigit(l->buf[pos + n]))
         n++;
-    while (pos + n < len && l->buf[pos + n] != ' ')
+    while (pos + n < len && isAlphaOrDigit(l->buf[pos + n]))
         n++;
     if (n != 0) {
         memmove(l->buf + pos, l->buf + pos + n, len - pos + 1);
@@ -879,9 +894,9 @@ void editDeletePrevWord(linenoiseState *l) {
     size_t pos = l->pos;
     size_t n = 0;
 
-    while (pos > n && l->buf[pos - n - 1] == ' ')
+    while (pos > n && !isAlphaOrDigit(l->buf[pos - n - 1]))
         n++;
-    while (pos > n && l->buf[pos - n - 1] != ' ')
+    while (pos > n && isAlphaOrDigit(l->buf[pos - n - 1]))
         n++;
     if (n != 0) {
         memmove(l->buf + pos - n, l->buf + pos, l->len - pos + 1);
