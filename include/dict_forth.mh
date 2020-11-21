@@ -153,6 +153,7 @@
 #define DICT_TOKENS_FORTH_CORE_EXT(X)                                                              \
     X(3, "0<>", zero_ne)                                                                           \
     X(2, "<>", ne)                                                                                 \
+    X(7, "endcase", endcase)                                                                       \
     X(5, "false", false)                                                                           \
     X(4, "pick", pick)                                                                             \
     X(4, "roll", roll)                                                                             \
@@ -167,7 +168,10 @@
     X(3, "?do", question_do)                                                                       \
     X(5, "again", again)                                                                           \
     X(7, "buffer:", buffer_colon)                                                                  \
+    X(4, "case", case)                                                                             \
+    X(5, "endof", endof)                                                                           \
     X(3, "hex", hex)                                                                               \
+    X(2, "of", of)                                                                                 \
     X(10, "parse-name", parse_name)                                                                \
     X(1, "\\", backslash)
 

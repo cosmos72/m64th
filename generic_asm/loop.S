@@ -33,7 +33,7 @@ FUNC_START(_q_if_)
         JNZ(   DTOP,   TO(_q_if_.enter))
         RELJUMP()
 LABEL(_q_if_.enter)
-        NEXTT()                    /* skip IP offset          */
+        NEXTT()                        /* skip IP offset          */
 FUNC_RAWEND(_q_if_)
 #endif
 
@@ -48,7 +48,7 @@ FUNC_START(_q_if0_)
         JZ(    DTOP,   TO(_q_if0_.enter))
         RELJUMP()
 LABEL(_q_if0_.enter)
-        NEXTT()                    /* skip IP offset          */
+        NEXTT()                        /* skip IP offset          */
 FUNC_RAWEND(_q_if0_)
 #endif
 
@@ -66,11 +66,38 @@ FUNC_RAWEND(_jump_)
 /** implementation of 'do', enters a (do) ... (loop) */
 #ifndef M4FDO
 FUNC_START(do)
-        DPOP(  REG1)                 /* REG1 = i'             */
-        RPUSH2(RTOP,       REG1)     /* save rstack top, i'   */
-        MOVE(  DTOP,       RTOP)     /* RTOP = i              */
-        DPOP___DTOP()                /* reload dstack top     */
+        DPOP(  REG1)                   /* REG1 = i'            */
+        RPUSH2(RTOP,       REG1)       /* save rstack top, i'  */
+        MOVE(  DTOP,       RTOP)       /* RTOP = i             */
+        DPOP___DTOP()                  /* reload dstack top    */
 FUNC_END(do)
+#endif
+
+
+/**
+ * followed followed by IP offset, ignores it.
+ * token '(case)' is actually an alias of this function
+ */
+FUNC_START(_ignore_)
+        ADD2(  IMM(SZt),   IP)         /* skip IP offset       */
+FUNC_END(_ignore_)
+
+
+/**
+ * implementation of 'of', enters a (of) ... (endof)
+ * must be followed by IP offset to skip.
+ * IP offset = 0 means first instruction after (of) itself
+ */
+#ifndef M4F_OF_
+FUNC_START(_of_)   /* (of)  ( x y -- x| ) */
+        MOVE(  DTOP,   REG1)           /* a = y                */
+        DPOP___DTOP()                  /* dtop = x             */
+        JEQ(   DTOP,   REG1,   TO(_of_.enter))
+        RELJUMP()
+LABEL(_of_.enter)
+        DPOP___DTOP()                  /* reload dtop          */
+        NEXTT()                        /* skip IP offset       */
+FUNC_RAWEND(_of_)
 #endif
 
 

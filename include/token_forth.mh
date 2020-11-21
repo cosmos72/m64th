@@ -177,13 +177,13 @@
 #undef M4again /*147*/           /* again    no dedicated m4token */
 #undef M4buffer_colon /*148*/    /* buffer:  no dedicated m4token */
 #undef M4c_quote /*149*/         /* c"       */
-#undef M4case /*150*/            /* case     */
+#undef M4case /*150*/            /* case     no dedicated m4token */
 #undef M4compile_comma /*151*/   /* compile, no dedicated m4token */
 #undef M4defer /*152*/           /* defer    */
 #undef M4defer_store /*153*/     /* defer!   */
 #undef M4defer_fetch /*154*/     /* defer@   */
-#undef M4endcase /*155*/         /* endcase  */
-#undef M4endof /*156*/           /* endof    */
+#define M4endcase 155            /* endcase  */
+#undef M4endof /*156*/           /* endof    no dedicated m4token */
 #undef M4erase /*157*/           /* erase    */
 #define M4false 158              /* false    */
 #undef M4hex /*159*/             /* hex      no dedicated m4token */
@@ -191,7 +191,7 @@
 #undef M4is /*161*/              /* is       */
 #undef M4marker /*162*/          /* marker   */
 #define M4nip 163                /* nip      */
-#undef M4of /*164*/              /* of       */
+#undef M4of /*164*/              /* of       no dedicated m4token */
 #undef M4pad /*165*/             /* pad      */
 #undef M4parse /*166*/           /* parse    */
 #undef M4parse_name /*167*/      /* parse-name   no dedicated m4token */

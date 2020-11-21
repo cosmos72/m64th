@@ -153,7 +153,7 @@ WORD_START(ibuf_refill, ibuf_find_nonblanks)
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
         /* dup >r iobuf>pos @                       ( pos                ) (R: io )
-         * ?if                                      ( pos                ) (R: io )
+         * dup if                                   ( pos                ) (R: io )
          *    r@ iobuf>data                         ( pos c-addr u       ) (R: io )
          *    r@ iobuf>addr swap                    ( pos c-addr addr0 u ) (R: io )
          *    cmove                                 ( pos                ) (R: io )

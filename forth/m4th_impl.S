@@ -171,7 +171,16 @@ WORD_START(_call_xt_,  _call_native_)
     /* make inliner happy: it skips the final 'exit' of a word's code when inlining */
     WORD_CODE(_call_xt_, exit)
 WORD_END(_call_xt_)
-WORD_START(_catch_beg_,  _call_xt_)
+WORD_START(_case_, _call_xt_)
+    WORD_STACK_NONE()
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE | M4FLAG_CONSUMES_IP_SZt | M4FLAG_INLINE_ALWAYS | M4FLAG_REEXEC_AFTER_OPTIMIZE)
+    WORD_CODE(
+        CALL(case), exit
+    )
+WORD_END(_case_)
+WORD_START(_catch_beg_,  _case_)
     WORD_DSTACK(-1,-1) /* stack effect of called word */
     WORD_RSTACK(0,3)
     WORD_DSTACK(1,0)   /* stack effect when jumping */
@@ -461,7 +470,14 @@ WORD_START(_if0_, _if_)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_MAY_JUMP | M4FLAG_IMMEDIATE | M4FLAG_REEXEC_AFTER_OPTIMIZE)
     WORD_CODE(_compile_jump_lit_, _if0_, _if_, exit)
 WORD_END(_if0_)
-WORD_START(_ip_, _if0_)
+WORD_START(_ignore_, _if0_)
+    WORD_STACK_NONE()
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt)
+    WORD_CODE(_compile_sys_lit_, _ignore_, _ignore_, exit)
+WORD_END(_ignore_)
+WORD_START(_ip_, _ignore_)
     WORD_DSTACK(0,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -998,11 +1014,24 @@ WORD_START(_compile_jump_lit_, _compile_jump_)
     WORD_CODE(_compile_jump_lit_, T(-1), T(-1), exit)
 WORD_END(_compile_jump_lit_)
 /*
+ * ( -- sys ) must be followed by m4token and its category.
+ * append the token to XT being compiled,
+ * then push sys to dstack i.e. jump_address (= # of tokens of XT being compiled) and category.
+ */
+WORD_START(_compile_sys_lit_, _compile_jump_lit_)
+    WORD_DSTACK(0,2)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE() /* consumes IP and uses IP-relative TOKEN_CALL_NOTHROW(), cannot inline in native code */
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt2 | M4FLAG_INLINE_ALWAYS)
+    WORD_CODE(_compile_sys_lit_, T(-1), T(-1), exit)
+WORD_END(_compile_sys_lit_)
+/*
  * ( sys+ -- sys+ cs-depth ) must be followed by category.
  * find category in control stack and return its cs-depth.
  * Stops at colon-sys, throws if not found.
  */
-WORD_START(_cs_find_lit_, _compile_jump_lit_)
+WORD_START(_cs_find_lit_, _compile_sys_lit_)
     WORD_DSTACK(0,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -1063,6 +1092,16 @@ WORD_START(_does_exit_, _does_)
     /* make inliner happy: it skips the final 'exit' of a word's code when inlining */
     WORD_CODE(_does_exit_, exit)
 WORD_END(_does_exit_)
+WORD_START(_endof_,    _does_exit_)
+    WORD_DSTACK(2,-1)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_JUMP | M4FLAG_IMMEDIATE | M4FLAG_REEXEC_AFTER_OPTIMIZE)
+    WORD_CODE(
+        CALL(endof), exit
+    )
+WORD_END(_endof_)
 /* ( sys -- ) finish compiling a word, make it findable */
 WORD_START(_finish_, _does_exit_)
     WORD_DSTACK(2,0)
@@ -1100,7 +1139,17 @@ WORD_START(_inline_, _finish_)
         _loop_, T(-6), drop, exit
     )
 WORD_END(_inline_)
-WORD_START(_optimize_once_, _inline_)
+WORD_START(_of_, _inline_)
+    WORD_DSTACK(2,-1)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_MAY_JUMP | M4FLAG_IMMEDIATE | M4FLAG_REEXEC_AFTER_OPTIMIZE)
+    WORD_CODE(
+        CALL(of), exit
+    )
+WORD_END(_of_)
+WORD_START(_optimize_once_, _of_)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -1135,7 +1184,7 @@ WORD_START(_recompile_, _optimize_)
         /* here dup state @ sub allot ( set here = xt )( here            )
          * >r 0 ' colon                                ( sys             ) (R: here )
          * begin                                       ( ...             ) (R: here )
-         *   here r@ <                                 ( t|f             ) (R: here )
+         *   here r@ u<                                ( t|f             ) (R: here )
          * while                                       (                 ) (R: here )
          *   [recompile-token]                         ( ...             ) (R: here )
          * repeat                                      (                 ) (R: here )
@@ -1145,7 +1194,7 @@ WORD_START(_recompile_, _optimize_)
         here, dup, state, fetch, sub, allot,
         to_r, zero, _lit_tok_, colon,
         begin,
-            here, r_fetch, less,
+            here, r_fetch, u_less,
         _while_, T(3+nCALLt),
             CALL(_recompile_token_),
         _repeat_, T(-8-nCALLt),

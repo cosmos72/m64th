@@ -63,16 +63,17 @@ WORD_START(buffer_colon,       again)
         CALL(create), allot, exit
     )
 WORD_END(buffer_colon)
-WORD_START(hex,      buffer_colon)
-    WORD_STACK_NONE()  /* stack effect if not jumping */
-    WORD_STACK_NONE()  /* stack effect if jumping */
+WORD_START(case,               buffer_colon)
+    WORD_STACK_NONE()
+    WORD_STACK_NONE()
     WORD_NATIVE_NONE()
-    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE)
     WORD_CODE(
-        _lit_, T(16), base, store, exit
+        _compile_jump_lit_, _case_, _case_,            /* ( case-sys            ) */
+        exit                                           /* ( case-sys            ) */
     )
-WORD_END(hex)
-WORD_START(compile_comma, hex)
+WORD_END(case)
+WORD_START(compile_comma, buffer_colon)
     WORD_DSTACK(1,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -94,9 +95,56 @@ WORD_START(compile_comma, hex)
         xt_to_name, CALL(_inline_), exit
    )
 WORD_END(compile_comma)
-WORD(false,        compile_comma,  DSTACK(0,1), RSTACK(0,0), WORD_PURE)
-WORD(nip,              false,      DSTACK(2,1), RSTACK(0,0), WORD_PURE)
-WORD_START(parse_name, nip)
+WORD_START(endcase,    compile_comma)
+    WORD_DSTACK(1,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE | M4FLAG_INLINE_ALWAYS | M4FLAG_REEXEC_AFTER_OPTIMIZE)
+    WORD_CODE(
+        _check_lit_tok_, _case_,                       /* ( case-sys            ) */
+        _lit_comma_, endcase,                          /* compile 'endcase'       */
+        CALL(_resolve_jump_here_),                     /* (                     ) */
+        exit                                           /* (                     ) */
+    )
+WORD_END(endcase)
+WORD_START(endof,      endcase)
+    WORD_DSTACK(2,-1)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE)
+    WORD_CODE(
+        _check_lit_tok_, _of_,                         /* ( _ of-sys            ) */
+        _compile_jump_lit_, _endof_, _case_,           /* ( _ of-sys case2-sys  ) */
+        minus_cs_rot,                                  /* ( case2-sys _ of-sys  ) */
+        CALL(_resolve_jump_here_),                     /* ( case2-sys _         ) */
+        _check_lit_tok_, _case_,                       /* ( case2-sys case1-sys ) */
+        cs_drop, exit                                  /* ( case2-sys           ) */
+    )
+WORD_END(endof)
+WORD(false,            endof,      DSTACK(0,1), RSTACK(0,0), WORD_PURE)
+WORD_START(hex,        false)
+    WORD_STACK_NONE()  /* stack effect if not jumping */
+    WORD_STACK_NONE()  /* stack effect if jumping */
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        _lit_, T(16), base, store, exit
+    )
+WORD_END(hex)
+WORD(nip,              hex,        DSTACK(2,1), RSTACK(0,0), WORD_PURE)
+WORD_START(of, nip)
+    WORD_DSTACK(2,-1)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE)
+    WORD_CODE(
+        _compile_jump_lit_, _of_, _of_, exit
+    )
+WORD_END(of)
+WORD_START(parse_name, of)
     WORD_DSTACK(0,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()

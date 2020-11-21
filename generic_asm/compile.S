@@ -82,7 +82,7 @@ FUNC_START(_compile_jump_lit_)
 FUNC_DEF(_compile_jump_)
 /* FUNC_START(_compile_jump_) */
                                                        /* ( token category         ) */
-        TOKEN_CALL_NOTHROW(FUNC(_num_compiled_reg0_), _compile_jump_.0)  /* @ = #code_n                */
+        TOKEN_CALL_NOTHROW(FUNC(_num_compiled_reg0_), _compile_jump_.0) /* @ = #code_n */
         LOAD(  REG1,       AT(DSTK))                   /* a = token                  */
         ADD2(  IMM(2),     REG0)                       /* @ = jump_address           */
         init_RFFF_REG2()                               /* b = -1                     */
@@ -92,6 +92,25 @@ FUNC_DEF(_compile_jump_)
         STOR(  REG0,       AT(DSTK))                   /* ( jump_address category )  */
 FUNC_END(_compile_jump_)
 FUNC_SIZE(_compile_jump_lit_)
+
+
+/**
+ * [compile-sys-lit] ( -- sys ) must be followed by m4token and its category.
+ * compile a non-jumping token i.e. append it to XT being compiled,
+ * then push sys to dstack i.e. jump_address (= # of tokens of XT being compiled) and category.
+ */
+FUNC_START(_compile_sys_lit_)
+        TOKEN_CALL_NOTHROW(FUNC(_num_compiled_reg0_), _compile_sys_lit_.0) /* @ = #code_n */
+        LD_ut( REG1,       AT(IP))                     /* a = token                  */
+        LD_ut( REG2,       AT(IP, SZt))                /* b = category               */
+        ADD2( IMM(SZt2),   IP)                         /* skip two m4token           */
+        STORt( REG1,       AT(HERE))                   /* here[0] = token            */
+        INC1(  REG0)                                   /* @ = jump_address           */
+        ADD2(  IMM(SZt),   HERE)                       /* here += SZt                */
+        DPUSH2(DTOP,       REG0)                       /* ( jump_address _ )         */
+        MOVE(  REG2,       DTOP)                       /* ( jump_address category )  */
+FUNC_END(_compile_sys_lit_)
+
 
 /**
  * ( -- cs-depth ) must be followed by jump category.

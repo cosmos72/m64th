@@ -392,17 +392,20 @@
     X(7, "(break)", _break_)                                                                       \
     X(13, "(call-native)", _call_native_)                                                          \
     X(9, "(call-xt)", _call_xt_)                                                                   \
-    X(11, "(catch-beg)", _catch_beg_)                                                              \
-    X(11, "(catch-end)", _catch_end_)                                                              \
+    X(6, "(case)", _case_)                    /* execution semantics of 'case'     */              \
+    X(11, "(catch-beg)", _catch_beg_)         /* first half of 'catch'             */              \
+    X(11, "(catch-end)", _catch_end_)         /* second half of 'catch'            */              \
     X(15, "(check-lit-tok)", _check_lit_tok_) /* ( x -- x ) followed by expected x: a token */     \
-    X(10, "(continue)", _continue_)                                                                \
-    X(4, "(do)", _do_)                                                                             \
-    X(11, "(does-exit)", _does_exit_) /* alias of exit. used immediately after (does) */           \
-    X(6, "(else)", _else_)                                                                         \
+    X(10, "(continue)", _continue_)           /* execution semantics of 'continue' */              \
+    X(4, "(do)", _do_)                        /* execution semantics of 'do'       */              \
+    X(11, "(does-exit)", _does_exit_)         /* alias of exit. used immediately after (does) */   \
+    X(6, "(else)", _else_)                    /* execution semantics of 'else'     */              \
+    X(7, "(endof)", _endof_)                  /* execution semantics of 'endof'    */              \
     X(12, "(exec-token)", _exec_token_)                                                            \
     X(21, "(exec-xt-from-native)", _exec_xt_from_native_)                                          \
     X(4, "(if)", _if_)                                                                             \
     X(5, "(if0)", _if0_)                                                                           \
+    X(8, "(ignore)", _ignore_) /* followed by IP offset, ignores it. aliased by '(case)'  */       \
     X(4, "(ip)", _ip_)                                                                             \
     X(9, "(ip>data)", _ip_to_data_)                                                                \
     X(14, "(ip>data>addr)", _ip_to_data_addr_)                                                     \
@@ -436,6 +439,7 @@
     X(12, "(local-free)", _local_free_) /* release space for last reserved local variables */      \
     X(6, "(loop)", _loop_)                                                                         \
     X(9, "(missing)", _missing_)                                                                   \
+    X(4, "(of)", _of_) /* ( x y -- x| ) execution semantics of 'of' */                             \
     X(8, "(repeat)", _repeat_)                                                                     \
     X(18, "(return-to-native)", _return_to_native_)                                                \
     X(12, "(to-local-0)", _to_local_0_) /* set 0-th local variable */                              \
@@ -464,6 +468,8 @@
     X(14, "[compile-jump]", _compile_jump_)                                                        \
     /* ( -- sys ) compile an unresolved jump. must be followed by jump token and its category */   \
     X(18, "[compile-jump-lit]", _compile_jump_lit_)                                                \
+    /* ( -- sys ) compile a non-jump token. must be followed by token and its category */          \
+    X(17, "[compile-sys-lit]", _compile_sys_lit_)                                                  \
     X(13, "[cs-find-lit]", _cs_find_lit_) /* ( sys+ -- sys+ cs-depth ) followed by category */     \
     X(2, "-2", minus_two)                                                                          \
     X(2, "-1", minus_one)                                                                          \

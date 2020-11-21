@@ -199,7 +199,7 @@ WORD_START(begin, base)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE | M4FLAG_REEXEC_AFTER_OPTIMIZE)
     WORD_CODE(
-        _lit_comma_, begin, _num_compiled_, _lit_tok_, begin, exit
+        _compile_sys_lit_, begin, begin, exit
     )
 WORD_END(begin)
 WORD(bl,               begin,      DSTACK(0,1), RSTACK(0,0), WORD_PURE)
