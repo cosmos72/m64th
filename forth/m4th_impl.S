@@ -857,7 +857,7 @@ WORD_START(_optimize_4token_, _optimize_if_else_)
 WORD_END(_optimize_4token_)
 /**
  * find an optimized sequence to replace N tokens being compiled.
- * if no optimized sequence was found, return 0
+ * return address of optimized sequence and u' = number of consumed tokens, or 0 0
  * ( tok-addr u -- counted-tokens u' | 0 0 )
  */
 WORD_START(_optimize_tokens_, _optimize_4token_)
@@ -865,13 +865,33 @@ WORD_START(_optimize_tokens_, _optimize_4token_)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
-    WORD_FLAGS(0)
-    WORD_CODE(/* generated from file m4th_impl.forth - see source and comments there */
-        /*60*/ two_to_r, i, _if_, T(10+nCALLt), i_prime, CALL(_optimize_1token_), question_dup, _if_, T(4), two_r_from_two_drop, one, exit,
-        then, then, i, two, u_more_equal, _if_, T(10+nCALLt), i_prime, CALL(_optimize_2token_), question_dup, _if_, T(4), two_r_from_two_drop, two, exit,
-        then, then, i, three, u_more_equal, _if_, T(10+nCALLt), i_prime, CALL(_optimize_3token_), question_dup, _if_, T(4), two_r_from_two_drop, three, exit,
-        then, then, i, four, u_more_equal, _if_, T(10+nCALLt), i_prime, CALL(_optimize_4token_), question_dup, _if_, T(4), two_r_from_two_drop, four, exit,
-        then, then, two_r_from_two_drop, zero, zero, exit
+    WORD_FLAGS(M4FLAG_DATA_TOKENS)
+    WORD_CODE_AND_DATA(_optimize_tokens_,
+      WORD_CODE_TOKENS(/* generated from file m4th_impl.forth - see source and comments there */
+        /*35*/ _ip_to_data_addr_, minus_rot, two_to_r,
+        begin,
+            dup, token_fetch,
+        _q_while_, T(23),
+            r_fetch, u_less_equal,
+        _while_, T(17),
+            r2nd_fetch, over, token_plus, fetch, execute,
+        _q_while0_, T(5),
+            drop, token_plus, cell_plus,
+        _repeat_, T(-20),
+            swap, token_fetch, two_r_from_two_drop, exit,
+        then,
+            zero,
+        then,
+        nip, zero, two_r_from_two_drop, exit
+      ),
+      WORD_DATA_TOKENS(
+        T(1), XT(_optimize_1token_),
+        T(2), XT(_optimize_2token_),
+        T(3), XT(_optimize_3token_),
+        T(3), XT(_optimize_if_else_),
+        T(4), XT(_optimize_4token_),
+        T(0)
+      )
     )
 WORD_END(_optimize_tokens_)
 /**
