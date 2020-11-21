@@ -802,7 +802,7 @@ WORD_END(_optimize_if_else_)
 /**
  * find an optimized sequence to replace four tokens being compiled.
  * if no optimized sequence was found, return 0
- * ( tok-addr -- counted-tokens | 0 )
+ * ( tok-addr -- counted-tokens|0 )
  */
 WORD_START(_optimize_4token_, _optimize_if_else_)
     WORD_DSTACK(1,1)
@@ -813,23 +813,13 @@ WORD_START(_optimize_4token_, _optimize_if_else_)
     WORD_CODE_AND_DATA(_optimize_4token_,
       WORD_CODE_TOKENS(
         /* _q_if_ T(n) dup then => ?dup */
-        _ip_to_data_addr_, zero, flip,                 /* ( 0 &data tok-addr       ) */
-        dup, token_fetch,                              /* ( 0 &data tok-addr tok0  ) */
-        _lit_tok_, _q_if_, ne,                         /* ( 0 &data tok-addr t|f   ) */
-        _if_, T(3),                                    /* ( 0 &data tok-addr       ) */
-            two_drop, exit,                            /* ( 0                      ) */
-        then,                                          /* ( 0 &data tok-addr       ) */
-        dup, token_fetch_2,                            /* ( 0 &data tok-addr tok1  ) */
-        _lit_tok_, dup, ne,                            /* ( 0 &data tok-addr t|f   ) */
-        _if_, T(3),                                    /* ( 0 &data tok-addr       ) */
-            two_drop, exit,                            /* ( 0                      ) */
-        then,                                          /* ( 0 &data tok-addr       ) */
-        dup, token_fetch_3,                            /* ( 0 &data tok-addr tok1  ) */
-        _lit_tok_, then, ne,                           /* ( 0 &data tok-addr t|f   ) */
-        _if_, T(3),                                    /* ( 0 &data tok-addr       ) */
-            two_drop, exit,                            /* ( 0                      ) */
-        then,                                          /* ( 0 &data tok-addr       ) */
-        drop, nip, exit                                /* ( &data                  ) */
+        _ip_to_data_addr_, over, token_fetch,          /* ( addr &data tok0     ) */
+        _lit_tok_, _q_if_, equal, and,                 /* ( addr &data|0        ) */
+        over, token_fetch_2,                           /* ( addr &data|0 tok2   ) */
+        _lit_tok_, dup, equal, and,                    /* ( addr &data|0'       ) */
+        swap, token_fetch_3,                           /* ( &data|0 tok3        ) */
+        _lit_tok_, then, equal, and,                   /* ( &data|0'            ) */
+        exit                                           /* ( &data|0             ) */
       ),
       WORD_DATA_TOKENS(
         T(1), question_dup
