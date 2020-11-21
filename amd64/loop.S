@@ -87,13 +87,14 @@ FUNC_SIZE(_do_)
  * IP offset = 0 means first instruction after (if) itself
  */
 FUNC_START(_if_)
-        test   DTOP, DTOP;
-        DPOP___DTOP()              /* preserves EFLAGS        */
-        jnz    TO(_if_.enter);
-        RELJUMP()
-LABEL(_if_.enter)
-        NEXTT()                    /* skip IP offset          */
-FUNC_RAWEND(_if_)
+        LD_st( REG3,   AT(IP))         /* c = jump offset         */
+        ADD2(IMM(SZt), IP)             /* skip IP offset          */
+        test   DTOP,   DTOP;
+        ADD4(  IP,     REG3,PSZt, REG3)/* c = TARGET_IP - preserves EFLAGS */
+        DPOP___DTOP()                  /* preserves EFLAGS        */
+        cmovz  REG3,   IP;             /* set IP if DTOP was 0    */
+FUNC_END(_if_)
+
 
 /**
  * pop dstack top.
@@ -102,13 +103,46 @@ FUNC_RAWEND(_if_)
  * IP offset = 0 means first instruction after (if0) itself
  */
 FUNC_START(_if0_)
-        test   DTOP, DTOP;
-        DPOP___DTOP()              /* preserves EFLAGS        */
-        jz     TO(_if0_.enter);
-        RELJUMP()
-LABEL(_if0_.enter)
-        NEXTT()                    /* skip IP offset          */
-FUNC_RAWEND(_if0_)
+        LD_st( REG3,   AT(IP))         /* c = jump offset         */
+        ADD2(IMM(SZt), IP)             /* skip IP offset          */
+        test   DTOP,   DTOP;
+        ADD4(  IP,     REG3,PSZt, REG3)/* c = TARGET_IP - preserves EFLAGS */
+        DPOP___DTOP()                  /* preserves EFLAGS        */
+        cmovnz REG3,   IP;             /* set IP if DTOP was <> 0 */
+FUNC_END(_if0_)
+
+
+/**
+ * ( n -- n ) examine dstack top without removing it.
+ * if <> 0 continue to next instruction, otherwise jump.
+ * must be followed by IP offset to jump.
+ * IP offset = 0 means first instruction after (?if) itself
+ */
+#define M4F_Q_IF_
+FUNC_START(_q_if_)
+        LD_st( REG3,   AT(IP))         /* c = jump offset         */
+        ADD2(IMM(SZt), IP)             /* skip IP offset          */
+        test   DTOP,   DTOP;
+        ADD4(  IP,     REG3,PSZt, REG3)/* c = TARGET_IP - preserves EFLAGS */
+        cmovz  REG3,   IP;             /* set IP if DTOP was 0    */
+FUNC_END(_q_if_)
+
+
+/**
+ * ( n -- n ) examine dstack top without removing it.
+ * if = 0 continue to next instruction, otherwise jump.
+ * must be followed by IP offset to jump.
+ * IP offset = 0 means first instruction after (?if0) itself
+ */
+#define M4F_Q_IF0_
+FUNC_START(_q_if0_)
+        LD_st( REG3,   AT(IP))         /* c = jump offset         */
+        ADD2(IMM(SZt), IP)             /* skip IP offset          */
+        test   DTOP,   DTOP;
+        ADD4(  IP,     REG3,PSZt, REG3)/* c = TARGET_IP - preserves EFLAGS */
+        cmovnz REG3,   IP;             /* set IP if DTOP was <> 0 */
+FUNC_END(_q_if0_)
+
 
 /**
  * must be followed by IP offset of first instruction after (loop)

@@ -28,13 +28,14 @@
  * must be followed by IP offset to jump.
  * IP offset = 0 means first instruction after (?if) itself
  */
+#ifndef M4F_Q_IF_
 FUNC_START(_q_if_)
         JNZ(   DTOP,   TO(_q_if_.enter))
         RELJUMP()
 LABEL(_q_if_.enter)
         NEXTT()                    /* skip IP offset          */
 FUNC_RAWEND(_q_if_)
-
+#endif
 
 /**
  * ( n -- n ) examine dstack top without removing it.
@@ -42,12 +43,14 @@ FUNC_RAWEND(_q_if_)
  * must be followed by IP offset to jump.
  * IP offset = 0 means first instruction after (?if0) itself
  */
+#ifndef M4F_Q_IF0_
 FUNC_START(_q_if0_)
         JZ(    DTOP,   TO(_q_if0_.enter))
         RELJUMP()
 LABEL(_q_if0_.enter)
         NEXTT()                    /* skip IP offset          */
 FUNC_RAWEND(_q_if0_)
+#endif
 
 
 /**
