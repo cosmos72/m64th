@@ -891,15 +891,15 @@ static m4testexecute testexecute_e[] = {
      {{1, {(m4cell)test_tokens_r_from_plus_to_r}}, {}},
      {{}, {}},
      {1, {m4r_plus_store}}},
-    {"{(if0) T(_) (else)} (optimize-if-else)",
-     {CALL(_optimize_if_else_),     /* ( counted-tokens ) */
+    {"{(if0) T(_) (else)} (optimize-3jump)",
+     {CALL(_optimize_3jump_),       /* ( counted-tokens ) */
       CALL(countedtokens_comma),    /* (                ) */
       m4one, m4token_comma, m4bye}, /* (                ) */
      {{1, {(m4cell)test_tokens_if0_t_else}}, {}},
      {{}, {}},
      {2, {m4_if_, T(1)}}},
-    {"{(if) T(_) then} (optimize-if-else)",
-     {CALL(_optimize_if_else_),          /* ( counted-tokens ) */
+    {"{(if) T(_) then} (optimize-3jump)",
+     {CALL(_optimize_3jump_),            /* ( counted-tokens ) */
       CALL(countedtokens_comma), m4bye}, /* (                ) */
      {{1, {(m4cell)test_tokens_if_t_then}}, {}},
      {{}, {}},

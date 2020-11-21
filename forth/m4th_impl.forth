@@ -57,9 +57,10 @@ also m4th-impl definitions
 ;
 
 
-\ find an optimized sequence to replace three tokens being compiled, containing an 'if' or 'else'.
+\ find an optimized sequence to replace three tokens being compiled,
+\ which may be part of control flow i.e. 'if' 'else' 'case' etc.
 \ if no optimized sequence was found, return 0
-: (optimize-if-else) \ ( tok-addr -- counted-tokens|0 )
+: (optimize-3jump) \ ( tok-addr -- counted-tokens|0 )
    (ip>data>addr) swap dup                     \ ( &data addr addr     )
    token@ swap token[2]                        \ ( &data tok0 tok2     )
    8 tokens lshift                             \ ( &data tok0 tok2<<16 )
@@ -174,4 +175,4 @@ also m4th-impl definitions
 ;
 
 
-disassemble-upto (optimize-if-else)
+disassemble-upto (optimize-1token)

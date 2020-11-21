@@ -804,17 +804,18 @@ WORD_START(_optimize_3token_, _optimize_2token_)
     WORD_DATA_END(_optimize_3token_)
 WORD_END(_optimize_3token_)
 /**
- * find an optimized sequence to replace three tokens being compiled, containing an 'if' or 'else'.
+ * find an optimized sequence to replace three tokens being compiled,
+ * which may be part of control flow i.e. 'if' 'else' 'case' etc.
  * if no optimized sequence was found, return 0
  * ( tok-addr -- counted-tokens|0 )
  */
-WORD_START(_optimize_if_else_, _optimize_3token_)
+WORD_START(_optimize_3jump_, _optimize_3token_)
     WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_DATA_TOKENS)
-    WORD_CODE_AND_DATA(_optimize_if_else_,
+    WORD_CODE_AND_DATA(_optimize_3jump_,
       WORD_CODE_TOKENS(/* generated from file m4th_impl.forth - see source and comments there */
         /*38*/ _ip_to_data_addr_, swap, dup, token_fetch, swap, token_fetch_2,
         eight, tokens, lshift, or, to_r,
@@ -840,16 +841,17 @@ WORD_START(_optimize_if_else_, _optimize_3token_)
           _if0_,   /*T(n)*/ _else_, /*=>*/ T(1), _if_,
           _q_if_,  /*T(n)*/ _else_, /*=>*/ T(1), _q_if0_,
           _q_if0_, /*T(n)*/ _else_, /*=>*/ T(1), _q_if_,
+          _case_,  /*T(n)*/ endcase, /*=>*/ T(1), drop,
           T(0)
       )
     )
-WORD_END(_optimize_if_else_)
+WORD_END(_optimize_3jump_)
 /**
  * find an optimized sequence to replace four tokens being compiled.
  * if no optimized sequence was found, return 0
  * ( tok-addr -- counted-tokens|0 )
  */
-WORD_START(_optimize_4token_, _optimize_if_else_)
+WORD_START(_optimize_4token_, _optimize_3jump_)
     WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -904,7 +906,7 @@ WORD_START(_optimize_tokens_, _optimize_4token_)
         T(1), XT(_optimize_1token_),
         T(2), XT(_optimize_2token_),
         T(3), XT(_optimize_3token_),
-        T(3), XT(_optimize_if_else_),
+        T(3), XT(_optimize_3jump_),
         T(4), XT(_optimize_4token_),
         T(0)
       )

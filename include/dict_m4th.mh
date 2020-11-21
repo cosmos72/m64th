@@ -502,9 +502,9 @@
     X(22, "(hashmap-indexof/cell)", _hashmap_indexof_cell_)                                        \
     /* ( map key -- pos ) get bucket index for key in hashmap/int */                               \
     X(21, "(hashmap-indexof/int)", _hashmap_indexof_int_)                                          \
-    /*  find an optimized sequence to replace an 'if' or 'else' being compiled. */                 \
-    /* ( tok0|tok1<<16|tok2<<32 -- counted-tokens|0 ) */                                           \
-    X(18, "(optimize-if-else)", _optimize_if_else_)                                                \
+    /* find an optimized sequence to replace three tokens being compiled, */                       \
+    /* which may be part of control flow i.e. 'if' 'else' 'case' etc.  */                          \
+    X(16, "(optimize-3jump)", _optimize_3jump_) /* ( tok-addr -- counted-tokens|0 ) */             \
     /*  find an optimized sequence to replace a single token being compiled. */                    \
     X(17, "(optimize-1token)", _optimize_1token_) /* ( tok-addr -- counted-tokens|0 ) */           \
     /*  find an optimized sequence to replace 2 tokens being compiled. */                          \

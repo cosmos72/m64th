@@ -202,6 +202,7 @@ static const m4testcompile testcompile_a[] = {
      {14,
       {m4_case_, T(-1), m4two, m4_of_, T(3), m4three, m4_endof_, T(-1), m4four, m4_of_, T(3),
        m4five, m4_endof_, T(-1)}}},
+    {"case endcase", {}, {}, {3, {m4_case_, T(-1), m4endcase}}},
     {"case 3 of 4 endof 5 of 6 endof 7 endcase",
      {},
      {},
@@ -260,6 +261,8 @@ static const m4testcompile testcompile_b[] = {
      {2, {0, m4colon}},
      {},
      {5, {m4_q_if_, T(2), m4three, m4then, m4exit}}},
+    /* ------------------------------- [optimize] case ---------------------- */
+    {"case endcase ;", {2, {0, m4colon}}, {}, {2, {m4drop, m4exit}}},
     /* ------------------------------- [optimize] begin --------------------- */
     {"begin nop again ;", {2, {0, m4colon}}, {}, {4, {m4begin, m4_again_, T(-2), m4exit}}},
     {"begin while nop repeat ;",
