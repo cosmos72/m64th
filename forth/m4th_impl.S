@@ -1112,23 +1112,16 @@ WORD_START(_optimize_once_, _inline_)
         cmove_count, nip, here, minus, allot, exit
     )
 WORD_END(_optimize_once_)
+/* call (optimize-once) repeatedly until there is nothing left optimize. updates HERE. */
 WORD_START(_optimize_, _optimize_once_)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE)
-    WORD_CODE(
-        state, fetch, here,                         /* ( xt here            ) */
-#if 1
-        /*                \ optimize tokens in range xt...here                */
-        _c_arg_2_, _c_call_, CELL(m4th_c_optimize), _c_ret_2_, /* ( xt here') */
-        nip,                                        /* ( here'              ) */
-        here,                                       /* ( here' here         ) */
-        minus, allot,                               /* (                    ) */
-#else /* 0 */
-#endif /* 0 */
-        CALL(_recompile_), exit                     /* (                    ) */
+    WORD_CODE(/* generated from file m4th_impl.forth - see source and comments there */
+        /*14*/ begin, CALL(_optimize_once_), _until0_, T(-3-nCALLt),
+        CALL(_recompile_), exit
     )
 WORD_END(_optimize_)
 /* rebuild XT jump offsets after optimization */

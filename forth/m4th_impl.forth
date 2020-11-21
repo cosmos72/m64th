@@ -164,5 +164,14 @@ also m4th-impl definitions
 ;
 
 
+\ call (optimize-once) repeatedly until there is nothing left optimize. updates HERE.
+: (optimize)    \ ( -- )
+   begin                                     \ (                  )
+      (optimize-once)                        \ ( t|f              )
+      0=                                     \ ( flag             )
+   until                                     \ (                  )
+   [recompile]                               \ (                  )
+;
+
 
 disassemble-upto (optimize-if-else)

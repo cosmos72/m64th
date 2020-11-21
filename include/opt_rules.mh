@@ -147,6 +147,7 @@
         x(three, rshift, /*=>*/ eight_div)                   /* 3  lshift     => 8/             */ \
         x(four, times, /*=>*/ four_times)                    /* 4  *          => 4*             */ \
         x(four, plus, /*=>*/ four_plus)                      /* 4  +          => 4+             */ \
+        x(four, minus, /*=>*/ four_minus)                    /* 4  -          => 4-             */ \
         x(four, div, /*=>*/ four_sm_div)                     /* 4  /          => 4sm/           */ \
         x(four, ne, /*=>*/ four_minus, zero_ne)              /* 4  <>         => 4- 0<>         */ \
         x(four, equal, /*=>*/ four_minus, zero_equal)        /* 4  =          => 4- 0=          */ \
@@ -166,6 +167,7 @@
         x(four_sm_div, two_sm_div, /*=>*/ four_sm_div)       /* 4sm/ 2sm/     => 8sm/           */ \
         x(eight, times, /*=>*/ eight_times)                  /* 8  *          => 8*             */ \
         x(eight, plus, /*=>*/ eight_plus)                    /* 8  +          => 8+             */ \
+        x(eight, minus, /*=>*/ eight_minus)                  /* 8  -          => 8-             */ \
         x(eight, div, /*=>*/ eight_sm_div)                   /* 8  /          => 8sm/           */ \
         x(eight, ne, /*=>*/ eight_minus, zero_ne)            /* 8  <>         => 8- 0<>         */ \
         x(eight, equal, /*=>*/ eight_minus, zero_equal)      /* 8  =          => 8- 0=          */ \

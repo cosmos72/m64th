@@ -945,6 +945,20 @@ static m4testexecute testexecute_e[] = {
      {{4, {m4times, m4dup, m4times, m4dup}}, {}},
      {{1, {ttrue}}, {}},
      {2, {/* optimized sequence: */ m4squared, m4squared}}},
+    {"{1 * 2 * 4 *} (optimize)",
+     {m4token_comma, m4token_comma, m4token_comma, /* ( _ _ _           ) */
+      m4token_comma, m4token_comma, m4token_comma, /* (                 ) */
+      CALL(_optimize_), m4bye},                    /* (                 ) */
+     {{6, {m4times, m4four, m4times, m4two, m4times, m4one}}, {}},
+     {{}, {}},
+     {1, {/* optimized sequence: */ m4eight_times}}},
+    {"{1 - 1 - 4 +} (optimize)",
+     {m4token_comma, m4token_comma, m4token_comma, /* ( _ _ _           ) */
+      m4token_comma, m4token_comma, m4token_comma, /* (                 ) */
+      CALL(_optimize_), m4bye},                    /* (                 ) */
+     {{6, {m4plus, m4four, m4minus, m4one, m4minus, m4one}}, {}},
+     {{}, {}},
+     {1, {/* optimized sequence: */ m4two_plus}}},
 };
 
 static const char teststr_empty[] = "";
