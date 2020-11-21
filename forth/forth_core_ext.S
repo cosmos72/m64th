@@ -73,7 +73,7 @@ WORD_START(case,               buffer_colon)
         exit                                           /* ( case-sys            ) */
     )
 WORD_END(case)
-WORD_START(compile_comma, buffer_colon)
+WORD_START(compile_comma, case)
     WORD_DSTACK(1,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()

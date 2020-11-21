@@ -465,7 +465,7 @@ static m4testexecute testexecute_c[] = {
     {"r>", {m4r_from, m4bye}, {{}, {1, {99}}}, {{1, {99}}, {}}, {}},
     {"dup>r", {m4dup_to_r, m4bye}, {{1, {33}}, {}}, {{1, {33}}, {1, {33}}}, {}},
     {"r>drop", {m4r_from_drop, m4bye}, {{}, {1, {99}}}, {{}, {}}, {}},
-    /* ----------------------------- if, else, do, loop --------------------- */
+    /* ----------------------------- if else -------------------------------- */
     {"0 1 do", {m4do, m4bye}, {{2, {0, 1}}, {}}, {{}, {2, {0, 1}}}, {}},
     {"1 0 do", {m4do, m4bye}, {{2, {1, 0}}, {}}, {{}, {2, {1, 0}}}, {}},
     {"0 0 (?do)", {m4_q_do_, T(0), m4bye}, {{2, {0, 0}}, {}}, {{}, {}}, {}},
@@ -480,6 +480,7 @@ static m4testexecute testexecute_c[] = {
     {"1 (if0)", {m4_if0_, T(1), m4three, m4bye}, {{1, {1}}, {}}, {{}, {}}, {}},
     {"(else) T(0)", {m4_else_, T(0), m4bye, m4_missing_}, {{}, {}}, {{}, {}}, {}},
     {"(else) T(1)", {m4_else_, T(1), m4true, m4bye}, {{}, {}}, {{}, {}}, {}},
+    /* ----------------------------- do leave loop -------------------------- */
     {"(leave)", {m4_leave_, T(0), m4bye}, {{}, {2, {0, 1}}}, {{}, {}}, {}},
     {"0 0 2>r 2 (+loop)",
      {m4_plus_loop_, T(0), m4bye},
@@ -506,6 +507,25 @@ static m4testexecute testexecute_c[] = {
      {m4do, m4i_plus, m4_loop_, T(-3), m4bye},
      {{3, {0, (m4cell)1e6, 0}}, {}},
      {{1, {499999500000l}}, {}},
+     {}},
+    /* ----------------------------- case of endof endcase ------------------ */
+    {"(case) T(-1)", {m4_case_, T(-1), m4bye}, {{}, {}}, {{}, {}}, {}},
+    {"0 1 (of) T(1) 2", {m4_of_, T(1), m4two, m4bye}, {{2, {0, 1}}, {}}, {{1, {0}}, {}}, {}},
+    {"1 1 (of) T(1) 3", {m4_of_, T(1), m4three, m4bye}, {{2, {1, 1}}, {}}, {{1, {3}}, {}}, {}},
+    {"(endof) T(0) 4", {m4_endof_, T(0), m4four, m4bye}, {{}, {}}, {{1, {4}}, {}}, {}},
+    {"(endof) T(1) 5", {m4_endof_, T(1), m4five, m4bye}, {{}, {}}, {{}, {}}, {}},
+    {"6 endcase", {m4endcase, m4bye}, {{1, {6}}, {}}, {{}, {}}, {}},
+    {"1 (case) T(-1) 1 (of) T(3) -1 (endof) T(3) 2* 0 endcase",
+     {m4_case_, T(-1), m4one, m4_of_, T(3), m4minus_one, m4_endof_, T(3), m4two_times, m4zero,
+      m4endcase, m4bye},
+     {{1, {1}}, {}},
+     {{1, {-1}}, {}},
+     {}},
+    {"3 (case) T(-1) 1 (of) T(3) -1 (endof) T(3) 2* 0 endcase",
+     {m4_case_, T(-1), m4one, m4_of_, T(3), m4minus_one, m4_endof_, T(3), m4two_times, m4zero,
+      m4endcase, m4bye},
+     {{1, {3}}, {}},
+     {{1, {6}}, {}},
      {}},
     /* ----------------------------- line  ---------------------------------- */
     {"\"abc\" 'c' line-find-char",
