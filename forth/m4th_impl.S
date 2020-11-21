@@ -629,24 +629,47 @@ WORD(_to_local_e_, _to_local_d_,   DSTACK(1,0), RSTACK(0,0), WORD_IMPURE | M4FLA
 WORD(_to_local_f_, _to_local_e_,   DSTACK(1,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
 WORD(_to_local_n_, _to_local_f_,   DSTACK(1,0), RSTACK(0,0), M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_CONSUMES_IP_SZt)
 WORD_START(_until_, _to_local_n_)
-    WORD_DSTACK(1,0) /* token stack effect when not jumping */
+    WORD_DSTACK(1,0) /* runtime stack effect when not jumping */
     WORD_RSTACK(0,0)
-    WORD_DSTACK(1,0) /* token stack effect when jumping */
+    WORD_DSTACK(1,0) /* runtime stack effect when jumping */
     WORD_RSTACK(0,0)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_MAY_JUMP | M4FLAG_IMMEDIATE | M4FLAG_REEXEC_AFTER_OPTIMIZE)
-    WORD_CODE(CALL(until), exit)
+    WORD_CODE(
+        _lit_tok_, _until_,
+        CALL(_until_comma_), exit
+    )
 WORD_END(_until_)
 WORD_START(_until0_, _until_)
-    WORD_DSTACK(1,0) /* token stack effect when not jumping */
+    WORD_DSTACK(1,0) /* runtime stack effect when not jumping */
     WORD_RSTACK(0,0)
-    WORD_DSTACK(1,0) /* token stack effect when jumping */
+    WORD_DSTACK(1,0) /* runtime stack effect when jumping */
     WORD_RSTACK(0,0)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_MAY_JUMP | M4FLAG_IMMEDIATE | M4FLAG_REEXEC_AFTER_OPTIMIZE)
-    WORD_CODE(exit) /* TODO */
+    WORD_CODE(
+        _lit_tok_, _until0_,
+        CALL(_until_comma_), exit
+    )
 WORD_END(_until0_)
-WORD_START(_while_, _until_)
+/* common implementation to compile 'until' '(until)' '(until0)' */
+WORD_START(_until_comma_, _until0_)
+    WORD_DSTACK(3,0) /* runtime stack effect when not jumping */
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        to_r,                                    /* ( sys              ) (R: tok  )      */
+        _check_lit_tok_, begin,                  /* ( sys              ) must be 'begin' */
+        r_from, _lit_tok_, _until_,              /* ( sys tok category )                 */
+        _compile_jump_,                          /* ( sys sys-until    )                 */
+        cs_drop,                    /* we only need the compiled 'until' not the cs data */
+        CALL(_resolve_jump_there_), /* resolve jump offset from 'until' to 'begin'       */
+        exit
+    )
+WORD_END(_until_comma_)
+WORD_START(_while_, _until_comma_)
     WORD_DSTACK(1,0) /* token stack effect when not jumping */
     WORD_RSTACK(0,0)
     WORD_DSTACK(1,0) /* token stack effect when jumping */

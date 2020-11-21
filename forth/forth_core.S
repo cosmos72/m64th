@@ -532,11 +532,8 @@ WORD_START(until,      unloop)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_CODE(
-        _check_lit_tok_, begin,             /* ( sys ) must be 'begin' */
-        _compile_jump_lit_, _until_, _until_,
-        cs_drop,                    /* we only need the compiled '(until)' not the cs data */
-        CALL(_resolve_jump_there_), /* resolve jump offset from '(until)' to 'begin'       */
-        exit
+        _lit_tok_, _until_,
+        CALL(_until_comma_), exit
     )
 WORD_END(until)
 WORD_START(variable,   until)

@@ -527,6 +527,7 @@
     X(14, "[resolve-loop]", _resolve_loop_) /* common back-end of 'loop' and '+loop'        */     \
     X(23, "[throw-compile-only-xt]", _throw_compile_only_xt_)                                      \
     X(24, "[throw-if-not-compiling]", _throw_if_not_compiling_)                                    \
+    X(8, "[until,]", _until_comma_) /* compile one of 'until' '(until)' '(until0)'    */           \
     X(9, "char>base", char_to_base) /* convert '#' to 10, '$' to 16, '%' to 2, else 0 */           \
     X(6, "char>u", char_to_u) /* convert numeric digit from char to unsigned number, else -1 */    \
     /* ( caddr n -- caddr' n' base ) convert prefix # $ % to base, else fetch current base */      \

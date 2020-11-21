@@ -234,6 +234,7 @@ static const m4testcompile testcompile_b[] = {
     {"dup if 1 then ;", {2, {0, m4colon}}, {}, {5, {m4_q_if_, T(2), m4one, m4then, m4exit}}},
     {"dup 0= if 2 then ;", {2, {0, m4colon}}, {}, {5, {m4_q_if0_, T(2), m4two, m4then, m4exit}}},
     /* ------------------------------- [optimize] begin --------------------- */
+    {"begin nop again ;", {2, {0, m4colon}}, {}, {4, {m4begin, m4_again_, T(-2), m4exit}}},
     {"begin while nop repeat ;",
      {2, {0, m4colon}},
      {},
@@ -258,6 +259,9 @@ static const m4testcompile testcompile_b[] = {
      {2, {0, m4colon}},
      {},
      {6, {m4begin, m4_q_while0_, T(2), m4_repeat_, T(-4), m4exit}}},
+    {"begin until ;", {2, {0, m4colon}}, {}, {4, {m4begin, m4_until_, T(-2), m4exit}}},
+    {"begin 0= until ;", {2, {0, m4colon}}, {}, {4, {m4begin, m4_until0_, T(-2), m4exit}}},
+    {"begin 0<> until ;", {2, {0, m4colon}}, {}, {4, {m4begin, m4_until_, T(-2), m4exit}}},
 };
 
 static m4code m4testcompile_init(const m4testcompile *t, m4countedcode *codegen_buf) {
