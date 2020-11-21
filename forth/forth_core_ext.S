@@ -102,10 +102,14 @@ WORD_START(endcase,    compile_comma)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE | M4FLAG_INLINE_ALWAYS | M4FLAG_REEXEC_AFTER_OPTIMIZE)
     WORD_CODE(
-        _check_lit_tok_, _case_,                       /* ( case-sys            ) */
-        _lit_comma_, endcase,                          /* compile 'endcase'       */
-        CALL(_resolve_jump_here_),                     /* (                     ) */
-        exit                                           /* (                     ) */
+        _lit_comma_, endcase,                          /* compile 'endcase'           */
+        begin,                                         /* ( case-sys endof-sys*     ) */
+            dup, _lit_tok_, _endof_, equal,            /* ( case-sys endof-sys* t|f ) */
+        _while_, T(3+nCALLt),                          /* ( case-sys endof-sys*     ) */
+            CALL(_resolve_jump_here_),                 /* ( case-sys endof-sys'     ) */
+        _repeat_, T(-9-nCALLt),                        /* ( case-sys                ) */
+        _check_lit_tok_, _case_,                       /* ( case-sys                ) */
+        cs_drop, exit                                  /* (                         ) */
     )
 WORD_END(endcase)
 WORD_START(endof,      endcase)
@@ -115,12 +119,11 @@ WORD_START(endof,      endcase)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE)
     WORD_CODE(
-        _check_lit_tok_, _of_,                         /* ( _ of-sys            ) */
-        _compile_jump_lit_, _endof_, _case_,           /* ( _ of-sys case2-sys  ) */
-        minus_cs_rot,                                  /* ( case2-sys _ of-sys  ) */
-        CALL(_resolve_jump_here_),                     /* ( case2-sys _         ) */
-        _check_lit_tok_, _case_,                       /* ( case2-sys case1-sys ) */
-        cs_drop, exit                                  /* ( case2-sys           ) */
+        _check_lit_tok_, _of_,                         /* ( of-sys              ) */
+        _compile_jump_lit_, _endof_, _endof_,          /* ( of-sys endof-sys    ) */
+        cs_swap,                                       /* ( endof-sys of-sys    ) */
+        CALL(_resolve_jump_here_),                     /* ( endof-sys           ) */
+        exit                                           /* ( endof-sys           ) */
     )
 WORD_END(endof)
 WORD(false,            endof,      DSTACK(0,1), RSTACK(0,0), WORD_PURE)
