@@ -68,7 +68,7 @@ WORD(count_tokens,     compile_string_comma, DSTACK(1,2), RSTACK(0,0), WORD_IMPU
 /**
  * compile u tokens. the address counted-tokens contains
  * the number u - which occupies 1 token - followed by u tokens
- * ( counted-tokens -- )
+ * ( counted-tokens|0 -- )
  */
 WORD_START(countedtokens_comma,   count_tokens)
     WORD_DSTACK(1,0)
@@ -77,7 +77,7 @@ WORD_START(countedtokens_comma,   count_tokens)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
-        count_tokens, CALL(tokens_comma), exit
+        question_dup, _if_, T(2+nCALLt), count_tokens, CALL(tokens_comma), then, exit
     )
 WORD_END(countedtokens_comma)
 /* flags>consumed-tokens ( flags -- u ) get # consumed tokens from flags */

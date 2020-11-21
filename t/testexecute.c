@@ -769,6 +769,7 @@ static const m4token test_tokens_swap_drop[] = {m4swap, m4drop};
 static const m4token test_tokens_ne_zero_more[] = {m4ne, m4zero_more};
 static const m4token test_tokens_r_from_plus_to_r[] = {m4r_from, m4plus, m4to_r};
 static const m4token test_tokens_if_t_then[] = {m4_if_, (m4token)-1, m4then};
+static const m4token test_tokens_if0_t_else[] = {m4_if0_, (m4token)-1, m4_else_};
 static const m4token test_tokens__lit__0xffff_and[] = {m4_lit_, 0xffff, m4and};
 static const m4token test_tokens_qif_t_dup_then[] = {m4_q_if_, (m4token)-1, m4dup, m4then};
 /*
@@ -822,13 +823,6 @@ static m4testexecute testexecute_e[] = {
      {{2, {M4two | (M4pick << 16), 1 | (M4hop << 16)}}, {}},
      {}},
     /* ---------------------- optimize* ---------------------- */
-    {"{(if0) T(_) (else)} (optimize-if-else)",
-     {CALL(_optimize_if_else_),     /* ( counted-tokens ) */
-      CALL(countedtokens_comma),    /* (                ) */
-      m4one, m4token_comma, m4bye}, /* (                ) */
-     {{1, {m4_if0_ | ((m4ucell)(m4token)-1) << (8 * SZt) | ((m4cell)m4_else_) << (16 * SZt)}}, {}},
-     {{}, {}},
-     {2, {m4_if_, T(1)}}},
     {"{_missing_} (optimize-1token)",
      {CALL(_optimize_1token_), /* ( counted-tokens )                    */
       m4bye},                  /* ( 0 ) i.e. _missing_ is not optimized */
@@ -877,8 +871,15 @@ static m4testexecute testexecute_e[] = {
      {{1, {(m4cell)test_tokens_r_from_plus_to_r}}, {}},
      {{}, {}},
      {1, {m4r_plus_store}}},
-    {"{(if) T(_) then} (optimize-3token)",
-     {CALL(_optimize_3token_),           /* ( counted-tokens ) */
+    {"{(if0) T(_) (else)} (optimize-if-else)",
+     {CALL(_optimize_if_else_),     /* ( counted-tokens ) */
+      CALL(countedtokens_comma),    /* (                ) */
+      m4one, m4token_comma, m4bye}, /* (                ) */
+     {{1, {(m4cell)test_tokens_if0_t_else}}, {}},
+     {{}, {}},
+     {2, {m4_if_, T(1)}}},
+    {"{(if) T(_) then} (optimize-if-else)",
+     {CALL(_optimize_if_else_),          /* ( counted-tokens ) */
       CALL(countedtokens_comma), m4bye}, /* (                ) */
      {{1, {(m4cell)test_tokens_if_t_then}}, {}},
      {{}, {}},
