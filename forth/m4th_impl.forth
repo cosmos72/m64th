@@ -125,18 +125,44 @@ also m4th-impl definitions
 ;
 
 
-\ copy and optimize exactly u tokens from src to HERE. updates HERE.
+\ copy and optimize exactly u tokens from XT+offset to HERE. updates HERE.
 \ return true if something was optimized, else false
-: (optimize,)   \ ( src u -- t|f )
-  false >r                                     \ (               ) (R: false )
-  begin                                        \ ( src u         ) (R: t|f   )
-     dup                                       \ ( src u u       ) (R: t|f   )
-  while                                        \ ( src u         ) (R: t|f   )
-     (optimize-tokens,)                        \ ( src' u' t|f'  ) (R: t|f   )
-     r@ or r!                                  \ ( src' u'       ) (R: t|f'  )
-  repeat                                       \ ( src' u'       ) (R: t|f   )
-  2drop r>                                     \ ( t|f           )
+: (optimize-xt,)   \ ( offset u -- t|f )
+   false >r                                    \ ( offset u         ) (R: false )
+   begin                                       \ ( offset u         ) (R: t|f   )
+      dup                                      \ ( offset u u       ) (R: t|f   )
+   while                                       \ ( offset u         ) (R: t|f   )
+      \ tricky: XT may move, because compiling can reallocate it
+      over tokens state @ +                    \ ( offset u src     ) (R: t|f   )
+      over                                     \ ( offset u src u   ) (R: t|f   )
+      (optimize-tokens,)                       \ ( offset u n t|f'  ) (R: t|f   )
+      r@ or r!                                 \ ( offset u n       ) (R: t|f'  )
+      tuck -                                   \ ( offset n u'      ) (R: t|f   )
+      flip +                                   \ ( u offset'        ) (R: t|f   )
+      swap                                     \ ( offset u         ) (R: t|f   )
+   repeat                                      \ ( offset 0         ) (R: t|f   )
+   2drop r>                                    \ ( t|f              )
 ;
+
+
+\ optimize exactly HERE-XT tokens starting from XT. optimized tokens
+\ are initially written to HERE and up, then copied back to XT and up.
+\ updates HERE. return t if something was optimized, else false
+: (optimize-once)    \ ( -- t|f )
+   0 state @ here dup >r                     \ ( 0 xt here        ) (R: here )
+   sub /token                                \ ( 0 u              ) (R: here )
+   (optimize-xt,)                            \ ( t|f              ) (R: here )
+   \ optimized code is now between saved HERE and current HERE
+   r> state @                                \ ( t|f here xt      )
+   over here                                 \ ( t|f here xt here here' )
+   sub                                       \ ( t|f here xt u    )
+   cmove/count                               \ ( t|f here' xt'    )
+   \ optimized code is now between XT and XT'
+   nip                                       \ ( t|f xt'          )
+   \ so set HERE = XT'
+   here - allot                              \ ( t|f              )
+;
+
 
 
 disassemble-upto (optimize-if-else)

@@ -922,20 +922,15 @@ WORD_START(_optimize_xt_comma_, _optimize_tokens_comma_)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_FLAGS(0)
-    WORD_CODE(
-        false, to_r,                                   /* ( offset u         ) (R: false ) */
-        begin,                                         /* ( offset u         ) (R: t|f   ) */
-            _q_while_, T(17+nCALLt),                   /* ( offset u         ) (R: t|f   ) */
-                               /* tricky: XT may move, because compiling can reallocate it */
-            over, tokens, state, fetch, plus,          /* ( offset u src     ) (R: t|f   ) */
-            over,                                      /* ( offset u src u   ) (R: t|f   ) */
-            CALL(_optimize_tokens_comma_),             /* ( offset u n t|f'  ) (R: t|f   ) */
-            r_fetch, or, r_store,                      /* ( offset u n       ) (R: t|f'  ) */
-            tuck, minus,                               /* ( offset n u'      ) (R: t|f   ) */
-            flip, plus,                                /* ( u offset'        ) (R: t|f   ) */
-            swap,                                      /* ( offset u         ) (R: t|f   ) */
-        _repeat_, T(-19-nCALLt),                       /* ( offset 0         ) (R: t|f   ) */
-        two_drop, r_from, exit                         /* ( t|f              )             */
+    WORD_CODE(/* generated from file m4th_impl.forth - see source and comments there */
+        /*29*/ zero, to_r,
+        begin,
+        _q_while_, T(17+nCALLt),
+            over, tokens, state, fetch, plus, over,
+            CALL(_optimize_tokens_comma_),
+            r_fetch, or, r_store, tuck, minus, flip, plus, swap,
+        _repeat_, T(-19-nCALLt),
+        two_drop, r_from, exit
     )
 WORD_END(_optimize_xt_comma_)
 /* ( x -- token t | x f ) try to optimize '[ x ] literal' */
@@ -1105,61 +1100,35 @@ WORD_START(_inline_, _finish_)
         _loop_, T(-6), drop, exit
     )
 WORD_END(_inline_)
-WORD_START(_optimize_, _inline_)
+WORD_START(_optimize_once_, _inline_)
+    WORD_DSTACK(0,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE)
+    WORD_CODE(/* generated from file m4th_impl.forth - see source and comments there */
+        /*24*/ zero, state, fetch, here, dup_to_r, sub, div_token,
+        CALL(_optimize_xt_comma_), r_from, state, fetch, over, here, sub,
+        cmove_count, nip, here, minus, allot, exit
+    )
+WORD_END(_optimize_once_)
+WORD_START(_optimize_, _optimize_once_)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE)
     WORD_CODE(
-#if 1
         state, fetch, here,                         /* ( xt here            ) */
-        /*                  \ code to optimize is at xt...here                */
+#if 1
+        /*                \ optimize tokens in range xt...here                */
         _c_arg_2_, _c_call_, CELL(m4th_c_optimize), _c_ret_2_, /* ( xt here') */
         nip,                                        /* ( here'              ) */
         here,                                       /* ( here' here         ) */
         minus, allot,                               /* (                    ) */
-        CALL(_recompile_), exit                     /* (                    ) */
 #else /* 0 */
-        /* state @ here                                ( xt here            )
-         *                  \ code to optimize is at xt...here
-         * 2>r                                         (                    ) (R: beg end )
-         * begin                                       (                    ) (R: beg end )
-         *    2r@ dup                                  ( beg end end        ) (R: beg end )
-         *    (optimize-1)                             ( beg' end' t|f'     ) (R: beg end )
-         *                  \ optimized code is now at end...end'
-         *    flip drop                                ( t|f end'           ) (R: beg end )
-         *    r@ swap                                  ( t|f end end'       ) (R: beg end )
-         *    r2nd@ swap                               ( t|f end beg end'   ) (R: beg end )
-         *    (optimize-2)                             ( t|f end' beg' t|f' ) (R: beg end )
-         *                  \ optimized code is now at beg...beg'
-         *    flip drop                                ( t|f t|f' beg'      ) (R: beg end )
-         *    -rot or swap                             ( t|f beg'           ) (R: beg end )
-         *    r!                                       ( t|f                ) (R: beg beg')
-         * while                                       (                    ) (R: beg beg')
-         * repeat                                      (                    ) (R: beg beg')
-         * r> r>drop                                   ( beg'               )
-         * here                                        ( beg' here          )
-         * - allot          \ update HERE, set it to beg'
-         * [recompile]
-         */
-        state, fetch, here,
-        two_to_r,
-        begin,
-            two_r_fetch, dup,
-            flip, drop,
-            r_fetch, swap,
-            r2nd_fetch, swap,
-            flip, drop,
-            minus_rot, or, swap,
-            r_store,
-        _while_, T(2),
-        _repeat_, T(-20-2*nCALLt),
-        r_from, r_from_drop,
-        here,
-        minus, allot,
-        CALL(_recompile_), exit
 #endif /* 0 */
+        CALL(_recompile_), exit                     /* (                    ) */
     )
 WORD_END(_optimize_)
 /* rebuild XT jump offsets after optimization */

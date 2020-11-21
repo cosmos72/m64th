@@ -513,6 +513,10 @@
     X(18, "(optimize-tokens,)", _optimize_tokens_comma_) /* ( src u -- src' u' ) */                \
     /* copy and optimize exactly u tokens from XT+offset to HERE. updates HERE. */                 \
     X(14, "(optimize-xt,)", _optimize_xt_comma_) /* ( offset u -- ) */                             \
+    /* optimize exactly HERE-XT tokens starting from XT. optimized tokens are initially written */ \
+    /* to HERE and up, then copied back to XT and up. updates HERE. */                             \
+    /* return t if something was optimized, else false */                                          \
+    X(16, "(optimize-once)", _optimize_once_) /* ( -- t|f ) */                                     \
     /* find an optimized sequence to replace '[ x ] literal' */                                    \
     X(18, "(optimize-literal)", _optimize_literal_) /* ( x -- token t | x f ) */                   \
     X(15, "(repl-type-ack)", _repl_type_ack_)                                                      \
