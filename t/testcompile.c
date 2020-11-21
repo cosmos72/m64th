@@ -262,6 +262,8 @@ static const m4testcompile testcompile_b[] = {
     {"begin until ;", {2, {0, m4colon}}, {}, {4, {m4begin, m4_until_, T(-2), m4exit}}},
     {"begin 0= until ;", {2, {0, m4colon}}, {}, {4, {m4begin, m4_until0_, T(-2), m4exit}}},
     {"begin 0<> until ;", {2, {0, m4colon}}, {}, {4, {m4begin, m4_until_, T(-2), m4exit}}},
+    {"begin dup until ;", {2, {0, m4colon}}, {}, {4, {m4begin, m4_q_until_, T(-2), m4exit}}},
+    {"begin dup 0= until ;", {2, {0, m4colon}}, {}, {4, {m4begin, m4_q_until0_, T(-2), m4exit}}},
 };
 
 static m4code m4testcompile_init(const m4testcompile *t, m4countedcode *codegen_buf) {

@@ -76,7 +76,10 @@ WORD_START(_q_until_, _q_if0_)
     WORD_RSTACK(0,0)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_MAY_JUMP | M4FLAG_IMMEDIATE | M4FLAG_REEXEC_AFTER_OPTIMIZE)
-    WORD_CODE(exit) /* TODO */
+    WORD_CODE(
+        _lit_tok_, _q_until_,
+        CALL(_until_comma_), exit
+    )
 WORD_END(_q_until_)
 WORD_START(_q_until0_, _q_until_)
     WORD_DSTACK(1,1) /* token stack effect when not jumping */
@@ -85,7 +88,10 @@ WORD_START(_q_until0_, _q_until_)
     WORD_RSTACK(0,0)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_MAY_JUMP | M4FLAG_IMMEDIATE | M4FLAG_REEXEC_AFTER_OPTIMIZE)
-    WORD_CODE(exit) /* TODO */
+    WORD_CODE(
+        _lit_tok_, _q_until0_,
+        CALL(_until_comma_), exit
+    )
 WORD_END(_q_until0_)
 WORD_START(_q_while_, _q_until0_)
     WORD_DSTACK(1,1) /* token stack effect when not jumping */
