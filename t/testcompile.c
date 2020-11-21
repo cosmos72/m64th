@@ -226,13 +226,21 @@ static const m4testcompile testcompile_b[] = {
     {"if then ;", {2, {0, m4colon}}, {}, {2, {m4drop, m4exit}}},
     {"if chars then ;", {2, {0, m4colon}}, {}, {2, {m4drop, m4exit}}},
     {"if 1+ 1- then ;", {2, {0, m4colon}}, {}, {2, {m4drop, m4exit}}},
+    {"if else 1 then ;", {2, {0, m4colon}}, {}, {5, {m4_if0_, T(2), m4one, m4then, m4exit}}},
     {"0= if then ;", {2, {0, m4colon}}, {}, {2, {m4drop, m4exit}}},
     {"0= if 1 then ;", {2, {0, m4colon}}, {}, {5, {m4_if0_, T(2), m4one, m4then, m4exit}}},
+    {"0= if else 1 then ;", {2, {0, m4colon}}, {}, {5, {m4_if_, T(2), m4one, m4then, m4exit}}},
     {"dup if then ;", {2, {0, m4colon}}, {}, {1, {m4exit}}},
+    {"dup if dup then ;", {2, {0, m4colon}}, {}, {2, {m4question_dup, m4exit}}},
     {"dup if nop then ;", {2, {0, m4colon}}, {}, {1, {m4exit}}},
     {"dup if 1+ 1- then ;", {2, {0, m4colon}}, {}, {1, {m4exit}}},
     {"dup if 1 then ;", {2, {0, m4colon}}, {}, {5, {m4_q_if_, T(2), m4one, m4then, m4exit}}},
+    {"dup if else 1 then ;", {2, {0, m4colon}}, {}, {5, {m4_q_if0_, T(2), m4one, m4then, m4exit}}},
     {"dup 0= if 2 then ;", {2, {0, m4colon}}, {}, {5, {m4_q_if0_, T(2), m4two, m4then, m4exit}}},
+    {"dup 0= if else 3 then ;",
+     {2, {0, m4colon}},
+     {},
+     {5, {m4_q_if_, T(2), m4three, m4then, m4exit}}},
     /* ------------------------------- [optimize] begin --------------------- */
     {"begin nop again ;", {2, {0, m4colon}}, {}, {4, {m4begin, m4_again_, T(-2), m4exit}}},
     {"begin while nop repeat ;",
@@ -264,6 +272,8 @@ static const m4testcompile testcompile_b[] = {
     {"begin 0<> until ;", {2, {0, m4colon}}, {}, {4, {m4begin, m4_until_, T(-2), m4exit}}},
     {"begin dup until ;", {2, {0, m4colon}}, {}, {4, {m4begin, m4_q_until_, T(-2), m4exit}}},
     {"begin dup 0= until ;", {2, {0, m4colon}}, {}, {4, {m4begin, m4_q_until0_, T(-2), m4exit}}},
+    /* ------------------------------- [optimize] --------------------- */
+    {"dup dup dup dup drop drop drop drop ;", {2, {0, m4colon}}, {}, {1, {m4exit}}},
 };
 
 static m4code m4testcompile_init(const m4testcompile *t, m4countedcode *codegen_buf) {
