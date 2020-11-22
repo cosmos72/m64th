@@ -643,8 +643,10 @@ WORD_END(string_ne)
 WORD(trail,            string_ne,      DSTACK(2,3), RSTACK(0,0), WORD_PURE)
 WORD(u_less_equal,     trail,          DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(u_more_equal,     u_less_equal,   DSTACK(2,1), RSTACK(0,0), WORD_PURE)
+/* u>d ( u -- ud ) extend unsigned number to double width */
+WORD(u_to_d,           u_more_equal,   DSTACK(1,2), RSTACK(0,0), WORD_PURE)
 #ifdef M4FUM_DIV_MOD
-WORD(um_div_mod,       u_more_equal,   DSTACK(3,2), RSTACK(0,0), WORD_PURE)
+WORD(um_div_mod,       u_to_d,         DSTACK(3,2), RSTACK(0,0), WORD_PURE)
 #else
 WORD_START(um_div_mod, u_more_equal)
     WORD_DSTACK(3,2)

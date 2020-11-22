@@ -184,4 +184,7 @@
 #define m4f_lit_tok_ CAT3(m4f_lit, SZt, s_)
 #define m4f_lit_xt_ CAT3(m4f_lit, SZ, s_)
 
+#define m4fd_to_s m4fdrop
+#define m4fu_to_d m4fzero
+
 #endif /* M4TH_INCLUDE_FUNC_ALIAS_MH */

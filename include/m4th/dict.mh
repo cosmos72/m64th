@@ -551,7 +551,8 @@
     X(11, "string>sign", string_to_sign) /* ( caddr n -- caddr' n' sign ) parse initial '-' */     \
     /* ( caddr n base -- caddr' n' u ) convert string from base to unsigned number */              \
     X(13, "string&base>u", string_base_to_u)                                                       \
-    X(6, "u>char", u_to_char) /* convert unsigned number to to char in current base */
+    X(6, "u>char", u_to_char) /* convert unsigned number to to char in current base */             \
+    X(3, "u>d", u_to_d)       /* ( u -- ud ) extend unsigned number to double width */
 
 /* ------- m4th-* ------------------------------------------------------------------------------- */
 #define DICT_WORDS_M4TH(X) /* contains all DICT_WORDS_M4TH_* */                                    \

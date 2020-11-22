@@ -41,8 +41,7 @@ WORD_START(num,        store)
 #endif
         swap,                                       /* ( quotient remainder       ) */
         CALL(u_to_char),                            /* ( quotient ch              ) */
-        /* warning: we should define and use u>d instead */
-        hold, zero, swap, exit                      /* ( ud'                      ) */
+        hold, u_to_d, exit                          /* ( ud'                      ) */
     )
 WORD_END(num)
 WORD(num_end,          num,        DSTACK(2,2), RSTACK(0,0), WORD_IMPURE)

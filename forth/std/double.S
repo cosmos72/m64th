@@ -17,31 +17,11 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "../include/asm.mh"
-#include "../include/dict.mh"
-#include "../include/std/dict.mh"
-
 /* clang-format off */
 
-/* ---------------------------------------------------------------------------------------------- */
+DICT_WORDS_FORTH_DOUBLE(WORDNAME)
 
-DICT_START(forth_root)
-#include "std/root.S"
-#include "std/root_gen.S"
-DICT_BODY(forth_root, LASTWORD)
-DICT_END(forth_root)
+WORD(d_to_s, LASTWORD, DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 
-DICT_START(forth_root)
-#include "std/core.S"
-#include "std/core_ext.S"
-#include "std/double.S"
-#include "std/double_ext.S"
-#include "std/exception.S"
-#include "std/memory.S"
-#include "std/tools.S"
-#include "std/tools_ext.S"
-#include "std/searchorder.S"
-#include "std/searchorder_gen.S"
-#include "std/string.S"
-DICT_BODY(forth, LASTWORD)
-DICT_END(forth)
+#undef LASTWORD
+#define LASTWORD d_to_s

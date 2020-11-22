@@ -251,7 +251,7 @@
 #undef M4d_two_div /*221*/    /* d2/      */
 #undef M4d_less /*222*/       /* d<       */
 #undef M4d_equal /*223*/      /* d=       */
-#undef M4d_to_s /*224*/       /* d>s      */
+/*#undef M4d_to_s*/ /*224*/   /* d>s      aliased to M4drop */
 #undef M4d_abs /*225*/        /* dabs     */
 #undef M4d_max /*226*/        /* dmax     */
 #undef M4d_min /*227*/        /* dmin     */

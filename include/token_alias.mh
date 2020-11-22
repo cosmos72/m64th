@@ -193,6 +193,9 @@
 #define m4cs_rot m4two_rot
 #define m4r2nd_fetch m4i_prime
 
+#define m4d_to_s m4drop
+#define m4u_to_d m4zero
+
 /* -------------------------------------------------------------------------- */
 /* M4* numeric values have uppercase prefix 'M4'                              */
 /* -------------------------------------------------------------------------- */
@@ -331,5 +334,8 @@
 #define M4minus_cs_rot M4minus_two_rot
 #define M4cs_rot M4two_rot
 #define M4r2nd_fetch M4i_prime
+
+#define M4d_to_s M4drop
+#define M4u_to_d M4zero
 
 #endif /* M4TH_INCLUDE_TOKEN_ALIAS_MH */

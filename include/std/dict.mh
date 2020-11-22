@@ -181,6 +181,13 @@
     X(10, "parse-name", parse_name)                                                                \
     X(1, "\\", backslash)
 
+/* ------- forth 2012: double ------------------------------------------------------------------- */
+#define DICT_TOKENS_FORTH_DOUBLE(X) /*                                                      */
+
+#define DICT_WORDS_FORTH_DOUBLE(X) /*                                                       */     \
+    DICT_TOKENS_FORTH_DOUBLE(X)    /*                                                       */     \
+    X(3, "d>s", d_to_s)            /* ( d -- n ) truncate double width number               */
+
 /* ------- forth 2012: double ext --------------------------------------------------------------- */
 #define DICT_TOKENS_FORTH_DOUBLE_EXT(X) /*                                                      */ \
     X(4, "2rot", two_rot)
@@ -257,6 +264,7 @@
     DICT_TOKENS_FORTH_ROOT(X)                                                                      \
     DICT_TOKENS_FORTH_CORE(X)                                                                      \
     DICT_TOKENS_FORTH_CORE_EXT(X)                                                                  \
+    DICT_TOKENS_FORTH_DOUBLE(X)                                                                    \
     DICT_TOKENS_FORTH_DOUBLE_EXT(X)                                                                \
     DICT_TOKENS_FORTH_EXCEPTION(X)                                                                 \
     DICT_TOKENS_FORTH_TOOLS_EXT(X)                                                                 \
@@ -267,6 +275,7 @@
     DICT_WORDS_FORTH_ROOT(X)                                                                       \
     DICT_WORDS_FORTH_CORE(X)                                                                       \
     DICT_WORDS_FORTH_CORE_EXT(X)                                                                   \
+    DICT_WORDS_FORTH_DOUBLE(X)                                                                     \
     DICT_WORDS_FORTH_DOUBLE_EXT(X)                                                                 \
     DICT_WORDS_FORTH_EXCEPTION(X)                                                                  \
     DICT_WORDS_FORTH_TOOLS_EXT(X)                                                                  \

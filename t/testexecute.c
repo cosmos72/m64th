@@ -1020,7 +1020,7 @@ static m4testexecute testexecute_f[] = {
     /* ----------------------------- um/mod --------------------------------- */
     {"_ _ um/mod",
      {CALL(um_div_mod), m4bye},
-     {{3, {1 /*dividend hi*/, 3 /*dividend lo*/, 2 /*divisor*/}}, {}},
+     {{3, {3 /*dividend lo*/, 1 /*dividend hi*/, 2 /*divisor*/}}, {}},
      {{2, {1, 1 | (m4ucell)1 << (8 * SZ - 1)}}, {}},
      {}},
     /* ----------------------------- base ----------------------------------- */

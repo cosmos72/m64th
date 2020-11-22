@@ -332,9 +332,10 @@ FUNC_END(u_more_equal)
 #define M4FUM_DIV_MOD
 FUNC_START(um_div_mod)
         MOVE(  DTOP,   %rcx)       /* DTOP is %rax, we will clobber it       */
-        LOAD(  %rdx,   AT(DSTK,SZ))/* %rdx = ud high half                    */
-        DPOP___DTOP()              /* %rax = ud low half                     */
-        div   %rcx;                /* quotient is in %rax, remainder in %rdx */
+        LOAD(  %rdx,   AT(DSTK,SZ))/* %rdx = ud low half                     */
+        DPOP___DTOP()              /* %rax = ud high half                    */
+        xchg   %rax, %rdx;         /* %rax = low half, %rdx = high half      */
+        div    %rcx;               /* quotient is in %rax, remainder in %rdx */
         STOR(  %rdx,   AT(DSTK))   /* ( ud%u _     ) save remainder          */
         /*MOVE(%rax, DTOP)*/       /* quotient is already in DTOP = %rax     */
 FUNC_END(um_div_mod)
