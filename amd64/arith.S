@@ -328,6 +328,18 @@ FUNC_START(u_more_equal)   /* u>=  m4th-user */
 FUNC_END(u_more_equal)
 
 
+/* um/mod ( ud u -- ud%u ud/u ) unsigned remainder & quotient of double-width unsigned division */
+#define M4FUM_DIV_MOD
+FUNC_START(um_div_mod)
+        MOVE(  DTOP,   %rcx)       /* DTOP is %rax, we will clobber it       */
+        LOAD(  %rdx,   AT(DSTK,SZ))/* %rdx = ud high half                    */
+        DPOP___DTOP()              /* %rax = ud low half                     */
+        div   %rcx;                /* quotient is in %rax, remainder in %rdx */
+        STOR(  %rdx,   AT(DSTK))   /* ( ud%u _     ) save remainder          */
+        /*MOVE(%rax, DTOP)*/       /* quotient is already in DTOP = %rax     */
+FUNC_END(um_div_mod)
+
+
 /* ( x lo hi -- flag ) true if lo <= x < hi \ signed or unsigned */
 FUNC_START(within)         /* within   core ext */
         DPOP2( REG2,   REG1)           /* b = lo, a = x             */

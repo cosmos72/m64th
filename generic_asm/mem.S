@@ -60,7 +60,7 @@ FUNC_START(uint_fetch)
 FUNC_END(uint_fetch)
 
 
-/* @        ( addr -- n )  forth-core */
+/* @        ( addr -- x )  forth-core */
 FUNC_START(fetch)
         LOAD(  DTOP, AT(DTOP))
 FUNC_END(fetch)

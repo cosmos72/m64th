@@ -643,15 +643,29 @@ WORD_END(string_ne)
 WORD(trail,            string_ne,      DSTACK(2,3), RSTACK(0,0), WORD_PURE)
 WORD(u_less_equal,     trail,          DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(u_more_equal,     u_less_equal,   DSTACK(2,1), RSTACK(0,0), WORD_PURE)
-WORD_START(valid_base_q, u_more_equal)
+#ifdef M4FUM_DIV_MOD
+WORD(um_div_mod,       u_more_equal,   DSTACK(3,2), RSTACK(0,0), WORD_PURE)
+#else
+WORD_START(um_div_mod, u_more_equal)
+    WORD_DSTACK(3,2)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_PURE)
+    WORD_CODE(
+        _c_arg_3_, _c_call_, CELL(m4th_um_div_mod), _c_ret_2_, exit
+    )
+WORD_END(string_ne)
+#endif
+WORD_START(valid_base_q, um_div_mod)
     WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
     WORD_CODE(
-        two, _lit_, T(37),       /* base 2 37                   */
-        within,                    /* caddr n base                */
+        two, _lit_, T(37),             /* base 2 37                   */
+        within,                        /* caddr n base                */
         exit
     )
 WORD_END(valid_base_q)

@@ -60,6 +60,24 @@ void m4th_dot(m4cell n, m4iobuf *io) {
     }
 }
 
+/**
+ * temporary C implementation of 'um/mod' on architectures
+ * that lack 128bit/64bit hardware division
+ */
+#ifndef __x86_64__
+typedef struct {
+    uint64_t remainder, quotient;
+} um_div_mod_result;
+
+typedef unsigned __int128 uint128_t;
+
+um_div_mod_result m4th_um_div_mod(uint64_t hi, uint64_t lo, uint64_t divisor) {
+    const uint128_t dividend = (uint128_t)hi << 64 | lo;
+    const um_div_mod_result ret = {(uint64_t)(dividend % divisor), (uint64_t)(dividend / divisor)};
+    return ret;
+}
+#endif /* __x86_64__ */
+
 /******************************************************************************/
 /* C implementation of CRC32c                                                 */
 /******************************************************************************/

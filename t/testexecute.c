@@ -1017,6 +1017,12 @@ static const char teststr_dollar_ffffffffffffffff[] = "$ffffffffffffffff";
 #define TESTSTR(...) TESTSTR_n(__VA_ARGS__, 0)
 
 static m4testexecute testexecute_f[] = {
+    /* ----------------------------- um/mod --------------------------------- */
+    {"_ _ um/mod",
+     {CALL(um_div_mod), m4bye},
+     {{3, {1 /*dividend hi*/, 3 /*dividend lo*/, 2 /*divisor*/}}, {}},
+     {{2, {1, 1 | (m4ucell)1 << (8 * SZ - 1)}}, {}},
+     {}},
     /* ----------------------------- base ----------------------------------- */
     {"base @", {m4base, m4fetch, m4bye}, {{}, {}}, {{1, {10}}, {}}, {}},
     {"hex", {CALL(hex), m4base, m4fetch, m4bye}, {{}, {}}, {{1, {16}}, {}}, {}},

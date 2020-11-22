@@ -67,8 +67,8 @@ FUNC_START(div)      /* / */
 FUNC_END(div)
 
 
-/* signed divide & remainder */
-FUNC_START(div_mod)          /* /mod */
+/* /mod ( a b -- a%b a/b ) signed remainder & quotient */
+FUNC_START(div_mod)          /*  */
         LOAD(  REG1,   AT(DSTK))
         DIV3(  REG1,   DTOP,   REG2)
         msub   REG1,   REG2,   DTOP,   REG1;
@@ -314,6 +314,14 @@ FUNC_START(u_more_equal)   /* u>=      m4th-user */
         cmp    REG2,   DTOP;
         csetm  DTOP,   hs;
 FUNC_END(u_more_equal)
+
+
+/* unimplemented - crash with SIGILL */
+/* word 'um/mod' is expected to call C implementation m4th_um_div_mod instead */
+#undef M4FUM_DIV_MOD
+FUNC_START(um_div_mod)     /* um/mod   */
+        .4byte   0; /* udf */
+FUNC_END(um_div_mod)
 
 
 #define M4FTUCK
