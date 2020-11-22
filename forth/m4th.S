@@ -18,7 +18,7 @@
  */
 
 #include "../include/dict.mh"
-#include "../include/dict_m4th.mh"
+#include "../include/m4th/dict.mh"
 
 /* helper macros to define words {byte,char,short,ushort,int,uint,cell,token}_fetch* */
 

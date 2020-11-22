@@ -21,8 +21,8 @@
 #define M4TH_INCLUDE_TOKEN_MH
 
 #include "token_alias.mh"
-#include "token_forth.mh"
-#include "token_m4th.mh"
+#include "std/token.mh"
+#include "m4th/token.mh"
 #include "word.mh" /* WORD_SYM() */
 
 #define M4TOKEN_SYM(name) m4##name

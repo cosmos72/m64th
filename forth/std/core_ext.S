@@ -19,7 +19,7 @@
 
 #include "../../include/asm.mh"
 #include "../../include/dict.mh"
-#include "../../include/dict_forth.mh"
+#include "../../include/std/dict.mh"
 
 /* clang-format off */
 

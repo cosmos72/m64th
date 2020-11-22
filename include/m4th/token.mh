@@ -48,73 +48,83 @@
 #define M4eight_div M4_u(18)             /* 8/   floored divide by 8                */
 #define M4eight_sm_div M4_u(19)          /* 8/sm symmetric divide by 8              */
 #undef M4____gap                         /*                                         */
-#define M4two_dup_two_to_r M4_u(21)      /* 2dup_2>r  equivalent to: 2dup 2>r       */
-#define M4two_nip M4_u(22)               /* 2nip      equivalent to: 2swap 2drop    */
-#define M4two_pick M4_u(23)              /* 2pick                                   */
-#define M4two_roll M4_u(24)              /* 2roll     roll double-width cells       */
-#define M4minus_two_roll M4_u(25)        /* -2roll    2roll in opposite direction   */
+#undef M4____gap                         /*                                         */
+#define M4two_dup_two_to_r M4_u(22)      /* 2dup_2>r  equivalent to: 2dup 2>r       */
+#define M4two_nip M4_u(23)               /* 2nip      equivalent to: 2swap 2drop    */
+#define M4two_pick M4_u(24)              /* 2pick                                   */
+#define M4two_roll M4_u(25)              /* 2roll     roll double-width cells       */
+#define M4minus_two_roll M4_u(26)        /* -2roll    2roll in opposite direction   */
 #define M4minus_cs_roll M4minus_two_roll /* -cs-roll  equivalent to: -2roll         */
-#define M4minus_two_rot M4_u(27)         /* -2rot     equivalent to: 2rot 2rot      */
-#define M4two_r_from_two_drop M4_u(28)   /* 2r>2drop  equivalent to: 2r>  2drop     */
-#undef M4____gap                         /*                                         */
-#define M4atomic_plus_store M4_u(30)     /* ( n addr -- n' ) atomically increment cell by n   */
-#define M4atomic_one_plus_store M4_u(31) /* (   addr -- n' ) atomically increment cell by 1   */
-#undef M4____gap                         /*                                         */
-#define M4bounds M4_u(33)                /* ( c-addr u -- c-addr+u c-addr ) get string bounds */
-#define M4cmove_count M4_u(34)           /* ( src_addr dst_addr u -- src_addr+u dst-addr+u )  */
-#define M4minus_cmove_count M4_u(35)     /* ( src_addr dst_addr u -- src_addr-u dst_addr-u )  */
-#undef M4____gap                         /*                                         */
-#define M4crc_cell M4_u(37)              /* ( x -- crc32 ) compute CRC32c of a cell           */
-#define M4crc_string M4_u(38)            /* ( c-addr u -- crc32 ) compute CRC32c of a string  */
-#undef M4____gap                         /*                                         */
-#define M4dp0 M4_u(40)                   /* dp0 ( x -- x addr-of-x ) get data stack bottom    */
-#define M4dup_to_r M4_u(41)              /* dup>r                   equivalent to: dup  >r    */
-#define M4ex_message_store M4_u(42)      /* ( c-addr u -- ) save string as exception message  */
-#define M4ex_message_fetch M4_u(43)      /* ( -- c-addr u ) fetch exception message string    */
-#define M4flip M4_u(44)                  /* flip ( a b c -- c b a ) equivalent to: swap rot   */
-#undef M4____gap                         /*                                         */
-#define M4hop M4_u(46)                   /* hop       equivalent to: 2   pick       */
-#define M4i_times M4_u(47)               /* i*                                      */
-#define M4i_plus M4_u(48)                /* i+                                      */
-#define M4i_minus M4_u(59)               /* i-                                      */
-#define M4i_prime M4_u(60)               /* i'                                      */
-#undef M4____gap                         /*                                         */
-#define M4line_find_char M4_u(62)        /* ( c-addr u ch -- u' ) get index of char or CR */
-#define M4noop M4_u(63)                  /* noop                                    */
-#define M4n_to_drop M4_u(64)             /* n>drop ( xn .. x1 n -- ) drop n cells   */
-#define M4r_store M4_u(65)               /* r!        equivalent to: r>  drop >r    */
-#define M4r_plus_store M4_u(66)          /* r+!       equivalent to: r>  +    >r    */
-#define M4r_from_drop M4_u(67)           /* r>drop    equivalent to: r>  drop       */
-#define M4rdepth M4_u(68)                /* rdepth    get return stack depth        */
-#undef M4____gap                         /*                                         */
-#define M4minus_roll M4_u(70)            /* -roll     rotate in opposite direction than "roll" */
-#define M4minus_rot M4_u(71)             /* -rot      equivalent to: rot rot        */
+#define M4minus_two_rot M4_u(28)         /* -2rot     equivalent to: 2rot 2rot      */
+#define M4two_r_from_two_drop M4_u(29)   /* 2r>2drop  equivalent to: 2r>  2drop     */
 #undef M4____gap                         /*                                         */
 #undef M4____gap                         /*                                         */
-#define M4squared M4_u(74)               /* squared   equivalent to: dup *          */
+#define M4atomic_plus_store M4_u(32)     /* ( n addr -- n' ) atomically increment cell by n   */
+#define M4atomic_one_plus_store M4_u(33) /* (   addr -- n' ) atomically increment cell by 1   */
 #undef M4____gap                         /*                                         */
 #undef M4____gap                         /*                                         */
-#define M4string_equal M4_u(77)          /* string=    ( c-addr1 c-addr2 u -- t|f ) */
-#define M4string_ci_equal M4_u(78)       /* string-ci= ( c-addr1 c-addr2 u -- t|f ) */
-#define M4string_find_blank M4_u(79)     /* ( c-addr u -- u' ) get index of first char <= ' ' */
-#define M4string_find_char M4_u(80)      /* ( c-addr u ch -- u' ) get index of first ch       */
-#define M4string_find_nonblank M4_u(81)  /* ( c-addr u -- u' ) get index of first char > ' '  */
-#define M4string_to_lower M4_u(82)       /* ( src dst u -- dst u ) copy and convert to lowercase */
+#define M4bounds M4_u(36)                /* ( c-addr u -- c-addr+u c-addr ) get string bounds */
+#define M4cmove_count M4_u(37)           /* ( src_addr dst_addr u -- src_addr+u dst-addr+u )  */
+#define M4minus_cmove_count M4_u(38)     /* ( src_addr dst_addr u -- src_addr-u dst_addr-u )  */
 #undef M4____gap                         /*                                         */
-#define M4sub M4_u(84)                   /* sub       equivalent to: swap -         */
-#define M4trail M4_u(85)                 /* trail     equivalent to: over swap      */
+#define M4crc_cell M4_u(40)              /* ( x -- crc32 ) compute CRC32c of a cell           */
+#define M4crc_string M4_u(41)            /* ( c-addr u -- crc32 ) compute CRC32c of a string  */
 #undef M4____gap                         /*                                         */
 #undef M4____gap                         /*                                         */
-#define M4u_less_equal M4_u(88)          /* u<=                                     */
-#define M4u_more_equal M4_u(89)          /* u>=                                     */
+#define M4dp0 M4_u(44)                   /* dp0 ( x -- x addr-of-x ) get data stack bottom    */
+#define M4dup_to_r M4_u(45)              /* dup>r                   equivalent to: dup  >r    */
+#define M4ex_message_store M4_u(46)      /* ( c-addr u -- ) save string as exception message  */
+#define M4ex_message_fetch M4_u(47)      /* ( -- c-addr u ) fetch exception message string    */
+#define M4flip M4_u(48)                  /* flip ( a b c -- c b a ) equivalent to: swap rot   */
 #undef M4____gap                         /*                                         */
 #undef M4____gap                         /*                                         */
-#define M4to_byte M4_u(92)               /* >byte   truncate dtop to   int8_t, then sign-extend */
-#define M4to_char M4_u(93)               /* >char   truncate dtop to  uint8_t, then zero-extend */
-#define M4to_short M4_u(94)              /* >short  truncate dtop to  int16_t, then sign-extend */
-#define M4to_ushort M4_u(95)             /* >ushort truncate dtop to uint16_t, then zero-extend */
-#define M4to_int M4_u(96)                /* >int    truncate dtop to  int32_t, then sign-extend */
-#define M4to_uint M4_u(97)               /* >uint   truncate dtop to uint32_t, then zero-extend */
+#define M4hop M4_u(51)                   /* hop       equivalent to: 2   pick       */
+#define M4i_times M4_u(52)               /* i*                                      */
+#define M4i_plus M4_u(53)                /* i+                                      */
+#define M4i_minus M4_u(54)               /* i-                                      */
+#define M4i_prime M4_u(55)               /* i'                                      */
+#undef M4____gap                         /*                                         */
+#undef M4____gap                         /*                                         */
+#define M4line_find_char M4_u(58)        /* ( c-addr u ch -- u' ) get index of char or CR */
+#define M4noop M4_u(59)                  /* noop                                    */
+#define M4n_to_drop M4_u(60)             /* n>drop ( xn .. x1 n -- ) drop n cells   */
+#undef M4____gap                         /*                                         */
+#undef M4____gap                         /*                                         */
+#define M4r_store M4_u(63)               /* r!        equivalent to: r>  drop >r    */
+#define M4r_plus_store M4_u(64)          /* r+!       equivalent to: r>  +    >r    */
+#define M4r_from_drop M4_u(65)           /* r>drop    equivalent to: r>  drop       */
+#define M4rdepth M4_u(66)                /* rdepth    get return stack depth        */
+#undef M4____gap                         /*                                         */
+#define M4minus_roll M4_u(68)            /* -roll     rotate in opposite direction than "roll" */
+#define M4minus_rot M4_u(69)             /* -rot      equivalent to: rot rot        */
+#undef M4____gap                         /*                                         */
+#undef M4____gap                         /*                                         */
+#define M4squared M4_u(72)               /* squared   equivalent to: dup *          */
+#undef M4____gap                         /*                                         */
+#define M4string_equal M4_u(74)          /* string=    ( c-addr1 c-addr2 u -- t|f ) */
+#define M4string_ci_equal M4_u(75)       /* string-ci= ( c-addr1 c-addr2 u -- t|f ) */
+#define M4string_find_blank M4_u(76)     /* ( c-addr u -- u' ) get index of first char <= ' ' */
+#define M4string_find_char M4_u(77)      /* ( c-addr u ch -- u' ) get index of first ch       */
+#define M4string_find_nonblank M4_u(78)  /* ( c-addr u -- u' ) get index of first char > ' '  */
+#define M4string_to_lower M4_u(79)       /* ( src dst u -- dst u ) copy and convert to lowercase */
+#undef M4____gap                         /*                                         */
+#undef M4____gap                         /*                                         */
+#define M4sub M4_u(82)                   /* sub       equivalent to: swap -         */
+#define M4trail M4_u(83)                 /* trail     equivalent to: over swap      */
+#undef M4____gap                         /*                                         */
+#undef M4____gap                         /*                                         */
+#define M4u_less_equal M4_u(86)          /* u<=                                     */
+#define M4u_more_equal M4_u(87)          /* u>=                                     */
+#undef M4____gap                         /*                                         */
+#undef M4____gap                         /*                                         */
+#undef M4____gap                         /*                                         */
+#define M4to_byte M4_u(91)               /* >byte   truncate dtop to   int8_t, then sign-extend */
+#define M4to_char M4_u(92)               /* >char   truncate dtop to  uint8_t, then zero-extend */
+#define M4to_short M4_u(93)              /* >short  truncate dtop to  int16_t, then sign-extend */
+#define M4to_ushort M4_u(94)             /* >ushort truncate dtop to uint16_t, then zero-extend */
+#define M4to_int M4_u(95)                /* >int    truncate dtop to  int32_t, then sign-extend */
+#define M4to_uint M4_u(96)               /* >uint   truncate dtop to uint32_t, then zero-extend */
+#undef M4____gap                         /*                                         */
 #undef M4____gap                         /*                                         */
 #undef M4____gap                         /* ----------- fetch[n] --------------------------- */
 #define M4byte_fetch M4_u(100)           /* byte@     read   ((*int8_t)dtop)[0], sign-extend */

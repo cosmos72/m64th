@@ -63,7 +63,7 @@ MARKER(asm_func_end)
 SECTION_DATA() /* SECTION_RODATA() causes linker warning: relocation in read-only section `.rodata' */
 MARKER(asm_data_start)
 
-#include "forth/forth.S"
+#include "forth/std.S"
 #include "forth/m4th.S"
 
 WORDLIST(forth)
