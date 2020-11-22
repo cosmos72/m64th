@@ -430,7 +430,7 @@
 #define M4_endof_ M4_i(40)          /* (endof)         followed by IP offset to jump              */
 #define M4_exec_token_ M4_i(41)     /* pop token, exec it. It must be 'inline' and not consume IP */
 #define M4_exec_xt_from_native_ M4_i(42) /* pop XT and execute it from native code     */
-#undef M4____gap                         /*                                            */
+#define M4_fallthrough_ M4_i(43)         /* (fallthrough) followed by IP offset to jump*/
 #define M4_if_ M4_i(44)                  /* (if)     followed by IP offset to jump     */
 #define M4_if0_ M4_i(45)                 /* (if0)    followed by IP offset to jump     */
 #define M4_ignore_ M4_i(46)              /* (ignore) followed by IP offset, ignores it */

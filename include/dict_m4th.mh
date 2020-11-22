@@ -235,6 +235,9 @@
     /*                          read name, find nt, show disassembly of all nt up to it */         \
     X(16, "disassemble-upto", disassemble_upto)                                                    \
     X(9, "ex>string", ex_to_string) /* ( ex -- c-addr u ) get exception name            */         \
+    /* jump to next 'of' inside a 'case'.                                               */         \
+    /* can appear only as last statement inside 'of' i.e. instead of 'endcase'          */         \
+    X(11, "fallthrough", fallthrough)                                                              \
     X(10, "forth-root", forth_root) /* set first wordlist in searchorder to forth-root  */         \
     X(17, "hashmap-find/cell", hashmap_find_cell) /* ( map key -- key' &val|0 ) find key in map */ \
     X(16, "hashmap-find/int", hashmap_find_int)   /* ( map key -- key' &val|0 ) find key in map */ \
@@ -402,6 +405,7 @@
     X(7, "(endof)", _endof_)                  /* execution semantics of 'endof'    */              \
     X(12, "(exec-token)", _exec_token_)                                                            \
     X(21, "(exec-xt-from-native)", _exec_xt_from_native_)                                          \
+    X(13, "(fallthrough)", _fallthrough_) /* jump to next 'of' inside a 'case' */                  \
     X(4, "(if)", _if_)                                                                             \
     X(5, "(if0)", _if0_)                                                                           \
     X(8, "(ignore)", _ignore_) /* followed by IP offset, ignores it. aliased by '(case)'  */       \
@@ -533,6 +537,7 @@
     X(22, "[resolve-begin-repeat]", _resolve_begin_repeat_) /* common back-end of 'begin..' */     \
     X(19, "[resolve-jump-here]", _resolve_jump_here_)       /* resolve a jump to here       */     \
     X(20, "[resolve-jump-there]", _resolve_jump_there_)     /* resolve a jump from here     */     \
+    X(17, "[resolve-jump-to]", _resolve_jump_to_) /* resolve a jump to specified offset     */     \
     X(14, "[resolve-loop]", _resolve_loop_) /* common back-end of 'loop' and '+loop'        */     \
     X(23, "[throw-compile-only-xt]", _throw_compile_only_xt_)                                      \
     X(24, "[throw-if-not-compiling]", _throw_if_not_compiling_)                                    \

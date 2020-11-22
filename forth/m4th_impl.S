@@ -331,9 +331,20 @@ WORD_START(_exec_xt_from_native_, _exec_token_)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_MAY_JUMP)
     WORD_CODE(_exec_xt_from_native_, exit)
 WORD_END(_exec_xt_from_native_)
+/* jump to next 'of' inside a 'case' */
+WORD_START(_fallthrough_,      _exec_xt_from_native_)
+    WORD_DSTACK(0,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE | M4FLAG_CONSUMES_IP_SZt | M4FLAG_JUMP | M4FLAG_REEXEC_AFTER_OPTIMIZE)
+    WORD_CODE(
+        CALL(fallthrough), exit
+    )
+WORD_END(_fallthrough_)
 /* (hashmap-entry@/cell) ( vec u -- key &val next ) fetch u-th entry in hashmap buckets. */
 /* next is -1 for 'no_entry', or -2 for 'no_next_entry' */
-WORD_START(_hashmap_entry_fetch_cell_, _exec_xt_from_native_)
+WORD_START(_hashmap_entry_fetch_cell_, _fallthrough_)
     WORD_DSTACK(2,3)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -1282,6 +1293,24 @@ WORD_START(_resolve_jump_there_, _resolve_jump_here_)
         token_store, exit
     )
 WORD_END(_resolve_jump_there_)
+/**
+ * Resolve the most recent unresolved jump, setting its relative displacement to n.
+ * ( jump_address jump_category n -- )
+ */
+WORD_START(_resolve_jump_to_, _resolve_jump_there_)
+    WORD_DSTACK(3,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE)
+    WORD_CODE(
+                                          /* ( #tokens jump_category n ) */
+        nip, swap,                        /* ( n #tokens               ) */
+        _num_compiled_, minus, one_minus, /* ( n token-offset          ) */
+        tokens, here, plus,               /* ( n taddr ) taddr of jump offset */
+        token_store, exit
+    )
+WORD_END(_resolve_jump_to_)
 /**
  * called by 'loop': resolve the jump offsets of a single 'do' or '?do',
  * zero or more 'leave' and one 'loop' or '+loop'

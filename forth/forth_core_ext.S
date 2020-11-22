@@ -102,6 +102,10 @@ WORD_START(endcase,    compile_comma)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE | M4FLAG_INLINE_ALWAYS | M4FLAG_REEXEC_AFTER_OPTIMIZE)
     WORD_CODE(
         _lit_comma_, endcase,                          /* compile 'endcase'           */
+        dup, _lit_tok_, _fallthrough_, equal,          /* ( case-sys sys* t|f       ) */
+        _if_, T(3+nCALLt),                             /* ( case-sys endof-sys* fallthrough-sys ) */
+            zero, CALL(_resolve_jump_to_),             /* ( case-sys endof-sys*     ) */
+        then,                                          /* ( case-sys endof-sys*     ) */
         begin,                                         /* ( case-sys endof-sys*     ) */
             dup, _lit_tok_, _endof_, equal,            /* ( case-sys endof-sys* t|f ) */
         _while_, T(3+nCALLt),                          /* ( case-sys endof-sys*     ) */
@@ -143,7 +147,11 @@ WORD_START(of, nip)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE)
     WORD_CODE(
-        _compile_jump_lit_, _of_, _of_, exit
+        dup, _lit_tok_, _fallthrough_, equal, to_r,    /* ( _                ) (R: t|f ) */
+        _compile_jump_lit_, _of_, _of_, r_from,        /* ( _ of-sys t|f     )           */
+        _if_, T(3+nCALLt),                             /* ( fallthrough-sys of-sys )     */
+            cs_swap, CALL(_resolve_jump_here_),        /* ( of-sys           )           */
+        then, exit
     )
 WORD_END(of)
 WORD_START(parse_name, of)

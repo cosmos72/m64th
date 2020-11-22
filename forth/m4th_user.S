@@ -185,8 +185,24 @@ WORD_START(ex_to_string, ex_message_fetch)
         drop, LIT_STRING(9, "exception"), exit         /* ( c-addr u           ) */
     )
 WORD_END(ex_to_string)
+/* jump to next 'of' inside a 'case'. */
+/* can appear only as last statement inside 'of' i.e. instead of 'endcase' */
+WORD_START(fallthrough,      ex_to_string)
+    WORD_DSTACK(0,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE)
+    WORD_CODE(
+        _check_lit_tok_, _of_,                            /* ( of-sys                    ) */
+        _compile_jump_lit_, _fallthrough_, _fallthrough_, /* ( of-sys fallthrough-sys    ) */
+        cs_swap,                                          /* ( fallthrough-sys of-sys    ) */
+        CALL(_resolve_jump_here_),                        /* ( fallthrough-sys           ) */
+        exit                                              /* ( fallthrough-sys           ) */
+    )
+WORD_END(fallthrough)
 /* replace first wordlist in search order with forth_root wordlist (S: wid -- forth_root ) */
-WORD_START(forth_root, ex_to_string)
+WORD_START(forth_root, fallthrough)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()

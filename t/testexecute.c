@@ -677,6 +677,12 @@ static m4testexecute testexecute_d[] = {
      {{3, {19, 1, DXT(throw)}}, {1, {0xfed4}}},
      {{3, {19, -1 /*clobbered*/, 1}}, {1, {0xfed4}}},
      {}},
+    /* ----------------------------- [resolve-jump-to] ---------------------- */
+    {"[resolve-jump-to]",
+     {m4token_comma, m4token_comma, m4zero, CALL(_resolve_jump_to_), m4bye},
+     {{4, {T(2), m4_fallthrough_, T(-1), m4_fallthrough_}}, {}},
+     {{}, {}},
+     {2, {m4_fallthrough_, T(0)}}},
     /* ----------------------------- (optimize-literal) --------------------- */
     /* these also test (ip>data) and (ip>data>addr) */
     {"-3 (optimize-literal)",
