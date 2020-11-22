@@ -19,8 +19,8 @@
 
 #include "c/c_liblinenoise.h"
 #include "impl.h"
+#include "include/m4th.h"
 #include "include/word_fwd.h"
-#include "m4th.h"
 
 #include <stdio.h>
 #include <string.h>

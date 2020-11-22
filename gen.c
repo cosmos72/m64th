@@ -20,9 +20,9 @@
 #include "impl.h"
 #include "include/dict_fwd.h"       /* m4dict_... */
 #include "include/hashmap_number.h" /* m4dict_... */
-#include "include/opt_rules.mh"     /* OPT*_RULES */
-#include "include/word_fwd.h"       /* m4w_...    */
-#include "m4th.h"
+#include "include/m4th.h"
+#include "include/opt_rules.mh" /* OPT*_RULES */
+#include "include/word_fwd.h"   /* m4w_...    */
 
 #include <assert.h>
 #include <stdio.h>

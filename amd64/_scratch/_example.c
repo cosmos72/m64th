@@ -17,7 +17,7 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "../m4th.h"
+#include "../include/m4th.h"
 #include <errno.h>  /* errno     */
 #include <stddef.h> /* size_t    */
 

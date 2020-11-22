@@ -20,8 +20,8 @@
 #ifndef M4TH_M4TH_H
 #define M4TH_M4TH_H
 
-#include "include/token.h" /* FIXME not a public header */
-#include "m4th.mh"
+#include "flag.mh"
+#include "token.h" /* FIXME not a public header */
 
 #include <stddef.h>    /* size_t    */
 #include <stdint.h>    /* [u]int*_t */
@@ -201,7 +201,7 @@ struct m4word_s {
     m4token code[];
 };
 
-#include "include/hashmap_string.h" /* needs m4cell, m4ucell, m4string */
+#include "hashmap_string.h" /* needs m4cell, m4ucell, m4string */
 
 struct m4wordlist_s {     /**< wordlist                                                 */
     const m4dict *dict;   /**< pointer to read-only dictionary                          */

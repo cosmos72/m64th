@@ -20,7 +20,7 @@
 #ifndef M4TH_TEST_H
 #define M4TH_TEST_H
 
-#include "m4th.h"
+#include "include/m4th.h"
 
 m4cell m4th_testcompile(m4th *m, FILE *out);
 m4cell m4th_testexecute(m4th *m, FILE *out);

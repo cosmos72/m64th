@@ -17,7 +17,7 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "../m4th.h"
+#include "../include/m4th.h"
 
 #if defined(__i386__) && defined(__GNUC__)
 #define FASTCALL __attribute__((regparm(1)))

@@ -20,7 +20,7 @@
 #ifndef M4TH_IMPL_H
 #define M4TH_IMPL_H
 
-#include "m4th.h"
+#include "include/m4th.h"
 
 enum {
     tfalse = 0,

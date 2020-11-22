@@ -20,11 +20,11 @@
 #ifndef M4TH_INCLUDE_ASM_MH
 #define M4TH_INCLUDE_ASM_MH
 
-#include "../m4th.mh" /* also define public macros */
 #include "countedstring.mh"
+#include "flag.mh"
 #include "func.mh"
 #include "iobuf.mh"
-#include "m4th.mh"
+#include "m4th.mh" /* also define public macros */
 #include "macro.mh"
 #include "token.mh"
 #include "word.mh"

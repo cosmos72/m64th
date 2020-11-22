@@ -19,7 +19,7 @@
 #ifndef M4TH_INCLUDE_HASHMAP_NUMBER_H
 #define M4TH_INCLUDE_HASHMAP_NUMBER_H
 
-#include "../m4th.h" /* m4* */
+#include "m4th.h" /* m4* */
 
 #ifdef __cplusplus
 extern "C" {

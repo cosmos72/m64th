@@ -17,7 +17,7 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "m4th.h"
+#include "include/m4th.h"
 #include "impl.h" /* tfalse, ttrue */
 #include "include/dict_all.mh"
 #include "include/dict_fwd.h"

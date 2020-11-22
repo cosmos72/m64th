@@ -20,7 +20,7 @@
 #ifndef M4TH_HASHMAP_STRING_H
 #define M4TH_HASHMAP_STRING_H
 
-#include "../m4th.h"
+#include "m4th.h"
 
 #ifdef __cplusplus
 extern "C" {

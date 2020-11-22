@@ -20,8 +20,8 @@
 #ifndef M4TH_C_LIBLINENOISE_H
 #define M4TH_C_LIBLINENOISE_H
 
+#include "../include/m4th.h"
 #include "../linenoise/linenoise.h"
-#include "../m4th.h"
 
 #include <stdio.h>
 

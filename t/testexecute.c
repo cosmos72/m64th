@@ -25,9 +25,9 @@
 #include "../include/func_fwd.h"
 #include "../include/hashmap_number.h"
 #include "../include/iobuf.mh"
+#include "../include/m4th.h"
 #include "../include/token.h"
 #include "../include/word_fwd.h"
-#include "../m4th.h"
 #include "testcommon.h"
 
 #include <assert.h> /* assert()          */

@@ -21,9 +21,9 @@
 #define M4TH_T_TESTCOMPILE_C
 
 #include "../impl.h"
+#include "../include/m4th.h"
 #include "../include/word_fwd.h"
 #include "../include/wordlist_fwd.h"
-#include "../m4th.h"
 #include "testcommon.h"
 
 #define XT(name) CELL(DXT(name))
