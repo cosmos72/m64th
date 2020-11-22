@@ -171,16 +171,7 @@ WORD_START(_call_xt_,  _call_native_)
     /* make inliner happy: it skips the final 'exit' of a word's code when inlining */
     WORD_CODE(_call_xt_, exit)
 WORD_END(_call_xt_)
-WORD_START(_case_, _call_xt_)
-    WORD_STACK_NONE()
-    WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
-    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE | M4FLAG_CONSUMES_IP_SZt | M4FLAG_INLINE_ALWAYS | M4FLAG_REEXEC_AFTER_OPTIMIZE)
-    WORD_CODE(
-        CALL(case), exit
-    )
-WORD_END(_case_)
-WORD_START(_catch_beg_,  _case_)
+WORD_START(_catch_beg_,  _call_xt_)
     WORD_DSTACK(-1,-1) /* stack effect of called word */
     WORD_RSTACK(0,3)
     WORD_DSTACK(1,0)   /* stack effect when jumping */
@@ -841,7 +832,6 @@ WORD_START(_optimize_3jump_, _optimize_3token_)
           _if0_,   /*T(n)*/ _else_, /*=>*/ T(1), _if_,
           _q_if_,  /*T(n)*/ _else_, /*=>*/ T(1), _q_if0_,
           _q_if0_, /*T(n)*/ _else_, /*=>*/ T(1), _q_if_,
-          _case_,  /*T(n)*/ endcase, /*=>*/ T(1), drop,
           T(0)
       )
     )

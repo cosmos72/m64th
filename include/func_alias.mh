@@ -33,7 +33,7 @@
 #define m4fbegin m4fnoop         /* begin       noop, used as compile marker   */
 #define m4f_again_ m4f_jump_     /* (again)     unconditional jump             */
 #define m4f_break_ m4f_jump_     /* (break)     unconditional jump             */
-#define m4f_case_ m4f_ignore_    /* (case)      ignore jump offset             */
+#define m4fcase m4fnoop          /* (case)      noop, used as compile marker   */
 #define m4f_continue_ m4f_jump_  /* (continue)  unconditional jump             */
 #define m4f_does_exit_ m4fexit   /* (does-exit) alias of exit                  */
 #define m4fendcase m4fdrop       /* endcase                                    */

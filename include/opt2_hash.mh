@@ -4,7 +4,7 @@
  */
 /* clang-format off */
 #define OPT2_HASHMAP(start, entry)	\
-start(/*size*/ 415, /*lcap*/ 8)	\
+start(/*size*/ 416, /*lcap*/ 8)	\
 entry(M4zero|(M4roll<<16),	0,	-2)	\
 entry(M4dup|(M4tuck<<16),	2|(M4dup<<16)|(M4dup<<32),	-2)	\
 entry(0,	0,	-1)	\
@@ -200,7 +200,7 @@ entry(M4two_r_from|(M4drop<<16),	2|(M4r_from_drop<<16)|(M4r_from<<32),	-2)	\
 entry(M4one|(M4minus_roll<<16),	1|(M4swap<<16),	453)	\
 entry(0,	0,	-1)	\
 entry(M4zero_ne|(M4_while0_<<16),	1|(M4_while0_<<16),	-2)	\
-entry(M4two|(M4rshift<<16),	1|(M4four_div<<16),	451)	\
+entry(M4two|(M4rshift<<16),	1|(M4four_div<<16),	462)	\
 entry(0,	0,	-1)	\
 entry(0,	0,	-1)	\
 entry(M4negate|(M4one_minus<<16),	1|(M4invert<<16),	454)	\
@@ -211,7 +211,7 @@ entry(M4swap|(M4equal<<16),	1|(M4equal<<16),	-2)	\
 entry(M4one|(M4div<<16),	0,	470)	\
 entry(M4abs|(M4zero_equal<<16),	1|(M4zero_equal<<16),	-2)	\
 entry(0,	0,	-1)	\
-entry(M4zero_ne|(M4zero_more_equal<<16),	1|(M4zero_equal<<16),	462)	\
+entry(M4zero_ne|(M4zero_more_equal<<16),	1|(M4zero_equal<<16),	498)	\
 entry(M4negate|(M4minus<<16),	1|(M4plus<<16),	-2)	\
 entry(M4minus_two|(M4equal<<16),	2|(M4two_plus<<16)|(M4zero_equal<<32),	469)	\
 entry(M4eight_minus|(M4four_plus<<16),	1|(M4four_minus<<16),	-2)	\
@@ -467,7 +467,7 @@ entry(0,	0,	-1)	\
 entry(M4two|(M4plus<<16),	1|(M4two_plus<<16),	-2)	\
 entry(0,	0,	-1)	\
 entry(M4less|(M4zero_more<<16),	3|(M4drop<<16)|(M4drop<<32)|(M4zero<<48),	456)	\
-entry(M4over|(M4flip<<16),	1|(M4over<<16),	-2)	\
+entry(M4case|(M4endcase<<16),	1|(M4drop<<16),	451)	\
 entry(0,	0,	-1)	\
 entry(M4short_aligned|(M4aligned<<16),	1|(M4aligned<<16),	-2)	\
 entry(M4negate|(M4_if0_<<16),	1|(M4_if0_<<16),	-2)	\
@@ -503,7 +503,7 @@ entry(M4swap|(M4less_equal<<16),	1|(M4more_equal<<16),	483)	\
 entry(M4negate|(M4_if_<<16),	1|(M4_if_<<16),	480)	\
 entry(0,	0,	-1)	\
 entry(M4dup|(M4over<<16),	2|(M4dup<<16)|(M4dup<<32),	492)	\
-entry(0,	0,	-1)	\
+entry(M4over|(M4flip<<16),	1|(M4over<<16),	-2)	\
 entry(M4i|(M4minus<<16),	1|(M4i_minus<<16),	485)	\
 entry(M4pick|(M4drop<<16),	1|(M4drop<<16),	489)	\
 entry(M4zero_less_equal|(M4zero_more<<16),	2|(M4drop<<16)|(M4zero<<32),	490)	\

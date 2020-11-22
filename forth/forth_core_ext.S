@@ -67,10 +67,9 @@ WORD_START(case,               buffer_colon)
     WORD_STACK_NONE()
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
-    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE)
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE | M4FLAG_INLINE_ALWAYS | M4FLAG_REEXEC_AFTER_OPTIMIZE)
     WORD_CODE(
-        _compile_jump_lit_, _case_, _case_,            /* ( case-sys            ) */
-        exit                                           /* ( case-sys            ) */
+        _compile_sys_lit_, case, case, exit            /* ( case-sys            ) */
     )
 WORD_END(case)
 WORD_START(compile_comma, case)
@@ -108,7 +107,7 @@ WORD_START(endcase,    compile_comma)
         _while_, T(3+nCALLt),                          /* ( case-sys endof-sys*     ) */
             CALL(_resolve_jump_here_),                 /* ( case-sys endof-sys'     ) */
         _repeat_, T(-9-nCALLt),                        /* ( case-sys                ) */
-        _check_lit_tok_, _case_,                       /* ( case-sys                ) */
+        _check_lit_tok_, case,                         /* ( case-sys                ) */
         cs_drop, exit                                  /* (                         ) */
     )
 WORD_END(endcase)

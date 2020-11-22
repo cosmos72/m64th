@@ -392,7 +392,6 @@
     X(7, "(break)", _break_)                                                                       \
     X(13, "(call-native)", _call_native_)                                                          \
     X(9, "(call-xt)", _call_xt_)                                                                   \
-    X(6, "(case)", _case_)                    /* execution semantics of 'case'     */              \
     X(11, "(catch-beg)", _catch_beg_)         /* first half of 'catch'             */              \
     X(11, "(catch-end)", _catch_end_)         /* second half of 'catch'            */              \
     X(15, "(check-lit-tok)", _check_lit_tok_) /* ( x -- x ) followed by expected x: a token */     \

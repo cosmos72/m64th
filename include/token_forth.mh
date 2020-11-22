@@ -177,7 +177,7 @@
 #undef M4again /*147*/           /* again    no dedicated m4token */
 #undef M4buffer_colon /*148*/    /* buffer:  no dedicated m4token */
 #undef M4c_quote /*149*/         /* c"       */
-#undef M4case /*150*/            /* case     no dedicated m4token */
+#define M4case 150               /* case     */
 #undef M4compile_comma /*151*/   /* compile, no dedicated m4token */
 #undef M4defer /*152*/           /* defer    */
 #undef M4defer_store /*153*/     /* defer!   */
