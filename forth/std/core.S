@@ -501,7 +501,18 @@ WORD_START(s_quote, rshift)
         CALL(compile_string_comma), exit
     )
 WORD_END(s_quote)
-WORD(state,            s_quote,    DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
+/* ( n -- d ) extend signed number to double width */
+WORD_START(s_to_d, s_quote)
+    WORD_DSTACK(1,2)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_PURE)
+    WORD_CODE(
+        dup, zero_less, exit
+    )
+WORD_END(s_to_d)
+WORD(state,            s_to_d,     DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 /* source ( -- c-addr u ) get entire content of input buffer (including already parsed data) */
 WORD_START(source,     state)
     WORD_DSTACK(0,2)

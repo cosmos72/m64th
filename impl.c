@@ -71,7 +71,7 @@ typedef struct {
 
 typedef unsigned __int128 uint128_t;
 
-um_div_mod_result m4th_um_div_mod(uint64_t hi, uint64_t lo, uint64_t divisor) {
+um_div_mod_result m4th_um_div_mod(uint64_t lo, uint64_t hi, uint64_t divisor) {
     const uint128_t dividend = (uint128_t)hi << 64 | lo;
     const um_div_mod_result ret = {(uint64_t)(dividend % divisor), (uint64_t)(dividend / divisor)};
     return ret;
