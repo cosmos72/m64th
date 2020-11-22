@@ -17,10 +17,10 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "../include/asm.mh"
-#include "../include/dict.mh"
-#include "../include/dict_m4th.mh"
-#include "../include/hashmap.mh"
+#include "../../include/asm.mh"
+#include "../../include/dict.mh"
+#include "../../include/dict_m4th.mh"
+#include "../../include/hashmap.mh"
 
 /* clang-format off */
 
@@ -126,6 +126,10 @@ WORD_START(minus_cs_roll,   continue)
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(minus_cs_roll, exit)
 WORD_END(minus_cs_roll)
+#if 0
+/* ( d n -- d' ) divide double-width number d by signed n. result is double-width */
+WORD(d_div, minus_cs_roll, DSTACK(3,2), RSTACK(0,0), WORD_PURE)
+#endif
 WORD_START(disassemble, minus_cs_roll)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)

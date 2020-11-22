@@ -26,21 +26,21 @@
 /* ---------------------------------------------------------------------------------------------- */
 
 DICT_START(forth_root)
-#include "forth_root.S"
-#include "forth_root_gen.S"
+#include "std/root.S"
+#include "std/root_gen.S"
 DICT_BODY(forth_root, LASTWORD)
 DICT_END(forth_root)
 
 DICT_START(forth_root)
-#include "forth_core.S"
-#include "forth_core_ext.S"
-#include "forth_double_ext.S"
-#include "forth_exception.S"
-#include "forth_memory.S"
-#include "forth_tools.S"
-#include "forth_tools_ext.S"
-#include "forth_searchorder.S"
-#include "forth_searchorder_gen.S"
-#include "forth_string.S"
+#include "std/core.S"
+#include "std/core_ext.S"
+#include "std/double_ext.S"
+#include "std/exception.S"
+#include "std/memory.S"
+#include "std/tools.S"
+#include "std/tools_ext.S"
+#include "std/searchorder.S"
+#include "std/searchorder_gen.S"
+#include "std/string.S"
 DICT_BODY(forth, LASTWORD)
 DICT_END(forth)

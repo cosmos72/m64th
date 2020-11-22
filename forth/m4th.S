@@ -47,7 +47,7 @@
 
 DICT_START(m4th_c)
 DICT_WORDS_M4TH_C(WORDNAME)
-#include "m4th_c.S"
+#include "m4th/c.S"
 DICT_BODY(m4th_c, LASTWORD)
 DICT_END(m4th_c)
 
@@ -55,7 +55,7 @@ DICT_END(m4th_c)
 
 DICT_START(m4th_core)
 DICT_WORDS_M4TH_CORE(WORDNAME)
-#include "m4th_core.S"
+#include "m4th/core.S"
 DICT_BODY(m4th_core, LASTWORD)
 DICT_END(m4th_core)
 
@@ -63,7 +63,7 @@ DICT_END(m4th_core)
 
 DICT_START(m4th_impl)
 DICT_WORDS_M4TH_IMPL(WORDNAME)
-#include "m4th_impl.S"
+#include "m4th/impl.S"
 DICT_BODY(m4th_impl, LASTWORD)
 DICT_END(m4th_impl)
 
@@ -71,7 +71,7 @@ DICT_END(m4th_impl)
 
 DICT_START(m4th_user)
 DICT_WORDS_M4TH_USER(WORDNAME)
-#include "m4th_user.S"
-#include "m4th_user_gen.S"
+#include "m4th/user.S"
+#include "m4th/user_gen.S"
 DICT_BODY(m4th_user, LASTWORD)
 DICT_END(m4th_user)

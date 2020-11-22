@@ -17,9 +17,9 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "../include/asm.mh"
-#include "../include/dict.mh"
-#include "../include/dict_forth.mh"
+#include "../../include/asm.mh"
+#include "../../include/dict.mh"
+#include "../../include/dict_forth.mh"
 
 /* clang-format off */
 

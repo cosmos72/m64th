@@ -19,7 +19,7 @@
 
 /* clang-format off */
 
-#include "../include/err.mh" /* M4ERR_STACK_UNDERFLOW */
+#include "../../include/err.mh" /* M4ERR_STACK_UNDERFLOW */
 
 DICT_WORDS_FORTH_CORE(WORDNAME)
 

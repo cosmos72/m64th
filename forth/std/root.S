@@ -19,7 +19,7 @@
 
 /* clang-format off */
 
-#include "../include/err.mh"
+#include "../../include/err.mh"
 
 /* words shared between forth wordlist and forth-root wordlist */
 
