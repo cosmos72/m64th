@@ -1602,17 +1602,17 @@ WORD_START(u_to_char, string_to_sign)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_PURE) /* multiple exits => cannot inline */
     WORD_CODE(
-        /* dup 10 < if
+        /* dup 10 u< if
          *   '0' + exit
-         * then dup 36 < if
+         * then dup 36 u< if
          *   ('a'-10) + exit
          * then '?'
          */
-        dup, _lit_, T(10), less,               /* ( u t|f                  ) */
+        dup, _lit_, T(10), u_less,               /* ( u t|f                  ) */
         _if_, T(5),                            /* ( u                      ) */
             _lit_, T('0'), plus, exit,         /* ( u+'0'                  ) */
         then,                                  /* ( u                      ) */
-        dup, _lit_, T(36), less,               /* ( u t|f                  ) */
+        dup, _lit_, T(36), u_less,               /* ( u t|f                  ) */
         _if_, T(5),                            /* ( u                      ) */
             _lit_, T('a'-10), plus, exit,      /* ( u+'a'-10               ) */
         then,
