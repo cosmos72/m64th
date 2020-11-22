@@ -35,6 +35,7 @@
 #define M4TH_OFF_VM -SZ2             /* offset of m4th->vm              */
 #define M4TH_OFF_C_REG0 -SZ          /* offset of m4th->c_regs[0]       */
 #define M4TH_OFF_USER 0              /* offset of m4th->user*           */
+#define M4TH_OFF_PIC_START 4         /* offset of m4th->pic_start       */
 #define M4TH_OFF_LASTW SZ            /* offset of m4th->lastw           */
 #define M4TH_OFF_XT SZ2              /* offset of m4th->xt              */
 #define M4TH_OFF_LOCALNAMES SZ3      /* offset of m4th->localnames      */
@@ -47,5 +48,9 @@
 #define M4TH_OFF_EX_STRING_N SZ11    /* offset of m4th->ex_message.n    */
 #define M4TH_OFF_COMPILE_WID SZ12    /* offset of m4th->compile_wid     */
 #define M4TH_OFF_SEARCHORDER SZ13    /* offset of m4th->searchorder     */
+
+/* pictured output buffer must be at least (2 x n) + 2 chars */
+/* where n = number of bits in a cell */
+#define M4TH_PIC_MAXSIZE (16 * SZ + 2)
 
 #endif /* M4TH_INCLUDE_M4TH_MH */

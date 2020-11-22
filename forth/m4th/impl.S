@@ -20,9 +20,9 @@
 #include "../../dispatch/sz.mh" /* SZ SZt */
 #include "../../include/asm.mh"
 #include "../../include/dict.mh"
-#include "../../include/m4th/dict.mh"
 #include "../../include/err.mh"
 #include "../../include/hashmap.mh"
+#include "../../include/m4th/dict.mh"
 #include "../../include/opt2_hash.mh"
 #include "../../include/opt3_hash.mh"
 #include "../../include/opt_rules.mh"
@@ -1429,19 +1429,19 @@ WORD_START(char_to_u, char_to_base)
          *   87 - exit
          * then -1
          */
-        dup, _lit_, T('0'), _lit_, T('9'+1), /* ( ch ch '0' '9'+1 )         */
-        within, _if_, T(5),                      /* ( ch )                      */
-            _lit_, T('0'), minus, exit,        /* ( ch-'0' )                  */
+        dup, _lit_, T('0'), _lit_, T('9'+1),  /* ( ch ch '0' '9'+1         ) */
+        within, _if_, T(5),                   /* ( ch                      ) */
+            _lit_, T('0'), minus, exit,       /* ( ch-'0'                  ) */
         then,
-        dup, _lit_, T('A'), _lit_, T('Z'+1), /* ( ch ch 'A' 'Z'+1 )         */
-        within, _if_, T(5),                      /* ( ch )                      */
-            _lit_, T('A'-10), minus, exit,     /* ( ch-'A'+10 )               */
+        dup, _lit_, T('A'), _lit_, T('Z'+1),  /* ( ch ch 'A' 'Z'+1         ) */
+        within, _if_, T(5),                   /* ( ch                      ) */
+            _lit_, T('A'-10), minus, exit,    /* ( ch-'A'+10               ) */
         then,
-        dup, _lit_, T('a'), _lit_, T('z'+1), /* ( ch ch 'a' 'z'+1 )         */
-        within, _if_, T(5),                      /* ( ch )                      */
-            _lit_, T('a'-10), minus, exit,     /* ( ch-'a'+10 )               */
+        dup, _lit_, T('a'), _lit_, T('z'+1),  /* ( ch ch 'a' 'z'+1         ) */
+        within, _if_, T(5),                   /* ( ch                      ) */
+            _lit_, T('a'-10), minus, exit,    /* ( ch-'a'+10               ) */
         then,
-        drop, minus_one, exit                    /* ( -1 )                      */
+        drop, minus_one, exit                 /* ( -1                      ) */
     )
 WORD_END(char_to_u)
 /*
@@ -1594,6 +1594,31 @@ WORD_START(string_to_sign, string_base_to_u)
         minus_one, exit
     )
 WORD_END(string_to_sign)
+/* ( u -- ch )  convert unsigned number to char in current base */
+WORD_START(u_to_char, string_to_sign)
+    WORD_DSTACK(1,1)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_PURE) /* multiple exits => cannot inline */
+    WORD_CODE(
+        /* dup 10 < if
+         *   '0' + exit
+         * then dup 36 < if
+         *   ('a'-10) + exit
+         * then '?'
+         */
+        dup, _lit_, T(10), less,               /* ( u t|f                  ) */
+        _if_, T(5),                            /* ( u                      ) */
+            _lit_, T('0'), plus, exit,         /* ( u+'0'                  ) */
+        then,                                  /* ( u                      ) */
+        dup, _lit_, T(36), less,               /* ( u t|f                  ) */
+        _if_, T(5),                            /* ( u                      ) */
+            _lit_, T('a'-10), plus, exit,      /* ( u+'a'-10               ) */
+        then,
+        drop, _lit_, T('?'), exit              /* ( '?'                    ) */
+    )
+WORD_END(u_to_char)
 
 #undef LASTWORD
-#define LASTWORD string_to_sign
+#define LASTWORD u_to_char

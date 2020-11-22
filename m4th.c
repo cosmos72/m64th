@@ -23,9 +23,11 @@
 #include "include/dict_fwd.h"
 #include "include/func.mh"
 #include "include/func_fwd.h"
+#include "include/m4th.mh" /* M4TH_PIC_MAXSIZE */
 #include "include/macro.mh"
 #include "include/word_fwd.h"
 #include "include/wordlist_fwd.h"
+
 #include <assert.h> /* assert()  */
 #include <errno.h>  /* errno     */
 #include <stdio.h>  /* printf() */
@@ -1245,6 +1247,8 @@ m4th *m4th_new(m4th_opt options) {
     memset(m->c_regs, '\0', sizeof(m->c_regs));
     m->user_size = ((m4cell)&m->user_var[0] - (m4cell)&m->user_size) / SZ;
     m->user_next = m->user_size;
+    m->pict_start = M4TH_PIC_MAXSIZE;
+    m->unused0 = 0;
     m->lastw = NULL;
     m->xt = NULL;
     m->localnames = NULL;

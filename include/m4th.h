@@ -230,8 +230,10 @@ struct m4th_s {                /**< m4th forth interpreter and compiler         
     const void *c_regs[1];     /**< m4th_run() may save C registers here         */
                                /*                                                */
                                /* USER variables, i.e. thread-local              */
-    uint32_t user_size;        /**< # available cells in user variables          */
-    uint32_t user_next;        /**< next available cell in user variables        */
+    uint16_t user_size;        /**< # available cells in user variables          */
+    uint16_t user_next;        /**< next available cell in user variables        */
+    uint16_t pict_start;       /**< offset from HERE to beginning of pictured output buffer */
+    uint16_t unused0;          /**<                                              */
     m4word *lastw;             /**< last defined forth word                      */
     m4xt xt;                   /**< XT being compiled. also used for STATE       */
     m4localnames *localnames;  /**< local variable names of XT being compiled    */

@@ -25,6 +25,7 @@
 #include "../include/func_fwd.h"
 #include "../include/iobuf.mh"
 #include "../include/m4th.h"
+#include "../include/m4th.mh" /* M4TH_PIC_MAXSIZE */
 #include "../include/token.h"
 #include "../include/word_fwd.h"
 #include "testcommon.h"
@@ -159,7 +160,42 @@ static const m4testio testio_a[] = {
      {"", "pq"}},
 };
 
+/* these require higher obuf capacity */
 static const m4testio testio_b[] = {
+    /* ------------------------- pictured numeric output -------------------- */
+    {"<# #>",
+     {m4num_start, m4num_end, m4type, m4bye},
+     {{2, {0, 0}}, {}},
+     {{}, {}},
+     {"", ""},
+     {"", ""}},
+    {"<# char a hold #>",
+     {m4num_start, m4hold, m4num_end, m4type, m4bye},
+     {{3, {0, 0, 'a'}}, {}},
+     {{}, {}},
+     {"", ""},
+     {"", "a"}},
+    {"<# char b char c hold #>",
+     {m4num_start, m4hold, m4hold, m4num_end, m4type, m4bye},
+     {{4, {0, 0, 'c', 'b'}}, {}},
+     {{}, {}},
+     {"", ""},
+     {"", "cb"}},
+    {"<# 3 # #>",
+     {m4num_start, CALL(num), m4num_end, m4type, m4bye},
+     {{2, {0, 3}}, {}},
+     {{}, {}},
+     {"", ""},
+     {"", "3"}},
+    {"<# 123 #s #>",
+     {m4num_start, CALL(num_s), m4num_end, m4type, m4bye},
+     {{2, {0, 123}}, {}},
+     {{}, {}},
+     {"", ""},
+     {"", "123"}},
+};
+
+static const m4testio testio_c[] = {
     /* ------------------------- dot ---------------------------------------- */
     {"9 .", {CALL(dot), m4bye}, {{1, {9}}, {}}, {{}, {}}, {"", ""}, {"", "9 "}},
     /* ------------------------- parse-name --------------------------------- */
@@ -213,7 +249,7 @@ static const m4testio testio_b[] = {
 };
 
 /* these require higher ibuf capacity */
-static const m4testio testio_c[] = {
+static const m4testio testio_d[] = {
     {"\"123\" iobuf>data 'a' fill",
      {m4in_to_ibuf, m4iobuf_data, m4_lit_, T('a'), m4fill, m4bye},
      {{}, {}},
@@ -240,7 +276,7 @@ static const m4testio testio_c[] = {
      {"ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd", ""}},
 };
 
-static const m4testio testio_d[] = {
+static const m4testio testio_e[] = {
     /* ------------------------- interpret ---------------------------------- */
     {"interpret", {CALL(interpret), m4bye}, {{}, {}}, {{1, {3}}, {}}, {" 3 2", ""}, {" 2", ""}},
     /* ------------------------- repl --------------------------------------- */
@@ -495,9 +531,10 @@ m4cell m4th_testio(m4th *m, FILE *out) {
     m4testcount count = {};
     m4testio_global_init();
     m4testio_bunch(m, testio_a, N_OF(testio_a), &count, out, SZ2);
-    m4testio_bunch(m, testio_b, N_OF(testio_b), &count, out, SZ2);
-    m4testio_bunch(m, testio_c, N_OF(testio_c), &count, out, 80);
-    m4testio_bunch(m, testio_d, N_OF(testio_d), &count, out, SZ2);
+    m4testio_bunch(m, testio_b, N_OF(testio_b), &count, out, M4TH_PIC_MAXSIZE);
+    m4testio_bunch(m, testio_c, N_OF(testio_c), &count, out, SZ2);
+    m4testio_bunch(m, testio_d, N_OF(testio_d), &count, out, 80);
+    m4testio_bunch(m, testio_e, N_OF(testio_e), &count, out, SZ2);
 
     if (out != NULL) {
         if (count.failed == 0) {

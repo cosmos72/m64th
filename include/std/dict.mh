@@ -35,6 +35,7 @@
 /* ------- forth 2012: core --------------------------------------------------------------------- */
 #define DICT_TOKENS_FORTH_CORE(X)                                                                  \
     X(1, "!", store)                                                                               \
+    X(2, "#>", num_end)                                                                            \
     X(1, "*", times)                                                                               \
     X(1, "+", plus)                                                                                \
     X(2, "+!", plus_store)                                                                         \
@@ -60,6 +61,7 @@
     X(5, "2swap", two_swap)                                                                        \
     X(1, ":", colon)                                                                               \
     X(1, "<", less)                                                                                \
+    X(2, "<#", num_start)                                                                          \
     X(1, "=", equal)                                                                               \
     X(1, ">", more)                                                                                \
     X(2, ">r", to_r)                                                                               \
@@ -90,6 +92,7 @@
     X(4, "exit", exit)                                                                             \
     X(4, "fill", fill)                                                                             \
     X(4, "here", here)                                                                             \
+    X(4, "hold", hold)                                                                             \
     X(1, "i", i)                                                                                   \
     X(9, "immediate", immediate)                                                                   \
     X(6, "invert", invert)                                                                         \
@@ -121,6 +124,8 @@
 #define DICT_WORDS_FORTH_CORE(X)                                                                   \
     DICT_TOKENS_FORTH_CORE(X)                                                                      \
     /* the following words are implemented in forth, thus no dedicated m4token value */            \
+    X(1, "#", num)                                                                                 \
+    X(2, "#s", num_s)                                                                              \
     X(1, "'", tick)                                                                                \
     X(5, "+loop", plus_loop)                                                                       \
     X(1, ".", dot)                                                                                 \

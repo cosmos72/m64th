@@ -24,7 +24,45 @@
 DICT_WORDS_FORTH_CORE(WORDNAME)
 
 WORD(store,            LASTWORD,   DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE)
-WORD_START(tick,       store)
+/* # ( ud -- ud' ) divide ud by current BASE. ud' is the quotient.
+ * convert the remainder u to a character and prepend it to pictured numeric output */
+WORD_START(num,        store)
+    WORD_DSTACK(2,2)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        base, fetch,                                /* ( ud base                  ) */
+#ifdef M4FUM_DIV_MOD
+        um_div_mod,                                 /* ( remainder quotient       ) */
+#else
+        CALL(um_div_mod),                           /* ( remainder quotient       ) */
+#endif
+        swap,                                       /* ( quotient remainder       ) */
+        CALL(u_to_char),                            /* ( quotient ch              ) */
+        /* warning: we should define and use u>d instead */
+        hold, zero, swap, exit                      /* ( ud'                      ) */
+    )
+WORD_END(num)
+WORD(num_end,          num,        DSTACK(2,2), RSTACK(0,0), WORD_IMPURE)
+/* #s ( ud -- ud' ) call # repeatedly (at least once) until ud is zero. return ud. */
+WORD_START(num_s,      num_end)
+    WORD_DSTACK(2,2)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        begin,                                      /* ( ud                       ) */
+            CALL(num),                              /* ( ud'                      ) */
+            over, zero_equal,                       /* ( ud t|f                   ) */
+            over, zero_equal, and,                  /* ( ud t|f'                  ) */
+        _until_, T(-8-nCALLt),
+        exit
+    )
+WORD_END(num)
+WORD_START(tick,       num)
     WORD_DSTACK(0,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -135,7 +173,8 @@ WORD_START(semi,       colon)
     )
 WORD_END(semi)
 WORD(less,             semi,       DSTACK(2,1), RSTACK(0,0), WORD_PURE)
-WORD(equal,            less,       DSTACK(2,1), RSTACK(0,0), WORD_PURE)
+WORD(num_start,        less,       DSTACK(0,0), RSTACK(0,0), WORD_IMPURE)
+WORD(equal,            num_start,  DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(more,             equal,      DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD_START(to_in,      more)
     WORD_DSTACK(0,1)
@@ -334,7 +373,8 @@ WORD_START(exit, execute)
 WORD_END(exit)
 WORD(fill,             exit,       DSTACK(3,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE)
 WORD(here,             fill,       DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
-WORD(i,                here,       DSTACK(0,1), RSTACK(1,1), WORD_R_PURE)
+WORD(hold,             here,       DSTACK(1,0), RSTACK(0,0), WORD_IMPURE)
+WORD(i,                hold,       DSTACK(0,1), RSTACK(1,1), WORD_R_PURE)
 WORD_START(if, i)
     WORD_DSTACK(0,2)  /* stack effect when compiling */
     WORD_RSTACK(0,0)

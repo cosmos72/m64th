@@ -21,14 +21,45 @@
 
 /* clang-format off */
 
+/* #> ( xd -- c-addr u ) drop xd, return the pictured numeric output
+ * as a user-modifiable string */
+FUNC_START(num_end)
+        LD_uh( DTOP,   AT(M4TH, M4TH_OFF_PIC_START))   /* dtop = pic_start       */
+        ADD4(  HERE,   DTOP,0, REG2)                   /* b = c-addr             */
+        SUB2(  IMM(M4TH_PIC_MAXSIZE), DTOP)            /* dtop = -u              */
+        STOR(  REG2,   AT(DSTK))                       /* ( c-addr -u          ) */
+        NEG1(  DTOP)                                   /* ( c-addr u           ) */
+FUNC_END(num_end)
+
+
+/* <# ( -- ) initialize the pictured numeric output */
+FUNC_START(num_start)
+        MOVI(  M4TH_PIC_MAXSIZE,       REG1)
+        STORh( REG1,   AT(M4TH, M4TH_OFF_PIC_START))   /* pic_start = initial value */
+FUNC_END(num_start)
+
 
 /* emit ( ch -- ) write one char to current output */
 FUNC_START(emit)
         LOAD(  REG1,   AT(M4TH, M4TH_OFF_OUT))         /* a = io                 */
         DPUSH( REG1)                                   /* dstk ( io ch         ) */
-        TOKEN_CALL_NOTHROW(FUNC(obuf_write_char), emit.0) /* dstk ( err           ) */
+        TOKEN_CALL_NOTHROW(FUNC(obuf_write_char), emit.0) /* dstk ( err        ) */
         DPOP___DTOP()                                  /* dstk (               ) */
 FUNC_END(emit)
+
+
+/* hold ( ch -- ) add one char to the beginning of pictured numeric output */
+FUNC_START(hold)
+        LD_uh( REG1,   AT(M4TH, M4TH_OFF_PIC_START))   /* a = pic_start          */
+        JNZ(   REG1,   TO(hold.ok))
+        MOVI(M4ERR_PICTURED_NUMERIC_OUTPUT_STRING_OVERFLOW, REG0)
+        JUMP(  FUNC(_throw_reg0_))
+LABEL(hold.ok)
+        DEC1(  REG1)                                   /* a = pic_start - 1      */
+        STORb( DTOP,   AT(HERE, REG1,1))               /* here[pic_start-1] = ch */
+        STORh( REG1,   AT(M4TH, M4TH_OFF_PIC_START))   /* --pic_start            */
+        DPOP___DTOP()
+FUNC_END(hold)
 
 
 /* in>ibuf ( -- io ) get current input as iobuf */

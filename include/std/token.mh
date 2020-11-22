@@ -29,9 +29,9 @@
 
 /* 'forth' wordlist: 'core' word set */
 #define M4store 1                 /* !        */
-#undef M4number_sign /*2*/        /* #        */
-#undef M4num_end /*3*/            /* #>       */
-#undef M4num_s /*4*/              /* #s       */
+#undef M4num /*2*/                /* #        no dedicated m4token */
+#define M4num_end 3               /* #>       */
+#undef M4num_s /*4*/              /* #s       no dedicated m4token */
 #undef M4tick /*5*/               /* '        no dedicated m4token */
 #undef M4paren /*6*/              /* (        */
 #define M4times 7                 /* *        */
@@ -61,7 +61,7 @@
 #define M4colon 31                /* :        implemented in forth, this is just a marker */
 #undef M4semi /*32*/              /* ;        no dedicated m4token */
 #define M4less 33                 /* <        */
-#undef M4num_start /*34*/         /* <#       */
+#define M4num_start 34            /* <#       */
 #define M4equal 35                /* =        */
 #define M4more 36                 /* >        */
 #undef M4to_body /*37*/           /* >body    */
@@ -109,7 +109,7 @@
 #undef M4find /*79*/              /* find     no dedicated m4token */
 #define M4f_m_div_mod 80          /* fm/mod   */
 #define M4here 81                 /* here     */
-#undef M4hold /*82*/              /* hold     */
+#define M4hold 82                 /* hold     */
 #define M4i 83                    /* i        */
 #undef M4if /*84*/                /* if       no dedicated m4token */
 #define M4immediate 85            /* immediate*/
