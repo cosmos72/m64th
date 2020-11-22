@@ -58,11 +58,11 @@ WORD_START(num_s,      num_end)
             CALL(num),                              /* ( ud'                      ) */
             over, zero_equal,                       /* ( ud t|f                   ) */
             over, zero_equal, and,                  /* ( ud t|f'                  ) */
-        _until_, T(-8-nCALLt),
+        _until_, T(-8-nCALLt),                      /* ( ud                       ) */
         exit
     )
-WORD_END(num)
-WORD_START(tick,       num)
+WORD_END(num_s)
+WORD_START(tick,       num_s)
     WORD_DSTACK(0,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
