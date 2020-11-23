@@ -167,32 +167,3 @@ LABEL(_loop_.leave)
         ADD2(  IMM(SZ2),   RSTK)                   /* drop i' i from return stack */
         NEXTT()                                    /* skip IP offset              */
 FUNC_RAWEND(_loop_)
-
-
-#define M4FTWO_TO_R
-FUNC_START(two_to_r)       /* 2>r      */
-        LOAD(  REG1,   AT(DSTK))
-        RPUSH2(RTOP,   REG1)
-        MOVE(  DTOP,   RTOP)
-        LOAD(  DTOP,   AT(DSTK, SZ))
-        ADD2(  IMM(SZ2), DSTK)
-FUNC_END(two_to_r)
-
-
-#define M4FTWO_DUP_TWO_TO_R
-FUNC_START(two_dup_two_to_r)   /* 2dup 2>r  m4th-user */
-        STOR(  RTOP,       AT(RSTK, -SZ))
-        LOAD(  REG1,       AT(DSTK))
-        MOVE(  DTOP,       RTOP)
-        STOR(  REG1,       AT(RSTK, -SZ2))
-        SUB2(  IMM(SZ2),   RSTK)
-FUNC_END(two_dup_two_to_r)
-
-
-#define M4FTWO_R_FROM
-FUNC_START(two_r_from)     /* 2r>      */
-        RPOP(  REG1)
-        DPUSH2(DTOP,   REG1)
-        MOVE(  RTOP,   DTOP)
-        RPOP(  RTOP)
-FUNC_END(two_r_from)

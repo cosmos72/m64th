@@ -32,6 +32,7 @@ MARKER(asm_func_start)
 
 #if defined(__x86_64__)
 #include "amd64/arith.S"
+#include "amd64/double.S"
 #include "amd64/call.S"
 #include "amd64/compile.S"
 #include "amd64/core.S"
@@ -39,6 +40,7 @@ MARKER(asm_func_start)
 #include "amd64/mem.S"
 #elif defined(__aarch64__)
 #include "arm64/arith.S"
+#include "arm64/double.S"
 #include "arm64/call.S"
 #include "arm64/compile.S"
 #include "arm64/core.S"
@@ -49,6 +51,7 @@ MARKER(asm_func_start)
 #endif
 
 #include "generic_asm/arith.S"
+#include "generic_asm/double.S"
 #include "generic_asm/call.S"
 #include "generic_asm/compile.S"
 #include "generic_asm/core.S"

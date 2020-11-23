@@ -195,6 +195,7 @@
 
 #define m4d_to_s m4drop
 #define m4u_to_d m4zero
+#define m4d_to_hi m4nip
 
 /* -------------------------------------------------------------------------- */
 /* M4* numeric values have uppercase prefix 'M4'                              */
@@ -337,5 +338,6 @@
 
 #define M4d_to_s M4drop
 #define M4u_to_d M4zero
+#define M4d_to_hi M4nip
 
 #endif /* M4TH_INCLUDE_TOKEN_ALIAS_MH */

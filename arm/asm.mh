@@ -169,6 +169,7 @@
 #define SUB2(src,dst)     sub   dst, dst, src;      /* dst -= src     */
 #define SUB3(a,b,dst)     sub   dst, a, b;          /* dst  = a - b   */
 #define STOR(reg,at)      str   reg, at;            /* *at  = reg     */
+#define UDIV3(a,b,dst)    udiv  dst, a, b;          /* dst  = a / b   */
 #define XOR2(src,dst)     eor   dst, dst, src;      /* dst ^= src     */
 #define XSUB2(a,b)        sub   b,   a, b;          /* b    = a - b   */
 #define ZERO(dst)         mov   dst, xzr;           /* dst  = 0       */

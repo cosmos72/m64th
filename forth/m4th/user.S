@@ -30,7 +30,9 @@
 
 WORD(less_equal,       less_equal,     DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(more_equal,       less_equal,     DSTACK(2,1), RSTACK(0,0), WORD_PURE)
-WORD(zero_less_equal,  more_equal,     DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD(q_du_to_u,        more_equal,     DSTACK(2,-1),RSTACK(0,0), WORD_PURE)
+WORD(q_2du_to_2u,      q_du_to_u,      DSTACK(4,-1),RSTACK(0,0), WORD_PURE)
+WORD(zero_less_equal,  q_2du_to_2u,    DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(zero_more_equal, zero_less_equal, DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(two_plus,        zero_more_equal, DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(two_minus,        two_plus,       DSTACK(1,1), RSTACK(0,0), WORD_PURE)
@@ -56,7 +58,8 @@ WORD_START(minus_two_roll,   two_roll)
 WORD_END(minus_two_roll)
 WORD(minus_two_rot,    minus_two_roll, DSTACK(6,6), RSTACK(0,0), WORD_PURE)
 WORD(two_sm_div,       minus_two_rot,  DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(four_times,       two_sm_div,     DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD(two_tuck,         two_sm_div,     DSTACK(4,6), RSTACK(0,0), WORD_PURE)
+WORD(four_times,       two_tuck,       DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(four_plus,        four_times,     DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(four_minus,       four_plus,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(four_div,         four_minus,     DSTACK(1,1), RSTACK(0,0), WORD_PURE)
@@ -159,7 +162,31 @@ WORD_END(disassemble_name)
 WORD(do_i_plus_loop, disassemble_name, DSTACK(2,1), RSTACK(0,0), WORD_IMPURE)
 /* dp0        ( x -- x addr-of-x ) get address of stack bottom */
 WORD(dp0,              do_i_plus_loop, DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
-WORD(dup_to_r,         dp0,            DSTACK(1,1), RSTACK(0,1), WORD_R_PURE)
+/**
+ * du/mod ( du du-divisor -- du-rem du-quo ) unsigned remainder & quotient
+ * of double-width unsigned division.
+ * returned remainder and quotient are double-width unsigned numbers
+ */
+WORD_START(du_div_mod, dp0)
+    WORD_DSTACK(4,4)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_PURE)
+    WORD_CODE(
+        q_2du_to_2u,                                   /* ( ud1 ud2 f | u1 u2 t  ) */
+        _if_, T(7),    /* 64bit division */            /* ( u1 u2                ) */
+            u_div_mod,                                 /* ( rem quo              ) */
+            swap, u_to_d, rot, u_to_d, exit,           /* ( du-rem du-quo        ) */
+        then,                                          /* ( ud1 ud2              ) */
+        dp0, dup,                                      /* ( ud1 x=ud2 &x &x      ) */
+        cell_plus, cell_plus, swap,                    /* ( y=ud1 x=ud2 &y &x    ) */
+        _c_arg_2_, _c_call_, CELL(m4th_ud_div_mod), _c_ret_0_,
+                                                       /* ( du-rem du-quo        ) */
+        exit
+    )
+WORD_END(du_div_mod)
+WORD(dup_to_r,         du_div_mod,     DSTACK(1,1), RSTACK(0,1), WORD_R_PURE)
 WORD(ex_message_store, dup_to_r,       DSTACK(2,0), RSTACK(0,0), WORD_IMPURE)
 WORD(ex_message_fetch,ex_message_store,DSTACK(0,2), RSTACK(0,0), WORD_IMPURE)
 /* ( ex -- c-addr u ) get exception name */
@@ -643,31 +670,19 @@ WORD_END(string_ne)
 WORD(trail,            string_ne,      DSTACK(2,3), RSTACK(0,0), WORD_PURE)
 WORD(u_less_equal,     trail,          DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(u_more_equal,     u_less_equal,   DSTACK(2,1), RSTACK(0,0), WORD_PURE)
-/* u>d ( u -- ud ) extend unsigned number to double width */
+/* u>d ( u -- du ) extend unsigned number to double width */
 WORD(u_to_d,           u_more_equal,   DSTACK(1,2), RSTACK(0,0), WORD_PURE)
-#ifdef M4FUM_DIV_MOD
-WORD(um_div_mod,       u_to_d,         DSTACK(3,2), RSTACK(0,0), WORD_PURE)
-#else
-WORD_START(um_div_mod, u_more_equal)
-    WORD_DSTACK(3,2)
-    WORD_RSTACK(0,0)
-    WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
-    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_PURE)
-    WORD_CODE(
-        _c_arg_3_, _c_call_, CELL(m4th_um_div_mod), _c_ret_2_, exit
-    )
-WORD_END(string_ne)
-#endif
-WORD_START(valid_base_q, um_div_mod)
+/* u/mod ( u1 u2 -- u1%u2 u1/u2 ) unsigned remainder & divide */
+WORD(u_div_mod,        u_to_d,         DSTACK(2,2), RSTACK(0,0), WORD_PURE)
+WORD_START(valid_base_q, u_div_mod)
     WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
     WORD_CODE(
-        two, _lit_, T(37),             /* base 2 37                   */
-        within,                        /* caddr n base                */
+        two, _lit_, T(37),             /* base 2 37                    */
+        within,                        /* caddr n base                 */
         exit
     )
 WORD_END(valid_base_q)

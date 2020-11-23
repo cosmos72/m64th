@@ -293,7 +293,8 @@ FUNC_RAWEND(two_roll)
 #endif
 
 
-/* ( du du_1 ... d1 d0 u -- d0 du du_1 ... d1 ) */
+#ifndef M4FMINUS_TWO_ROLL
+/* ( dx_u ... d1 d0 u -- d0 dx_u ... d1 ) */
 FUNC_START(minus_two_roll)
         SHL2(IMM(1),   DTOP)               /* dtop <<= 1                         */
         ADD4(  DSTK,   DTOP, PSZ, REG0)    /* @ = address of du                  */
@@ -309,6 +310,7 @@ FUNC_START(minus_two_roll)
         TOKEN_CALL_NOTHROW(FUNC(move), minus_two_roll.0) /* ( du du ... d1 d0 &du            ) */
         JUMP(    FUNC(two_store))              /* ( d0 du ... d1                   ) */
 FUNC_RAWEND(minus_two_roll)
+#endif
 
 
 /* ----------------------- string ---------------------- */

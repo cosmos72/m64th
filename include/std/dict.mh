@@ -115,7 +115,6 @@
     X(4, "then", then)                                                                             \
     X(4, "type", type)                                                                             \
     X(2, "u<", u_less)                                                                             \
-    X(6, "um/mod", um_div_mod)                                                                     \
     X(6, "unloop", unloop)                                                                         \
     X(3, "xor", xor)                                                                               \
     X(1, "[", left_bracket)                                                                        \
@@ -151,6 +150,7 @@
     X(6, "source", source)                                                                         \
     X(5, "space", space)                                                                           \
     X(6, "spaces", spaces)                                                                         \
+    X(6, "um/mod", um_div_mod)                                                                     \
     X(5, "until", until)                                                                           \
     X(8, "variable", variable)                                                                     \
     X(5, "while", while)                                                                           \

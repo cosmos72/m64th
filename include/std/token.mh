@@ -150,7 +150,7 @@
 #undef M4u_dot /*120*/            /* u.       */
 #define M4u_less 121              /* u<       */
 #undef M4um_times /*122*/         /* um*      */
-#define M4um_div_mod 123          /* um/mod   */
+#undef M4um_div_mod /*123*/       /* um/mod   */
 #define M4unloop 124              /* unloop   */
 #undef M4until /*125*/            /* until    no dedicated m4token */
 #undef M4variable /*126*/         /* variable */

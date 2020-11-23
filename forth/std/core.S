@@ -24,7 +24,7 @@
 DICT_WORDS_FORTH_CORE(WORDNAME)
 
 WORD(store,            LASTWORD,   DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE)
-/* # ( ud -- ud' ) divide ud by current BASE. ud' is the quotient.
+/* # ( du -- du' ) divide du by current BASE. du' is the quotient.
  * convert the remainder u to a character and prepend it to pictured numeric output */
 WORD_START(num,        store)
     WORD_DSTACK(2,2)
@@ -33,19 +33,14 @@ WORD_START(num,        store)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
-        base, fetch,                                /* ( ud base                  ) */
-#ifdef M4FUM_DIV_MOD
-        um_div_mod,                                 /* ( remainder quotient       ) */
-#else
-        CALL(um_div_mod),                           /* ( remainder quotient       ) */
-#endif
-        swap,                                       /* ( quotient remainder       ) */
-        CALL(u_to_char),                            /* ( quotient ch              ) */
-        hold, u_to_d, exit                          /* ( ud'                      ) */
+        base, fetch, u_to_d,                        /* ( du du-base               ) */
+        CALL(du_div_mod),                           /* ( du-remainder du-quotient ) */
+        two_swap, d_to_s,                           /* ( du-quotient  remainder   ) */
+        CALL(u_to_char), hold, exit                 /* ( du-quotent               ) */
     )
 WORD_END(num)
 WORD(num_end,          num,        DSTACK(2,2), RSTACK(0,0), WORD_IMPURE)
-/* #s ( ud -- ud' ) call # repeatedly (at least once) until ud is zero. return ud. */
+/* #s ( du -- du' ) call # repeatedly (at least once) until du is zero. return du. */
 WORD_START(num_s,      num_end)
     WORD_DSTACK(2,2)
     WORD_RSTACK(0,0)
@@ -53,11 +48,11 @@ WORD_START(num_s,      num_end)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
-        begin,                                      /* ( ud                       ) */
-            CALL(num),                              /* ( ud'                      ) */
-            over, zero_equal,                       /* ( ud t|f                   ) */
-            over, zero_equal, and,                  /* ( ud t|f'                  ) */
-        _until_, T(-8-nCALLt),                      /* ( ud                       ) */
+        begin,                                      /* ( du                       ) */
+            CALL(num),                              /* ( du'                      ) */
+            over, zero_equal,                       /* ( du t|f                   ) */
+            over, zero_equal, and,                  /* ( du t|f'                  ) */
+        _until_, T(-8-nCALLt),                      /* ( du                       ) */
         exit
     )
 WORD_END(num_s)
@@ -184,7 +179,7 @@ WORD_START(to_in,      more)
     WORD_CODE(in_to_ibuf, iobuf_pos, exit)
 WORD_END(to_in)
 /*
- * >number ( ud caddr n -- ud caddr n )  \ convert string from base to number
+ * >number ( du caddr n -- du caddr n )  \ convert string from base to number
  */
 WORD_START(to_number, to_in)
     WORD_DSTACK(4,4)
@@ -193,8 +188,8 @@ WORD_START(to_number, to_in)
     WORD_NATIVE_NONE()
     WORD_FLAGS(0)
     WORD_CODE(
-        /* 2swap 2>r base @                    ( caddr n base ) (R: ud )
-         * string&base>u                       ( caddr' n' u  ) (R: ud )
+        /* 2swap 2>r base @                    ( caddr n base ) (R: du )
+         * string&base>u                       ( caddr' n' u  ) (R: du )
          *
          *
          * then
@@ -574,13 +569,28 @@ WORD_START(type, then)
     WORD_CODE(type, exit)
 WORD_END(type)
 WORD(u_less,           type,       DSTACK(2,1), RSTACK(0,0), WORD_PURE)
-WORD(unloop,           u_less,     DSTACK(0,0), RSTACK(2,0), WORD_R_PURE)
-WORD_START(until,      unloop)
-    WORD_DSTACK(2,0)   /* stack effect when compiling */
+/** ( du u -- u-rem u-quo ) divide double-width unsigned number.
+ * return single-width unsigned quotient and remainder */
+WORD_START(um_div_mod, u_less)
+    WORD_DSTACK(3,2)   /* stack effect */
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
-    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
+    WORD_FLAGS(M4FLAG_PURE | M4FLAG_INLINE)
+    WORD_CODE(
+        u_to_d, CALL(du_div_mod),              /* ( du-rem du-quo                    ) */
+        d_to_s, minus_rot, d_to_s, swap,       /* ( u-rem  u-quo                     ) */
+        exit
+    )
+WORD_END(until)
+WORD(unloop,           u_less,     DSTACK(0,0), RSTACK(2,0), WORD_R_PURE)
+WORD_START(until,      unloop)
+    WORD_DSTACK(1,0)   /* execution stack effect when not jumping */
+    WORD_RSTACK(0,0)
+    WORD_DSTACK(1,0)   /* execution stack effect when jumping */
+    WORD_RSTACK(0,0)
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_MAY_JUMP | M4FLAG_IMMEDIATE)
     WORD_CODE(
         _lit_tok_, _until_,
         CALL(_until_comma_), exit

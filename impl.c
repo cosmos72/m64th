@@ -61,22 +61,26 @@ void m4th_dot(m4cell n, m4iobuf *io) {
 }
 
 /**
- * temporary C implementation of 'um/mod' on architectures
- * that lack 128bit/64bit hardware division
+ * temporary C implementation of 'du/mod' i.e. full 128bit unsigned division
  */
-#ifndef __x86_64__
-typedef struct {
-    uint64_t remainder, quotient;
-} um_div_mod_result;
-
 typedef unsigned __int128 uint128_t;
+typedef struct {
+    uint64_t hi, lo;
+} uint128_forth_stack;
 
-um_div_mod_result m4th_um_div_mod(uint64_t lo, uint64_t hi, uint64_t divisor) {
-    const uint128_t dividend = (uint128_t)hi << 64 | lo;
-    const um_div_mod_result ret = {(uint64_t)(dividend % divisor), (uint64_t)(dividend / divisor)};
-    return ret;
+void m4th_ud_div_mod(uint128_forth_stack *dividend_in_remainder_out,
+                     uint128_forth_stack *divisor_in_quotient_out) {
+    const uint128_t dividend =
+        (uint128_t)dividend_in_remainder_out->hi << 64 | dividend_in_remainder_out->lo;
+    const uint128_t divisor =
+        (uint128_t)divisor_in_quotient_out->hi << 64 | divisor_in_quotient_out->lo;
+    const uint128_t remainder = dividend % divisor;
+    const uint128_t quotient = dividend / divisor;
+    dividend_in_remainder_out->hi = remainder >> 64;
+    dividend_in_remainder_out->lo = remainder;
+    divisor_in_quotient_out->hi = quotient >> 64;
+    divisor_in_quotient_out->lo = quotient;
 }
-#endif /* __x86_64__ */
 
 /******************************************************************************/
 /* C implementation of CRC32c                                                 */

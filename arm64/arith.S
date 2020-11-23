@@ -77,6 +77,16 @@ FUNC_START(div_mod)          /*  */
 FUNC_END(div_mod)
 
 
+/* u/mod ( u1 u2 -- u1%u2 u1/u2 ) unsigned remainder & divide */
+FUNC_START(u_div_mod)
+        LOAD(  REG1,   AT(DSTK))
+        UDIV3( REG1,   DTOP,   REG2)
+        msub   REG1,   REG2,   DTOP,   REG1;
+        MOVE(  REG2,   DTOP)
+        STOR(  REG1,   AT(DSTK))
+FUNC_END(u_div_mod)
+
+
 FUNC_START(zero_less_equal)   /* 0<=  m4th-user   */
         cmp    DTOP,   IMM(0);
         csetm  DTOP,   le;
@@ -111,58 +121,6 @@ FUNC_START(two_sm_div)     /* 2sm/ m4th-user symmetric divide by 2 */
         add    DTOP,   DTOP,   DTOP, lsr IMM(63);
         asr    DTOP,   DTOP,   IMM(1);
 FUNC_END(two_sm_div)
-
-
-#define M4FTWO_NIP
-FUNC_START(two_nip)        /* 2nip     m4th-user */
-        LOAD(  REG1,   AT(DSTK))
-        str    REG1,   [DSTK, SZ2]!;
-FUNC_END(two_nip)
-
-
-/* 2pick ( du ... d1 d0 u -- du ... d1 d0 du ) m4th-user */
-FUNC_START(two_pick)
-        ADD4(  DSTK,   DTOP,   IMM(PSZ+1), REG1)
-        ldp    DTOP,   REG2,   AT(REG1);
-        DPUSH( REG2)
-FUNC_END(two_pick)
-
-
-/* 2rot  ( a b c d e f -- c d e f a b ) */
-#define M4FTWO_ROT
-FUNC_START(two_rot)
-        ldp    REG2,   REG1,   AT(DSTK, SZ3);  /* b, a            */
-        ldp    REG4,   REG3,   AT(DSTK, SZ);   /* d, c            */
-        ldr    REG0,           AT(DSTK);       /* e               */
-        stp    REG4,   REG3,   AT(DSTK, SZ3);  /* ( c d _ _ _ _ ) */
-        stp    DTOP,   REG0,   AT(DSTK, SZ);   /* ( c d e f _ _ ) */
-        str    REG1,           AT(DSTK);       /* ( c d e f a _ ) */
-        MOVE(  REG2,   DTOP)                   /* ( c d e f a b ) */
-FUNC_END(two_rot)
-
-
-/* -2rot  ( a b c d e f -- e f a b c d ) m4th-user */
-#define M4FMINUS_TWO_ROT
-FUNC_START(minus_two_rot)
-        ldp    REG0,   REG4,   AT(DSTK);       /* e, d            */
-        ldp    REG3,   REG2,   AT(DSTK, SZ2);  /* c, b            */
-        ldr    REG1,           AT(DSTK, SZ4);  /* a               */
-        stp    REG3,   REG2,   AT(DSTK);       /* ( _ _ _ b c _ ) */
-        stp    REG1,   DTOP,   AT(DSTK, SZ2);  /* ( _ f a b c _ ) */
-        str    REG0,           AT(DSTK, SZ4);  /* ( e f a b c _ ) */
-        MOVE(  REG4,   DTOP)                   /* ( e f a b c d ) */
-FUNC_END(minus_two_rot)
-
-
-/* 2swap ( a b c d -- c d a b ) */
-#define M4FTWO_SWAP
-FUNC_START(two_swap)
-        ldp    REG1,   REG2, AT(DSTK);
-        ldr    REG3,         AT(DSTK, SZ2);
-        stp    DTOP,   REG1, AT(DSTK, SZ);
-        str    REG3,         AT(DSTK);
-        MOVE(  REG2,   DTOP)
-FUNC_END(two_swap)
 
 
 FUNC_START(four_sm_div)    /* 4sm/ m4th-user symmetric divide by 4 */
@@ -314,14 +272,6 @@ FUNC_START(u_more_equal)   /* u>=      m4th-user */
         cmp    REG2,   DTOP;
         csetm  DTOP,   hs;
 FUNC_END(u_more_equal)
-
-
-/* unimplemented - crash with SIGILL */
-/* word 'um/mod' is expected to call C implementation m4th_um_div_mod instead */
-#undef M4FUM_DIV_MOD
-FUNC_START(um_div_mod)     /* um/mod   */
-        .4byte   0; /* udf */
-FUNC_END(um_div_mod)
 
 
 #define M4FTUCK

@@ -301,6 +301,7 @@
         x(u_more_equal, invert, /*=>*/ u_less)               /* u>=  invert   => u<             */ \
         /*_____2... ______________________________________*/ /*                                 */ \
         x(two_to_r, two_r_from /*=>*/)                       /* 2>r   2r>     =>                */ \
+        x(two_over, nip, /*=>*/ hop)                         /* 2over nip     => hop            */ \
         x(two_over, drop, /*=>*/ three, pick)                /* 2over drop    => 3 pick         */ \
         x(two_over, two_nip, /*=>*/ drop, drop, two_dup)     /* 2over 2nip    => 2drop 2dup     */ \
         x(two_r_from, two_to_r /*=>*/)                       /* 2r>   2>r     =>                */ \
@@ -434,8 +435,11 @@
         x(r_from_drop, to_r, /*=>*/ r_store)                 /* r>drop >r     => r!             */ \
         x(r_from_drop, r_from_drop, /*=>*/ two_r_from_two_drop) /* r>drop r>drop => 2r>2drop    */ \
         x(rot, flip, /*=>*/ swap)                          /* rot    flip   => swap           */   \
+        x(rot, nip, /*=>*/ drop, swap)                     /* rot    nip    => drop swap      */   \
         x(rot, rot, /*=>*/ minus_rot)                      /* rot    rot    => -rot           */   \
         x(rot, minus_rot /*=>*/)                           /* rot    -rot   =>                */   \
+        x(minus_rot, drop, /*=>*/ nip, swap)               /* -rot   drop   => nip swap       */   \
+        x(minus_rot, nip, /*=>*/ flip, drop)               /* -rot   nip    => flip drop      */   \
         x(minus_rot, over, /*=>*/ flip, tuck)              /* -rot   over   => flip tuck      */   \
         x(minus_rot, rot /*=>*/)                           /* -rot   rot    =>                */   \
         x(minus_rot, minus_rot, /*=>*/ rot)                /* -rot   -rot   => rot            */   \

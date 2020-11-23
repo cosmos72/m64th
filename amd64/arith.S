@@ -26,6 +26,7 @@ FUNC_START(_missing_)      /* (missing) called instead of invalid/unimplemented 
         ud2;                   /* crash with SIGILL */
 FUNC_END(_missing_)
 
+
 #define M4FTIMES
 FUNC_START(times)          /* *    */
         MUL2(  AT(DSTK),   DTOP)
@@ -78,6 +79,17 @@ FUNC_START(div_mod)
 FUNC_END(div_mod)
 
 
+/* u/mod ( u1 u2 -- u1%u2 u1/u2 ) unsigned remainder & divide */
+FUNC_START(u_div_mod)
+        MOVE(  DTOP,   %rcx)       /* DTOP is %rax, we will clobber it */
+        LOAD(  %rax,   AT(DSTK))
+        xor    %edx,   %edx;       /* zero-extend %rax into %rdx */
+        div    %rcx;               /* quotient is in %rax, remainder in %rdx */
+        STOR(  %rdx,   AT(DSTK))   /* remainder */
+        /*MOVE(%rax, DTOP)*/       /* result is already in DTOP = %rax */
+FUNC_END(u_div_mod)
+
+
 #define M4FZERO
 FUNC_START(zero)           /* 0    m4th-impl */
         DPUSH__DTOP()
@@ -126,15 +138,6 @@ FUNC_START(two_sm_div)     /* 2sm/   m4th-user symmetric divide by 2 */
         ADD2(  REG1, DTOP) /* add 1 if negative */
         sar    DTOP;       /* because sar rounds toward -infinity */
 FUNC_END(two_sm_div)
-
-
-/* 2pick ( du ... d1 d0 u -- du_1 ... d1 d0 du ) m4th-user */
-FUNC_START(two_pick)
-        shl    DTOP;
-        mov    SZ(DSTK, DTOP, SZ), REG1;
-        mov      (DSTK, DTOP, SZ), DTOP;
-        DPUSH( REG1)
-FUNC_END(two_pick)
 
 
 FUNC_START(four_sm_div)    /* 4sm/ m4th-user symmetric divide by 4 */
@@ -326,19 +329,6 @@ FUNC_START(u_more_equal)   /* u>=  m4th-user */
         MOVI(  0,      DTOP)           /* xor would affect EFLAGS   */
         cmovae RFFF,   DTOP;
 FUNC_END(u_more_equal)
-
-
-/* um/mod ( ud u -- ud%u ud/u ) unsigned remainder & quotient of double-width unsigned division */
-#define M4FUM_DIV_MOD
-FUNC_START(um_div_mod)
-        MOVE(  DTOP,   %rcx)       /* DTOP is %rax, we will clobber it       */
-        LOAD(  %rdx,   AT(DSTK,SZ))/* %rdx = ud low half                     */
-        DPOP___DTOP()              /* %rax = ud high half                    */
-        xchg   %rax, %rdx;         /* %rax = low half, %rdx = high half      */
-        div    %rcx;               /* quotient is in %rax, remainder in %rdx */
-        STOR(  %rdx,   AT(DSTK))   /* ( ud%u _     ) save remainder          */
-        /*MOVE(%rax, DTOP)*/       /* quotient is already in DTOP = %rax     */
-FUNC_END(um_div_mod)
 
 
 /* ( x lo hi -- flag ) true if lo <= x < hi \ signed or unsigned */

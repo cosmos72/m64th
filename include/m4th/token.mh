@@ -20,19 +20,19 @@
 #ifndef M4TH_INCLUDE_TOKEN_M4TH_MH
 #define M4TH_INCLUDE_TOKEN_M4TH_MH
 
+/*
+ *
+ *
+ *
+ */
 /* 'm4th-user' wordlist */
 #define M4_u(x) ((x) + 510)
-#undef M4____gap                         /*                                         */
-#undef M4____gap                         /*                                         */
-#undef M4____gap                         /*                                         */
-#undef M4____gap                         /*                                         */
-#undef M4____gap                         /*                                         */
-#define M4less_equal M4_u(0)             /* <=                                      */
-#define M4more_equal M4_u(1)             /* >=                                      */
-#undef M4____gap                         /*                                         */
-#define M4zero_less_equal M4_u(3)        /* 0<=                                     */
-#define M4zero_more_equal M4_u(4)        /* 0>=                                     */
-#undef M4____gap                         /*                                         */
+#define M4less_equal M4_u(0)  /* <=                                      */
+#define M4more_equal M4_u(1)  /* >=                                      */
+#define M4q_2du_to_2u M4_u(2) /* ( du1 du2 -- u1 u2 t | du1 du2 f ) narrow double-width numbers */
+#define M4q_du_to_u M4_u(3)   /* ( du -- u t | du f ) narrow a double-width number  */
+#define M4zero_less_equal M4_u(4)        /* 0<=                                     */
+#define M4zero_more_equal M4_u(5)        /* 0>=                                     */
 #define M4two_plus M4_u(6)               /* 2+                                      */
 #define M4two_minus M4_u(7)              /* 2-                                      */
 #define M4two_sm_div M4_u(8)             /* 2sm/ symmetric divide by 2              */
@@ -54,10 +54,10 @@
 #define M4two_pick M4_u(24)              /* 2pick                                   */
 #define M4two_roll M4_u(25)              /* 2roll     roll double-width cells       */
 #define M4minus_two_roll M4_u(26)        /* -2roll    2roll in opposite direction   */
+#define M4two_tuck M4_u(27)              /* 2tuck     equivalent to: 2swap 2over    */
 #define M4minus_cs_roll M4minus_two_roll /* -cs-roll  equivalent to: -2roll         */
-#define M4minus_two_rot M4_u(28)         /* -2rot     equivalent to: 2rot 2rot      */
-#define M4two_r_from_two_drop M4_u(29)   /* 2r>2drop  equivalent to: 2r>  2drop     */
-#undef M4____gap                         /*                                         */
+#define M4minus_two_rot M4_u(29)         /* -2rot     equivalent to: 2rot 2rot      */
+#define M4two_r_from_two_drop M4_u(30)   /* 2r>2drop  equivalent to: 2r>  2drop     */
 #undef M4____gap                         /*                                         */
 #define M4atomic_plus_store M4_u(32)     /* ( n addr -- n' ) atomically increment cell by n   */
 #define M4atomic_one_plus_store M4_u(33) /* (   addr -- n' ) atomically increment cell by 1   */
@@ -115,7 +115,7 @@
 #undef M4____gap                         /*                                         */
 #define M4u_less_equal M4_u(86)          /* u<=                                     */
 #define M4u_more_equal M4_u(87)          /* u>=                                     */
-#undef M4____gap                         /*                                         */
+#define M4u_div_mod M4_u(88)             /* ( u1 u2 -- u1%u2 u1/u2 ) unsigned remainder & divide */
 #undef M4____gap                         /*                                         */
 #undef M4____gap                         /*                                         */
 #define M4to_byte M4_u(91)               /* >byte   truncate dtop to   int8_t, then sign-extend */

@@ -24,6 +24,10 @@
 #define DICT_TOKENS_M4TH_USER(X)                                                                   \
     X(2, "<=", less_equal)                                                                         \
     X(2, ">=", more_equal)                                                                         \
+    /*                              attempt to narrow a double-width unsigned number            */ \
+    X(7, "?du>u", q_du_to_u)     /* ( du -- u t | du f )                                        */ \
+                                 /* attempt to narrow two double-width unsigned numbers         */ \
+    X(7, "?2du>2u", q_2du_to_2u) /* ( du1 du2 -- u1 u2 t | du1 du2 f )                          */ \
     X(3, "0<=", zero_less_equal)                                                                   \
     X(3, "0>=", zero_more_equal)                                                                   \
     X(2, "2+", two_plus)                                                                           \
@@ -47,6 +51,7 @@
     X(5, "2roll", two_roll)                                                                        \
     X(6, "-2roll", minus_two_roll)                                                                 \
     X(5, "-2rot", minus_two_rot) /*             ( a b c d e f -- e f a b c d )                  */ \
+    X(5, "2tuck", two_tuck)      /*             ( a b c d     -- c d a b c d )                  */ \
     X(8, "atomic+!", atomic_plus_store)      /* ( n addr -- n' ) atomically increment cell by n */ \
     X(9, "atomic1+!", atomic_one_plus_store) /* ( addr   -- n' ) atomically increment cell by 1 */ \
     X(6, "bounds", bounds) /* ( c-addr u -- c-addr+u c-addr ) get string bounds        */          \
@@ -88,7 +93,11 @@
     X(12, "string>lower", string_to_lower) /* ( c-addr-src c-addr-dst u -- c-addr-dst u )   */     \
     X(3, "sub", sub)                       /* equivalent to: swap -                         */     \
     X(5, "trail", trail)                   /* equivalent to: over swap                      */     \
-    /*                              */     /*                                               */     \
+    /*                             */      /*                                                */    \
+    X(3, "u<=", u_less_equal)                                                                      \
+    X(3, "u>=", u_more_equal)                                                                      \
+    X(5, "u/mod", u_div_mod)           /* ( u1 u2 -- u1%u2 u1/u2 ) */                              \
+    /*                              */ /*                                               */         \
     X(5, ">byte", to_byte)                                                                         \
     X(5, ">char", to_char)                                                                         \
     X(6, ">short", to_short)                                                                       \
@@ -174,10 +183,7 @@
     X(11, "short-align", short_align)                                                              \
     X(9, "int-align", int_align)                                                                   \
     X(13, "short-aligned", short_aligned)                                                          \
-    X(11, "int-aligned", int_aligned)                                                              \
-    /*                             */ /*                                                */         \
-    X(3, "u<=", u_less_equal)                                                                      \
-    X(3, "u>=", u_more_equal)
+    X(11, "int-aligned", int_aligned)
 
 #define DICT_WORDS_M4TH_USER(X)                                                                    \
     DICT_TOKENS_M4TH_USER(X)                                                                       \
@@ -234,6 +240,8 @@
     X(17, "disassemble-names", disassemble_names)                                                  \
     /*                          read name, find nt, show disassembly of all nt up to it */         \
     X(16, "disassemble-upto", disassemble_upto)                                                    \
+    /* double-width unsigned remainder & divide                                         */         \
+    X(6, "du/mod", du_div_mod)      /* ( du du-divisor -- du-rem du-quo )               */         \
     X(9, "ex>string", ex_to_string) /* ( ex -- c-addr u ) get exception name            */         \
     /* jump to next 'of' inside a 'case'.                                               */         \
     /* can appear only as last statement inside 'of' i.e. instead of 'endcase'          */         \
@@ -251,12 +259,13 @@
     X(8, "see-name", see_name)  /* ( nt -- ) show definition of nt                       */        \
     X(8, "string<>", string_ne) /* ( addr1 addr2 u -- addr1 addr2 u t|f )                */        \
     X(11, "string-ci<>", string_ci_ne) /* ( addr1 addr2 u -- addr1 addr2 u t|f )         */        \
-    /* ( caddr n -- caddr' n' x t|f ) convert string to number, recognizing base & sign  */        \
-    X(13, "string>number", string_to_number)                                                       \
-    /*         ( ex|0 -- ) write cr exception and ex-message@ to current output          */        \
-    X(14, "type-exception", type_exception)                                                        \
+    /*                                 convert string to number, recognizing base & sign */        \
+    X(13, "string>number", string_to_number) /* ( caddr n -- caddr' n' x t|f )           */        \
+    /*                              write cr exception and ex-message@ to current output */        \
+    X(14, "type-exception", type_exception) /* ( ex|0 -- )                               */        \
+    X(3, "u>d", u_to_d) /*            ( u -- du ) extend unsigned number to double width */        \
     X(11, "valid-base?", valid_base_q) /* ( base -- t|f ) true if 2 <= base <= 36        */        \
-    /* get all words in wordlist up to nt1. newer words are placed toward stack top */             \
+    /* get all words in wordlist up to nt1. newer words are placed toward stack top      */        \
     X(18, "wordlist-upto-name", wordlist_upto_name) /* ( wid nt1 -- 0 | ntu ... nt2 nt1 u ) */
 
 /* ------- m4th-c ------------------------------------------------------------------------------- */
@@ -544,15 +553,15 @@
     X(8, "[until,]", _until_comma_) /* compile one of 'until' '(until)' '(until0)'    */           \
     X(9, "char>base", char_to_base) /* convert '#' to 10, '$' to 16, '%' to 2, else 0 */           \
     X(6, "char>u", char_to_u) /* convert numeric digit from char to unsigned number, else -1 */    \
-    /* ( caddr n -- caddr' n' base ) convert prefix # $ % to base, else fetch current base */      \
+    X(4, "d>hi", d_to_hi)     /* ( d -- n ) extract high half from double width number       */    \
+    /* ( caddr n -- caddr' n' base ) convert prefix # $ % to base, else fetch current base   */    \
     X(11, "string>base", string_to_base)                                                           \
     /* ( caddr n -- caddr' n' ch ) convert "'x'" to 'x' for any char x, else -1 */                 \
     X(11, "string>char", string_to_char)                                                           \
     X(11, "string>sign", string_to_sign) /* ( caddr n -- caddr' n' sign ) parse initial '-' */     \
     /* ( caddr n base -- caddr' n' u ) convert string from base to unsigned number */              \
     X(13, "string&base>u", string_base_to_u)                                                       \
-    X(6, "u>char", u_to_char) /* convert unsigned number to to char in current base */             \
-    X(3, "u>d", u_to_d)       /* ( u -- ud ) extend unsigned number to double width */
+    X(6, "u>char", u_to_char) /* convert unsigned number to to char in current base */
 
 /* ------- m4th-* ------------------------------------------------------------------------------- */
 #define DICT_WORDS_M4TH(X) /* contains all DICT_WORDS_M4TH_* */                                    \

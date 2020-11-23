@@ -186,5 +186,6 @@
 
 #define m4fd_to_s m4fdrop
 #define m4fu_to_d m4fzero
+#define m4fd_to_hi m4fnip
 
 #endif /* M4TH_INCLUDE_FUNC_ALIAS_MH */

@@ -101,52 +101,6 @@ FUNC_RAWEND(_of_)
 #endif
 
 
-#ifndef M4FTWO_DUP_TWO_TO_R
-FUNC_START(two_dup_two_to_r)   /* 2dup 2>r  ( a b -- a b ) (R: -- a b ) m4th-user */
-        LOAD(  REG1,       AT(DSTK))
-        RPUSH2(RTOP,       REG1)
-        MOVE(  DTOP,       RTOP)
-FUNC_END(two_dup_two_to_r)
-#endif
-
-
-#ifndef M4FTWO_TO_R
-FUNC_START(two_to_r)           /* 2>r      */
-        DPOP(  REG1)
-        RPUSH2(RTOP,       REG1)
-        MOVE(  DTOP,       RTOP)
-        DPOP___DTOP()
-FUNC_END(two_to_r)
-#endif
-
-
-#ifndef M4FTWO_R_FROM
-FUNC_START(two_r_from)         /* 2r>      */
-        DPUSH__DTOP()
-        MOVE(  RTOP,       DTOP)
-        RPOP2( REG1,       RTOP)
-        DPUSH( REG1)
-FUNC_END(two_r_from)
-#endif
-
-
-FUNC_START(two_r_from_two_drop)/* 2r>2drop  m4th-user */
-        LOAD(  RTOP,       AT(RSTK, SZ))
-        ADD2(  IMM(SZ2),   RSTK)
-FUNC_END(two_r_from_two_drop)
-
-
-#ifndef M4FTWO_R_FETCH
-FUNC_START(two_r_fetch)        /* 2r@      */
-        STOR(  DTOP,       AT(DSTK, -SZ))
-        LOAD(  REG1,       AT(RSTK))
-        MOVE(  RTOP,       DTOP)
-        STOR(  REG1,       AT(DSTK, -SZ2))
-        SUB2(  IMM(SZ2),   DSTK)
-FUNC_END(two_r_fetch)
-#endif
-
-
 FUNC_START(to_r)               /* >r */
         RPUSH( RTOP)
         MOVE(  DTOP, RTOP)
