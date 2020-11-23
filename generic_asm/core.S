@@ -271,8 +271,8 @@ FUNC_START(searchorder_pick)
 FUNC_END(searchorder_pick)
 
 
-/* searchorder[0]! (S: wid1 .. -- wid2 ) ( wid2 -- ) */
-/* get i-th element of searchorder list */
+/* searchorder[0]! ( wid -- ) (S: .. x -- .. wid ) */
+/* set first element of searchorder list */
 FUNC_START(searchorder_store_0)
         LOAD(  REG2,   AT(M4TH,M4TH_OFF_SEARCHORDER))/* b = searchorder.n   */
         ADDI(  M4TH,   M4TH_OFF_SEARCHORDER, REG1) /* a = &m->searchorder */
