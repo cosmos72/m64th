@@ -95,6 +95,7 @@ WORD_START(plus_loop, plus_store)
 WORD_END(plus_loop)
 WORD(comma,            plus_loop,  DSTACK(1,0), RSTACK(0,0), WORD_IMPURE)
 WORD(minus,            comma,      DSTACK(2,1), RSTACK(0,0), WORD_PURE)
+/* ( n -- ) display n using current base */
 WORD_START(dot,        minus)
     WORD_DSTACK(1,0)
     WORD_RSTACK(0,0)
@@ -102,16 +103,32 @@ WORD_START(dot,        minus)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
-        /* depth 0<=
-         * M4ERR_STACK_UNDERFLOW and throw
-         * out>obuf dup obuf-flush drop     ( ensure enough space )  ( n io          )
-         * (c-arg-2) (c-call) m4th_dot (c-ret-0)                     (               )
+        /* depth 0<=                                                 ( n         )
+         * M4ERR_STACK_UNDERFLOW and throw                           ( n         )
+         * dup 0< dup >r                                             ( n t|f     ) (R: t|f )
+         * if                                                        ( -u        ) (R: t|f )
+         *    negate                                                 ( u         ) (R: t|f )
+         * then                                                      ( u         ) (R: t|f )
+         * <# bl hold                                                ( u         ) (R: t|f )
+         * u>d #s                                                    ( du        ) (R: t|f )
+         * r> if                                                     ( du        )
+         *   [char] - hold                                           ( du        )
+         * then                                                      ( du        )
+         * #> type                                                   (           )
          */
         depth, zero_less_equal,
         _lit_, T(M4ERR_STACK_UNDERFLOW), and, throw,
-        out_to_obuf, dup, CALL(obuf_flush), drop,
-        _c_arg_2_, _c_call_, CELL(m4th_dot), _c_ret_0_,
-        exit
+
+        dup, zero_less, dup_to_r,
+        _if_, T(2),
+            negate,
+        then,
+        num_start, bl, hold,
+        u_to_d, CALL(num_s),
+        r_from, _if_, T(4),
+            _lit_, T('-'), hold,
+        then,
+        num_end, type, exit
     )
 WORD_END(dot)
 WORD(div,              dot,        DSTACK(2,1), RSTACK(0,0), WORD_PURE)

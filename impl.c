@@ -29,37 +29,6 @@
 #include <stdlib.h> /* strtol()                   */
 #include <string.h> /* memcmp() memcpy() strlen() */
 
-/** temporary C implementation of '.' */
-void m4th_dot(m4cell n, m4iobuf *io) {
-    m4ucell len;
-    enum { N = SZ * 3 + 2 }; /* large enough also for sign and final space */
-    char buf[N];
-    char *addr = buf + N;
-
-    *--addr = ' ';
-
-    if (n == 0) {
-        *--addr = '0';
-    } else {
-        m4cell negative = n < 0;
-        m4ucell u = (m4ucell)(negative ? -n : n);
-
-        while (u != 0) {
-            *--addr = (u % 10) + '0';
-            u /= 10;
-        }
-        if (negative) {
-            *--addr = '-';
-        }
-    }
-    len = buf + N - addr;
-    if (io->max - io->end >= len) {
-        memcpy(io->addr + io->end, addr, len);
-        io->end += len;
-        return;
-    }
-}
-
 /**
  * temporary C implementation of 'du/mod' i.e. full 128bit unsigned division
  */

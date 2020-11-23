@@ -27,9 +27,6 @@ enum {
     ttrue = (m4cell)-1,
 };
 
-/** temporary C implementation of '.' */
-void m4th_dot(m4cell n, m4iobuf *io);
-
 /** used for testing and benchmark */
 extern m4cell m4th_crctable[256];
 void m4th_crcinit(m4cell table[256]);
