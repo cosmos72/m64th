@@ -172,6 +172,22 @@ FUNC_START(exit)
 FUNC_RAWEND(exit)
 
 
+/** (recurse)  ( -- ) execution semantics of 'recurse'
+ * must be followed by jump offset. calls it. */
+FUNC_START(_recurse_)
+        RPUSH( RTOP)               /* save RTOP                     */
+        ADDI(  IP,     SZt,RTOP)   /* save return address = IP+SZt  */
+        LD_st( REG3,     AT(IP))   /* c = jump offset               */
+#ifdef __x86_64__
+        lea    SZt(IP, REG3, SZt), IP; /* set target IP             */
+#else
+        ADD2(IMM(SZt), IP)             /* skip IP offset            */
+        ADD4(  IP,     REG3,PSZt, IP)  /* set target IP             */
+#endif
+        NEXT0()                    /* jump                          */
+FUNC_RAWEND(_recurse_)
+
+
 /* ( ex -- ) throw exception if ex != 0 */
 FUNC_START(throw)
         MOVE(  DTOP,   REG0)

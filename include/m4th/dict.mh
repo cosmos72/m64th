@@ -452,7 +452,8 @@
     X(12, "(local-free)", _local_free_) /* release space for last reserved local variables */      \
     X(6, "(loop)", _loop_)                                                                         \
     X(9, "(missing)", _missing_)                                                                   \
-    X(4, "(of)", _of_) /* ( x y -- x| ) execution semantics of 'of' */                             \
+    X(4, "(of)", _of_)           /* ( x y -- x| ) execution semantics of 'of'      */              \
+    X(9, "(recurse)", _recurse_) /* ( x y -- x| ) execution semantics of 'recurse' */              \
     X(8, "(repeat)", _repeat_)                                                                     \
     X(18, "(return-to-native)", _return_to_native_)                                                \
     X(12, "(to-local-0)", _to_local_0_) /* set 0-th local variable */                              \

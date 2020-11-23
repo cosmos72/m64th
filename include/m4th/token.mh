@@ -477,12 +477,12 @@
 #define M4_local_alloc_ M4_i(77) /* followed by T(n), reserve space for n local variables */
 #define M4_local_free_ M4_i(78)  /* release space for last reserved local variables       */
 #undef M4____gap                 /*                                         */
-#define M4_loop_ M4_i(80)        /* (loop)   followed by IP offset to jump            */
+#define M4_loop_ M4_i(80)        /* (loop)    followed by IP offset to jump       */
 #define M4_missing_ 0            /* (missing) called instead of invalid/unimplemented function */
-#define M4_of_ M4_i(82)          /* (of)            followed by IP offset to jump     */
-#undef M4____gap                 /*                                         */
-#define M4_repeat_ M4_i(84)      /* (repeat) followed by IP offset to jump            */
-#define M4_return_to_native_ M4_i(85)  /* (return-to-native) return to native code    */
+#define M4_of_ M4_i(82)          /* (of)      followed by IP offset to jump       */
+#define M4_recurse_ M4_i(83)     /* (recurse) followed by IP offset to jump       */
+#define M4_repeat_ M4_i(84)      /* (repeat)  followed by IP offset to jump       */
+#define M4_return_to_native_ M4_i(85)  /* (return-to-native) return to native code*/
 #undef M4____gap                       /*                                         */
 #undef M4____gap                       /*                                         */
 #undef M4____gap                       /*                                         */

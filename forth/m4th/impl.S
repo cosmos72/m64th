@@ -603,12 +603,21 @@ WORD_START(_loop_, _local_free_)
     WORD_CODE(CALL(loop), exit)
 WORD_END(_loop_)
 WORD(_missing_,        _loop_,         DSTACK(0,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_JUMP)
-WORD_START(_repeat_, _missing_)
+WORD_START(_recurse_,  _missing_)
+    WORD_DSTACK(-1,-1)  /* stack effect when not jumping */
+    WORD_RSTACK(0,0)
+    WORD_DSTACK(0,0)    /* stack effect when jumping */
+    WORD_RSTACK(0,1)
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt| M4FLAG_INLINE_ALWAYS | M4FLAG_IMMEDIATE | M4FLAG_MAY_JUMP | M4FLAG_REEXEC_AFTER_OPTIMIZE)
+    WORD_CODE(CALL(recurse), exit)
+WORD_END(_recurse_)
+WORD_START(_repeat_,   _recurse_)
     WORD_STACK_NONE() /* dummy, always jumps       */
     WORD_DSTACK(0,0)  /* stack effect when jumping */
     WORD_RSTACK(0,0)
     WORD_NATIVE_NONE()
-    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_JUMP | M4FLAG_IMMEDIATE | M4FLAG_REEXEC_AFTER_OPTIMIZE)
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_INLINE_ALWAYS | M4FLAG_JUMP | M4FLAG_IMMEDIATE | M4FLAG_REEXEC_AFTER_OPTIMIZE)
     WORD_CODE(CALL(repeat), exit)
 WORD_END(_repeat_)
 /* ( -- ) type " ok\n" if interpreting, otherwise type " compiled\n" */

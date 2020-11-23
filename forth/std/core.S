@@ -484,7 +484,19 @@ WORD_START(postpone,   over)
 WORD_END(postpone)
 WORD(r_from,           postpone,   DSTACK(0,1), RSTACK(1,0), WORD_R_PURE)
 WORD(r_fetch,          r_from,     DSTACK(0,1), RSTACK(1,1), WORD_R_PURE)
-WORD_START(repeat,     r_fetch)
+WORD_START(recurse,    r_fetch)
+    WORD_DSTACK(4,0)   /* stack effect when compiling */
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
+    WORD_CODE(
+        _lit_tok_, _recurse_, token_comma,
+        _num_compiled_, one_plus, negate,              /* ( -IP_offset                    ) */
+        token_comma, exit
+    )
+WORD_END(recurse)
+WORD_START(repeat,     recurse)
     WORD_DSTACK(4,0)   /* stack effect when compiling */
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()

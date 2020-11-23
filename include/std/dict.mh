@@ -144,6 +144,7 @@
     X(7, "literal", literal)                                                                       \
     X(4, "loop", loop)                                                                             \
     X(8, "postpone", postpone)                                                                     \
+    X(7, "recurse", recurse)                                                                       \
     X(6, "repeat", repeat)                                                                         \
     X(2, "s\"", s_quote)                                                                           \
     X(3, "s>d", s_to_d)                                                                            \

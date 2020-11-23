@@ -236,6 +236,8 @@ static const m4testcompile testcompile_a[] = {
      {2, {0, m4colon}},
      {},
      {3 + 2 * nCALLt, {m4_lit_xt_, XT(and), CALL(compile_comma), m4exit}}},
+    /* ------------------------------- recurse ------------------------------ */
+    {"recurse ;", {2, {0, m4colon}}, {}, {3, {m4_recurse_, T(-2), m4exit}}},
 };
 
 static const m4testcompile testcompile_b[] = {
@@ -257,6 +259,10 @@ static const m4testcompile testcompile_b[] = {
     /* test [recompile] to correctly update jump offsets after optimization */
     {"if noop 1+ then ;", {2, {0, m4colon}}, {}, {5, {m4_if_, T(2), m4one_plus, m4then, m4exit}}},
     {"if 1+ 1+ then ;", {2, {0, m4colon}}, {}, {5, {m4_if_, T(2), m4two_plus, m4then, m4exit}}},
+    {"if recurse then ;",
+     {2, {0, m4colon}},
+     {},
+     {6, {m4_if_, T(3), m4_recurse_, T(-4), m4then, m4exit}}},
     /* ------------------------------- [optimize] if ------------------------ */
     {"if then ;", {2, {0, m4colon}}, {}, {2, {m4drop, m4exit}}},
     {"if chars then ;", {2, {0, m4colon}}, {}, {2, {m4drop, m4exit}}},
