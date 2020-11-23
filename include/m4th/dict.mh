@@ -61,8 +61,8 @@
     /* ( src dst u -- src-u dst-u ) backward copy u bytes, */                                      \
     /*  and pre-decrement addresses before copying each byte  */                                   \
     X(12, "-cmove/count", minus_cmove_count)                                                       \
-    X(8, "crc-cell", crc_cell)          /* ( x -- crc32 ) compute CRC32c of a cell              */ \
-    X(10, "crc-string", crc_string)     /* ( c-addr u -- crc32 ) compute CRC32c of a string     */ \
+    X(8, "crc-cell", crc_cell)      /* ( x -- crc32 ) compute CRC32c of a cell                  */ \
+    X(10, "crc-string", crc_string) /* ( c-addr u -- crc32 ) compute CRC32c of a string         */ \
     X(10, "do-i+-loop", do_i_plus_loop) /* do i + loop                                          */ \
     X(3, "dp0", dp0)        /* ( x --- x addr-of-x ) get address of data stack bottom           */ \
     X(5, "dup>r", dup_to_r) /* ( x -- ) (R: -- x )               equivalent to: dup >r          */ \
@@ -234,6 +234,7 @@
     X(6, "cs-dup", cs_dup)            /* ( sys -- sys sys )                             */         \
     X(8, "-cs-roll", minus_cs_roll)   /* ( ... cs-depth -- ... )                        */         \
     X(7, "cs-swap", cs_swap)          /* ( a_sys b_sys -- b_sys a_sys )                 */         \
+    X(4, "d>hi", d_to_hi) /*      ( d -- x ) extract high half from double width number */         \
     X(11, "disassemble", disassemble) /* read name, find nt then show its disassembly   */         \
     X(16, "disassemble-name", disassemble_name) /* ( nt -- ) show disassembly of word   */         \
     /* ( ntu ... nt2 nt1 u -- ) show disassembly of N words */                                     \
@@ -553,7 +554,6 @@
     X(8, "[until,]", _until_comma_) /* compile one of 'until' '(until)' '(until0)'    */           \
     X(9, "char>base", char_to_base) /* convert '#' to 10, '$' to 16, '%' to 2, else 0 */           \
     X(6, "char>u", char_to_u) /* convert numeric digit from char to unsigned number, else -1 */    \
-    X(4, "d>hi", d_to_hi)     /* ( d -- n ) extract high half from double width number       */    \
     /* ( caddr n -- caddr' n' base ) convert prefix # $ % to base, else fetch current base   */    \
     X(11, "string>base", string_to_base)                                                           \
     /* ( caddr n -- caddr' n' ch ) convert "'x'" to 'x' for any char x, else -1 */                 \

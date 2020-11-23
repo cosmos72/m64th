@@ -129,6 +129,8 @@ WORD_START(minus_cs_roll,   continue)
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(minus_cs_roll, exit)
 WORD_END(minus_cs_roll)
+/* ( d -- x ) extract high half from double width number */
+WORD(d_to_hi,           minus_cs_roll, DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD_START(disassemble, minus_cs_roll)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)

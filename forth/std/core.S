@@ -572,7 +572,7 @@ WORD(u_less,           type,       DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 /** ( du u -- u-rem u-quo ) divide double-width unsigned number.
  * return single-width unsigned quotient and remainder */
 WORD_START(um_div_mod, u_less)
-    WORD_DSTACK(3,2)   /* stack effect */
+    WORD_DSTACK(3,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()

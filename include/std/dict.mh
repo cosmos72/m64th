@@ -187,7 +187,9 @@
 
 #define DICT_WORDS_FORTH_DOUBLE(X) /*                                                       */     \
     DICT_TOKENS_FORTH_DOUBLE(X)    /*                                                       */     \
-    X(3, "d>s", d_to_s)            /* ( d -- n ) truncate double width number               */
+    X(3, "d>s", d_to_s)            /* ( d -- n ) truncate double width number               */     \
+    X(3, "d0<", d_zero_less)       /* ( d -- t|f ) true if d is negative                    */     \
+    X(3, "d0=", d_zero_equal)      /* ( d -- t|f ) true if d is zero                        */
 
 /* ------- forth 2012: double ext --------------------------------------------------------------- */
 #define DICT_TOKENS_FORTH_DOUBLE_EXT(X) /*                                                      */ \

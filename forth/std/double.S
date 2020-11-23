@@ -22,6 +22,28 @@
 DICT_WORDS_FORTH_DOUBLE(WORDNAME)
 
 WORD(d_to_s, LASTWORD, DSTACK(2,1), RSTACK(0,0), WORD_PURE)
+/* d0< ( d -- t|f ) true if d is negative */
+WORD_START(d_zero_less,        d_to_s)
+    WORD_DSTACK(2,1)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        d_to_hi, zero_less, exit
+    )
+WORD_END(d_zero_less)
+/* d0= ( d -- t|f ) true if d is zero */
+WORD_START(d_zero_equal,       d_zero_less)
+    WORD_DSTACK(2,1)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        zero_equal, swap, zero_equal, and, exit
+    )
+WORD_END(d_zero_equal)
 
 #undef LASTWORD
-#define LASTWORD d_to_s
+#define LASTWORD d_zero_equal
