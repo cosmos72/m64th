@@ -150,6 +150,7 @@
     X(6, "source", source)                                                                         \
     X(5, "space", space)                                                                           \
     X(6, "spaces", spaces)                                                                         \
+    X(2, "u.", u_dot)                                                                              \
     X(6, "um/mod", um_div_mod)                                                                     \
     X(5, "until", until)                                                                           \
     X(8, "variable", variable)                                                                     \

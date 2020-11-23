@@ -245,8 +245,8 @@
 #undef M4d_minus /*215*/      /* d-       */
 #undef M4d_dot /*216*/        /* d.       */
 #undef M4d_dot_r /*217*/      /* d.r      */
-#undef M4d_zero_less /*218*/  /* d0<      */
-#undef M4d_zero_equal /*219*/ /* d0=      */
+#undef M4d_zero_less /*218*/  /* d0<      no dedicated m4token */
+#undef M4d_zero_equal /*219*/ /* d0=      no dedicated m4token */
 #undef M4d_two_times /*220*/  /* d2*      */
 #undef M4d_two_div /*221*/    /* d2/      */
 #undef M4d_less /*222*/       /* d<       */

@@ -21,7 +21,7 @@
 
 DICT_WORDS_FORTH_DOUBLE(WORDNAME)
 
-WORD(d_to_s, LASTWORD, DSTACK(2,1), RSTACK(0,0), WORD_PURE)
+WORD(d_to_s,                 LASTWORD, DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 /* d0< ( d -- t|f ) true if d is negative */
 WORD_START(d_zero_less,        d_to_s)
     WORD_DSTACK(2,1)

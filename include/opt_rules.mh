@@ -308,6 +308,7 @@
         x(two_r_from, drop, /*=>*/ r_from_drop, r_from)      /* 2r>   drop    => r>drop r>      */ \
         x(two_r_fetch, drop, /*=>*/ r2nd_fetch)              /* 2r@   drop    => r2nd@          */ \
         x(two_r_fetch, nip, /*=>*/ r_fetch)                  /* 2r@   nip     => r@             */ \
+        x(two_rot, two_nip, /*=>*/ two_drop, two_swap)       /* 2rot  2nip    => 2drop 2swap    */ \
         x(two_rot, two_rot, /*=>*/ minus_two_rot)            /* 2rot  2rot    => -2rot          */ \
         x(two_rot, minus_two_rot /*=>*/)                     /* 2rot  -2rot   =>                */ \
         x(minus_two_rot, two_rot /*=>*/)                     /* -2rot 2rot    =>                */ \
@@ -509,13 +510,14 @@
     x(drop, drop, /*=>*/ two_drop)    /* drop drop       => 2drop        */                        \
         x(over, over, /*=>*/ two_dup) /* over over       => 2dup         */
 
-#define OPT3_RULES(x)                                     /*                                   */  \
-    x(r_from, plus, to_r, /*=>*/ r_plus_store)            /* r>     +   >r      => r+!         */  \
-        x(_lit_, T(0xff), and, /*=>*/ to_char)            /* 0xff   and         => to-char     */  \
-        x(_lit_, T(0xffff), and, /*=>*/ to_ushort)        /* 0xffff and         => to-ushort   */  \
-        x(two_swap, drop, drop, /*=>*/ two_nip)           /* 2swap  drop drop   => 2nip        */  \
-        x(to_r, dup, r_from, /*=>*/ trail)                /* >r     dup  r>     => trail       */  \
-        x(to_r, over, r_from, /*=>*/ hop, swap)           /* >r     over r>     => hop  swap   */  \
+#define OPT3_RULES(x)                              /*                                   */         \
+    x(r_from, plus, to_r, /*=>*/ r_plus_store)     /* r>     +   >r      => r+!         */         \
+        x(_lit_, T(0xff), and, /*=>*/ to_char)     /* 0xff   and         => to-char     */         \
+        x(_lit_, T(0xffff), and, /*=>*/ to_ushort) /* 0xffff and         => to-ushort   */         \
+        x(two_swap, drop, drop, /*=>*/ two_nip)    /* 2swap  drop drop   => 2nip        */         \
+        x(to_r, dup, r_from, /*=>*/ trail)         /* >r     dup  r>     => trail       */         \
+        x(to_r, over, r_from, /*=>*/ hop, swap)    /* >r     over r>     => hop  swap   */         \
+        x(minus_two_rot, drop, drop, /*=>*/ two_nip, two_swap) /* -2rot 2drop   => 2nip 2swap  */  \
         /* ______________  */                             /*                                   */  \
         x(three, plus, byte_fetch, /*=>*/ byte_fetch_3)   /* 3   +  byte@        => byte[3]    */  \
         x(five, plus, byte_fetch, /*=>*/ byte_fetch_5)    /* 5   +  byte@        => byte[5]    */  \

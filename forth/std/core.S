@@ -585,7 +585,29 @@ WORD_START(type, then)
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(type, exit)
 WORD_END(type)
-WORD(u_less,           type,       DSTACK(2,1), RSTACK(0,0), WORD_PURE)
+/* ( u -- ) display u using current base */
+WORD_START(u_dot,      type)
+    WORD_DSTACK(1,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        /* depth 0<=                                                 ( u         )
+         * M4ERR_STACK_UNDERFLOW and throw                           ( u         )
+         * <# bl hold                                                ( u         )
+         * u>d #s                                                    ( du        )
+         * #> type                                                   (           )
+         */
+        depth, zero_less_equal,
+        _lit_, T(M4ERR_STACK_UNDERFLOW), and, throw,
+
+        num_start, bl, hold,
+        u_to_d, CALL(num_s),
+        num_end, type, exit
+    )
+WORD_END(u_dot)
+WORD(u_less,           u_dot,      DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 /** ( du u -- u-rem u-quo ) divide double-width unsigned number.
  * return single-width unsigned quotient and remainder */
 WORD_START(um_div_mod, u_less)
