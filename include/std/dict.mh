@@ -166,6 +166,7 @@
     X(4, "case", case)                                                                             \
     X(7, "endcase", endcase)                                                                       \
     X(5, "false", false)                                                                           \
+    X(5, "holds", holds)                                                                           \
     X(4, "pick", pick)                                                                             \
     X(4, "roll", roll)                                                                             \
     X(4, "true", true)                                                                             \
