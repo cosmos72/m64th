@@ -105,29 +105,25 @@ WORD_START(dot,        minus)
     WORD_CODE(
         /* depth 0<=                                                 ( n         )
          * M4ERR_STACK_UNDERFLOW and throw                           ( n         )
-         * dup 0< dup >r                                             ( n t|f     ) (R: t|f )
-         * if                                                        ( -u        ) (R: t|f )
-         *    negate                                                 ( u         ) (R: t|f )
-         * then                                                      ( u         ) (R: t|f )
-         * <# bl hold                                                ( u         ) (R: t|f )
-         * u>d #s                                                    ( du        ) (R: t|f )
-         * r> if                                                     ( du        )
-         *   [char] - hold                                           ( du        )
-         * then                                                      ( du        )
+         * dup >r dup 0<                                             ( n t|f     ) (R: n )
+         * if                                                        ( -u        ) (R: n )
+         *    negate                                                 ( u         ) (R: n )
+         * then                                                      ( u         ) (R: n )
+         * <# bl hold                                                ( u         ) (R: n )
+         * u>d #s                                                    ( du        ) (R: n )
+         * r> sign                                                   ( du        )
          * #> type                                                   (           )
          */
         depth, zero_less_equal,
         _lit_, T(M4ERR_STACK_UNDERFLOW), and, throw,
 
-        dup, zero_less, dup_to_r,
+        dup_to_r, dup, zero_less,
         _if_, T(2),
             negate,
         then,
         num_start, bl, hold,
         u_to_d, CALL(num_s),
-        r_from, _if_, T(4),
-            _lit_, T('-'), hold,
-        then,
+        r_from, CALL(sign),
         num_end, type, exit
     )
 WORD_END(dot)
@@ -536,7 +532,20 @@ WORD_START(s_to_d, s_quote)
         dup, zero_less, exit
     )
 WORD_END(s_to_d)
-WORD(state,            s_to_d,     DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
+/* ( n -- ) if n is negative, add a a minus sign to the beginning of the pictured numeric output */
+WORD_START(sign, s_to_d)
+    WORD_DSTACK(1,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        zero_less, _if_, T(4),
+            _lit_, T('-'), hold,
+        then, exit
+    )
+WORD_END(sign)
+WORD(state,            sign,       DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 /* source ( -- c-addr u ) get entire content of input buffer (including already parsed data) */
 WORD_START(source,     state)
     WORD_DSTACK(0,2)

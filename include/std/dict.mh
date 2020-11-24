@@ -148,6 +148,7 @@
     X(6, "repeat", repeat)                                                                         \
     X(2, "s\"", s_quote)                                                                           \
     X(3, "s>d", s_to_d)                                                                            \
+    X(4, "sign", sign)                                                                             \
     X(6, "source", source)                                                                         \
     X(5, "space", space)                                                                           \
     X(6, "spaces", spaces)                                                                         \
