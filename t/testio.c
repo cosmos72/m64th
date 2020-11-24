@@ -25,7 +25,7 @@
 #include "../include/func_fwd.h"
 #include "../include/iobuf.mh"
 #include "../include/m4th.h"
-#include "../include/m4th.mh" /* M4TH_PIC_MAXSIZE */
+#include "../include/m4th.mh" /* M4TH_PICT_MAXSIZE */
 #include "../include/token.h"
 #include "../include/word_fwd.h"
 #include "testcommon.h"
@@ -563,7 +563,7 @@ m4cell m4th_testio(m4th *m, FILE *out) {
     m4testcount count = {};
     m4testio_global_init();
     m4testio_bunch(m, testio_a, N_OF(testio_a), &count, out, SZ2);
-    m4testio_bunch(m, testio_b, N_OF(testio_b), &count, out, M4TH_PIC_MAXSIZE);
+    m4testio_bunch(m, testio_b, N_OF(testio_b), &count, out, M4TH_PICT_MAXSIZE);
     m4testio_bunch(m, testio_c, N_OF(testio_c), &count, out, SZ2);
     m4testio_bunch(m, testio_d, N_OF(testio_d), &count, out, 80);
     m4testio_bunch(m, testio_e, N_OF(testio_e), &count, out, SZ2);
