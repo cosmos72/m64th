@@ -23,80 +23,261 @@
 
 FUNC_START(_local_0_) /* (local-0) ( -- x ) push 0-th local variable to dstack */
         DPUSH__DTOP()
+    FUNC_DEF_NOALIGN(_drop_local_0_)
         LOAD(  DTOP,   AT(LOCL))
+    FUNC_DEF_RET(_drop_local_0_)
 FUNC_END(_local_0_)
+FUNC_START(_to_local_0_) /* (to-local-0) ( x -- ) store dstack top to 1-st local variable */
+        STOR(  DTOP,   AT(LOCL))
+        DPOP___DTOP()
+FUNC_END(_to_local_0_)
+FUNC_START(_dup_to_local_0_) /* (dup-to-local-0) ( x -- x ) copy dstack top to 1-st local variable */
+        STOR(  DTOP,   AT(LOCL))
+FUNC_END(_dup_to_local_0_)
+
+
 FUNC_START(_local_1_) /* (local-1) ( -- x ) push 1-st local variable to dstack */
         DPUSH__DTOP()
+    FUNC_DEF_NOALIGN(_drop_local_1_)
         LOAD(  DTOP,   AT(LOCL, SZ))
+    FUNC_DEF_RET(_drop_local_1_)
 FUNC_END(_local_1_)
+FUNC_START(_to_local_1_) /* (to-local-1) ( x -- ) store dstack top to 1-st local variable */
+        STOR(  DTOP,   AT(LOCL, SZ))
+        DPOP___DTOP()
+FUNC_END(_to_local_1_)
+FUNC_START(_dup_to_local_1_) /* (dup-to-local-1) ( x -- x ) copy dstack top to 1-st local variable */
+        STOR(  DTOP,   AT(LOCL, SZ))
+FUNC_END(_dup_to_local_1_)
+
+
 FUNC_START(_local_2_) /* (local-2) ( -- x ) push 2-nd local variable to dstack */
         DPUSH__DTOP()
+    FUNC_DEF_NOALIGN(_drop_local_2_)
         LOAD(  DTOP,   AT(LOCL, SZ2))
+    FUNC_DEF_RET(_drop_local_2_)
 FUNC_END(_local_2_)
+FUNC_START(_to_local_2_) /* (to-local-2) ( x -- ) store dstack top to 2-nd local variable */
+        STOR(  DTOP,   AT(LOCL, SZ2))
+        DPOP___DTOP()
+FUNC_END(_to_local_2_)
+FUNC_START(_dup_to_local_2_) /* (dup-to-local-2) ( x -- x ) copy dstack top to 2-nd local variable */
+        STOR(  DTOP,   AT(LOCL, SZ2))
+FUNC_END(_dup_to_local_2_)
+
+
 FUNC_START(_local_3_) /* (local-3) ( -- x ) push 3-rd local variable to dstack */
         DPUSH__DTOP()
+    FUNC_DEF_NOALIGN(_drop_local_3_)
         LOAD(  DTOP,   AT(LOCL, SZ3))
+    FUNC_DEF_RET(_drop_local_3_)
 FUNC_END(_local_3_)
+FUNC_START(_to_local_3_) /* (to-local-3) ( x -- ) store dstack top to 3-rd local variable */
+        STOR(  DTOP,   AT(LOCL, SZ3))
+        DPOP___DTOP()
+FUNC_END(_to_local_3_)
+FUNC_START(_dup_to_local_3_) /* (dup-to-local-3) ( x -- x ) copy dstack top to 3-rd local variable */
+        STOR(  DTOP,   AT(LOCL, SZ3))
+FUNC_END(_dup_to_local_3_)
+
+
 FUNC_START(_local_4_) /* (local-4) ( -- x ) push 4-th local variable to dstack */
         DPUSH__DTOP()
+    FUNC_DEF_NOALIGN(_drop_local_4_)
         LOAD(  DTOP,   AT(LOCL, SZ4))
+    FUNC_DEF_RET(_drop_local_4_)
 FUNC_END(_local_4_)
+FUNC_START(_to_local_4_) /* (to-local-4) ( x -- ) store dstack top to 4-th local variable */
+        STOR(  DTOP,   AT(LOCL, SZ4))
+        DPOP___DTOP()
+FUNC_END(_to_local_4_)
+FUNC_START(_dup_to_local_4_) /* (dup-to-local-4) ( x -- x ) copy dstack top to 4-th local variable */
+        STOR(  DTOP,   AT(LOCL, SZ4))
+FUNC_END(_dup_to_local_4_)
+
+
 FUNC_START(_local_5_) /* (local-5) ( -- x ) push 5-th local variable to dstack */
         DPUSH__DTOP()
+    FUNC_DEF_NOALIGN(_drop_local_5_)
         LOAD(  DTOP,   AT(LOCL, SZ5))
+    FUNC_DEF_RET(_drop_local_5_)
 FUNC_END(_local_5_)
+FUNC_START(_to_local_5_) /* (to-local-5) ( x -- ) store dstack top to 5-th local variable */
+        STOR(  DTOP,   AT(LOCL, SZ5))
+        DPOP___DTOP()
+FUNC_END(_to_local_5_)
+FUNC_START(_dup_to_local_5_) /* (dup-to-local-5) ( x -- x ) copy dstack top to 5-th local variable */
+        STOR(  DTOP,   AT(LOCL, SZ5))
+FUNC_END(_dup_to_local_5_)
+
+
 FUNC_START(_local_6_) /* (local-6) ( -- x ) push 6-th local variable to dstack */
         DPUSH__DTOP()
+    FUNC_DEF_NOALIGN(_drop_local_6_)
         LOAD(  DTOP,   AT(LOCL, SZ6))
+    FUNC_DEF_RET(_drop_local_6_)
 FUNC_END(_local_6_)
+FUNC_START(_to_local_6_) /* (to-local-6) ( x -- ) store dstack top to 6-th local variable */
+        STOR(  DTOP,   AT(LOCL, SZ6))
+        DPOP___DTOP()
+FUNC_END(_to_local_6_)
+FUNC_START(_dup_to_local_6_) /* (dup-to-local-6) ( x -- x ) copy dstack top to 6-th local variable */
+        STOR(  DTOP,   AT(LOCL, SZ6))
+FUNC_END(_dup_to_local_6_)
+
+
 FUNC_START(_local_7_) /* (local-7) ( -- x ) push 7-th local variable to dstack */
         DPUSH__DTOP()
+    FUNC_DEF_NOALIGN(_drop_local_7_)
         LOAD(  DTOP,   AT(LOCL, SZ7))
+    FUNC_DEF_RET(_drop_local_7_)
 FUNC_END(_local_7_)
+FUNC_START(_to_local_7_) /* (to-local-7) ( x -- ) store dstack top to 7-th local variable */
+        STOR(  DTOP,   AT(LOCL, SZ7))
+        DPOP___DTOP()
+FUNC_END(_to_local_7_)
+FUNC_START(_dup_to_local_7_) /* (dup-to-local-7) ( x -- x ) copy dstack top to 7-th local variable */
+        STOR(  DTOP,   AT(LOCL, SZ7))
+FUNC_END(_dup_to_local_7_)
+
+
 FUNC_START(_local_8_) /* (local-8) ( -- x ) push 8-th local variable to dstack */
         DPUSH__DTOP()
+    FUNC_DEF_NOALIGN(_drop_local_8_)
         LOAD(  DTOP,   AT(LOCL, SZ8))
+    FUNC_DEF_RET(_drop_local_8_)
 FUNC_END(_local_8_)
+FUNC_START(_to_local_8_) /* (to-local-8) ( x -- ) store dstack top to 8-th local variable */
+        STOR(  DTOP,   AT(LOCL, SZ8))
+        DPOP___DTOP()
+FUNC_END(_to_local_8_)
+FUNC_START(_dup_to_local_8_) /* (dup-to-local-8) ( x -- x ) copy dstack top to 8-th local variable */
+        STOR(  DTOP,   AT(LOCL, SZ8))
+FUNC_END(_dup_to_local_8_)
+
+
 FUNC_START(_local_9_) /* (local-9) ( -- x ) push 9-th local variable to dstack */
         DPUSH__DTOP()
+    FUNC_DEF_NOALIGN(_drop_local_9_)
         LOAD(  DTOP,   AT(LOCL, SZ9))
+    FUNC_DEF_RET(_drop_local_9_)
 FUNC_END(_local_9_)
+FUNC_START(_to_local_9_) /* (to-local-9) ( x -- ) store dstack top to 9-th local variable */
+        STOR(  DTOP,   AT(LOCL, SZ9))
+        DPOP___DTOP()
+FUNC_END(_to_local_9_)
+FUNC_START(_dup_to_local_9_) /* (dup-to-local-9) ( x -- x ) copy dstack top to 9-th local variable */
+        STOR(  DTOP,   AT(LOCL, SZ9))
+FUNC_END(_dup_to_local_9_)
+
+
 FUNC_START(_local_a_) /* (local-a) ( -- x ) push 10-th local variable to dstack */
         DPUSH__DTOP()
+    FUNC_DEF_NOALIGN(_drop_local_a_)
         LOAD(  DTOP,   AT(LOCL, SZ10))
+    FUNC_DEF_RET(_drop_local_a_)
 FUNC_END(_local_a_)
+FUNC_START(_to_local_a_) /* (to-local-a) ( x -- ) store dstack top to 10-th local variable */
+        STOR(  DTOP,   AT(LOCL, SZ10))
+        DPOP___DTOP()
+FUNC_END(_to_local_a_)
+FUNC_START(_dup_to_local_a_) /* (dup-to-local-a) ( x -- x ) copy dstack top to 10-th local variable */
+        STOR(  DTOP,   AT(LOCL, SZ10))
+FUNC_END(_dup_to_local_a_)
+
+
 FUNC_START(_local_b_) /* (local-b) ( -- x ) push 11-th local variable to dstack */
         DPUSH__DTOP()
+    FUNC_DEF_NOALIGN(_drop_local_b_)
         LOAD(  DTOP,   AT(LOCL, SZ11))
+    FUNC_DEF_RET(_drop_local_b_)
 FUNC_END(_local_b_)
+FUNC_START(_to_local_b_) /* (to-local-b) ( x -- ) store dstack top to 11-th local variable */
+        STOR(  DTOP,   AT(LOCL, SZ11))
+        DPOP___DTOP()
+FUNC_END(_to_local_b_)
+FUNC_START(_dup_to_local_b_) /* (dup-to-local-b) ( x -- x ) copy dstack top to 11-th local variable */
+        STOR(  DTOP,   AT(LOCL, SZ11))
+FUNC_END(_dup_to_local_b_)
+
+
 FUNC_START(_local_c_) /* (local-c) ( -- x ) push 12-th local variable to dstack */
         DPUSH__DTOP()
+    FUNC_DEF_NOALIGN(_drop_local_c_)
         LOAD(  DTOP,   AT(LOCL, SZ12))
+    FUNC_DEF_RET(_drop_local_c_)
 FUNC_END(_local_c_)
+FUNC_START(_to_local_c_) /* (to-local-c) ( x -- ) store dstack top to 12-th local variable */
+        STOR(  DTOP,   AT(LOCL, SZ12))
+        DPOP___DTOP()
+FUNC_END(_to_local_c_)
+FUNC_START(_dup_to_local_c_) /* (dup-to-local-c) ( x -- x ) copy dstack top to 12-th local variable */
+        STOR(  DTOP,   AT(LOCL, SZ12))
+FUNC_END(_dup_to_local_c_)
+
+
 FUNC_START(_local_d_) /* (local-d) ( -- x ) push 13-th local variable to dstack */
         DPUSH__DTOP()
+    FUNC_DEF_NOALIGN(_drop_local_d_)
         LOAD(  DTOP,   AT(LOCL, SZ13))
+    FUNC_DEF_RET(_drop_local_d_)
 FUNC_END(_local_d_)
+FUNC_START(_to_local_d_) /* (to-local-d) ( x -- ) store dstack top to 13-th local variable */
+        STOR(  DTOP,   AT(LOCL, SZ13))
+        DPOP___DTOP()
+FUNC_END(_to_local_d_)
+FUNC_START(_dup_to_local_d_) /* (dup-to-local-d) ( x -- x ) copy dstack top to 13-th local variable */
+        STOR(  DTOP,   AT(LOCL, SZ13))
+FUNC_END(_dup_to_local_d_)
+
+
 FUNC_START(_local_e_) /* (local-e) ( -- x ) push 14-th local variable to dstack */
         DPUSH__DTOP()
+    FUNC_DEF_NOALIGN(_drop_local_e_)
         LOAD(  DTOP,   AT(LOCL, SZ14))
+    FUNC_DEF_RET(_drop_local_e_)
 FUNC_END(_local_e_)
+FUNC_START(_to_local_e_) /* (to-local-e) ( x -- ) store dstack top to 14-th local variable */
+        STOR(  DTOP,   AT(LOCL, SZ14))
+        DPOP___DTOP()
+FUNC_END(_to_local_e_)
+FUNC_START(_dup_to_local_e_) /* (dup-to-local-e) ( x -- x ) copy dstack top to 14-th local variable */
+        STOR(  DTOP,   AT(LOCL, SZ14))
+FUNC_END(_dup_to_local_e_)
+
+
 FUNC_START(_local_f_) /* (local-f) ( -- x ) push 15-th local variable to dstack */
         DPUSH__DTOP()
+    FUNC_DEF_NOALIGN(_drop_local_f_)
         LOAD(  DTOP,   AT(LOCL, SZ15))
+    FUNC_DEF_RET(_drop_local_f_)
 FUNC_END(_local_f_)
+FUNC_START(_to_local_f_) /* (to-local-f) ( x -- ) store dstack top to 15-th local variable */
+        STOR(  DTOP,   AT(LOCL, SZ15))
+        DPOP___DTOP()
+FUNC_END(_to_local_f_)
+FUNC_START(_dup_to_local_f_) /* (dup-to-local-f) ( x -- x ) copy dstack top to 15-th local variable */
+        STOR(  DTOP,   AT(LOCL, SZ15))
+FUNC_END(_dup_to_local_f_)
+
+
 FUNC_START(_local_n_) /* (local-n) ( -- x ) must be followed by N. push N-th local variable to dstack */
         LD_ut( REG1,   AT(IP))
         DPUSH__DTOP()
         LOAD(  DTOP,   AT(LOCL, REG1, SZ))
         ADD2(IMM(SZt), IP)
 FUNC_END(_local_n_)
+FUNC_START(_to_local_n_) /* (local-n) ( x -- ) must be followed by N. store dstack top to N-th local variable */
+        LD_ut( REG1,   AT(IP))
+        STOR(  DTOP,   AT(LOCL, REG1, SZ))
+        DPOP___DTOP()
+        ADD2(IMM(SZt), IP)
+FUNC_END(_to_local_n_)
 
-
-/* (local-alloc) (R: -- locl ln-1 ... l1 l0 n ) followed by T(n), reserve space for n local variables */
-FUNC_START(_local_alloc_)
+/* (local-enter) (R: -- locl ln-1 ... l1 l0 n ) followed by T(n), reserve space for n local variables */
+FUNC_START(_local_enter_)
 #ifdef __aarch64__
-        ldrh   REG1_ut,AT(IP), SZt;        /* a = n; IP += SZt i.e. skip T(n) */
+        LD_ut( REG1,   AT(IP), SZt)        /* a = n; IP += SZt i.e. skip T(n) */
 #else
         LD_ut( REG1,   AT(IP))             /* a = n                           */
         ADD2(IMM(SZt), IP)                 /* IP += SZt i.e. skip T(n)        */
@@ -107,11 +288,11 @@ FUNC_START(_local_alloc_)
         ADD4(  RSTK,   REG1, PSZ,  RSTK)   /* (R: LOCL ln-1 ... l1 l0 n     ) */
         MOVE(  RSTK,   LOCL)               /* LOCL = &l0                      */
         NEXT0()
-FUNC_RAWEND(_local_alloc_)
+FUNC_RAWEND(_local_enter_)
 
 
-/* (local-free) (R: locl ln-1 ... l1 l0 n -- ) release space for last reserved local variables */
-FUNC_START(_local_free_)
+/* (local-exit) (R: locl ln-1 ... l1 l0 n -- ) release space for last reserved local variables */
+FUNC_START(_local_exit_)
 #ifdef __x86_64__
         leaq   SZ2(RSTK, RTOP, SZ),  RSTK;
         LOAD(  LOCL,   AT(RSTK, -SZ2))
@@ -120,76 +301,4 @@ FUNC_START(_local_free_)
         ADD4(  RSTK,   RTOP, PSZ,  RSTK)   /* (R: LOCL n                    ) */
         RPOP2( LOCL,   RTOP)               /* (R:                           ) */
 #endif
-FUNC_END(_local_free_)
-
-
-FUNC_START(_to_local_0_) /* (to-local-0) ( x -- ) store dstack top to 1-st local variable */
-        STOR(  DTOP,   AT(LOCL))
-        DPOP___DTOP()
-FUNC_END(_to_local_0_)
-FUNC_START(_to_local_1_) /* (to-local-1) ( x -- ) store dstack top to 1-st local variable */
-        STOR(  DTOP,   AT(LOCL, SZ))
-        DPOP___DTOP()
-FUNC_END(_to_local_1_)
-FUNC_START(_to_local_2_) /* (to-local-2) ( x -- ) store dstack top to 2-nd local variable */
-        STOR(  DTOP,   AT(LOCL, SZ2))
-        DPOP___DTOP()
-FUNC_END(_to_local_2_)
-FUNC_START(_to_local_3_) /* (to-local-3) ( x -- ) store dstack top to 3-rd local variable */
-        STOR(  DTOP,   AT(LOCL, SZ3))
-        DPOP___DTOP()
-FUNC_END(_to_local_3_)
-FUNC_START(_to_local_4_) /* (to-local-4) ( x -- ) store dstack top to 4-th local variable */
-        STOR(  DTOP,   AT(LOCL, SZ4))
-        DPOP___DTOP()
-FUNC_END(_to_local_4_)
-FUNC_START(_to_local_5_) /* (to-local-5) ( x -- ) store dstack top to 5-th local variable */
-        STOR(  DTOP,   AT(LOCL, SZ5))
-        DPOP___DTOP()
-FUNC_END(_to_local_5_)
-FUNC_START(_to_local_6_) /* (to-local-6) ( x -- ) store dstack top to 6-th local variable */
-        STOR(  DTOP,   AT(LOCL, SZ6))
-        DPOP___DTOP()
-FUNC_END(_to_local_6_)
-FUNC_START(_to_local_7_) /* (to-local-7) ( x -- ) store dstack top to 7-th local variable */
-        STOR(  DTOP,   AT(LOCL, SZ7))
-        DPOP___DTOP()
-FUNC_END(_to_local_7_)
-FUNC_START(_to_local_8_) /* (to-local-8) ( x -- ) store dstack top to 8-th local variable */
-        STOR(  DTOP,   AT(LOCL, SZ8))
-        DPOP___DTOP()
-FUNC_END(_to_local_8_)
-FUNC_START(_to_local_9_) /* (to-local-9) ( x -- ) store dstack top to 9-th local variable */
-        STOR(  DTOP,   AT(LOCL, SZ9))
-        DPOP___DTOP()
-FUNC_END(_to_local_9_)
-FUNC_START(_to_local_a_) /* (to-local-a) ( x -- ) store dstack top to 10-th local variable */
-        STOR(  DTOP,   AT(LOCL, SZ10))
-        DPOP___DTOP()
-FUNC_END(_to_local_a_)
-FUNC_START(_to_local_b_) /* (to-local-b) ( x -- ) store dstack top to 11-th local variable */
-        STOR(  DTOP,   AT(LOCL, SZ11))
-        DPOP___DTOP()
-FUNC_END(_to_local_b_)
-FUNC_START(_to_local_c_) /* (to-local-c) ( x -- ) store dstack top to 12-th local variable */
-        STOR(  DTOP,   AT(LOCL, SZ12))
-        DPOP___DTOP()
-FUNC_END(_to_local_c_)
-FUNC_START(_to_local_d_) /* (to-local-d) ( x -- ) store dstack top to 13-th local variable */
-        STOR(  DTOP,   AT(LOCL, SZ13))
-        DPOP___DTOP()
-FUNC_END(_to_local_d_)
-FUNC_START(_to_local_e_) /* (to-local-e) ( x -- ) store dstack top to 14-th local variable */
-        STOR(  DTOP,   AT(LOCL, SZ14))
-        DPOP___DTOP()
-FUNC_END(_to_local_e_)
-FUNC_START(_to_local_f_) /* (to-local-f) ( x -- ) store dstack top to 15-th local variable */
-        STOR(  DTOP,   AT(LOCL, SZ15))
-        DPOP___DTOP()
-FUNC_END(_to_local_f_)
-FUNC_START(_to_local_n_) /* (local-n) ( x -- ) must be followed by N. store dstack top to N-th local variable */
-        LD_ut( REG1,   AT(IP))
-        STOR(  DTOP,   AT(LOCL, REG1, SZ))
-        DPOP___DTOP()
-        ADD2(IMM(SZt), IP)
-FUNC_END(_to_local_n_)
+FUNC_END(_local_exit_)

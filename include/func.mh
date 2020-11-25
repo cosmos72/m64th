@@ -31,6 +31,10 @@
     .globl FUNC(name);                                                                             \
     .type FUNC(name), @function;
 
+#define FUNC_DEF_NOALIGN(name)                                                                     \
+    FUNC_DECL(name)                                                                                \
+    FUNC(name) :
+
 #define FUNC_DEF(name)                                                                             \
     FUNC_ALIGN()                                                                                   \
     FUNC_DECL(name)                                                                                \
@@ -42,9 +46,18 @@
 
 #define FUNC_RAWEND(name)                                                                          \
     .cfi_endproc;                                                                                  \
-    .size FUNC(name), .- FUNC(name);
+    FUNC_SIZE(name)
 
-#define FUNC_END(name) FUNC_RET(name) : NEXT() FUNC_RAWEND(name)
+/* clang-format off */
+
+#define FUNC_DEF_RET(name)                                                                         \
+    FUNC_RET(name) :                                                                               \
+    FUNC_SIZE(name)
+
+#define FUNC_END(name)                                                                             \
+    FUNC_RET(name) :                                                                               \
+    NEXT()                                                                                         \
+    FUNC_RAWEND(name)
 
 /* clang-format on */
 

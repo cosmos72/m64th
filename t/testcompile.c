@@ -144,6 +144,10 @@ static const m4testcompile testcompile_a[] = {
      {14,
       {m4_if_, T(10), m4plus, m4_if_, T(3), m4times, m4_else_, T(2), m4div, m4then, m4_else_, T(2),
        m4minus, m4then}}},
+    /* ------------------------------- ahead -------------------------------- */
+    {"ahead", {}, {2, {2, m4_ahead_}}, {2, {m4_ahead_, T(-1)}}},
+    {"ahead then", {}, {}, {3, {m4_ahead_, T(1), m4then}}},
+    {"ahead 1 then", {}, {}, {4, {m4_ahead_, T(2), m4one, m4then}}},
     /* ------------------------------- do loop ------------------------------ */
     {"do", {}, {2, {2, m4_do_}}, {2, {m4_do_, T(-1)}}},
     {"?do", {}, {2, {2, m4_do_}}, {2, {m4_q_do_, T(-1)}}},

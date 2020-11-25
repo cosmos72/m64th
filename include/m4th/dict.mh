@@ -25,7 +25,7 @@
     X(2, "<=", less_equal)                                                                         \
     X(2, ">=", more_equal)                                                                         \
     /*                              attempt to narrow a double-width unsigned number            */ \
-    X(7, "?du>u", q_du_to_u)     /* ( du -- u t | du f )                                        */ \
+    X(5, "?du>u", q_du_to_u)     /* ( du -- u t | du f )                                        */ \
                                  /* attempt to narrow two double-width unsigned numbers         */ \
     X(7, "?2du>2u", q_2du_to_2u) /* ( du1 du2 -- u1 u2 t | du1 du2 f )                          */ \
     X(3, "0<=", zero_less_equal)                                                                   \
@@ -88,12 +88,12 @@
     X(7, "string=", string_equal)        /* ( addr1 addr2 u -- addr1 addr2 u t|f )          */     \
     X(10, "string-ci=", string_ci_equal) /* ( addr1 addr2 u -- addr1 addr2 u t|f )          */     \
     X(17, "string-find-blank", string_find_blank) /* ( c-addr u -- u' )                     */     \
-    X(16, "string-find-char", string_find_char)   /* ( c-addr u -- u' )                     */     \
+    X(16, "string-find-char", string_find_char)   /* ( c-addr u ch -- u' )                  */     \
     X(20, "string-find-nonblank", string_find_nonblank) /* ( c-addr u -- u' )               */     \
     X(12, "string>lower", string_to_lower) /* ( c-addr-src c-addr-dst u -- c-addr-dst u )   */     \
     X(3, "sub", sub)                       /* equivalent to: swap -                         */     \
     X(5, "trail", trail)                   /* equivalent to: over swap                      */     \
-    /*                             */      /*                                                */    \
+    /*                             */      /*                                               */     \
     X(3, "u<=", u_less_equal)                                                                      \
     X(3, "u>=", u_more_equal)                                                                      \
     X(5, "u/mod", u_div_mod)           /* ( u1 u2 -- u1%u2 u1/u2 ) */                              \
@@ -402,17 +402,50 @@
     X(8, "(?while)", _q_while_)                                                                    \
     X(9, "(?while0)", _q_while0_)                                                                  \
     X(7, "(again)", _again_)                                                                       \
+    X(7, "(ahead)", _ahead_)                                                                       \
     X(7, "(break)", _break_)                                                                       \
     X(13, "(call-native)", _call_native_)                                                          \
     X(9, "(call-xt)", _call_xt_)                                                                   \
-    X(11, "(catch-beg)", _catch_beg_)         /* first half of 'catch'             */              \
-    X(11, "(catch-end)", _catch_end_)         /* second half of 'catch'            */              \
-    X(15, "(check-lit-tok)", _check_lit_tok_) /* ( x -- x ) followed by expected x: a token */     \
-    X(10, "(continue)", _continue_)           /* execution semantics of 'continue' */              \
-    X(4, "(do)", _do_)                        /* execution semantics of 'do'       */              \
-    X(11, "(does-exit)", _does_exit_)         /* alias of exit. used immediately after (does) */   \
-    X(6, "(else)", _else_)                    /* execution semantics of 'else'     */              \
-    X(7, "(endof)", _endof_)                  /* execution semantics of 'endof'    */              \
+    X(11, "(catch-beg)", _catch_beg_)           /* first half of 'catch'             */            \
+    X(11, "(catch-end)", _catch_end_)           /* second half of 'catch'            */            \
+    X(15, "(check-lit-tok)", _check_lit_tok_)   /* ( x -- x ) followed by expected x: a token */   \
+    X(10, "(continue)", _continue_)             /* execution semantics of 'continue' */            \
+    X(4, "(do)", _do_)                          /* execution semantics of 'do'       */            \
+    X(11, "(does-exit)", _does_exit_)           /* alias of exit. used immediately after (does) */ \
+    X(14, "(drop-local-0)", _drop_local_0_)     /* drop & fetch 0-th local variable */             \
+    X(14, "(drop-local-1)", _drop_local_1_)     /* drop & fetch 1-st local variable */             \
+    X(14, "(drop-local-2)", _drop_local_2_)     /* drop & fetch 2-nd local variable */             \
+    X(14, "(drop-local-3)", _drop_local_3_)     /* drop & fetch 3-rd local variable */             \
+    X(14, "(drop-local-4)", _drop_local_4_)     /* drop & fetch 4-th local variable */             \
+    X(14, "(drop-local-5)", _drop_local_5_)     /* drop & fetch 5-th local variable */             \
+    X(14, "(drop-local-6)", _drop_local_6_)     /* drop & fetch 6-th local variable */             \
+    X(14, "(drop-local-7)", _drop_local_7_)     /* drop & fetch 7-th local variable */             \
+    X(14, "(drop-local-8)", _drop_local_8_)     /* drop & fetch 8-th local variable */             \
+    X(14, "(drop-local-9)", _drop_local_9_)     /* drop & fetch 9-th local variable */             \
+    X(14, "(drop-local-a)", _drop_local_a_)     /* drop & fetch 10-th local variable */            \
+    X(14, "(drop-local-b)", _drop_local_b_)     /* drop & fetch 11-th local variable */            \
+    X(14, "(drop-local-c)", _drop_local_c_)     /* drop & fetch 12-th local variable */            \
+    X(14, "(drop-local-d)", _drop_local_d_)     /* drop & fetch 14-th local variable */            \
+    X(14, "(drop-local-e)", _drop_local_e_)     /* drop & fetch 14-th local variable */            \
+    X(14, "(drop-local-f)", _drop_local_f_)     /* drop & fetch 15-th local variable */            \
+    X(16, "(dup-to-local-0)", _dup_to_local_0_) /*  dup & store 0-th local variable */             \
+    X(16, "(dup-to-local-1)", _dup_to_local_1_) /*  dup & store 1-st local variable */             \
+    X(16, "(dup-to-local-2)", _dup_to_local_2_) /*  dup & store 2-nd local variable */             \
+    X(16, "(dup-to-local-3)", _dup_to_local_3_) /*  dup & store 3-rd local variable */             \
+    X(16, "(dup-to-local-4)", _dup_to_local_4_) /*  dup & store 4-th local variable */             \
+    X(16, "(dup-to-local-5)", _dup_to_local_5_) /*  dup & store 5-th local variable */             \
+    X(16, "(dup-to-local-6)", _dup_to_local_6_) /*  dup & store 6-th local variable */             \
+    X(16, "(dup-to-local-7)", _dup_to_local_7_) /*  dup & store 7-th local variable */             \
+    X(16, "(dup-to-local-8)", _dup_to_local_8_) /*  dup & store 8-th local variable */             \
+    X(16, "(dup-to-local-9)", _dup_to_local_9_) /*  dup & store 9-th local variable */             \
+    X(16, "(dup-to-local-a)", _dup_to_local_a_) /*  dup & store 10-th local variable */            \
+    X(16, "(dup-to-local-b)", _dup_to_local_b_) /*  dup & store 11-th local variable */            \
+    X(16, "(dup-to-local-c)", _dup_to_local_c_) /*  dup & store 12-th local variable */            \
+    X(16, "(dup-to-local-d)", _dup_to_local_d_) /*  dup & store 13-th local variable */            \
+    X(16, "(dup-to-local-e)", _dup_to_local_e_) /*  dup & store 14-th local variable */            \
+    X(16, "(dup-to-local-f)", _dup_to_local_f_) /*  dup & store 15-th local variable */            \
+    X(6, "(else)", _else_)                      /* execution semantics of 'else'     */            \
+    X(7, "(endof)", _endof_)                    /* execution semantics of 'endof'    */            \
     X(12, "(exec-token)", _exec_token_)                                                            \
     X(21, "(exec-xt-from-native)", _exec_xt_from_native_)                                          \
     X(13, "(fallthrough)", _fallthrough_) /* jump to next 'of' inside a 'case' */                  \
@@ -430,49 +463,49 @@
     X(12, "(lit-string)", _lit_string_)                                                            \
     X(9, "(lit-tok)", _lit_tok_)                                                                   \
     X(8, "(lit-xt)", _lit_xt_)                                                                     \
-    X(9, "(local-0)", _local_0_) /* get 0-th local variable */                                     \
-    X(9, "(local-1)", _local_1_) /* get 1-st local variable */                                     \
-    X(9, "(local-2)", _local_2_) /* get 2-nd local variable */                                     \
-    X(9, "(local-3)", _local_3_) /* get 3-rd local variable */                                     \
-    X(9, "(local-4)", _local_4_) /* get 4-th local variable */                                     \
-    X(9, "(local-5)", _local_5_) /* get 5-th local variable */                                     \
-    X(9, "(local-6)", _local_6_) /* get 6-th local variable */                                     \
-    X(9, "(local-7)", _local_7_) /* get 7-th local variable */                                     \
-    X(9, "(local-8)", _local_8_) /* get 8-th local variable */                                     \
-    X(9, "(local-9)", _local_9_) /* get 9-th local variable */                                     \
-    X(9, "(local-a)", _local_a_) /* get 10-th local variable */                                    \
-    X(9, "(local-b)", _local_b_) /* get 11-th local variable */                                    \
-    X(9, "(local-c)", _local_c_) /* get 12-th local variable */                                    \
-    X(9, "(local-d)", _local_d_) /* get 13-th local variable */                                    \
-    X(9, "(local-e)", _local_e_) /* get 14-th local variable */                                    \
-    X(9, "(local-f)", _local_f_) /* get 15-th local variable */                                    \
-    X(9, "(local-n)", _local_n_) /* followed by N. get N-th local variable */                      \
+    X(9, "(local-0)", _local_0_) /* fetch 0-th local variable */                                   \
+    X(9, "(local-1)", _local_1_) /* fetch 1-st local variable */                                   \
+    X(9, "(local-2)", _local_2_) /* fetch 2-nd local variable */                                   \
+    X(9, "(local-3)", _local_3_) /* fetch 3-rd local variable */                                   \
+    X(9, "(local-4)", _local_4_) /* fetch 4-th local variable */                                   \
+    X(9, "(local-5)", _local_5_) /* fetch 5-th local variable */                                   \
+    X(9, "(local-6)", _local_6_) /* fetch 6-th local variable */                                   \
+    X(9, "(local-7)", _local_7_) /* fetch 7-th local variable */                                   \
+    X(9, "(local-8)", _local_8_) /* fetch 8-th local variable */                                   \
+    X(9, "(local-9)", _local_9_) /* fetch 9-th local variable */                                   \
+    X(9, "(local-a)", _local_a_) /* fetch 10-th local variable */                                  \
+    X(9, "(local-b)", _local_b_) /* fetch 11-th local variable */                                  \
+    X(9, "(local-c)", _local_c_) /* fetch 12-th local variable */                                  \
+    X(9, "(local-d)", _local_d_) /* fetch 13-th local variable */                                  \
+    X(9, "(local-e)", _local_e_) /* fetch 14-th local variable */                                  \
+    X(9, "(local-f)", _local_f_) /* fetch 15-th local variable */                                  \
+    X(9, "(local-n)", _local_n_) /* followed by T(N) fetch N-th local variable */                  \
     /* followed by T(n), reserve space for n local variables */                                    \
-    X(13, "(local-alloc)", _local_alloc_)                                                          \
-    X(12, "(local-free)", _local_free_) /* release space for last reserved local variables */      \
+    X(13, "(local-enter)", _local_enter_)                                                          \
+    X(12, "(local-exit)", _local_exit_) /* release space of last reserved local variables */       \
     X(6, "(loop)", _loop_)                                                                         \
     X(9, "(missing)", _missing_)                                                                   \
     X(4, "(of)", _of_)           /* ( x y -- x| ) execution semantics of 'of'      */              \
     X(9, "(recurse)", _recurse_) /* ( x y -- x| ) execution semantics of 'recurse' */              \
     X(8, "(repeat)", _repeat_)                                                                     \
     X(18, "(return-to-native)", _return_to_native_)                                                \
-    X(12, "(to-local-0)", _to_local_0_) /* set 0-th local variable */                              \
-    X(12, "(to-local-1)", _to_local_1_) /* set 1-st local variable */                              \
-    X(12, "(to-local-2)", _to_local_2_) /* set 2-nd local variable */                              \
-    X(12, "(to-local-3)", _to_local_3_) /* set 3-rd local variable */                              \
-    X(12, "(to-local-4)", _to_local_4_) /* set 4-th local variable */                              \
-    X(12, "(to-local-5)", _to_local_5_) /* set 5-th local variable */                              \
-    X(12, "(to-local-6)", _to_local_6_) /* set 6-th local variable */                              \
-    X(12, "(to-local-7)", _to_local_7_) /* set 7-th local variable */                              \
-    X(12, "(to-local-8)", _to_local_8_) /* set 8-th local variable */                              \
-    X(12, "(to-local-9)", _to_local_9_) /* set 9-th local variable */                              \
-    X(12, "(to-local-a)", _to_local_a_) /* set 10-th local variable */                             \
-    X(12, "(to-local-b)", _to_local_b_) /* set 11-th local variable */                             \
-    X(12, "(to-local-c)", _to_local_c_) /* set 12-th local variable */                             \
-    X(12, "(to-local-d)", _to_local_d_) /* set 13-th local variable */                             \
-    X(12, "(to-local-e)", _to_local_e_) /* set 14-th local variable */                             \
-    X(12, "(to-local-f)", _to_local_f_) /* set 15-th local variable */                             \
-    X(12, "(to-local-n)", _to_local_n_) /* followed by N. set N-th local variable */               \
+    X(12, "(to-local-0)", _to_local_0_) /* store 0-th local variable */                            \
+    X(12, "(to-local-1)", _to_local_1_) /* store 1-st local variable */                            \
+    X(12, "(to-local-2)", _to_local_2_) /* store 2-nd local variable */                            \
+    X(12, "(to-local-3)", _to_local_3_) /* store 3-rd local variable */                            \
+    X(12, "(to-local-4)", _to_local_4_) /* store 4-th local variable */                            \
+    X(12, "(to-local-5)", _to_local_5_) /* store 5-th local variable */                            \
+    X(12, "(to-local-6)", _to_local_6_) /* store 6-th local variable */                            \
+    X(12, "(to-local-7)", _to_local_7_) /* store 7-th local variable */                            \
+    X(12, "(to-local-8)", _to_local_8_) /* store 8-th local variable */                            \
+    X(12, "(to-local-9)", _to_local_9_) /* store 9-th local variable */                            \
+    X(12, "(to-local-a)", _to_local_a_) /* store 10-th local variable */                           \
+    X(12, "(to-local-b)", _to_local_b_) /* store 11-th local variable */                           \
+    X(12, "(to-local-c)", _to_local_c_) /* store 12-th local variable */                           \
+    X(12, "(to-local-d)", _to_local_d_) /* store 13-th local variable */                           \
+    X(12, "(to-local-e)", _to_local_e_) /* store 14-th local variable */                           \
+    X(12, "(to-local-f)", _to_local_f_) /* store 15-th local variable */                           \
+    X(12, "(to-local-n)", _to_local_n_) /* followed by T(N) store N-th local variable */           \
     X(7, "(until)", _until_)                                                                       \
     X(8, "(until0)", _until0_)                                                                     \
     X(7, "(while)", _while_)                                                                       \

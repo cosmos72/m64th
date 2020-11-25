@@ -21,7 +21,14 @@
 
 DICT_WORDS_FORTH_TOOLS_EXT(WORDNAME)
 
-WORD_START(bye, LASTWORD)
+WORD_START(ahead,      LASTWORD)
+    WORD_STACK_NONE()
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE)
+    WORD_CODE(_compile_jump_lit_, _ahead_, _ahead_, exit)
+WORD_END(ahead)
+WORD_START(bye,        ahead)
     WORD_DSTACK(0,-1)  /* data   stack may be altered from outside */
     WORD_RSTACK(0,-1)  /* return stack may be altered from outside */
     WORD_DSTACK(0,-1)
@@ -30,7 +37,7 @@ WORD_START(bye, LASTWORD)
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MAY_JUMP)
     WORD_CODE(bye, exit) /* exit is reachable by subsequent m4th_run() */
 WORD_END(bye)
-WORD_START(cs_pick,      bye)
+WORD_START(cs_pick,    bye)
     WORD_DSTACK(1,2) /* DSTACK(x+1,x+2) */
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -38,7 +45,7 @@ WORD_START(cs_pick,      bye)
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_COMPILE_ONLY)
     WORD_CODE(cs_pick, exit)
 WORD_END(cs_pick)
-WORD_START(cs_roll,      cs_pick)
+WORD_START(cs_roll,    cs_pick)
     WORD_DSTACK(1,0) /* DSTACK(x+1,x) */
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()

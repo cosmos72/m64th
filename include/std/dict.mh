@@ -237,6 +237,7 @@
 
 #define DICT_WORDS_FORTH_TOOLS_EXT(X)                                                              \
     DICT_TOKENS_FORTH_TOOLS_EXT(X)                                                                 \
+    X(5, "ahead", ahead)                                                                           \
     X(7, "cs-pick", cs_pick)                                                                       \
     X(7, "cs-roll", cs_roll)
 
