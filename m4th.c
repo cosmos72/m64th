@@ -608,7 +608,7 @@ void m4code_print(m4code src, m4printmode mode, FILE *out) {
         const m4token tok = code[i++];
         fputs(separator, out);
         separator = next_separator;
-        if (tok == m4_call_xt_ && n - i >= SZ / SZt) {
+        if (tok == m4_call_ && n - i >= SZ / SZt) {
             i += m4token_print_call(code + i, mode, out);
         } else if (tok == m4_catch_beg_ && i < n) {
             i += m4token_print_catch(code[i], mode, out);
@@ -1392,7 +1392,7 @@ m4cell m4th_execute_word(m4th *m, const m4word *w) {
     m4cell ret;
     {
         m4cell cell = (m4cell)w->code;
-        code[0] = m4_call_xt_;
+        code[0] = m4_call_;
         memcpy(code + 1, &cell, SZ);
         code[1 + SZ / SZt] = m4bye;
     }

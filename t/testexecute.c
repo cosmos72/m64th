@@ -93,7 +93,7 @@ static m4testexecute testexecute_a[] = {
      {}},
 #elif 0
     {"1e8 0 do over crc+ loop nip",
-     {m4do, m4over, m4_call_xt_, CELL(crc1byte_code), m4_loop_, T(-3 - callsz), m4nip, m4bye},
+     {m4do, m4over, m4_call_, CELL(crc1byte_code), m4_loop_, T(-3 - callsz), m4nip, m4bye},
      {{4, {'t', 0xffffffff, 1e8, 0}}, {}},
      {{1, {0x773edc4e}}, {}},
      {}},
@@ -593,7 +593,7 @@ static m4testexecute testexecute_d[] = {
     {"(call) 'noop", {CALL(noop), m4bye}, {{}, {}}, {{}, {}}, {}},
     {"(call) 'true", {CALL(true), m4bye}, {{}, {}}, {{1, {ttrue}}, {}}, {}},
     {"crc+",
-     {m4_call_xt_, CELL(crc1byte_code), m4bye},
+     {m4_call_, CELL(crc1byte_code), m4bye},
      {{2, {0xffffffff, 't'}}, {}},
      {{1, {0x1b806fbc /* m4th_crc1byte(0xffffffff, 't')*/}}, {}},
      {}},

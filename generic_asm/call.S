@@ -22,12 +22,12 @@
 /* clang-format off */
 
 /** must be followed by an XT. calls it. */
-FUNC_START(_call_xt_)
+FUNC_START(_call_)
         RPUSH( RTOP)               /* save RTOP                     */
         ADDI(  IP,     SZ, RTOP)   /* save return address = IP+SZ   */
         LOAD(  IP,     AT(IP))     /* load xt from IP[0]            */
         NEXT0()                    /* jump to xt                    */
-FUNC_RAWEND(_call_xt_)
+FUNC_RAWEND(_call_)
 
 
 /*

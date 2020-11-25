@@ -279,7 +279,7 @@ WORD_START(create,     constant)
         CALL(_create_),                        /* create word, mark it M4FLAG_CREATE   */
         right_bracket,                         /* start compiling                      */
         _lit_comma_, _ip_to_data_addr_,        /* compile (ip>data>addr)               */
-        _lit_comma_, _call_xt_,                /* compile (call-xt)                    */
+        _lit_comma_, _call_,                /* compile (call)                    */
         _lit_xt_, XT(noop), xt_comma,          /* compile XT(noop). placeholder set by DOES> */
         CALL(_finish_), exit                   /* finish compiling, make word findable */
     )
@@ -320,7 +320,7 @@ WORD_START(does,       do)
          */
         CALL(_throw_if_not_compiling_),
         _check_lit_tok_, colon,
-        _lit_comma_, _call_xt_,                        /* compile '(call-xt)'    */
+        _lit_comma_, _call_,                        /* compile '(call)'    */
         _lit_xt_, XT(_does_), xt_comma,                /* compile XT of '(does)' */
         _lit_comma_, _does_exit_,                      /* compile '(does-exit)'  */
         exit

@@ -425,7 +425,7 @@
 #define M4_break_if_ M4_i(25)       /* (break-if)      followed by IP offset to jump if dtop <> 0 */
 #define M4_break_if0_ M4_i(26)      /* (break-if0)     followed by IP offset to jump if dtop == 0 */
 #define M4_call_native_ M4_i(27)    /* (call-native)   followed by native code address. calls it. */
-#define M4_call_xt_ M4_i(28)        /* (call-xt)       followed by XT. calls it.                  */
+#define M4_call_ M4_i(28)        /* (call)       followed by XT. calls it.                  */
 #undef M4____gap                    /*                                                            */
 #define M4_catch_beg_ M4_i(30)      /* (catch-beg)     first  half of 'catch'                     */
 #define M4_catch_end_ M4_i(31)      /* (catch-end)     second half of 'catch'                     */

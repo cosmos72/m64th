@@ -81,14 +81,14 @@ WORD_START(compile_comma, case)
     WORD_CODE(
         /* dup xt>name name-inline?                    ( xt t|f        )
          * if0                                         ( xt            )
-         *    ' (call-xt) token,                       ( xt            )
+         *    ' (call) token,                       ( xt            )
          *    xt, exit                                 (               )
          * then                                        ( xt            )
          * xt>name [inline]
          */
         dup, xt_to_name, CALL(name_inline_query),
         _if0_, T(5),
-            _lit_comma_, _call_xt_,    /* compile (call-xt) */
+            _lit_comma_, _call_,    /* compile (call) */
             xt_comma, exit,            /* compile XT        */
         then,
         xt_to_name, CALL(_inline_), exit

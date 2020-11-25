@@ -168,7 +168,7 @@ WORD_START(_call_native_, _break_)
     WORD_FLAGS(M4FLAG_CONSUMES_IP_SZ | M4FLAG_INLINE_ALWAYS)
     WORD_CODE(_call_native_, exit)
 WORD_END(_call_native_)
-WORD_START(_call_xt_,  _call_native_)
+WORD_START(_call_,  _call_native_)
     WORD_DSTACK(-1,-1) /* stack effect of called XT */
     WORD_RSTACK(0,0)
     WORD_DSTACK(0,0)   /* stack effect when calling */
@@ -176,9 +176,9 @@ WORD_START(_call_xt_,  _call_native_)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZ | M4FLAG_INLINE_ALWAYS | M4FLAG_MAY_JUMP)
     /* make inliner happy: it skips the final 'exit' of a word's code when inlining */
-    WORD_CODE(_call_xt_, exit)
-WORD_END(_call_xt_)
-WORD_START(_catch_beg_,  _call_xt_)
+    WORD_CODE(_call_, exit)
+WORD_END(_call_)
+WORD_START(_catch_beg_,  _call_)
     WORD_DSTACK(-1,-1) /* stack effect of called word */
     WORD_RSTACK(0,3)
     WORD_DSTACK(1,0)   /* stack effect when jumping */
@@ -1117,7 +1117,7 @@ WORD_START(_does_, _defer_uninitialized_)
          *    M4ERR_NOT_CREATED and throw              ( IP nt                      )
          * name>xt                                     ( IP xt                      )
          *
-         *          ( xt of CREATEd words contains 'ip>data>addr (call-xt) XT exit' )
+         *          ( xt of CREATEd words contains 'ip>data>addr (call) XT exit' )
          * token+ token+                               ( IP xt-addr                 )
          * !                                           (                            )
          */
