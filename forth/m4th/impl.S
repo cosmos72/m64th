@@ -679,7 +679,7 @@ WORD_START(_local_append_,  _local_allocate_)
         exit
     )
 WORD_END(_local_append_)
-WORD_START(_local_enter_,_local_allocate_)
+WORD_START(_local_enter_,_local_append_)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,-1)
     WORD_STACK_NONE()
