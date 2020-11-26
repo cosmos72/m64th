@@ -1319,25 +1319,29 @@ void m4th_also(m4th *m, m4wordlist *wid) {
 m4cell m4th_local(m4th *m, m4string localname) {
     m4localnames *l = m->localnames;
     m4ucell len = localname.n;
+    m4ucell pos;
     if (len == 0) {
         /* nothing to to */
         return ttrue;
     }
     if (!l) {
         // allow at least 16 local variables, each with a name 255 bytes long
-        const m4ucell capacity = 16 * 256;
+        const m4ucell capacity = 16 * 256 + 1;
         m->localnames = l = m4mem_allocate(sizeof(m4localnames) + capacity);
         l->end = l->n = 0;
         l->capacity = capacity;
     }
-    if (len != (m4char)len || len >= l->capacity - l->end) {
+    if (len != (m4char)len || len + 2 > l->capacity - l->end) {
         /* localname is too long */
         return tfalse;
     }
-    l->vec[l->end].n = (m4char)len;
-    memcpy(l->vec[l->end].addr, localname.addr, len);
-    l->end += len + 1;
+    pos = l->end;
+    l->vec[pos].n = (m4char)len;
+    memcpy(l->vec[pos].addr, localname.addr, len);
+    pos += len + 1;
+    l->vec[pos].n = 0; /* end-of-names marker */
     l->n++;
+    l->end = pos;
     return ttrue;
 }
 

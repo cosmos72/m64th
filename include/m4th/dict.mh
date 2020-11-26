@@ -593,6 +593,7 @@
     X(21, "(hashmap-indexof/int)", _hashmap_indexof_int_)                                          \
     /* allocate and initialize m4th->localnames data structure */                                  \
     X(16, "(local-allocate)", _local_allocate_)                                                    \
+    X(14, "(local-append)", _local_append_) /* ( c-addr u -- ) used by '(local)' */ \
     /* find an optimized sequence to replace three tokens being compiled, */                       \
     /* which may be part of control flow i.e. 'if' 'else' 'case' etc.  */                          \
     X(16, "(optimize-3jump)", _optimize_3jump_) /* ( tok-addr -- counted-tokens|0 ) */             \

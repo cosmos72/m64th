@@ -282,6 +282,8 @@
     DICT_TOKENS_FORTH_DOUBLE(X)                                                                    \
     DICT_TOKENS_FORTH_DOUBLE_EXT(X)                                                                \
     DICT_TOKENS_FORTH_EXCEPTION(X)                                                                 \
+    DICT_TOKENS_FORTH_LOCALS(X)                                                                    \
+    DICT_TOKENS_FORTH_MEMORY(X)                                                                    \
     DICT_TOKENS_FORTH_TOOLS_EXT(X)                                                                 \
     DICT_TOKENS_FORTH_SEARCHORDER(X)                                                               \
     DICT_TOKENS_FORTH_STRING(X)
@@ -293,6 +295,8 @@
     DICT_WORDS_FORTH_DOUBLE(X)                                                                     \
     DICT_WORDS_FORTH_DOUBLE_EXT(X)                                                                 \
     DICT_WORDS_FORTH_EXCEPTION(X)                                                                  \
+    DICT_WORDS_FORTH_LOCALS(X)                                                                     \
+    DICT_WORDS_FORTH_MEMORY(X)                                                                     \
     DICT_WORDS_FORTH_TOOLS_EXT(X)                                                                  \
     DICT_WORDS_FORTH_SEARCHORDER(X)                                                                \
     DICT_WORDS_FORTH_STRING(X)

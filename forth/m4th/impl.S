@@ -647,7 +647,7 @@ WORD_START(_local_allocate_,_to_lx_)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY)
     WORD_CODE(
-        _lit_, T(LOCALNAMES_SZ + 16 * 256),            /* ( sizeof(m4localnames) + capacity ) */
+        _lit_, T(LOCALNAMES_SZ + 16 * 256 + 1),        /* ( sizeof(m4localnames) + capacity ) */
         dup, CALL(allocate), throw,                    /* ( cap addr                        ) */
         zero, over, store,                             /* ( cap addr                        ) */
         zero, over, cell_store_1,                      /* ( cap addr                        ) */
@@ -657,6 +657,28 @@ WORD_START(_local_allocate_,_to_lx_)
         exit
     )
 WORD_END(_local_allocate_)
+WORD_START(_local_append_,  _local_allocate_)
+    WORD_DSTACK(2,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY)
+    WORD_CODE(
+        dup, one_plus, to_r,                   /* ( c-addr u         ) (R: u+1 ) */
+        user_var, T(M4TH_USER_VAR_LOCALNAMES), /* ( c-addr u &l      ) (R: u+1 ) */
+        fetch, dup, cell_fetch_1,              /* ( c-addr u l pos   ) (R: u+1 ) */
+        swap, cell_fetch_3, plus,              /* ( c-addr u dst     ) (R: u+1 ) */
+        two_dup, c_store,                      /* ( c-addr u dst     ) (R: u+1 ) */
+	one_plus,                              /* ( c-addr u dst'    ) (R: u+1 ) */
+        swap, cmove_count, nip,                /* ( dst'             ) (R: u+1 ) */
+        zero, swap, c_store,                   /* (                  ) (R: u+1 ) */
+        user_var, T(M4TH_USER_VAR_LOCALNAMES), /* ( &l               )           */
+	fetch, r_from, over,                   /* ( l u+1 l          )           */
+	cell_store_1,    /* update localnames.end ( l                )           */
+        one, plus_store, /* update localnames.n   (                  )           */
+        exit
+    )
+WORD_END(_local_append_)
 WORD_START(_local_enter_,_local_allocate_)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,-1)

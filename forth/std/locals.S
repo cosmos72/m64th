@@ -43,7 +43,14 @@ WORD_START(_local_, LASTWORD)
             CALL(_local_allocate_),            /* ( c-addr u &l              ) */
         then,                                  /* ( c-addr u &l              ) */
         fetch,                                 /* ( c-addr u l               ) */
-        exit
+        dup_to_r, cell_fetch_1,                /* ( c-addr u end       ) (R: l ) */
+        plus, two_plus,                        /* ( c-addr u end''     ) (R: l ) */
+        r_from, cell_fetch_2, more_equal,      /* ( c-addr u t|f             ) */
+        _if_, T(4),                            /* ( c-addr u                 ) */
+            _lit_, T(M4ERR_LOCALS_OVERFLOW),   /* ( c-addr u err             ) */
+            throw,
+        then,                                  /* ( c-addr u                 ) */
+        CALL(_local_append_), exit             /* (                          ) */
     )
 WORD_END(_local_)
 

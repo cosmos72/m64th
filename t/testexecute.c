@@ -378,11 +378,17 @@ static m4testexecute testexecute_b[] = {
      {{}, {5, {0, 7, 8, 9, 3}}},
      {}},
     {"(local-exit)", {m4_local_exit_, T(3), m4bye}, {{}, {3, {99, 11, 1}}}, {}, {}},
-    {"locals",
-     {m4_local_enter_, T(2), m4_to_l0_, m4_to_l1_, m4_l0_, m4_l1_, m4minus, m4_local_exit_, m4bye},
+    {"(lx)",
+     {m4_local_enter_, T(2), m4_to_l0_, m4_to_l1_, m4_l0_, m4_l1_,
+      m4minus, m4_local_exit_, m4bye},
      {{2, {8, 3}}, {}},
      {{1, {-5}}, {}},
      {}},
+#if 0
+    {"_ (local)", {CALL(_local_), m4bye},
+     {{2, {(m4cell)"abc", 3}}, {}},
+     {{}, {}}, {}},
+#endif
 };
 
 static m4testexecute testexecute_c[] = {
