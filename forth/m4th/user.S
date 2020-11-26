@@ -533,13 +533,9 @@ WORD(uints,            ints,           DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 
 DEF_WORD_FETCH(uints)
 
-WORD(byte_store,       cell_fetch_8,   DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE) /* alias of c! */
-WORD(char_store,       byte_store,     DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE) /* alias of c! */
-WORD(short_store,      char_store,     DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE)
-WORD(ushort_store,     short_store,    DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE) /* alias of short! */
-WORD(int_store,        ushort_store,   DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE)
-WORD(uint_store,       int_store,      DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE) /* alias of int! */
-WORD(one_byte,         uint_store,     DSTACK(0,1), RSTACK(0,0), WORD_PURE) /* 1 i.e. sizeof(byte)   */
+DEF_WORD_STORE(cell_fetch_8)
+
+WORD(one_byte,         cell_store_8,   DSTACK(0,1), RSTACK(0,0), WORD_PURE) /* 1 i.e. sizeof(byte)   */
 WORD(one_char,         one_byte,       DSTACK(0,1), RSTACK(0,0), WORD_PURE) /* 1 i.e. sizeof(char)   */
 WORD(one_short,        one_char,       DSTACK(0,1), RSTACK(0,0), WORD_PURE) /* 2 i.e. sizeof(short)  */
 WORD(one_ushort,       one_short,      DSTACK(0,1), RSTACK(0,0), WORD_PURE) /* 2 i.e. sizeof(ushort) */

@@ -39,36 +39,8 @@
 #define m4_lit_int_ /*      */ m4_lit4s_
 #define m4_lit_cell_ /**/ CAT3(m4_lit, SZ, s_)
 
-#define m4char_fetch m4c_fetch       /* char@   is an alias for c@     - no dedicated m4token */
-#define m4cell_fetch m4fetch         /* cell@   is an alias for @      - no dedicated m4token */
-#define m4byte_store m4c_store       /* byte!   is an alias for c!     - no dedicated m4token */
-#define m4char_store m4c_store       /* char!   is an alias for c!     - no dedicated m4token */
-#define m4ushort_store m4short_store /* ushort! is an alias for short! - no dedicated m4token */
-#define m4uint_store m4int_store     /* uint!   is an alias for int!   - no dedicated m4token */
-
-#define m4char_store_1 m4byte_store_1
-#define m4char_store_2 m4byte_store_2
-#define m4char_store_3 m4byte_store_3
-#define m4char_store_4 m4byte_store_4
-#define m4char_store_5 m4byte_store_5
-#define m4char_store_6 m4byte_store_6
-#define m4char_store_7 m4byte_store_7
-
-#define m4ushort_store_1 m4short_store_1
-#define m4ushort_store_2 m4short_store_2
-#define m4ushort_store_3 m4short_store_3
-#define m4ushort_store_4 m4short_store_4
-#define m4ushort_store_5 m4short_store_5
-#define m4ushort_store_6 m4short_store_6
-#define m4ushort_store_7 m4short_store_7
-
-#define m4uint_store_1 m4int_store_1
-#define m4uint_store_2 m4int_store_2
-#define m4uint_store_3 m4int_store_3
-#define m4uint_store_4 m4int_store_4
-#define m4uint_store_5 m4int_store_5
-#define m4uint_store_6 m4int_store_6
-#define m4uint_store_7 m4int_store_7
+#define m4char_fetch m4c_fetch /* char@   is an alias for c@     - no dedicated m4token */
+#define m4cell_fetch m4fetch   /* cell@   is an alias for @      - no dedicated m4token */
 
 #define m4div_byte m4noop        /* /byte     divide dtop by sizeof(byte)   */
 #define m4div_char m4noop        /* /char     divide dtop by sizeof(char)   */
@@ -104,7 +76,6 @@
 #define m4div_cell CAT3(m4_, SZ, _div)           /* /cell         => _SZ/         */
 #define m4div_token CAT3(m4_, SZt, _div)         /* /token        => _SZt/        */
 #define m4to_token CAT3(m4_to_, SZt, u)          /* >token        => >SZt         */
-#define m4token_store CAT3(m4_, SZt, u_store)    /* token!        => _SZtu_store  */
 #define m4one_token CAT(m4_, SZt)                /* 1token        => _SZt         */
 #define m4token_plus CAT3(m4_, SZt, _plus)       /* token+        => _SZt_plus    */
 #define m4tokens CAT3(m4_, SZt, _times)          /* tokens        => _SZt_times   */
@@ -120,6 +91,16 @@
 #define m4token_fetch_6 CAT3(m4_, SZt, u_fetch_6) /* token[6]      */
 #define m4token_fetch_7 CAT3(m4_, SZt, u_fetch_7) /* token[7]      */
 #define m4token_fetch_8 CAT3(m4_, SZt, u_fetch_8) /* token[8]      */
+
+#define m4token_store CAT3(m4_, SZt, _store)     /* token!        => _SZt_store  */
+#define m4token_store_1 CAT3(m4_, SZt, _store_1) /* token[1]!      */
+#define m4token_store_2 CAT3(m4_, SZt, _store_2) /* token[2]!      */
+#define m4token_store_3 CAT3(m4_, SZt, _store_3) /* token[3]!      */
+#define m4token_store_4 CAT3(m4_, SZt, _store_4) /* token[4]!      */
+#define m4token_store_5 CAT3(m4_, SZt, _store_5) /* token[5]!      */
+#define m4token_store_6 CAT3(m4_, SZt, _store_6) /* token[6]!      */
+#define m4token_store_7 CAT3(m4_, SZt, _store_7) /* token[7]!      */
+#define m4token_store_8 CAT3(m4_, SZt, _store_8) /* token[8]!      */
 
 /*
  * needed by m4one_cell, m4cells, m4cell_plus, m4div_cell
@@ -151,10 +132,19 @@
 #define m4_to_8u m4noop
 
 /* needed by m4token_store */
-#define m4_1u_store m4c_store
-#define m4_2u_store m4short_store
-#define m4_4u_store m4int_store
-#define m4_8u_store m4store
+#define m4_1_store m4c_store
+#define m4_2_store m4short_store
+#define m4_4_store m4int_store
+#define m4_8_store m4store
+
+#define m4_2_store_1 m4short_store_1
+#define m4_2_store_2 m4short_store_2
+#define m4_2_store_3 m4short_store_3
+#define m4_2_store_4 m4short_store_4
+#define m4_2_store_5 m4short_store_5
+#define m4_2_store_6 m4short_store_6
+#define m4_2_store_7 m4short_store_7
+#define m4_2_store_8 m4short_store_8
 
 /* needed by m4token_fetch */
 #define m4_1u_fetch m4char_fetch
@@ -247,7 +237,6 @@
 #define M4div_cell CAT3(M4_, SZ, _div)           /* /cell         => _SZ/         */
 #define M4div_token CAT3(M4_, SZt, _div)         /* /token        => _SZt/        */
 #define M4to_token CAT3(M4_to_, SZt, u)          /* >token        => >SZt         */
-#define M4token_store CAT3(M4_, SZt, u_store)    /* token!        => _SZtu_store  */
 #define M4one_token CAT2(M4_, SZt)               /* 1token        => _SZt         */
 #define M4token_plus CAT3(M4_, SZt, _plus)       /* token+        => _SZt_plus    */
 #define M4tokens CAT3(M4_, SZt, _times)          /* tokens        => _SZt_times   */
@@ -263,6 +252,16 @@
 #define M4token_fetch_6 CAT3(M4_, SZt, u_fetch_6) /* token[6]      */
 #define M4token_fetch_7 CAT3(M4_, SZt, u_fetch_7) /* token[7]      */
 #define M4token_fetch_8 CAT3(M4_, SZt, u_fetch_8) /* token[8]      */
+
+#define M4token_store CAT3(M4_, SZt, _store)     /* token!        => _SZt_store  */
+#define M4token_store_1 CAT3(M4_, SZt, _store_1) /* token[1]!      */
+#define M4token_store_2 CAT3(M4_, SZt, _store_2) /* token[2]!      */
+#define M4token_store_3 CAT3(M4_, SZt, _store_3) /* token[3]!      */
+#define M4token_store_4 CAT3(M4_, SZt, _store_4) /* token[4]!      */
+#define M4token_store_5 CAT3(M4_, SZt, _store_5) /* token[5]!      */
+#define M4token_store_6 CAT3(M4_, SZt, _store_6) /* token[6]!      */
+#define M4token_store_7 CAT3(M4_, SZt, _store_7) /* token[7]!      */
+#define M4token_store_8 CAT3(M4_, SZt, _store_8) /* token[8]!      */
 
 /*
  * needed by M4one_cell, M4cells, M4cell_plus, M4div_cell
@@ -294,10 +293,19 @@
 #define M4_to_8u M4noop
 
 /* needed by M4token_store */
-#define M4_1u_store M4c_store
-#define M4_2u_store M4short_store
-#define M4_4u_store M4int_store
-#define M4_8u_store M4store
+#define M4_1_store M4c_store
+#define M4_2_store M4short_store
+#define M4_4_store M4int_store
+#define M4_8_store M4store
+
+#define M4_2_store_1 M4short_store_1
+#define M4_2_store_2 M4short_store_2
+#define M4_2_store_3 M4short_store_3
+#define M4_2_store_4 M4short_store_4
+#define M4_2_store_5 M4short_store_5
+#define M4_2_store_6 M4short_store_6
+#define M4_2_store_7 M4short_store_7
+#define M4_2_store_8 M4short_store_8
 
 /* needed by M4token_fetch */
 #define M4_1u_fetch M4char_fetch

@@ -197,15 +197,15 @@
 #define M4cell_fetch_7 M4_u(167)         /* cell[7]   read   ((*m4cell)dtop)[7]              */
 #define M4cell_fetch_8 M4_u(168)         /* cell[8]   read   ((*m4cell)dtop)[8]              */
 /* -------------- store ----------------------------------------------------------- */
-#define M4byte_store M4c_store           /* byte!     write   (int8_t)d2 at address dtop     */
-#define M4byte_store_1 M4_u(171)         /* byte[1]!   write   ((*int8_t)dtop)[1]   */
-#define M4byte_store_2 M4_u(172)         /* byte[2]!   write   ((*int8_t)dtop)[2]   */
-#define M4byte_store_3 M4_u(173)         /* byte[3]!   write   ((*int8_t)dtop)[3]   */
-#define M4byte_store_4 M4_u(174)         /* byte[4]!   write   ((*int8_t)dtop)[4]   */
-#define M4byte_store_5 M4_u(175)         /* byte[5]!   write   ((*int8_t)dtop)[5]   */
-#define M4byte_store_6 M4_u(176)         /* byte[6]!   write   ((*int8_t)dtop)[6]   */
-#define M4byte_store_7 M4_u(177)         /* byte[7]!   write   ((*int8_t)dtop)[7]   */
-#define M4byte_store_8 M4_u(178)         /* byte[8]!   write   ((*int8_t)dtop)[8]   */
+#undef M4____gap                         /*                                         */
+#undef M4____gap                         /*                                         */
+#undef M4____gap                         /*                                         */
+#undef M4____gap                         /*                                         */
+#undef M4____gap                         /*                                         */
+#undef M4____gap                         /*                                         */
+#undef M4____gap                         /*                                         */
+#undef M4____gap                         /*                                         */
+#undef M4____gap                         /*                                         */
 #undef M4____gap                         /*                                         */
 #define M4char_store M4c_store           /* char!      write (uint8_t)d2 at address dtop     */
 #define M4char_store_1 M4_u(181)         /* char[1]!   write   ((*int8_t)dtop)[1]   */
@@ -227,16 +227,6 @@
 #define M4short_store_7 M4_u(197)        /* short[7]!  write  ((*int16_t)dtop)[7]   */
 #define M4short_store_8 M4_u(198)        /* short[8]!  write  ((*int16_t)dtop)[8]   */
 #undef M4____gap                         /*                                         */
-#define M4ushort_store M4short_store     /* ushort!   write (uint16_t)d2 at address dtop     */
-#define M4ushort_store_1 M4short_store_1 /* ushort[1]!  write ((*uint16_t)dtop)[1]   */
-#define M4ushort_store_2 M4short_store_2 /* ushort[2]!  write ((*uint16_t)dtop)[2]   */
-#define M4ushort_store_3 M4short_store_3 /* ushort[3]!  write ((*uint16_t)dtop)[3]   */
-#define M4ushort_store_4 M4short_store_4 /* ushort[4]!  write ((*uint16_t)dtop)[4]   */
-#define M4ushort_store_5 M4short_store_5 /* ushort[5]!  write ((*uint16_t)dtop)[5]   */
-#define M4ushort_store_6 M4short_store_6 /* ushort[6]!  write ((*uint16_t)dtop)[6]   */
-#define M4ushort_store_7 M4short_store_7 /* ushort[7]!  write ((*uint16_t)dtop)[7]   */
-#define M4ushort_store_8 M4short_store_8 /* ushort[8]!  write ((*uint16_t)dtop)[8]   */
-#undef M4____gap                         /*                                         */
 #define M4int_store M4_u(200)            /* int!      write  (int32_t)d2 at address dtop     */
 #define M4int_store_1 M4_u(201)          /* int[1]!    write  ((*int32_t)dtop)[1]   */
 #define M4int_store_2 M4_u(202)          /* int[2]!    write  ((*int32_t)dtop)[2]   */
@@ -246,16 +236,6 @@
 #define M4int_store_6 M4_u(206)          /* int[6]!    write  ((*int32_t)dtop)[6]   */
 #define M4int_store_7 M4_u(207)          /* int[7]!    write  ((*int32_t)dtop)[7]   */
 #define M4int_store_8 M4_u(208)          /* int[8]!    write  ((*int32_t)dtop)[8]   */
-/* */                                    /*                                         */
-#define M4uint_store M4int_store         /* uint!     write (uint32_t)d2 at address dtop     */
-#define M4uint_store_1 M4int_store_1     /* uint[1]!    write ((*uint32_t)dtop)[1]  */
-#define M4uint_store_2 M4int_store_2     /* uint[2]!    write ((*uint32_t)dtop)[2]  */
-#define M4uint_store_3 M4int_store_3     /* uint[3]!    write ((*uint32_t)dtop)[3]  */
-#define M4uint_store_4 M4int_store_4     /* uint[4]!    write ((*uint32_t)dtop)[4]  */
-#define M4uint_store_5 M4int_store_5     /* uint[5]!    write ((*uint32_t)dtop)[5]  */
-#define M4uint_store_6 M4int_store_6     /* uint[6]!    write ((*uint32_t)dtop)[6]  */
-#define M4uint_store_7 M4int_store_7     /* uint[7]!    write ((*uint32_t)dtop)[7]  */
-#define M4uint_store_8 M4int_store_8     /* uint[8]!    write ((*uint32_t)dtop)[8]  */
 #undef M4____gap                         /*                                         */
 #define M4cell_store M4store             /* cell!     write    d2 at address dtop   */
 #define M4cell_store_1 M4_u(211)         /* cell[1]!   write   ((*m4cell)dtop)[1]   */
@@ -425,7 +405,7 @@
 #define M4_break_if_ M4_i(25)       /* (break-if)      followed by IP offset to jump if dtop <> 0 */
 #define M4_break_if0_ M4_i(26)      /* (break-if0)     followed by IP offset to jump if dtop == 0 */
 #define M4_call_native_ M4_i(27)    /* (call-native)   followed by native code address. calls it. */
-#define M4_call_ M4_i(28)        /* (call)       followed by XT. calls it.                  */
+#define M4_call_ M4_i(28)           /* (call)       followed by XT. calls it.                  */
 #undef M4____gap                    /*                                                            */
 #define M4_catch_beg_ M4_i(30)      /* (catch-beg)     first  half of 'catch'                     */
 #define M4_catch_end_ M4_i(31)      /* (catch-end)     second half of 'catch'                     */
@@ -449,93 +429,93 @@
 #define M4_ip_to_data_addr_ M4_i(49) /* must be 1st instr in word. return word's data>addr      */
 #undef M4____gap                     /*                                         */
 #define M4_leave_ M4_i(51)           /* (leave)  followed by IP offset to jump          */
-#define M4_lit_comma_ M4_i(52)      /* followed by m4token, append it to current word's code/data */
-#define M4_lit2s_ M4_i(53)          /* (lit-2s) followed by int16, push it to dstack     */
-#define M4_lit4s_ M4_i(54)          /* (lit-4s) followed by int32, push it to dstack     */
-#define M4_lit8s_ M4_i(55)          /* (lit-8s) followed by int64, push it to dstack     */
-#define M4_lit_string_ M4_i(56)     /* followed by T(len) and ascii, push them to dstack */
-#define M4_lit_tok_ M4_i(57)        /* followed by m4token, push it to dstack            */
-#define M4_lit_xt_ M4_i(58)         /* followed by XT, push it to dstack                 */
-#undef M4____gap                    /*                                         */
-#define M4_local_0_ M4_i(60)        /*            fetch 0-th local variable      */
-#define M4_drop_local_0_ M4_i(61)   /* drop, then fetch 0-th local variable      */
-#define M4_to_local_0_ M4_i(62)     /*            store 0-th local variable      */
-#define M4_dup_to_local_0_ M4_i(63) /* dup,  then store 0-th local variable      */
-#define M4_local_1_ M4_i(64)        /*            fetch 1-th local variable      */
-#define M4_drop_local_1_ M4_i(65)   /* drop, then fetch 1-th local variable      */
-#define M4_to_local_1_ M4_i(66)     /*            store 1-th local variable      */
-#define M4_dup_to_local_1_ M4_i(67) /* dup,  then store 1-th local variable      */
-#define M4_local_2_ M4_i(68)        /*            fetch 2-th local variable      */
-#define M4_drop_local_2_ M4_i(69)   /* drop, then fetch 2-th local variable      */
-#define M4_to_local_2_ M4_i(70)     /*            store 2-th local variable      */
-#define M4_dup_to_local_2_ M4_i(71) /* dup,  then store 2-th local variable      */
-#define M4_local_3_ M4_i(72)        /*            fetch 3-th local variable      */
-#define M4_drop_local_3_ M4_i(73)   /* drop, then fetch 3-th local variable      */
-#define M4_to_local_3_ M4_i(74)     /*            store 3-th local variable      */
-#define M4_dup_to_local_3_ M4_i(75) /* dup,  then store 3-th local variable      */
-#define M4_local_4_ M4_i(76)        /*            fetch 4-th local variable      */
-#define M4_drop_local_4_ M4_i(77)   /* drop, then fetch 4-th local variable      */
-#define M4_to_local_4_ M4_i(78)     /*            store 4-th local variable      */
-#define M4_dup_to_local_4_ M4_i(79) /* dup,  then store 4-th local variable      */
-#define M4_local_5_ M4_i(80)        /*            fetch 5-th local variable      */
-#define M4_drop_local_5_ M4_i(81)   /* drop, then fetch 5-th local variable      */
-#define M4_to_local_5_ M4_i(82)     /*            store 5-th local variable      */
-#define M4_dup_to_local_5_ M4_i(83) /* dup,  then store 5-th local variable      */
-#define M4_local_6_ M4_i(84)        /*            fetch 6-th local variable      */
-#define M4_drop_local_6_ M4_i(85)   /* drop, then fetch 6-th local variable      */
-#define M4_to_local_6_ M4_i(86)     /*            store 6-th local variable      */
-#define M4_dup_to_local_6_ M4_i(87) /* dup,  then store 6-th local variable      */
-#define M4_local_7_ M4_i(88)        /*            fetch 7-th local variable      */
-#define M4_drop_local_7_ M4_i(89)   /* drop, then fetch 7-th local variable      */
-#define M4_to_local_7_ M4_i(90)     /*            store 7-th local variable      */
-#define M4_dup_to_local_7_ M4_i(91) /* dup,  then store 7-th local variable      */
-#define M4_local_8_ M4_i(92)        /*            fetch 8-th local variable      */
-#define M4_drop_local_8_ M4_i(93)   /* drop, then fetch 8-th local variable      */
-#define M4_to_local_8_ M4_i(94)     /*            store 8-th local variable      */
-#define M4_dup_to_local_8_ M4_i(95) /* dup,  then store 8-th local variable      */
-#define M4_local_9_ M4_i(96)        /*            fetch 9-th local variable      */
-#define M4_drop_local_9_ M4_i(97)   /* drop, then fetch 9-th local variable      */
-#define M4_to_local_9_ M4_i(98)     /*            store 9-th local variable      */
-#define M4_dup_to_local_9_ M4_i(99) /* dup,  then store 9-th local variable      */
-#define M4_local_a_ M4_i(100)       /*            fetch 10-th local variable     */
-#define M4_drop_local_a_ M4_i(101)  /* drop, then fetch 10-th local variable     */
-#define M4_to_local_a_ M4_i(102)    /*            store 10-th local variable     */
-#define M4_dup_to_local_a_ M4_i(103) /* dup,  then store 10-th local variable     */
-#define M4_local_b_ M4_i(104)        /*            fetch 11-th local variable     */
-#define M4_drop_local_b_ M4_i(105)   /* drop, then fetch 11-th local variable     */
-#define M4_to_local_b_ M4_i(106)     /*            store 11-th local variable     */
-#define M4_dup_to_local_b_ M4_i(107) /* dup,  then store 11-th local variable     */
-#define M4_local_c_ M4_i(108)        /*            fetch 12-th local variable     */
-#define M4_drop_local_c_ M4_i(109)   /* drop, then fetch 12-th local variable     */
-#define M4_to_local_c_ M4_i(110)     /*            store 12-th local variable     */
-#define M4_dup_to_local_c_ M4_i(111) /* dup,  then store 12-th local variable     */
-#define M4_local_d_ M4_i(112)        /*            fetch 13-th local variable     */
-#define M4_drop_local_d_ M4_i(113)   /* drop, then fetch 13-th local variable     */
-#define M4_to_local_d_ M4_i(114)     /*            store 13-th local variable     */
-#define M4_dup_to_local_d_ M4_i(115) /* dup,  then store 13-th local variable     */
-#define M4_local_e_ M4_i(116)        /*            fetch 14-th local variable     */
-#define M4_drop_local_e_ M4_i(117)   /* drop, then fetch 14-th local variable     */
-#define M4_to_local_e_ M4_i(118)     /*            store 14-th local variable     */
-#define M4_dup_to_local_e_ M4_i(119) /* dup,  then store 14-th local variable     */
-#define M4_local_f_ M4_i(120)        /*            fetch 15-th local variable     */
-#define M4_drop_local_f_ M4_i(121)   /* drop, then fetch 15-th local variable     */
-#define M4_to_local_f_ M4_i(122)     /*            store 15-th local variable     */
-#define M4_dup_to_local_f_ M4_i(123) /* dup,  then store 15-th local variable     */
-#define M4_local_n_ M4_i(124)        /* followed by T(n),        fetch n-th local variable */
-#define M4_drop_local_n_ M4_i(125)   /* followed by T(n), drop & fetch n-th local variable */
-#define M4_to_local_n_ M4_i(126)     /* followed by T(n),        store n-th local variable */
-#define M4_dup_to_local_n_ M4_i(127) /* followed by T(n), dup  & store n-th local variable */
-#define M4_local_enter_ M4_i(128)    /* followed by T(n), reserve space for n local variables */
-#define M4_local_exit_ M4_i(129)     /* release space for last reserved local variables       */
-#undef M4____gap                     /*                                         */
-#undef M4____gap                     /*                                         */
-#undef M4____gap                     /*                                         */
-#undef M4____gap                     /*                                         */
-#define M4_loop_ M4_i(134)           /* (loop)    followed by IP offset to jump       */
-#define M4_missing_ 0         /* (missing) called instead of invalid/unimplemented function */
-#define M4_of_ M4_i(136)      /* (of)      followed by IP offset to jump       */
-#define M4_recurse_ M4_i(137) /* (recurse) followed by IP offset to jump       */
-#define M4_repeat_ M4_i(138)  /* (repeat)  followed by IP offset to jump       */
+#define M4_lit_comma_ M4_i(52)    /* followed by m4token, append it to current word's code/data */
+#define M4_lit2s_ M4_i(53)        /* (lit-2s) followed by int16, push it to dstack     */
+#define M4_lit4s_ M4_i(54)        /* (lit-4s) followed by int32, push it to dstack     */
+#define M4_lit8s_ M4_i(55)        /* (lit-8s) followed by int64, push it to dstack     */
+#define M4_lit_string_ M4_i(56)   /* followed by T(len) and ascii, push them to dstack */
+#define M4_lit_tok_ M4_i(57)      /* followed by m4token, push it to dstack            */
+#define M4_lit_xt_ M4_i(58)       /* followed by XT, push it to dstack                 */
+#undef M4____gap                  /*                                         */
+#define M4_l0_ M4_i(60)           /*            fetch 0-th local variable      */
+#define M4_drop_l0_ M4_i(61)      /* drop, then fetch 0-th local variable      */
+#define M4_to_l0_ M4_i(62)        /*            store 0-th local variable      */
+#define M4_dup_to_l0_ M4_i(63)    /* dup,  then store 0-th local variable      */
+#define M4_l1_ M4_i(64)           /*            fetch 1-th local variable      */
+#define M4_drop_l1_ M4_i(65)      /* drop, then fetch 1-th local variable      */
+#define M4_to_l1_ M4_i(66)        /*            store 1-th local variable      */
+#define M4_dup_to_l1_ M4_i(67)    /* dup,  then store 1-th local variable      */
+#define M4_l2_ M4_i(68)           /*            fetch 2-th local variable      */
+#define M4_drop_l2_ M4_i(69)      /* drop, then fetch 2-th local variable      */
+#define M4_to_l2_ M4_i(70)        /*            store 2-th local variable      */
+#define M4_dup_to_l2_ M4_i(71)    /* dup,  then store 2-th local variable      */
+#define M4_l3_ M4_i(72)           /*            fetch 3-th local variable      */
+#define M4_drop_l3_ M4_i(73)      /* drop, then fetch 3-th local variable      */
+#define M4_to_l3_ M4_i(74)        /*            store 3-th local variable      */
+#define M4_dup_to_l3_ M4_i(75)    /* dup,  then store 3-th local variable      */
+#define M4_l4_ M4_i(76)           /*            fetch 4-th local variable      */
+#define M4_drop_l4_ M4_i(77)      /* drop, then fetch 4-th local variable      */
+#define M4_to_l4_ M4_i(78)        /*            store 4-th local variable      */
+#define M4_dup_to_l4_ M4_i(79)    /* dup,  then store 4-th local variable      */
+#define M4_l5_ M4_i(80)           /*            fetch 5-th local variable      */
+#define M4_drop_l5_ M4_i(81)      /* drop, then fetch 5-th local variable      */
+#define M4_to_l5_ M4_i(82)        /*            store 5-th local variable      */
+#define M4_dup_to_l5_ M4_i(83)    /* dup,  then store 5-th local variable      */
+#define M4_l6_ M4_i(84)           /*            fetch 6-th local variable      */
+#define M4_drop_l6_ M4_i(85)      /* drop, then fetch 6-th local variable      */
+#define M4_to_l6_ M4_i(86)        /*            store 6-th local variable      */
+#define M4_dup_to_l6_ M4_i(87)    /* dup,  then store 6-th local variable      */
+#define M4_l7_ M4_i(88)           /*            fetch 7-th local variable      */
+#define M4_drop_l7_ M4_i(89)      /* drop, then fetch 7-th local variable      */
+#define M4_to_l7_ M4_i(90)        /*            store 7-th local variable      */
+#define M4_dup_to_l7_ M4_i(91)    /* dup,  then store 7-th local variable      */
+#define M4_l8_ M4_i(92)           /*            fetch 8-th local variable      */
+#define M4_drop_l8_ M4_i(93)      /* drop, then fetch 8-th local variable      */
+#define M4_to_l8_ M4_i(94)        /*            store 8-th local variable      */
+#define M4_dup_to_l8_ M4_i(95)    /* dup,  then store 8-th local variable      */
+#define M4_l9_ M4_i(96)           /*            fetch 9-th local variable      */
+#define M4_drop_l9_ M4_i(97)      /* drop, then fetch 9-th local variable      */
+#define M4_to_l9_ M4_i(98)        /*            store 9-th local variable      */
+#define M4_dup_to_l9_ M4_i(99)    /* dup,  then store 9-th local variable      */
+#define M4_la_ M4_i(100)          /*            fetch 10-th local variable     */
+#define M4_drop_la_ M4_i(101)     /* drop, then fetch 10-th local variable     */
+#define M4_to_la_ M4_i(102)       /*            store 10-th local variable     */
+#define M4_dup_to_la_ M4_i(103)   /* dup,  then store 10-th local variable     */
+#define M4_lb_ M4_i(104)          /*            fetch 11-th local variable     */
+#define M4_drop_lb_ M4_i(105)     /* drop, then fetch 11-th local variable     */
+#define M4_to_lb_ M4_i(106)       /*            store 11-th local variable     */
+#define M4_dup_to_lb_ M4_i(107)   /* dup,  then store 11-th local variable     */
+#define M4_lc_ M4_i(108)          /*            fetch 12-th local variable     */
+#define M4_drop_lc_ M4_i(109)     /* drop, then fetch 12-th local variable     */
+#define M4_to_lc_ M4_i(110)       /*            store 12-th local variable     */
+#define M4_dup_to_lc_ M4_i(111)   /* dup,  then store 12-th local variable     */
+#define M4_ld_ M4_i(112)          /*            fetch 13-th local variable     */
+#define M4_drop_ld_ M4_i(113)     /* drop, then fetch 13-th local variable     */
+#define M4_to_ld_ M4_i(114)       /*            store 13-th local variable     */
+#define M4_dup_to_ld_ M4_i(115)   /* dup,  then store 13-th local variable     */
+#define M4_le_ M4_i(116)          /*            fetch 14-th local variable     */
+#define M4_drop_le_ M4_i(117)     /* drop, then fetch 14-th local variable     */
+#define M4_to_le_ M4_i(118)       /*            store 14-th local variable     */
+#define M4_dup_to_le_ M4_i(119)   /* dup,  then store 14-th local variable     */
+#define M4_lf_ M4_i(120)          /*            fetch 15-th local variable     */
+#define M4_drop_lf_ M4_i(121)     /* drop, then fetch 15-th local variable     */
+#define M4_to_lf_ M4_i(122)       /*            store 15-th local variable     */
+#define M4_dup_to_lf_ M4_i(123)   /* dup,  then store 15-th local variable     */
+#undef M4____gap                  /*                                         */
+#undef M4____gap                  /*                                         */
+#define M4_lx_ M4_i(126)          /* followed by T(n),        fetch n-th local variable */
+#define M4_to_lx_ M4_i(127)       /* followed by T(n),        store n-th local variable */
+#define M4_local_enter_ M4_i(128) /* followed by T(n), reserve space for n local variables */
+#define M4_local_exit_ M4_i(129)  /* release space for last reserved local variables       */
+#undef M4____gap                  /*                                         */
+#undef M4____gap                  /*                                         */
+#undef M4____gap                  /*                                         */
+#undef M4____gap                  /*                                         */
+#define M4_loop_ M4_i(134)        /* (loop)    followed by IP offset to jump       */
+#define M4_missing_ 0             /* (missing) called instead of invalid/unimplemented function */
+#define M4_of_ M4_i(136)          /* (of)      followed by IP offset to jump       */
+#define M4_recurse_ M4_i(137)     /* (recurse) followed by IP offset to jump       */
+#define M4_repeat_ M4_i(138)      /* (repeat)  followed by IP offset to jump       */
 #define M4_return_to_native_ M4_i(139) /* (return-to-native) return to native code*/
 #undef M4____gap                       /*                                         */
 #undef M4____gap                       /*                                         */

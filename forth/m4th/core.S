@@ -19,8 +19,8 @@
 
 #include "../../include/asm.mh"
 #include "../../include/dict.mh"
-#include "../../include/m4th/dict.mh"
 #include "../../include/err.mh"
+#include "../../include/m4th/dict.mh"
 
 /* clang-format off */
 
@@ -598,9 +598,10 @@ WORD(to_token,         string_to_name, DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(one_token,        to_token,       DSTACK(0,1), RSTACK(0,0), WORD_PURE)
 WORD(token_plus,       one_token,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(tokens,           token_plus,     DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(token_store,      tokens,         DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE)
 
-DEF_WORD_FETCH_TYP(token,        token_store)
+DEF_WORD_STORE_TYP(token,      tokens)
+
+DEF_WORD_FETCH_TYP(token,      token_store_8)
 
 WORD(token_align,      token_fetch_8,  DSTACK(0,0), RSTACK(0,0), WORD_IMPURE)
 WORD(token_aligned,    token_align,    DSTACK(1,1), RSTACK(0,0), WORD_PURE)

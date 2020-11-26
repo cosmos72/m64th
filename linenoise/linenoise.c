@@ -242,7 +242,33 @@ static int isUnsupportedTerm(void) {
     return 0;
 }
 
+/* BUG: on x86_64 with optimizations enabled, clang uses %xmm registers */
+/* in function termiosRawMode() to read&write 'raw' fields.             */
+/* this works only if the pointer 'raw' is aligned at 16 bytes - which is not always true */
+/* defining termiosRawMode() as noinline seems to trick clang into aligning it */
+#ifdef __clang__
+__attribute__((noinline))
+#endif
+static void
 /* Raw mode: 1960 magic shit. */
+termiosRawMode(struct termios *raw, const struct termios *orig) {
+    *raw = *orig;
+    /* input modes: no break, no CR to NL, no parity check, no strip char,
+     * no start/stop output control. */
+    raw->c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
+    /* control modes - set 8 bit chars */
+    raw->c_cflag |= (CS8);
+    /* output modes - disable post processing */
+    raw->c_oflag &= ~(OPOST);
+    /* local modes - echo off, canonical off, no extended functions,
+     * no signal chars (^Z,^C) */
+    raw->c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
+    /* control chars - set return condition: min number of bytes and timer.
+     * We want read to return every single byte, without timeout. */
+    raw->c_cc[VMIN] = 1;
+    raw->c_cc[VTIME] = 0; /* 1 byte, no timer */
+}
+
 static int enableRawMode(int fd) {
     struct termios raw;
 
@@ -257,21 +283,7 @@ static int enableRawMode(int fd) {
     if (tcgetattr(fd, &orig_termios) == -1) {
         return -1;
     }
-    raw = orig_termios; /* modify the original mode */
-    /* input modes: no break, no CR to NL, no parity check, no strip char,
-     * no start/stop output control. */
-    raw.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
-    /* output modes - disable post processing */
-    raw.c_oflag &= ~(OPOST);
-    /* control modes - set 8 bit chars */
-    raw.c_cflag |= (CS8);
-    /* local modes - choing off, canonical off, no extended functions,
-     * no signal chars (^Z,^C) */
-    raw.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
-    /* control chars - set return condition: min number of bytes and timer.
-     * We want read to return every single byte, without timeout. */
-    raw.c_cc[VMIN] = 1;
-    raw.c_cc[VTIME] = 0; /* 1 byte, no timer */
+    termiosRawMode(&raw, &orig_termios);
 
     /* put terminal in raw mode */
     if (tcsetattr(fd, TCSANOW, &raw) < 0) {

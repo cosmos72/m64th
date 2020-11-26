@@ -115,7 +115,7 @@
     X(7, "byte[7]", byte_fetch_7)                                                                  \
     X(7, "byte[8]", byte_fetch_8)                                                                  \
     /*                              */ /*                                               */         \
-    /* X(5, "char@", char_fetch)    */ /* alias of: c@                                  */         \
+    /* X(5, "char@", char_fetch)    */ /* alias of c@                                  */          \
     X(7, "char[1]", char_fetch_1)                                                                  \
     X(7, "char[2]", char_fetch_2)                                                                  \
     X(7, "char[3]", char_fetch_3)                                                                  \
@@ -165,7 +165,7 @@
     X(7, "uint[7]", uint_fetch_7)                                                                  \
     X(7, "uint[8]", uint_fetch_8)                                                                  \
     /*                              */ /*                                               */         \
-    /* X(5, "cell@", cell_fetch)    */ /* alias of: @                                   */         \
+    /* X(5, "cell@", cell_fetch)    */ /* alias of @                                    */         \
     X(7, "cell[1]", cell_fetch_1)                                                                  \
     X(7, "cell[2]", cell_fetch_2)                                                                  \
     X(7, "cell[3]", cell_fetch_3)                                                                  \
@@ -175,8 +175,45 @@
     X(7, "cell[7]", cell_fetch_7)                                                                  \
     X(7, "cell[8]", cell_fetch_8)                                                                  \
     /*                              */ /*                                               */         \
+    /* X(5, "char!", char_store)    */ /* alias of c!                                   */         \
+    X(8, "char[1]!", char_store_1)                                                                 \
+    X(8, "char[2]!", char_store_2)                                                                 \
+    X(8, "char[3]!", char_store_3)                                                                 \
+    X(8, "char[4]!", char_store_4)                                                                 \
+    X(8, "char[5]!", char_store_5)                                                                 \
+    X(8, "char[6]!", char_store_6)                                                                 \
+    X(8, "char[7]!", char_store_7)                                                                 \
+    X(8, "char[8]!", char_store_8)                                                                 \
+    /*                              */ /*                                               */         \
     X(6, "short!", short_store)                                                                    \
+    X(9, "short[1]!", short_store_1)                                                               \
+    X(9, "short[2]!", short_store_2)                                                               \
+    X(9, "short[3]!", short_store_3)                                                               \
+    X(9, "short[4]!", short_store_4)                                                               \
+    X(9, "short[5]!", short_store_5)                                                               \
+    X(9, "short[6]!", short_store_6)                                                               \
+    X(9, "short[7]!", short_store_7)                                                               \
+    X(9, "short[8]!", short_store_8)                                                               \
+    /*                              */ /*                                               */         \
     X(4, "int!", int_store)                                                                        \
+    X(7, "int[1]!", int_store_1)                                                                   \
+    X(7, "int[2]!", int_store_2)                                                                   \
+    X(7, "int[3]!", int_store_3)                                                                   \
+    X(7, "int[4]!", int_store_4)                                                                   \
+    X(7, "int[5]!", int_store_5)                                                                   \
+    X(7, "int[6]!", int_store_6)                                                                   \
+    X(7, "int[7]!", int_store_7)                                                                   \
+    X(7, "int[8]!", int_store_8)                                                                   \
+    /*                              */ /*                                               */         \
+    /* X(5, "cell!", cell_store)   */  /* alias of !                                   */          \
+    X(8, "cell[1]!", cell_store_1)                                                                 \
+    X(8, "cell[2]!", cell_store_2)                                                                 \
+    X(8, "cell[3]!", cell_store_3)                                                                 \
+    X(8, "cell[4]!", cell_store_4)                                                                 \
+    X(8, "cell[5]!", cell_store_5)                                                                 \
+    X(8, "cell[6]!", cell_store_6)                                                                 \
+    X(8, "cell[7]!", cell_store_7)                                                                 \
+    X(8, "cell[8]!", cell_store_8)                                                                 \
     X(6, "short,", short_comma)                                                                    \
     X(4, "int,", int_comma)                                                                        \
     X(14, "countedstring,", countedstring_comma) /* ( c-addr u -- )                    */          \
@@ -197,11 +234,8 @@
     /*                             */ /*                                                */         \
     X(5, "char@", char_fetch)         /* alias of c@                                    */         \
     X(5, "cell@", cell_fetch)         /* alias of @                                     */         \
-    X(5, "byte!", byte_store)         /* alias of c!                                    */         \
     X(5, "char!", char_store)         /* alias of c!                                    */         \
-    X(7, "ushort!", ushort_store)     /* alias of short!                                */         \
-    X(5, "uint!", uint_store)         /* alias of int!                                  */         \
-    /*X(5, "cell!", cell_store)    */ /* alias of !                                     */         \
+    X(5, "cell!", cell_store)         /* alias of !                                     */         \
     /*                             */ /*                                                */         \
     X(5, "1byte", one_byte)           /* alias of 1 i.e. sizeof(byte)                   */         \
     X(5, "1char", one_char)           /* alias of 1 i.e. sizeof(char)                   */         \
@@ -372,7 +406,15 @@
     X(11, "string>name", string_to_name)  /* ( c-addr u -- nt|0 wid|0 -1|0|1 )            */       \
     X(6, "/token", div_token)             /* alias of _SZt_div,      no dedicated m4token */       \
     X(6, ">token", to_token)              /* alias of to_SZtu,       no dedicated m4token */       \
-    X(6, "token!", token_store)           /* alias of _SZtu_store,   no dedicated m4token */       \
+    X(6, "token!", token_store)           /* alias of _SZt_store,    no dedicated m4token */       \
+    X(9, "token[1]!", token_store_1)      /* alias of _SZt_store_1,  no dedicated m4token */       \
+    X(9, "token[2]!", token_store_2)      /* alias of _SZt_store_2,  no dedicated m4token */       \
+    X(9, "token[3]!", token_store_3)      /* alias of _SZt_store_3,  no dedicated m4token */       \
+    X(9, "token[4]!", token_store_4)      /* alias of _SZt_store_4,  no dedicated m4token */       \
+    X(9, "token[5]!", token_store_5)      /* alias of _SZt_store_5,  no dedicated m4token */       \
+    X(9, "token[6]!", token_store_6)      /* alias of _SZt_store_6,  no dedicated m4token */       \
+    X(9, "token[7]!", token_store_7)      /* alias of _SZt_store_7,  no dedicated m4token */       \
+    X(9, "token[8]!", token_store_8)      /* alias of _SZt_store_8,  no dedicated m4token */       \
     X(6, "token@", token_fetch)           /* alias of _SZtu_fetch,   no dedicated m4token */       \
     X(8, "token[1]", token_fetch_1)       /* alias of _SZtu_fetch_1, no dedicated m4token */       \
     X(8, "token[2]", token_fetch_2)       /* alias of _SZtu_fetch_2, no dedicated m4token */       \
@@ -405,47 +447,47 @@
     X(7, "(ahead)", _ahead_)                                                                       \
     X(7, "(break)", _break_)                                                                       \
     X(13, "(call-native)", _call_native_)                                                          \
-    X(6, "(call)", _call_)                                                                   \
-    X(11, "(catch-beg)", _catch_beg_)           /* first half of 'catch'             */            \
-    X(11, "(catch-end)", _catch_end_)           /* second half of 'catch'            */            \
-    X(15, "(check-lit-tok)", _check_lit_tok_)   /* ( x -- x ) followed by expected x: a token */   \
-    X(10, "(continue)", _continue_)             /* execution semantics of 'continue' */            \
-    X(4, "(do)", _do_)                          /* execution semantics of 'do'       */            \
-    X(11, "(does-exit)", _does_exit_)           /* alias of exit. used immediately after (does) */ \
-    X(14, "(drop-local-0)", _drop_local_0_)     /* drop & fetch 0-th local variable */             \
-    X(14, "(drop-local-1)", _drop_local_1_)     /* drop & fetch 1-st local variable */             \
-    X(14, "(drop-local-2)", _drop_local_2_)     /* drop & fetch 2-nd local variable */             \
-    X(14, "(drop-local-3)", _drop_local_3_)     /* drop & fetch 3-rd local variable */             \
-    X(14, "(drop-local-4)", _drop_local_4_)     /* drop & fetch 4-th local variable */             \
-    X(14, "(drop-local-5)", _drop_local_5_)     /* drop & fetch 5-th local variable */             \
-    X(14, "(drop-local-6)", _drop_local_6_)     /* drop & fetch 6-th local variable */             \
-    X(14, "(drop-local-7)", _drop_local_7_)     /* drop & fetch 7-th local variable */             \
-    X(14, "(drop-local-8)", _drop_local_8_)     /* drop & fetch 8-th local variable */             \
-    X(14, "(drop-local-9)", _drop_local_9_)     /* drop & fetch 9-th local variable */             \
-    X(14, "(drop-local-a)", _drop_local_a_)     /* drop & fetch 10-th local variable */            \
-    X(14, "(drop-local-b)", _drop_local_b_)     /* drop & fetch 11-th local variable */            \
-    X(14, "(drop-local-c)", _drop_local_c_)     /* drop & fetch 12-th local variable */            \
-    X(14, "(drop-local-d)", _drop_local_d_)     /* drop & fetch 14-th local variable */            \
-    X(14, "(drop-local-e)", _drop_local_e_)     /* drop & fetch 14-th local variable */            \
-    X(14, "(drop-local-f)", _drop_local_f_)     /* drop & fetch 15-th local variable */            \
-    X(16, "(dup-to-local-0)", _dup_to_local_0_) /*  dup & store 0-th local variable */             \
-    X(16, "(dup-to-local-1)", _dup_to_local_1_) /*  dup & store 1-st local variable */             \
-    X(16, "(dup-to-local-2)", _dup_to_local_2_) /*  dup & store 2-nd local variable */             \
-    X(16, "(dup-to-local-3)", _dup_to_local_3_) /*  dup & store 3-rd local variable */             \
-    X(16, "(dup-to-local-4)", _dup_to_local_4_) /*  dup & store 4-th local variable */             \
-    X(16, "(dup-to-local-5)", _dup_to_local_5_) /*  dup & store 5-th local variable */             \
-    X(16, "(dup-to-local-6)", _dup_to_local_6_) /*  dup & store 6-th local variable */             \
-    X(16, "(dup-to-local-7)", _dup_to_local_7_) /*  dup & store 7-th local variable */             \
-    X(16, "(dup-to-local-8)", _dup_to_local_8_) /*  dup & store 8-th local variable */             \
-    X(16, "(dup-to-local-9)", _dup_to_local_9_) /*  dup & store 9-th local variable */             \
-    X(16, "(dup-to-local-a)", _dup_to_local_a_) /*  dup & store 10-th local variable */            \
-    X(16, "(dup-to-local-b)", _dup_to_local_b_) /*  dup & store 11-th local variable */            \
-    X(16, "(dup-to-local-c)", _dup_to_local_c_) /*  dup & store 12-th local variable */            \
-    X(16, "(dup-to-local-d)", _dup_to_local_d_) /*  dup & store 13-th local variable */            \
-    X(16, "(dup-to-local-e)", _dup_to_local_e_) /*  dup & store 14-th local variable */            \
-    X(16, "(dup-to-local-f)", _dup_to_local_f_) /*  dup & store 15-th local variable */            \
-    X(6, "(else)", _else_)                      /* execution semantics of 'else'     */            \
-    X(7, "(endof)", _endof_)                    /* execution semantics of 'endof'    */            \
+    X(6, "(call)", _call_)                                                                         \
+    X(11, "(catch-beg)", _catch_beg_)         /* first half of 'catch'             */              \
+    X(11, "(catch-end)", _catch_end_)         /* second half of 'catch'            */              \
+    X(15, "(check-lit-tok)", _check_lit_tok_) /* ( x -- x ) followed by expected x: a token */     \
+    X(10, "(continue)", _continue_)           /* execution semantics of 'continue' */              \
+    X(4, "(do)", _do_)                        /* execution semantics of 'do'       */              \
+    X(11, "(does-exit)", _does_exit_)         /* alias of exit. used immediately after (does) */   \
+    X(9, "(drop&l0)", _drop_l0_)              /* drop & fetch 0-th local variable */               \
+    X(9, "(drop&l1)", _drop_l1_)              /* drop & fetch 1-st local variable */               \
+    X(9, "(drop&l2)", _drop_l2_)              /* drop & fetch 2-nd local variable */               \
+    X(9, "(drop&l3)", _drop_l3_)              /* drop & fetch 3-rd local variable */               \
+    X(9, "(drop&l4)", _drop_l4_)              /* drop & fetch 4-th local variable */               \
+    X(9, "(drop&l5)", _drop_l5_)              /* drop & fetch 5-th local variable */               \
+    X(9, "(drop&l6)", _drop_l6_)              /* drop & fetch 6-th local variable */               \
+    X(9, "(drop&l7)", _drop_l7_)              /* drop & fetch 7-th local variable */               \
+    X(9, "(drop&l8)", _drop_l8_)              /* drop & fetch 8-th local variable */               \
+    X(9, "(drop&l9)", _drop_l9_)              /* drop & fetch 9-th local variable */               \
+    X(9, "(drop&la)", _drop_la_)              /* drop & fetch 10-th local variable */              \
+    X(9, "(drop&lb)", _drop_lb_)              /* drop & fetch 11-th local variable */              \
+    X(9, "(drop&lc)", _drop_lc_)              /* drop & fetch 12-th local variable */              \
+    X(9, "(drop&ld)", _drop_ld_)              /* drop & fetch 14-th local variable */              \
+    X(9, "(drop&le)", _drop_le_)              /* drop & fetch 14-th local variable */              \
+    X(9, "(drop&lf)", _drop_lf_)              /* drop & fetch 15-th local variable */              \
+    X(8, "(dup>l0)", _dup_to_l0_)             /*  dup & store 0-th local variable */               \
+    X(8, "(dup>l1)", _dup_to_l1_)             /*  dup & store 1-st local variable */               \
+    X(8, "(dup>l2)", _dup_to_l2_)             /*  dup & store 2-nd local variable */               \
+    X(8, "(dup>l3)", _dup_to_l3_)             /*  dup & store 3-rd local variable */               \
+    X(8, "(dup>l4)", _dup_to_l4_)             /*  dup & store 4-th local variable */               \
+    X(8, "(dup>l5)", _dup_to_l5_)             /*  dup & store 5-th local variable */               \
+    X(8, "(dup>l6)", _dup_to_l6_)             /*  dup & store 6-th local variable */               \
+    X(8, "(dup>l7)", _dup_to_l7_)             /*  dup & store 7-th local variable */               \
+    X(8, "(dup>l8)", _dup_to_l8_)             /*  dup & store 8-th local variable */               \
+    X(8, "(dup>l9)", _dup_to_l9_)             /*  dup & store 9-th local variable */               \
+    X(8, "(dup>la)", _dup_to_la_)             /*  dup & store 10-th local variable */              \
+    X(8, "(dup>lb)", _dup_to_lb_)             /*  dup & store 11-th local variable */              \
+    X(8, "(dup>lc)", _dup_to_lc_)             /*  dup & store 12-th local variable */              \
+    X(8, "(dup>ld)", _dup_to_ld_)             /*  dup & store 13-th local variable */              \
+    X(8, "(dup>le)", _dup_to_le_)             /*  dup & store 14-th local variable */              \
+    X(8, "(dup>lf)", _dup_to_lf_)             /*  dup & store 15-th local variable */              \
+    X(6, "(else)", _else_)                    /* execution semantics of 'else'     */              \
+    X(7, "(endof)", _endof_)                  /* execution semantics of 'endof'    */              \
     X(12, "(exec-token)", _exec_token_)                                                            \
     X(21, "(exec-xt-from-native)", _exec_xt_from_native_)                                          \
     X(13, "(fallthrough)", _fallthrough_) /* jump to next 'of' inside a 'case' */                  \
@@ -463,23 +505,23 @@
     X(12, "(lit-string)", _lit_string_)                                                            \
     X(9, "(lit-tok)", _lit_tok_)                                                                   \
     X(8, "(lit-xt)", _lit_xt_)                                                                     \
-    X(9, "(local-0)", _local_0_) /* fetch 0-th local variable */                                   \
-    X(9, "(local-1)", _local_1_) /* fetch 1-st local variable */                                   \
-    X(9, "(local-2)", _local_2_) /* fetch 2-nd local variable */                                   \
-    X(9, "(local-3)", _local_3_) /* fetch 3-rd local variable */                                   \
-    X(9, "(local-4)", _local_4_) /* fetch 4-th local variable */                                   \
-    X(9, "(local-5)", _local_5_) /* fetch 5-th local variable */                                   \
-    X(9, "(local-6)", _local_6_) /* fetch 6-th local variable */                                   \
-    X(9, "(local-7)", _local_7_) /* fetch 7-th local variable */                                   \
-    X(9, "(local-8)", _local_8_) /* fetch 8-th local variable */                                   \
-    X(9, "(local-9)", _local_9_) /* fetch 9-th local variable */                                   \
-    X(9, "(local-a)", _local_a_) /* fetch 10-th local variable */                                  \
-    X(9, "(local-b)", _local_b_) /* fetch 11-th local variable */                                  \
-    X(9, "(local-c)", _local_c_) /* fetch 12-th local variable */                                  \
-    X(9, "(local-d)", _local_d_) /* fetch 13-th local variable */                                  \
-    X(9, "(local-e)", _local_e_) /* fetch 14-th local variable */                                  \
-    X(9, "(local-f)", _local_f_) /* fetch 15-th local variable */                                  \
-    X(9, "(local-n)", _local_n_) /* followed by T(N) fetch N-th local variable */                  \
+    X(4, "(l0)", _l0_) /* fetch 0-th local variable */                                             \
+    X(4, "(l1)", _l1_) /* fetch 1-st local variable */                                             \
+    X(4, "(l2)", _l2_) /* fetch 2-nd local variable */                                             \
+    X(4, "(l3)", _l3_) /* fetch 3-rd local variable */                                             \
+    X(4, "(l4)", _l4_) /* fetch 4-th local variable */                                             \
+    X(4, "(l5)", _l5_) /* fetch 5-th local variable */                                             \
+    X(4, "(l6)", _l6_) /* fetch 6-th local variable */                                             \
+    X(4, "(l7)", _l7_) /* fetch 7-th local variable */                                             \
+    X(4, "(l8)", _l8_) /* fetch 8-th local variable */                                             \
+    X(4, "(l9)", _l9_) /* fetch 9-th local variable */                                             \
+    X(4, "(la)", _la_) /* fetch 10-th local variable */                                            \
+    X(4, "(lb)", _lb_) /* fetch 11-th local variable */                                            \
+    X(4, "(lc)", _lc_) /* fetch 12-th local variable */                                            \
+    X(4, "(ld)", _ld_) /* fetch 13-th local variable */                                            \
+    X(4, "(le)", _le_) /* fetch 14-th local variable */                                            \
+    X(4, "(lf)", _lf_) /* fetch 15-th local variable */                                            \
+    X(4, "(lx)", _lx_) /* followed by T(N) fetch N-th local variable */                            \
     /* followed by T(n), reserve space for n local variables */                                    \
     X(13, "(local-enter)", _local_enter_)                                                          \
     X(12, "(local-exit)", _local_exit_) /* release space of last reserved local variables */       \
@@ -489,23 +531,23 @@
     X(9, "(recurse)", _recurse_) /* ( x y -- x| ) execution semantics of 'recurse' */              \
     X(8, "(repeat)", _repeat_)                                                                     \
     X(18, "(return-to-native)", _return_to_native_)                                                \
-    X(12, "(to-local-0)", _to_local_0_) /* store 0-th local variable */                            \
-    X(12, "(to-local-1)", _to_local_1_) /* store 1-st local variable */                            \
-    X(12, "(to-local-2)", _to_local_2_) /* store 2-nd local variable */                            \
-    X(12, "(to-local-3)", _to_local_3_) /* store 3-rd local variable */                            \
-    X(12, "(to-local-4)", _to_local_4_) /* store 4-th local variable */                            \
-    X(12, "(to-local-5)", _to_local_5_) /* store 5-th local variable */                            \
-    X(12, "(to-local-6)", _to_local_6_) /* store 6-th local variable */                            \
-    X(12, "(to-local-7)", _to_local_7_) /* store 7-th local variable */                            \
-    X(12, "(to-local-8)", _to_local_8_) /* store 8-th local variable */                            \
-    X(12, "(to-local-9)", _to_local_9_) /* store 9-th local variable */                            \
-    X(12, "(to-local-a)", _to_local_a_) /* store 10-th local variable */                           \
-    X(12, "(to-local-b)", _to_local_b_) /* store 11-th local variable */                           \
-    X(12, "(to-local-c)", _to_local_c_) /* store 12-th local variable */                           \
-    X(12, "(to-local-d)", _to_local_d_) /* store 13-th local variable */                           \
-    X(12, "(to-local-e)", _to_local_e_) /* store 14-th local variable */                           \
-    X(12, "(to-local-f)", _to_local_f_) /* store 15-th local variable */                           \
-    X(12, "(to-local-n)", _to_local_n_) /* followed by T(N) store N-th local variable */           \
+    X(5, "(>l0)", _to_l0_) /* store 0-th local variable */                                         \
+    X(5, "(>l1)", _to_l1_) /* store 1-st local variable */                                         \
+    X(5, "(>l2)", _to_l2_) /* store 2-nd local variable */                                         \
+    X(5, "(>l3)", _to_l3_) /* store 3-rd local variable */                                         \
+    X(5, "(>l4)", _to_l4_) /* store 4-th local variable */                                         \
+    X(5, "(>l5)", _to_l5_) /* store 5-th local variable */                                         \
+    X(5, "(>l6)", _to_l6_) /* store 6-th local variable */                                         \
+    X(5, "(>l7)", _to_l7_) /* store 7-th local variable */                                         \
+    X(5, "(>l8)", _to_l8_) /* store 8-th local variable */                                         \
+    X(5, "(>l9)", _to_l9_) /* store 9-th local variable */                                         \
+    X(5, "(>la)", _to_la_) /* store 10-th local variable */                                        \
+    X(5, "(>lb)", _to_lb_) /* store 11-th local variable */                                        \
+    X(5, "(>lc)", _to_lc_) /* store 12-th local variable */                                        \
+    X(5, "(>ld)", _to_ld_) /* store 13-th local variable */                                        \
+    X(5, "(>le)", _to_le_) /* store 14-th local variable */                                        \
+    X(5, "(>lf)", _to_lf_) /* store 15-th local variable */                                        \
+    X(5, "(>lx)", _to_lx_) /* followed by T(N) store N-th local variable */                        \
     X(7, "(until)", _until_)                                                                       \
     X(8, "(until0)", _until0_)                                                                     \
     X(7, "(while)", _while_)                                                                       \
@@ -549,6 +591,8 @@
     X(22, "(hashmap-indexof/cell)", _hashmap_indexof_cell_)                                        \
     /* ( map key -- pos ) get bucket index for key in hashmap/int */                               \
     X(21, "(hashmap-indexof/int)", _hashmap_indexof_int_)                                          \
+    /* allocate and initialize m4th->localnames data structure */                                  \
+    X(16, "(local-allocate)", _local_allocate_)                                                    \
     /* find an optimized sequence to replace three tokens being compiled, */                       \
     /* which may be part of control flow i.e. 'if' 'else' 'case' etc.  */                          \
     X(16, "(optimize-3jump)", _optimize_3jump_) /* ( tok-addr -- counted-tokens|0 ) */             \

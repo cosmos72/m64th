@@ -17,32 +17,14 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "../include/asm.mh"
-#include "../include/dict.mh"
-#include "../include/std/dict.mh"
+#ifndef M4TH_INCLUDE_LOCALNAMES_MH
+#define M4TH_INCLUDE_LOCALNAMES_MH
 
-/* clang-format off */
+#define LOCALNAMES_OFF_N 0     /* offset of m4localnames->n        */
+#define LOCALNAMES_OFF_END SZ  /* offset of m4localnames->end      */
+#define LOCALNAMES_OFF_CAP SZ2 /* offset of m4localnames->capacity */
+#define LOCALNAMES_OFF_VEC SZ3 /* offset of m4localnames->vec      */
 
-/* ---------------------------------------------------------------------------------------------- */
+#define LOCALNAMES_SZ SZ3 /* sizeof(m4localnames) */
 
-DICT_START(forth_root)
-#include "std/root.S"
-#include "std/root_gen.S"
-DICT_BODY(forth_root, LASTWORD)
-DICT_END(forth_root)
-
-DICT_START(forth_root)
-#include "std/core.S"
-#include "std/core_ext.S"
-#include "std/double.S"
-#include "std/double_ext.S"
-#include "std/exception.S"
-#include "std/locals.S"
-#include "std/memory.S"
-#include "std/tools.S"
-#include "std/tools_ext.S"
-#include "std/searchorder.S"
-#include "std/searchorder_gen.S"
-#include "std/string.S"
-DICT_BODY(forth, LASTWORD)
-DICT_END(forth)
+#endif /* M4TH_INCLUDE_LOCALNAMES_MH */

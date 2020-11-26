@@ -432,10 +432,10 @@
 #undef M4sfloat_plus /*402*/   /* sfloat+    */
 #undef M4sfloats /*403*/       /* sfloats    */
 
-/* 'forth' wordlist: 'local' word set */
-#undef M4_local_ /*406*/ /* (local)   */
+/* 'forth' wordlist: 'locals' word set */
+#undef M4_local_ /*406*/ /* (local)    no dedicated m4token */
 
-/* 'forth' wordlist: 'local ext' word set */
+/* 'forth' wordlist: 'locals ext' word set */
 #undef M4locals /*409*/      /* locals        obsolescent in forth 2012 */
 #undef M4brace_colon /*410*/ /* {: */
 

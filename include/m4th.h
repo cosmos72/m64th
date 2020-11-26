@@ -161,7 +161,7 @@ struct m4iobuf_s {
 
 /** list of local variable names */
 struct m4localnames_s {
-    m4ucell end, capacity, n;
+    m4ucell n, end, capacity;
     m4countedstring vec[];
 };
 
@@ -232,8 +232,8 @@ struct m4th_s {                /**< m4th forth interpreter and compiler         
                                /* USER variables, i.e. thread-local              */
     uint16_t user_size;        /**< # available cells in user variables          */
     uint16_t user_next;        /**< next available cell in user variables        */
-    uint8_t  pict_start;       /**< offset from HERE to beginning of pictured output buffer */
-    uint8_t  unused0[3];       /**<                                              */
+    uint8_t pict_start;        /**< offset from HERE to beginning of pictured output buffer */
+    uint8_t unused0[3];        /**<                                              */
     m4word *lastw;             /**< last defined forth word                      */
     m4xt xt;                   /**< XT being compiled. also used for STATE       */
     m4localnames *localnames;  /**< local variable names of XT being compiled    */
@@ -343,6 +343,12 @@ void m4dict_print(const m4dict *dict, const m4word *override_lastw, m4printmode 
 /** return how many bytes of code are consumed by token or word marked with given flags */
 m4cell m4flags_consume_ip(m4flags fl);
 void m4flags_print(m4flags fl, m4printmode mode, FILE *out);
+
+/* try to add a new local variable to m->localnames. return ttrue if successful */
+m4cell m4th_local(m4th *m, m4string localname);
+/* return index of local variable if found, else -1 */
+/* use case-insensitive string comparison m4string_ci_equals() */
+m4cell m4local_find(const m4localnames *l, m4string localname);
 
 void m4slice_copy_to_code(m4slice src, m4code *dst);
 /*

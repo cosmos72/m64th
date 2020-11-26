@@ -43,6 +43,24 @@
     DEF_WORD_FETCH_TYP(uint, int_fetch_8)                                                          \
     DEF_WORD_FETCH_TYP(cell, uint_fetch_8)
 
+#define DEF_WORD_STORE_TYP_OFF(typ, offset, prev_word)                                             \
+    WORD(typ##_store##offset, prev_word, DSTACK(2, 0), RSTACK(0, 0), WORD_IMPURE | M4FLAG_MEM_STORE)
+#define DEF_WORD_STORE_TYP(typ, prev_word)                                                         \
+    DEF_WORD_STORE_TYP_OFF(typ, /**/, prev_word)                                                   \
+    DEF_WORD_STORE_TYP_OFF(typ, _1, typ##_store)                                                   \
+    DEF_WORD_STORE_TYP_OFF(typ, _2, typ##_store_1)                                                 \
+    DEF_WORD_STORE_TYP_OFF(typ, _3, typ##_store_2)                                                 \
+    DEF_WORD_STORE_TYP_OFF(typ, _4, typ##_store_3)                                                 \
+    DEF_WORD_STORE_TYP_OFF(typ, _5, typ##_store_4)                                                 \
+    DEF_WORD_STORE_TYP_OFF(typ, _6, typ##_store_5)                                                 \
+    DEF_WORD_STORE_TYP_OFF(typ, _7, typ##_store_6)                                                 \
+    DEF_WORD_STORE_TYP_OFF(typ, _8, typ##_store_7)
+#define DEF_WORD_STORE(prev_word)                                                                  \
+    DEF_WORD_STORE_TYP(char, prev_word)                                                            \
+    DEF_WORD_STORE_TYP(short, char_store_8)                                                        \
+    DEF_WORD_STORE_TYP(int, short_store_8)                                                         \
+    DEF_WORD_STORE_TYP(cell, int_store_8)
+
 /**/
 
 DICT_START(m4th_c)

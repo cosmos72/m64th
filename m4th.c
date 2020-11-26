@@ -1296,6 +1296,7 @@ void m4th_clear(m4th *m) {
     m->ip = NULL;
     m->lastw = NULL;
     m->xt = NULL;
+    m4mem_free(m->localnames);
     m->localnames = NULL;
     m->mem.curr = m->mem.start;
     m->handler = m->ex = 0;
@@ -1312,6 +1313,52 @@ void m4th_also(m4th *m, m4wordlist *wid) {
     if (wid != NULL && s->n < m4searchorder_max) {
         s->addr[s->n++] = wid;
     }
+}
+
+/* try to add a new local variable to m->localnames. return ttrue if successful */
+m4cell m4th_local(m4th *m, m4string localname) {
+    m4localnames *l = m->localnames;
+    m4ucell len = localname.n;
+    if (len == 0) {
+        /* nothing to to */
+        return ttrue;
+    }
+    if (!l) {
+        // allow at least 16 local variables, each with a name 255 bytes long
+        const m4ucell capacity = 16 * 256;
+        m->localnames = l = m4mem_allocate(sizeof(m4localnames) + capacity);
+        l->end = l->n = 0;
+        l->capacity = capacity;
+    }
+    if (len != (m4char)len || len >= l->capacity - l->end) {
+        /* localname is too long */
+        return tfalse;
+    }
+    l->vec[l->end].n = (m4char)len;
+    memcpy(l->vec[l->end].addr, localname.addr, len);
+    l->end += len + 1;
+    l->n++;
+    return ttrue;
+}
+
+/* return index of local variable if found, else -1 */
+/* use case-insensitive string comparison m4string_ci_equals() */
+m4cell m4local_find(const m4localnames *l, m4string localname) {
+    m4cell i, n, pos, end;
+    if (!l || l->n == 0) {
+        return -1;
+    }
+    n = l->n;
+    end = l->end;
+    for (i = pos = 0; i < n && pos < end; i++) {
+        const m4countedstring *cstr = &l->vec[pos];
+        const m4string str = {cstr->addr, cstr->n};
+        if (m4string_ci_equals(localname, str)) {
+            return i;
+        }
+        pos += str.n + 1;
+    }
+    return -1;
 }
 
 /* C implementation of ':' i.e. start compiling a new word */

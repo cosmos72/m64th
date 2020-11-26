@@ -212,6 +212,13 @@
     X(6, "abort\"", abort_quote)                                                                   \
     X(5, "catch", catch)
 
+/* ------- forth 2012: locals ------------------------------------------------------------------- */
+#define DICT_TOKENS_FORTH_LOCALS(X) /*                                                       */
+
+#define DICT_WORDS_FORTH_LOCALS(X)                                                                 \
+    DICT_TOKENS_FORTH_LOCALS(X)                                                                    \
+    X(7, "(local)", _local_) /* ( c-addr u -- ) create a new local variable with specified name */
+
 /* ------- forth 2012: memory ------------------------------------------------------------------- */
 #define DICT_TOKENS_FORTH_MEMORY(X) /*                                                       */
 

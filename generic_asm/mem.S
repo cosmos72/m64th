@@ -179,7 +179,8 @@ FUNC_END(typ##_store_##offset)
         DEF_FUNC_STORE_TYP_OFF(typ, 4, ST_xx, size) \
         DEF_FUNC_STORE_TYP_OFF(typ, 5, ST_xx, size) \
         DEF_FUNC_STORE_TYP_OFF(typ, 6, ST_xx, size) \
-        DEF_FUNC_STORE_TYP_OFF(typ, 7, ST_xx, size)
+        DEF_FUNC_STORE_TYP_OFF(typ, 7, ST_xx, size) \
+        DEF_FUNC_STORE_TYP_OFF(typ, 8, ST_xx, size)
 
 #define DEF_FUNC_STORE() \
         DEF_FUNC_STORE_TYP(char,   STORb, 1) \
