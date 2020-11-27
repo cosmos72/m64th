@@ -141,6 +141,16 @@ FUNC_START(i_prime)            /* i' and r2nd@ m4th-user */
 FUNC_END(i_prime)
 
 
+FUNC_START(r_one_plus)         /* r1+ (R: n -- n+1 ) m4th-user */
+        INC1(  RTOP)
+FUNC_END(r_one_plus)
+
+
+FUNC_START(r_one_minus)        /* r1- (R: n -- n-1 ) m4th-user */
+        DEC1(  RTOP)
+FUNC_END(r_one_minus)
+
+
 FUNC_START(r_store)            /* r!   ( x -- ) (R: y -- x ) m4th-user */
         MOVE(  DTOP, RTOP)
         DPOP___DTOP()

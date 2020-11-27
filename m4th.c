@@ -309,6 +309,12 @@ void m4flags_print(m4flags fl, m4printmode mode, FILE *out) {
 
 /* ----------------------- m4string ---------------------- */
 
+/* convert m4countedstring to m4string */
+m4string m4string_count(const m4countedstring *cstr) {
+    m4string ret = {(m4char *)cstr->addr, cstr->n};
+    return ret;
+}
+
 m4string m4string_make(const void *addr, const m4ucell n) {
     m4string ret = {(m4char *)addr, n};
     return ret;
@@ -1237,7 +1243,7 @@ m4th *m4th_new(m4th_opt options) {
     } else {
         memset(&m->rstack, '\0', sizeof(m->rstack));
     }
-    m->locals = NULL;
+    m->lstack = NULL;
     m->ip = NULL;
     m->ftable = ftable;
     m->wtable = wtable;
@@ -1251,7 +1257,7 @@ m4th *m4th_new(m4th_opt options) {
     memset(m->unused0, 0, sizeof(m->unused0));
     m->lastw = NULL;
     m->xt = NULL;
-    m->localnames = NULL;
+    m->locals = NULL;
     m->mem = m4cbuf_alloc(dataspace_n);
     m->base = 10;
     m->handler = m->ex = 0;
@@ -1289,6 +1295,7 @@ void m4th_clear(m4th *m) {
 
     m->dstack.curr = m->dstack.end;
     m->rstack.curr = m->rstack.end;
+    m->lstack = NULL;
     m->vm = m4f_vm_;
     memset(m->c_regs, '\0', sizeof(m->c_regs));
     m->in->err = m->in->pos = m->in->end = 0;
@@ -1296,8 +1303,8 @@ void m4th_clear(m4th *m) {
     m->ip = NULL;
     m->lastw = NULL;
     m->xt = NULL;
-    m4mem_free(m->localnames);
-    m->localnames = NULL;
+    m4mem_free(m->locals);
+    m->locals = NULL;
     m->mem.curr = m->mem.start;
     m->handler = m->ex = 0;
     m->ex_message.addr = NULL;
@@ -1315,52 +1322,82 @@ void m4th_also(m4th *m, m4wordlist *wid) {
     }
 }
 
-/* try to add a new local variable to m->localnames. return ttrue if successful */
+/* get local variable at specified byte offset */
+const m4local *m4locals_at(const m4locals *ls, m4ucell byte_offset) {
+    return (const m4local *)(((const m4char *)ls->vec) + byte_offset);
+}
+
+/* get first local variable */
+static const m4local *m4locals_first(const m4locals *ls) {
+    return ls && ls->n && ls->end ? ls->vec : NULL;
+}
+
+/* get next local variable */
+static const m4local *m4locals_next(const m4locals *ls, const m4local *l) {
+    l = (const m4local *)(l->str.addr + l->str.n);
+    return (const m4char *)l < (const m4char *)ls->vec + ls->end ? l : NULL;
+}
+
+/* initialize local variable */
+static void m4local_init(m4local *l, m4string localname) {
+    const m4char len = (m4char)localname.n;
+    l->idx = 0;
+    l->str.n = len;
+    memcpy(l->str.addr, localname.addr, len);
+}
+
+/* set all indexes of local variables. return ttrue */
+static m4cell m4locals_set_indexes(m4locals *ls) {
+    m4local *l = (m4local *)m4locals_first(ls);
+    if (l) {
+        m4ucell i;
+        for (i = ls->n - 1; l; i--) {
+            l->idx = i;
+            l = (m4local *)m4locals_next(ls, l);
+        }
+    }
+    return ttrue;
+}
+
+/* try to add a new local variable to m->locals. return ttrue if successful. */
+/* empty localname means 'end of local variables' */
 m4cell m4th_local(m4th *m, m4string localname) {
-    m4localnames *l = m->localnames;
+    m4locals *ls = m->locals;
+    m4local *l;
     m4ucell len = localname.n;
-    m4ucell pos;
     if (len == 0) {
-        /* nothing to to */
-        return ttrue;
+        /* end-of-locals marker: set all indexes */
+        return m4locals_set_indexes(ls);
     }
-    if (!l) {
+    if (!ls) {
         // allow at least 16 local variables, each with a name 255 bytes long
-        const m4ucell capacity = 16 * 256 + 1;
-        m->localnames = l = m4mem_allocate(sizeof(m4localnames) + capacity);
-        l->end = l->n = 0;
-        l->capacity = capacity;
+        const m4ucell capacity = 16 * (sizeof(m4local) + 255);
+        m->locals = ls = m4mem_allocate(sizeof(m4locals) + capacity);
+        ls->end = ls->n = 0;
+        ls->capacity = capacity;
     }
-    if (len != (m4char)len || len + 2 > l->capacity - l->end) {
-        /* localname is too long */
+    if (ls->n == (m4char)-1 || len != (m4char)len ||
+        len + sizeof(m4local) > ls->capacity - ls->end) {
+        /* too many local variables, or localname is too long */
         return tfalse;
     }
-    pos = l->end;
-    l->vec[pos].n = (m4char)len;
-    memcpy(l->vec[pos].addr, localname.addr, len);
-    pos += len + 1;
-    l->vec[pos].n = 0; /* end-of-names marker */
-    l->n++;
-    l->end = pos;
+    l = (m4local *)m4locals_at(ls, ls->end);
+    m4local_init(l, localname);
+    ls->n++;
+    ls->end = l->str.addr + len - (m4char *)ls->vec;
     return ttrue;
 }
 
 /* return index of local variable if found, else -1 */
 /* use case-insensitive string comparison m4string_ci_equals() */
-m4cell m4local_find(const m4localnames *l, m4string localname) {
-    m4cell i, n, pos, end;
-    if (!l || l->n == 0) {
-        return -1;
-    }
-    n = l->n;
-    end = l->end;
-    for (i = pos = 0; i < n && pos < end; i++) {
-        const m4countedstring *cstr = &l->vec[pos];
-        const m4string str = {cstr->addr, cstr->n};
+m4cell m4locals_find(const m4locals *ls, m4string localname) {
+    const m4local *l = m4locals_first(ls);
+    while (l) {
+        const m4string str = m4string_count(&l->str);
         if (m4string_ci_equals(localname, str)) {
-            return i;
+            return l->idx;
         }
-        pos += str.n + 1;
+        l = m4locals_next(ls, l);
     }
     return -1;
 }

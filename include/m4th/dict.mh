@@ -78,6 +78,8 @@
     X(14, "line-find-char", line_find_char)                                                        \
     X(4, "noop", noop)                   /* ( -- ) do nothing                               */     \
     X(6, "n>drop", n_to_drop)            /* ( xn .. x1 n -- ) drop n cells                  */     \
+    X(3, "r1+", r_one_plus)              /*          (R: a -- a+1 )                         */     \
+    X(3, "r1-", r_one_minus)             /*          (R: a -- a-1 )                         */     \
     X(2, "r!", r_store)                  /* ( a -- ) (R: b -- a   )                         */     \
     X(3, "r+!", r_plus_store)            /* ( a -- ) (R: b -- a+b )                         */     \
     X(6, "r>drop", r_from_drop)          /* (R: x -- ) equivalent to: r> drop               */     \
@@ -470,6 +472,7 @@
     X(9, "(drop&ld)", _drop_ld_)              /* drop & fetch 14-th local variable */              \
     X(9, "(drop&le)", _drop_le_)              /* drop & fetch 14-th local variable */              \
     X(9, "(drop&lf)", _drop_lf_)              /* drop & fetch 15-th local variable */              \
+    X(9, "(drop&lx)", _drop_lx_)              /* drop & fetch N-th local variable */               \
     X(8, "(dup>l0)", _dup_to_l0_)             /*  dup & store 0-th local variable */               \
     X(8, "(dup>l1)", _dup_to_l1_)             /*  dup & store 1-st local variable */               \
     X(8, "(dup>l2)", _dup_to_l2_)             /*  dup & store 2-nd local variable */               \
@@ -486,6 +489,7 @@
     X(8, "(dup>ld)", _dup_to_ld_)             /*  dup & store 13-th local variable */              \
     X(8, "(dup>le)", _dup_to_le_)             /*  dup & store 14-th local variable */              \
     X(8, "(dup>lf)", _dup_to_lf_)             /*  dup & store 15-th local variable */              \
+    X(8, "(dup>lx)", _dup_to_lx_)             /*  dup & store  N-th local variable */              \
     X(6, "(else)", _else_)                    /* execution semantics of 'else'     */              \
     X(7, "(endof)", _endof_)                  /* execution semantics of 'endof'    */              \
     X(12, "(exec-token)", _exec_token_)                                                            \
@@ -523,8 +527,8 @@
     X(4, "(lf)", _lf_) /* fetch 15-th local variable */                                            \
     X(4, "(lx)", _lx_) /* followed by T(N) fetch N-th local variable */                            \
     /* followed by T(n), reserve space for n local variables */                                    \
-    X(13, "(local-enter)", _local_enter_)                                                          \
-    X(12, "(local-exit)", _local_exit_) /* release space of last reserved local variables */       \
+    X(14, "(locals-enter)", _locals_enter_)                                                        \
+    X(13, "(locals-exit)", _locals_exit_) /* release space of last reserved local variables */     \
     X(6, "(loop)", _loop_)                                                                         \
     X(9, "(missing)", _missing_)                                                                   \
     X(4, "(of)", _of_)           /* ( x y -- x| ) execution semantics of 'of'      */              \
@@ -591,9 +595,13 @@
     X(22, "(hashmap-indexof/cell)", _hashmap_indexof_cell_)                                        \
     /* ( map key -- pos ) get bucket index for key in hashmap/int */                               \
     X(21, "(hashmap-indexof/int)", _hashmap_indexof_int_)                                          \
-    /* allocate and initialize m4th->localnames data structure */                                  \
-    X(16, "(local-allocate)", _local_allocate_)                                                    \
-    X(14, "(local-append)", _local_append_) /* ( c-addr u -- ) used by '(local)' */ \
+    X(17, "(locals-allocate)", _locals_allocate_) /* ( -- ls ) allocate a new m4locals struct   */ \
+    X(12, "(locals-add)", _locals_add_)         /* ( ls c-addr u -- )   create a local variable */ \
+    X(14, "(locals-clear)", _locals_clear_)     /* ( ls -- )         remove all local variables */ \
+    X(13, "(locals-find)", _locals_find_)       /* ( ls c-addr u -- idx|-1) find local variable */ \
+    X(14, "(locals-first)", _locals_first_)     /* ( ls   -- ls l|0  ) get first local variable */ \
+    X(13, "(locals-next)", _locals_next_)       /* ( ls l -- ls l'|0 ) get  next local variable */ \
+    X(16, "(locals-set-idx)", _locals_set_idx_) /* ( ls   -- )   set indexes of local variables */ \
     /* find an optimized sequence to replace three tokens being compiled, */                       \
     /* which may be part of control flow i.e. 'if' 'else' 'case' etc.  */                          \
     X(16, "(optimize-3jump)", _optimize_3jump_) /* ( tok-addr -- counted-tokens|0 ) */             \
@@ -601,6 +609,8 @@
     X(17, "(optimize-1token)", _optimize_1token_) /* ( tok-addr -- counted-tokens|0 ) */           \
     /*  find an optimized sequence to replace 2 tokens being compiled. */                          \
     X(17, "(optimize-2token)", _optimize_2token_) /* ( tok-addr -- counted-tokens|0 ) */           \
+    /*  find a low-priority optimized sequence to replace 2 tokens being compiled. */              \
+    X(25, "(optimize-2token-lowprio)", _optimize_2token_lowprio_) /* ( tok-addr -- ctokens|0 ) */  \
     /*  find an optimized sequence to replace 3 tokens being compiled. */                          \
     X(17, "(optimize-3token)", _optimize_3token_) /* ( tok-addr -- counted-tokens|0 ) */           \
     /*  find an optimized sequence to replace 4 tokens being compiled. */                          \
@@ -614,6 +624,14 @@
     /* find an optimized sequence to replace '[ x ] literal' */                                    \
     X(18, "(optimize-literal)", _optimize_literal_) /* ( x -- token t | x f ) */                   \
     X(15, "(repl-type-ack)", _repl_type_ack_)                                                      \
+    /* ( -- ls ) allocate m4th->locals data structure if not present */                            \
+    X(22, "(user-locals-allocate)", _user_locals_allocate_)                                        \
+    /* ( -- ) remove all local variables from m4th->locals */                                      \
+    X(19, "(user-locals-clear)", _user_locals_clear_)                                              \
+    /* ( c-addr u -- idx|-1 ) find local variable in m4th->locals */                               \
+    X(18, "(user-locals-find)", _user_locals_find_)                                                \
+    /* ( -- ) set indexes of local variables in m4th->locals */                                    \
+    X(16, "(user-locals-set-idx)", _user_locals_set_idx_)                                          \
     X(8, "[finish]", _finish_)      /* ( sys -- ) finish compiling a word, make it findable   */   \
     X(8, "[inline]", _inline_)      /* ( nt -- ) inline a call to word into XT being compiled */   \
     X(10, "[optimize]", _optimize_) /* optimize current XT being compiled  */                      \

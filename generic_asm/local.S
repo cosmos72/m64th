@@ -277,21 +277,36 @@ FUNC_START(_dup_to_lf_) /* (dup>lf) ( x -- x ) copy dstack top to 15-th local va
 FUNC_END(_dup_to_lf_)
 
 
-FUNC_START(_lx_) /* (lx) ( -- x ) followed by T(N), push N-th local variable to dstack */
+/* (lx) ( -- x ) followed by T(N), push N-th local variable to dstack */
+FUNC_START(_lx_)
         LD_ut( REG1,   AT(IP))
         DPUSH__DTOP()
         LOAD(  DTOP,   AT(LOCL, REG1, SZ))
         ADD2(IMM(SZt), IP)
 FUNC_END(_lx_)
-FUNC_START(_to_lx_) /* (lx) ( x -- ) followed by T(N), store dstack top to N-th local variable */
+/* (drop&lx) ( y -- x ) followed by T(N), drop, then push N-th local variable to dstack */
+FUNC_START(_drop_lx_)
+        LD_ut( REG1,   AT(IP))
+        LOAD(  DTOP,   AT(LOCL, REG1, SZ))
+        ADD2(IMM(SZt), IP)
+FUNC_END(_drop_lx_)
+/* (lx) ( x -- ) followed by T(N), store dstack top to N-th local variable */
+FUNC_START(_to_lx_)
         LD_ut( REG1,   AT(IP))
         STOR(  DTOP,   AT(LOCL, REG1, SZ))
         DPOP___DTOP()
         ADD2(IMM(SZt), IP)
 FUNC_END(_to_lx_)
+/* (dup>lx) ( x -- x ) followed by T(N), copy dstack top to N-th local variable */
+FUNC_START(_dup_to_lx_)
+        LD_ut( REG1,   AT(IP))
+        STOR(  DTOP,   AT(LOCL, REG1, SZ))
+        ADD2(IMM(SZt), IP)
+FUNC_END(_dup_to_lx_)
 
-/* (local-enter) (R: -- locl ln-1 ... l1 l0 n ) followed by T(n), reserve space for n local variables */
-FUNC_START(_local_enter_)
+
+/* (locals-enter) (R: -- locl ln-1 ... l1 l0 n ) followed by T(n), reserve space for n local variables */
+FUNC_START(_locals_enter_)
 #ifdef __aarch64__
         LD_ut( REG1,   AT(IP), SZt)        /* a = n; IP += SZt i.e. skip T(n) */
 #else
@@ -304,11 +319,11 @@ FUNC_START(_local_enter_)
         ADD4(  RSTK,   REG1, PSZ,  RSTK)   /* (R: LOCL ln-1 ... l1 l0 n     ) */
         MOVE(  RSTK,   LOCL)               /* LOCL = &l0                      */
         NEXT0()
-FUNC_RAWEND(_local_enter_)
+FUNC_RAWEND(_locals_enter_)
 
 
-/* (local-exit) (R: locl ln-1 ... l1 l0 n -- ) release space for last reserved local variables */
-FUNC_START(_local_exit_)
+/* (locals-exit) (R: locl ln-1 ... l1 l0 n -- ) release space for last reserved local variables */
+FUNC_START(_locals_exit_)
 #ifdef __x86_64__
         leaq   SZ2(RSTK, RTOP, SZ),  RSTK;
         LOAD(  LOCL,   AT(RSTK, -SZ2))
@@ -317,4 +332,4 @@ FUNC_START(_local_exit_)
         ADD4(  RSTK,   RTOP, PSZ,  RSTK)   /* (R: LOCL n                    ) */
         RPOP2( LOCL,   RTOP)               /* (R:                           ) */
 #endif
-FUNC_END(_local_exit_)
+FUNC_END(_locals_exit_)

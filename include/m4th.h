@@ -92,7 +92,8 @@ typedef struct m4counteddata_s m4counteddata;
 typedef struct m4countedstring_s m4countedstring;
 typedef struct m4dict_s m4dict;
 typedef struct m4iobuf_s m4iobuf;
-typedef struct m4localnames_s m4localnames;
+typedef struct m4local_s m4local;
+typedef struct m4locals_s m4locals;
 typedef struct m4slice_s m4slice;
 typedef struct m4buf_s m4stack;
 typedef struct m4pair_s m4pair;
@@ -159,10 +160,16 @@ struct m4iobuf_s {
     m4char *addr;
 };
 
-/** list of local variable names */
-struct m4localnames_s {
+/** local variable */
+struct m4local_s {
+    m4char idx;
+    m4countedstring str;
+};
+
+/** list of local variables */
+struct m4locals_s {
     m4ucell n, end, capacity;
-    m4countedstring vec[];
+    m4local vec[];
 };
 
 struct m4pair_s {
@@ -219,7 +226,7 @@ struct m4searchorder_s {                 /**< counted array of wordlists */
 struct m4th_s {                /**< m4th forth interpreter and compiler          */
     m4stack dstack;            /**< data stack                                   */
     m4stack rstack;            /**< return stack                                 */
-    m4cell *locals;            /**< pointer to forth local variables (in return stack) */
+    m4cell *lstack;            /**< pointer to forth local variables (in return stack) */
     const m4token *ip;         /**< instruction pointer                          */
     m4func *ftable;            /**< table m4token -> m4func asm function address */
     const m4word **wtable;     /**< table m4token -> m4word*                     */
@@ -236,7 +243,7 @@ struct m4th_s {                /**< m4th forth interpreter and compiler         
     uint8_t unused0[3];        /**<                                              */
     m4word *lastw;             /**< last defined forth word                      */
     m4xt xt;                   /**< XT being compiled. also used for STATE       */
-    m4localnames *localnames;  /**< local variable names of XT being compiled    */
+    m4locals *locals;          /**< local variables of XT being compiled         */
     m4cell base;               /**< current BASE                                 */
     m4cbuf mem;                /**< start, HERE and end of data space            */
     m4cell handler;            /**< exception handler installed by CATCH         */
@@ -344,11 +351,14 @@ void m4dict_print(const m4dict *dict, const m4word *override_lastw, m4printmode 
 m4cell m4flags_consume_ip(m4flags fl);
 void m4flags_print(m4flags fl, m4printmode mode, FILE *out);
 
-/* try to add a new local variable to m->localnames. return ttrue if successful */
+/* try to add a new local variable to m->locals. return ttrue if successful. */
+/* empty localname means 'end of local variables' */
 m4cell m4th_local(m4th *m, m4string localname);
 /* return index of local variable if found, else -1 */
 /* use case-insensitive string comparison m4string_ci_equals() */
-m4cell m4local_find(const m4localnames *l, m4string localname);
+m4cell m4locals_find(const m4locals *ls, m4string localname);
+/* get local variable at specified byte offset */
+const m4local *m4locals_at(const m4locals *ls, m4ucell byte_offset);
 
 void m4slice_copy_to_code(m4slice src, m4code *dst);
 /*
@@ -361,6 +371,8 @@ void m4slice_print_stdout(m4slice cells, m4cell direction, m4printmode mode);
 void m4slice_to_word_code(const m4slice *src, m4word *dst);
 
 m4string m4string_make(const void *addr, const m4ucell n);
+/* convert m4countedstring to m4string */
+m4string m4string_count(const m4countedstring *cstr);
 m4cell m4string_equals(m4string a, m4string b);
 m4cell m4string_ci_equals(m4string a, m4string b); /* case insensitive comparison */
 void m4string_print(m4string str, m4printmode mode, FILE *out);

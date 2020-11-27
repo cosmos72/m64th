@@ -45,8 +45,8 @@ WORD_START(wordlist,   set_current)
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
         _c_arg_0_, _c_call_, CELL(m4wordlist_new), _c_ret_1_,   /* ( wid|0      ) */
-        dup, zero_equal,                                           /* ( wid|0 t|f  ) */
-        _lit_, T(M4ERR_OUT_OF_MEMORY), and, throw,                 /* ( wid        ) */
+        dup, zero_equal,                                        /* ( wid|0 t|f  ) */
+        _lit_, T(M4ERR_FAILED_TO_ALLOCATE), and, throw,         /* ( wid        ) */
         exit
     )
 WORD_END(wordlist)

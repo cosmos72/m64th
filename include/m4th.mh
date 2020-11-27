@@ -26,7 +26,7 @@
 #define M4TH_OFF_RBEG -SZ11          /* offset of m4th->rstack.start    */
 #define M4TH_OFF_RSTK -SZ10          /* offset of m4th->rstack.curr     */
 #define M4TH_OFF_REND -SZ9           /* offset of m4th->rstack.end      */
-#define M4TH_OFF_LOCL -SZ8           /* offset of m4th->locals          */
+#define M4TH_OFF_LSTK -SZ8           /* offset of m4th->locals          */
 #define M4TH_OFF_IP -SZ7             /* offset of m4th->ip              */
 #define M4TH_OFF_FTABLE -SZ6         /* offset of m4th->ftable          */
 #define M4TH_OFF_WTABLE -SZ5         /* offset of m4th->wtable          */
@@ -38,7 +38,7 @@
 #define M4TH_OFF_PICT_START 4        /* offset of m4th->pict_start       */
 #define M4TH_OFF_LASTW SZ            /* offset of m4th->lastw           */
 #define M4TH_OFF_XT SZ2              /* offset of m4th->xt              */
-#define M4TH_OFF_LOCALNAMES SZ3      /* offset of m4th->localnames      */
+#define M4TH_OFF_LOCALS SZ3          /* offset of m4th->locals      */
 #define M4TH_OFF_BASE SZ4            /* offset of m4th->base            */
 #define M4TH_OFF_MEM_START SZ5       /* offset of m4th->mem.start       */
 #define M4TH_OFF_HERE SZ6            /* offset of m4th->mem.curr = HERE */
@@ -53,6 +53,6 @@
 /* where n = number of bits in a cell */
 #define M4TH_PICT_MAXSIZE (16 * SZ + 2)
 
-#define M4TH_USER_VAR_LOCALNAMES 3 /* user_var index m4th->localnames */
+#define M4TH_USER_VAR_LOCALS 3 /* user_var index m4th->locals */
 
 #endif /* M4TH_INCLUDE_M4TH_MH */

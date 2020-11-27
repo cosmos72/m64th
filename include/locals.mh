@@ -17,14 +17,21 @@
  * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_INCLUDE_LOCALNAMES_MH
-#define M4TH_INCLUDE_LOCALNAMES_MH
+#ifndef M4TH_INCLUDE_LOCALS_MH
+#define M4TH_INCLUDE_LOCALS_MH
 
-#define LOCALNAMES_OFF_N 0     /* offset of m4localnames->n        */
-#define LOCALNAMES_OFF_END SZ  /* offset of m4localnames->end      */
-#define LOCALNAMES_OFF_CAP SZ2 /* offset of m4localnames->capacity */
-#define LOCALNAMES_OFF_VEC SZ3 /* offset of m4localnames->vec      */
+#define LOCAL_OFF_IDX 0      /* offset of m4local->idx      */
+#define LOCAL_OFF_STR 1      /* offset of m4local->str      */
+#define LOCAL_OFF_STR_N 1    /* offset of m4local->str.n    */
+#define LOCAL_OFF_STR_ADDR 2 /* offset of m4local->str.addr */
 
-#define LOCALNAMES_SZ SZ3 /* sizeof(m4localnames) */
+#define LOCAL_SZ 2 /* sizeof(m4local) */
 
-#endif /* M4TH_INCLUDE_LOCALNAMES_MH */
+#define M4LOCALS_OFF_N 0     /* offset of m4locals->n        */
+#define M4LOCALS_OFF_END SZ  /* offset of m4locals->end      */
+#define M4LOCALS_OFF_CAP SZ2 /* offset of m4locals->capacity */
+#define M4LOCALS_OFF_VEC SZ3 /* offset of m4locals->vec      */
+
+#define LOCALS_SZ SZ3 /* sizeof(m4locals) */
+
+#endif /* M4TH_INCLUDE_LOCALS_MH */

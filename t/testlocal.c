@@ -59,10 +59,12 @@ m4cell m4th_testlocal(m4th *m, FILE *out) {
         }
         count.total++;
     }
+    /* end of locals */
+    m4th_local(m, m4string_make(NULL, 0));
     for (i = 0; i < n; i++) {
         m4string str = {buf, sizeof(buf)};
         testlocal_fillstr('A' + 26, i, buf);
-        if (m4local_find(m->localnames, str) != i) {
+        if (m4locals_find(m->locals, str) != n - i - 1) {
             count.failed++;
             if (out != NULL) {
                 fprintf(out, "local   test failed: %d", (int)count.total);

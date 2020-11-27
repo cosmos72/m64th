@@ -348,8 +348,10 @@
         x(abs, squared, /*=>*/ squared)                      /* abs  squared  => squared        */ \
         x(c_fetch, drop, /*=>*/ drop)                        /* c@   drop     => drop           */ \
         x(case, endcase, /*=>*/ drop)                        /* case endcase  => drop           */ \
+        x(drop, _lx_, /*=>*/ _drop_lx_)                      /* drop (lx)     => (drop&lx)      */ \
         x(dup, _if_, /*=>*/ _q_if_)                          /* dup  (if)     => (?if)          */ \
         x(dup, _if0_, /*=>*/ _q_if0_)                        /* dup  (if0)    => (?if0)         */ \
+        x(dup, _to_lx_, /*=>*/ _dup_to_lx_)                  /* dup  (>lx)    => (dup>lx)       */ \
         x(dup, _until_, /*=>*/ _q_until_)                    /* dup  (until)  => (?until)       */ \
         x(dup, _until0_, /*=>*/ _q_until0_)                  /* dup  (until0) => (?until0)      */ \
         x(dup, _while_, /*=>*/ _q_while_)                    /* dup  (while)  => (?while)       */ \
@@ -506,9 +508,74 @@
         x(_SZ_plus, fetch, /*=>*/ cell_fetch_1)            /* SZ+   @       => cell[1]        */
 
 /* low-priority optimizations: they may prevent other optimizations      */
-#define OPT2_LOWPRIO_RULES(x)         /*                                 */                        \
-    x(drop, drop, /*=>*/ two_drop)    /* drop drop       => 2drop        */                        \
-        x(over, over, /*=>*/ two_dup) /* over over       => 2dup         */
+#define OPT2_RULES_LOWPRIO(x)                      /*                                 */           \
+    x(drop, drop, /*=>*/ two_drop)                 /* drop drop       => 2drop        */           \
+        x(over, over, /*=>*/ two_dup)              /* over over       => 2dup         */           \
+        /*        local variables       */         /*                                 */           \
+        x(_lx_, T(0x0), /*=>*/ _l0_)               /* (lx) T(0)       => (l0)         */           \
+        x(_lx_, T(0x1), /*=>*/ _l1_)               /* (lx) T(1)       => (l1)         */           \
+        x(_lx_, T(0x2), /*=>*/ _l2_)               /* (lx) T(2)       => (l2)         */           \
+        x(_lx_, T(0x3), /*=>*/ _l3_)               /* (lx) T(3)       => (l3)         */           \
+        x(_lx_, T(0x4), /*=>*/ _l4_)               /* (lx) T(4)       => (l4)         */           \
+        x(_lx_, T(0x5), /*=>*/ _l5_)               /* (lx) T(5)       => (l5)         */           \
+        x(_lx_, T(0x6), /*=>*/ _l6_)               /* (lx) T(6)       => (l6)         */           \
+        x(_lx_, T(0x7), /*=>*/ _l7_)               /* (lx) T(7)       => (l7)         */           \
+        x(_lx_, T(0x8), /*=>*/ _l8_)               /* (lx) T(8)       => (l8)         */           \
+        x(_lx_, T(0x9), /*=>*/ _l9_)               /* (lx) T(9)       => (l9)         */           \
+        x(_lx_, T(0xa), /*=>*/ _la_)               /* (lx) T(a)       => (la)         */           \
+        x(_lx_, T(0xb), /*=>*/ _lb_)               /* (lx) T(b)       => (lb)         */           \
+        x(_lx_, T(0xc), /*=>*/ _lc_)               /* (lx) T(c)       => (lc)         */           \
+        x(_lx_, T(0xd), /*=>*/ _ld_)               /* (lx) T(d)       => (ld)         */           \
+        x(_lx_, T(0xe), /*=>*/ _le_)               /* (lx) T(e)       => (le)         */           \
+        x(_lx_, T(0xf), /*=>*/ _lf_)               /* (lx) T(f)       => (lf)         */           \
+        x(_drop_lx_, T(0x0), /*=>*/ _drop_l0_)     /* (drop&lx) T(0)  => (drop&l0)    */           \
+        x(_drop_lx_, T(0x1), /*=>*/ _drop_l1_)     /* (drop&lx) T(1)  => (drop&l1)    */           \
+        x(_drop_lx_, T(0x2), /*=>*/ _drop_l2_)     /* (drop&lx) T(2)  => (drop&l2)    */           \
+        x(_drop_lx_, T(0x3), /*=>*/ _drop_l3_)     /* (drop&lx) T(3)  => (drop&l3)    */           \
+        x(_drop_lx_, T(0x4), /*=>*/ _drop_l4_)     /* (drop&lx) T(4)  => (drop&l4)    */           \
+        x(_drop_lx_, T(0x5), /*=>*/ _drop_l5_)     /* (drop&lx) T(5)  => (drop&l5)    */           \
+        x(_drop_lx_, T(0x6), /*=>*/ _drop_l6_)     /* (drop&lx) T(6)  => (drop&l6)    */           \
+        x(_drop_lx_, T(0x7), /*=>*/ _drop_l7_)     /* (drop&lx) T(7)  => (drop&l7)    */           \
+        x(_drop_lx_, T(0x8), /*=>*/ _drop_l8_)     /* (drop&lx) T(8)  => (drop&l8)    */           \
+        x(_drop_lx_, T(0x9), /*=>*/ _drop_l9_)     /* (drop&lx) T(9)  => (drop&l9)    */           \
+        x(_drop_lx_, T(0xa), /*=>*/ _drop_la_)     /* (drop&lx) T(a)  => (drop&la)    */           \
+        x(_drop_lx_, T(0xb), /*=>*/ _drop_lb_)     /* (drop&lx) T(b)  => (drop&lb)    */           \
+        x(_drop_lx_, T(0xc), /*=>*/ _drop_lc_)     /* (drop&lx) T(c)  => (drop&lc)    */           \
+        x(_drop_lx_, T(0xd), /*=>*/ _drop_ld_)     /* (drop&lx) T(d)  => (drop&ld)    */           \
+        x(_drop_lx_, T(0xe), /*=>*/ _drop_le_)     /* (drop&lx) T(e)  => (drop&le)    */           \
+        x(_drop_lx_, T(0xf), /*=>*/ _drop_lf_)     /* (drop&lx) T(f)  => (drop&lf)    */           \
+        x(_to_lx_, T(0x0), /*=>*/ _to_l0_)         /* (>lx) T(0)      => (>l0)        */           \
+        x(_to_lx_, T(0x1), /*=>*/ _to_l1_)         /* (>lx) T(1)      => (>l1)        */           \
+        x(_to_lx_, T(0x2), /*=>*/ _to_l2_)         /* (>lx) T(2)      => (>l2)        */           \
+        x(_to_lx_, T(0x3), /*=>*/ _to_l3_)         /* (>lx) T(3)      => (>l3)        */           \
+        x(_to_lx_, T(0x4), /*=>*/ _to_l4_)         /* (>lx) T(4)      => (>l4)        */           \
+        x(_to_lx_, T(0x5), /*=>*/ _to_l5_)         /* (>lx) T(5)      => (>l5)        */           \
+        x(_to_lx_, T(0x6), /*=>*/ _to_l6_)         /* (>lx) T(6)      => (>l6)        */           \
+        x(_to_lx_, T(0x7), /*=>*/ _to_l7_)         /* (>lx) T(7)      => (>l7)        */           \
+        x(_to_lx_, T(0x8), /*=>*/ _to_l8_)         /* (>lx) T(8)      => (>l8)        */           \
+        x(_to_lx_, T(0x9), /*=>*/ _to_l9_)         /* (>lx) T(9)      => (>l9)        */           \
+        x(_to_lx_, T(0xa), /*=>*/ _to_la_)         /* (>lx) T(a)      => (>la)        */           \
+        x(_to_lx_, T(0xb), /*=>*/ _to_lb_)         /* (>lx) T(b)      => (>lb)        */           \
+        x(_to_lx_, T(0xc), /*=>*/ _to_lc_)         /* (>lx) T(c)      => (>lc)        */           \
+        x(_to_lx_, T(0xd), /*=>*/ _to_ld_)         /* (>lx) T(d)      => (>ld)        */           \
+        x(_to_lx_, T(0xe), /*=>*/ _to_le_)         /* (>lx) T(e)      => (>le)        */           \
+        x(_to_lx_, T(0xf), /*=>*/ _to_lf_)         /* (>lx) T(f)      => (>lf)        */           \
+        x(_dup_to_lx_, T(0x0), /*=>*/ _dup_to_l0_) /* (dup>lx) T(0)   => (dup>l0)     */           \
+        x(_dup_to_lx_, T(0x1), /*=>*/ _dup_to_l1_) /* (dup>lx) T(1)   => (dup>l1)     */           \
+        x(_dup_to_lx_, T(0x2), /*=>*/ _dup_to_l2_) /* (dup>lx) T(2)   => (dup>l2)     */           \
+        x(_dup_to_lx_, T(0x3), /*=>*/ _dup_to_l3_) /* (dup>lx) T(3)   => (dup>l3)     */           \
+        x(_dup_to_lx_, T(0x4), /*=>*/ _dup_to_l4_) /* (dup>lx) T(4)   => (dup>l4)     */           \
+        x(_dup_to_lx_, T(0x5), /*=>*/ _dup_to_l5_) /* (dup>lx) T(5)   => (dup>l5)     */           \
+        x(_dup_to_lx_, T(0x6), /*=>*/ _dup_to_l6_) /* (dup>lx) T(6)   => (dup>l6)     */           \
+        x(_dup_to_lx_, T(0x7), /*=>*/ _dup_to_l7_) /* (dup>lx) T(7)   => (dup>l7)     */           \
+        x(_dup_to_lx_, T(0x8), /*=>*/ _dup_to_l8_) /* (dup>lx) T(8)   => (dup>l8)     */           \
+        x(_dup_to_lx_, T(0x9), /*=>*/ _dup_to_l9_) /* (dup>lx) T(9)   => (dup>l9)     */           \
+        x(_dup_to_lx_, T(0xa), /*=>*/ _dup_to_la_) /* (dup>lx) T(a)   => (dup>la)     */           \
+        x(_dup_to_lx_, T(0xb), /*=>*/ _dup_to_lb_) /* (dup>lx) T(b)   => (dup>lb)     */           \
+        x(_dup_to_lx_, T(0xc), /*=>*/ _dup_to_lc_) /* (dup>lx) T(c)   => (dup>lc)     */           \
+        x(_dup_to_lx_, T(0xd), /*=>*/ _dup_to_ld_) /* (dup>lx) T(d)   => (dup>ld)     */           \
+        x(_dup_to_lx_, T(0xe), /*=>*/ _dup_to_le_) /* (dup>lx) T(e)   => (dup>le)     */           \
+        x(_dup_to_lx_, T(0xf), /*=>*/ _dup_to_lf_) /* (dup>lx) T(f)   => (dup>lf)     */
 
 #define OPT3_RULES(x)                              /*                                   */         \
     x(r_from, plus, to_r, /*=>*/ r_plus_store)     /* r>     +   >r      => r+!         */         \

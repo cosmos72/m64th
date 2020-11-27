@@ -57,7 +57,7 @@ LABEL(th_run.stack_c)
         SUB2(IMM(4096),    sp)
 
 LABEL(th_run.stack_done)
-        LOAD(  LOCL, AT(M4TH, M4TH_OFF_LOCL))   /* load local variables pointer    */
+        LOAD(  LOCL, AT(M4TH, M4TH_OFF_LSTK))   /* load local variables pointer    */
         LOAD(  IP,   AT(M4TH, M4TH_OFF_IP))     /* load instruction  pointer       */
         LOAD(  FTBL, AT(M4TH, M4TH_OFF_FTABLE)) /* load table m4token -> m4func    */
         LOAD(  VM,   AT(M4TH, M4TH_OFF_VM))     /* load VM pointer                 */
@@ -90,7 +90,7 @@ FUNC_START(bye)
         STOR(  VM,   AT(M4TH, M4TH_OFF_VM))     /* save VM pointer                 */
         STOR(  FTBL, AT(M4TH, M4TH_OFF_FTABLE)) /* save table m4token -> m4func    */
         STOR(  IP,   AT(M4TH, M4TH_OFF_IP))     /* save instruction  pointer       */
-        STOR(  LOCL, AT(M4TH, M4TH_OFF_LOCL))   /* save local variables pointer    */
+        STOR(  LOCL, AT(M4TH, M4TH_OFF_LSTK))   /* save local variables pointer    */
 
         /* if m4th->rstack.curr == 0, no forth return stack is available           */
         /* => we used C stack as forth return stack                                */

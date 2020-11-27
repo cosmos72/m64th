@@ -22,9 +22,10 @@
 #include "../../include/dict.mh"
 #include "../../include/err.mh"
 #include "../../include/hashmap.mh"
-#include "../../include/localnames.mh"
+#include "../../include/locals.mh"
 #include "../../include/m4th/dict.mh"
 #include "../../include/opt2_hash.mh"
+#include "../../include/opt2_lowprio_hash.mh"
 #include "../../include/opt3_hash.mh"
 #include "../../include/opt_rules.mh"
 
@@ -237,9 +238,10 @@ WORD_START(_create_, _continue_)
         dup, CALL(parse_name),                         /* ( m4flags m4flags c-addr u     ) */
         dup, zero_equal,                               /* ( m4flags m4flags c-addr u t|f ) */
             _lit_, T(M4ERR_ZERO_LENGTH_NAME), and, throw,
-        name_comma, dup, to_latest,                   /* ( m4flags m4flags nt           ) */
+        name_comma, dup, to_latest,                    /* ( m4flags m4flags nt           ) */
         name_to_flags_store,                           /* ( m4flags                      ) */
-        _lit_tok_, colon, exit                         /* ( colon-sys                    ) */
+        _lit_tok_, colon,                              /* ( colon-sys                    ) */
+        CALL(_user_locals_clear_), exit                /* ( colon-sys                    ) */
     )
 WORD_END(_create_)
 WORD_START(_do_, _create_)
@@ -591,7 +593,8 @@ WORD(_lc_,    _lb_,      DSTACK(0,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_
 WORD(_ld_,    _lc_,      DSTACK(0,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
 WORD(_le_,    _ld_,      DSTACK(0,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
 WORD(_lf_,    _le_,      DSTACK(0,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
-WORD(_drop_l0_,     _lf_,DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
+WORD(_lx_,    _lf_,      DSTACK(0,1), RSTACK(0,0), M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_INLINE_ALWAYS)
+WORD(_drop_l0_,     _lx_,DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
 WORD(_drop_l1_,_drop_l0_,DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
 WORD(_drop_l2_,_drop_l1_,DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
 WORD(_drop_l3_,_drop_l2_,DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
@@ -607,7 +610,8 @@ WORD(_drop_lc_,_drop_lb_,DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_
 WORD(_drop_ld_,_drop_lc_,DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
 WORD(_drop_le_,_drop_ld_,DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
 WORD(_drop_lf_,_drop_le_,DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
-WORD(_to_l0_,  _drop_lf_,DSTACK(1,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
+WORD(_drop_lx_,_drop_lf_,DSTACK(1,1), RSTACK(0,0), M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_INLINE_ALWAYS)
+WORD(_to_l0_,  _drop_lx_,DSTACK(1,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
 WORD(_to_l1_,  _to_l0_,  DSTACK(1,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
 WORD(_to_l2_,  _to_l1_,  DSTACK(1,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
 WORD(_to_l3_,  _to_l2_,  DSTACK(1,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
@@ -623,7 +627,8 @@ WORD(_to_lc_,  _to_lb_,  DSTACK(1,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_
 WORD(_to_ld_,  _to_lc_,  DSTACK(1,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
 WORD(_to_le_,  _to_ld_,  DSTACK(1,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
 WORD(_to_lf_,  _to_le_,  DSTACK(1,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
-WORD(_dup_to_l0_,_to_lf_,    DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
+WORD(_to_lx_,  _to_lf_,  DSTACK(1,0), RSTACK(0,0), M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_INLINE_ALWAYS)
+WORD(_dup_to_l0_,_to_lx_,    DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
 WORD(_dup_to_l1_,_dup_to_l0_,DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
 WORD(_dup_to_l2_,_dup_to_l1_,DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
 WORD(_dup_to_l3_,_dup_to_l2_,DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
@@ -639,56 +644,184 @@ WORD(_dup_to_lc_,_dup_to_lb_,DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMP
 WORD(_dup_to_ld_,_dup_to_lc_,DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
 WORD(_dup_to_le_,_dup_to_ld_,DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
 WORD(_dup_to_lf_,_dup_to_le_,DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
-WORD(_lx_,       _dup_to_lf_,DSTACK(0,1), RSTACK(0,0), M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_INLINE_ALWAYS)
-WORD(_to_lx_,    _lx_,       DSTACK(1,0), RSTACK(0,0), M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_INLINE_ALWAYS)
-WORD_START(_local_allocate_,_to_lx_)
-    WORD_STACK_NONE()
-    WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
-    WORD_FLAGS(M4FLAG_COMPILE_ONLY)
-    WORD_CODE(
-        _lit_, T(LOCALNAMES_SZ + 16 * 256 + 1),        /* ( sizeof(m4localnames) + capacity ) */
-        dup, CALL(allocate), throw,                    /* ( cap addr                        ) */
-        zero, over, store,                             /* ( cap addr                        ) */
-        zero, over, cell_store_1,                      /* ( cap addr                        ) */
-        tuck, cell_store_2,                            /* ( addr                            ) */
-        user_var, T(M4TH_USER_VAR_LOCALNAMES),         /* ( addr &m->localnames             ) */
-        store,                                         /* (                                 ) */
-        exit
-    )
-WORD_END(_local_allocate_)
-WORD_START(_local_append_,  _local_allocate_)
-    WORD_DSTACK(2,0)
+WORD(_dup_to_lx_,_dup_to_lf_,DSTACK(1,1), RSTACK(0,0), M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_INLINE_ALWAYS)
+/* ( -- ls ) create a new m4locals data structure and initialize it */
+WORD_START(_locals_allocate_,  _dup_to_lx_)
+    WORD_DSTACK(3,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
-    WORD_FLAGS(M4FLAG_COMPILE_ONLY)
+    WORD_FLAGS(0)
     WORD_CODE(
-        dup, one_plus, to_r,                   /* ( c-addr u         ) (R: u+1 ) */
-        user_var, T(M4TH_USER_VAR_LOCALNAMES), /* ( c-addr u &l      ) (R: u+1 ) */
-        fetch, dup, cell_fetch_1,              /* ( c-addr u l pos   ) (R: u+1 ) */
-        swap, cell_fetch_3, plus,              /* ( c-addr u dst     ) (R: u+1 ) */
-        two_dup, c_store,                      /* ( c-addr u dst     ) (R: u+1 ) */
-	one_plus,                              /* ( c-addr u dst'    ) (R: u+1 ) */
-        swap, cmove_count, nip,                /* ( dst'             ) (R: u+1 ) */
-        zero, swap, c_store,                   /* (                  ) (R: u+1 ) */
-        user_var, T(M4TH_USER_VAR_LOCALNAMES), /* ( &l               )           */
-	fetch, r_from, over,                   /* ( l u+1 l          )           */
-	cell_store_1,    /* update localnames.end ( l                )           */
-        one, plus_store, /* update localnames.n   (                  )           */
+        _lit_, T(LOCALS_SZ + 16 * (LOCAL_SZ + 255)),   /* ( sizeof(m4locals) + capacity     ) */
+        dup, CALL(allocate), throw,                    /* ( cap ls                          ) */
+        tuck, cell_store_2,      /* set ls.cap */      /* ( ls                              ) */
+        zero, over, store,       /* set ls.n   */      /* ( ls                              ) */
+        zero, over, cell_store_1,/* set ls.end */      /* ( ls                              ) */
         exit
     )
-WORD_END(_local_append_)
-WORD_START(_local_enter_,_local_append_)
+WORD_END(_locals_allocate_)
+/* ( ls c-addr u -- ) create a new local variable. */
+WORD_START(_locals_add_,  _locals_allocate_)
+    WORD_DSTACK(3,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(0)
+    WORD_CODE(
+        /* throw if ls == 0 */
+        hop, zero_equal,                       /* ( ls c-addr u t|f            ) */
+        _lit_, T(M4ERR_INVALID_MEMORY_ADDRESS),/* ( ls c-addr u t|f err        ) */
+        and, throw,                            /* ( ls c-addr u                ) */
+        /* throw if name too long */
+        dup, dup, to_char, ne,                 /* ( ls c-addr u t|f            ) */
+        _if_, T(5),                            /* ( ls c-addr u                ) */
+            ex_message_store,                  /* ( ls                         ) */
+            _lit_, T(M4ERR_DEFINITION_NAME_TOO_LONG),/* ( ls                   ) */
+            throw,                             /* (                            ) */
+        then,                                  /* ( ls c-addr u                ) */
+        /* throw if too many names */
+        rot, dup, fetch,                       /* ( c-addr u ls n              ) */
+        _lit_, T(0xff), more_equal,            /* ( c-addr u ls t|f            ) */
+        _lit_, T(M4ERR_LOCALS_OVERFLOW), and,  /* ( c-addr u ls err|0          ) */
+        throw,                                 /* ( c-addr u ls                ) */
+        /* throw if locals array overflow */
+        dup, cell_fetch_1,                     /* ( c-addr u ls ls.end         ) */
+        over, cell_fetch_2,                    /* ( c-addr u ls ls.end ls.cap  ) */
+        sub,                                   /* ( c-addr u ls avail_bytes    ) */
+        hop, two_plus,                         /* ( c-addr u ls avail_bytes u' ) */
+        u_less,                                /* ( c-addr u ls t|f            ) */
+        _lit_, T(M4ERR_LOCALS_OVERFLOW), and,  /* ( c-addr u ls err|0          ) */
+        throw,                                 /* ( c-addr u ls                ) */
+        /* add new local variable */
+        over, two_plus, to_r,                  /* ( c-addr u ls      ) (R: u+2    ) */
+        dup_to_r,                              /* ( c-addr u ls      ) (R: u+2 ls ) */
+        cell_fetch_1,                          /* ( c-addr u end     ) (R: u+2 ls ) */
+        r_fetch, three, cells, plus,           /* ( c-addr u end vec ) (R: u+2 ls ) */
+        plus,                                  /* ( c-addr u l       ) (R: u+2 ls ) */
+        zero, over, c_store, /* set l.idx         ( c-addr u l       ) (R: u+2 ls ) */
+        one_plus,            /*                   ( c-addr u l+1     ) (R: u+2 ls ) */
+        two_dup, c_store,    /* set l.n           ( c-addr u l+1     ) (R: u+2 ls ) */
+        one_plus,            /*                   ( c-addr u l+2     ) (R: u+2 ls ) */
+        swap, cmove,         /* set l chars       (                  ) (R: u+2 ls ) */
+        one, r_fetch,        /*                   ( 1 ls             ) (R: u+2 ls ) */
+        plus_store,          /* set locals.n      (                  ) (R: u+2 ls ) */
+        two_r_from,          /*                   ( u+2 ls           )              */
+        cell_plus, plus_store, /* set locals.end  (                  )              */
+        exit
+    )
+WORD_END(_locals_add_)
+/* ( ls -- ) remove all local variables from specified m4locals struct */
+WORD_START(_locals_clear_,_locals_add_)
+    WORD_DSTACK(1,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(0)
+    WORD_CODE(
+        _q_if0_, T(3),                         /* ( 0                ) */
+            drop, exit,                        /* (                  ) */
+        then,                                  /* ( ls               ) */
+        zero, over, store,   /* set l.n */     /* ( ls               ) */
+        zero, swap,                            /* ( 0 ls             ) */
+        cell_store_1, exit   /* set l.end */   /* (                  ) */
+    )
+WORD_END(_locals_clear_)
+WORD_START(_locals_enter_,     _locals_clear_)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,-1)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_INLINE_ALWAYS)
-    WORD_CODE(_local_enter_, T(0), exit)
-WORD_END(_local_enter_)
-WORD(_local_exit_,  _local_enter_, DSTACK(0,0), RSTACK(-1,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
-WORD_START(_loop_, _local_exit_)
+    WORD_CODE(_locals_enter_, T(0), exit)
+WORD_END(_locals_enter_)
+WORD(_locals_exit_,    _locals_enter_, DSTACK(0,0), RSTACK(-1,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
+/* ( ls c-addr u -- idx|-1 ) find local variable */
+WORD_START(_locals_find_,      _locals_exit_)
+    WORD_DSTACK(3,1)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(0)
+    WORD_CODE(
+        two_to_r,                              /* ( ls                  ) (R: c-addr u ) */
+        CALL(_locals_first_),                  /* ( ls l|0              ) (R: c-addr u ) */
+        begin,                                 /* ( ls l|0              ) (R: c-addr u ) */
+        _q_while_, T(28+nCALLt),               /* ( ls l                ) (R: c-addr u ) */
+            dup, one_plus, count,              /* ( ls l c-addr' u'     ) (R: c-addr u ) */
+            dup, r_fetch, equal,               /* ( ls l c-addr' u' t|f ) (R: c-addr u ) */
+            _if_, T(15),                       /* ( ls l c-addr' u'     ) (R: c-addr u ) */
+                r2nd_fetch, swap,              /* ( ls l c-addr' c-addr u' ) (R: c-addr u ) */
+                string_ci_equal, nip, nip, nip,/* ( ls l t|f            ) (R: c-addr u ) */
+                _if_, T(5),                    /* ( ls l                ) (R: c-addr u ) */
+                    nip, two_r_from_two_drop,  /* ( l                   )                */
+                    c_fetch, exit,             /* ( idx                 )                */
+                then,                          /* ( ls l                ) (R: c-addr u ) */
+            _else_, T(2),                      /* ( ls l c-addr' u'     ) (R: c-addr u ) */
+                two_drop,                      /* ( ls l                ) (R: c-addr u ) */
+            then,                              /* ( ls l                ) (R: c-addr u ) */
+            CALL(_locals_next_),               /* ( ls l'|0             ) (R: c-addr u ) */
+        _repeat_, T(-30-nCALLt),               /* ( ls 0                ) (R: c-addr u ) */
+        nip, two_r_from_two_drop,              /* ( 0                   )                */
+        one_minus, exit                        /* ( -1                  )                */
+    )
+WORD_END(_locals_find_)
+/* ( ls -- ls l|0  ) get first local variable */
+WORD_START(_locals_first_,     _locals_find_)
+    WORD_DSTACK(1,2)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY)
+    WORD_CODE(
+        _q_if0_, T(3),                         /* ( 0                )           */
+            dup, exit,                         /* ( 0 0              )           */
+        then,                                  /* ( ls               )           */
+        dup, fetch, zero_ne,                   /* ( ls t|f           )           */
+        over, cell_fetch_1, zero_ne, and,      /* ( ls t|f'          )           */
+        over, three, cells, plus,              /* ( ls t|f l         )           */
+        and, exit                              /* ( ls l|0           )           */
+    )
+WORD_END(_locals_first_)
+/* ( ls l -- ls l'|0 ) get next local variable */
+WORD_START(_locals_next_,      _locals_first_)
+    WORD_DSTACK(2,2)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY)
+    WORD_CODE(
+        dup, char_fetch_1, plus, two_plus,     /* ( ls l'               )        */
+        over, cell_fetch_1,                    /* ( ls l ls.end         )        */
+        hop, three, cells, plus,               /* ( ls l ls.end ls.vec  )        */
+        plus,                                  /* ( ls l ls.vec+ls.end  )        */
+        over, more,                            /* ( ls l t|f            )        */
+        and, exit                              /* ( ls l|0              )        */
+    )
+WORD_END(_locals_next_)
+/* ( ls -- ) compute indexes of existing variables. */
+WORD_START(_locals_set_idx_,  _locals_next_)
+    WORD_DSTACK(1,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY)
+    WORD_CODE(
+        _q_if0_, T(3),                         /* ( 0                )           */
+            drop, exit,                        /* ( 0                )           */
+        then,                                  /* ( ls               )           */
+        dup, fetch, to_r,                      /* ( ls               ) (R: n   ) */
+        CALL(_locals_first_),                  /* ( ls l|0           ) (R: n   ) */
+        begin,                                 /* ( ls l|0           ) (R: i   ) */
+        _q_while_, T(7+nCALLt),                /* ( ls l             ) (R: i   ) */
+            r_one_minus, r_fetch,              /* ( ls l i-1         ) (R: i'  ) */
+            over, c_store,                     /* ( ls l             ) (R: i   ) */
+            CALL(_locals_next_),               /* ( ls l'|0          ) (R: i   ) */
+        _repeat_, T(-9-nCALLt),                /* ( ls 0             ) (R: i   ) */
+        two_drop, r_from_drop, exit            /* (                  )           */
+    )
+WORD_END(_locals_set_idx_)
+WORD_START(_loop_,     _locals_set_idx_)
     WORD_DSTACK(0,0) /* stack effect when not jumping */
     WORD_RSTACK(2,0)
     WORD_DSTACK(0,0) /* stack effect when jumping */
@@ -865,11 +998,38 @@ WORD_START(_optimize_2token_, _optimize_1token_)
     WORD_DATA_END(_optimize_2token_)
 WORD_END(_optimize_2token_)
 /**
+ * find a low-priority optimized sequence to replace two tokens being compiled.
+ * if no optimized sequence was found, return 0
+ * ( tok-addr -- counted-tokens | 0 )
+ */
+WORD_START(_optimize_2token_lowprio_, _optimize_2token_)
+    WORD_DSTACK(1,1)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE|M4FLAG_DATA_TOKENS)
+    WORD_CODE_N_AUTO(_optimize_2token_lowprio_)
+    WORD_DATA_N_AUTO(_optimize_2token_lowprio_)
+    WORD_CODE_START(_optimize_2token_lowprio_)
+      WORD_CODE_TOKENS(/* generated from file m4th_impl.forth - see source and comments there */
+        /*17*/ _ip_to_data_addr_, swap, dup, token_fetch, swap, token_fetch_1,
+        eight, tokens, lshift, or, CALL(hashmap_find_int), nip, exit
+      )
+    WORD_CODE_END(_optimize_2token_lowprio_)
+    WORD_DATA_START(_optimize_2token_lowprio_)
+#define H2_START(size, lcap) WORD_DATA_INTS(size, lcap) WORD_DATA_CELLS(.+ 8)
+#define H2_ENTRY(key, val, next) WORD_DATA_CELLS(val) WORD_DATA_INTS(key, next)
+      OPT2_LOWPRIO_HASHMAP(H2_START, H2_ENTRY)
+#undef H2_START
+#undef H2_ENTRY
+    WORD_DATA_END(_optimize_2token_lowprio_)
+WORD_END(_optimize_2token_lowprio_)
+/**
  * find an optimized sequence to replace three tokens being compiled.
  * if no optimized sequence was found, return 0
  * ( tok-addr -- counted-tokens | 0 )
  */
-WORD_START(_optimize_3token_, _optimize_2token_)
+WORD_START(_optimize_3token_, _optimize_2token_lowprio_)
     WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -1207,6 +1367,7 @@ WORD_START(_finish_, _endof_)
         _if0_, T(2+nCALLt),
             CALL(_optimize_),
         then,
+        CALL(_user_locals_clear_),
         left_bracket, align, /* also align HERE to current word's data */
         latest, get_current, wordlist_add_name, exit
     )
@@ -1465,7 +1626,61 @@ WORD_START(_throw_if_not_compiling_, _throw_compile_only_xt_)
         exit
     )
 WORD_END(_throw_if_not_compiling_)
-WORD(minus_two,_throw_compile_only_xt_,DSTACK(0,1), RSTACK(0,0), WORD_PURE)
+/* ( -- ls ) allocate m4th->locals data structure if not present */
+WORD_START(_user_locals_allocate_,_throw_if_not_compiling_)
+    WORD_DSTACK(0,1)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY)
+    WORD_CODE(
+        user_var, T(M4TH_USER_VAR_LOCALS), dup, fetch, /* ( &ls ls|0                        ) */
+        _q_if_, T(3),                                  /* ( &ls ls                          ) */
+            nip, exit,                                 /* ( ls                              ) */
+        then,                                          /* ( &ls 0                           ) */
+        drop,                                          /* ( &ls                             ) */
+        CALL(_locals_allocate_),                       /* ( &ls ls                          ) */
+        tuck, swap,                                    /* ( ls ls &ls                       ) */
+        store, exit              /* set m4th.locals */ /* ( ls                              ) */
+    )
+WORD_END(_user_locals_allocate_)
+/* ( -- )    remove all local variables from m4th->locals */
+WORD_START(_user_locals_clear_,_user_locals_allocate_)
+    WORD_DSTACK(0,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE)
+    WORD_CODE(
+        user_var, T(M4TH_USER_VAR_LOCALS), fetch,
+        CALL(_locals_clear_), exit
+    )
+WORD_END(_user_locals_clear_)
+/* ( c-addr u -- idx|-1 ) find local variable in m4th->locals */
+WORD_START(_user_locals_find_,      _user_locals_clear_)
+    WORD_DSTACK(2,1)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE)
+    WORD_CODE(
+        user_var, T(M4TH_USER_VAR_LOCALS), fetch,
+        minus_rot,
+        CALL(_locals_find_), exit
+    )
+WORD_END(_user_locals_find_)
+/* ( -- ) set indexes of local variables in m4th->locals */
+WORD_START(_user_locals_set_idx_,      _user_locals_find_)
+    WORD_STACK_NONE()
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE)
+    WORD_CODE(
+        user_var, T(M4TH_USER_VAR_LOCALS), fetch,
+        CALL(_locals_set_idx_), exit
+    )
+WORD_END(_user_locals_set_idx_)
+WORD(minus_two, _user_locals_set_idx_, DSTACK(0,1), RSTACK(0,0), WORD_PURE)
 WORD(minus_one,        minus_two,      DSTACK(0,1), RSTACK(0,0), WORD_PURE)
 WORD(zero,             minus_one,      DSTACK(0,1), RSTACK(0,0), WORD_PURE)
 WORD(one,              zero,           DSTACK(0,1), RSTACK(0,0), WORD_PURE)

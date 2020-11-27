@@ -52,7 +52,7 @@ LABEL(th_run.stack_c)
         MOVE(  RSTK,   AT(M4TH, M4TH_OFF_REND))
 
 LABEL(th_run.stack_done)
-        LOAD(  LOCL,   AT(M4TH, M4TH_OFF_LOCL))   /* load local variables pointer    */
+        LOAD(  LOCL,   AT(M4TH, M4TH_OFF_LSTK))   /* load local variables pointer    */
         LOAD(  IP,     AT(M4TH, M4TH_OFF_IP))     /* load instruction  pointer       */
         LOAD(  FTBL,   AT(M4TH, M4TH_OFF_FTABLE)) /* load table m4token -> m4func    */
         LOAD(  VM,     AT(M4TH, M4TH_OFF_VM))     /* load VM pointer                 */
@@ -82,7 +82,7 @@ FUNC_RAWEND(_vm_)
 FUNC_START(bye)
         RPUSH( RTOP)                              /* save first return stack element */
         DPUSH__DTOP()                             /* save first data   stack element */
-        STOR(  LOCL,   AT(M4TH, M4TH_OFF_LOCL))   /* save local variables pointer    */
+        STOR(  LOCL,   AT(M4TH, M4TH_OFF_LSTK))   /* save local variables pointer    */
         STOR(  IP,     AT(M4TH, M4TH_OFF_IP))     /* save instruction  pointer       */
         STOR(  FTBL,   AT(M4TH, M4TH_OFF_FTABLE)) /* save table m4token -> m4func    */
         STOR(  VM,     AT(M4TH, M4TH_OFF_VM  ))   /* save VM   address               */
@@ -116,7 +116,7 @@ FUNC_RAWEND(bye)
 FUNC_START(_c_arg_0_)
         SUB2(  IMM(SZ),DSTK)
         /* save DSTK, LOCL to m4th. helps if C calls back into forth                 */
-        STOR(  LOCL,   AT(M4TH, M4TH_OFF_LOCL))    /* save LOCL = %r9  (clobbered)   */
+        STOR(  LOCL,   AT(M4TH, M4TH_OFF_LSTK))    /* save LOCL = %r9  (clobbered)   */
         STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))    /* save DSTK = %rsi (clobbered)   */
         STOR(  DTOP,   AT(DSTK))                   /* will be reloaded by c-ret-[N]  */
 FUNC_END(_c_arg_0_)
@@ -124,7 +124,7 @@ FUNC_END(_c_arg_0_)
 
 /* pop 1 arg, prepare it for C function call */
 FUNC_START(_c_arg_1_)
-        STOR(  LOCL,   AT(M4TH, M4TH_OFF_LOCL))    /* save LOCL = %r9  (clobbered)   */
+        STOR(  LOCL,   AT(M4TH, M4TH_OFF_LSTK))    /* save LOCL = %r9  (clobbered)   */
         STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))    /* save DSTK = %rsi (clobbered)   */
         MOVE(  DTOP,   %rdi)                       /* %rdi = C arg 1                 */
 FUNC_END(_c_arg_1_)
@@ -133,7 +133,7 @@ FUNC_END(_c_arg_1_)
 /* pop 2 args, prepare them for C function call */
 FUNC_START(_c_arg_2_)
         ADD2(  IMM(SZ), DSTK)
-        STOR(  LOCL,   AT(M4TH, M4TH_OFF_LOCL))    /* save LOCL = %r9  (clobbered)   */
+        STOR(  LOCL,   AT(M4TH, M4TH_OFF_LSTK))    /* save LOCL = %r9  (clobbered)   */
         STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))    /* save DSTK = %rsi (clobbered)   */
         LOAD(  %rdi,   AT(DSTK, -SZ))              /* %rdi = C arg 1                 */
         MOVE(  DTOP,   %rsi)                       /* %rsi = C arg 2 (clobbers DSTK) */
@@ -143,7 +143,7 @@ FUNC_END(_c_arg_2_)
 /* pop 3 args, prepare them for C function call */
 FUNC_START(_c_arg_3_)
         ADD2(  IMM(SZ2), DSTK)
-        STOR(  LOCL,   AT(M4TH, M4TH_OFF_LOCL))    /* save LOCL = %r9  (clobbered)   */
+        STOR(  LOCL,   AT(M4TH, M4TH_OFF_LSTK))    /* save LOCL = %r9  (clobbered)   */
         STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))    /* save DSTK = %rsi (clobbered)   */
         MOVE(  DTOP,   %rdx)                       /* %rdx = C arg 3                 */
         LOAD(  %rdi,   AT(DSTK, -SZ))              /* %rdi = C arg 1                 */
@@ -154,7 +154,7 @@ FUNC_END(_c_arg_3_)
 /* pop 4 args, prepare them for C function call */
 FUNC_START(_c_arg_4_)
         ADD2(  IMM(SZ3), DSTK)
-        STOR(  LOCL,   AT(M4TH, M4TH_OFF_LOCL))    /* save LOCL = %r9  (clobbered)   */
+        STOR(  LOCL,   AT(M4TH, M4TH_OFF_LSTK))    /* save LOCL = %r9  (clobbered)   */
         STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))    /* save DSTK = %rsi (clobbered)   */
         MOVE(  DTOP,   %rcx)                       /* %rcx = C arg 4                 */
         LOAD(  %rdx,   AT(DSTK, -SZ3))             /* %rdx = C arg 3                 */
@@ -166,7 +166,7 @@ FUNC_END(_c_arg_4_)
 /* pop 5 args, prepare them for C function call */
 FUNC_START(_c_arg_5_)
         ADD2(  IMM(SZ4), DSTK)
-        STOR(  LOCL,   AT(M4TH, M4TH_OFF_LOCL))    /* save LOCL = %r9  (clobbered)   */
+        STOR(  LOCL,   AT(M4TH, M4TH_OFF_LSTK))    /* save LOCL = %r9  (clobbered)   */
         STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))    /* save DSTK = %rsi (clobbered)   */
         LOAD(  %rcx,   AT(DSTK, -SZ4))             /* %rcx = C arg 4                 */
         LOAD(  %rdx,   AT(DSTK, -SZ3))             /* %rdx = C arg 3                 */
@@ -178,7 +178,7 @@ FUNC_END(_c_arg_5_)
 /* pop 6 args, prepare them for C function call */
 FUNC_START(_c_arg_6_)
         ADD2(  IMM(SZ5), DSTK)
-        STOR(  LOCL,   AT(M4TH, M4TH_OFF_LOCL))    /* save LOCL = %r9  (clobbered)   */
+        STOR(  LOCL,   AT(M4TH, M4TH_OFF_LSTK))    /* save LOCL = %r9  (clobbered)   */
         STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))    /* save DSTK = %rsi (clobbered)   */
         MOVE(  DTOP,   %r9)                        /* %r9  = C arg 6                 */
         LOAD(  %r8,    AT(DSTK, -SZ5))             /* %r8  = C arg 5                 */
@@ -217,7 +217,7 @@ LABEL(_c_call_.finish)
          * we need to restore only: DSTK LOCL RFFF
          */
         LOAD(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))    /* reload DSTK = %rsi             */
-        LOAD(  LOCL,   AT(M4TH, M4TH_OFF_LOCL))    /* reload LOCL = %r9              */
+        LOAD(  LOCL,   AT(M4TH, M4TH_OFF_LSTK))    /* reload LOCL = %r9              */
         RPUSH(IMM(-1)) RPOP(RFFF)                  /* set RFFF = -1                  */
 FUNC_END(_c_call_)
 

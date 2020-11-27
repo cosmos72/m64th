@@ -58,12 +58,13 @@ typedef enum m4err_id_e {
     m4err_non_existent_file = M4ERR_NON_EXISTENT_FILE, /* -38 */
     m4err_unexpected_eof = M4ERR_UNEXPECTED_EOF,       /* -39 */
     /* ... */
-    m4err_quit = M4ERR_QUIT,                                                     /* -56 */
-    m4err_exception_in_send_or_recv_char = M4ERR_EXCEPTION_IN_SEND_OR_RECV_CHAR, /* -57 */
+    m4err_quit = M4ERR_QUIT,                                               /* -56 */
+    m4err_failed_to_send_or_recv_char = M4ERR_FAILED_TO_SEND_OR_RECV_CHAR, /* -57 */
+    /* ... */
+    m4err_failed_to_allocate = M4ERR_FAILED_TO_ALLOCATE, /* -59 */
     /* ... */
     m4err_defer_uninitialized = M4ERR_DEFER_UNINITIALIZED, /* -256 */
     m4err_not_created = M4ERR_NOT_CREATED,                 /* -257 */
-    m4err_out_of_memory = M4ERR_OUT_OF_MEMORY,             /* -258 */
 
     m4err_c_errno = M4ERR_C_ERRNO, /* error is M4ERR_C_ERRNO - errno */
 } m4err_id;

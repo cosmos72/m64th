@@ -4,7 +4,7 @@
  */
 /* clang-format off */
 #define OPT2_HASHMAP(start, entry)	\
-start(/*size*/ 421, /*lcap*/ 8)	\
+start(/*size*/ 423, /*lcap*/ 8)	\
 entry(M4zero|(M4roll<<16),	0,	256)	\
 entry(M4zero_more_equal|(M4zero_less<<16),	1|(M4zero_less<<16),	257)	\
 entry(M4negate|(M4_while0_<<16),	1|(M4_while0_<<16),	-2)	\
@@ -24,7 +24,7 @@ entry(M4one_minus|(M4two_plus<<16),	1|(M4one_plus<<16),	271)	\
 entry(M4more|(M4zero_less<<16),	1|(M4more<<16),	282)	\
 entry(M4zero|(M4pick<<16),	1|(M4dup<<16),	280)	\
 entry(M4minus_one|(M4xor<<16),	1|(M4invert<<16),	-2)	\
-entry(0,	0,	-1)	\
+entry(M4dup|(M4_to_lx_<<16),	1|(M4_dup_to_lx_<<16),	-2)	\
 entry(M4dup|(M4drop<<16),	0,	-2)	\
 entry(M4zero|(M4lshift<<16),	0,	-2)	\
 entry(M4equal|(M4zero_less<<16),	1|(M4equal<<16),	278)	\
@@ -48,7 +48,7 @@ entry(0,	0,	-1)	\
 entry(0,	0,	-1)	\
 entry(M4less|(M4zero_more_equal<<16),	1|(M4more_equal<<16),	297)	\
 entry(M4minus_one|(M4mod<<16),	2|(M4drop<<16)|(M4zero<<32),	307)	\
-entry(M4swap|(M4over<<16),	1|(M4tuck<<16),	-2)	\
+entry(M4drop|(M4_lx_<<16),	1|(M4_drop_lx_<<16),	299)	\
 entry(M4four_times|(M4two_times<<16),	1|(M4eight_times<<16),	300)	\
 entry(0,	0,	-1)	\
 entry(0,	0,	-1)	\
@@ -260,7 +260,7 @@ entry(M4two|(M4minus_roll<<16),	1|(M4minus_rot<<16),	273)	\
 entry(M4four_plus|(M4int_fetch<<16),	1|(M4int_fetch_1<<16),	-2)	\
 entry(0,	0,	-1)	\
 entry(M4two|(M4times<<16),	1|(M4two_times<<16),	290)	\
-entry(M4zero|(M4xor<<16),	0,	299)	\
+entry(M4zero|(M4xor<<16),	0,	332)	\
 entry(M4tuck|(M4hop<<16),	2|(M4tuck<<16)|(M4dup<<32),	-2)	\
 entry(M4dup|(M4tuck<<16),	2|(M4dup<<16)|(M4dup<<32),	-2)	\
 entry(0,	0,	-1)	\
@@ -304,7 +304,7 @@ entry(M4four_plus|(M4uint_fetch<<16),	1|(M4uint_fetch_1<<16),	259)	\
 entry(M4more_equal|(M4zero_more_equal<<16),	1|(M4less<<16),	289)	\
 entry(M4int_aligned|(M4int_aligned<<16),	1|(M4int_aligned<<16),	-2)	\
 entry(M4more_equal|(M4invert<<16),	1|(M4less<<16),	-2)	\
-entry(M4four_plus|(M4short_fetch<<16),	1|(M4short_fetch_2<<16),	511)	\
+entry(M4swap|(M4over<<16),	1|(M4tuck<<16),	-2)	\
 entry(M4abs|(M4abs<<16),	1|(M4abs<<16),	-2)	\
 entry(0,	0,	-1)	\
 entry(0,	0,	-1)	\
@@ -337,7 +337,7 @@ entry(M4two_over|(M4two_nip<<16),	3|(M4drop<<16)|(M4drop<<32)|(M4two_dup<<48),	-
 entry(0,	0,	-1)	\
 entry(M4two_times|(M4two_times<<16),	1|(M4four_times<<16),	-2)	\
 entry(M4two_rot|(M4minus_two_rot<<16),	0,	324)	\
-entry(0,	0,	-1)	\
+entry(M4four_plus|(M4short_fetch<<16),	1|(M4short_fetch_2<<16),	511)	\
 entry(M4to_r|(M4r_from<<16),	0,	328)	\
 entry(M4swap|(M4u_less_equal<<16),	1|(M4u_more_equal<<16),	313)	\
 entry(M4flip|(M4nip<<16),	2|(M4nip<<16)|(M4swap<<32),	-2)	\

@@ -28,29 +28,14 @@ WORD_START(_local_, LASTWORD)
     WORD_NATIVE_NONE()
     WORD_FLAGS(0)
     WORD_CODE(
-        _q_if0_, T(3),                         /* ( c-addr u                 ) */
-            two_drop, exit,                    /* (                          ) */
-        then,                                  /* ( c-addr u                 ) */
-        two_dup, to_char, ne,                  /* ( c-addr u t|f             ) */
-        _if_, T(5),                            /* ( c-addr u                 ) */
-            ex_message_store,                  /* (                          ) */
-            _lit_, T(M4ERR_DEFINITION_NAME_TOO_LONG),/* (                    ) */
-            throw,                             /* (                          ) */
-        then,                                  /* ( c-addr u                 ) */
-        user_var, T(M4TH_USER_VAR_LOCALNAMES), /* ( c-addr u &l              ) */
-        dup, fetch,                            /* ( c-addr u &l l|0          ) */
-        _if0_, T(2+nCALLt),                    /* ( c-addr u &l              ) */
-            CALL(_local_allocate_),            /* ( c-addr u &l              ) */
-        then,                                  /* ( c-addr u &l              ) */
-        fetch,                                 /* ( c-addr u l               ) */
-        dup_to_r, cell_fetch_1,                /* ( c-addr u end       ) (R: l ) */
-        plus, two_plus,                        /* ( c-addr u end''     ) (R: l ) */
-        r_from, cell_fetch_2, more_equal,      /* ( c-addr u t|f             ) */
-        _if_, T(4),                            /* ( c-addr u                 ) */
-            _lit_, T(M4ERR_LOCALS_OVERFLOW),   /* ( c-addr u err             ) */
-            throw,
-        then,                                  /* ( c-addr u                 ) */
-        CALL(_local_append_), exit             /* (                          ) */
+        CALL(_user_locals_allocate_),          /* ( c-addr u ls              ) */
+        minus_rot,                             /* ( ls c-addr u              ) */
+        _q_if0_, T(4+nCALLt),                  /* ( ls c-addr u                */
+            /* end-of-locals marker: compute indexes */
+            two_drop,                          /* ( ls                       ) */
+            CALL(_locals_set_idx_), exit,      /* (                          ) */
+        then,                                  /* ( ls c-addr u              ) */
+        CALL(_locals_add_), exit               /* (                          ) */
     )
 WORD_END(_local_)
 

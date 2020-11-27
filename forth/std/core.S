@@ -148,15 +148,15 @@ WORD_START(colon,      two_swap)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
-        /* state @ 0<>                                 ( t|f             )
-         *    M4ERR_COMPILER_NESTING and throw         (                 )
+        /* state @ 0<>                              ( t|f             )
+         * M4ERR_COMPILER_NESTING and throw         (                 )
          * 0 (create)                               ( colon-sys: 0 colon )
          * postpone ]
          */
         state, fetch, zero_ne,
-            _lit_, T(M4ERR_COMPILER_NESTING), and, throw,
+        _lit_, T(M4ERR_COMPILER_NESTING), and, throw,
 #if 0
-        /* temporarily disable optimizer, it does not recompute jump offsets */
+        /* temporarily disable optimizer */
         _lit_, T(M4FLAG_NOOPT),
 #else
         zero,
