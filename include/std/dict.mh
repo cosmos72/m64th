@@ -272,7 +272,9 @@
     X(5, "cmove", cmove)                                                                           \
     /*X(6, "cmove>", cmove_top)*/
 
-#define DICT_WORDS_FORTH_STRING(X) DICT_TOKENS_FORTH_STRING(X)
+#define DICT_WORDS_FORTH_STRING(X) /*                                                          */  \
+    DICT_TOKENS_FORTH_STRING(X)    /*                                                          */  \
+    X(5, "blank", blank)
 
 /* ------- forth 2012 --------------------------------------------------------------------------- */
 #define DICT_TOKENS_FORTH(X)                                                                       \
