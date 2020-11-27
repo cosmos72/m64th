@@ -199,12 +199,15 @@ FUNC_START(_c_call_)
         STOR(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))
         LOAD(  %rsp,   AT(M4TH, M4TH_OFF_C_REG0))
         call   *AT(IP);
+	/* C function may clobber m4th.c_regs[0]                                     */
+	/* if it calls back into forth                                               */
+        STOR(  %rsp,   AT(M4TH, M4TH_OFF_C_REG0))
         LOAD(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))
         JUMP(  TO(_c_call_.finish))
 
 LABEL(_c_call_.stack_c)
         /* m4th->rstack.curr == 0 thus RSTK i.e. %rsp points to C stack:             */
-        /* nothing to fix                                                            */
+        /* FIXME align %rsp to 16 bytes                                              */
         call   *AT(IP);
 
 LABEL(_c_call_.finish)
