@@ -227,8 +227,8 @@ WORD_START(_continue_, _catch_end_)
        CALL(continue), exit
     )
 WORD_END(_continue_)
-/* ( -- ) if compiling, forget latest word and discard compilation stack. */
-/* also unconditionally stops compiling */
+/* ( -- ) if compiling, forget latest word, discard compilation stack, */
+/* skip until end of input line. also unconditionally stops compiling */
 WORD_START(_compiler_abort_, _continue_)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)
@@ -252,13 +252,15 @@ WORD_START(_compiler_abort_, _continue_)
         then,                                              /* ( addr                   ) */
         here, minus,                                       /* ( negative_offset_bytes  ) */
         allot,                                             /* (                        ) */
-        /* now discard compilation stack */                /* (                        ) */
+        /* discard compilation stack */                    /* (                        ) */
         begin,                                             /* ( sys*                   ) */
             depth,                                         /* ( sys* u                 ) */
         _while_, T(6),                                     /* ( sys* sys               ) */
             _lit_tok_, colon, equal, nip,                  /* ( sys* t|f               ) */
         _until_, T(-9),                                    /* (                        ) */
-        then, exit                                         /* (                        ) */
+        then,                                              /* (                        ) */
+        /* skip until end of input line */
+        CALL(backslash), exit
     )
 WORD_END(_compiler_abort_)
 /* ( m4flags -- sys ) read non-blanks string, create a new word for it. set LATEST */

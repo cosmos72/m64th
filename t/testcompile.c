@@ -242,6 +242,8 @@ static const m4testcompile testcompile_a[] = {
      {3 + 2 * nCALLt, {m4_lit_xt_, XT(and), CALL(compile_comma), m4exit}}},
     /* ------------------------------- recurse ------------------------------ */
     {"recurse ;", {2, {0, m4colon}}, {}, {3, {m4_recurse_, T(-2), m4exit}}},
+    /* exception while compiling: must stop compiling and discard rest of line */
+    {"non-existent-name 1", {4, {0, m4colon, -1, -1}}, {}, {}},
 };
 
 static const m4testcompile testcompile_b[] = {
