@@ -399,8 +399,8 @@ WORD_START(_hashmap_entry_fetch_cell_, _fallthrough_)
     WORD_CODE(
         _lit_, T(M4HASHMAP_ENTRY_SZ_CELL), times, plus,    /* ( vec'         )           */
         dup_to_r,                                          /* ( vec          ) (R: vec ) */
-#if M4HASHMAP_ENTRY_OFF_KEY_CELL == 12
-        cell_fetch_3,                                      /* ( key          ) (R: vec ) */
+#if M4HASHMAP_ENTRY_OFF_KEY_CELL == SZ
+        cell_fetch_1,                                      /* ( key          ) (R: vec ) */
 #else
         _lit_, T(M4HASHMAP_ENTRY_OFF_KEY_CELL), plus, fetch, /* same */
 #endif
