@@ -296,6 +296,7 @@
     X(8, "see-name", see_name)  /* ( nt -- ) show definition of nt                       */        \
     X(8, "string<>", string_ne) /* ( addr1 addr2 u -- addr1 addr2 u t|f )                */        \
     X(11, "string-ci<>", string_ci_ne) /* ( addr1 addr2 u -- addr1 addr2 u t|f )         */        \
+    X(9, "string2<>", string2_ne)      /* ( addr1 u1 addr2 u2  -- addr1 u1 t|f )         */        \
     X(8, "string2=", string2_equal)    /* ( addr1 u1 addr2 u2  -- addr1 u1 t|f )         */        \
     /*                                 convert string to number, recognizing base & sign */        \
     X(13, "string>number", string_to_number) /* ( caddr n -- caddr' n' x t|f )           */        \

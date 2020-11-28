@@ -40,7 +40,7 @@ WORD_START(string2_equal, clearstack)
     WORD_RSTACK(0,0)
     WORD_STACK_ANY()
     WORD_NATIVE_NONE()
-    WORD_FLAGS(0)
+    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
     WORD_CODE(
         /*14*/ rot, tuck, equal,
         _if_, T(5),
@@ -50,7 +50,19 @@ WORD_START(string2_equal, clearstack)
         then, exit
     )
 WORD_END(string2_equal)
-WORD_START(wordlist_upto_name, string2_equal)
+/* string2<> ( c-addr1 u1 c-addr2 u2  -- c-addr1 u1 t|f ) */
+WORD_START(string2_ne, string2_equal)
+    WORD_DSTACK(4,3)
+    WORD_RSTACK(0,0)
+    WORD_STACK_ANY()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
+    WORD_CODE(
+        /* optimizes better than "string2= invert" */
+        CALL(string2_equal), zero_equal, exit
+    )
+WORD_END(string2_ne)
+WORD_START(wordlist_upto_name, string2_ne)
     WORD_DSTACK(2,-1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()

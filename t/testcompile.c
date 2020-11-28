@@ -110,9 +110,9 @@ static const m4testcompile testcompile_a[] = {
     {"/mod drop false true", {}, {}, {4, {m4div_mod, m4drop, m4false, m4true}}},
     {"?dup dup exit", {}, {}, {3, {m4question_dup, m4dup, m4exit}}},
     {"string=", {}, {}, {1, {m4string_equal}}},
-    {"string<>", {}, {}, {2, {m4string_equal, m4invert}}},
+    {"string<>", {}, {}, {2, {m4string_equal, m4zero_equal}}},
     {"STRING-CI=", {}, {}, {1, {m4string_ci_equal}}},
-    {"sTrInG-CI<>", {}, {}, {2, {m4string_ci_equal, m4invert}}},
+    {"sTrInG-CI<>", {}, {}, {2, {m4string_ci_equal, m4zero_equal}}},
     {"c, short, int, ,", {}, {}, {4, {m4c_comma, m4short_comma, m4int_comma, m4comma}}},
     /* ------------------------------- immediate words ---------------------- */
     {"s\"  fubar\"", {}, {}, {3, {LIT_STRING(6, " fubar")}}},
