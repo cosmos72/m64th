@@ -580,6 +580,9 @@
     DICT_TOKENS_M4TH_IMPL(X)                                                                       \
     X(13, "(abort-quote)", _abort_quote_)   /* ( x c-addr u ) runtime part of abort" */            \
     X(14, "(check-stacks)", _check_stacks_) /* throw on stack underflow              */            \
+    /* ( ex|0 -- ex|0 ) if compiling and ex <> 0, forget latest word and discard compilation       \
+     * stack. */                                                                                   \
+    X(16, "(compiler-abort)", _compiler_abort_) /* if ex <> 0, also stops compiling */             \
     /* ( m4flags -- sys ) read non-blanks string, create new word for it. set LATEST */            \
     X(8, "(create)", _create_)                                                                     \
     X(21, "(defer-uninitialized)", _defer_uninitialized_) /* throw M4ERR_DEFER_UNINITIALIZED */    \
@@ -587,8 +590,6 @@
     X(6, "(does)", _does_) /* ( -- ) replace execution semantics of latest word */                 \
     X(11, "(eval-name)", _eval_name_)                                                              \
     X(13, "(eval-number)", _eval_number_) /* ( x -- ) interpret or compile number */               \
-                                          /* ( -- ) also unconditionally stops compiling */        \
-    X(28, "(forget-latest-if-compiling)", _forget_latest_if_compiling_)                            \
     /* ( vec pos -- key &val next ) fetch entry from hashmap/cell bucket index */                  \
     X(21, "(hashmap-entry@/cell)", _hashmap_entry_fetch_cell_)                                     \
     /* ( vec pos -- key &val next ) fetch entry from hashmap/int bucket index */                   \
