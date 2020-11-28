@@ -455,6 +455,7 @@ WORD_START(repl,  rdepth)
          *    if                                       ( ... 0         )
          *       drop (repl-type-ack)                  ( ...           )
          *    else                                     ( ... ex|0      )
+         *       (forget-latest-if-compiling)          ( ... ex|0      )
          *       type-exception                        ( ...           )
          *    then                                     ( ...           )
          * repeat                                      ( ...           )
@@ -462,21 +463,23 @@ WORD_START(repl,  rdepth)
         begin,
             out_to_obuf, CALL(obuf_flush), drop,
             in_to_ibuf, CALL(ibuf_refill_if_empty),
-        _while0_, T(20+4*nCALLt),
+        _while0_, T(21+5*nCALLt),
             _lit_xt_, XT(interpret), _catch_beg_, _catch_end_,
             dup, zero_equal,
             in_to_ibuf, CALL(ibuf_skip_blanks),
             in_to_ibuf, iobuf_empty_query, and,
             _if_, T(4+nCALLt),
                 drop, CALL(_repl_type_ack_),
-            _else_, T(2+nCALLt),
+            _else_, T(3+2*nCALLt),
+                /* also unconditionally stops compiling */
+                CALL(_forget_latest_if_compiling_),
                 CALL(type_exception),
             then,
-        _repeat_, T(-27-6*nCALLt), exit
+        _repeat_, T(-28-7*nCALLt), exit
     )
 WORD_END(repl)
-WORD(r2nd_fetch,      repl,           DSTACK(0,1), RSTACK(2,2), WORD_R_PURE)
-WORD(squared,          r2nd_fetch,    DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD(r2nd_fetch,       repl,           DSTACK(0,1), RSTACK(2,2), WORD_R_PURE)
+WORD(squared,          r2nd_fetch,     DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(sub,              squared,        DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD_START(minus_roll, sub)
     WORD_DSTACK(1,0) /* DSTACK(x+1,x)   */

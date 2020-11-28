@@ -587,6 +587,8 @@
     X(6, "(does)", _does_) /* ( -- ) replace execution semantics of latest word */                 \
     X(11, "(eval-name)", _eval_name_)                                                              \
     X(13, "(eval-number)", _eval_number_) /* ( x -- ) interpret or compile number */               \
+                                          /* ( -- ) also unconditionally stops compiling */        \
+    X(28, "(forget-latest-if-compiling)", _forget_latest_if_compiling_)                            \
     /* ( vec pos -- key &val next ) fetch entry from hashmap/cell bucket index */                  \
     X(21, "(hashmap-entry@/cell)", _hashmap_entry_fetch_cell_)                                     \
     /* ( vec pos -- key &val next ) fetch entry from hashmap/int bucket index */                   \

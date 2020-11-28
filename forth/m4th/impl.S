@@ -352,9 +352,44 @@ WORD_START(_fallthrough_,      _exec_xt_from_native_)
         CALL(fallthrough), exit
     )
 WORD_END(_fallthrough_)
+/* ( ex|0 -- ex|0 ) also unconditionally stops compiling */
+WORD_START(_forget_latest_if_compiling_, _fallthrough_)
+    WORD_DSTACK(0,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        state, fetch, zero_ne,                             /* ( t|f                    ) */
+        zero, state, store,  /* set interpretation state      ( t|f                    ) */
+        latest, and,                                       /* ( nt|0                   ) */
+        _q_if0_, T(3),                                     /* ( 0                      ) */
+            /* no word being compiled */                   /* ( 0                      ) */
+            drop, exit,                                    /* (                        ) */
+        then,                                              /* ( nt                     ) */
+        dup, name_to_string, drop,                         /* ( nt c-addr|0            ) */
+        _q_if_, T(3),                                      /* ( nt c-addr              ) */
+            nip, one_minus,                                /* ( &countedstring         ) */
+        _else_, T(2),                                      /* ( nt 0                   ) */
+            /* unnamed word */                             /* ( nt 0                   ) */
+            drop,                                          /* ( nt                     ) */
+        then,                                              /* ( addr                   ) */
+        here, minus,                                       /* ( negative_offset_bytes  ) */
+        allot,                                             /* (                        ) */
+        /* now discard compilation stack */                /* ( ex|0                   ) */
+        to_r,                                              /* (             ) (R: ex|0 ) */
+        begin,                                             /* ( sys*        ) (R: ex|0 ) */
+            depth,                                         /* ( sys* u      ) (R: ex|0 ) */
+        _while_, T(6),                                     /* ( sys* sys    ) (R: ex|0 ) */
+            _lit_tok_, colon, equal, nip,                  /* ( sys* t|f    ) (R: ex|0 ) */
+        _until_, T(-9),                                    /* (             ) (R: ex|0 ) */
+        then,                                              /* (             ) (R: ex|0 ) */
+        r_from, exit                                       /* ( ex|0                   ) */
+    )
+WORD_END(_forget_latest_if_compiling_)
 /* (hashmap-entry@/cell) ( vec u -- key &val next ) fetch u-th entry in hashmap buckets. */
 /* next is -1 for 'no_entry', or -2 for 'no_next_entry' */
-WORD_START(_hashmap_entry_fetch_cell_, _fallthrough_)
+WORD_START(_hashmap_entry_fetch_cell_, _forget_latest_if_compiling_)
     WORD_DSTACK(2,3)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
