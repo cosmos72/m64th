@@ -242,16 +242,8 @@ static int isUnsupportedTerm(void) {
     return 0;
 }
 
-/* BUG: on x86_64 with optimizations enabled, clang uses %xmm registers */
-/* in function termiosRawMode() to read&write 'raw' fields.             */
-/* this works only if the pointer 'raw' is aligned at 16 bytes - which is not always true */
-/* defining termiosRawMode() as noinline seems to trick clang into aligning it */
-#ifdef __clang__
-__attribute__((noinline))
-#endif
-static void
 /* Raw mode: 1960 magic shit. */
-termiosRawMode(struct termios *raw, const struct termios *orig) {
+static void termiosRawMode(struct termios *raw, const struct termios *orig) {
     *raw = *orig;
     /* input modes: no break, no CR to NL, no parity check, no strip char,
      * no start/stop output control. */

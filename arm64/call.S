@@ -182,7 +182,7 @@ FUNC_START(_c_call_)
         JUMP(  TO(_c_call_.finish))
 
 LABEL(_c_call_.stack_c)
-        /* m4th->rstack.curr == 0 thus RSTK points to C stack, below sp:     */
+        /* m4th->rstack.curr == 0 thus RSTK points to C stack, possibly below sp: */
         /* update sp before call, and restore it after call                  */
         AND3(  RSTK,IMM(-SZ2), sp)     /* set sp = RSTK, then align it       */
         blr    x9;                     /* call C func, overwrites lr         */

@@ -379,7 +379,6 @@ static m4cell m4token_print_int16(const m4token *code, m4printmode mode, FILE *o
 
 static m4cell m4token_print_int32(const m4token *code, m4printmode mode, FILE *out) {
     int32_t val;
-    (void)mode;
     memcpy(&val, code, sizeof(val));
     if (val >= -1024 && val <= 1024) {
         fprintf(out, (mode == m4mode_user ? "%ld" : "INT(%ld)"), (long)val);
@@ -391,7 +390,6 @@ static m4cell m4token_print_int32(const m4token *code, m4printmode mode, FILE *o
 
 static m4cell m4token_print_int64(const m4token *code, m4printmode mode, FILE *out) {
     int64_t val;
-    (void)mode;
     memcpy(&val, code, sizeof(val));
     if (val >= -1024 && val <= 1024) {
         fprintf(out, (mode == m4mode_user ? "%ld" : "CELL(%ld)"), (long)val);
@@ -481,8 +479,15 @@ void m4token_print(m4token tok, m4printmode mode, FILE *out) {
             return;
         }
     }
-    /* FIXME: this assumes sizeof(m4token) == 2 */
+#if SZt == 2
     m4token_print_int16(&tok, mode, out);
+#elif SZt == 4
+    m4token_print_int32(&tok, mode, out);
+#elif SZt == 8
+    m4token_print_int64(&tok, mode, out);
+#else
+#error unsupported sizeof(m4token): expecting 2, 4 or 8
+#endif
 }
 
 #if 0 /* unused */

@@ -194,21 +194,27 @@ FUNC_START(_c_call_)
         LOAD(  REG0,   AT(M4TH, M4TH_OFF_RSTK))
         JZ(    REG0,   TO(_c_call_.stack_c))
 
-        /* m4th->rstack.curr != 0 thus RSTK i.e. %rsp points to private memory:      */
-        /* update %rsp before call, and restore it after call                        */
+        /* m4th->rstack.curr != 0 thus forth RSTK i.e. %rsp points to private memory:*/
+        /* => update %rsp to point to C stack before call, and restore it after call */
         STOR(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))
         LOAD(  %rsp,   AT(M4TH, M4TH_OFF_C_REG0))
         call   *AT(IP);
-	/* C function may clobber m4th.c_regs[0]                                     */
-	/* if it calls back into forth                                               */
+        /* C functions may clobber m4th.c_regs[0] if they call back into forth       */
+        /* => restore m4th.c_regs[0] = C stack = %rsp now                            */
         STOR(  %rsp,   AT(M4TH, M4TH_OFF_C_REG0))
         LOAD(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))
         JUMP(  TO(_c_call_.finish))
 
 LABEL(_c_call_.stack_c)
-        /* m4th->rstack.curr == 0 thus RSTK i.e. %rsp points to C stack:             */
-        /* FIXME align %rsp to 16 bytes                                              */
+        /* m4th->rstack.curr == 0 thus forth RSTK i.e. %rsp points to C stack:       */
+        /* per x86-64 SYSV ABI, we must align %rsp to 16 bytes                       */
+        MOVE(  %rsp,   REG0)
+        SUB2(IMM(SZ),  %rsp)
+        AND2(IMM(-SZ2),%rsp)
+        STOR(  REG0,   AT(%rsp))
         call   *AT(IP);
+        /* restore %rsp */
+        LOAD(  %rsp,   AT(%rsp))
 
 LABEL(_c_call_.finish)
         ADD2(  IMM(SZ),IP)                         /* skip C function address        */
