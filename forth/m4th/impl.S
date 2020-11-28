@@ -244,7 +244,7 @@ WORD_START(_compiler_abort_, _continue_)
             drop, exit,                                    /* (                        ) */
         then,                                              /* ( nt                     ) */
         dup, name_to_string, drop,                         /* ( nt c-addr|0            ) */
-        _q_if_, T(3),                                      /* ( nt c-addr              ) */
+        _q_if_, T(4),                                      /* ( nt c-addr              ) */
             nip, one_minus,                                /* ( &countedstring         ) */
         _else_, T(2),                                      /* ( nt 0                   ) */
             /* unnamed word */                             /* ( nt 0                   ) */
