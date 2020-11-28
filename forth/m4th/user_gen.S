@@ -30,13 +30,27 @@ WORD_START(clearstack, LASTWORD)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE|M4FLAG_PURE)
-    WORD_CODE_AND_DATA(clearstack,
-        WORD_CODE_TOKENS(
-            /*3*/ depth, n_to_drop, exit
-        ),
+    WORD_CODE(
+        /*3*/ depth, n_to_drop, exit
     )
 WORD_END(clearstack)
-WORD_START(wordlist_upto_name, clearstack)
+/* string2= ( c-addr1 u1 c-addr2 u2  -- c-addr1 u1 t|f ) */
+WORD_START(string2_equal, clearstack)
+    WORD_DSTACK(4,3)
+    WORD_RSTACK(0,0)
+    WORD_STACK_ANY()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(0)
+    WORD_CODE(
+        /*14*/ rot, tuck, equal,
+        _if_, T(5),
+            string_equal, rot, drop,
+        _else_, T(3),
+            nip, zero,
+        then, exit
+    )
+WORD_END(string2_equal)
+WORD_START(wordlist_upto_name, string2_equal)
     WORD_DSTACK(2,-1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()

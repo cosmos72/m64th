@@ -21,7 +21,8 @@
 
 DICT_WORDS_FORTH_LOCALS(WORDNAME)
 
-WORD_START(_local_, LASTWORD)
+
+WORD_START(_local_,            LASTWORD)
     WORD_DSTACK(2,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -38,6 +39,16 @@ WORD_START(_local_, LASTWORD)
         CALL(_locals_add_), exit               /* (                          ) */
     )
 WORD_END(_local_)
+WORD_START(_brace_colon_,      _local_)
+    WORD_DSTACK(2,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(0)
+    WORD_CODE(
+        exit
+    )
+WORD_END(_brace_colon_)
 
 #undef LASTWORD
-#define LASTWORD _local_
+#define LASTWORD _brace_colon_

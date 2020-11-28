@@ -19,9 +19,22 @@
 also m4th-core \ wordlist-last-name string>name ex-message!
 also m4th-user definitions
 
+
 \ clear data stack
 : clearstack \ ( ... -- )
    depth n>drop ;
+
+
+\ compare two strings
+: string2=   \ ( c-addr1 u1 c-addr2 u2 -- c-addr1 u1 t|f )
+   rot tuck =                                \ ( c-addr1 c-addr2 u2 t|f )
+   if                                        \ ( c-addr1 c-addr2 u1     )
+      string=                                \ ( c-addr1 c-addr2 u1 t|f )
+      rot drop                               \ ( c-addr1 u1 t|f         )
+   else                                      \ ( c-addr1 c-addr2 u1     )
+      nip false                              \ ( c-addr1 u1 f           )
+   then                                      \ ( c-addr1 u1 t|f         )
+;
 
 
 \ get all names in wordlist up to given name.
