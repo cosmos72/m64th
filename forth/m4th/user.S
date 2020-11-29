@@ -457,7 +457,7 @@ WORD_START(repl,  rdepth)
          *    else                                     ( ... ex|0      )
          *       ?dup if                               ( ... ex        )
          *          type-exception                     ( ...           )
-         *          (compiler-abort)                   ( ...           )
+         *          compiler-abort                     ( ...           )
          *       then                                  ( ...           )
          *    then                                     ( ...           )
          * repeat                                      ( ...           )
@@ -477,7 +477,7 @@ WORD_START(repl,  rdepth)
                 _if_, T(3+2*nCALLt),
                     CALL(type_exception),
                     /* also unconditionally stops compiling */
-                    CALL(_compiler_abort_),
+                    CALL(compiler_abort),
                 then,
             then,
         _repeat_, T(-32-7*nCALLt), exit

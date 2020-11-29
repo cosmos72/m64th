@@ -384,6 +384,8 @@
     X(10, "always-eof", always_eof)                                                                \
     /* compile-string, ( c-addr u -- ) runtime effect: ( -- c-addr' u ) */                         \
     X(15, "compile-string,", compile_string_comma)                                                 \
+    /* ( -- ) if compiling, forget latest word and discard compilation stack. */                   \
+    X(14, "compiler-abort", compiler_abort)      /* also unconditionally stops compiling */        \
     X(14, "countedtokens,", countedtokens_comma) /* ( counted-tokens -- ) */                       \
     /*   ( io ch -- c-addr u ) get string before ch in iobuf (no refilling) */                     \
     X(14, "ibuf-find-char", ibuf_find_char)                                                        \
@@ -582,9 +584,6 @@
     DICT_TOKENS_M4TH_IMPL(X)                                                                       \
     X(13, "(abort-quote)", _abort_quote_)   /* ( x c-addr u ) runtime part of abort" */            \
     X(14, "(check-stacks)", _check_stacks_) /* throw on stack underflow              */            \
-    /* ( ex|0 -- ex|0 ) if compiling and ex <> 0, forget latest word and discard compilation       \
-     * stack. */                                                                                   \
-    X(16, "(compiler-abort)", _compiler_abort_) /* if ex <> 0, also stops compiling */             \
     /* ( m4flags -- sys ) read non-blanks string, create new word for it. set LATEST */            \
     X(8, "(create)", _create_)                                                                     \
     X(21, "(defer-uninitialized)", _defer_uninitialized_) /* throw M4ERR_DEFER_UNINITIALIZED */    \

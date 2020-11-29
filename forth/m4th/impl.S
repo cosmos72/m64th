@@ -227,44 +227,8 @@ WORD_START(_continue_, _catch_end_)
        CALL(continue), exit
     )
 WORD_END(_continue_)
-/* ( -- ) if compiling, forget latest word, discard compilation stack, */
-/* skip until end of input line. also unconditionally stops compiling */
-WORD_START(_compiler_abort_, _continue_)
-    WORD_DSTACK(0,0)
-    WORD_RSTACK(0,0)
-    WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
-    WORD_FLAGS(M4FLAG_INLINE)
-    WORD_CODE(
-        state, fetch, zero_ne,                             /* ( t|f                    ) */
-        zero, state, store,  /* set interpretation state      ( t|f                    ) */
-        latest, and,                                       /* ( nt|0                   ) */
-        _q_if0_, T(3),                                     /* ( 0                      ) */
-            /* no word being compiled */                   /* ( 0                      ) */
-            drop, exit,                                    /* (                        ) */
-        then,                                              /* ( nt                     ) */
-        dup, name_to_string, drop,                         /* ( nt c-addr|0            ) */
-        _q_if_, T(4),                                      /* ( nt c-addr              ) */
-            nip, one_minus,                                /* ( &countedstring         ) */
-        _else_, T(2),                                      /* ( nt 0                   ) */
-            /* unnamed word */                             /* ( nt 0                   ) */
-            drop,                                          /* ( nt                     ) */
-        then,                                              /* ( addr                   ) */
-        here, minus,                                       /* ( negative_offset_bytes  ) */
-        allot,                                             /* (                        ) */
-        /* discard compilation stack */                    /* (                        ) */
-        begin,                                             /* ( sys*                   ) */
-            depth,                                         /* ( sys* u                 ) */
-        _while_, T(6),                                     /* ( sys* sys               ) */
-            _lit_tok_, colon, equal, nip,                  /* ( sys* t|f               ) */
-        _until_, T(-9),                                    /* (                        ) */
-        then,                                              /* (                        ) */
-        /* skip until end of input line */
-        CALL(backslash), exit
-    )
-WORD_END(_compiler_abort_)
 /* ( m4flags -- sys ) read non-blanks string, create a new word for it. set LATEST */
-WORD_START(_create_, _compiler_abort_)
+WORD_START(_create_,   _continue_)
     WORD_DSTACK(1,2)   /* stack effect if not jumping */
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()  /* stack effect if jumping */
@@ -280,7 +244,7 @@ WORD_START(_create_, _compiler_abort_)
         CALL(_user_locals_clear_), exit                /* ( colon-sys                    ) */
     )
 WORD_END(_create_)
-WORD_START(_do_, _create_)
+WORD_START(_do_,       _create_)
     WORD_DSTACK(2,0) /* stack effect when not jumping */
     WORD_RSTACK(0,2)
     WORD_DSTACK(2,0) /* stack effect when jumping */
@@ -289,7 +253,7 @@ WORD_START(_do_, _create_)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_INLINE | M4FLAG_IMMEDIATE | M4FLAG_REEXEC_AFTER_OPTIMIZE)
     WORD_CODE(_compile_jump_lit_, _do_, _do_, exit)
 WORD_END(_do_)
-WORD_START(_else_, _do_)
+WORD_START(_else_,     _do_)
     WORD_STACK_NONE()  /* dummy, token always jumps */
     WORD_DSTACK(0,0)   /* stack effect when jumping */
     WORD_RSTACK(0,0)
@@ -298,7 +262,7 @@ WORD_START(_else_, _do_)
     WORD_CODE(CALL(else), exit)
 WORD_END(_else_)
 /* ( nt -1|1 -- ) interpret or compile name. dtop == -1 if name is immediate */
-WORD_START(_eval_name_, _else_)
+WORD_START(_eval_name_,_else_)
     WORD_DSTACK(-1,-1) /* stack effect when not jumping */
     WORD_RSTACK(-1,-1)
     WORD_STACK_NONE()

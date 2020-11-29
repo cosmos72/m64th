@@ -63,8 +63,44 @@ WORD_START(compile_string_comma, always_eof)
         cmove, exit
     )
 WORD_END(compile_string_comma)
+/* ( -- ) if compiling, forget latest word, discard compilation stack, */
+/* skip until end of input line. also unconditionally stops compiling */
+WORD_START(compiler_abort, compile_string_comma)
+    WORD_DSTACK(0,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        state, fetch, zero_ne,                             /* ( t|f                    ) */
+        zero, state, store,  /* set interpretation state      ( t|f                    ) */
+        latest, and,                                       /* ( nt|0                   ) */
+        _q_if0_, T(3),                                     /* ( 0                      ) */
+            /* no word being compiled */                   /* ( 0                      ) */
+            drop, exit,                                    /* (                        ) */
+        then,                                              /* ( nt                     ) */
+        dup, name_to_string, drop,                         /* ( nt c-addr|0            ) */
+        _q_if_, T(4),                                      /* ( nt c-addr              ) */
+            nip, one_minus,                                /* ( &countedstring         ) */
+        _else_, T(2),                                      /* ( nt 0                   ) */
+            /* unnamed word */                             /* ( nt 0                   ) */
+            drop,                                          /* ( nt                     ) */
+        then,                                              /* ( addr                   ) */
+        here, minus,                                       /* ( negative_offset_bytes  ) */
+        allot,                                             /* (                        ) */
+        /* discard compilation stack */                    /* (                        ) */
+        begin,                                             /* ( sys*                   ) */
+            depth,                                         /* ( sys* u                 ) */
+        _while_, T(6),                                     /* ( sys* sys               ) */
+            _lit_tok_, colon, equal, nip,                  /* ( sys* t|f               ) */
+        _until_, T(-9),                                    /* (                        ) */
+        then,                                              /* (                        ) */
+        /* skip until end of input line */
+        CALL(backslash), exit
+    )
+WORD_END(compiler_abort)
 /* count-tokens ( counted-tokens -- tok-addr u ) */
-WORD(count_tokens,     compile_string_comma, DSTACK(1,2), RSTACK(0,0), WORD_IMPURE|M4FLAG_MEM_FETCH)
+WORD(count_tokens,     compiler_abort, DSTACK(1,2), RSTACK(0,0), WORD_IMPURE|M4FLAG_MEM_FETCH)
 /**
  * compile u tokens. the address counted-tokens contains
  * the number u - which occupies 1 token - followed by u tokens
