@@ -640,6 +640,8 @@
     X(16, "(user-locals-set-idx)", _user_locals_set_idx_)                                          \
     /* ({:found|) ( i j -- ^j i ) update {: internal state to remember that | was found */         \
     X(10, "({:found|)", _brace_colon_found_pipe_)                                                  \
+    /* ( n2_after_pipe n1_before_pipe -- ) compile code to initialize local variables */           \
+    X(21, "[compile-user-locals]", _compile_user_locals_)                                          \
     X(8, "[finish]", _finish_)      /* ( sys -- ) finish compiling a word, make it findable   */   \
     X(8, "[inline]", _inline_)      /* ( nt -- ) inline a call to word into XT being compiled */   \
     X(10, "[optimize]", _optimize_) /* optimize current XT being compiled  */                      \

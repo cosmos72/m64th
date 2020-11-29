@@ -175,16 +175,6 @@ also m4th-impl definitions
 ;
 
 
-\ update {: internal state to remember that | was found
-: ({:found|)  \ ( i j -- ^j i )
-   invert swap                               \ ( j' i             )
-   dup 0<                                    \ ( j' i t|f         )
-   if           \ found a second "|"         \ ( j' i             )
-      -22 throw \ CONTROL_STRUCTURE_MISMATCH
-   then                                      \ ( j i              )
-;
-
-
 \ parse names and skip them until :} is found
 : (skip-until:})   \ ( -- )
   begin
@@ -194,6 +184,16 @@ also m4th-impl definitions
   until                                      \ ( c-addr u         )
   then                                       \ ( c-addr u         )
   2drop                                      \ (                  )
+;
+
+
+\ update {: internal state to remember that | was found
+: ({:found|)  \ ( i j -- ^j i )
+   invert swap                               \ ( j' i             )
+   dup 0<                                    \ ( j' i t|f         )
+   if           \ found a second "|"         \ ( j' i             )
+      -22 throw \ CONTROL_STRUCTURE_MISMATCH
+   then                                      \ ( j i              )
 ;
 
 

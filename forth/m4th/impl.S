@@ -1277,11 +1277,27 @@ WORD_START(_compile_sys_lit_, _compile_jump_lit_)
     WORD_CODE(_compile_sys_lit_, T(-1), T(-1), exit)
 WORD_END(_compile_sys_lit_)
 /*
+ * [compile-user-locals]   ( n2_after_pipe n1_before_pipe -- )
+ * compile code to initialize local variables
+ */
+WORD_START(_compile_user_locals_, _compile_sys_lit_)
+    WORD_DSTACK(2,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY)
+    WORD_CODE(
+        two_dup, plus,                              /* ( n2 n1 n                    ) */
+        _lit_comma_, _locals_enter_,                /* ( n2 n1 n                    ) */
+        exit
+    )
+WORD_END(_compile_user_locals_)
+/*
  * ( sys+ -- sys+ cs-depth ) must be followed by category.
  * find category in control stack and return its cs-depth.
  * Stops at colon-sys, throws if not found.
  */
-WORD_START(_cs_find_lit_, _compile_sys_lit_)
+WORD_START(_cs_find_lit_, _compile_user_locals_)
     WORD_DSTACK(0,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
