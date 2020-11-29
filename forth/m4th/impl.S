@@ -953,7 +953,7 @@ WORD_START(_optimize_1token_, _while0_)
     WORD_CODE_N_AUTO(_optimize_1token_)
     WORD_DATA_N_AUTO(_optimize_1token_)
     WORD_CODE_START(_optimize_1token_)
-      WORD_CODE_TOKENS(/* generated from file m4th_impl.forth - see source and comments there */
+      WORD_CODE_TOKENS(/* generated from file impl.forth - see source and comments there */
         /*28*/ _ip_to_data_, one_token, minus, bounds, rot, token_fetch, minus_rot,
         _do_, T(16), dup, i, token_fetch, equal, _if_, T(6), drop, i, token_plus, unloop, exit,
         then, four, tokens, _plus_loop_, T(-16), drop, zero, exit
@@ -984,7 +984,7 @@ WORD_START(_optimize_2token_, _optimize_1token_)
     WORD_CODE_N_AUTO(_optimize_2token_)
     WORD_DATA_N_AUTO(_optimize_2token_)
     WORD_CODE_START(_optimize_2token_)
-      WORD_CODE_TOKENS(/* generated from file m4th_impl.forth - see source and comments there */
+      WORD_CODE_TOKENS(/* generated from file impl.forth - see source and comments there */
         /*17*/ _ip_to_data_addr_, swap, dup, token_fetch, swap, token_fetch_1,
         eight, tokens, lshift, or, CALL(hashmap_find_int), nip, exit
       )
@@ -1011,7 +1011,7 @@ WORD_START(_optimize_2token_lowprio_, _optimize_2token_)
     WORD_CODE_N_AUTO(_optimize_2token_lowprio_)
     WORD_DATA_N_AUTO(_optimize_2token_lowprio_)
     WORD_CODE_START(_optimize_2token_lowprio_)
-      WORD_CODE_TOKENS(/* generated from file m4th_impl.forth - see source and comments there */
+      WORD_CODE_TOKENS(/* generated from file impl.forth - see source and comments there */
         /*17*/ _ip_to_data_addr_, swap, dup, token_fetch, swap, token_fetch_1,
         eight, tokens, lshift, or, CALL(hashmap_find_int), nip, exit
       )
@@ -1038,7 +1038,7 @@ WORD_START(_optimize_3token_, _optimize_2token_lowprio_)
     WORD_CODE_N_AUTO(_optimize_3token_)
     WORD_DATA_N_AUTO(_optimize_3token_)
     WORD_CODE_START(_optimize_3token_)
-      WORD_CODE_TOKENS(/* generated from file m4th_impl.forth - see source and comments there */
+      WORD_CODE_TOKENS(/* generated from file impl.forth - see source and comments there */
         /*24*/ _ip_to_data_addr_, swap, dup_to_r, token_fetch, i, token_fetch_1, eight, tokens, lshift, or,
         r_from, token_fetch_2, _lit2s_, T(12+nCALLt), tokens, lshift, or, CALL(hashmap_find_cell),
         nip, exit
@@ -1065,7 +1065,7 @@ WORD_START(_optimize_3jump_, _optimize_3token_)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_DATA_TOKENS)
     WORD_CODE_AND_DATA(_optimize_3jump_,
-      WORD_CODE_TOKENS(/* generated from file m4th_impl.forth - see source and comments there */
+      WORD_CODE_TOKENS(/* generated from file impl.forth - see source and comments there */
         /*38*/ _ip_to_data_addr_, swap, dup, token_fetch, swap, token_fetch_2,
         eight, tokens, lshift, or, to_r,
         begin,
@@ -1133,7 +1133,7 @@ WORD_START(_optimize_tokens_, _optimize_4token_)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_DATA_TOKENS)
     WORD_CODE_AND_DATA(_optimize_tokens_,
-      WORD_CODE_TOKENS(/* generated from file m4th_impl.forth - see source and comments there */
+      WORD_CODE_TOKENS(/* generated from file impl.forth - see source and comments there */
         /*35*/ _ip_to_data_addr_, minus_rot, two_to_r,
         begin,
             dup, token_fetch,
@@ -1171,7 +1171,7 @@ WORD_START(_optimize_tokens_comma_, _optimize_tokens_)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_FLAGS(0)
-    WORD_CODE(/* generated from file m4th_impl.forth - see source and comments there */
+    WORD_CODE(/* generated from file impl.forth - see source and comments there */
         /*31*/ _q_if0_, T(4), nip, zero, exit, then, trail, CALL(_optimize_tokens_),
         _q_if_, T(7+nCALLt), swap, count_tokens, CALL(tokens_comma), nip, minus_one,
         _else_, T(5), one_plus, flip, token_fetch, token_comma, then, exit
@@ -1188,7 +1188,7 @@ WORD_START(_optimize_xt_comma_, _optimize_tokens_comma_)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_FLAGS(0)
-    WORD_CODE(/* generated from file m4th_impl.forth - see source and comments there */
+    WORD_CODE(/* generated from file impl.forth - see source and comments there */
         /*29*/ zero, to_r,
         begin,
         _q_while_, T(17+nCALLt),
@@ -1406,7 +1406,7 @@ WORD_START(_optimize_once_, _of_)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE)
-    WORD_CODE(/* generated from file m4th_impl.forth - see source and comments there */
+    WORD_CODE(/* generated from file impl.forth - see source and comments there */
         /*24*/ zero, state, fetch, here, dup_to_r, sub, div_token,
         CALL(_optimize_xt_comma_), r_from, state, fetch, over, here, sub,
         cmove_count, nip, here, minus, allot, exit
@@ -1419,7 +1419,7 @@ WORD_START(_optimize_, _optimize_once_)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE)
-    WORD_CODE(/* generated from file m4th_impl.forth - see source and comments there */
+    WORD_CODE(/* generated from file impl.forth - see source and comments there */
         /*14*/ begin, CALL(_optimize_once_), _until0_, T(-3-nCALLt),
         CALL(_recompile_), exit
     )
@@ -1594,8 +1594,25 @@ WORD_START(_resolve_loop_, _resolve_jump_there_)
         CALL(_resolve_jump_there_), exit
     )
 WORD_END(_resolve_loop_)
+/* (skip-until:}) ( -- ) parse words and skip them until :} is found */
+WORD_START(_skip_until_colon_brace_, _resolve_loop_)
+    WORD_STACK_NONE()
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(0)
+    WORD_CODE(/* generated from file impl.forth - see source and comments there */
+        /*22*/
+        begin,
+            in_to_ibuf, CALL(ibuf_find_nonblanks),
+        _q_while_, T(4+nSTRt(2)+nCALLt),
+            LIT_STRING(2, ":}"), CALL(string2_equal),
+        _until_, T(-8-nSTRt(2)-2*nCALLt),
+        then,
+        two_drop, exit
+    )
+WORD_END(_skip_until_colon_brace_)
 /* ( xt -- ) always throws M4ERR_INTERPRETING_COMPILE_ONLY_WORD */
-WORD_START(_throw_compile_only_xt_, _resolve_loop_)
+WORD_START(_throw_compile_only_xt_, _skip_until_colon_brace_)
     WORD_STACK_NONE() /* stack effect when not jumping */
     WORD_DSTACK(1,0)  /* stack effect when jumping */
     WORD_RSTACK(0,0)
@@ -1680,7 +1697,21 @@ WORD_START(_user_locals_set_idx_,      _user_locals_find_)
         CALL(_locals_set_idx_), exit
     )
 WORD_END(_user_locals_set_idx_)
-WORD(minus_two, _user_locals_set_idx_, DSTACK(0,1), RSTACK(0,0), WORD_PURE)
+/* ({:found|) ( i j -- ^j i ) update {: internal state to remember that | was found */
+WORD_START(_brace_colon_found_pipe_,      _user_locals_set_idx_)
+    WORD_DSTACK(2,2)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(/* generated from file impl.forth - see source and comments there */
+        /*11*/ invert, swap, dup, zero_less,
+        _if_, T(4),
+            _lit2s_, T(M4ERR_CONTROL_STRUCTURE_MISMATCH), throw,
+        then, exit
+    )
+WORD_END(_brace_colon_found_pipe_)
+WORD(minus_two,_brace_colon_found_pipe_,DSTACK(0,1),RSTACK(0,0), WORD_PURE)
 WORD(minus_one,        minus_two,      DSTACK(0,1), RSTACK(0,0), WORD_PURE)
 WORD(zero,             minus_one,      DSTACK(0,1), RSTACK(0,0), WORD_PURE)
 WORD(one,              zero,           DSTACK(0,1), RSTACK(0,0), WORD_PURE)

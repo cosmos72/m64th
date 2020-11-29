@@ -175,4 +175,26 @@ also m4th-impl definitions
 ;
 
 
+\ update {: internal state to remember that | was found
+: ({:found|)  \ ( i j -- ^j i )
+   invert swap                               \ ( j' i             )
+   dup 0<                                    \ ( j' i t|f         )
+   if           \ found a second "|"         \ ( j' i             )
+      -22 throw \ CONTROL_STRUCTURE_MISMATCH
+   then                                      \ ( j i              )
+;
+
+
+\ parse names and skip them until :} is found
+: (skip-until:})   \ ( -- )
+  begin
+     parse-name dup                          \ ( c-addr u u       )
+  while                                      \ ( c-addr u         )
+     s" :}" string2=                         \ ( c-addr u t|f     )
+  until                                      \ ( c-addr u         )
+  then                                       \ ( c-addr u         )
+  2drop                                      \ (                  )
+;
+
+
 disassemble-upto (optimize-1token)

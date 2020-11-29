@@ -19,15 +19,6 @@
 also forth definitions
 
 
-: (found|)  \ ( i j -- ^j i )
-   invert swap                         \ ( j' i        )
-   dup 0<                              \ ( j' i t|f    )
-   if           \ found a second "|"   \ ( j' i        )
-      -22 throw \ CONTROL_STRUCTURE_MISMATCH
-   then                                \ ( j i         )
-;
-
-
 \ parse syntax "{: in1 in2 ... inn | local1 local2 ... localn -- out1 out2 ... outn :}"
 : {:
    0 0 2>r                                   \ (                      ) (R: i j )
@@ -42,11 +33,11 @@ also forth definitions
       if                                     \ ( c-addr u             ) (R: i j )
          (local) r1+                         \ (                      ) (R: i j')
       else                                   \ ( c-addr u             ) (R: i j )
-         2drop 2r> (found|) 2>r              \ (                      ) (R: j' i)
+         2drop 2r> ({:found|) 2>r            \ (                      ) (R: j' i)
       then                                   \ (                      ) (R: i j )
    again                                     \ ( c-addr u             ) (R: i j )
    then      \ found "--"                    \ ( c-addr u             ) (R: i j )
-      (skip-until-:})                        \ ( c-addr u             ) (R: i j )
+      (skip-until:})                         \ ( c-addr u             ) (R: i j )
    then      \ found ":}"                    \ ( c-addr u             ) (R: i j )
    then      \ found end-of-line             \ ( c-addr u             ) (R: i j )
    2drop 2r>                                 \ ( i j                  )
