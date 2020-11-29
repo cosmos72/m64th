@@ -54,7 +54,8 @@
     X(5, "2tuck", two_tuck)      /*             ( a b c d     -- c d a b c d )                  */ \
     X(8, "atomic+!", atomic_plus_store)      /* ( n addr -- n' ) atomically increment cell by n */ \
     X(9, "atomic1+!", atomic_one_plus_store) /* ( addr   -- n' ) atomically increment cell by 1 */ \
-    X(6, "bounds", bounds) /* ( c-addr u -- c-addr+u c-addr ) get string bounds        */          \
+    X(6, "bounds", bounds)          /* ( c-addr u -- c-addr+u c-addr ) get string bounds        */ \
+    X(10, "breakpoint", breakpoint) /* ( -- ) debugger breakpoint */                               \
     /* ( src dst u -- src+u dst+u ) forward copy u bytes, */                                       \
     /*  and post-increment addresses after copying each byte  */                                   \
     X(11, "cmove/count", cmove_count)                                                              \

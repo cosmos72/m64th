@@ -62,8 +62,8 @@
 #define M4atomic_plus_store M4_u(32)     /* ( n addr -- n' ) atomically increment cell by n   */
 #define M4atomic_one_plus_store M4_u(33) /* (   addr -- n' ) atomically increment cell by 1   */
 #undef M4____gap                         /*                                         */
-#undef M4____gap                         /*                                         */
-#define M4bounds M4_u(36)                /* ( c-addr u -- c-addr+u c-addr ) get string bounds */
+#define M4bounds M4_u(35)                /* ( c-addr u -- c-addr+u c-addr ) get string bounds */
+#define M4breakpoint M4_u(36)            /* ( -- ) debugger breakpoint              */
 #define M4cmove_count M4_u(37)           /* ( src_addr dst_addr u -- src_addr+u dst-addr+u )  */
 #define M4minus_cmove_count M4_u(38)     /* ( src_addr dst_addr u -- src_addr-u dst_addr-u )  */
 #undef M4____gap                         /*                                         */

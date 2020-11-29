@@ -290,6 +290,10 @@ FUNC_START(bounds) /* bounds m4th-user ( c-addr u -- c-addr+u c-addr ) get strin
 FUNC_END(bounds)
 
 
+FUNC_START(breakpoint)           /* breakpoint    m4th-user */
+FUNC_END(breakpoint)
+
+
 FUNC_START(drop)
         DPOP___DTOP()
 FUNC_END(drop)
