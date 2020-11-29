@@ -592,17 +592,20 @@ WORD(searchorder_dup,   searchorder_drop,  DSTACK(0,0), RSTACK(0,0), WORD_IMPURE
 WORD(searchorder_pick,  searchorder_dup,   DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
 /* searchorder[0]! ( wid -- ) set first wid in searchorder */
 WORD(searchorder_store_0,searchorder_pick, DSTACK(1,0), RSTACK(0,0), WORD_IMPURE)
-/* ( c-addr u -- idx|-1 ) find local variable in m4th->locals */
+/* ( c-addr u -- idx true | -1 false ) find local variable in m4th->locals */
 WORD_START(string_to_local,      searchorder_store_0)
     WORD_DSTACK(2,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
-    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE)
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY)
     WORD_CODE(
         user_var, T(M4TH_USER_VAR_LOCALS), fetch,
-        minus_rot,
-        CALL(_locals_find_), exit
+        _q_if0_, T(6),                          /* ( c-addr u 0                ) */
+            nip, nip, minus_one, swap, exit,    /* ( -1 false                  ) */
+        then,                                   /* ( c-addr u ls               ) */
+        minus_rot, CALL(_locals_find_),         /* ( idx|-1                    ) */
+        dup, one_plus, zero_ne, exit            /* ( idx true | -1 false       ) */
     )
 WORD_END(string_to_local)
 /*

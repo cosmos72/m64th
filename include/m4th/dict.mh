@@ -640,6 +640,7 @@
     X(21, "(user-locals-set-idx)", _user_locals_set_idx_)                                          \
     /* ({:found|) ( i j -- ^j i ) update {: internal state to remember that | was found */         \
     X(10, "({:found|)", _brace_colon_found_pipe_)                                                  \
+    X(15, "[compile-local]", _compile_local_) /* ( idx -- ) compile a local variable fetch */      \
     /* ( n1_before_pipe n2_after_pipe -- ) compile code to initialize local variables */           \
     X(22, "[compile-locals-enter]", _compile_locals_enter_)                                        \
     X(8, "[finish]", _finish_)      /* ( sys -- ) finish compiling a word, make it findable   */   \

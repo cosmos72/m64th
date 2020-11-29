@@ -343,10 +343,13 @@ WORD_START(interpret,  i_prime)
          * ?if0                                         ( c-addr u                 )
          *    2drop exit                                (                          )
          * then                                         ( c-addr u                 )
-         * 2dup                                         ( c-addr u c-addr u        )
-         * string>local                                 ( c-addr u idx|-1          )
-         *
-         * string>name nip                              ( c-addr u nt|0 -1|0|1     )
+         * 2dup string>local                            ( c-addr u idx t|f         )
+         * if                       ( is a local )      ( c-addr u idx             )
+         *    nip nip [compile-local] exit              (                          )
+         * else                                         ( c-addr u idx             )
+         *    drop                                      ( c-addr u                 )
+         * then                                         ( c-addr u                 )
+         * 2dup string>name nip                         ( c-addr u nt|0 -1|0|1     )
          * ?if                      ( is a word )       ( c-addr u nt  -1|1        )
          *    2nip (eval-name) (check-stacks) exit      (                          )
          * then                                         ( c-addr u 0 0             )
@@ -361,8 +364,13 @@ WORD_START(interpret,  i_prime)
         _q_if0_, T(3),
             two_drop, exit,
         then,
-        two_dup,
-        CALL(string_to_name), nip,
+        two_dup, CALL(string_to_local),
+        _if_, T(6+nCALLt),
+            nip, nip, CALL(_compile_local_), exit,
+        _else_, T(2),
+            drop,
+        then,
+        two_dup, CALL(string_to_name), nip,
         _q_if_, T(5+2*nCALLt),
             two_nip, CALL(_eval_name_), CALL(_check_stacks_), exit,
         then,

@@ -1277,10 +1277,25 @@ WORD_START(_compile_sys_lit_, _compile_jump_lit_)
     WORD_CODE(_compile_sys_lit_, T(-1), T(-1), exit)
 WORD_END(_compile_sys_lit_)
 /*
+ * [compile-local]   ( idx -- )
+ * compile a local variable fetch
+ */
+WORD_START(_compile_local_, _compile_sys_lit_)
+    WORD_DSTACK(1,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY)
+    WORD_CODE(
+        _lit_comma_, _lx_,          /* compile '(lx)'  ( idx                        ) */
+        token_comma, exit           /* compile T(idx)  (                            ) */
+    )
+WORD_END(_compile_local_)
+/*
  * [compile-locals-enter]   ( n1_before_pipe n2_after_pipe -- )
  * compile code to initialize local variables
  */
-WORD_START(_compile_locals_enter_, _compile_sys_lit_)
+WORD_START(_compile_locals_enter_, _compile_local_)
     WORD_DSTACK(2,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
