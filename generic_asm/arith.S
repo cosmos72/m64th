@@ -291,6 +291,11 @@ FUNC_END(bounds)
 
 
 FUNC_START(breakpoint)           /* breakpoint    m4th-user */
+#ifdef __x86_64__
+        int3;
+#elif __aarch64__
+        .4byte 0xd4200000;       /* may not work on iOS */
+#endif
 FUNC_END(breakpoint)
 
 

@@ -1722,7 +1722,7 @@ WORD_START(_token_consumed_ip_comma_,  _throw_if_not_compiling_)
         then,
         name_to_flags, flags_to_consumed_tokens, tuck, zero,
         _q_do_, T(6),
-            dup, token_fetch, token_comma, tokens,
+            dup, token_fetch, token_comma, token_plus,
         _loop_, T(-6),
         drop, exit
     )
