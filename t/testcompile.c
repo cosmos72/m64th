@@ -321,8 +321,29 @@ static const m4testcompile testcompile_b[] = {
     {"begin 0<> until ;", {2, {0, m4colon}}, {}, {4, {m4begin, m4_until_, T(-2), m4exit}}},
     {"begin dup until ;", {2, {0, m4colon}}, {}, {4, {m4begin, m4_q_until_, T(-2), m4exit}}},
     {"begin dup 0= until ;", {2, {0, m4colon}}, {}, {4, {m4begin, m4_q_until0_, T(-2), m4exit}}},
-    /* ------------------------------- [optimize] --------------------- */
+    /* ------------------------------- [optimize] --------------------------- */
     {"dup dup dup dup drop drop drop drop ;", {2, {0, m4colon}}, {}, {1, {m4exit}}},
+};
+
+static const m4testcompile testcompile_c[] = {
+    /* ------------------------------- local variables ---------------------- */
+    {"{: :}", {2, {0, m4colon}}, {2, {0, m4colon}}, {2, {m4_locals_enter_, T(0)}}},
+    {"{: :} ;", {2, {0, m4colon}}, {}, {4, {m4_locals_enter_, T(0), m4_locals_exit_, m4exit}}},
+    {"{: -- :}", {2, {0, m4colon}}, {2, {0, m4colon}}, {2, {m4_locals_enter_, T(0)}}},
+    {"{: a :}",
+     {2, {0, m4colon}},
+     {2, {0, m4colon}},
+     {4, {m4_locals_enter_, T(1), m4_to_lx_, T(0)}}},
+    {"{: | c :}", {2, {0, m4colon}}, {2, {0, m4colon}}, {2, {m4_locals_enter_, T(1)}}},
+    {"{: | c d -- e f :}", {2, {0, m4colon}}, {2, {0, m4colon}}, {2, {m4_locals_enter_, T(2)}}},
+    {"{: a b c | d -- e f g :}",
+     {2, {0, m4colon}},
+     {2, {0, m4colon}},
+     {8, {m4_locals_enter_, T(4), m4_to_lx_, T(1), m4_to_lx_, T(2), m4_to_lx_, T(3)}}},
+    {"{: a b | c d -- e f g h :} ;",
+     {2, {0, m4colon}},
+     {},
+     {8, {m4_locals_enter_, T(4), m4_to_lx_, T(2), m4_to_lx_, T(3), m4_locals_exit_, m4exit}}},
 };
 
 static m4code m4testcompile_init(const m4testcompile *t, m4countedcode *codegen_buf) {
@@ -402,8 +423,8 @@ static void m4testcompile_failed(m4th *m, const m4testcompile *t, m4code t_codeg
 }
 
 m4cell m4th_testcompile(m4th *m, FILE *out) {
-    const m4testcompile *t[] = {testcompile_a, testcompile_b};
-    const m4cell n[] = {N_OF(testcompile_a), N_OF(testcompile_b)};
+    const m4testcompile *t[] = {testcompile_a, testcompile_b, testcompile_c};
+    const m4cell n[] = {N_OF(testcompile_a), N_OF(testcompile_b), N_OF(testcompile_c)};
 
     m4countedcode codegen_buf;
     m4cell i, j, run = 0, fail = 0;

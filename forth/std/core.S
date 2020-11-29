@@ -374,9 +374,16 @@ WORD_START(exit, execute)
     WORD_DSTACK(0,0)   /* stack effect when jumping */
     WORD_RSTACK(1,0)
     WORD_NATIVE_NONE()
-    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS | M4FLAG_JUMP)
-   /* make inliner happy: it skips the final 'exit' of a word's code when inlining */
-    WORD_CODE(exit, exit)
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE | M4FLAG_JUMP)
+    WORD_CODE(
+        CALL(_throw_if_not_compiling_),
+        user_var, T(M4TH_USER_VAR_LOCALS), fetch,      /* ( ls|0                 ) */
+        _if_, T(3),                                    /* (                      ) */
+            _lit_comma_, _locals_exit_, /* compile '(locals-exit)'                 */
+        then,
+        _lit_comma_, exit,              /* compile 'exit'                          */
+        exit
+    )
 WORD_END(exit)
 WORD(fill,             exit,       DSTACK(3,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE)
 WORD(here,             fill,       DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)

@@ -1277,27 +1277,33 @@ WORD_START(_compile_sys_lit_, _compile_jump_lit_)
     WORD_CODE(_compile_sys_lit_, T(-1), T(-1), exit)
 WORD_END(_compile_sys_lit_)
 /*
- * [compile-user-locals]   ( n2_after_pipe n1_before_pipe -- )
+ * [compile-locals-enter]   ( n1_before_pipe n2_after_pipe -- )
  * compile code to initialize local variables
  */
-WORD_START(_compile_user_locals_, _compile_sys_lit_)
+WORD_START(_compile_locals_enter_, _compile_sys_lit_)
     WORD_DSTACK(2,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY)
     WORD_CODE(
-        two_dup, plus,                              /* ( n2 n1 n                    ) */
-        _lit_comma_, _locals_enter_,                /* ( n2 n1 n                    ) */
+                                    /*                 ( n1 n2                      ) */
+        _lit_comma_, _locals_enter_,/* compile '(locals-enter)'                       */
+        swap, bounds,               /*                 ( n=n1+n2 n2                 ) */
+        over, token_comma,          /* compile T(n)    ( n n2                       ) */
+        _q_do_, T(6),               /*                 (                  ) (R: n i ) */
+            _lit_comma_, _to_lx_,   /* compile '(>lx)' (                  ) (R: n i ) */
+            i, token_comma,         /* compile T(i)    (                  ) (R: n i ) */
+        _loop_, T(-6),              /*                 (                            ) */
         exit
     )
-WORD_END(_compile_user_locals_)
+WORD_END(_compile_locals_enter_)
 /*
  * ( sys+ -- sys+ cs-depth ) must be followed by category.
  * find category in control stack and return its cs-depth.
  * Stops at colon-sys, throws if not found.
  */
-WORD_START(_cs_find_lit_, _compile_user_locals_)
+WORD_START(_cs_find_lit_, _compile_locals_enter_)
     WORD_DSTACK(0,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -1306,7 +1312,7 @@ WORD_START(_cs_find_lit_, _compile_user_locals_)
     WORD_CODE(_cs_find_lit_, T(-1),  exit)
 WORD_END(_cs_find_lit_)
 /* throw M4ERR_DEFER_UNINITIALIZED */
-WORD_START(_defer_uninitialized_, _num_compiled_)
+WORD_START(_defer_uninitialized_, _cs_find_lit_)
     WORD_DSTACK(2,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -1315,7 +1321,7 @@ WORD_START(_defer_uninitialized_, _num_compiled_)
     WORD_CODE(_lit2s_, SHORT(M4ERR_DEFER_UNINITIALIZED), throw, exit)
 WORD_END(_defer_uninitialized_)
 /* ( -- ) replace execution semantics of latest word, setting it to code after caller's IP */
-WORD_START(_does_, _defer_uninitialized_)
+WORD_START(_does_,     _defer_uninitialized_)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -1377,7 +1383,7 @@ WORD_START(_finish_, _endof_)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE)
     WORD_CODE(
         _check_lit_tok_, colon,
-        _lit_comma_, exit, /* compile 'exit' */
+        CALL(exit), /* compile 'exit' */
         drop, _lit_, T(M4FLAG_NOOPT_MASK), and,
         /* optimize only if (word.flags & M4FLAG_NOOPT_MASK) == 0 */
         _if0_, T(2+nCALLt),
@@ -1617,12 +1623,13 @@ WORD_START(_skip_until_colon_brace_, _resolve_loop_)
     WORD_NATIVE_NONE()
     WORD_FLAGS(0)
     WORD_CODE(/* generated from file impl.forth - see source and comments there */
-        /*22*/
+        /*25*/
+        zero, zero,
         begin,
-            in_to_ibuf, CALL(ibuf_find_nonblanks),
-        _q_while_, T(4+nSTRt(2)+nCALLt),
+            two_drop, in_to_ibuf, CALL(ibuf_find_nonblanks),
+        _q_while_, T(5+nSTRt(2)+nCALLt),
             LIT_STRING(2, ":}"), CALL(string2_equal),
-        _until_, T(-8-nSTRt(2)-2*nCALLt),
+        _until_, T(-9-nSTRt(2)-2*nCALLt),
         then,
         two_drop, exit
     )

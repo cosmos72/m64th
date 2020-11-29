@@ -177,7 +177,9 @@ also m4th-impl definitions
 
 \ parse names and skip them until :} is found
 : (skip-until:})   \ ( -- )
+  0 0
   begin
+     2drop                                   \ (                  )
      parse-name dup                          \ ( c-addr u u       )
   while                                      \ ( c-addr u         )
      s" :}" string2=                         \ ( c-addr u t|f     )
