@@ -182,6 +182,7 @@
 #define m4minus_cs_rot m4minus_two_rot
 #define m4cs_rot m4two_rot
 #define m4r2nd_fetch m4i_prime
+#define m4r3rd_fetch m4j
 
 #define m4d_to_s m4drop
 #define m4u_to_d m4zero
@@ -343,6 +344,7 @@
 #define M4minus_cs_rot M4minus_two_rot
 #define M4cs_rot M4two_rot
 #define M4r2nd_fetch M4i_prime
+#define M4r3rd_fetch M4j
 
 #define M4d_to_s M4drop
 #define M4u_to_d M4zero

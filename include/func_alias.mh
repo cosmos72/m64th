@@ -64,6 +64,7 @@
 
 /** m4th-user aliases */
 #define m4fr2nd_fetch m4fi_prime /* r2nd@ */
+#define m4fr3rd_fetch m4fj       /* r3rd@ */
 
 #define m4fchar_store m4fc_store
 #define m4fchar_fetch m4fc_fetch               /* char@   alias for c@     - no dedicated m4func */

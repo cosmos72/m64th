@@ -286,15 +286,16 @@
     X(10, "forth-root", forth_root) /* set first wordlist in searchorder to forth-root  */         \
     X(17, "hashmap-find/cell", hashmap_find_cell) /* ( map key -- key' &val|0 ) find key in map */ \
     X(16, "hashmap-find/int", hashmap_find_int)   /* ( map key -- key' &val|0 ) find key in map */ \
-    X(9, "interpret", interpret)      /* one iteration of forth interpret/compile loop  */         \
-    X(6, "m4th-c", m4th_c)            /* set first wordlist in searchorder to m4th-c    */         \
-    X(9, "m4th-core", m4th_core)      /* set first wordlist in searchorder to m4th-core */         \
-    X(9, "m4th-impl", m4th_impl)      /* set first wordlist in searchorder to m4th-impl */         \
-    X(11, "parse-quote", parse_quote) /* ( -- c-addr u ) read a string ended by quote   */         \
-    X(4, "repl", repl)                /* call INTERPRET repeatedly until EOF or input error     */ \
-    X(5, "r2nd@", r2nd_fetch)   /* alias of '2r@ drop' i.e. fetch second item from return stack */ \
-    X(8, "see-name", see_name)  /* ( nt -- ) show definition of nt                       */        \
-    X(8, "string<>", string_ne) /* ( addr1 addr2 u -- addr1 addr2 u t|f )                */        \
+    X(9, "interpret", interpret)       /* one iteration of forth interpret/compile loop  */        \
+    X(6, "m4th-c", m4th_c)             /* set first wordlist in searchorder to m4th-c    */        \
+    X(9, "m4th-core", m4th_core)       /* set first wordlist in searchorder to m4th-core */        \
+    X(9, "m4th-impl", m4th_impl)       /* set first wordlist in searchorder to m4th-impl */        \
+    X(11, "parse-quote", parse_quote)  /* ( -- c-addr u ) read a string ended by quote   */        \
+    X(4, "repl", repl)                 /* call INTERPRET repeatedly until EOF or input error   */  \
+    X(5, "r2nd@", r2nd_fetch)          /* alias of i' i.e. fetch second item from return stack */  \
+    X(5, "r3rd@", r3rd_fetch)          /* alias of j i.e. fetch third item from return stack   */  \
+    X(8, "see-name", see_name)         /* ( nt -- ) show definition of nt                */        \
+    X(8, "string<>", string_ne)        /* ( addr1 addr2 u -- addr1 addr2 u t|f )         */        \
     X(11, "string-ci<>", string_ci_ne) /* ( addr1 addr2 u -- addr1 addr2 u t|f )         */        \
     X(9, "string2<>", string2_ne)      /* ( addr1 u1 addr2 u2  -- addr1 u1 t|f )         */        \
     X(8, "string2=", string2_equal)    /* ( addr1 u1 addr2 u2  -- addr1 u1 t|f )         */        \
