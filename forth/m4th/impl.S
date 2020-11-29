@@ -1696,21 +1696,8 @@ WORD_START(_user_locals_clear_,_user_locals_allocate_)
         CALL(_locals_clear_), exit
     )
 WORD_END(_user_locals_clear_)
-/* ( c-addr u -- idx|-1 ) find local variable in m4th->locals */
-WORD_START(_user_locals_find_,      _user_locals_clear_)
-    WORD_DSTACK(2,1)
-    WORD_RSTACK(0,0)
-    WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
-    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE)
-    WORD_CODE(
-        user_var, T(M4TH_USER_VAR_LOCALS), fetch,
-        minus_rot,
-        CALL(_locals_find_), exit
-    )
-WORD_END(_user_locals_find_)
 /* ( -- ) set indexes of local variables in m4th->locals */
-WORD_START(_user_locals_set_idx_,      _user_locals_find_)
+WORD_START(_user_locals_set_idx_,      _user_locals_clear_)
     WORD_STACK_NONE()
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()

@@ -344,6 +344,8 @@ WORD_START(interpret,  i_prime)
          *    2drop exit                                (                          )
          * then                                         ( c-addr u                 )
          * 2dup                                         ( c-addr u c-addr u        )
+         * string>local                                 ( c-addr u idx|-1          )
+         *
          * string>name nip                              ( c-addr u nt|0 -1|0|1     )
          * ?if                      ( is a word )       ( c-addr u nt  -1|1        )
          *    2nip (eval-name) (check-stacks) exit      (                          )

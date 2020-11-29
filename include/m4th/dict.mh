@@ -408,6 +408,8 @@
     X(8, "parse-nt", parse_nt)                                                                     \
     /* parse-xt ( xt -1|1 ) throws if name not found. 1 if name is immediate, else -1 */           \
     X(8, "parse-xt", parse_xt)                                                                     \
+    /* ( c-addr u -- idx|-1 ) find local variable in m4th->locals */                               \
+    X(12, "string>local", string_to_local)                                                         \
     /* find name in search order. 1 if name is immediate, else -1      */                          \
     X(11, "string>name", string_to_name)  /* ( c-addr u -- nt|0 wid|0 -1|0|1 )            */       \
     X(6, "/token", div_token)             /* alias of _SZt_div,      no dedicated m4token */       \
@@ -634,8 +636,6 @@
     X(22, "(user-locals-allocate)", _user_locals_allocate_)                                        \
     /* ( -- ) remove all local variables from m4th->locals */                                      \
     X(19, "(user-locals-clear)", _user_locals_clear_)                                              \
-    /* ( c-addr u -- idx|-1 ) find local variable in m4th->locals */                               \
-    X(18, "(user-locals-find)", _user_locals_find_)                                                \
     /* ( -- ) set indexes of local variables in m4th->locals */                                    \
     X(21, "(user-locals-set-idx)", _user_locals_set_idx_)                                          \
     /* ({:found|) ( i j -- ^j i ) update {: internal state to remember that | was found */         \
