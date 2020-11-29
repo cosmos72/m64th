@@ -386,8 +386,9 @@
     /* compile-string, ( c-addr u -- ) runtime effect: ( -- c-addr' u ) */                         \
     X(15, "compile-string,", compile_string_comma)                                                 \
     /* ( -- ) if compiling, forget latest word and discard compilation stack. */                   \
-    X(14, "compiler-abort", compiler_abort)      /* also unconditionally stops compiling */        \
-    X(14, "countedtokens,", countedtokens_comma) /* ( counted-tokens -- ) */                       \
+    X(14, "compiler-abort", compiler_abort)            /* also unconditionally stops compiling */  \
+    X(14, "countedtokens,", countedtokens_comma)       /* ( counted-tokens -- ) */                 \
+    X(18, "countedtokens>last", countedtokens_to_last) /* ( countedtokens -- tok|_missing_ ) */    \
     /*   ( io ch -- c-addr u ) get string before ch in iobuf (no refilling) */                     \
     X(14, "ibuf-find-char", ibuf_find_char)                                                        \
     /*   ( io -- c-addr u ) find non-blank string in iobuf (no refilling) */                       \
@@ -658,6 +659,7 @@
     X(20, "[resolve-jump-there]", _resolve_jump_there_)     /* resolve a jump from here     */     \
     X(17, "[resolve-jump-to]", _resolve_jump_to_) /* resolve a jump to specified offset     */     \
     X(14, "[resolve-loop]", _resolve_loop_) /* common back-end of 'loop' and '+loop'        */     \
+    X(20, "[token-consumed-ip,]", _token_consumed_ip_comma_) /* ( tok -- ) */                      \
     X(23, "[throw-compile-only-xt]", _throw_compile_only_xt_)                                      \
     X(24, "[throw-if-not-compiling]", _throw_if_not_compiling_)                                    \
     X(8, "[until,]", _until_comma_) /* compile one of 'until' '(until)' '(until0)'    */           \

@@ -115,6 +115,22 @@ also m4th-impl definitions
 ;
 
 
+\ compile consumed IP at src after a token 'if' 'else' 'while' etc.
+: [token-consumed-ip,]  \ ( src tok -- u )
+   token>name dup 0=                           \ ( src nt|0 t|f             )
+   if                                          \ ( src 0                    )
+      nip exit                                 \ ( 0                        )
+   then                                        \ ( src nt                   )
+   name>flags flags>consumed-tokens            \ ( src u                    )
+   tuck 0                                      \ ( u src u 0                )
+   ?do                                         \ ( u src         ) (R: u i  )
+      dup token@ token,                        \ ( u src         ) (R: u i  )
+      token+                                   \ ( u src'        ) (R: u i  )
+   loop                                        \ ( u src                    )
+   drop                                        \ ( u                        )
+;
+
+
 \ copy and optimize at least one token from src to HERE. updates HERE.
 \ return number of consumed tokens, and true if an optimized sequence was found, else false.
 : (optimize-tokens,)  \ ( src u opts -- u' t|f )
@@ -122,15 +138,20 @@ also m4th-impl definitions
    if                                          \ ( src 0 opts               )
       drop nip false exit                      \ ( 0 false                  )
    then                                        \ ( src u opts               )
-   >r                                          \ ( src u                    ) (R: opts )
-   trail                                       \ ( src src u                ) (R: opts )
-   r> (optimize-tokens)                        \ ( src countedtokens|0 iu|0 )
-   dup if                                      \ ( src countedtokens iu     )
-      swap countedtokens,                      \ ( src iu                   )
-      nip true                                 \ ( iu true                  )
+   >r trail r>                                 \ ( src src u opts           )
+   (optimize-tokens)                           \ ( src countedtokens|0 iu|0 )
+   swap dup                                    \ ( src iu|0 countedtokens|0 )
+   if                                          \ ( src iu countedtokens     )
+      flip                                     \ ( countedtokens iu src     )
+      over tokens +                            \ ( countedtokens iu src'    )
+      rot dup countedtokens,                   \ ( iu src countedtokens     )
+      countedtokens>last                       \ ( iu src tok|_missing_     )
+      [token-consumed-ip,] + true              \ ( iu' true                 )
    else                                        \ ( src 0 0                  )
-      1+ flip                                  \ ( 1 false src              )
-      token@ token,                            \ ( 1 false                  )
+      2drop dup token+                         \ ( src src'                 )
+      swap token@ dup token,                   \ ( src' tok                 )
+      [token-consumed-ip,]                     \ ( iu                       )
+      1+ false                                 \ ( iu' false                )
    then                                        \ ( iu t|f                   )
 ;
 

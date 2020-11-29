@@ -1180,22 +1180,24 @@ WORD_START(_optimize_tokens_comma_, _optimize_tokens_)
     WORD_NATIVE_NONE()
     WORD_FLAGS(0)
     WORD_CODE(/* generated from file impl.forth - see source and comments there */
-#if 1
-        /*34*/ over,
+        over,
         _if0_, T(5),
-            drop, nip, zero, exit,
+            drop, nip, false, exit,
         then,
-            to_r, trail, r_from, CALL(_optimize_tokens_),
-        _q_if_, T(6+nCALLt),
-            swap, CALL(countedtokens_comma), nip, minus_one,
-        _else_, T(5),
-            one_plus, flip, ushort_fetch, short_comma,
+        to_r, trail, r_from,
+        CALL(_optimize_tokens_), swap,
+        _q_if_, T(13+3*nCALLt),
+            flip, over, tokens, plus, rot, dup,
+            CALL(countedtokens_comma),
+            CALL(countedtokens_to_last),
+            CALL(_token_consumed_ip_comma_),
+            plus, true,
+        _else_, T(11+nCALLt),
+            two_drop, dup, two_plus, swap, token_fetch,
+            dup, token_comma,
+            CALL(_token_consumed_ip_comma_),
+            one_plus, false,
         then, exit
-#else
-        /*31*/ _q_if0_, T(4), nip, zero, exit, then, trail, CALL(_optimize_tokens_),
-        _q_if_, T(7+nCALLt), swap, count_tokens, CALL(tokens_comma), nip, minus_one,
-        _else_, T(5), one_plus, flip, token_fetch, token_comma, then, exit
-#endif
     )
 WORD_END(_optimize_tokens_comma_)
 /**
@@ -1210,7 +1212,6 @@ WORD_START(_optimize_xt_comma_, _optimize_tokens_comma_)
     WORD_NATIVE_NONE()
     WORD_FLAGS(0)
     WORD_CODE(/* generated from file impl.forth - see source and comments there */
-#if 1
         /*31*/ zero, two_to_r,
         begin,
         _q_while_, T(18+nCALLt),
@@ -1219,16 +1220,6 @@ WORD_START(_optimize_xt_comma_, _optimize_tokens_comma_)
             r_fetch, or, r_store, tuck, minus, flip, plus, swap,
         _repeat_, T(-20-nCALLt),
         two_drop, r_from, r_from_drop, exit
-#else
-        /*29*/ zero, to_r,
-        begin,
-        _q_while_, T(17+nCALLt),
-            over, tokens, state, fetch, plus, over,
-            CALL(_optimize_tokens_comma_),
-            r_fetch, or, r_store, tuck, minus, flip, plus, swap,
-        _repeat_, T(-19-nCALLt),
-        two_drop, r_from, exit
-#endif
     )
 WORD_END(_optimize_xt_comma_)
 /* ( x -- token t | x f ) try to optimize '[ x ] literal' */
@@ -1717,8 +1708,27 @@ WORD_START(_throw_if_not_compiling_, _throw_compile_only_xt_)
         exit
     )
 WORD_END(_throw_if_not_compiling_)
+/* ( src tok -- ) compile consumed IP at src after a token 'if' 'else' 'while' etc. */
+WORD_START(_token_consumed_ip_comma_,  _throw_if_not_compiling_)
+    WORD_DSTACK(2,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY)
+    WORD_CODE(/* generated from file impl.forth - see source and comments there */
+        /*20*/ token_to_name,
+        _q_if0_, T(3),
+            nip, exit,
+        then,
+        name_to_flags, flags_to_consumed_tokens, tuck, zero,
+        _q_do_, T(6),
+            dup, token_fetch, token_comma, tokens,
+        _loop_, T(-6),
+        drop, exit
+    )
+WORD_END(_token_consumed_ip_comma_)
 /* ( -- ls ) allocate m4th->locals data structure if not present */
-WORD_START(_user_locals_allocate_,_throw_if_not_compiling_)
+WORD_START(_user_locals_allocate_,     _token_consumed_ip_comma_)
     WORD_DSTACK(0,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -1759,7 +1769,7 @@ WORD_START(_user_locals_set_idx_,      _user_locals_clear_)
     )
 WORD_END(_user_locals_set_idx_)
 /* ({:found|) ( i j -- ^j i ) update {: internal state to remember that | was found */
-WORD_START(_brace_colon_found_pipe_,      _user_locals_set_idx_)
+WORD_START(_brace_colon_found_pipe_,   _user_locals_set_idx_)
     WORD_DSTACK(2,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()

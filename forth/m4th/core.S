@@ -116,8 +116,23 @@ WORD_START(countedtokens_comma,   count_tokens)
         question_dup, _if_, T(2+nCALLt), count_tokens, CALL(tokens_comma), then, exit
     )
 WORD_END(countedtokens_comma)
+/* ( countedtokens -- tok|_missing_ ) get last token from countedtokens, or _missing_ */
+WORD_START(countedtokens_to_last, countedtokens_comma)
+    WORD_DSTACK(1,1)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        CALL(count_tokens),                            /* ( addr n                       ) */
+        _q_if0_, T(5),                                 /* ( addr n                       ) */
+            two_drop, _lit_tok_, _missing_, exit,      /* ( _missing_                    ) */
+        then,                                          /* ( addr n                       ) */
+        one_minus, tokens, plus, token_fetch, exit     /* ( tok                          ) */
+    )
+WORD_END(countedtokens_to_last)
 /* flags>consumed-tokens ( flags -- u ) get # consumed tokens from flags */
-WORD(flags_to_consumed_tokens, countedtokens_comma, DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD(flags_to_consumed_tokens, countedtokens_to_last, DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 /**
  * ibuf-find-char ( io ch -- c-addr u ) find ch in iobuf and return string before it.
  * if ch is present, consume it. does not refill.
