@@ -1124,18 +1124,17 @@ WORD_END(_optimize_4token_)
 /**
  * find an optimized sequence to replace N tokens being compiled.
  * return address of optimized sequence and u' = number of consumed tokens, or 0 0
- * ( tok-addr u -- counted-tokens u' | 0 0 )
+ * ( tok-addr u opts -- counted-tokens u' | 0 0 )
  */
 WORD_START(_optimize_tokens_, _optimize_4token_)
-    WORD_DSTACK(2,2)
+    WORD_DSTACK(3,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_DATA_TOKENS)
     WORD_CODE_AND_DATA(_optimize_tokens_,
-#if 1
       WORD_CODE_TOKENS(/* generated from file impl.forth - see source and comments there */
-        _ip_to_data_addr_, _lit2s_, T(256), to_r, minus_rot, two_to_r,
+        _ip_to_data_addr_, swap, to_r, minus_rot, two_to_r,
         begin,
             dup, token_fetch, dup,
             r3rd_fetch, and, swap, to_char,
@@ -1167,64 +1166,60 @@ WORD_START(_optimize_tokens_, _optimize_4token_)
         T(4|0x100), XT(_optimize_4token_),
         T(0)
       )
-#else
-      WORD_CODE_TOKENS(/* generated from file impl.forth - see source and comments there */
-        /*35*/ _ip_to_data_addr_, minus_rot, two_to_r,
-        begin,
-            dup, token_fetch,
-        _q_while_, T(23),
-            r_fetch, u_less_equal,
-        _while_, T(17),
-            r2nd_fetch, over, token_plus, fetch, execute,
-        _q_while0_, T(5),
-            drop, token_plus, cell_plus,
-        _repeat_, T(-20),
-            swap, token_fetch, two_r_from_two_drop, exit,
-        then,
-            zero,
-        then,
-        nip, zero, two_r_from_two_drop, exit
-      ),
-      WORD_DATA_TOKENS(
-        T(1), XT(_optimize_1token_),
-        T(2), XT(_optimize_2token_),
-        T(3), XT(_optimize_3token_),
-        T(3), XT(_optimize_3jump_),
-        T(4), XT(_optimize_4token_),
-        T(0)
-      )
-#endif
     )
 WORD_END(_optimize_tokens_)
 /**
  * copy and optimize at least one token from src to HERE. updates HERE.
  * return number of consumed tokens, and true if an optimized sequence was found, else false.
- * ( src u -- u' t|f )
+ * ( src u opts -- u' t|f )
  */
 WORD_START(_optimize_tokens_comma_, _optimize_tokens_)
-    WORD_DSTACK(2,3)
+    WORD_DSTACK(3,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_FLAGS(0)
     WORD_CODE(/* generated from file impl.forth - see source and comments there */
+#if 1
+        /*34*/ over,
+        _if0_, T(5),
+            drop, nip, zero, exit,
+        then,
+            to_r, trail, r_from, CALL(_optimize_tokens_),
+        _q_if_, T(6+nCALLt),
+            swap, CALL(countedtokens_comma), nip, minus_one,
+        _else_, T(5),
+            one_plus, flip, ushort_fetch, short_comma,
+        then, exit
+#else
         /*31*/ _q_if0_, T(4), nip, zero, exit, then, trail, CALL(_optimize_tokens_),
         _q_if_, T(7+nCALLt), swap, count_tokens, CALL(tokens_comma), nip, minus_one,
         _else_, T(5), one_plus, flip, token_fetch, token_comma, then, exit
+#endif
     )
 WORD_END(_optimize_tokens_comma_)
 /**
  * copy and optimize exactly u tokens from XT+offset to HERE. updates HERE.
  * return true if something was optimized, else false
- * ( offset u -- t|f )
+ * ( offset u opts -- t|f )
  */
 WORD_START(_optimize_xt_comma_, _optimize_tokens_comma_)
-    WORD_DSTACK(2,1)
+    WORD_DSTACK(3,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_FLAGS(0)
     WORD_CODE(/* generated from file impl.forth - see source and comments there */
+#if 1
+        /*31*/ zero, two_to_r,
+        begin,
+        _q_while_, T(18+nCALLt),
+            over, two_times, state, fetch, plus, over,
+            r2nd_fetch, CALL(_optimize_tokens_comma_),
+            r_fetch, or, r_store, tuck, minus, flip, plus, swap,
+        _repeat_, T(-20-nCALLt),
+        two_drop, r_from, r_from_drop, exit
+#else
         /*29*/ zero, to_r,
         begin,
         _q_while_, T(17+nCALLt),
@@ -1233,6 +1228,7 @@ WORD_START(_optimize_xt_comma_, _optimize_tokens_comma_)
             r_fetch, or, r_store, tuck, minus, flip, plus, swap,
         _repeat_, T(-19-nCALLt),
         two_drop, r_from, exit
+#endif
     )
 WORD_END(_optimize_xt_comma_)
 /* ( x -- token t | x f ) try to optimize '[ x ] literal' */
@@ -1437,8 +1433,8 @@ WORD_START(_finish_, _endof_)
         CALL(exit), /* compile 'exit' */
         drop, _lit_, T(M4FLAG_NOOPT_MASK), and,
         /* optimize only if (word.flags & M4FLAG_NOOPT_MASK) == 0 */
-        _if0_, T(2+nCALLt),
-            CALL(_optimize_),
+        _if0_, T(3+nCALLt),
+            _lit_, T(M4OPTS_PRIO_NORM), CALL(_optimize_),
         then,
         CALL(_user_locals_clear_),
         left_bracket, align, /* also align HERE to current word's data */
@@ -1474,27 +1470,31 @@ WORD_START(_of_, _inline_)
     )
 WORD_END(_of_)
 WORD_START(_optimize_once_, _of_)
-    WORD_DSTACK(0,0)
+    WORD_DSTACK(1,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE)
     WORD_CODE(/* generated from file impl.forth - see source and comments there */
-        /*24*/ zero, state, fetch, here, dup_to_r, sub, div_token,
-        CALL(_optimize_xt_comma_), r_from, state, fetch, over, here, sub,
-        cmove_count, nip, here, minus, allot, exit
+        /*25*/ zero, state, fetch, here, dup_to_r,
+        sub, two_div, rot, CALL(_optimize_xt_comma_),
+        r_from, state, fetch, over,
+        here, sub, cmove_count, nip,
+        here, minus, allot, exit
     )
 WORD_END(_optimize_once_)
 /* call (optimize-once) repeatedly until there is nothing left optimize. updates HERE. */
 WORD_START(_optimize_, _optimize_once_)
-    WORD_DSTACK(0,0)
+    WORD_DSTACK(1,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE)
     WORD_CODE(/* generated from file impl.forth - see source and comments there */
-        /*14*/ begin, CALL(_optimize_once_), _until0_, T(-3-nCALLt),
-        CALL(_recompile_), exit
+        /*16*/ begin,
+            dup, CALL(_optimize_once_),
+        _until0_, T(-4-nCALLt),
+        drop, CALL(_recompile_), exit
     )
 WORD_END(_optimize_)
 /* rebuild XT jump offsets after optimization */

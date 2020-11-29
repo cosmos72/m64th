@@ -83,7 +83,7 @@ also m4th-impl definitions
 \ find an optimized sequence to replace N tokens being compiled.
 \ return address of optimized sequence and u' = number of consumed tokens, or 0 0
 : (optimize-tokens)    \ ( tok-addr u opts -- counted-tokens u' | 0 0 )
-   (ip>data>addr) $100 >r -rot                 \ ( &data tok-addr u      ) (R: opts            )
+   (ip>data>addr) swap -rot                    \ ( &data tok-addr u      ) (R: opts            )
    2>r                                         \ ( &data                 ) (R: opts tok-addr u )
    begin                                       \ ( &data                 ) (R: opts tok-addr u )
       dup token@ dup                           \ ( &data n+opt n+opt     ) (R: opts tok-addr u )
