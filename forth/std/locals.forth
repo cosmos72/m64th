@@ -47,5 +47,5 @@ also forth definitions
    if          \ ^n_before n_after           \ ( i j                  )
       swap invert                            \ ( n_after n_before     )
    then                                      \ ( n_after n_before     )
-   [compile-user-locals,]                    \ (                      )
+   [compile-user-locals]                     \ (                      )
 ;

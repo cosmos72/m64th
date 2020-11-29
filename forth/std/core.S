@@ -279,7 +279,7 @@ WORD_START(create,     constant)
         CALL(_create_),                        /* create word, mark it M4FLAG_CREATE   */
         right_bracket,                         /* start compiling                      */
         _lit_comma_, _ip_to_data_addr_,        /* compile (ip>data>addr)               */
-        _lit_comma_, _call_,                /* compile (call)                    */
+        _lit_comma_, _call_,                   /* compile (call)                       */
         _lit_xt_, XT(noop), xt_comma,          /* compile XT(noop). placeholder set by DOES> */
         CALL(_finish_), exit                   /* finish compiling, make word findable */
     )
@@ -487,7 +487,7 @@ WORD_START(recurse,    r_fetch)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_CODE(
-        _lit_tok_, _recurse_, token_comma,
+        _lit_comma_, _recurse_,
         _num_compiled_, one_plus, negate,              /* ( -IP_offset                    ) */
         token_comma, exit
     )
