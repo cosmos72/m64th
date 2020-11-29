@@ -1375,7 +1375,7 @@ m4cell m4th_local(m4th *m, m4string localname) {
         return m4locals_set_indexes(ls);
     }
     if (!ls) {
-        // allow at least 16 local variables, each with a name 255 bytes long
+        /* allow at least 16 local variables, each with a name 255 bytes long */
         const m4ucell capacity = 16 * (sizeof(m4local) + 255);
         m->locals = ls = m4mem_allocate(sizeof(m4locals) + capacity);
         ls->end = ls->n = 0;
