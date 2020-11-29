@@ -1133,14 +1133,31 @@ WORD_START(_optimize_tokens_, _optimize_4token_)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_DATA_TOKENS)
     WORD_CODE_AND_DATA(_optimize_tokens_,
-#if 0
+#if 1
       WORD_CODE_TOKENS(/* generated from file impl.forth - see source and comments there */
-        /*54*/ _ip_to_data_addr_, _lit2s_, T(256), to_r, minus_rot, two_to_r,
+        _ip_to_data_addr_, _lit2s_, T(256), to_r, minus_rot, two_to_r,
         begin,
-            dup, ushort_fetch, dup, j, and, swap, to_char,
-        _q_while_, T(32),
-            i, u_less_equal,
-        _while_, T(26), over, _if_, T(8), i_prime, over, two_plus, fetch, execute, dup, _else_, T(2), zero, then, _while0_, T(5), drop, two_plus, eight_plus, _repeat_, T(-33), swap, ushort_fetch, two_r_from_two_drop, r_from_drop, exit, then, zero, then, drop, nip, zero, two_r_from_two_drop, r_from_drop, exit
+            dup, token_fetch, dup,
+            r3rd_fetch, and, swap, to_char,
+        _q_while_, T(31),
+            r_fetch, u_less_equal,
+        _while_, T(25),
+            _if_, T(7),
+                r2nd_fetch, over,
+                token_plus, fetch, execute,
+            _else_, T(2),
+                zero,
+            then,
+        _q_while0_, T(5),
+            drop, token_plus, cell_plus,
+        _repeat_, T(-31),
+            swap, token_fetch, to_char,
+            two_r_from_two_drop, r_from_drop, exit,
+        then,
+            zero,
+        then,
+        nip, two_drop, zero, zero,
+        two_r_from_two_drop, r_from_drop, exit
       ),
       WORD_DATA_TOKENS(
         T(1|0x100), XT(_optimize_1token_),

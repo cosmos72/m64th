@@ -24,9 +24,9 @@
 # to the file $HOME/.gdbinit
 #
 
-class PrintDataStack(gdb.Command):
+class PrintForthDataStack(gdb.Command):
     def __init__(self):
-        gdb.Command.__init__(self, "z", gdb.COMMAND_DATA, gdb.COMPLETE_SYMBOL, True)
+        gdb.Command.__init__(self, "y", gdb.COMMAND_DATA, gdb.COMPLETE_SYMBOL, True)
         self.sz = 8
         self.szt = 2
     def invoke(self, arg, from_tty):
@@ -102,4 +102,14 @@ class PrintDataStack(gdb.Command):
             s = s[2:]
         return s
 
-PrintDataStack()
+PrintForthDataStack()
+
+
+class ContinueAndPrintForthDataStack(gdb.Command):
+    def __init__(self):
+        gdb.Command.__init__(self, "z", gdb.COMMAND_DATA, gdb.COMPLETE_SYMBOL, True)
+    def invoke(self, arg, from_tty):
+        gdb.execute("continue")
+        gdb.execute("y")
+
+ContinueAndPrintForthDataStack()
