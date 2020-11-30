@@ -646,6 +646,12 @@ static m4testexecute testexecute_d[] = {
      {{2, {3, -3 * SZt /*distance between the tokens (ip) and "abc"*/}}, {}},
      {}},
     /* ----------------------------- catch, throw --------------------------- */
+    {"' bye catch",
+     {m4_catch_beg_, m4_catch_end_},
+     {{2, {7, DXT(bye)}}, {1, {0xfed0}}},
+     /* inspect return stack filled by 'catch'. */
+     {{1, {7}}, {5, {0xfed0, 0, 0, 0, 0x7fffffff /* fixed by m4testexecute_fix() */}}},
+     {}},
     {"' noop catch",
      {m4_catch_beg_, m4_catch_end_, m4bye},
      {{2, {23, DXT(noop)}}, {1, {0xfed1}}},
@@ -1754,6 +1760,11 @@ static void m4testexecute_fix(m4testexecute *t, const m4code_pair *pair) {
     case m4name_to_string:
         t->after.d.data[0] = (m4cell)m4word_name((const m4word *)t->before.d.data[0]).addr;
         break;
+    case m4_catch_beg_:
+        if (t->code[1] == m4_catch_end_ && t->code[2] == m4_missing_) {
+            /* testing "' bye catch" */
+            t->after.r.data[4] = (m4cell)pair->first.addr + SZt;
+        }
     }
 }
 

@@ -50,6 +50,9 @@ FUNC_START(_catch_beg_)
         /* save dstk depth to rstk */
         RPUSH( REG1)                               /* save dend - dstk   */
 
+        /* save locals address register to rstk */
+        RPUSH( LOCL)                               /* save LOCL          */
+
         /* save m4th.handler to rstk */
         LOAD(  REG1,   AT(M4TH, M4TH_OFF_HANDLER))
         RPUSH( REG1)                               /* save m4th.handler  */
@@ -83,8 +86,8 @@ FUNC_START(_catch_end_)
         /* no exception was thrown. just restore m4th.handler and rstk,          */
         /* without restoring dstk                                                */
         STOR(  RTOP,   AT(M4TH, M4TH_OFF_HANDLER))   /* m4th.handler = rtop = previous m4th.handler */
-        LOAD(  RTOP,   AT(RSTK, SZ))                 /* reload rtop              */
-        ADD2(  IMM(SZ2), RSTK)                       /* adjust rstk              */
+        LOAD(  RTOP,   AT(RSTK, SZ2))                /* reload rtop              */
+        ADD2(  IMM(SZ3), RSTK)                       /* adjust rstk              */
         JUMP(  TO(_catch_end_.push))
 
 LABEL(_catch_end_.thrown)
@@ -97,7 +100,7 @@ LABEL(_catch_end_.thrown)
         /* do NOT clear m4th.ex_message, caller may need it                        */
 
 LABEL(_catch_end_.push)
-        /* final touch: push REG2 to dstk */
+        /* final touch: push exception to dstk */
         DPUSH__DTOP()
         MOVE(  REG2,   DTOP)                         /* ( exception | 0          ) */
 FUNC_END(_catch_end_)
@@ -213,6 +216,9 @@ LABEL(throw.rstk_ok)
         /* load previous m4th.handler from rstk */
         RPOP(  REG1)                                 /* a = previous m4th.handler */
         STOR(  REG1,   AT(M4TH, M4TH_OFF_HANDLER))   /* m4th.handler = a          */
+
+        /* load previous LOCL register from rstk */
+        RPOP(  LOCL)
 
         /*
          * recompute dstk from m4th.dend and depth saved to rstk.
