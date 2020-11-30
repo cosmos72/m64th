@@ -836,6 +836,8 @@ static const m4token test_tokens_false[] = {m4false};
 static const m4token test_tokens_one_plus[] = {m4one_plus};
 static const m4token test_tokens_swap_drop[] = {m4swap, m4drop};
 static const m4token test_tokens_ne_zero_more[] = {m4ne, m4zero_more};
+static const m4token test_tokens_lx_t3[] = {m4_lx_, 3};
+static const m4token test_tokens_drop_drop[] = {m4drop, m4drop};
 static const m4token test_tokens_r_from_plus_to_r[] = {m4r_from, m4plus, m4to_r};
 static const m4token test_tokens_if_t_then[] = {m4_if_, (m4token)-1, m4then};
 static const m4token test_tokens_if0_t_else[] = {m4_if0_, (m4token)-1, m4_else_};
@@ -934,6 +936,18 @@ static m4testexecute testexecute_e[] = {
      {{1, {(m4cell)test_tokens_ne_zero_more}}, {}},
      {{}, {}},
      {3, {m4drop, m4drop, m4zero}}},
+    {"{(lx) T(3)} (optimize-2token-midprio)",
+     {CALL(_optimize_2token_midprio_),   /* ( counted-tokens ) */
+      CALL(countedtokens_comma), m4bye}, /* (                ) */
+     {{1, {(m4cell)test_tokens_lx_t3}}, {}},
+     {{}, {}},
+     {1, {m4_l3_}}},
+    {"{drop drop} (optimize-2token-lowprio)",
+     {CALL(_optimize_2token_lowprio_),   /* ( counted-tokens ) */
+      CALL(countedtokens_comma), m4bye}, /* (                ) */
+     {{1, {(m4cell)test_tokens_drop_drop}}, {}},
+     {{}, {}},
+     {1, {m4two_drop}}},
     {"{r> + >r} (optimize-3token)",
      {CALL(_optimize_3token_),           /* ( counted-tokens ) */
       CALL(countedtokens_comma), m4bye}, /* (                ) */
@@ -961,70 +975,70 @@ static m4testexecute testexecute_e[] = {
      {1, {m4question_dup}}},
     {"{_missing_} 1 (optimize-tokens)",
      {CALL(_optimize_tokens_), m4bye}, /* ( counted-tokens u' ) */
-     {{3, {(m4cell)test_tokens__missing_, 1, M4OPTS_PRIO_NORM}}, {}},
+     {{3, {(m4cell)test_tokens__missing_, 1, M4OPTS_PRIO_HIGH}}, {}},
      {{2, {0, 0}}, {}},
      {}},
     {"{false} 1 (optimize-tokens)",
      {CALL(_optimize_tokens_),                   /* ( counted-tokens u' ) */
       m4swap, CALL(countedtokens_comma), m4bye}, /* ( u'                ) */
-     {{3, {(m4cell)test_tokens_false, 1, M4OPTS_PRIO_NORM}}, {}},
+     {{3, {(m4cell)test_tokens_false, 1, M4OPTS_PRIO_HIGH}}, {}},
      {{1, {1}}, {}},
      {1, {m4zero}}},
     {"{swap drop} 2 (optimize-tokens)",
      {CALL(_optimize_tokens_),                   /* ( counted-tokens u' ) */
       m4swap, CALL(countedtokens_comma), m4bye}, /* ( u'                ) */
-     {{3, {(m4cell)test_tokens_swap_drop, 2, M4OPTS_PRIO_NORM}}, {}},
+     {{3, {(m4cell)test_tokens_swap_drop, 2, M4OPTS_PRIO_HIGH}}, {}},
      {{1, {2}}, {}},
      {1, {m4nip}}},
     {"{$ffff and} (optimize-tokens)",
      {CALL(_optimize_tokens_),                   /* ( counted-tokens u' ) */
       m4swap, CALL(countedtokens_comma), m4bye}, /* ( u'                ) */
-     {{3, {(m4cell)test_tokens__lit__0xffff_and, 3, M4OPTS_PRIO_NORM}}, {}},
+     {{3, {(m4cell)test_tokens__lit__0xffff_and, 3, M4OPTS_PRIO_HIGH}}, {}},
      {{1, {3}}, {}},
      {1, {m4to_ushort}}},
     {"{1 -} (optimize-tokens,)",
      {m4token_comma, m4token_comma, m4state, m4fetch, m4two,            /* ( xt u    ) */
-      m4_lit_, M4OPTS_PRIO_NORM, CALL(_optimize_tokens_comma_), m4bye}, /* ( u' t|f  ) */
+      m4_lit_, M4OPTS_PRIO_HIGH, CALL(_optimize_tokens_comma_), m4bye}, /* ( u' t|f  ) */
      {{2, {m4minus, m4one}}, {}},
      {{2, {2, ttrue}}, {}},
      {3, {m4one, m4minus, /* followed by optimized sequence */ m4one_minus}}},
-    {"{2 * dup} (optimize-xt,)",
+    {"{2 * dup} [optimize-xt,]",
      {m4token_comma, m4token_comma, m4token_comma,                  /* (            ) */
       m4zero, m4three,                                              /* ( offset u   ) */
-      m4_lit_, M4OPTS_PRIO_NORM, CALL(_optimize_xt_comma_), m4bye}, /* ( t|f        ) */
+      m4_lit_, M4OPTS_PRIO_HIGH, CALL(_optimize_xt_comma_), m4bye}, /* ( t|f        ) */
      {{3, {m4dup, m4times, m4two}}, {}},
      {{1, {ttrue}}, {}},
      {5, {m4two, m4times, m4dup, /* followed by optimized sequence */ m4two_times, m4dup}}},
-    {"{dup * exit} (optimize-xt,)",
+    {"{dup * exit} [optimize-xt,]",
      {m4token_comma, m4token_comma, m4token_comma, /* (               ) */
-      m4zero, m4three, m4_lit_, M4OPTS_PRIO_NORM,  /* ( offset u opts ) */
+      m4zero, m4three, m4_lit_, M4OPTS_PRIO_HIGH,  /* ( offset u opts ) */
       CALL(_optimize_xt_comma_), m4bye},           /* ( t|f           ) */
      {{3, {m4exit, m4times, m4dup}}, {}},
      {{1, {ttrue}}, {}},
      {5, {m4dup, m4times, m4exit, /* followed by optimized sequence */ m4squared, m4exit}}},
-    {"{4 * 2 *} (optimize-once)",
+    {"{4 * 2 *} [optimize-once]",
      {m4token_comma, m4token_comma, m4token_comma, m4token_comma, /* (            ) */
-      m4_lit_, M4OPTS_PRIO_NORM, CALL(_optimize_once_), m4bye},   /* ( t|f        ) */
+      m4_lit_, M4OPTS_PRIO_HIGH, CALL(_optimize_once_), m4bye},   /* ( t|f        ) */
      {{4, {m4times, m4two, m4times, m4four}}, {}},
      {{1, {ttrue}}, {}},
      {2, {/* optimized sequence: */ m4four_times, m4two_times}}},
-    {"{dup * dup *} (optimize-once)",
+    {"{dup * dup *} [optimize-once]",
      {m4token_comma, m4token_comma, m4token_comma, m4token_comma, /* (            ) */
-      m4_lit_, M4OPTS_PRIO_NORM, CALL(_optimize_once_), m4bye},   /* ( t|f        ) */
+      m4_lit_, M4OPTS_PRIO_HIGH, CALL(_optimize_once_), m4bye},   /* ( t|f        ) */
      {{4, {m4times, m4dup, m4times, m4dup}}, {}},
      {{1, {ttrue}}, {}},
      {2, {/* optimized sequence: */ m4squared, m4squared}}},
-    {"{1 * 2 * 4 *} (optimize)",
-     {m4token_comma, m4token_comma, m4token_comma,         /* ( _ _ _           ) */
-      m4token_comma, m4token_comma, m4token_comma,         /* (                 ) */
-      m4_lit_, M4OPTS_PRIO_NORM, CALL(_optimize_), m4bye}, /* (                 ) */
+    {"{1 * 2 * 4 *} [optimize]",
+     {m4token_comma, m4token_comma, m4token_comma,              /* ( _ _ _           ) */
+      m4token_comma, m4token_comma, m4token_comma,              /* (                 ) */
+      m4_lit_, M4OPTS_PRIO_HIGH, CALL(_optimize_opts_), m4bye}, /* (                 ) */
      {{6, {m4times, m4four, m4times, m4two, m4times, m4one}}, {}},
      {{}, {}},
      {1, {/* optimized sequence: */ m4eight_times}}},
-    {"{1 - 1 - 4 +} (optimize)",
-     {m4token_comma, m4token_comma, m4token_comma,         /* ( _ _ _           ) */
-      m4token_comma, m4token_comma, m4token_comma,         /* (                 ) */
-      m4_lit_, M4OPTS_PRIO_NORM, CALL(_optimize_), m4bye}, /* (                 ) */
+    {"{1 - 1 - 4 +} [optimize]",
+     {m4token_comma, m4token_comma, m4token_comma,              /* ( _ _ _           ) */
+      m4token_comma, m4token_comma, m4token_comma,              /* (                 ) */
+      m4_lit_, M4OPTS_PRIO_HIGH, CALL(_optimize_opts_), m4bye}, /* (                 ) */
      {{6, {m4plus, m4four, m4minus, m4one, m4minus, m4one}}, {}},
      {{}, {}},
      {1, {/* optimized sequence: */ m4two_plus}}},

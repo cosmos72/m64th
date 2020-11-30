@@ -56,7 +56,8 @@
 #define M4TH_USER_VAR_LOCALS 3 /* user_var index m4th->locals */
 
 /* (optimize*) arguments */
-#define M4OPTS_PRIO_NORM 0x100
-#define M4OPTS_PRIO_LOW 0x200
+#define M4OPTS_PRIO_HIGH 0x100
+#define M4OPTS_PRIO_MID 0x200
+#define M4OPTS_PRIO_LOW 0x400
 
 #endif /* M4TH_INCLUDE_M4TH_MH */

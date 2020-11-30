@@ -45,6 +45,26 @@ also m4th-impl definitions
    nip                                         \ ( &val|0                  )
 ;
 
+
+\ find a low-priority optimized sequence to replace two tokens being compiled.
+: (optimize-2token-lowprio) \ ( tok-addr -- counted-tokens|0 )
+   (ip>data>addr) swap                         \ ( &data addr addr       )
+   uint@           \ assumes 1uint == 2 tokens   ( &data tok0|tok1<<16   )
+   >r                                          \ ( &data                 ) (R: key )
+   begin                                       \ ( &data                 ) (R: key )
+      dup uint@    \ assumes 1uint == 2 tokens   ( &data tok0|tok1<<16   ) (R: key )
+      dup                                      \ ( &data tok0|tok1<<16 fl) (R: key )
+   while                                       \ ( &data tok0|tok1<<16   ) (R: key )
+      r@ <>                                    \ ( &data t|f             ) (R: key )
+   while                                       \ ( &data                 ) (R: key )
+      4 tokens +                               \ ( &data'                ) (R: key )
+   repeat                                      \ ( &data                 ) (R: key )
+      0 swap uint+ \ assumes 1uint == 2 tokens   ( 0 counted-tokens      ) (R: key )
+   then                                        \ ( _ counted-tokens|0    ) (R: key )
+   nip r> drop                                 \ ( counted-tokens|0      )
+;
+
+
 \ find an optimized sequence to replace three tokens being compiled.
 : (optimize-3token)    \ ( tok-addr -- counted-tokens | 0 )
    (ip>data>addr) swap dup >r                  \ ( hashmap tok-addr               ) (R: tok-addr )
@@ -116,7 +136,7 @@ also m4th-impl definitions
 
 
 \ compile consumed IP at src after a token 'if' 'else' 'while' etc.
-: [token-consumed-ip,]  \ ( src tok -- u )
+: (token-consumed-ip,)  \ ( src tok -- u )
    token>name dup 0=                           \ ( src nt|0 t|f             )
    if                                          \ ( src 0                    )
       nip exit                                 \ ( 0                        )
@@ -146,11 +166,11 @@ also m4th-impl definitions
       over tokens +                            \ ( countedtokens iu src'    )
       rot dup countedtokens,                   \ ( iu src countedtokens     )
       countedtokens>last                       \ ( iu src tok|_missing_     )
-      [token-consumed-ip,] + true              \ ( iu' true                 )
+      (token-consumed-ip,) + true              \ ( iu' true                 )
    else                                        \ ( src 0 0                  )
       2drop dup token+                         \ ( src src'                 )
       swap token@ dup token,                   \ ( src' tok                 )
-      [token-consumed-ip,]                     \ ( iu                       )
+      (token-consumed-ip,)                     \ ( iu                       )
       1+ false                                 \ ( iu' false                )
    then                                        \ ( iu t|f                   )
 ;
@@ -158,7 +178,7 @@ also m4th-impl definitions
 
 \ copy and optimize exactly u tokens from XT+offset to HERE. updates HERE.
 \ return true if something was optimized, else false
-: (optimize-xt,)   \ ( offset u opts -- t|f )
+: [optimize-xt,]   \ ( offset u opts -- t|f )
    false 2>r                                   \ ( offset u         ) (R: opts false )
    begin                                       \ ( offset u         ) (R: opts t|f   )
       dup                                      \ ( offset u u       ) (R: opts t|f   )
@@ -179,10 +199,10 @@ also m4th-impl definitions
 \ optimize exactly HERE-XT tokens starting from XT. optimized tokens
 \ are initially written to HERE and up, then copied back to XT and up.
 \ updates HERE. return t if something was optimized, else false
-: (optimize-once)    \ ( opts -- t|f )
+: [optimize-once]    \ ( opts -- t|f )
    0 state @ here dup >r                     \ ( opts 0 xt here   ) (R: here )
    sub /token rot                            \ ( 0 u opts         ) (R: here )
-   (optimize-xt,)                            \ ( t|f              ) (R: here )
+   [optimize-xt,]                            \ ( t|f              ) (R: here )
    \ optimized code is now between saved HERE and current HERE
    r> state @                                \ ( t|f here xt      )
    over here                                 \ ( t|f here xt here here' )
@@ -195,10 +215,10 @@ also m4th-impl definitions
 ;
 
 
-\ call (optimize-once) repeatedly until there is nothing left optimize. updates HERE.
-: (optimize)    \ ( opts -- )
+\ call [optimize-once] repeatedly until there is nothing left optimize. updates HERE.
+: [optimize]    \ ( opts -- )
    begin                                     \ ( opts             )
-      dup (optimize-once)                    \ ( opts t|f         )
+      dup [optimize-once]                    \ ( opts t|f         )
       0=                                     \ ( opts flag        )
    until                                     \ ( opts             )
    drop [recompile]                          \ (                  )

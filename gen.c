@@ -181,14 +181,14 @@ static void genopt2_run(FILE *out) {
     genopt2_dump(map, "OPT2", out);
 }
 
-static void genopt2_lowprio_run(FILE *out) {
-    static const m4token opt[][6] = {OPT2_RULES_LOWPRIO(OPT2_TO_TOKENS)};
+static void genopt2_midprio_run(FILE *out) {
+    static const m4token opt[][6] = {OPT2_RULES_MIDPRIO(OPT2_TO_TOKENS)};
     m4hashmap_int *map = m4hashmap_new_int(N_OF(opt) / 2);
     m4cell i;
     for (i = 0; i < (m4cell)N_OF(opt); i++) {
         genopt2_add(map, opt[i]);
     }
-    genopt2_dump(map, "OPT2_LOWPRIO", out);
+    genopt2_dump(map, "OPT2_MIDPRIO", out);
 }
 
 static void genopt3_run(FILE *out) {
@@ -279,7 +279,7 @@ int main(int argc, char *argv[]) {
     } else {
         genopt_to_file("include/opt2_hash.mh", genopt2_run);
         genopt_to_file("include/opt3_hash.mh", genopt3_run);
-        genopt_to_file("include/opt2_lowprio_hash.mh", genopt2_lowprio_run);
+        genopt_to_file("include/opt2_midprio_hash.mh", genopt2_midprio_run);
     }
     return 0;
 }

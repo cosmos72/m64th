@@ -194,6 +194,9 @@
 
 /* internal m4th macros used (mostly) by assembly */
 
+/* helps catching errors. how to include __FILE__ in error message/ */
+#define M4 CAT2(error_extra_comma_after_end_of_list_at_line_, __LINE__)
+
 #define M4SIZEOF_SHORT(x) _, 2
 #define M4SIZEOF_INT(x) _, 4
 #define M4SIZEOF_CELL(x) _, SZ
@@ -238,7 +241,7 @@
  * assembler macro: insert M4_call_, WORD_SYM(word).code in a sequence of m4token.
  */
 #define M4CALL(word)                                                                               \
-    CAT3(., SZt, byte) M4_call_;                                                                \
+    CAT3(., SZt, byte) M4_call_;                                                                   \
     CAT3(., SZ, byte) WORD_SYM(word) + WORD_OFF_XT;
 
 /* assembler macro: number of extra m4tokens needed by M4CALL(...)

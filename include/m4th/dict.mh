@@ -611,15 +611,17 @@
     X(14, "(locals-first)", _locals_first_)     /* ( ls   -- ls l|0  ) get first local variable */ \
     X(13, "(locals-next)", _locals_next_)       /* ( ls l -- ls l'|0 ) get  next local variable */ \
     X(16, "(locals-set-idx)", _locals_set_idx_) /* ( ls   -- )   set indexes of local variables */ \
-    /* find an optimized sequence to replace three tokens being compiled, */                       \
-    /* which may be part of control flow i.e. 'if' 'else' 'case' etc.  */                          \
-    X(16, "(optimize-3jump)", _optimize_3jump_) /* ( tok-addr -- counted-tokens|0 ) */             \
     /*  find an optimized sequence to replace a single token being compiled. */                    \
     X(17, "(optimize-1token)", _optimize_1token_) /* ( tok-addr -- counted-tokens|0 ) */           \
     /*  find an optimized sequence to replace 2 tokens being compiled. */                          \
     X(17, "(optimize-2token)", _optimize_2token_) /* ( tok-addr -- counted-tokens|0 ) */           \
+    /*  find a mid-priority optimized sequence to replace 2 tokens being compiled. */              \
+    X(25, "(optimize-2token-midprio)", _optimize_2token_midprio_) /* ( tok-addr -- ctokens|0 ) */  \
     /*  find a low-priority optimized sequence to replace 2 tokens being compiled. */              \
     X(25, "(optimize-2token-lowprio)", _optimize_2token_lowprio_) /* ( tok-addr -- ctokens|0 ) */  \
+    /* find an optimized sequence to replace three tokens being compiled, */                       \
+    /* which may be part of control flow i.e. 'if' 'else' 'case' etc.  */                          \
+    X(16, "(optimize-3jump)", _optimize_3jump_) /* ( tok-addr -- counted-tokens|0 ) */             \
     /*  find an optimized sequence to replace 3 tokens being compiled. */                          \
     X(17, "(optimize-3token)", _optimize_3token_) /* ( tok-addr -- counted-tokens|0 ) */           \
     /*  find an optimized sequence to replace 4 tokens being compiled. */                          \
@@ -628,8 +630,6 @@
     X(17, "(optimize-tokens)", _optimize_tokens_) /* ( tok-addr u -- counted-tokens u' | 0 0 ) */  \
     /* copy and optimize at least one token from src to HERE. updates HERE src and u */            \
     X(18, "(optimize-tokens,)", _optimize_tokens_comma_) /* ( src u -- src' u' ) */                \
-    /* copy and optimize exactly u tokens from XT+offset to HERE. updates HERE. */                 \
-    X(14, "(optimize-xt,)", _optimize_xt_comma_) /* ( offset u -- ) */                             \
     /* find an optimized sequence to replace '[ x ] literal' */                                    \
     X(18, "(optimize-literal)", _optimize_literal_) /* ( x -- token t | x f ) */                   \
     X(15, "(repl-type-ack)", _repl_type_ack_)                                                      \
@@ -648,11 +648,14 @@
     X(22, "[compile-locals-enter]", _compile_locals_enter_)                                        \
     X(8, "[finish]", _finish_)      /* ( sys -- ) finish compiling a word, make it findable   */   \
     X(8, "[inline]", _inline_)      /* ( nt -- ) inline a call to word into XT being compiled */   \
-    X(10, "[optimize]", _optimize_) /* optimize current XT being compiled  */                      \
+    X(10, "[optimize]", _optimize_) /* optimize current XT being compiled */                       \
+    X(15, "[optimize-opts]", _optimize_opts_) /* ( opts -- ) optimize current XT being compiled */ \
     /* optimize exactly HERE-XT tokens starting from XT. optimized tokens are initially written */ \
     /* to HERE and up, then copied back to XT and up. updates HERE. */                             \
     /* return t if something was optimized, else false */                                          \
-    X(15, "[optimize-once]", _optimize_once_)     /* ( -- t|f ) */                                 \
+    X(15, "[optimize-once]", _optimize_once_) /* ( opts -- t|f ) */                                \
+    /* copy and optimize exactly u tokens from XT+offset to HERE. updates HERE. */                 \
+    X(14, "[optimize-xt,]", _optimize_xt_comma_)  /* ( offset u opts -- ) */                       \
     X(11, "[recompile]", _recompile_)             /* rebuild XT jump offsets after optimization */ \
     X(17, "[recompile-token]", _recompile_token_) /* recompile one token after optimization */     \
     X(22, "[resolve-begin-repeat]", _resolve_begin_repeat_) /* common back-end of 'begin..' */     \
@@ -660,7 +663,7 @@
     X(20, "[resolve-jump-there]", _resolve_jump_there_)     /* resolve a jump from here     */     \
     X(17, "[resolve-jump-to]", _resolve_jump_to_) /* resolve a jump to specified offset     */     \
     X(14, "[resolve-loop]", _resolve_loop_) /* common back-end of 'loop' and '+loop'        */     \
-    X(20, "[token-consumed-ip,]", _token_consumed_ip_comma_) /* ( tok -- ) */                      \
+    X(20, "(token-consumed-ip,)", _token_consumed_ip_comma_) /* ( tok -- ) */                      \
     X(23, "[throw-compile-only-xt]", _throw_compile_only_xt_)                                      \
     X(24, "[throw-if-not-compiling]", _throw_if_not_compiling_)                                    \
     X(8, "[until,]", _until_comma_) /* compile one of 'until' '(until)' '(until0)'    */           \

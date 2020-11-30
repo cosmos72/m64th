@@ -25,7 +25,7 @@
 #include "../../include/locals.mh"
 #include "../../include/m4th/dict.mh"
 #include "../../include/opt2_hash.mh"
-#include "../../include/opt2_lowprio_hash.mh"
+#include "../../include/opt2_midprio_hash.mh"
 #include "../../include/opt3_hash.mh"
 #include "../../include/opt_rules.mh"
 
@@ -998,31 +998,63 @@ WORD_START(_optimize_2token_, _optimize_1token_)
     WORD_DATA_END(_optimize_2token_)
 WORD_END(_optimize_2token_)
 /**
- * find a low-priority optimized sequence to replace two tokens being compiled.
+ * find a medium-priority optimized sequence to replace two tokens being compiled.
  * if no optimized sequence was found, return 0
  * ( tok-addr -- counted-tokens | 0 )
  */
-WORD_START(_optimize_2token_lowprio_, _optimize_2token_)
+WORD_START(_optimize_2token_midprio_, _optimize_2token_)
     WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE|M4FLAG_DATA_TOKENS)
-    WORD_CODE_N_AUTO(_optimize_2token_lowprio_)
-    WORD_DATA_N_AUTO(_optimize_2token_lowprio_)
-    WORD_CODE_START(_optimize_2token_lowprio_)
+    WORD_CODE_N_AUTO(_optimize_2token_midprio_)
+    WORD_DATA_N_AUTO(_optimize_2token_midprio_)
+    WORD_CODE_START(_optimize_2token_midprio_)
       WORD_CODE_TOKENS(/* generated from file impl.forth - see source and comments there */
         /*17*/ _ip_to_data_addr_, swap, dup, token_fetch, swap, token_fetch_1,
         eight, tokens, lshift, or, CALL(hashmap_find_int), nip, exit
       )
-    WORD_CODE_END(_optimize_2token_lowprio_)
-    WORD_DATA_START(_optimize_2token_lowprio_)
+    WORD_CODE_END(_optimize_2token_midprio_)
+    WORD_DATA_START(_optimize_2token_midprio_)
 #define H2_START(size, lcap) WORD_DATA_INTS(size, lcap) WORD_DATA_CELLS(.+ 8)
 #define H2_ENTRY(key, val, next) WORD_DATA_CELLS(val) WORD_DATA_INTS(key, next)
-      OPT2_LOWPRIO_HASHMAP(H2_START, H2_ENTRY)
+      OPT2_MIDPRIO_HASHMAP(H2_START, H2_ENTRY)
 #undef H2_START
 #undef H2_ENTRY
-    WORD_DATA_END(_optimize_2token_lowprio_)
+    WORD_DATA_END(_optimize_2token_midprio_)
+WORD_END(_optimize_2token_midprio_)
+/**
+ * find a low-priority optimized sequence to replace two tokens being compiled.
+ * if no optimized sequence was found, return 0
+ * ( tok-addr -- counted-tokens | 0 )
+ */
+WORD_START(_optimize_2token_lowprio_, _optimize_2token_midprio_)
+    WORD_DSTACK(1,1)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE|M4FLAG_DATA_TOKENS)
+    WORD_CODE_AND_DATA(_optimize_2token_lowprio_,
+      WORD_CODE_TOKENS(/* generated from file impl.forth - see source and comments there */
+        /*24*/ _ip_to_data_addr_, swap, uint_fetch, to_r,
+        begin,
+            dup, uint_fetch,
+        _q_while_, T(13),
+            r_fetch, ne,
+        _while_, T(5),
+            four, tokens, plus,
+        _repeat_, T(-13),
+            zero, swap, uint_plus,
+        then,
+        nip, r_from_drop, exit
+      ),
+      WORD_DATA_TOKENS(
+        drop, drop, /*=>*/ T(1), two_drop,
+        over, over, /*=>*/ T(1), two_dup,
+        T(0), T(0)
+      )
+    )
 WORD_END(_optimize_2token_lowprio_)
 /**
  * find an optimized sequence to replace three tokens being compiled.
@@ -1159,11 +1191,14 @@ WORD_START(_optimize_tokens_, _optimize_4token_)
         two_r_from_two_drop, r_from_drop, exit
       ),
       WORD_DATA_TOKENS(
-        T(1|0x100), XT(_optimize_1token_),
-        T(2|0x100), XT(_optimize_2token_),
-        T(3|0x100), XT(_optimize_3token_),
-        T(3|0x100), XT(_optimize_3jump_),
-        T(4|0x100), XT(_optimize_4token_),
+        /* must be ordered by increasing length of optimized sequence */
+        T(1|M4OPTS_PRIO_HIGH), XT(_optimize_1token_),
+        T(2|M4OPTS_PRIO_HIGH), XT(_optimize_2token_),
+        T(2|M4OPTS_PRIO_MID),  XT(_optimize_2token_midprio_),
+        T(2|M4OPTS_PRIO_LOW),  XT(_optimize_2token_lowprio_),
+        T(3|M4OPTS_PRIO_HIGH), XT(_optimize_3token_),
+        T(3|M4OPTS_PRIO_HIGH), XT(_optimize_3jump_),
+        T(4|M4OPTS_PRIO_HIGH), XT(_optimize_4token_),
         T(0)
       )
     )
@@ -1200,30 +1235,8 @@ WORD_START(_optimize_tokens_comma_, _optimize_tokens_)
         then, exit
     )
 WORD_END(_optimize_tokens_comma_)
-/**
- * copy and optimize exactly u tokens from XT+offset to HERE. updates HERE.
- * return true if something was optimized, else false
- * ( offset u opts -- t|f )
- */
-WORD_START(_optimize_xt_comma_, _optimize_tokens_comma_)
-    WORD_DSTACK(3,1)
-    WORD_RSTACK(0,0)
-    WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
-    WORD_FLAGS(0)
-    WORD_CODE(/* generated from file impl.forth - see source and comments there */
-        /*31*/ zero, two_to_r,
-        begin,
-        _q_while_, T(18+nCALLt),
-            over, two_times, state, fetch, plus, over,
-            r2nd_fetch, CALL(_optimize_tokens_comma_),
-            r_fetch, or, r_store, tuck, minus, flip, plus, swap,
-        _repeat_, T(-20-nCALLt),
-        two_drop, r_from, r_from_drop, exit
-    )
-WORD_END(_optimize_xt_comma_)
 /* ( x -- token t | x f ) try to optimize '[ x ] literal' */
-WORD_START(_optimize_literal_, _optimize_xt_comma_)
+WORD_START(_optimize_literal_, _optimize_tokens_comma_)
     WORD_DSTACK(1,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -1424,8 +1437,8 @@ WORD_START(_finish_, _endof_)
         CALL(exit), /* compile 'exit' */
         drop, _lit_, T(M4FLAG_NOOPT_MASK), and,
         /* optimize only if (word.flags & M4FLAG_NOOPT_MASK) == 0 */
-        _if0_, T(3+nCALLt),
-            _lit_, T(M4OPTS_PRIO_NORM), CALL(_optimize_),
+        _if0_, T(2+nCALLt),
+            CALL(_optimize_),
         then,
         CALL(_user_locals_clear_),
         left_bracket, align, /* also align HERE to current word's data */
@@ -1460,7 +1473,48 @@ WORD_START(_of_, _inline_)
         CALL(of), exit
     )
 WORD_END(_of_)
-WORD_START(_optimize_once_, _of_)
+/**
+ * call [optimize-prio] three times:
+ * first for high priority optimizations,
+ * then for medium priority optimizations,
+ * finally for low priority optimizations. updates HERE.
+ * ( -- )
+ */
+WORD_START(_optimize_, _of_)
+    WORD_DSTACK(0,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE)
+    WORD_CODE(
+        _lit_, T(M4OPTS_PRIO_HIGH), CALL(_optimize_opts_),
+        _lit_, T(M4OPTS_PRIO_MID),  CALL(_optimize_opts_),
+        _lit_, T(M4OPTS_PRIO_LOW),  CALL(_optimize_opts_),
+        exit
+    )
+WORD_END(_optimize_)
+/* ( opts -- ) call [optimize-once] repeatedly until there is nothing left optimize. */
+/* updates HERE. */
+WORD_START(_optimize_opts_, _of_)
+    WORD_DSTACK(1,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE)
+    WORD_CODE(
+        begin,
+            dup, CALL(_optimize_once_),
+        _until0_, T(-4-nCALLt),
+        drop, CALL(_recompile_), exit
+    )
+WORD_END(_optimize_opts_)
+/**
+ * optimize exactly HERE-XT tokens starting from XT. optimized tokens
+ * are initially written to HERE and up, then copied back to XT and up.
+ * updates HERE. return t if something was optimized, else false
+ * ( opts -- t|f )
+ */
+WORD_START(_optimize_once_, _optimize_opts_)
     WORD_DSTACK(1,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -1474,22 +1528,30 @@ WORD_START(_optimize_once_, _of_)
         here, minus, allot, exit
     )
 WORD_END(_optimize_once_)
-/* call (optimize-once) repeatedly until there is nothing left optimize. updates HERE. */
-WORD_START(_optimize_, _optimize_once_)
-    WORD_DSTACK(1,0)
+/**
+ * copy and optimize exactly u tokens from XT+offset to HERE. updates HERE.
+ * return true if something was optimized, else false
+ * ( offset u opts -- t|f )
+ */
+WORD_START(_optimize_xt_comma_, _optimize_once_)
+    WORD_DSTACK(3,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
-    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE)
+    WORD_FLAGS(0)
     WORD_CODE(/* generated from file impl.forth - see source and comments there */
-        /*16*/ begin,
-            dup, CALL(_optimize_once_),
-        _until0_, T(-4-nCALLt),
-        drop, CALL(_recompile_), exit
+        /*31*/ zero, two_to_r,
+        begin,
+        _q_while_, T(18+nCALLt),
+            over, two_times, state, fetch, plus, over,
+            r2nd_fetch, CALL(_optimize_tokens_comma_),
+            r_fetch, or, r_store, tuck, minus, flip, plus, swap,
+        _repeat_, T(-20-nCALLt),
+        two_drop, r_from, r_from_drop, exit
     )
-WORD_END(_optimize_)
+WORD_END(_optimize_xt_comma_)
 /* rebuild XT jump offsets after optimization */
-WORD_START(_recompile_, _optimize_)
+WORD_START(_recompile_, _optimize_xt_comma_)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()

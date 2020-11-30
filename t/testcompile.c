@@ -247,8 +247,7 @@ static const m4testcompile testcompile_a[] = {
 };
 
 static const m4testcompile testcompile_b[] = {
-    /* ------------------------------- (optimize-1) ------------------------- */
-    {"2drop ;", {2, {0, m4colon}}, {}, {3, {m4drop, m4drop, m4exit}}},
+    /* ------------------------------- (optimize-1token) -------------------- */
     {"cell+ ;", {2, {0, m4colon}}, {}, {2, {m4_SZ_plus, m4exit}}},
     {"cells ;", {2, {0, m4colon}}, {}, {2, {m4_SZ_times, m4exit}}},
     {"char+ ;", {2, {0, m4colon}}, {}, {2, {m4one_plus, m4exit}}},
@@ -256,11 +255,13 @@ static const m4testcompile testcompile_b[] = {
     {"false ;", {2, {0, m4colon}}, {}, {2, {m4zero, m4exit}}},
     {"noop ;", {2, {0, m4colon}}, {}, {1, {m4exit}}},
     {"true ;", {2, {0, m4colon}}, {}, {2, {m4minus_one, m4exit}}},
-    /* ------------------------------- (optimize-2) ------------------------- */
+    /* ------------------------------- (optimize-2token) -------------------- */
     {"1+ 1- ;", {2, {0, m4colon}}, {}, {1, {m4exit}}},
     {"1+ 1+ ;", {2, {0, m4colon}}, {}, {2, {m4two_plus, m4exit}}},
     {"1+ noop 1+ ;", {2, {0, m4colon}}, {}, {2, {m4two_plus, m4exit}}},
     {"swap drop ;", {2, {0, m4colon}}, {}, {2, {m4nip, m4exit}}},
+    /* ------------------------------- (optimize-2token-lowprio) ------------ */
+    {"drop drop ;", {2, {0, m4colon}}, {}, {2, {m4two_drop, m4exit}}},
     /* ------------------------------- [recompile] -------------------------- */
     /* test [recompile] to correctly update jump offsets after optimization */
     {"if noop 1+ then ;", {2, {0, m4colon}}, {}, {5, {m4_if_, T(2), m4one_plus, m4then, m4exit}}},
@@ -269,7 +270,7 @@ static const m4testcompile testcompile_b[] = {
      {2, {0, m4colon}},
      {},
      {6, {m4_if_, T(3), m4_recurse_, T(-4), m4then, m4exit}}},
-    /* ------------------------------- [optimize] if ------------------------ */
+    /* ------------------------------- [optimize-3jump] --------------------- */
     {"if then ;", {2, {0, m4colon}}, {}, {2, {m4drop, m4exit}}},
     {"if chars then ;", {2, {0, m4colon}}, {}, {2, {m4drop, m4exit}}},
     {"if 1+ 1- then ;", {2, {0, m4colon}}, {}, {2, {m4drop, m4exit}}},
@@ -323,6 +324,7 @@ static const m4testcompile testcompile_b[] = {
     {"begin dup 0= until ;", {2, {0, m4colon}}, {}, {4, {m4begin, m4_q_until0_, T(-2), m4exit}}},
     /* ------------------------------- [optimize] --------------------------- */
     {"dup dup dup dup drop drop drop drop ;", {2, {0, m4colon}}, {}, {1, {m4exit}}},
+    {"drop dup dup dup drop drop drop drop ;", {2, {0, m4colon}}, {}, {2, {m4two_drop, m4exit}}},
 };
 
 static const m4testcompile testcompile_c[] = {
@@ -343,7 +345,7 @@ static const m4testcompile testcompile_c[] = {
     {"{: a b | c d -- e f g h :} ;",
      {2, {0, m4colon}},
      {},
-     {8, {m4_locals_enter_, T(4), m4_to_lx_, T(2), m4_to_lx_, T(3), m4_locals_exit_, m4exit}}},
+     {6, {m4_locals_enter_, T(4), m4_to_l2_, m4_to_l3_, m4_locals_exit_, m4exit}}},
 };
 
 static m4code m4testcompile_init(const m4testcompile *t, m4countedcode *codegen_buf) {
