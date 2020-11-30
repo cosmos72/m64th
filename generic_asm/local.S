@@ -333,3 +333,10 @@ FUNC_START(_locals_exit_)
         RPOP2( LOCL,   RTOP)               /* (R:                           ) */
 #endif
 FUNC_END(_locals_exit_)
+
+
+/* lp0 ( -- addr-of-locals ) get address of local variables */
+FUNC_START(lp0)
+        DPUSH__DTOP()
+        MOVE(  LOCL,   DTOP)
+FUNC_END(lp0)

@@ -534,6 +534,8 @@
 #define M4_compile_jump_lit_ M4_i(154) /* ( -- sys ) followed by m4token and its category      */
 #define M4_compile_sys_lit_ M4_i(155)  /* ( -- sys ) followed by m4token and its category      */
 #define M4_cs_find_lit_ M4_i(156)      /* followed by category. get its depth in control stack */
-#define M4____end M4_i(157)
+#define M4lp0 M4_i(157)                /* ( -- addr ) get address of local variables           */
+#define M4rp0 M4_i(158) /* (R: x y -- x y ) ( -- &x ) get address of return stack bottom       */
+#define M4____end M4_i(159)
 
 #endif /* M4TH_INCLUDE_TOKEN_M4TH_MH */

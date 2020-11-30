@@ -28,7 +28,20 @@
 /* --- m4th-user -------------------------------------------------------------------------------- */
 /* ---------------------------------------------------------------------------------------------- */
 
-WORD(less_equal,       less_equal,     DSTACK(2,1), RSTACK(0,0), WORD_PURE)
+/* show return stack */
+WORD_START(dot_rs, dot_rs)
+    WORD_STACK_NONE()
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        dup_to_r,                               /* push RTOP to return stack  */
+        rp0, rdepth, minus_one,                 /* ( rstk rdepth -1 )         */
+        _c_arg_3_, _c_call_, CELL(m4slice_print_stdout), _c_ret_0_,
+        r_from_drop, exit                       /* pop RTOP from return stack */
+    )
+WORD_END(dot_rs)
+WORD(less_equal,       dot_rs,         DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(more_equal,       less_equal,     DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(q_du_to_u,        more_equal,     DSTACK(2,-1),RSTACK(0,0), WORD_PURE)
 WORD(q_2du_to_2u,      q_du_to_u,      DSTACK(4,-1),RSTACK(0,0), WORD_PURE)

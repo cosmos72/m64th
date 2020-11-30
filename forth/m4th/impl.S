@@ -1910,11 +1910,15 @@ WORD_START(char_to_u, char_to_base)
         drop, minus_one, exit                 /* ( -1                      ) */
     )
 WORD_END(char_to_u)
+/* lp0        ( -- addr-of-locals ) get address of local variables */
+WORD(lp0,              char_to_u,      DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
+/* rp0 (R: x y -- x y ) ( -- &x ) get address of return stack bottom */
+WORD(rp0,              lp0,            DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 /*
  * string>base ( caddr n -- caddr' n' base )
  * if string starts with # $ or % consume it and return corresponding base, else return current base
  */
-WORD_START(string_to_base, char_to_u)
+WORD_START(string_to_base, rp0)
     WORD_DSTACK(2,3)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
