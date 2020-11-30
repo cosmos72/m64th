@@ -403,6 +403,7 @@ FUNC_START(rdepth)          /* ( -- n ) m4th-user get return stack depth */
         LOAD(  DTOP,   AT(M4TH, M4TH_OFF_REND))
         SUB2(  RSTK,   DTOP)
         SAR2(  IMM(PSZ),   DTOP)
+        INC1(  DTOP)        /* also consider RTOP */
 FUNC_END(rdepth)
 
 

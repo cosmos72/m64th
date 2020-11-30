@@ -36,7 +36,7 @@ WORD_START(dot_rs, dot_rs)
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
         dup_to_r,                               /* push RTOP to return stack  */
-        rp0, rdepth, minus_one,                 /* ( rstk rdepth -1 )         */
+        rp0, rdepth, one_minus, minus_one,                 /* ( rstk rdepth -1 )         */
         _c_arg_3_, _c_call_, CELL(m4slice_print_stdout), _c_ret_0_,
         r_from_drop, exit                       /* pop RTOP from return stack */
     )
