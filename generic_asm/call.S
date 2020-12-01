@@ -191,11 +191,11 @@ FUNC_START(_recurse_)
 FUNC_RAWEND(_recurse_)
 
 
-/* rp0 (R: x y -- x y ) ( -- &x ) get address of return stack bottom */
-FUNC_START(rp0)
+/* rp@ (R: x y -- x y ) ( -- &x ) get current return stack address */
+FUNC_START(rp_fetch)
         DPUSH__DTOP()
         MOVE(  RSTK,   DTOP)
-FUNC_END(rp0)
+FUNC_END(rp_fetch)
 
 
 /* ( ex -- ) throw exception if ex != 0 */

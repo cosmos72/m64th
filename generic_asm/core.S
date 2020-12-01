@@ -153,7 +153,7 @@ LABEL(name_comma.str_done)                             /* ( addr                
 FUNC_END(name_comma)
 
 
-FUNC_START(name_to_code) /* ( nt -- xt u ) */
+FUNC_START(name_to_code)   /* ( nt -- xt u ) */
         ADDI(  DTOP,       WORD_OFF_XT,   REG1)        /* a = w.code         */
         LD_uh( DTOP,       AT(DTOP, WORD_OFF_CODE_N))  /* dtop = w.code_n    */
         DPUSH( REG1)                                   /* d2   = w.code      */
@@ -165,7 +165,7 @@ FUNC_START(name_to_code_n) /* ( nt -- n ) */
 FUNC_END(name_to_code_n)
 
 
-FUNC_START(name_to_data)     /* ( nt -- addr u ) */
+FUNC_START(name_to_data)   /* ( nt -- addr u ) */
         ADDI(  DTOP,       WORD_OFF_XT,   REG1)        /* a = w.code         */
         LD_uh( REG2,       AT(DTOP, WORD_OFF_CODE_N))  /* b = w.code_n       */
         ADD4(  REG1,       REG2, PSZt,    REG2)        /* b = w.code + w.code_n */
@@ -175,12 +175,28 @@ FUNC_START(name_to_data)     /* ( nt -- addr u ) */
 FUNC_END(name_to_data)
 
 
-FUNC_START(name_to_flags) /* ( nt -- m4flags ) */
+FUNC_START(name_to_data_addr)  /* ( nt -- addr ) */
+        ADDI(  DTOP,       WORD_OFF_XT,   REG1)        /* a    = w.code         */
+        LD_uh( DTOP,       AT(DTOP, WORD_OFF_CODE_N))  /* dtop = w.code_n       */
+        ADD4(  REG1,       DTOP, PSZt,    DTOP)        /* dtop = w.code + w.code_n */
+        ALIGN( SZ,         DTOP)                       /* dtop = w.data         */
+FUNC_END(name_to_data_addr)
+
+
+/* set m4word.data_n of specified word */
+FUNC_START(name_to_data_n_store) /* ( u nt -- ) */
+        DPOP(  REG1)                                   /* a = u            */
+        STORw( REG1,       AT(DTOP, WORD_OFF_DATA_N))  /* w.data_n = u     */
+        DPOP___DTOP()
+FUNC_END(name_to_data_n_store)
+
+
+FUNC_START(name_to_flags)  /* ( nt -- m4flags ) */
         LD_uh( DTOP,       AT(DTOP, WORD_OFF_FLAGS)) /* dtop = m4flags    */
 FUNC_END(name_to_flags)
 
 
-FUNC_START(name_to_flags_store) /* ( m4flags nt -- ) */
+FUNC_START(name_to_flags_store)    /* ( m4flags nt -- ) */
         DPOP(  REG1)                                 /* a = m4flags          */
         STORh( REG1,       AT(DTOP, WORD_OFF_FLAGS)) /* w.flags = m4flags    */
         DPOP___DTOP()

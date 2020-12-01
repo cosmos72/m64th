@@ -163,61 +163,61 @@
 #define M4right_bracket 133       /* ]        */
 
 /* 'forth' wordlist: 'core ext' word set */
-#undef M4dot_paren /*136*/       /* .(       */
-#undef M4dot_r /*137*/           /* .r       */
-#define M4zero_ne 138            /* 0<>      */
-#define M4zero_more 139          /* 0>       */
-#define M4two_to_r 140           /* 2>r      */
-#define M4two_r_from 141         /* 2r>      */
-#define M4two_r_fetch 142        /* 2r@      */
-#undef M4colon_noname /*143*/    /* :noname  */
-#define M4ne 144                 /* <>       */
-#undef M4question_do /*145*/     /* ?do      no dedicated m4token */
+#undef M4dot_paren /*136*/       /* .(           */
+#undef M4dot_r /*137*/           /* .r           */
+#define M4zero_ne 138            /* 0<>          */
+#define M4zero_more 139          /* 0>           */
+#define M4two_to_r 140           /* 2>r          */
+#define M4two_r_from 141         /* 2r>          */
+#define M4two_r_fetch 142        /* 2r@          */
+#undef M4colon_noname /*143*/    /* :noname      */
+#define M4ne 144                 /* <>           */
+#undef M4question_do /*145*/     /* ?do          no dedicated m4token */
 #undef M4action_of /*146*/       /* action_of    */
-#undef M4again /*147*/           /* again    no dedicated m4token */
-#undef M4buffer_colon /*148*/    /* buffer:  no dedicated m4token */
-#undef M4c_quote /*149*/         /* c"       */
-#define M4case 150               /* case     */
-#undef M4compile_comma /*151*/   /* compile, no dedicated m4token */
-#undef M4defer /*152*/           /* defer    */
-#undef M4defer_store /*153*/     /* defer!   */
-#undef M4defer_fetch /*154*/     /* defer@   */
-#define M4endcase 155            /* endcase  */
-#undef M4endof /*156*/           /* endof    no dedicated m4token */
-#undef M4erase /*157*/           /* erase    */
-#define M4false 158              /* false    */
-#undef M4hex /*159*/             /* hex      no dedicated m4token */
-#define M4holds 160              /* holds    */
-#undef M4is /*161*/              /* is       */
-#undef M4marker /*162*/          /* marker   */
-#define M4nip 163                /* nip      */
-#undef M4of /*164*/              /* of       no dedicated m4token */
-#undef M4pad /*165*/             /* pad      */
-#undef M4parse /*166*/           /* parse    */
+#undef M4again /*147*/           /* again        no dedicated m4token */
+#undef M4buffer_colon /*148*/    /* buffer:      no dedicated m4token */
+#undef M4c_quote /*149*/         /* c"           */
+#define M4case 150               /* case         */
+#undef M4compile_comma /*151*/   /* compile,     no dedicated m4token */
+#undef M4defer /*152*/           /* defer        */
+#undef M4defer_store /*153*/     /* defer!       */
+#undef M4defer_fetch /*154*/     /* defer@       */
+#define M4endcase 155            /* endcase      */
+#undef M4endof /*156*/           /* endof        no dedicated m4token */
+#undef M4erase /*157*/           /* erase        */
+#define M4false 158              /* false        */
+#undef M4hex /*159*/             /* hex          no dedicated m4token */
+#define M4holds 160              /* holds        */
+#undef M4is /*161*/              /* is           */
+#undef M4marker /*162*/          /* marker       */
+#define M4nip 163                /* nip          */
+#undef M4of /*164*/              /* of           no dedicated m4token */
+#undef M4pad /*165*/             /* pad          */
+#undef M4parse /*166*/           /* parse        */
 #undef M4parse_name /*167*/      /* parse-name   no dedicated m4token */
-#define M4pick 168               /* pick     */
-#undef M4refill /*169*/          /* refill   */
-#undef M4restore_input /*170*/   /* restore-input    */
-#define M4roll 171               /* roll     */
-#undef M4s_equote /*172*/        /* s\"      */
+#define M4pick 168               /* pick         */
+#undef M4refill /*169*/          /* refill       */
+#undef M4restore_input /*170*/   /* restore-input*/
+#define M4roll 171               /* roll         */
+#undef M4s_equote /*172*/        /* s\"          */
 #undef M4save_input /*173*/      /* save-input   */
 #undef M4source_id /*174*/       /* source-id    */
-#undef M4to /*175*/              /* to       */
-#define M4true 176               /* true     */
-#define M4tuck 177               /* tuck     */
-#undef M4u_dot_r /*178*/         /* u.r      */
-#define M4u_more 179             /* u>       */
-#undef M4unused /*180*/          /* unused   */
-#undef M4value /*181*/           /* value    */
-#define M4within 182             /* within   */
-#undef M4bracket_compile /*183*/ /* [compile]    */
-#undef M4backslash /*184*/       /* \        no dedicated m4token */
-#undef M4num_t_i_b               /* #tib     (removed in Forth 2012) */
-#undef M4convert                 /* convert  (removed in Forth 2012) */
-#undef M4expect                  /* expect   (removed in Forth 2012) */
-#undef M4query                   /* query    (removed in Forth 2012) */
-#undef M4span                    /* span     (removed in Forth 2012) */
-#undef M4t_i_b                   /* tib      (removed in Forth 2012) */
+#undef M4to /*175*/              /* to           no dedicated m4token */
+#define M4true 176               /* true         */
+#define M4tuck 177               /* tuck         */
+#undef M4u_dot_r /*178*/         /* u.r          */
+#define M4u_more 179             /* u>           */
+#undef M4unused /*180*/          /* unused       */
+#undef M4value /*181*/           /* value        no dedicated m4token */
+#define M4within 182             /* within       */
+#undef M4bracket_compile /*183*/ /* [compile]    (obsolescent in Forth 2012) */
+#undef M4backslash /*184*/       /* \            no dedicated m4token */
+#undef M4num_t_i_b               /* #tib         (removed in Forth 2012) */
+#undef M4convert                 /* convert      (removed in Forth 2012) */
+#undef M4expect                  /* expect       (removed in Forth 2012) */
+#undef M4query                   /* query        (removed in Forth 2012) */
+#undef M4span                    /* span         (removed in Forth 2012) */
+#undef M4t_i_b                   /* tib          (removed in Forth 2012) */
 
 /* 'forth' wordlist: 'block' word set */
 #undef M4blk /*193*/          /* blk      */

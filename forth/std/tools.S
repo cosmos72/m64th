@@ -28,7 +28,7 @@ WORD_START(dot_s, LASTWORD)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
-        dp0, depth, one_minus, minus_one,                       /* ( dstk depth -1 ) */
+        sp_fetch, depth, one_minus, minus_one,                       /* ( dstk depth -1 ) */
         _c_arg_3_, _c_call_, CELL(m4slice_print_stdout), _c_ret_0_,
         exit
     )

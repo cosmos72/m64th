@@ -327,7 +327,23 @@ WORD(iobuf_max,        iobuf_func,     DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
 WORD(iobuf_pos,        iobuf_max,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(iobuf_end,        iobuf_pos,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(latest,           iobuf_end,      DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
-WORD(to_latest,     latest,         DSTACK(1,0), RSTACK(0,0), WORD_IMPURE)
+/* ( -- ) update data size of latest word */
+WORD_START(latest_sync,latest)
+    WORD_STACK_NONE()
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(0)
+    WORD_CODE(
+        latest,                                     /* ( nt            ) */
+        _q_if0_, T(3),                              /* ( nt            ) */
+            drop, exit,                             /* (               ) */
+        then,                                       /* ( nt            ) */
+        name_to_data_addr,                          /* ( addr          ) */
+        here, sub,                                  /* ( u             ) */
+        latest, name_to_data_n_store, exit          /* (               ) */
+    )
+WORD_END(latest_sync)
+WORD(to_latest,     latest_sync,       DSTACK(1,0), RSTACK(0,0), WORD_IMPURE)
 /* ( c-addr u -- nt ) create a new name. do NOT add it to compilation wordlist */
 WORD_START(name_comma,  to_latest)
     WORD_DSTACK(2,1)
@@ -354,11 +370,13 @@ WORD_START(name_inline_query,  name_comma)
         name_to_code_n, eight, less, exit
     )
 WORD_END(name_inline_query)
-WORD(name_to_code,  name_inline_query, DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD(name_to_code_n,   name_to_code,   DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD(name_to_data,     name_to_code_n, DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD(name_to_flags,    name_to_data,   DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD(name_to_flags_store,name_to_flags,DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE)
+WORD(name_to_code,         name_inline_query,  DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(name_to_code_n,       name_to_code,       DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(name_to_data,         name_to_code_n,     DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(name_to_data_addr,    name_to_data,       DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(name_to_data_n_store, name_to_data_addr,  DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE)
+WORD(name_to_flags,       name_to_data_n_store,DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(name_to_flags_store,  name_to_flags,      DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE)
 WORD_START(name_to_ident,  name_to_flags_store)
     WORD_DSTACK(1,2)
     WORD_RSTACK(0,0)

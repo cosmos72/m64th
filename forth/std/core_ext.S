@@ -179,14 +179,56 @@ WORD_START(roll,       pick)
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(roll, exit)
 WORD_END(roll)
-WORD(true,             roll,       DSTACK(0,1), RSTACK(0,0), WORD_PURE)
+WORD_START(to,         roll)
+    WORD_DSTACK(-1,0)  /* depends on cell size of parsed name */
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_IMMEDIATE) /* can also be interpreted */
+    WORD_CODE(
+        CALL(parse_name), two_dup, CALL(string_to_local),        /* ( c-addr u idx|-1 t|f ) */
+        _if_, T(3+nCALLt),                                       /* ( c-addr u idx        ) */
+            CALL(_to_lx_comma_), exit,                           /* (                     ) */
+        then,                                                    /* ( c-addr u -1         ) */
+        drop,                                                    /* ( c-addr u            ) */
+        two_dup, CALL(string_to_name), nip,                      /* ( c-addr u nt|0 -1|0|1) */
+        _q_if_, T(10),                                           /* ( c-addr u nt -1|1    ) */
+            drop, dup, name_to_flags,                            /* ( c-addr u nt m4flags ) */
+            _lit_, T(M4FLAG_NOOPT_MASK), and,                    /* ( c-addr u nt mask    ) */
+            _lit_, T(M4FLAG_VALUE), equal,                       /* ( c-addr u nt t|f     ) */
+        then,                                                    /* ( c-addr u nt|0 t|f   ) */
+        _if_, T(5+nCALLt),                                       /* ( c-addr u nt         ) */
+            nip, nip,                                            /* ( nt                  ) */
+            CALL(_to_value_), exit,                              /* (                     ) */
+        then,                                                    /* ( c-addr u 0          ) */
+        drop, ex_message_store,                                  /* (                     ) */
+        _lit_, T(M4ERR_INVALID_TO_NAME), throw, exit             /* (                     ) */
+    )
+WORD_END(to)
+WORD(true,             to,         DSTACK(0,1), RSTACK(0,0), WORD_PURE)
 WORD(tuck,             true,       DSTACK(2,3), RSTACK(0,0), WORD_PURE)
 WORD(u_more,           tuck,       DSTACK(2,1), RSTACK(0,0), WORD_PURE)
+WORD_START(value,      u_more)
+    WORD_DSTACK(1,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        _lit_, T(M4FLAG_VALUE),
+        CALL(_create_),                 /* create word, mark it M4FLAG_VALUE                */
+        right_bracket,                  /* start compiling          ( x sys               ) */
+        _lit_comma_, _ip_to_data_addr_, /* compile '(ip>data>addr)  ( x sys               ) */
+        _lit_comma_, fetch,             /* compile '@'              ( x sys               ) */
+        CALL(_finish_),                 /*                          ( x                   ) */
+        comma, exit                     /* store initial value      (                     ) */
+    )
+WORD_END(value)
 /*
  * within ( x lo hi -- flag )   \ true if lo <= x < hi, either signed or unsigned
  * : within over - -rot - u> ;
  */
-WORD(within,           u_more,     DSTACK(3,1), RSTACK(0,0), WORD_PURE)
+WORD(within,           value,      DSTACK(3,1), RSTACK(0,0), WORD_PURE)
 /* \      ( -- )   read and skip input until end-of-line. does not refill */
 WORD_START(backslash,  within)
     WORD_DSTACK(0,0)

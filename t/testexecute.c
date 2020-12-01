@@ -366,9 +366,13 @@ static m4testexecute testexecute_b[] = {
      {{1, {(uint32_t)9876543210l}}, {}},
      {}},
     /* ----------------------------- atomic --------------------------------- */
-    {"atomic1+!", {m4dp0, m4atomic_one_plus_store, m4bye}, {{1, {7}}, {}}, {{2, {8, 7}}, {}}, {}},
+    {"atomic1+!",
+     {m4sp_fetch, m4atomic_one_plus_store, m4bye},
+     {{1, {7}}, {}},
+     {{2, {8, 7}}, {}},
+     {}},
     {"atomic+!",
-     {m4dp0, m4two, m4swap, m4atomic_plus_store, m4bye},
+     {m4sp_fetch, m4two, m4swap, m4atomic_plus_store, m4bye},
      {{1, {7}}, {}},
      {{2, {9, 7}}, {}},
      {}},
@@ -632,10 +636,10 @@ static m4testexecute testexecute_d[] = {
     {"' eight execute", {m4execute, m4bye}, {{1, {DXT(eight)}}, {}}, {{1, {8}}, {}}, {}},
     {"6 7 ' plus execute", {m4execute, m4bye}, {{3, {6, 7, DXT(plus)}}, {}}, {{1, {13}}, {}}, {}},
     {"... ' store execute",
-     {m4dp0, m4cell_plus, /* ( 3 d1=7 store &d1 ) */
-      m4cell_plus,        /* ( d0=3 7 store &d0 ) */
-      m4swap,             /* ( d0=3 7 &d0 store ) */
-      m4execute, m4bye},  /* ( 7                ) */
+     {m4sp_fetch, m4cell_plus, /* ( 3 d1=7 store &d1 ) */
+      m4cell_plus,             /* ( d0=3 7 store &d0 ) */
+      m4swap,                  /* ( d0=3 7 &d0 store ) */
+      m4execute, m4bye},       /* ( 7                ) */
      {{3, {3, 7, DXT(store)}}, {}},
      {{1, {7}}, {}},
      {}},
@@ -1150,8 +1154,8 @@ static m4testexecute testexecute_f[] = {
      {}},
     /* ----------------------------- string>lower --------------------------- */
     {"\"abc\" string>lower",
-     {m4zero, m4minus_rot, m4dp0, m4cell_plus, m4cell_plus, m4swap, m4string_to_lower, m4two_drop,
-      m4bye},
+     {m4zero, m4minus_rot, m4sp_fetch, m4cell_plus, m4cell_plus, m4swap, m4string_to_lower,
+      m4two_drop, m4bye},
      {{2, {TESTSTR(_abc)}}, {}},
 #if __BYTE_ORDER == __BIG_ENDIAN
      {{1, {'a' << 16 | 'b' << 8 | 'c'}}, {}},
@@ -1161,8 +1165,8 @@ static m4testexecute testexecute_f[] = {
      {}},
 #if SZ >= 8
     {"\"aBcDefGH\" string>lower",
-     {m4zero, m4minus_rot, m4dp0, m4cell_plus, m4cell_plus, m4swap, m4string_to_lower, m4two_drop,
-      m4bye},
+     {m4zero, m4minus_rot, m4sp_fetch, m4cell_plus, m4cell_plus, m4swap, m4string_to_lower,
+      m4two_drop, m4bye},
      {{2, {TESTSTR(_aBcDefGH)}}, {}},
 #if __BYTE_ORDER == __BIG_ENDIAN
      {{1,
@@ -1446,22 +1450,22 @@ static m4testexecute testexecute_f[] = {
      {}},
     /* ---------------------------- cmove, move ----------------------------- */
     {"cmove",
-     {m4dp0, m4one_plus, m4dup, m4cell_plus, m4two, m4cmove, m4bye},
+     {m4sp_fetch, m4one_plus, m4dup, m4cell_plus, m4two, m4cmove, m4bye},
      {{2, {0, 'a' | 'b' << 8 | 'c' << 16 | 'd' << 24}}, {}},
      {{2, {'b' << 8 | 'c' << 16, 'a' | 'b' << 8 | 'c' << 16 | 'd' << 24}}, {}},
      {}},
     {"cmove \\ with copy propagation",
-     {m4dp0, m4dup, m4one_plus, m4two, m4cmove, m4bye},
+     {m4sp_fetch, m4dup, m4one_plus, m4two, m4cmove, m4bye},
      {{1, {'w' | 'x' << 8 | 'y' << 16 | 'z' << 24}}, {}},
      {{1, {'w' | 'w' << 8 | 'w' << 16 | 'z' << 24}}, {}},
      {}},
     {"move",
-     {m4dp0, m4dup, m4four, m4cells, m4plus, m4three, m4move, m4bye},
+     {m4sp_fetch, m4dup, m4four, m4cells, m4plus, m4three, m4move, m4bye},
      {{8, {-4, -3, -2, -1, 0, 11, 12, 13}}, {}},
      {{8, {-4, 11, 12, 13, 0, 11, 12, 13}}, {}},
      {}},
     {"move \\ overlapping source and destination",
-     {m4dp0, m4cell_plus, m4dup, m4cell_plus, m4swap, m4_lit_, T(5), m4move, m4bye},
+     {m4sp_fetch, m4cell_plus, m4dup, m4cell_plus, m4swap, m4_lit_, T(5), m4move, m4bye},
      {{8, {0, 1, 2, 3, 4, 5, 6, 7}}, {}},
      {{8, {0, 1, 1, 2, 3, 4, 5, 7}}, {}},
      {}},

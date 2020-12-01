@@ -119,6 +119,9 @@ static const m4testcompile testcompile_a[] = {
     /* ------------------------------- words -------------------------------- */
     {"compile,", {}, {}, {callsz, {CALL(compile_comma)}}},
     {"valid-base?", {}, {}, {4, {/*inlined*/ m4two, m4_lit_, T(37), m4within}}},
+};
+
+static const m4testcompile testcompile_b[] = {
     /* ------------------------------- defining words ----------------------- */
     /* we must exit compilation state first... hence '[' */
     {"[ 0 constant zero", {}, {}, {2, {m4zero, m4exit}}},
@@ -126,6 +129,15 @@ static const m4testcompile testcompile_a[] = {
     {"[ $7eef constant my-number", {}, {}, {3, {m4_lit_, T(0x7eef), m4exit}}},
     {"[ create w", {}, {}, {3 + nCALLt, {m4_ip_to_data_addr_, CALL(noop), m4exit}}},
     {"[ variable x", {}, {}, {2, {m4_ip_to_data_addr_, m4exit}}},
+    {"[ 3 value y ] ;", {}, {}, {3, {m4_ip_to_data_addr_, m4fetch, m4exit}}},
+    {"[ 2 value z 1 to z", {}, {}, {3, {m4_ip_to_data_addr_, m4fetch, m4exit}}},
+#if 0
+    {"[ 1 value one 1cell - allot ]", {}, {}, {3, {m4_ip_to_data_addr_, m4fetch, m4exit}}},
+#endif
+};
+
+static const m4testcompile testcompile_c[] = {
+    /* ------------------------------- compile-only words ------------------- */
     /* ------------------------------- '  ['] ------------------------------- */
     {"[ ' true", {}, {1, {XT(true)}}, {}},
     {"['] true", {}, {}, {1 + nCALLt, {m4_lit_xt_, XT(true)}}},
@@ -246,7 +258,7 @@ static const m4testcompile testcompile_a[] = {
     {"non-existent-name 1", {4, {0, m4colon, -1, -1}}, {}, {}},
 };
 
-static const m4testcompile testcompile_b[] = {
+static const m4testcompile testcompile_d[] = {
     /* ------------------------------- (optimize-1token) -------------------- */
     {"cell+ ;", {2, {0, m4colon}}, {}, {2, {m4_SZ_plus, m4exit}}},
     {"cells ;", {2, {0, m4colon}}, {}, {2, {m4_SZ_times, m4exit}}},
@@ -327,7 +339,7 @@ static const m4testcompile testcompile_b[] = {
     {"drop dup dup dup drop drop drop drop ;", {2, {0, m4colon}}, {}, {2, {m4two_drop, m4exit}}},
 };
 
-static const m4testcompile testcompile_c[] = {
+static const m4testcompile testcompile_e[] = {
     /* ------------------------------- local variables ---------------------- */
     {"{: :}", {2, {0, m4colon}}, {2, {0, m4colon}}, {2, {m4_locals_enter_, T(0)}}},
     {"{: :} ;", {2, {0, m4colon}}, {}, {4, {m4_locals_enter_, T(0), m4_locals_exit_, m4exit}}},
@@ -346,6 +358,15 @@ static const m4testcompile testcompile_c[] = {
      {2, {0, m4colon}},
      {},
      {6, {m4_locals_enter_, T(4), m4_to_l2_, m4_to_l3_, m4_locals_exit_, m4exit}}},
+    /* ------------------------------- 'to' local variables ----------------- */
+    {"{: | foo :} 7 to foo ;",
+     {2, {0, m4colon}},
+     {},
+     {6, {m4_locals_enter_, T(1), m4seven, m4_to_l0_, m4_locals_exit_, m4exit}}},
+    {"{: | bar :} 5 dup to bar ;",
+     {2, {0, m4colon}},
+     {},
+     {6, {m4_locals_enter_, T(1), m4five, m4_dup_to_l0_, m4_locals_exit_, m4exit}}},
 };
 
 static m4code m4testcompile_init(const m4testcompile *t, m4countedcode *codegen_buf) {
@@ -425,8 +446,10 @@ static void m4testcompile_failed(m4th *m, const m4testcompile *t, m4code t_codeg
 }
 
 m4cell m4th_testcompile(m4th *m, FILE *out) {
-    const m4testcompile *t[] = {testcompile_a, testcompile_b, testcompile_c};
-    const m4cell n[] = {N_OF(testcompile_a), N_OF(testcompile_b), N_OF(testcompile_c)};
+    const m4testcompile *t[] = {testcompile_a, testcompile_b, testcompile_c, testcompile_d,
+                                testcompile_e};
+    const m4cell n[] = {N_OF(testcompile_a), N_OF(testcompile_b), N_OF(testcompile_c),
+                        N_OF(testcompile_d), N_OF(testcompile_e)};
 
     m4countedcode codegen_buf;
     m4cell i, j, run = 0, fail = 0;

@@ -335,8 +335,8 @@ FUNC_START(_locals_exit_)
 FUNC_END(_locals_exit_)
 
 
-/* lp0 ( -- addr-of-locals ) get address of local variables */
-FUNC_START(lp0)
+/* lp_fetch ( -- addr-of-locals ) get current local variables address */
+FUNC_START(lp_fetch)
         DPUSH__DTOP()
         MOVE(  LOCL,   DTOP)
-FUNC_END(lp0)
+FUNC_END(lp_fetch)

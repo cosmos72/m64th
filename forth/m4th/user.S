@@ -36,7 +36,7 @@ WORD_START(dot_rs, dot_rs)
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
         dup_to_r,                               /* push RTOP to return stack  */
-        rp0, rdepth, one_minus, minus_one,                 /* ( rstk rdepth -1 )         */
+        rp_fetch, rdepth, one_minus, minus_one, /* ( rstk rdepth -1 )         */
         _c_arg_3_, _c_call_, CELL(m4slice_print_stdout), _c_ret_0_,
         r_from_drop, exit                       /* pop RTOP from return stack */
     )
@@ -176,14 +176,12 @@ WORD_START(disassemble_name, disassemble)
 WORD_END(disassemble_name)
 /* do-i+-loop  native-compiled version of do i+ loop */
 WORD(do_i_plus_loop, disassemble_name, DSTACK(2,1), RSTACK(0,0), WORD_IMPURE)
-/* dp0        ( x -- x addr-of-x ) get address of stack bottom */
-WORD(dp0,              do_i_plus_loop, DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 /**
  * du/mod ( du du-divisor -- du-rem du-quo ) unsigned remainder & quotient
  * of double-width unsigned division.
  * returned remainder and quotient are double-width unsigned numbers
  */
-WORD_START(du_div_mod, dp0)
+WORD_START(du_div_mod, do_i_plus_loop)
     WORD_DSTACK(4,4)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -195,7 +193,7 @@ WORD_START(du_div_mod, dp0)
             u_div_mod,                                 /* ( rem quo              ) */
             swap, u_to_d, rot, u_to_d, exit,           /* ( du-rem du-quo        ) */
         then,                                          /* ( ud1 ud2              ) */
-        dp0, dup,                                      /* ( ud1 x=ud2 &x &x      ) */
+        sp_fetch, dup,                                 /* ( ud1 x=ud2 &x &x      ) */
         cell_plus, cell_plus, swap,                    /* ( y=ud1 x=ud2 &y &x    ) */
         _c_arg_2_, _c_call_, CELL(m4th_ud_div_mod), _c_ret_0_,
                                                        /* ( du-rem du-quo        ) */
@@ -509,7 +507,9 @@ WORD_START(repl,  rdepth)
 WORD_END(repl)
 WORD(r2nd_fetch,       repl,           DSTACK(0,1), RSTACK(2,2), WORD_R_PURE)
 WORD(r3rd_fetch,       r2nd_fetch,     DSTACK(0,1), RSTACK(3,3), WORD_R_PURE)
-WORD(squared,          r3rd_fetch,     DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+/* sp@ ( x -- x addr-of-x ) get current data stack address */
+WORD(sp_fetch,         r3rd_fetch,     DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
+WORD(squared,          sp_fetch,       DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(sub,              squared,        DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD_START(minus_roll, sub)
     WORD_DSTACK(1,0) /* DSTACK(x+1,x)   */

@@ -71,18 +71,20 @@
 #define M4FLAG_MEM_STORE (1 << 9)    /** word dereferences pointer arguments(s) and writes to it */
 #define M4FLAG_DATA_TOKENS (1 << 10) /** word data contains m4tokens */
 
-#define M4FLAG_NOOPT_MASK (3 << 11) /** word must not be optimized */
+#define M4FLAG_NOOPT_MASK (7 << 11) /** word must not be optimized */
 /**< word defined with CREATE - do not optimize away CALL(noop) */
 #define M4FLAG_CREATE (1 << 11)
 /**< word defined with DEFER - do not optimize/inline CALL((defer-uninitialized)) */
 #define M4FLAG_DEFER (2 << 11)
+/**< word defined with VALUE - do not optimize/inline */
+#define M4FLAG_VALUE (3 << 11)
 /**< instruct the compiler not to optimize word */
-#define M4FLAG_NOOPT (3 << 11)
+#define M4FLAG_NOOPT (4 << 11)
 
 /**
  * < instruct the compiler to re-execute (immediate) word after optimization.
  * needed to recompute jump offsets
  */
-#define M4FLAG_REEXEC_AFTER_OPTIMIZE (1 << 13)
+#define M4FLAG_REEXEC_AFTER_OPTIMIZE (1 << 14)
 
 #endif /* M4TH_INCLUDE_FLAG_MH */

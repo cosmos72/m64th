@@ -50,6 +50,9 @@
 #define M4ERR_INVALID_RECURSION -27
 #define M4ERR_USER_INTERRUPT -28
 #define M4ERR_COMPILER_NESTING -29
+#define M4ERR_OBSOLESCENT_FEATURE -30
+#define M4ERR_NOT_CREATED -31     /* not created by CREATE, cannot use >BODY or DOES> on it */
+#define M4ERR_INVALID_TO_NAME -32 /* not a VALUE or local variable, cannot use TO on it */
 /* ... */
 #define M4ERR_FILE_IO_EXCEPTION -37
 #define M4ERR_NON_EXISTENT_FILE -38
@@ -61,7 +64,6 @@
 #define M4ERR_FAILED_TO_ALLOCATE -59 /* out of memory */
 
 #define M4ERR_DEFER_UNINITIALIZED -256 /* word created with DEFER is not initialized */
-#define M4ERR_NOT_CREATED -257 /* latest word not created by CREATE, cannot use DOES> on it */
 #define M4ERR_LOCALS_OVERFLOW -259
 /* ... */
 #define M4ERR_C_ERRNO -3500 /* error is M4ERR_C_ERRNO - errno */

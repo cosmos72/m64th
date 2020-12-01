@@ -312,12 +312,6 @@ FUNC_START(depth)          /* ( -- n ) get stack depth */
 FUNC_END(depth)
 
 
-FUNC_START(dp0)           /* dp0       m4th-user ( x -- x addr-of-x ) get address of stack bottom */
-        DPUSH__DTOP()
-        MOVE(  DSTK,   DTOP)
-FUNC_END(dp0)
-
-
 FUNC_START(dup)
         DPUSH__DTOP()
 FUNC_END(dup)
@@ -421,6 +415,12 @@ FUNC_START(minus_rot)      /* -rot  ( a b c -- c a b ) m4th-user */
         LOAD(  DTOP,   AT(DSTK))     /* DTOP = b */
         STOR(  REG1,   AT(DSTK))     /* store  a */
 FUNC_END(minus_rot)
+
+
+FUNC_START(sp_fetch)       /* sp@   m4th-user ( x -- x addr-of-x ) get current data stack address */
+        DPUSH__DTOP()
+        MOVE(  DSTK,   DTOP)
+FUNC_END(sp_fetch)
 
 
 FUNC_START(squared)        /* squared  m4th-user equivalent to: dup * */

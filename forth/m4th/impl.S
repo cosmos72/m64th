@@ -235,11 +235,13 @@ WORD_START(_create_,   _continue_)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
-        dup, CALL(parse_name),                         /* ( m4flags m4flags c-addr u     ) */
-        dup, zero_equal,                               /* ( m4flags m4flags c-addr u t|f ) */
+        state, fetch, zero_ne,                         /* ( m4flags t|f                  ) */
+            _lit_, T(M4ERR_COMPILER_NESTING), and, throw,
+        CALL(parse_name),                              /* ( m4flags c-addr u             ) */
+        dup, zero_equal,                               /* ( m4flags c-addr u t|f         ) */
             _lit_, T(M4ERR_ZERO_LENGTH_NAME), and, throw,
-        name_comma, dup, to_latest,                    /* ( m4flags m4flags nt           ) */
-        name_to_flags_store,                           /* ( m4flags                      ) */
+        name_comma, dup, to_latest,                    /* ( m4flags nt                   ) */
+        trail, name_to_flags_store,                    /* ( m4flags                      ) */
         _lit_tok_, colon,                              /* ( colon-sys                    ) */
         CALL(_user_locals_clear_), exit                /* ( colon-sys                    ) */
     )
@@ -872,7 +874,52 @@ WORD_START(_return_to_native_, _repl_type_ack_)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS | M4FLAG_JUMP)
     WORD_CODE(_return_to_native_, exit)
 WORD_END(_return_to_native_)
-WORD_START(_until_, _return_to_native_)
+/* (>lx,) ( c-addr u idx -- ) compile a store to local variable */
+WORD_START(_to_lx_comma_, _return_to_native_)
+    WORD_DSTACK(3,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY)
+    WORD_CODE(
+        state, fetch,                                        /* ( c-addr u idx flag   ) */
+        _if0_, T(6),                                         /* ( c-addr u idx        ) */
+            drop, ex_message_store,                          /* (                     ) */
+            _lit_, T(M4ERR_INTERPRETING_COMPILE_ONLY_WORD),  /* (                     ) */
+            throw,                                           /* (                     ) */
+        then,                                                /* ( c-addr u idx        ) */
+        nip, nip,                                            /* (idx                  ) */
+        _lit_comma_, _to_lx_,    /* compile (>lx)   */
+        token_comma, exit        /* compile T(idx)  */
+    )
+WORD_END(_to_lx_comma_)
+/* (to-value) ( nt -- ) execute or compile a store to a VALUE */
+WORD_START(_to_value_, _to_lx_comma_)
+    WORD_DSTACK(1,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(0)
+    WORD_CODE(
+        state, fetch,                                        /* ( nt flag             ) */
+        _if0_, T(3),                                         /* ( nt                  ) */
+            /* interpreting. store immediately to nt body       ( x nt                ) */
+            name_to_data_addr,                               /* ( x addr              ) */
+            store, exit,                                     /* (                     ) */
+        then,                                                /* ( nt                  ) */
+        /* compiling. compile a store to nt body */          /* ( nt                  ) */
+        /* note: a numeric cell address would be difficult to decompile                 */
+        /* => use '_lit_xt_' or create and use a token '_lit_nt_'                       */
+        name_to_xt,                                          /* ( xt                  ) */
+        _lit_comma_, _lit_xt_,      /* compile '(lit-xt)'       ( xt                  ) */
+        comma,                      /* compile xt               (                     ) */
+        _lit_comma_, xt_to_name,    /* compile 'xt>name'        (                     ) */
+        _lit_comma_, name_to_data_addr, /* compile 'name>data>addr'                     */
+        _lit_comma_, store,         /* compile '!'              (                     ) */
+        exit
+    )
+WORD_END(_to_value_)
+WORD_START(_until_, _to_value_)
     WORD_DSTACK(1,0) /* runtime stack effect when not jumping */
     WORD_RSTACK(0,0)
     WORD_DSTACK(1,0) /* runtime stack effect when jumping */
@@ -1910,15 +1957,15 @@ WORD_START(char_to_u, char_to_base)
         drop, minus_one, exit                 /* ( -1                      ) */
     )
 WORD_END(char_to_u)
-/* lp0        ( -- addr-of-locals ) get address of local variables */
-WORD(lp0,              char_to_u,      DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
-/* rp0 (R: x y -- x y ) ( -- &x ) get address of return stack bottom */
-WORD(rp0,              lp0,            DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
+/* lp_fetch        ( -- addr-of-locals ) get current local variables address */
+WORD(lp_fetch,         char_to_u,      DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
+/* rp_fetch (R: x y -- x y ) ( -- &x ) get current return stack address */
+WORD(rp_fetch,         lp_fetch,       DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 /*
  * string>base ( caddr n -- caddr' n' base )
  * if string starts with # $ or % consume it and return corresponding base, else return current base
  */
-WORD_START(string_to_base, rp0)
+WORD_START(string_to_base, rp_fetch)
     WORD_DSTACK(2,3)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()

@@ -184,6 +184,8 @@
     X(3, "hex", hex)                                                                               \
     X(2, "of", of)                                                                                 \
     X(10, "parse-name", parse_name)                                                                \
+    X(2, "to", to)                                                                                 \
+    X(5, "value", value)                                                                           \
     X(1, "\\", backslash)
 
 /* ------- forth 2012: double ------------------------------------------------------------------- */

@@ -65,7 +65,6 @@
     X(8, "crc-cell", crc_cell)      /* ( x -- crc32 ) compute CRC32c of a cell                  */ \
     X(10, "crc-string", crc_string) /* ( c-addr u -- crc32 ) compute CRC32c of a string         */ \
     X(10, "do-i+-loop", do_i_plus_loop) /* do i + loop                                          */ \
-    X(3, "dp0", dp0)        /* ( x --- x addr-of-x ) get address of data stack bottom           */ \
     X(5, "dup>r", dup_to_r) /* ( x -- ) (R: -- x )               equivalent to: dup >r          */ \
     X(11, "ex-message!", ex_message_store) /* ( c-addr u --    ) store exception message string */ \
     X(11, "ex-message@", ex_message_fetch) /* (    -- c-addr u ) fetch exception message string */ \
@@ -77,18 +76,19 @@
     X(2, "i'", i_prime)                                                                            \
     /* ( c-addr u ch -- u' ) get position of given char or CR/LF in string  */                     \
     X(14, "line-find-char", line_find_char)                                                        \
-    X(4, "noop", noop)                   /* ( -- ) do nothing                               */     \
-    X(6, "n>drop", n_to_drop)            /* ( xn .. x1 n -- ) drop n cells                  */     \
-    X(3, "r1+", r_one_plus)              /*          (R: a -- a+1 )                         */     \
-    X(3, "r1-", r_one_minus)             /*          (R: a -- a-1 )                         */     \
-    X(2, "r!", r_store)                  /* ( a -- ) (R: b -- a   )                         */     \
-    X(3, "r+!", r_plus_store)            /* ( a -- ) (R: b -- a+b )                         */     \
-    X(6, "r>drop", r_from_drop)          /* (R: x -- ) equivalent to: r> drop               */     \
-    X(6, "rdepth", rdepth)               /* ( -- n ) get return stack depth                 */     \
-    X(5, "-roll", minus_roll)            /* rotate in opposite direction than 'roll'        */     \
-    X(4, "-rot", minus_rot)              /* equivalent to: rot rot                          */     \
-    X(7, "squared", squared)             /* equivalent to: dup *                            */     \
-    X(7, "string=", string_equal)        /* ( addr1 addr2 u -- addr1 addr2 u t|f )          */     \
+    X(4, "noop", noop)            /* ( -- ) do nothing                               */            \
+    X(6, "n>drop", n_to_drop)     /* ( xn .. x1 n -- ) drop n cells                  */            \
+    X(3, "r1+", r_one_plus)       /*          (R: a -- a+1 )                         */            \
+    X(3, "r1-", r_one_minus)      /*          (R: a -- a-1 )                         */            \
+    X(2, "r!", r_store)           /* ( a -- ) (R: b -- a   )                         */            \
+    X(3, "r+!", r_plus_store)     /* ( a -- ) (R: b -- a+b )                         */            \
+    X(6, "r>drop", r_from_drop)   /* (R: x -- ) equivalent to: r> drop               */            \
+    X(6, "rdepth", rdepth)        /* ( -- n ) get return stack depth                 */            \
+    X(5, "-roll", minus_roll)     /* rotate in opposite direction than 'roll'        */            \
+    X(4, "-rot", minus_rot)       /* equivalent to: rot rot                          */            \
+    X(3, "sp@", sp_fetch)         /* ( x --- x addr-of-x ) get current data stack address */       \
+    X(7, "squared", squared)      /* equivalent to: dup *                            */            \
+    X(7, "string=", string_equal) /* ( addr1 addr2 u -- addr1 addr2 u t|f )          */            \
     X(10, "string-ci=", string_ci_equal) /* ( addr1 addr2 u -- addr1 addr2 u t|f )          */     \
     X(17, "string-find-blank", string_find_blank) /* ( c-addr u -- u' )                     */     \
     X(16, "string-find-char", string_find_char)   /* ( c-addr u ch -- u' )                  */     \
@@ -355,12 +355,14 @@
     X(9, "iobuf>pos", iobuf_pos)         /* ( io -- addr ) get address of iobuf position     */    \
     X(9, "iobuf>end", iobuf_end)         /* ( io -- addr ) get address of iobuf end position */    \
     X(6, "latest", latest)               /* (    -- nt   ) get last defined word             */    \
-    X(9, "to-latest", to_latest)         /* ( nt --      ) set last defined word            */     \
+    X(9, "to-latest", to_latest)         /* ( nt --      ) set last defined word             */    \
     X(5, "name,", name_comma)            /* ( c-addr u -- nt ) create a new name             */    \
     X(9, "name>code", name_to_code)      /* ( nt  -- taddr n ) get code array from name      */    \
     X(11, "name>code>n", name_to_code_n) /* ( nt -- u        ) get code size from name       */    \
-    X(9, "name>data", name_to_data)      /* ( nt -- addr u   ) get data of name              */    \
-    X(10, "name>flags", name_to_flags)   /* ( nt -- m4flags  ) get m4flags of name           */    \
+    X(9, "name>data", name_to_data)      /* ( nt -- addr u   ) get data array of name        */    \
+    X(14, "name>data>addr", name_to_data_addr)  /* ( nt -- addr u ) get data address name    */    \
+    X(12, "name>data>n!", name_to_data_n_store) /* ( u nt --  ) set data size of name        */    \
+    X(10, "name>flags", name_to_flags) /*   ( nt -- m4flags  ) get m4flags of name           */    \
     X(11, "name>flags!", name_to_flags_store) /* ( m4flags nt -- ) set m4flags of name       */    \
     X(10, "name>ident", name_to_ident) /* ( nt -- addr n  ) convert name to asm/C identifier */    \
     /* name>string is already defined by forth 'tools ext' wordset */                              \
@@ -402,6 +404,7 @@
     X(20, "ibuf-refill-if-empty", ibuf_refill_if_empty) /* ( io -- err ) */                        \
     X(16, "ibuf-skip-1blank", ibuf_skip_1blank)         /* ( io --     ) */                        \
     X(16, "ibuf-skip-blanks", ibuf_skip_blanks)         /* ( io -- ) skip consecutive blanks */    \
+    X(11, "latest-sync", latest_sync)        /* ( -- ) update data size of latest word   */        \
     X(12, "name-inline?", name_inline_query) /* ( nt -- flag ) calls to name should be inlined? */ \
     X(10, "obuf-flush", obuf_flush)          /* ( io -- err  ) flush iobuf data                 */ \
     /* ( io c -- err  ) flush iobuf, then write one char to it */                                  \
@@ -451,6 +454,23 @@
 /* ------- m4th-impl ---------------------------------------------------------------------------- */
 #define DICT_TOKENS_M4TH_IMPL(X)                                                                   \
     X(7, "(+loop)", _plus_loop_)                                                                   \
+    X(5, "(>l0)", _to_l0_) /* store 0-th local variable */                                         \
+    X(5, "(>l1)", _to_l1_) /* store 1-st local variable */                                         \
+    X(5, "(>l2)", _to_l2_) /* store 2-nd local variable */                                         \
+    X(5, "(>l3)", _to_l3_) /* store 3-rd local variable */                                         \
+    X(5, "(>l4)", _to_l4_) /* store 4-th local variable */                                         \
+    X(5, "(>l5)", _to_l5_) /* store 5-th local variable */                                         \
+    X(5, "(>l6)", _to_l6_) /* store 6-th local variable */                                         \
+    X(5, "(>l7)", _to_l7_) /* store 7-th local variable */                                         \
+    X(5, "(>l8)", _to_l8_) /* store 8-th local variable */                                         \
+    X(5, "(>l9)", _to_l9_) /* store 9-th local variable */                                         \
+    X(5, "(>la)", _to_la_) /* store 10-th local variable */                                        \
+    X(5, "(>lb)", _to_lb_) /* store 11-th local variable */                                        \
+    X(5, "(>lc)", _to_lc_) /* store 12-th local variable */                                        \
+    X(5, "(>ld)", _to_ld_) /* store 13-th local variable */                                        \
+    X(5, "(>le)", _to_le_) /* store 14-th local variable */                                        \
+    X(5, "(>lf)", _to_lf_) /* store 15-th local variable */                                        \
+    X(5, "(>lx)", _to_lx_) /* followed by T(N) store N-th local variable */                        \
     X(5, "(?do)", _q_do_)                                                                          \
     X(5, "(?if)", _q_if_)                                                                          \
     X(6, "(?if0)", _q_if0_)                                                                        \
@@ -548,23 +568,6 @@
     X(9, "(recurse)", _recurse_) /* ( x y -- x| ) execution semantics of 'recurse' */              \
     X(8, "(repeat)", _repeat_)                                                                     \
     X(18, "(return-to-native)", _return_to_native_)                                                \
-    X(5, "(>l0)", _to_l0_) /* store 0-th local variable */                                         \
-    X(5, "(>l1)", _to_l1_) /* store 1-st local variable */                                         \
-    X(5, "(>l2)", _to_l2_) /* store 2-nd local variable */                                         \
-    X(5, "(>l3)", _to_l3_) /* store 3-rd local variable */                                         \
-    X(5, "(>l4)", _to_l4_) /* store 4-th local variable */                                         \
-    X(5, "(>l5)", _to_l5_) /* store 5-th local variable */                                         \
-    X(5, "(>l6)", _to_l6_) /* store 6-th local variable */                                         \
-    X(5, "(>l7)", _to_l7_) /* store 7-th local variable */                                         \
-    X(5, "(>l8)", _to_l8_) /* store 8-th local variable */                                         \
-    X(5, "(>l9)", _to_l9_) /* store 9-th local variable */                                         \
-    X(5, "(>la)", _to_la_) /* store 10-th local variable */                                        \
-    X(5, "(>lb)", _to_lb_) /* store 11-th local variable */                                        \
-    X(5, "(>lc)", _to_lc_) /* store 12-th local variable */                                        \
-    X(5, "(>ld)", _to_ld_) /* store 13-th local variable */                                        \
-    X(5, "(>le)", _to_le_) /* store 14-th local variable */                                        \
-    X(5, "(>lf)", _to_lf_) /* store 15-th local variable */                                        \
-    X(5, "(>lx)", _to_lx_) /* followed by T(N) store N-th local variable */                        \
     X(7, "(until)", _until_)                                                                       \
     X(8, "(until0)", _until0_)                                                                     \
     X(7, "(while)", _while_)                                                                       \
@@ -588,11 +591,12 @@
     X(1, "6", six)                                                                                 \
     X(1, "7", seven)                                                                               \
     X(1, "8", eight)                                                                               \
-    X(3, "lp0", lp0) /* ( -- addr-of-locals ) get address of local variables */                    \
-    X(3, "rp0", rp0) /* (R: x y -- x y ) ( -- &x ) get address of return stack bottom */
+    X(3, "lp@", lp_fetch) /* ( -- addr-of-locals ) get current local variables address */          \
+    X(3, "rp@", rp_fetch) /* (R: x y -- x y ) ( -- &x ) get current return stack address */
 
 #define DICT_WORDS_M4TH_IMPL(X)                                                                    \
     DICT_TOKENS_M4TH_IMPL(X)                                                                       \
+    X(6, "(>lx,)", _to_lx_comma_) /* ( c-addr u N -- ) compile a store to N-th local variable */   \
     X(13, "(abort-quote)", _abort_quote_)   /* ( x c-addr u ) runtime part of abort" */            \
     X(14, "(check-stacks)", _check_stacks_) /* throw on stack underflow              */            \
     /* ( m4flags -- sys ) read non-blanks string, create new word for it. set LATEST */            \
@@ -639,6 +643,7 @@
     /* find an optimized sequence to replace '[ x ] literal' */                                    \
     X(18, "(optimize-literal)", _optimize_literal_) /* ( x -- token t | x f ) */                   \
     X(15, "(repl-type-ack)", _repl_type_ack_)                                                      \
+    X(10, "(to-value)", _to_value_) /* ( nt -- ) execute or compile a store to a VALUE */          \
     /* ( -- ) parse words and skip them until :} is found */                                       \
     X(14, "(skip-until:})", _skip_until_colon_brace_)                                              \
     /* ( -- ls ) allocate m4th->locals data structure if not present */                            \

@@ -53,18 +53,20 @@ typedef enum m4err_id_e {
     m4err_invalid_recursion = M4ERR_INVALID_RECURSION,                           /* -27 */
     m4err_user_interrupt = M4ERR_USER_INTERRUPT,                                 /* -28 */
     m4err_compiler_nesting = M4ERR_COMPILER_NESTING,                             /* -29 */
-    /* ... */
-    m4err_file_io_exception = M4ERR_FILE_IO_EXCEPTION, /* -37 */
-    m4err_non_existent_file = M4ERR_NON_EXISTENT_FILE, /* -38 */
-    m4err_unexpected_eof = M4ERR_UNEXPECTED_EOF,       /* -39 */
-    /* ... */
-    m4err_quit = M4ERR_QUIT,                                               /* -56 */
-    m4err_failed_to_send_or_recv_char = M4ERR_FAILED_TO_SEND_OR_RECV_CHAR, /* -57 */
-    /* ... */
-    m4err_failed_to_allocate = M4ERR_FAILED_TO_ALLOCATE, /* -59 */
-    /* ... */
-    m4err_defer_uninitialized = M4ERR_DEFER_UNINITIALIZED, /* -256 */
-    m4err_not_created = M4ERR_NOT_CREATED,                 /* -257 */
+    m4err_obsolescent_feature = M4ERR_OBSOLESCENT_FEATURE,                       /* -30 */
+    m4err_not_created = M4ERR_NOT_CREATED,                                       /* -31 */
+    m4err_invalid_to_name = M4ERR_INVALID_TO_NAME,                               /* -32 */
+    /* ... */                                                                    /*     */
+    m4err_file_io_exception = M4ERR_FILE_IO_EXCEPTION,                           /* -37 */
+    m4err_non_existent_file = M4ERR_NON_EXISTENT_FILE,                           /* -38 */
+    m4err_unexpected_eof = M4ERR_UNEXPECTED_EOF,                                 /* -39 */
+    /* ... */                                                                    /*     */
+    m4err_quit = M4ERR_QUIT,                                                     /* -56 */
+    m4err_failed_to_send_or_recv_char = M4ERR_FAILED_TO_SEND_OR_RECV_CHAR,       /* -57 */
+    /* ... */                                                                    /*     */
+    m4err_failed_to_allocate = M4ERR_FAILED_TO_ALLOCATE,                         /* -59 */
+    /* ... */                                                                    /*     */
+    m4err_defer_uninitialized = M4ERR_DEFER_UNINITIALIZED,                       /* -256 */
 
     m4err_c_errno = M4ERR_C_ERRNO, /* error is M4ERR_C_ERRNO - errno */
 } m4err_id;

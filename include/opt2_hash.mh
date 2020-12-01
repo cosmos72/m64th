@@ -4,7 +4,7 @@
  */
 /* clang-format off */
 #define OPT2_HASHMAP(start, entry)	\
-start(/*size*/ 423, /*lcap*/ 8)	\
+start(/*size*/ 425, /*lcap*/ 8)	\
 entry(M4zero|(M4roll<<16),	0,	256)	\
 entry(M4zero_more_equal|(M4zero_less<<16),	1|(M4zero_less<<16),	257)	\
 entry(M4negate|(M4_while0_<<16),	1|(M4_while0_<<16),	-2)	\
@@ -24,7 +24,7 @@ entry(M4one_minus|(M4two_plus<<16),	1|(M4one_plus<<16),	271)	\
 entry(M4more|(M4zero_less<<16),	1|(M4more<<16),	282)	\
 entry(M4zero|(M4pick<<16),	1|(M4dup<<16),	280)	\
 entry(M4minus_one|(M4xor<<16),	1|(M4invert<<16),	-2)	\
-entry(M4dup|(M4_to_lx_<<16),	1|(M4_dup_to_lx_<<16),	-2)	\
+entry(M4dup|(M4_to_lx_<<16),	1|(M4_dup_to_lx_<<16),	286)	\
 entry(M4dup|(M4drop<<16),	0,	-2)	\
 entry(M4zero|(M4lshift<<16),	0,	-2)	\
 entry(M4equal|(M4zero_less<<16),	1|(M4equal<<16),	278)	\
@@ -77,7 +77,7 @@ entry(M4dup|(M4_until0_<<16),	1|(M4_q_until0_<<16),	-2)	\
 entry(M4negate|(M4abs<<16),	1|(M4abs<<16),	-2)	\
 entry(M4tuck|(M4minus_rot<<16),	1|(M4dup<<16),	-2)	\
 entry(M4equal|(M4zero_equal<<16),	1|(M4ne<<16),	327)	\
-entry(M4four|(M4times<<16),	1|(M4four_times<<16),	358)	\
+entry(M4four|(M4times<<16),	1|(M4four_times<<16),	368)	\
 entry(0,	0,	-1)	\
 entry(M4one|(M4pick<<16),	1|(M4over<<16),	348)	\
 entry(M4u_more|(M4invert<<16),	1|(M4u_less_equal<<16),	441)	\
@@ -117,7 +117,7 @@ entry(M4minus_one|(M4div_mod<<16),	2|(M4negate<<16)|(M4zero<<32),	364)	\
 entry(M4one_plus|(M4negate<<16),	1|(M4invert<<16),	-2)	\
 entry(M4minus_one|(M4ne<<16),	2|(M4invert<<16)|(M4zero_ne<<32),	438)	\
 entry(M4one|(M4two_roll<<16),	1|(M4two_swap<<16),	367)	\
-entry(M4four_minus|(M4four_minus<<16),	1|(M4eight_minus<<16),	368)	\
+entry(M4four_minus|(M4four_minus<<16),	1|(M4eight_minus<<16),	373)	\
 entry(M4less_equal|(M4invert<<16),	1|(M4more<<16),	390)	\
 entry(0,	0,	-1)	\
 entry(M4int_align|(M4short_align<<16),	1|(M4int_align<<16),	-2)	\
@@ -219,7 +219,7 @@ entry(M4over|(M4plus<<16),	2|(M4bounds<<16)|(M4swap<<32),	-2)	\
 entry(M4one|(M4plus<<16),	1|(M4one_plus<<16),	288)	\
 entry(0,	0,	-1)	\
 entry(0,	0,	-1)	\
-entry(M4zero|(M4or<<16),	0,	295)	\
+entry(M4zero|(M4or<<16),	0,	322)	\
 entry(M4dup|(M4u_less<<16),	2|(M4drop<<16)|(M4zero<<32),	504)	\
 entry(M4one|(M4ne<<16),	2|(M4one_minus<<16)|(M4zero_ne<<32),	477)	\
 entry(0,	0,	-1)	\
@@ -255,7 +255,7 @@ entry(M4two_minus|(M4two_minus<<16),	1|(M4four_minus<<16),	-2)	\
 entry(M4minus_one|(M4and<<16),	0,	-2)	\
 entry(M4ne|(M4zero_less<<16),	1|(M4ne<<16),	-2)	\
 entry(M4more_equal|(M4zero_equal<<16),	1|(M4less<<16),	270)	\
-entry(M4zero_more_equal|(M4zero_less_equal<<16),	2|(M4drop<<16)|(M4minus_one<<32),	286)	\
+entry(M4zero_more_equal|(M4zero_less_equal<<16),	2|(M4drop<<16)|(M4minus_one<<32),	295)	\
 entry(M4two|(M4minus_roll<<16),	1|(M4minus_rot<<16),	273)	\
 entry(M4four_plus|(M4int_fetch<<16),	1|(M4int_fetch_1<<16),	-2)	\
 entry(0,	0,	-1)	\
@@ -291,7 +291,7 @@ entry(M4swap|(M4u_less<<16),	1|(M4u_more<<16),	272)	\
 entry(M4dup|(M4to_r<<16),	1|(M4dup_to_r<<16),	-2)	\
 entry(0,	0,	-1)	\
 entry(0,	0,	-1)	\
-entry(M4eight_plus|(M4int_fetch<<16),	1|(M4int_fetch_2<<16),	506)	\
+entry(M4name_to_data_addr|(M4drop<<16),	0,	-2)	\
 entry(0,	0,	-1)	\
 entry(M4swap|(M4drop<<16),	1|(M4nip<<16),	277)	\
 entry(M4zero_ne|(M4_if_<<16),	1|(M4_if_<<16),	-2)	\
@@ -300,7 +300,7 @@ entry(0,	0,	-1)	\
 entry(M4swap|(M4plus<<16),	1|(M4plus<<16),	-2)	\
 entry(M4two|(M4equal<<16),	2|(M4two_minus<<16)|(M4zero_equal<<32),	-2)	\
 entry(0,	0,	-1)	\
-entry(M4four_plus|(M4uint_fetch<<16),	1|(M4uint_fetch_1<<16),	259)	\
+entry(M4eight_plus|(M4int_fetch<<16),	1|(M4int_fetch_2<<16),	506)	\
 entry(M4more_equal|(M4zero_more_equal<<16),	1|(M4less<<16),	289)	\
 entry(M4int_aligned|(M4int_aligned<<16),	1|(M4int_aligned<<16),	-2)	\
 entry(M4more_equal|(M4invert<<16),	1|(M4less<<16),	-2)	\
@@ -327,7 +327,7 @@ entry(M4short_align|(M4align<<16),	1|(M4align<<16),	-2)	\
 entry(0,	0,	-1)	\
 entry(M4rot|(M4minus_rot<<16),	0,	-2)	\
 entry(M4over|(M4drop<<16),	0,	293)	\
-entry(0,	0,	-1)	\
+entry(M4four_plus|(M4uint_fetch<<16),	1|(M4uint_fetch_1<<16),	259)	\
 entry(M4minus_rot|(M4drop<<16),	2|(M4nip<<16)|(M4swap<<32),	308)	\
 entry(M4four|(M4minus<<16),	1|(M4four_minus<<16),	317)	\
 entry(M4trail|(M4drop<<16),	2|(M4drop<<16)|(M4dup<<32),	303)	\
@@ -373,12 +373,12 @@ entry(M4dup|(M4nip<<16),	0,	-2)	\
 entry(M4trail|(M4nip<<16),	0,	-2)	\
 entry(M4two_sm_div|(M4four_sm_div<<16),	1|(M4eight_sm_div<<16),	-2)	\
 entry(M4dup|(M4min<<16),	0,	-2)	\
-entry(M4negate|(M4_while_<<16),	1|(M4_while_<<16),	-2)	\
+entry(M4name_to_data|(M4drop<<16),	1|(M4name_to_data_addr<<16),	358)	\
 entry(M4ne|(M4zero_more_equal<<16),	1|(M4equal<<16),	-2)	\
 entry(M4over|(M4nip<<16),	2|(M4drop<<16)|(M4dup<<32),	349)	\
 entry(0,	0,	-1)	\
 entry(M4zero_more|(M4zero_ne<<16),	1|(M4zero_more<<16),	-2)	\
-entry(0,	0,	-1)	\
+entry(M4negate|(M4_while_<<16),	1|(M4_while_<<16),	-2)	\
 entry(M4times|(M4negate<<16),	2|(M4negate<<16)|(M4times<<32),	-2)	\
 entry(M4zero_more|(M4zero_less<<16),	1|(M4zero_less<<16),	366)	\
 entry(M4more|(M4zero_more<<16),	3|(M4drop<<16)|(M4drop<<32)|(M4zero<<48),	-2)	\
