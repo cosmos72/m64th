@@ -221,7 +221,8 @@ WORD_START(value,      u_more)
         _lit_comma_, _ip_to_data_addr_, /* compile '(ip>data>addr)  ( x sys               ) */
         _lit_comma_, fetch,             /* compile '@'              ( x sys               ) */
         CALL(_finish_),                 /*                          ( x                   ) */
-        comma, exit                     /* store initial value      (                     ) */
+        comma,                          /* store initial value      (                     ) */
+        CALL(latest_sync), exit         /* update word.data_n       (                     ) */
     )
 WORD_END(value)
 /*

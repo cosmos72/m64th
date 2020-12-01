@@ -131,8 +131,13 @@ static const m4testcompile testcompile_b[] = {
     {"[ variable x", {}, {}, {2, {m4_ip_to_data_addr_, m4exit}}},
     {"[ 3 value y ] ;", {}, {}, {3, {m4_ip_to_data_addr_, m4fetch, m4exit}}},
     {"[ 2 value z 1 to z", {}, {}, {3, {m4_ip_to_data_addr_, m4fetch, m4exit}}},
-#if 0
-    {"[ 1 value one 1cell - allot ]", {}, {}, {3, {m4_ip_to_data_addr_, m4fetch, m4exit}}},
+#if 0 /* FIXME we must encode the address of newly created word 'one' */
+    {"[ 1 value one 1cell - allot ] -1 to one",
+     {},
+     {},
+     {8 + callsz,
+      {m4_ip_to_data_addr_, m4fetch, m4exit, m4exit, m4minus_one, m4_lit_xt_, XT(zero),
+       m4xt_to_name, m4name_to_data_addr, m4store}}},
 #endif
 };
 

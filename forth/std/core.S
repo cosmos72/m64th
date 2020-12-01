@@ -660,7 +660,8 @@ WORD_START(variable,   until)
         right_bracket,                         /* start compiling                      */
         _lit_comma_, _ip_to_data_addr_,        /* compile (ip>data>addr)               */
         CALL(_finish_),                        /* finish compiling, make word findable */
-        one_cell, allot, exit                  /* allocate one cell                    */
+        one_cell, allot,                       /* allocate one cell                    */
+        CALL(latest_sync), exit                /* update latest.data_n                 */
     )
 WORD_END(variable)
 WORD_START(while,     variable)
