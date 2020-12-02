@@ -259,7 +259,8 @@ WORD_START(constant,   count)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
-        zero, CALL(_create_), right_bracket,   /* create word, start compiling         */
+        _lit_, T(M4FLAG_INLINE|M4FLAG_PURE),
+        CALL(_create_), right_bracket,   /* create word, start compiling         */
         rot, CALL(literal),                    /* compile number                       */
         CALL(_finish_), exit                   /* finish compiling, make word findable */
     )
