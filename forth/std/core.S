@@ -669,12 +669,7 @@ WORD_START(variable,   until)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
-        zero, CALL(_create_),                  /* create word                          */
-        right_bracket,                         /* start compiling                      */
-        _lit_comma_, _ip_to_data_addr_,        /* compile (ip>data>addr)               */
-        CALL(_finish_),                        /* finish compiling, make word findable */
-        one_cell, allot,                       /* allocate one cell                    */
-        CALL(latest_sync), exit                /* update latest.data_n                 */
+        one_cell, CALL(buffer_colon), exit
     )
 WORD_END(variable)
 WORD_START(while,     variable)

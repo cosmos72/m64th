@@ -87,7 +87,12 @@ WORD_START(buffer_colon,       action_of)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
-        CALL(create), allot, exit
+        zero, CALL(_create_),                  /* create word                          */
+        right_bracket,                         /* start compiling                      */
+        _lit_comma_, _ip_to_data_addr_,        /* compile (ip>data>addr)               */
+        CALL(_finish_),                        /* finish compiling, make word findable */
+        allot,                                 /* allocate N bytes                    */
+        CALL(latest_sync), exit                /* update latest.data_n                 */
     )
 WORD_END(buffer_colon)
 WORD_START(case,               buffer_colon)
