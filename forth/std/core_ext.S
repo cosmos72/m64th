@@ -240,7 +240,20 @@ WORD_START(of, nip)
         then, exit
     )
 WORD_END(of)
-WORD_START(parse_name, of)
+/* ( char "ccc<char>" -- c-addr u ) read from current input a string ended by specified char */
+WORD_START(parse,      of)
+    WORD_DSTACK(0,2)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        in_to_ibuf, CALL(ibuf_skip_1blank),         /* (               ) */
+        in_to_ibuf, swap, CALL(ibuf_find_char),     /* ( c-addr u      ) */
+        exit
+    )
+WORD_END(parse)
+WORD_START(parse_name, parse)
     WORD_DSTACK(0,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -316,7 +329,7 @@ WORD_START(backslash,  within)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE|M4FLAG_IMMEDIATE)
     WORD_CODE(
-        in_to_ibuf, _lit_, T('\n'), CALL(ibuf_find_char), two_drop, exit
+        _lit_, T('\n'), CALL(parse), two_drop, exit
     )
 WORD_END(backslash)
 

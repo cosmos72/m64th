@@ -453,22 +453,7 @@ WORD_START(m4th_impl,  m4th_core)
 WORD_END(m4th_impl)
 WORD(noop,             m4th_impl,      DSTACK(0,0), RSTACK(0,0), WORD_PURE)
 WORD(n_to_drop,        noop,           DSTACK(-1,0),RSTACK(0,0), WORD_PURE)
-/* ( "ccc<quote>" -- c-addr u ) read from current input a string ended by quote */
-WORD_START(parse_quote,n_to_drop)
-    WORD_DSTACK(0,2)
-    WORD_RSTACK(0,0)
-    WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
-    WORD_FLAGS(M4FLAG_INLINE)
-    WORD_CODE(
-        /* in>ibuf ibuf-skip-1blank                    (               )
-         * in>ibuf '"' ibuf-find-char                  ( c-addr u      )
-         */
-        in_to_ibuf, CALL(ibuf_skip_1blank),
-        in_to_ibuf, _lit_, T('"'), CALL(ibuf_find_char), exit
-    )
-WORD_END(m4th_impl)
-WORD(r_one_plus,       parse_quote,    DSTACK(0,0), RSTACK(1,1), WORD_R_PURE)
+WORD(r_one_plus,       n_to_drop,      DSTACK(0,0), RSTACK(1,1), WORD_R_PURE)
 WORD(r_one_minus,      r_one_plus,     DSTACK(0,0), RSTACK(1,1), WORD_R_PURE)
 WORD(r_store,          r_one_minus,    DSTACK(1,0), RSTACK(1,1), WORD_R_PURE)
 WORD(r_plus_store,     r_store,        DSTACK(1,0), RSTACK(1,1), WORD_R_PURE)

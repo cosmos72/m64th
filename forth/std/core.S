@@ -514,7 +514,7 @@ WORD_START(s_quote, rshift)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE)
     WORD_CODE(
-        CALL(parse_quote),                          /* ( c-addr u      ) */
+        _lit_, T('"'), CALL(parse),                 /* ( c-addr u      ) */
         CALL(compile_string_comma), exit
     )
 WORD_END(s_quote)

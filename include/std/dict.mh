@@ -188,6 +188,7 @@
     X(3, "hex", hex)                                                                               \
     X(2, "is", is)                                                                                 \
     X(2, "of", of)                                                                                 \
+    X(5, "parse", parse)                                                                           \
     X(10, "parse-name", parse_name)                                                                \
     X(2, "to", to)                                                                                 \
     X(5, "value", value)                                                                           \

@@ -261,7 +261,6 @@
     X(6, "m4th-c", m4th_c)             /* set first wordlist in searchorder to m4th-c    */        \
     X(9, "m4th-core", m4th_core)       /* set first wordlist in searchorder to m4th-core */        \
     X(9, "m4th-impl", m4th_impl)       /* set first wordlist in searchorder to m4th-impl */        \
-    X(11, "parse-quote", parse_quote)  /* ( -- c-addr u ) read a string ended by quote   */        \
     X(4, "repl", repl)                 /* call INTERPRET repeatedly until EOF or input error   */  \
     X(5, "r2nd@", r2nd_fetch)          /* alias of i' i.e. fetch second item from return stack */  \
     X(5, "r3rd@", r3rd_fetch)          /* alias of j i.e. fetch third item from return stack   */  \
