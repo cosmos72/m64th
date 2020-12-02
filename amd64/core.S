@@ -61,14 +61,14 @@ FUNC_START(name_to_prev) /* ( nt -- nt'|0 ) */
 FUNC_END(name_to_prev)
 
 
-FUNC_START(wordlist_last_name) /* ( wid -- nt ) */
+FUNC_START(wordlist_to_last) /* ( wid -- nt ) */
         LOAD(  REG1,   AT(DTOP, M4WORDLIST_OFF_LAST))    /* b = nt = wid.last      */
         test   REG1,   REG1;
         cmovnz REG1,   DTOP;                           /* dtop = nt|wid          */
-        jnz            FUNC_RET(wordlist_last_name);
+        jnz            FUNC_RET(wordlist_to_last);
         LOAD(  DTOP,   AT(DTOP, M4WORDLIST_OFF_DICT))    /* dtop = wid.dict        */
         LD_uw( REG1,   AT(DTOP, DICT_OFF_LASTWORD_OFF))/* a = dict.last_word_off */
         SUB2(  REG1,   DTOP)                           /* dtop = nt              */
         test   REG1,   REG1;
         cmovz  REG1,   DTOP;                           /* dtop = nt|0            */
-FUNC_END(wordlist_last_name)
+FUNC_END(wordlist_to_last)

@@ -70,7 +70,7 @@ WORD_START(wordlist_upto_name, string2_ne)
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE_AND_DATA(wordlist_upto_name,
         WORD_CODE_TOKENS(
-            /*24*/ to_r, wordlist_last_name, zero, swap, begin, dup, _while_, T(12), swap, one_plus, over, dup, r_fetch, ne, _while_, T(3), name_to_prev, _repeat_, T(-14), then, drop, r_from, drop, exit
+            /*24*/ to_r, wordlist_to_last, zero, swap, begin, dup, _while_, T(12), swap, one_plus, over, dup, r_fetch, ne, _while_, T(3), name_to_prev, _repeat_, T(-14), then, drop, r_from, drop, exit
         ),
     )
 WORD_END(wordlist_upto_name)

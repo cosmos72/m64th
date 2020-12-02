@@ -154,7 +154,7 @@ linenoiseString m4th_c_complete_word(linenoiseString input, linenoiseStrings *co
     /* will be merged by m4th_c_strings_unique() below                 */
     for (i = 0, n = searchorder.n; i < n; i++) {
         const m4wordlist *wid = searchorder.addr[i];
-        const m4word *w = m4wordlist_lastword(wid);
+        const m4word *w = m4wordlist_last_word(wid);
         while (w != NULL) {
             const m4string str = m4word_name(w);
             const linenoiseString completion = {str.n, (const char *)str.addr};
@@ -172,7 +172,7 @@ linenoiseString m4th_c_complete_word(linenoiseString input, linenoiseStrings *co
 /* print all words in wordlist, using linenoiseStrings as a qsort buffer */
 static void m4th_c_wordlist_print_all_words(const m4wordlist *wid, linenoiseStrings *strings,
                                             size_t columns, FILE *out) {
-    const m4word *w = m4wordlist_lastword(wid);
+    const m4word *w = m4wordlist_last_word(wid);
     size_t i, n, line;
     strings->size = 0;
     while (w != NULL) {

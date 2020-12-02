@@ -1189,14 +1189,14 @@ m4wordlist *m4wordlist_new(void) {
     return &t->wid;
 }
 
-void m4wordlist_add(m4wordlist *wid, m4word *w) {
-    const m4word *prev = m4wordlist_lastword(wid);
+void m4wordlist_add_word(m4wordlist *wid, m4word *w) {
+    const m4word *prev = m4wordlist_last_word(wid);
     w->prev_off = prev ? (size_t)w - (size_t)prev : 0;
     wid->last = w;
 }
 
 const m4word *m4wordlist_find(const m4wordlist *wid, m4string str) {
-    const m4word *w = m4wordlist_lastword(wid);
+    const m4word *w = m4wordlist_last_word(wid);
     while (w != NULL) {
         if (m4string_ci_equals(str, m4word_name(w))) {
             break;
@@ -1206,7 +1206,7 @@ const m4word *m4wordlist_find(const m4wordlist *wid, m4string str) {
     return w;
 }
 
-const m4word *m4wordlist_lastword(const m4wordlist *wid) {
+const m4word *m4wordlist_last_word(const m4wordlist *wid) {
     if (wid == NULL) {
         return NULL;
     } else if (wid->last) {

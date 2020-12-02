@@ -1492,7 +1492,7 @@ WORD_START(_finish_, _endof_)
         then,
         CALL(_user_locals_clear_),
         left_bracket, align, /* also align HERE to current word's data */
-        latest, get_current, wordlist_add_name, exit
+        latest, get_current, wordlist_add, exit
     )
 WORD_END(_finish_)
 WORD_START(_inline_, _finish_)

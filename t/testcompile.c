@@ -440,7 +440,7 @@ static void m4testcompile_wordlist_add(m4wordlist *wid, m4named_word *nw) {
     if (m4wordlist_find(wid, m4string_count(&nw->str))) {
         return;
     }
-    m4wordlist_add(wid, &nw->word);
+    m4wordlist_add_word(wid, &nw->word);
 }
 
 static void m4testcompile_fix(m4th *m) {

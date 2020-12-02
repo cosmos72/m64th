@@ -403,9 +403,9 @@ void m4word_print_code(const m4word *w, m4printmode mode, FILE *out);
 void m4word_data_print(const m4word *w, m4cell data_offset_n, m4printmode mode, FILE *out);
 
 m4wordlist *m4wordlist_new(void);
-void m4wordlist_add(m4wordlist *wid, m4word *w);
+void m4wordlist_add_word(m4wordlist *wid, m4word *w);
 const m4word *m4wordlist_find(const m4wordlist *wid, m4string str);
-const m4word *m4wordlist_lastword(const m4wordlist *wid);
+const m4word *m4wordlist_last_word(const m4wordlist *wid);
 m4string m4wordlist_name(const m4wordlist *wid);
 void m4wordlist_print(const m4wordlist *wid, m4printmode mode, FILE *out);
 

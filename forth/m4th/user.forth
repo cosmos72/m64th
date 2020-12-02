@@ -16,7 +16,7 @@
 \ You should have received a copy of the GNU Lesser General Public License
 \ along with m4th.  If not, see <https://www.gnu.org/licenses/>.
 
-also m4th-core \ wordlist-last-name string>name ex-message!
+also m4th-core \ wordlist>last string>name ex-message!
 also m4th-user definitions
 
 
@@ -40,7 +40,7 @@ also m4th-user definitions
 \ get all names in wordlist up to given name.
 \ newer names are placed toward top of the stack
 : wordlist-upto-name   ( wid nt1 -- 0 | ntu ... nt2 nt1 u )
-   >r wordlist-last-name 0 swap              ( 0 nt-last           ) ( R: nt1 )
+   >r wordlist>last 0 swap              ( 0 nt-last           ) ( R: nt1 )
    begin                                     ( * i nti             ) ( R: nt1 )
       dup while                              ( * i nti             ) ( R: nt1 )
       swap 1+                                ( * nti i'            ) ( R: nt1 )

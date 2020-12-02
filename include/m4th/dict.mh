@@ -375,7 +375,7 @@
     /* ( io c-addr u -- err  ) write string to iobuf */                                            \
     X(17, "obuf-write-string", obuf_write_string)                                                  \
     X(8, "out>obuf", out_to_obuf) /*  (   -- io   ) get current output as iobuf                */  \
-    X(17, "searchorder-clear", searchorder_clear) /* ( SO: wid_u-1 .. wid_0 -- ) */                                                                                                \
+    X(17, "searchorder-clear", searchorder_clear) /* ( SO: wid_u-1 .. wid_0 -- ) */                \
     X(17, "searchorder-depth",                                                                     \
       searchorder_depth)                        /* ( SO: wid_u-1 .. wid_0 -- same ) ( -- u )   */  \
     X(16, "searchorder-drop", searchorder_drop) /* ( SO: wid -- )                              */  \
@@ -384,10 +384,10 @@
     X(15, "searchorder[0]!", searchorder_store_0) /* ( wid -- ) overwrite searchorder 0-th elem */ \
     X(10, "token>name", token_to_name)            /* ( token -- nt|0 ) convert token to name */    \
     X(8, "user-var", user_var) /*        ( -- addr ) must be followed by index of user variable */ \
-    X(17, "wordlist-add-name", wordlist_add_name) /*   ( nt wid -- ) add name to wordlist       */ \
-    X(18, "wordlist-last-name", wordlist_last_name) /* ( wid -- nt ) get last name in wordlist  */ \
-    X(14, "wordlist-reset", wordlist_reset) /* ( wid -- ) remove all user-defined names from wid*/ \
+    X(13, "wordlist>last", wordlist_to_last)     /* ( wid -- nt ) get last name in wordlist  */    \
     X(15, "wordlist>string", wordlist_to_string) /* ( wid -- c-addr u ) convert wid to string   */ \
+    X(12, "wordlist-add", wordlist_add)          /*   ( nt wid -- ) add name to wordlist       */  \
+    X(14, "wordlist-reset", wordlist_reset) /* ( wid -- ) remove all user-defined names from wid*/ \
     X(7, "xt>name", xt_to_name) /*                  ( XT  -- nt ) convert XT to name            */
 
 #define DICT_WORDS_M4TH_CORE(X)                                                                    \

@@ -737,7 +737,7 @@ WORD_START(wordlist_find, user_var)
          * name>flags M4FLAG_IMMEDIATE and 0=                  ( nt t|f            )
          * 2* 1+ exit                                          ( nt -1|1           )
          */
-        wordlist_last_name,
+        wordlist_to_last,
         begin,
             _q_if0_, T(5),
                 nip, nip, zero, exit,
@@ -754,10 +754,10 @@ WORD_START(wordlist_find, user_var)
         two_times, one_plus, exit
     )
 WORD_END(wordlist_find)
-WORD(wordlist_add_name,    wordlist_find,      DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH | M4FLAG_MEM_STORE)
-WORD(wordlist_last_name,   wordlist_add_name,  DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD(wordlist_reset,       wordlist_last_name, DSTACK(1,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE)
-WORD(wordlist_to_string,   wordlist_last_name, DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(wordlist_add,    wordlist_find,      DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH | M4FLAG_MEM_STORE)
+WORD(wordlist_to_last,   wordlist_add,  DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(wordlist_reset,       wordlist_to_last, DSTACK(1,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE)
+WORD(wordlist_to_string,   wordlist_to_last, DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 WORD(xt_to_name,           wordlist_to_string, DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 
 #undef LASTWORD

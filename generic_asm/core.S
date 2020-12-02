@@ -329,19 +329,19 @@ FUNC_START(user_var)
 FUNC_RAWEND(user_var)
 
 
-FUNC_START(wordlist_add_name) /* ( nt wid -- ) add name to wordlist */
+FUNC_START(wordlist_add) /* ( nt wid -- ) add name to wordlist */
         DPUSH__DTOP()                                  /* ( nt wid wid            */
-        TOKEN_CALL_NOTHROW(FUNC(wordlist_last_name), wordlist_add_name.0)  /* ( dtop = prevnt         */
+        TOKEN_CALL_NOTHROW(FUNC(wordlist_to_last), wordlist_add.0)  /* ( dtop = prevnt         */
         LOAD(  REG1,   AT(DSTK, SZ))                   /* a = nt                  */
-        JZ(    DTOP,   TO(wordlist_add_name.prevnt))
+        JZ(    DTOP,   TO(wordlist_add.prevnt))
         XSUB2( REG1,   DTOP)                           /* dtop = nt-prevnt        */
-LABEL(wordlist_add_name.prevnt)
+LABEL(wordlist_add.prevnt)
         STOR(  DTOP,   AT(REG1, WORD_OFF_PREV_OFF))    /* nt.prev_off = dtop      */
         LOAD(  REG2,   AT(DSTK))                       /* b = wid                 */
         STOR(  REG1,   AT(REG2, M4WORDLIST_OFF_LAST))  /* wid.last = nt           */
         LOAD(  DTOP,   AT(DSTK, SZ2))
         ADD2( IMM(SZ3),DSTK)                           /* (                     ) */
-FUNC_END(wordlist_add_name)
+FUNC_END(wordlist_add)
 
 
 FUNC_START(wordlist_reset) /* ( wid -- ) */
