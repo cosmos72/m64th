@@ -1385,10 +1385,13 @@ WORD_START(_compile_locals_enter_, _compile_local_)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY)
     WORD_CODE(
-                                    /*                 ( n1 n2                      ) */
+        tuck, plus,                 /*                 ( n2 n=n1+n2                 ) */
+        _q_if0_, T(3),              /*                 ( 0 0                        ) */
+            two_drop, exit,         /*                 (                            ) */
+        then,                       /*                 ( n2 n                       ) */
         _lit_comma_, _locals_enter_,/* compile '(locals-enter)'                       */
-        swap, bounds,               /*                 ( n=n1+n2 n2                 ) */
-        over, token_comma,          /* compile T(n)    ( n n2                       ) */
+        tuck,                       /*                 ( n n2 n                     ) */
+        token_comma,                /* compile T(n)    ( n n2                       ) */
         _q_do_, T(6),               /*                 (                  ) (R: n i ) */
             _lit_comma_, _to_lx_,   /* compile '(>lx)' (                  ) (R: n i ) */
             i, token_comma,         /* compile T(i)    (                  ) (R: n i ) */

@@ -364,10 +364,14 @@ WORD_START(exit, execute)
     WORD_CODE(
         CALL(_throw_if_not_compiling_),
         user_var, T(M4TH_USER_VAR_LOCALS), fetch,      /* ( ls|0                 ) */
-        _if_, T(3),                                    /* (                      ) */
-            _lit_comma_, _locals_exit_, /* compile '(locals-exit)'                 */
-        then,
-        _lit_comma_, exit,              /* compile 'exit'                          */
+        question_dup,                                  /* ( ls ls |0             ) */
+        _if_, T(7),                                    /* ( ls                   ) */
+            fetch,                                     /* ( ls.n                 ) */
+            _if_, T(3),                                /* (                      ) */
+                _lit_comma_, _locals_exit_, /* compile '(locals-exit)'             */
+            then,                                      /* (                      ) */
+        then,                                          /* (                      ) */
+        _lit_comma_, exit,           /* compile 'exit'    (                      ) */
         exit
     )
 WORD_END(exit)

@@ -777,7 +777,7 @@ static m4testexecute testexecute_d[] = {
      {CALL(_compile_locals_enter_), m4bye},
      {{2, {0, 0}}, {}},
      {{}, {}},
-     {2, {m4_locals_enter_, T(0)}}},
+     {}}, /* optimized away */
     {"0 1 [compile-locals-enter]",
      {CALL(_compile_locals_enter_), m4bye},
      {{2, {0, 1}}, {}},

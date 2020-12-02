@@ -400,9 +400,9 @@ static const m4testcompile testcompile_d[] = {
 
 static const m4testcompile testcompile_e[] = {
     /* ------------------------------- local variables ---------------------- */
-    {"{: :}", {2, {0, m4colon}}, {2, {0, m4colon}}, {2, {m4_locals_enter_, T(0)}}},
-    {"{: :} ;", {2, {0, m4colon}}, {}, {4, {m4_locals_enter_, T(0), m4_locals_exit_, m4exit}}},
-    {"{: -- :}", {2, {0, m4colon}}, {2, {0, m4colon}}, {2, {m4_locals_enter_, T(0)}}},
+    {"{: :}", {2, {0, m4colon}}, {2, {0, m4colon}}, {/* optimized away */}},
+    {"{: :} ;", {2, {0, m4colon}}, {}, {1, {/* optimized away */ m4exit}}},
+    {"{: -- a b c :}", {2, {0, m4colon}}, {2, {0, m4colon}}, {/* optimized away */}},
     {"{: a :}",
      {2, {0, m4colon}},
      {2, {0, m4colon}},

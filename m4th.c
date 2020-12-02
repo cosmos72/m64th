@@ -1296,6 +1296,7 @@ void m4th_del(m4th *m) {
         m4iobuf_del(m->in);
         m4stack_free(&m->rstack);
         m4stack_free(&m->dstack);
+        m4mem_free(m->locals);
         m4mem_free(m);
     }
 }
@@ -1314,8 +1315,9 @@ void m4th_clear(m4th *m) {
     m->ip = NULL;
     m->lastw = NULL;
     m->xt = NULL;
-    m4mem_free(m->locals);
-    m->locals = NULL;
+    if (m->locals) {
+        m->locals->end = m->locals->n = 0;
+    }
     m->mem.curr = m->mem.start;
     m->handler = m->ex = 0;
     m->ex_message.addr = NULL;
