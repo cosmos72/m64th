@@ -32,10 +32,8 @@ WORD(two_r_fetch,      two_to_r,   DSTACK(0,2), RSTACK(2,2), WORD_R_PURE)
 WORD(two_r_from,       two_r_fetch,DSTACK(0,2), RSTACK(2,0), WORD_R_PURE)
 WORD(ne,               two_r_from, DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD_START(dot_paren,  ne)
-    WORD_DSTACK(2,0)   /* stack effect when not jumping */
-    WORD_RSTACK(0,2)
-    WORD_DSTACK(2,0)   /* stack effect when jumping */
-    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()  /* stack effect if not jumping */
+    WORD_STACK_NONE()  /* stack effect if not jumping */
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE)
     WORD_CODE(
@@ -52,8 +50,8 @@ WORD_START(question_do, dot_paren)
     WORD_CODE(_compile_jump_lit_, _q_do_, _do_, exit)
 WORD_END(question_do)
 WORD_START(again,      question_do)
-    WORD_STACK_NONE()  /* stack effect if not jumping */
-    WORD_STACK_NONE()  /* stack effect if jumping */
+    WORD_STACK_NONE()
+    WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_JUMP | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_CODE(

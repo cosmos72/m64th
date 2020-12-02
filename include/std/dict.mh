@@ -126,6 +126,7 @@
     X(1, "#", num)                                                                                 \
     X(2, "#s", num_s)                                                                              \
     X(1, "'", tick)                                                                                \
+    X(1, "(", paren)                                                                               \
     X(5, "+loop", plus_loop)                                                                       \
     X(1, ".", dot)                                                                                 \
     X(1, ";", semi)                                                                                \

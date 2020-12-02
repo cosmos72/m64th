@@ -79,7 +79,16 @@ WORD_START(tick,       num_s)
         exit
     )
 WORD_END(tick)
-WORD(times,            tick,       DSTACK(2,1), RSTACK(0,0), WORD_PURE)
+WORD_START(paren,      tick)
+    WORD_STACK_NONE()
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE)
+    WORD_CODE(
+        _lit_, T(')'), CALL(parse), two_drop, exit
+    )
+WORD_END(paren)
+WORD(times,            paren,      DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(plus,             times,      DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(plus_store,       plus,       DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE)
 WORD_START(plus_loop, plus_store)

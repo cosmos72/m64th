@@ -158,7 +158,8 @@ static const m4testio testio_a[] = {
      {{}, {}},
      {"", ""},
      {"", "pq"}},
-    {".( foo)", {CALL(dot_paren), m4bye}, {{}, {}}, {{}, {}}, {" foo)", ""}, {"", "foo"}},
+    {"( foo)", {CALL(paren), m4bye}, {{}, {}}, {{}, {}}, {" foo)", ""}, {"", ""}},
+    {".( bar)", {CALL(dot_paren), m4bye}, {{}, {}}, {{}, {}}, {" bar)", ""}, {"", "bar"}},
 };
 
 /* these require higher obuf capacity */
