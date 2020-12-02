@@ -99,10 +99,10 @@
     /*                             */      /*                                               */     \
     X(3, "u<=", u_less_equal)                                                                      \
     X(3, "u>=", u_more_equal)                                                                      \
-    X(5, "u/mod", u_div_mod)            /* ( u1 u2 -- u1%u2 u1/u2 )                      */        \
-    /*                              */  /*                                               */        \
-    X(5, "xt>validate", xt_to_validate) /* ( xt -- xt ) throw if XT is invalid           */        \
-    /*                              */  /*                                               */        \
+    X(5, "u/mod", u_div_mod)             /* ( u1 u2 -- u1%u2 u1/u2 )                      */       \
+    /*                              */   /*                                               */       \
+    X(11, "xt>validate", xt_to_validate) /* ( xt -- xt ) throw if XT is invalid           */       \
+    /*                              */   /*                                               */       \
     X(5, ">byte", to_byte)                                                                         \
     X(5, ">char", to_char)                                                                         \
     X(6, ">short", to_short)                                                                       \
