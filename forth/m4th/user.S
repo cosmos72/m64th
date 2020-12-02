@@ -261,7 +261,7 @@ WORD_START(fallthrough,      ex_to_string)
         exit                                              /* ( fallthrough-sys           ) */
     )
 WORD_END(fallthrough)
-/* replace first wordlist in search order with forth_root wordlist (S: wid -- forth_root ) */
+/* replace first wordlist in search order with forth_root wordlist ( SO: wid -- forth_root ) */
 WORD_START(forth_root, fallthrough)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)
@@ -282,28 +282,28 @@ WORD_START(hashmap_find_cell, flip)
     WORD_NATIVE_NONE()
     WORD_FLAGS(0)
     WORD_CODE(
-        dup_to_r, over,                                /* ( map key map         ) (R: key     ) */
+        dup_to_r, over,                                /* ( map key map         ) ( R: key     ) */
 #if M4HASHMAP_OFF_VEC_CELL == SZ2
-        cell_fetch_2,                                  /* ( map key vec         ) (R: key     ) */
+        cell_fetch_2,                                  /* ( map key vec         ) ( R: key     ) */
 #else
-        _lit_, T(M4HASHMAP_OFF_VEC_CELL), plus, fetch, /* ( map key vec         ) (R: key     ) */
+        _lit_, T(M4HASHMAP_OFF_VEC_CELL), plus, fetch, /* ( map key vec         ) ( R: key     ) */
 #endif
-        to_r,                                          /* ( map key             ) (R: key vec ) */
-        CALL(_hashmap_indexof_cell_),                  /* ( pos                 ) (R: key vec ) */
-        begin,                                         /* ( pos                 ) (R: key vec ) */
-            r_fetch, swap,                             /* ( vec pos             ) (R: key vec ) */
-            CALL(_hashmap_entry_fetch_cell_),          /* ( key' &val next      ) (R: key vec ) */
-            dup, one_plus, /* 0 if no entry */         /* ( key' &val next flag ) (R: key vec ) */
-        _while_, T(18),                                /* ( key' &val next      ) (R: key vec ) */
-            hop, r2nd_fetch, equal,                    /* ( key' &val next t|f  ) (R: key vec ) */
-            _if_, T(4),                                /* ( key' &val next      ) (R: key vec ) */
+        to_r,                                          /* ( map key             ) ( R: key vec ) */
+        CALL(_hashmap_indexof_cell_),                  /* ( pos                 ) ( R: key vec ) */
+        begin,                                         /* ( pos                 ) ( R: key vec ) */
+            r_fetch, swap,                             /* ( vec pos             ) ( R: key vec ) */
+            CALL(_hashmap_entry_fetch_cell_),          /* ( key' &val next      ) ( R: key vec ) */
+            dup, one_plus, /* 0 if no entry */         /* ( key' &val next flag ) ( R: key vec ) */
+        _while_, T(18),                                /* ( key' &val next      ) ( R: key vec ) */
+            hop, r2nd_fetch, equal,                    /* ( key' &val next t|f  ) ( R: key vec ) */
+            _if_, T(4),                                /* ( key' &val next      ) ( R: key vec ) */
                 two_r_from_two_drop, drop, exit,       /* ( key' &val           )               */
-            then,                                      /* ( key' &val next      ) (R: key vec ) */
-            dup, two_plus, /* 0 if no next entry */    /* ( key' &val next flag ) (R: key vec ) */
-        _while_, T(4),                                 /* ( key' &val next      ) (R: key vec ) */
-            nip, nip,                                  /* ( next                ) (R: key vec ) */
-        _repeat_, T(-24-nCALLt),                       /* ( key' &val next      ) (R: key vec ) */
-        then,              /* matches 1st 'while' */   /* ( key' &val next      ) (R: key vec ) */
+            then,                                      /* ( key' &val next      ) ( R: key vec ) */
+            dup, two_plus, /* 0 if no next entry */    /* ( key' &val next flag ) ( R: key vec ) */
+        _while_, T(4),                                 /* ( key' &val next      ) ( R: key vec ) */
+            nip, nip,                                  /* ( next                ) ( R: key vec ) */
+        _repeat_, T(-24-nCALLt),                       /* ( key' &val next      ) ( R: key vec ) */
+        then,              /* matches 1st 'while' */   /* ( key' &val next      ) ( R: key vec ) */
         two_drop, r_from_drop, r_from,                 /* ( key' key            )               */
         nip, zero, exit                                /* ( key  0              )               */
     )
@@ -316,30 +316,30 @@ WORD_START(hashmap_find_int, hashmap_find_cell)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_MEM_FETCH)
     WORD_CODE(
-        dup_to_r, over,                                /* ( map key map         ) (R: key     ) */
+        dup_to_r, over,                                /* ( map key map         ) ( R: key     ) */
 #if M4HASHMAP_OFF_VEC_INT == SZ
-        cell_fetch_1,                                  /* ( map key vec         ) (R: key     ) */
+        cell_fetch_1,                                  /* ( map key vec         ) ( R: key     ) */
 #elif M4HASHMAP_OFF_VEC_INT == 8
-        eight_plus, fetch                              /* ( map key vec         ) (R: key     ) */
+        eight_plus, fetch                              /* ( map key vec         ) ( R: key     ) */
 #else
-        _lit_, T(M4HASHMAP_OFF_VEC_INT), plus, fetch,  /* ( map key vec         ) (R: key     ) */
+        _lit_, T(M4HASHMAP_OFF_VEC_INT), plus, fetch,  /* ( map key vec         ) ( R: key     ) */
 #endif
-        to_r,                                          /* ( map key             ) (R: key vec ) */
-        CALL(_hashmap_indexof_int_),                   /* ( pos                 ) (R: key vec ) */
-        begin,                                         /* ( pos                 ) (R: key vec ) */
-            r_fetch, swap,                             /* ( vec pos             ) (R: key vec ) */
-            CALL(_hashmap_entry_fetch_int_),           /* ( key' &val next      ) (R: key vec ) */
-            dup, one_plus, /* 0 if no entry */         /* ( key' &val next flag ) (R: key vec ) */
-        _while_, T(18),                                /* ( key' &val next      ) (R: key vec ) */
-            hop, r2nd_fetch, equal,                    /* ( key' &val next t|f  ) (R: key vec ) */
-            _if_, T(4),                                /* ( key' &val next      ) (R: key vec ) */
+        to_r,                                          /* ( map key             ) ( R: key vec ) */
+        CALL(_hashmap_indexof_int_),                   /* ( pos                 ) ( R: key vec ) */
+        begin,                                         /* ( pos                 ) ( R: key vec ) */
+            r_fetch, swap,                             /* ( vec pos             ) ( R: key vec ) */
+            CALL(_hashmap_entry_fetch_int_),           /* ( key' &val next      ) ( R: key vec ) */
+            dup, one_plus, /* 0 if no entry */         /* ( key' &val next flag ) ( R: key vec ) */
+        _while_, T(18),                                /* ( key' &val next      ) ( R: key vec ) */
+            hop, r2nd_fetch, equal,                    /* ( key' &val next t|f  ) ( R: key vec ) */
+            _if_, T(4),                                /* ( key' &val next      ) ( R: key vec ) */
                 two_r_from_two_drop, drop, exit,       /* ( key' &val           )               */
-            then,                                      /* ( key' &val next      ) (R: key vec ) */
-            dup, two_plus, /* 0 if no next entry */    /* ( key' &val next flag ) (R: key vec ) */
-        _while_, T(4),                                 /* ( key' &val next      ) (R: key vec ) */
-            nip, nip,                                  /* ( next                ) (R: key vec ) */
-        _repeat_, T(-24-nCALLt),                       /* ( key' &val next      ) (R: key vec ) */
-        then,              /* matches 1st 'while' */   /* ( key' &val next      ) (R: key vec ) */
+            then,                                      /* ( key' &val next      ) ( R: key vec ) */
+            dup, two_plus, /* 0 if no next entry */    /* ( key' &val next flag ) ( R: key vec ) */
+        _while_, T(4),                                 /* ( key' &val next      ) ( R: key vec ) */
+            nip, nip,                                  /* ( next                ) ( R: key vec ) */
+        _repeat_, T(-24-nCALLt),                       /* ( key' &val next      ) ( R: key vec ) */
+        then,              /* matches 1st 'while' */   /* ( key' &val next      ) ( R: key vec ) */
         two_drop, r_from_drop, r_from,                 /* ( key' key            )               */
         nip, zero, exit                                /* ( key  0              )               */
     )
@@ -415,7 +415,7 @@ WORD_START(interpret,  i_prime)
 WORD_END(interpret)
 /* ( c-addr u ch -- u' ) get position of given char or CR/LF in string, whatever comes first */
 WORD(line_find_char,   interpret,      DSTACK(3,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-/* replace first wordlist in search order with m4th_c wordlist (S: wid -- m4th_c ) */
+/* replace first wordlist in search order with m4th_c wordlist ( SO: wid -- m4th_c ) */
 WORD_START(m4th_c,     line_find_char)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)
@@ -427,7 +427,7 @@ WORD_START(m4th_c,     line_find_char)
         searchorder_store_0, exit                      /* (                    ) */
     )
 WORD_END(m4th_c)
-/* replace first wordlist in search order with m4th_core wordlist (S: wid -- m4th_core ) */
+/* replace first wordlist in search order with m4th_core wordlist ( SO: wid -- m4th_core ) */
 WORD_START(m4th_core,  m4th_c)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)
@@ -439,7 +439,7 @@ WORD_START(m4th_core,  m4th_c)
         searchorder_store_0, exit                      /* (                    ) */
     )
 WORD_END(m4th_core)
-/* replace first wordlist in search order with m4th_impl wordlist (S: wid -- m4th_impl ) */
+/* replace first wordlist in search order with m4th_impl wordlist ( SO: wid -- m4th_impl ) */
 WORD_START(m4th_impl,  m4th_core)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)
@@ -660,9 +660,9 @@ WORD_START(string_to_number, string_to_lower)
          * if0                             ( base caddr n sign   )
          *    2drop drop false exit        ( 0 false             ) \ no digits
          * then                            ( base caddr n sign   )
-         * >r rot                          ( caddr n base        ) (R: sign )
-         * string&base>u                   ( caddr n u           ) (R: sign )
-         * rot drop                        ( n u                 ) (R: sign )
+         * >r rot                          ( caddr n base        ) ( R: sign )
+         * string&base>u                   ( caddr n u           ) ( R: sign )
+         * rot drop                        ( n u                 ) ( R: sign )
          * r> * swap                       ( x n                 )
          * 0=                              ( x t|f               )
          */

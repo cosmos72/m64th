@@ -233,7 +233,7 @@ FUNC_START(name_to_xt)     /* ( nt -- xt ) */
 FUNC_END(name_to_xt)
 
 
-/* searchorder-clear (S: wid_u-1 .. wid_0 -- ) clear searchorder list */
+/* searchorder-clear ( SO: wid_u-1 .. wid_0 -- ) clear searchorder list */
 FUNC_START(searchorder_clear)
         ZERO(  REG1)
         STOR(  REG1,   AT(M4TH,    M4TH_OFF_SEARCHORDER))
@@ -247,7 +247,7 @@ FUNC_START(searchorder_depth)
 FUNC_END(searchorder_depth)
 
 
-/* searchorder-drop (S: wid -- ) remove first element from searchorder list */
+/* searchorder-drop ( SO: wid -- ) remove first element from searchorder list */
 FUNC_START(searchorder_drop)
         LOAD(  REG2,   AT(M4TH,M4TH_OFF_SEARCHORDER))/* b = searchorder.n   */
         ADDI(  M4TH,   M4TH_OFF_SEARCHORDER, REG1) /* a = &m->searchorder */
@@ -258,7 +258,7 @@ FUNC_START(searchorder_drop)
 FUNC_END(searchorder_drop)
 
 
-/* searchorder-dup (S: wid -- wid wid ) duplicate first element of searchorder list */
+/* searchorder-dup ( SO: wid -- wid wid ) duplicate first element of searchorder list */
 FUNC_START(searchorder_dup)
         LOAD(  REG2,   AT(M4TH,M4TH_OFF_SEARCHORDER))/* b = searchorder.n   */
         ADDI(  M4TH,   M4TH_OFF_SEARCHORDER, REG1) /* a = &m->searchorder */
@@ -275,7 +275,7 @@ FUNC_START(searchorder_dup)
 FUNC_END(searchorder_dup)
 
 
-/* searchorder-pick (S: wid_u .. wid_0 -- wid_u .. wid_0 ) ( u -- wid_u ) */
+/* searchorder-pick ( SO: wid_u .. wid_0 -- wid_u .. wid_0 ) ( u -- wid_u ) */
 /* get i-th element of searchorder list */
 FUNC_START(searchorder_pick)
         ADDI(  M4TH,   M4TH_OFF_SEARCHORDER, REG1) /* a = &m->searchorder */
@@ -287,7 +287,7 @@ FUNC_START(searchorder_pick)
 FUNC_END(searchorder_pick)
 
 
-/* searchorder[0]! ( wid -- ) (S: .. x -- .. wid ) */
+/* searchorder[0]! ( wid -- ) ( SO: .. x -- .. wid ) */
 /* set first element of searchorder list */
 FUNC_START(searchorder_store_0)
         LOAD(  REG2,   AT(M4TH,M4TH_OFF_SEARCHORDER))/* b = searchorder.n   */

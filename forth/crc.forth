@@ -1,6 +1,6 @@
 \ adapted from https://www.rosettacode.org/wiki/CRC-32#Forth
 
-: crc/ \ ( n -- n )
+: crc/   ( n -- n )
    8 0 do dup 1 rshift swap 1 and
    if $edb88320 xor then loop ;
 
@@ -10,12 +10,12 @@
 
 create crc-table crc-fill
 
-: crc+ \ ( crc n -- crc' )
+: crc+   ( crc n -- crc' )
    over xor $ff and cells crc-table + @
    swap 8 rshift xor
 ;
 
-: crc-string+ \ ( crc str len -- crc' )
+: crc-string+   ( crc str len -- crc' )
    bounds ?do i c@ crc+ loop
 ;
 

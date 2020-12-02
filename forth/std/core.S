@@ -114,12 +114,12 @@ WORD_START(dot,        minus)
     WORD_CODE(
         /* depth 0<=                                                 ( n         )
          * M4ERR_STACK_UNDERFLOW and throw                           ( n         )
-         * dup >r dup 0<                                             ( n t|f     ) (R: n )
-         * if                                                        ( -u        ) (R: n )
-         *    negate                                                 ( u         ) (R: n )
-         * then                                                      ( u         ) (R: n )
-         * <# bl hold                                                ( u         ) (R: n )
-         * u>d #s                                                    ( du        ) (R: n )
+         * dup >r dup 0<                                             ( n t|f     ) ( R: n )
+         * if                                                        ( -u        ) ( R: n )
+         *    negate                                                 ( u         ) ( R: n )
+         * then                                                      ( u         ) ( R: n )
+         * <# bl hold                                                ( u         ) ( R: n )
+         * u>d #s                                                    ( du        ) ( R: n )
          * r> sign                                                   ( du        )
          * #> type                                                   (           )
          */
@@ -196,8 +196,8 @@ WORD_START(to_number, to_in)
     WORD_NATIVE_NONE()
     WORD_FLAGS(0)
     WORD_CODE(
-        /* 2swap 2>r base @                    ( caddr n base ) (R: du )
-         * string&base>u                       ( caddr' n' u  ) (R: du )
+        /* 2swap 2>r base @                    ( caddr n base ) ( R: du )
+         * string&base>u                       ( caddr' n' u  ) ( R: du )
          *
          *
          * then
@@ -579,13 +579,13 @@ WORD_START(spaces, space)
       WORD_CODE_TOKENS(                             /* ( n                 )             */
         _ip_to_data_,                               /* ( n c-addr u        )             */
         rot,                                        /* ( c-addr u n        )             */
-        zero, max, to_r,                            /* ( c-addr u          ) (R: n     ) */
-        begin,                                      /* ( c-addr u          ) (R: left  ) */
-            two_dup, r_fetch, min,                  /* ( c-addr u c-addr v ) (R: left  ) */
-            dup, negate, r_plus_store,              /* ( c-addr u c-addr v ) (R: left' ) */
-            type,                                   /* ( c-addr u          ) (R: left  ) */
-            r_fetch, zero_equal,                    /* ( c-addr u t|f      ) (R: left  ) */
-        _until_, T(-11),                            /* ( c-addr u          ) (R: 0     ) */
+        zero, max, to_r,                            /* ( c-addr u          ) ( R: n     ) */
+        begin,                                      /* ( c-addr u          ) ( R: left  ) */
+            two_dup, r_fetch, min,                  /* ( c-addr u c-addr v ) ( R: left  ) */
+            dup, negate, r_plus_store,              /* ( c-addr u c-addr v ) ( R: left' ) */
+            type,                                   /* ( c-addr u          ) ( R: left  ) */
+            r_fetch, zero_equal,                    /* ( c-addr u t|f      ) ( R: left  ) */
+        _until_, T(-11),                            /* ( c-addr u          ) ( R: 0     ) */
         two_drop, r_from_drop, exit                 /* (                   )             */
       ), WORD_DATA_STRINGS(
         "                                                                                                                                "

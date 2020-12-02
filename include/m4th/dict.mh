@@ -65,7 +65,7 @@
     X(8, "crc-cell", crc_cell)      /* ( x -- crc32 ) compute CRC32c of a cell                  */ \
     X(10, "crc-string", crc_string) /* ( c-addr u -- crc32 ) compute CRC32c of a string         */ \
     X(10, "do-i+-loop", do_i_plus_loop) /* do i + loop                                          */ \
-    X(5, "dup>r", dup_to_r) /* ( x -- ) (R: -- x )               equivalent to: dup >r          */ \
+    X(5, "dup>r", dup_to_r) /* ( x -- ) ( R: -- x )               equivalent to: dup >r */         \
     X(11, "ex-message!", ex_message_store) /* ( c-addr u --    ) store exception message string */ \
     X(11, "ex-message@", ex_message_fetch) /* (    -- c-addr u ) fetch exception message string */ \
     X(4, "flip", flip)                     /* ( a b c -- c b a ) equivalent to: swap rot        */ \
@@ -78,11 +78,11 @@
     X(14, "line-find-char", line_find_char)                                                        \
     X(4, "noop", noop)            /* ( -- ) do nothing                               */            \
     X(6, "n>drop", n_to_drop)     /* ( xn .. x1 n -- ) drop n cells                  */            \
-    X(3, "r1+", r_one_plus)       /*          (R: a -- a+1 )                         */            \
-    X(3, "r1-", r_one_minus)      /*          (R: a -- a-1 )                         */            \
-    X(2, "r!", r_store)           /* ( a -- ) (R: b -- a   )                         */            \
-    X(3, "r+!", r_plus_store)     /* ( a -- ) (R: b -- a+b )                         */            \
-    X(6, "r>drop", r_from_drop)   /* (R: x -- ) equivalent to: r> drop               */            \
+    X(3, "r1+", r_one_plus)       /*          ( R: a -- a+1 )                         */           \
+    X(3, "r1-", r_one_minus)      /*          ( R: a -- a-1 )                         */           \
+    X(2, "r!", r_store)           /* ( a -- ) ( R: b -- a   )                         */           \
+    X(3, "r+!", r_plus_store)     /* ( a -- ) ( R: b -- a+b )                         */           \
+    X(6, "r>drop", r_from_drop)   /* ( R: x -- ) equivalent to: r> drop               */           \
     X(6, "rdepth", rdepth)        /* ( -- n ) get return stack depth                 */            \
     X(5, "-roll", minus_roll)     /* rotate in opposite direction than 'roll'        */            \
     X(4, "-rot", minus_rot)       /* equivalent to: rot rot                          */            \
@@ -375,11 +375,12 @@
     /* ( io c-addr u -- err  ) write string to iobuf */                                            \
     X(17, "obuf-write-string", obuf_write_string)                                                  \
     X(8, "out>obuf", out_to_obuf) /*  (   -- io   ) get current output as iobuf                */  \
-    X(17, "searchorder-clear", searchorder_clear) /* (S: wid_u-1 .. wid_0 -- )                 */  \
-    X(17, "searchorder-depth", searchorder_depth) /* (S: wid_u-1 .. wid_0 -- same ) ( -- u )   */  \
-    X(16, "searchorder-drop", searchorder_drop)   /* (S: wid -- )                              */  \
-    X(15, "searchorder-dup", searchorder_dup)     /* (S: wid -- wid wid )                      */  \
-    X(16, "searchorder-pick", searchorder_pick)   /* (S: wid_u .. wid_0 -- same ) ( -- wid_u ) */  \
+    X(17, "searchorder-clear", searchorder_clear) /* ( SO: wid_u-1 .. wid_0 -- ) */                                                                                                \
+    X(17, "searchorder-depth",                                                                     \
+      searchorder_depth)                        /* ( SO: wid_u-1 .. wid_0 -- same ) ( -- u )   */  \
+    X(16, "searchorder-drop", searchorder_drop) /* ( SO: wid -- )                              */  \
+    X(15, "searchorder-dup", searchorder_dup)   /* ( SO: wid -- wid wid )                      */  \
+    X(16, "searchorder-pick", searchorder_pick) /* ( SO: wid_u .. wid_0 -- same ) ( -- wid_u ) */  \
     X(15, "searchorder[0]!", searchorder_store_0) /* ( wid -- ) overwrite searchorder 0-th elem */ \
     X(10, "token>name", token_to_name)            /* ( token -- nt|0 ) convert token to name */    \
     X(8, "user-var", user_var) /*        ( -- addr ) must be followed by index of user variable */ \
@@ -595,7 +596,7 @@
     X(1, "7", seven)                                                                               \
     X(1, "8", eight)                                                                               \
     X(3, "lp@", lp_fetch) /* ( -- addr-of-locals ) get current local variables address */          \
-    X(3, "rp@", rp_fetch) /* (R: x y -- x y ) ( -- &x ) get current return stack address */
+    X(3, "rp@", rp_fetch) /* ( R: x y -- x y ) ( -- &x ) get current return stack address */
 
 #define DICT_WORDS_M4TH_IMPL(X)                                                                    \
     DICT_TOKENS_M4TH_IMPL(X)                                                                       \

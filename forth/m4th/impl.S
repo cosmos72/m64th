@@ -364,13 +364,13 @@ WORD_START(_hashmap_entry_fetch_cell_, _fallthrough_)
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
     WORD_CODE(
         _lit_, T(M4HASHMAP_ENTRY_SZ_CELL), times, plus,    /* ( vec'         )           */
-        dup_to_r,                                          /* ( vec          ) (R: vec ) */
+        dup_to_r,                                          /* ( vec          ) ( R: vec ) */
 #if M4HASHMAP_ENTRY_OFF_KEY_CELL == SZ
-        cell_fetch_1,                                      /* ( key          ) (R: vec ) */
+        cell_fetch_1,                                      /* ( key          ) ( R: vec ) */
 #else
         _lit_, T(M4HASHMAP_ENTRY_OFF_KEY_CELL), plus, fetch, /* same */
 #endif
-        r_fetch,                                           /* ( key vec      ) (R: vec ) */
+        r_fetch,                                           /* ( key vec      ) ( R: vec ) */
 #if M4HASHMAP_ENTRY_OFF_VAL_CELL != 0
         _lit_, T(M4HASHMAP_ENTRY_OFF_VAL_CELL), plus,
 #endif
@@ -394,13 +394,13 @@ WORD_START(_hashmap_entry_fetch_int_, _hashmap_entry_fetch_cell_)
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
     WORD_CODE(
         _lit_, T(M4HASHMAP_ENTRY_SZ_INT), times, plus,     /* ( vec'         )           */
-        dup_to_r,                                          /* ( vec          ) (R: vec ) */
+        dup_to_r,                                          /* ( vec          ) ( R: vec ) */
 #if M4HASHMAP_ENTRY_OFF_KEY_INT == 8
-        int_fetch_2,                                       /* ( key          ) (R: vec ) */
+        int_fetch_2,                                       /* ( key          ) ( R: vec ) */
 #else
         _lit_, T(M4HASHMAP_ENTRY_OFF_KEY_INT), plus, int_fetch, /* same */
 #endif
-        r_fetch,                                           /* ( key vec      ) (R: vec ) */
+        r_fetch,                                           /* ( key vec      ) ( R: vec ) */
 #if M4HASHMAP_ENTRY_OFF_VAL_INT != 0
         _lit_, T(M4HASHMAP_ENTRY_OFF_VAL_INT), plus,
 #endif
@@ -696,18 +696,18 @@ WORD_START(_locals_add_,  _locals_allocate_)
         _lit_, T(M4ERR_LOCALS_OVERFLOW), and,  /* ( c-addr u ls err|0          ) */
         throw,                                 /* ( c-addr u ls                ) */
         /* add new local variable */
-        over, two_plus, to_r,                  /* ( c-addr u ls      ) (R: u+2    ) */
-        dup_to_r,                              /* ( c-addr u ls      ) (R: u+2 ls ) */
-        cell_fetch_1,                          /* ( c-addr u end     ) (R: u+2 ls ) */
-        r_fetch, three, cells, plus,           /* ( c-addr u end vec ) (R: u+2 ls ) */
-        plus,                                  /* ( c-addr u l       ) (R: u+2 ls ) */
-        zero, over, c_store, /* set l.idx         ( c-addr u l       ) (R: u+2 ls ) */
-        one_plus,            /*                   ( c-addr u l+1     ) (R: u+2 ls ) */
-        two_dup, c_store,    /* set l.n           ( c-addr u l+1     ) (R: u+2 ls ) */
-        one_plus,            /*                   ( c-addr u l+2     ) (R: u+2 ls ) */
-        swap, cmove,         /* set l chars       (                  ) (R: u+2 ls ) */
-        one, r_fetch,        /*                   ( 1 ls             ) (R: u+2 ls ) */
-        plus_store,          /* set locals.n      (                  ) (R: u+2 ls ) */
+        over, two_plus, to_r,                  /* ( c-addr u ls      ) ( R: u+2    ) */
+        dup_to_r,                              /* ( c-addr u ls      ) ( R: u+2 ls ) */
+        cell_fetch_1,                          /* ( c-addr u end     ) ( R: u+2 ls ) */
+        r_fetch, three, cells, plus,           /* ( c-addr u end vec ) ( R: u+2 ls ) */
+        plus,                                  /* ( c-addr u l       ) ( R: u+2 ls ) */
+        zero, over, c_store, /* set l.idx         ( c-addr u l       ) ( R: u+2 ls ) */
+        one_plus,            /*                   ( c-addr u l+1     ) ( R: u+2 ls ) */
+        two_dup, c_store,    /* set l.n           ( c-addr u l+1     ) ( R: u+2 ls ) */
+        one_plus,            /*                   ( c-addr u l+2     ) ( R: u+2 ls ) */
+        swap, cmove,         /* set l chars       (                  ) ( R: u+2 ls ) */
+        one, r_fetch,        /*                   ( 1 ls             ) ( R: u+2 ls ) */
+        plus_store,          /* set locals.n      (                  ) ( R: u+2 ls ) */
         two_r_from,          /*                   ( u+2 ls           )              */
         cell_plus, plus_store, /* set locals.end  (                  )              */
         exit
@@ -746,24 +746,24 @@ WORD_START(_locals_find_,      _locals_exit_)
     WORD_NATIVE_NONE()
     WORD_FLAGS(0)
     WORD_CODE(
-        two_to_r,                              /* ( ls                  ) (R: c-addr u ) */
-        CALL(_locals_first_),                  /* ( ls l|0              ) (R: c-addr u ) */
-        begin,                                 /* ( ls l|0              ) (R: c-addr u ) */
-        _q_while_, T(28+nCALLt),               /* ( ls l                ) (R: c-addr u ) */
-            dup, one_plus, count,              /* ( ls l c-addr' u'     ) (R: c-addr u ) */
-            dup, r_fetch, equal,               /* ( ls l c-addr' u' t|f ) (R: c-addr u ) */
-            _if_, T(15),                       /* ( ls l c-addr' u'     ) (R: c-addr u ) */
-                r2nd_fetch, swap,              /* ( ls l c-addr' c-addr u' ) (R: c-addr u ) */
-                string_ci_equal, nip, nip, nip,/* ( ls l t|f            ) (R: c-addr u ) */
-                _if_, T(5),                    /* ( ls l                ) (R: c-addr u ) */
+        two_to_r,                              /* ( ls                  ) ( R: c-addr u ) */
+        CALL(_locals_first_),                  /* ( ls l|0              ) ( R: c-addr u ) */
+        begin,                                 /* ( ls l|0              ) ( R: c-addr u ) */
+        _q_while_, T(28+nCALLt),               /* ( ls l                ) ( R: c-addr u ) */
+            dup, one_plus, count,              /* ( ls l c-addr' u'     ) ( R: c-addr u ) */
+            dup, r_fetch, equal,               /* ( ls l c-addr' u' t|f ) ( R: c-addr u ) */
+            _if_, T(15),                       /* ( ls l c-addr' u'     ) ( R: c-addr u ) */
+                r2nd_fetch, swap,              /* ( ls l c-addr' c-addr u' ) ( R: c-addr u ) */
+                string_ci_equal, nip, nip, nip,/* ( ls l t|f            ) ( R: c-addr u ) */
+                _if_, T(5),                    /* ( ls l                ) ( R: c-addr u ) */
                     nip, two_r_from_two_drop,  /* ( l                   )                */
                     c_fetch, exit,             /* ( idx                 )                */
-                then,                          /* ( ls l                ) (R: c-addr u ) */
-            _else_, T(2),                      /* ( ls l c-addr' u'     ) (R: c-addr u ) */
-                two_drop,                      /* ( ls l                ) (R: c-addr u ) */
-            then,                              /* ( ls l                ) (R: c-addr u ) */
-            CALL(_locals_next_),               /* ( ls l'|0             ) (R: c-addr u ) */
-        _repeat_, T(-30-nCALLt),               /* ( ls 0                ) (R: c-addr u ) */
+                then,                          /* ( ls l                ) ( R: c-addr u ) */
+            _else_, T(2),                      /* ( ls l c-addr' u'     ) ( R: c-addr u ) */
+                two_drop,                      /* ( ls l                ) ( R: c-addr u ) */
+            then,                              /* ( ls l                ) ( R: c-addr u ) */
+            CALL(_locals_next_),               /* ( ls l'|0             ) ( R: c-addr u ) */
+        _repeat_, T(-30-nCALLt),               /* ( ls 0                ) ( R: c-addr u ) */
         nip, two_r_from_two_drop,              /* ( 0                   )                */
         one_minus, exit                        /* ( -1                  )                */
     )
@@ -812,14 +812,14 @@ WORD_START(_locals_set_idx_,  _locals_next_)
         _q_if0_, T(3),                         /* ( 0                )           */
             drop, exit,                        /* ( 0                )           */
         then,                                  /* ( ls               )           */
-        dup, fetch, to_r,                      /* ( ls               ) (R: n   ) */
-        CALL(_locals_first_),                  /* ( ls l|0           ) (R: n   ) */
-        begin,                                 /* ( ls l|0           ) (R: i   ) */
-        _q_while_, T(7+nCALLt),                /* ( ls l             ) (R: i   ) */
-            r_one_minus, r_fetch,              /* ( ls l i-1         ) (R: i'  ) */
-            over, c_store,                     /* ( ls l             ) (R: i   ) */
-            CALL(_locals_next_),               /* ( ls l'|0          ) (R: i   ) */
-        _repeat_, T(-9-nCALLt),                /* ( ls 0             ) (R: i   ) */
+        dup, fetch, to_r,                      /* ( ls               ) ( R: n   ) */
+        CALL(_locals_first_),                  /* ( ls l|0           ) ( R: n   ) */
+        begin,                                 /* ( ls l|0           ) ( R: i   ) */
+        _q_while_, T(7+nCALLt),                /* ( ls l             ) ( R: i   ) */
+            r_one_minus, r_fetch,              /* ( ls l i-1         ) ( R: i'  ) */
+            over, c_store,                     /* ( ls l             ) ( R: i   ) */
+            CALL(_locals_next_),               /* ( ls l'|0          ) ( R: i   ) */
+        _repeat_, T(-9-nCALLt),                /* ( ls 0             ) ( R: i   ) */
         two_drop, r_from_drop, exit            /* (                  )           */
     )
 WORD_END(_locals_set_idx_)
@@ -951,7 +951,7 @@ WORD_START(_until_comma_, _until0_)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
-        to_r,                                    /* ( sys              ) (R: tok  )      */
+        to_r,                                    /* ( sys              ) ( R: tok  )      */
         _check_lit_tok_, begin,                  /* ( sys              ) must be 'begin' */
         r_from, _lit_tok_, _until_,              /* ( sys tok category )                 */
         _compile_jump_,                          /* ( sys sys-until    )                 */
@@ -1293,12 +1293,12 @@ WORD_START(_optimize_literal_, _optimize_tokens_comma_)
       _optimize_literal_,
       WORD_CODE_TOKENS(
         _ip_to_data_, bounds, _do_, T(17),             /* loop on this word's data   */
-            dup, i, short_fetch, equal,                /* ( x t|f   ) (R: end addr ) */
-            _if_, T(8),                                /* ( x       ) (R: end addr ) */
-                drop, i, token_plus, token_fetch,      /* ( token   ) (R: end addr ) */
+            dup, i, short_fetch, equal,                /* ( x t|f   ) ( R: end addr ) */
+            _if_, T(8),                                /* ( x       ) ( R: end addr ) */
+                drop, i, token_plus, token_fetch,      /* ( token   ) ( R: end addr ) */
                 true, unloop, exit,                    /* ( token true )             */
-            then,                                      /* ( x       ) (R: end addr ) */
-            one_token,                                 /* ( x SZt   ) (R: end addr ) */
+            then,                                      /* ( x       ) ( R: end addr ) */
+            one_token,                                 /* ( x SZt   ) ( R: end addr ) */
         _plus_loop_, T(-17),                           /* ( x       )                */
         false, exit                                    /* ( x false )                */
       ),
@@ -1392,9 +1392,9 @@ WORD_START(_compile_locals_enter_, _compile_local_)
         _lit_comma_, _locals_enter_,/* compile '(locals-enter)'                       */
         tuck,                       /*                 ( n n2 n                     ) */
         token_comma,                /* compile T(n)    ( n n2                       ) */
-        _q_do_, T(6),               /*                 (                  ) (R: n i ) */
-            _lit_comma_, _to_lx_,   /* compile '(>lx)' (                  ) (R: n i ) */
-            i, token_comma,         /* compile T(i)    (                  ) (R: n i ) */
+        _q_do_, T(6),               /*                 (                  ) ( R: n i ) */
+            _lit_comma_, _to_lx_,   /* compile '(>lx)' (                  ) ( R: n i ) */
+            i, token_comma,         /* compile T(i)    (                  ) ( R: n i ) */
         _loop_, T(-6),              /*                 (                            ) */
         exit
     )
@@ -1609,13 +1609,13 @@ WORD_START(_recompile_, _optimize_xt_comma_)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE)
     WORD_CODE(
         /* here dup state @ sub allot ( set here = xt )( here            )
-         * >r 0 ' colon                                ( sys             ) (R: here )
-         * begin                                       ( ...             ) (R: here )
-         *   here r@ u<                                ( t|f             ) (R: here )
-         * while                                       (                 ) (R: here )
-         *   [recompile-token]                         ( ...             ) (R: here )
-         * repeat                                      (                 ) (R: here )
-         * ' colon (check)                             ( sys             ) (R: here )
+         * >r 0 ' colon                                ( sys             ) ( R: here )
+         * begin                                       ( ...             ) ( R: here )
+         *   here r@ u<                                ( t|f             ) ( R: here )
+         * while                                       (                 ) ( R: here )
+         *   [recompile-token]                         ( ...             ) ( R: here )
+         * repeat                                      (                 ) ( R: here )
+         * ' colon (check)                             ( sys             ) ( R: here )
          * cs-drop r> drop                             (                 )
          */
         here, dup, state, fetch, sub, allot,
@@ -1962,7 +1962,7 @@ WORD_START(char_to_u, char_to_base)
 WORD_END(char_to_u)
 /* lp_fetch        ( -- addr-of-locals ) get current local variables address */
 WORD(lp_fetch,         char_to_u,      DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
-/* rp_fetch (R: x y -- x y ) ( -- &x ) get current return stack address */
+/* rp_fetch ( R: x y -- x y ) ( -- &x ) get current return stack address */
 WORD(rp_fetch,         lp_fetch,       DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 /*
  * string>base ( caddr n -- caddr' n' base )
@@ -1978,8 +1978,8 @@ WORD_START(string_to_base, rp_fetch)
         /* ?if                             ( caddr n       )
          *    over c@ char>base            ( caddr n base  )
          *    ?if                          ( caddr n base  )
-         *       >r                        ( caddr n       ) (R: base )
-         *       1- swap char+ swap        ( caddr' n'     ) (R: base )
+         *       >r                        ( caddr n       ) ( R: base )
+         *       1- swap char+ swap        ( caddr' n'     ) ( R: base )
          *       r> exit                   ( caddr n' base )
          *    then
          *    drop                         ( caddr n       )
@@ -2051,18 +2051,18 @@ WORD_START(string_base_to_u, string_to_char)
         /* over if0                            ( caddr n base      )
          *    drop 0 exit                      ( caddr n 0         )
          * then
-         * >r 0 -rot 0                         ( u caddr n 0       ) (R: base     )
-         * do                                  ( u caddr           ) (R: base n 0 )
-         *    dup c@ char>u dup 0 j within     ( u caddr digit t|f ) (R: base n i )
-         *    if0                              ( u caddr digit     ) (R: base n i )
-         *       drop swap                     ( caddr u           ) (R: base n i )
+         * >r 0 -rot 0                         ( u caddr n 0       ) ( R: base     )
+         * do                                  ( u caddr           ) ( R: base n 0 )
+         *    dup c@ char>u dup 0 j within     ( u caddr digit t|f ) ( R: base n i )
+         *    if0                              ( u caddr digit     ) ( R: base n i )
+         *       drop swap                     ( caddr u           ) ( R: base n i )
          *       i' i - unloop r> drop         ( caddr u n'        )
          *       swap exit                     ( caddr n u         )
-         *    then                             ( u caddr digit     ) (R: base n i )
-         *    rot j * +                        ( caddr u'          ) (R: base n i )
-         *    swap char+                       ( u caddr'          ) (R: base n i )
+         *    then                             ( u caddr digit     ) ( R: base n i )
+         *    rot j * +                        ( caddr u'          ) ( R: base n i )
+         *    swap char+                       ( u caddr'          ) ( R: base n i )
          * loop
-         * swap 0 swap                         ( caddr 0 u         ) (R: base     )
+         * swap 0 swap                         ( caddr 0 u         ) ( R: base     )
          * r> drop ;                           ( caddr 0 u         )
          */
         over, _if0_, T(4),

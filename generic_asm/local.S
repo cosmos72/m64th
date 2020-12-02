@@ -305,7 +305,7 @@ FUNC_START(_dup_to_lx_)
 FUNC_END(_dup_to_lx_)
 
 
-/* (locals-enter) (R: -- locl ln-1 ... l1 l0 n ) followed by T(n), reserve space for n local variables */
+/* (locals-enter) ( R: -- locl ln-1 ... l1 l0 n ) followed by T(n), reserve space for n local variables */
 FUNC_START(_locals_enter_)
 #ifdef __aarch64__
         LD_ut( REG1,   AT(IP), SZt)        /* a = n; IP += SZt i.e. skip T(n) */
@@ -313,24 +313,24 @@ FUNC_START(_locals_enter_)
         LD_ut( REG1,   AT(IP))             /* a = n                           */
         ADD2(IMM(SZt), IP)                 /* IP += SZt i.e. skip T(n)        */
 #endif
-        RPUSH2(RTOP,   LOCL)               /* (R: LOCL _                    ) */
-        MOVE(  REG1,   RTOP)               /* (R: LOCL n                    ) */
+        RPUSH2(RTOP,   LOCL)               /* ( R: LOCL _                    ) */
+        MOVE(  REG1,   RTOP)               /* ( R: LOCL n                    ) */
         NEG1(  REG1)                       /* a = -n                          */
-        ADD4(  RSTK,   REG1, PSZ,  RSTK)   /* (R: LOCL ln-1 ... l1 l0 n     ) */
+        ADD4(  RSTK,   REG1, PSZ,  RSTK)   /* ( R: LOCL ln-1 ... l1 l0 n     ) */
         MOVE(  RSTK,   LOCL)               /* LOCL = &l0                      */
         NEXT0()
 FUNC_RAWEND(_locals_enter_)
 
 
-/* (locals-exit) (R: locl ln-1 ... l1 l0 n -- ) release space for last reserved local variables */
+/* (locals-exit) ( R: locl ln-1 ... l1 l0 n -- ) release space for last reserved local variables */
 FUNC_START(_locals_exit_)
 #ifdef __x86_64__
         leaq   SZ2(RSTK, RTOP, SZ),  RSTK;
         LOAD(  LOCL,   AT(RSTK, -SZ2))
         LOAD(  RTOP,   AT(RSTK, -SZ))
 #else
-        ADD4(  RSTK,   RTOP, PSZ,  RSTK)   /* (R: LOCL n                    ) */
-        RPOP2( LOCL,   RTOP)               /* (R:                           ) */
+        ADD4(  RSTK,   RTOP, PSZ,  RSTK)   /* ( R: LOCL n                    ) */
+        RPOP2( LOCL,   RTOP)               /* ( R:                           ) */
 #endif
 FUNC_END(_locals_exit_)
 

@@ -19,15 +19,16 @@
 also m4th-core \ parse-nt
 
 \ convert counted string to name, or 0 if not found
-: find \ ( c-addr -- c-addr 0 | xt 1 | xt -1 )
-   dup count                             \ ( c-addr c-addr' u      )
-   ['] parse-nt catch nip                \ ( c-addr nt -1|1 err    )
-   if                                    \ ( c-addr x y            )
-     2drop zero                          \ ( c-addr 0              )
-   else                                  \ ( c-addr nt -1|1        )
-     rot drop                            \ ( nt -1|1               )
-     swap name>xt swap                   \ ( xt -1|1               )
-   then ;                                \ ( c-addr 0 | xt -1 | xt 1 )
+: find   ( c-addr -- c-addr 0 | xt 1 | xt -1 )
+   dup count                               ( c-addr c-addr' u      )
+   ['] parse-nt catch nip                  ( c-addr nt -1|1 err    )
+   if                                      ( c-addr x y            )
+     2drop zero                            ( c-addr 0              )
+   else                                    ( c-addr nt -1|1        )
+     rot drop                              ( nt -1|1               )
+     swap name>xt swap                     ( xt -1|1               )
+   then                                    ( c-addr 0 | xt -1 | xt 1 )
+;
 
 
 disassemble-upto find

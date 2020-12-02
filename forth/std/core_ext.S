@@ -35,7 +35,7 @@ WORD_START(dot_paren,  ne)
     WORD_STACK_NONE()  /* stack effect if not jumping */
     WORD_STACK_NONE()  /* stack effect if not jumping */
     WORD_NATIVE_NONE()
-    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE)
+    WORD_FLAGS(M4FLAG_IMMEDIATE)
     WORD_CODE(
         _lit_, T(')'), CALL(parse), type, exit
     )
@@ -242,7 +242,7 @@ WORD_START(of, nip)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE)
     WORD_CODE(
-        dup, _lit_tok_, _fallthrough_, equal, to_r,    /* ( _                ) (R: t|f ) */
+        dup, _lit_tok_, _fallthrough_, equal, to_r,    /* ( _                ) ( R: t|f ) */
         _compile_jump_lit_, _of_, _of_, r_from,        /* ( _ of-sys t|f     )           */
         _if_, T(3+nCALLt),                             /* ( fallthrough-sys of-sys )     */
             cs_swap, CALL(_resolve_jump_here_),        /* ( of-sys           )           */

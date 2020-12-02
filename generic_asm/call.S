@@ -191,7 +191,7 @@ FUNC_START(_recurse_)
 FUNC_RAWEND(_recurse_)
 
 
-/* rp@ (R: x y -- x y ) ( -- &x ) get current return stack address */
+/* rp@ ( R: x y -- x y ) ( -- &x ) get current return stack address */
 FUNC_START(rp_fetch)
         DPUSH__DTOP()
         MOVE(  RSTK,   DTOP)

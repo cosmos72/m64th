@@ -38,7 +38,7 @@ WORD_START(forth_wordlist, forth_wordlist)
     )
 WORD_END(forth_wordlist)
 /*
- * replace first wordlist in search order with m4th_user wordlist (S: * wid -- * m4th_user )
+ * replace first wordlist in search order with m4th_user wordlist ( SO: * wid -- * m4th_user )
  * it is included in forth-root wordlist to allow adding m4th* wordlists to searchorder
  * after they have been removed for any reason
  */

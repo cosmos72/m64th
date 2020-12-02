@@ -156,7 +156,7 @@ FUNC_END(two_tuck)
 
 
 #ifndef M4FTWO_DUP_TWO_TO_R
-FUNC_START(two_dup_two_to_r)   /* 2dup 2>r  ( a b -- a b ) (R: -- a b ) m4th-user */
+FUNC_START(two_dup_two_to_r)   /* 2dup 2>r  ( a b -- a b ) ( R: -- a b ) m4th-user */
         LOAD(  REG1,       AT(DSTK))
         RPUSH2(RTOP,       REG1)
         MOVE(  DTOP,       RTOP)

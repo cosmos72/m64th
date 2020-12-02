@@ -350,12 +350,12 @@
 #define M4out_to_obuf M4_(40) /* out>obuf         (      -- io  ) get current output as iobuf */
 #undef M4____gap              /*                                         */
 #undef M4____gap              /*                                         */
-#define M4searchorder_clear M4_(43)   /* (S: wid_u-1 .. wid_0 -- )                   */
-#define M4searchorder_depth M4_(44)   /* (S: wid_u-1 .. wid_0 -- same ) ( -- u )     */
-#define M4searchorder_drop M4_(45)    /* (S: wid -- )                                */
-#define M4searchorder_dup M4_(46)     /* (S: wid -- wid wid )                        */
-#define M4searchorder_pick M4_(47)    /* (S: wid_u-1 .. wid_0 -- same ) ( -- wid_u ) */
-#define M4searchorder_store_0 M4_(48) /* (S: wid1 -- wid2 ) ( wid2 -- )              */
+#define M4searchorder_clear M4_(43)   /* ( SO: wid_u-1 .. wid_0 -- )                   */
+#define M4searchorder_depth M4_(44)   /* ( SO: wid_u-1 .. wid_0 -- same ) ( -- u )     */
+#define M4searchorder_drop M4_(45)    /* ( SO: wid -- )                                */
+#define M4searchorder_dup M4_(46)     /* ( SO: wid -- wid wid )                        */
+#define M4searchorder_pick M4_(47)    /* ( SO: wid_u-1 .. wid_0 -- same ) ( -- wid_u ) */
+#define M4searchorder_store_0 M4_(48) /* ( SO: wid1 -- wid2 ) ( wid2 -- )              */
 #undef M4____gap                      /*                                         */
 #define M4token_to_name M4_(50)       /* token>name ( token -- nt|0 ) convert token to name */
 #define M4user_var M4_(51)            /* user-var ( -- addr ) followed by index of user var */
@@ -535,7 +535,7 @@
 #define M4_compile_sys_lit_ M4_i(155)  /* ( -- sys ) followed by m4token and its category      */
 #define M4_cs_find_lit_ M4_i(156)      /* followed by category. get its depth in control stack */
 #define M4lp_fetch M4_i(157)           /* ( -- addr ) get current local variables address      */
-#define M4rp_fetch M4_i(158) /* (R: x y -- x y ) ( -- &x ) get current return stack address    */
+#define M4rp_fetch M4_i(158) /* ( R: x y -- x y ) ( -- &x ) get current return stack address    */
 #define M4____end M4_i(159)
 
 #endif /* M4TH_INCLUDE_TOKEN_M4TH_MH */

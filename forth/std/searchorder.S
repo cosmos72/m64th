@@ -21,7 +21,7 @@
 
 DICT_WORDS_FORTH_SEARCHORDER(WORDNAME)
 
-/* duplicate first wordlist in search order (S: wid -- wid wid ) */
+/* duplicate first wordlist in search order ( SO: wid -- wid wid ) */
 WORD_START(also,       LASTWORD)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)

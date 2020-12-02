@@ -20,57 +20,63 @@ also m4th-core \ searchorder*
 
 
 \ set compilation wordlist to first wordlist in search order
-: definitions \ ( -- )
-   0 searchorder-pick                      \ ( wid                 )
-   set-current ;                           \ (                     )
+: definitions   ( -- )
+   0 searchorder-pick                        ( wid                 )
+   set-current                               (                     )
+;
 
 
 \ get all wordlists in search order
-: get-order \ (S: widn .. wid1 -- idem ) ( -- widn ... wid1 n )
-   searchorder-depth 0                     \ ( 0 n                 )
-   ?do                                     \ (                     ) (R: n i )
-      i' i - 1-                            \ ( n-i-1               ) (R: n i )
-      searchorder-pick                     \ ( widn                ) (R: n i )
-   loop                                    \ ( widn .. wid1        )
-   searchorder-depth ;                     \ ( widn .. wid1 n      )
+: get-order   ( SO: widn .. wid1 -- idem ) ( -- widn ... wid1 n )
+   searchorder-depth 0                       ( 0 n                 )
+   ?do                                       (                     ) ( R: n i )
+      i' i - 1-                              ( n-i-1               ) ( R: n i )
+      searchorder-pick                       ( widn                ) ( R: n i )
+   loop                                      ( widn .. wid1        )
+   searchorder-depth                         ( widn .. wid1 n      )
+;
 
 
 \ set search order to the single wordlist forth-root
-: only \ (S: * -- forth-root )
-   searchorder-clear also forth-root ;
+: only   ( SO: * -- forth-root )
+   searchorder-clear also forth-root
+;
 
 
 \ remove first wordlist in search order
-: previous \ (S: wid -- )
-   searchorder-drop ;
+: previous   ( SO: wid -- )
+   searchorder-drop
+;
 
 
 \ search for name in specified wordlist. return XT plus immediate flag, or zero
-: search-wordlist \ ( c-addr u wid -- 0 | xt 1 | xt -1 )
-   wordlist-find                           \ ( nt|0 -1|0|1         )
-   dup if                                  \ ( nt   -1|1           )
-      swap name>xt swap                    \ ( xt   -1|1           )
-   else                                    \ ( 0    0              )
-      nip                                  \ ( 0                   )
-   then ;                                  \ ( 0 | xt 1 | xt -1    )
+: search-wordlist   ( c-addr u wid -- 0 | xt 1 | xt -1 )
+   wordlist-find                             ( nt|0 -1|0|1         )
+   dup if                                    ( nt   -1|1           )
+      swap name>xt swap                      ( xt   -1|1           )
+   else                                      ( 0    0              )
+      nip                                    ( 0                   )
+   then                                      ( 0 | xt 1 | xt -1    )
+;
 
 
 disassemble-upto definitions
 
 \ set the search order to exactly ( widn ... wid1 )
 \ if n is -1, set implementation-defined minimum search order
-: set-order \ ( widn ... wid1 n -- ) (S: * -- widn ... wid1 )
-   dup 0< if                               \ ( -1                 )
+: set-order   ( widn ... wid1 n -- ) ( SO: * -- widn ... wid1 )
+   dup 0< if                                 ( -1                 )
       only
       drop exit
-   then                                    \ ( * n                 )
-   searchorder-clear                       \ ( * n                 )
-   dup>r                                   \ ( * n                 ) (R: n     )
-   0 swap ?do                              \ ( *                   ) (R: n 0 i )
-      i pick                               \ ( * widi+1            ) (R: n 0 i )
-      also searchorder[0]!                 \ ( *                   ) (R: n 0 i )
-   -1 +loop                                \ ( *                   ) (R: n     )
-   r>                                      \ ( * n                 )
-   n>drop ;                                \ (                     )
+   then                                      ( * n                 )
+   searchorder-clear                         ( * n                 )
+   dup>r                                     ( * n                 ) ( R: n     )
+   0 swap ?do                                ( *                   ) ( R: n 0 i )
+      i pick                                 ( * widi+1            ) ( R: n 0 i )
+      also searchorder[0]!                   ( *                   ) ( R: n 0 i )
+   -1 +loop                                  ( *                   ) ( R: n     )
+   r>                                        ( * n                 )
+   n>drop                                    (                     )
+;
 
 \ set-order is included in m4wordlist_forth_root : do not disassemble it here

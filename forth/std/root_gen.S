@@ -24,7 +24,7 @@
  * with some manual fixes to stack effects and flags
  */
 
-/* replace first wordlist in search order with forth wordlist (S: wid -- forth ) */
+/* replace first wordlist in search order with forth wordlist ( SO: wid -- forth ) */
 WORD_START(forth,          LASTWORD)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)

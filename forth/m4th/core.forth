@@ -21,18 +21,18 @@ also m4th-core definitions
 
 \ convert address of counted-tokens to address of tokens and count.
 \ analogous to 'count' but for tokens instead of chars
-: count-tokens \ ( counted-tokens -- tok-addr u )
+: count-tokens   ( counted-tokens -- tok-addr u )
    dup token+ swap token@
 ;
 
 \ compile u tokens
-: tokens, \ ( tok-addr u -- )
-   tokens bounds                              \ ( end-addr addr )
-   ?do                                        \ (               ) (R: end-addr addr )
-      i token@                                \ ( token         ) (R: end-addr addr )
-      token,                                  \ (               ) (R: end-addr addr )
-      1token                                  \ ( SZt           ) (R: end-addr addr )
-   +loop                                      \ (               )
+: tokens,   ( tok-addr u -- )
+   tokens bounds                                ( end-addr addr )
+   ?do                                          (               ) ( R: end-addr addr )
+      i token@                                  ( token         ) ( R: end-addr addr )
+      token,                                    (               ) ( R: end-addr addr )
+      1token                                    ( SZt           ) ( R: end-addr addr )
+   +loop                                        (               )
 ;
 
 disassemble-upto count-tokens
