@@ -145,7 +145,26 @@ WORD_START(minus_cs_roll,   continue)
 WORD_END(minus_cs_roll)
 /* ( d -- x ) extract high half from double width number */
 WORD(d_to_hi,           minus_cs_roll, DSTACK(2,1), RSTACK(0,0), WORD_PURE)
-WORD_START(disassemble, minus_cs_roll)
+/* defer>validate ( xt -- xt ) throw if XT was not created by DEFER */
+WORD_START(defer_to_validate, d_to_hi)
+    WORD_DSTACK(1,1)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        xt_to_validate,                                          /* ( xt                  ) */
+        dup, xt_to_name, dup, name_to_flags,                     /* ( xt nt m4flags       ) */
+        _lit_, T(M4FLAG_NOOPT_MASK), and,                        /* ( xt nt m4flags'      ) */
+        _lit_, T(M4FLAG_DEFER), ne,                              /* ( xt nt t|f           ) */
+        _if_, T(6),                                              /* ( xt nt               ) */
+            name_to_string, ex_message_store,                    /* ( xt                  ) */
+            _lit_, T(M4ERR_NOT_DEFER), throw,                    /* ( xt                  ) */
+        then,                                                    /* ( xt nt               ) */
+        drop, exit                                               /* ( xt                  ) */
+   )
+WORD_END(defer_to_validate)
+WORD_START(disassemble, defer_to_validate)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -721,6 +740,7 @@ WORD_START(valid_base_q, u_div_mod)
         exit
     )
 WORD_END(valid_base_q)
+WORD(xt_to_validate,      valid_base_q,   DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 
 #undef LASTWORD
-#define LASTWORD valid_base_q
+#define LASTWORD xt_to_validate

@@ -99,8 +99,10 @@
     /*                             */      /*                                               */     \
     X(3, "u<=", u_less_equal)                                                                      \
     X(3, "u>=", u_more_equal)                                                                      \
-    X(5, "u/mod", u_div_mod)           /* ( u1 u2 -- u1%u2 u1/u2 ) */                              \
-    /*                              */ /*                                               */         \
+    X(5, "u/mod", u_div_mod)            /* ( u1 u2 -- u1%u2 u1/u2 )                      */        \
+    /*                              */  /*                                               */        \
+    X(5, "xt>validate", xt_to_validate) /* ( xt -- xt ) throw if XT is invalid           */        \
+    /*                              */  /*                                               */        \
     X(5, ">byte", to_byte)                                                                         \
     X(5, ">char", to_char)                                                                         \
     X(6, ">short", to_short)                                                                       \
@@ -238,6 +240,8 @@
     X(8, "-cs-roll", minus_cs_roll) /* ( ... cs-depth -- ... )                        */           \
     X(7, "cs-swap", cs_swap)        /* ( a_sys b_sys -- b_sys a_sys )                 */           \
     X(4, "d>hi", d_to_hi) /*      ( d -- x ) extract high half from double width number */         \
+    /* ( xt -- xt ) throw if XT wass not created by DEFER */                                       \
+    X(14, "defer>validate", defer_to_validate)                                                     \
     X(11, "disassemble", disassemble) /* read name, find nt then show its disassembly   */         \
     X(16, "disassemble-name", disassemble_name) /* ( nt -- ) show disassembly of word   */         \
     /* ( ntu ... nt2 nt1 u -- ) show disassembly of N words */                                     \

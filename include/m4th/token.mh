@@ -116,7 +116,7 @@
 #define M4u_less_equal M4_u(86)         /* u<=                                     */
 #define M4u_more_equal M4_u(87)         /* u>=                                     */
 #define M4u_div_mod M4_u(88)            /* ( u1 u2 -- u1%u2 u1/u2 ) unsigned remainder & divide */
-#undef M4____gap                        /*                                         */
+#define M4xt_to_validate M4_u(89)       /* ( xt -- xt ) throw if XT is invalid     */
 #undef M4____gap                        /*                                         */
 #define M4to_byte M4_u(91)              /* >byte   truncate dtop to   int8_t, then sign-extend */
 #define M4to_char M4_u(92)              /* >char   truncate dtop to  uint8_t, then zero-extend */

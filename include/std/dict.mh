@@ -178,10 +178,15 @@
     DICT_TOKENS_FORTH_CORE_EXT(X)                                                                  \
     /* the following words are implemented in forth, thus no dedicated m4token value */            \
     X(3, "?do", question_do)                                                                       \
+    X(9, "action-of", action_of)                                                                   \
     X(5, "again", again)                                                                           \
     X(7, "buffer:", buffer_colon)                                                                  \
+    X(5, "defer", defer)                                                                           \
+    X(6, "defer!", defer_store)                                                                    \
+    X(6, "defer@", defer_fetch)                                                                    \
     X(5, "endof", endof)                                                                           \
     X(3, "hex", hex)                                                                               \
+    X(2, "is", is)                                                                                 \
     X(2, "of", of)                                                                                 \
     X(10, "parse-name", parse_name)                                                                \
     X(2, "to", to)                                                                                 \

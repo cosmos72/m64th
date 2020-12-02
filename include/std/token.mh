@@ -179,9 +179,9 @@
 #undef M4c_quote /*149*/         /* c"           */
 #define M4case 150               /* case         */
 #undef M4compile_comma /*151*/   /* compile,     no dedicated m4token */
-#undef M4defer /*152*/           /* defer        */
-#undef M4defer_store /*153*/     /* defer!       */
-#undef M4defer_fetch /*154*/     /* defer@       */
+#undef M4defer /*152*/           /* defer        no dedicated m4token */
+#undef M4defer_store /*153*/     /* defer!       no dedicated m4token */
+#undef M4defer_fetch /*154*/     /* defer@       no dedicated m4token */
 #define M4endcase 155            /* endcase      */
 #undef M4endof /*156*/           /* endof        no dedicated m4token */
 #undef M4erase /*157*/           /* erase        */

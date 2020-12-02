@@ -24,10 +24,6 @@
 #include "../include/word.mh" /* WORD_SYM() */
 #include "../test.h"
 
-enum {
-    callsz = 1 + SZ / SZt, /* # of m4token needed to store a CALL(...) */
-};
-
 /* store m4token numeric constant in a m4countedwcode */
 #define T(n) (n)
 /** store int16_t numeric constant in a m4countedwcode */

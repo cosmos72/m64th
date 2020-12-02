@@ -1189,6 +1189,12 @@ m4wordlist *m4wordlist_new(void) {
     return &t->wid;
 }
 
+void m4wordlist_add(m4wordlist *wid, m4word *w) {
+    const m4word *prev = m4wordlist_lastword(wid);
+    w->prev_off = prev ? (size_t)w - (size_t)prev : 0;
+    wid->last = w;
+}
+
 const m4word *m4wordlist_find(const m4wordlist *wid, m4string str) {
     const m4word *w = m4wordlist_lastword(wid);
     while (w != NULL) {

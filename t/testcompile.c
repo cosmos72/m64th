@@ -117,8 +117,38 @@ static const m4testcompile testcompile_a[] = {
     /* ------------------------------- immediate words ---------------------- */
     {"s\"  fubar\"", {}, {}, {3, {LIT_STRING(6, " fubar")}}},
     /* ------------------------------- words -------------------------------- */
-    {"compile,", {}, {}, {callsz, {CALL(compile_comma)}}},
+    {"compile,", {}, {}, {1 + nCALLt, {CALL(compile_comma)}}},
     {"valid-base?", {}, {}, {4, {/*inlined*/ m4two, m4_lit_, T(37), m4within}}},
+};
+
+/* both test_defer and test_defer_str are non-const: helps linker placing them near to each other */
+static m4countedstring test_defer_str = {10, "test_defer"};
+
+static m4word test_defer = {
+    0,            /* prev_off          */
+    0,            /* name_off          */
+    {-1, 0},      /* eff  stackeffects */
+    {0, 0},       /* jump stackeffects */
+    0,            /* native_len        */
+    m4flag_defer, /* flags             */
+    3 + nCALLt,   /* code_n            */
+    0,            /* data_n            */
+    {m4_call_, CELL(0), m4exit},
+};
+
+/* both test_value and test_value_str are non-const: helps linker placing them near to each other */
+static m4countedstring test_value_str = {10, "test_value"};
+
+static m4word test_value = {
+    0,            /* prev_off          */
+    0,            /* name_off          */
+    {0x10, 0},    /* eff  stackeffects */
+    {0, 0},       /* jump stackeffects */
+    0,            /* native_len        */
+    m4flag_value, /* flags             */
+    3 + nCALLt,   /* code_n            */
+    0,            /* data_n            */
+    {m4_ip_to_data_addr_, m4fetch, m4exit},
 };
 
 static const m4testcompile testcompile_b[] = {
@@ -128,17 +158,28 @@ static const m4testcompile testcompile_b[] = {
     {"[ 4 constant four", {}, {}, {2, {m4four, m4exit}}},
     {"[ $7eef constant my-number", {}, {}, {3, {m4_lit_, T(0x7eef), m4exit}}},
     {"[ create w", {}, {}, {3 + nCALLt, {m4_ip_to_data_addr_, CALL(noop), m4exit}}},
+    {"[ defer df", {}, {}, {2 + nCALLt, {CALL(_defer_uninitialized_), m4exit}}},
+    {"[ defer dg ' dg defer@", {}, {1, {0}}, {2 + nCALLt, {CALL(_defer_uninitialized_), m4exit}}},
+    {"[ defer dh ' dh ' min over defer! defer@",
+     {},
+     {1, {XT(min)}},
+     {2 + nCALLt, {CALL(min), m4exit}}},
+    {"[ defer di action-of di", {}, {1, {0}}, {2 + nCALLt, {CALL(_defer_uninitialized_), m4exit}}},
+    {"[ defer dj ' depth is dj action-of dj",
+     {},
+     {1, {XT(depth)}},
+     {2 + nCALLt, {CALL(depth), m4exit}}},
+    {"action-of test_defer",
+     {},
+     {},
+     {2 + 2 * nCALLt, {m4_lit_xt_, CELL(test_defer.code), CALL(defer_fetch)}}},
     {"[ variable x", {}, {}, {2, {m4_ip_to_data_addr_, m4exit}}},
     {"[ 3 value y ] ;", {}, {}, {3, {m4_ip_to_data_addr_, m4fetch, m4exit}}},
-    {"[ 2 value z 1 to z", {}, {}, {3, {m4_ip_to_data_addr_, m4fetch, m4exit}}},
-#if 0 /* FIXME we must encode the address of newly created word 'one' */
-    {"[ 1 value one 1cell - allot ] -1 to one",
+    {"[ 2 value z 1 to z z", {}, {1, {1}}, {3, {m4_ip_to_data_addr_, m4fetch, m4exit}}},
+    {"to test_value",
      {},
      {},
-     {8 + callsz,
-      {m4_ip_to_data_addr_, m4fetch, m4exit, m4exit, m4minus_one, m4_lit_xt_, XT(zero),
-       m4xt_to_name, m4name_to_data_addr, m4store}}},
-#endif
+     {4 + nCALLt, {m4_lit_xt_, CELL(test_value.code), m4xt_to_name, m4name_to_data_addr, m4store}}},
 };
 
 static const m4testcompile testcompile_c[] = {
@@ -382,6 +423,22 @@ static m4code m4testcompile_init(const m4testcompile *t, m4countedcode *codegen_
     return t_codegen;
 }
 
+static void m4testcompile_wordlist_add(m4wordlist *wid, m4word *w, const m4countedstring *str) {
+    if (m4wordlist_find(wid, m4string_count(str))) {
+        return;
+    }
+    const size_t name_off = (size_t)w - (size_t)str;
+    assert(name_off == (size_t)(uint16_t)name_off);
+    w->name_off = (uint16_t)name_off;
+    m4wordlist_add(wid, w);
+}
+
+static void m4testcompile_fix(m4th *m) {
+    m4wordlist *wid = m->searchorder.addr[m->searchorder.n - 1];
+    m4testcompile_wordlist_add(wid, &test_defer, &test_defer_str);
+    m4testcompile_wordlist_add(wid, &test_value, &test_value_str);
+}
+
 static m4cell m4testcompile_run(m4th *m, const m4testcompile *t, m4code t_codegen) {
     m4word *w;
     m4ucell input_n = strlen(t->input);
@@ -405,6 +462,8 @@ static m4cell m4testcompile_run(m4th *m, const m4testcompile *t, m4code t_codege
 
     m->mem.curr = (m4char *)(w + 1);
     m4countedstack_copy(&t->dbefore, &m->dstack);
+
+    m4testcompile_fix(m);
 
     m4th_repl(m);
 

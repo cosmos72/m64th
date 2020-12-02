@@ -53,7 +53,25 @@ WORD_START(again,      question_do)
         exit
     )
 WORD_END(again)
-WORD_START(buffer_colon,       again)
+WORD_START(action_of, again)
+    WORD_DSTACK(0,1)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_IMMEDIATE)
+    WORD_CODE(
+        state, fetch,
+        _if_, T(7+2*nCALLt),                     /* compiling          */
+            CALL(bracket_tick),                  /* execute [']        */
+            _lit_comma_, _call_,
+            _lit_xt_, XT(defer_fetch), xt_comma, /* compile 'defer@'   */
+        _else_, T(3+2*nCALLt),
+            CALL(tick),                          /* ( xt             ) */
+            CALL(defer_fetch),                   /* ( xt'            ) */
+        then, exit
+   )
+WORD_END(action_of)
+WORD_START(buffer_colon,       action_of)
     WORD_DSTACK(1,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -81,20 +99,62 @@ WORD_START(compile_comma, case)
     WORD_CODE(
         /* dup xt>name name-inline?                    ( xt t|f        )
          * if0                                         ( xt            )
-         *    ' (call) token,                       ( xt            )
+         *    ' (call) token,                          ( xt            )
          *    xt, exit                                 (               )
          * then                                        ( xt            )
          * xt>name [inline]
          */
         dup, xt_to_name, CALL(name_inline_query),
         _if0_, T(5),
-            _lit_comma_, _call_,    /* compile (call) */
-            xt_comma, exit,            /* compile XT        */
+            _lit_comma_, _call_,               /* compile (call) */
+            xt_comma, exit,                    /* compile XT        */
         then,
         xt_to_name, CALL(_inline_), exit
    )
 WORD_END(compile_comma)
-WORD_START(endcase,    compile_comma)
+WORD_START(defer, compile_comma)
+    WORD_STACK_NONE()
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(0)
+    WORD_CODE(
+        _lit_, T(M4FLAG_DEFER),
+        CALL(_create_),        /* create word, mark it M4FLAG_DEFER ( sys                 ) */
+        right_bracket,         /* start compiling                   ( sys                 ) */
+        _lit_comma_, _call_,   /* compile '(call)                   ( sys                 ) */
+        _lit_xt_, XT(_defer_uninitialized_),                     /* ( sys xt              ) */
+        xt_comma,             /* compile '(defer-uninitialized)'    ( sys                 ) */
+        CALL(_finish_), exit                                     /* (                     ) */
+   )
+WORD_END(defer)
+WORD_START(defer_store, defer)
+    WORD_DSTACK(2,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        swap, xt_to_validate, swap,                              /* ( xt2 xt1             ) */
+        CALL(defer_to_validate),                                 /* ( xt2 xt1             ) */
+        token_plus,                                              /* ( xt2 xt1+SZt         ) */
+        store, exit                                              /* (                     ) */
+   )
+WORD_END(defer_store)
+WORD_START(defer_fetch, defer_store)
+    WORD_DSTACK(1,1)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        CALL(defer_to_validate),                                 /* ( xt                  ) */
+        token_plus,                                              /* ( xt+SZt              ) */
+        fetch, dup,                                              /* ( xt1 xt1             ) */
+        _lit_xt_, XT(_defer_uninitialized_), ne,                 /* ( xt1 t|f             ) */
+        and, exit                                                /* ( xt1|0               ) */
+   )
+WORD_END(defer_fetch)
+WORD_START(endcase,    defer_fetch)
     WORD_DSTACK(1,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -147,7 +207,25 @@ WORD_START(holds,      hex)
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(holds, exit)
 WORD_END(holds)
-WORD(nip,              holds,      DSTACK(2,1), RSTACK(0,0), WORD_PURE)
+WORD_START(is,         holds)
+    WORD_DSTACK(1,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_IMMEDIATE)
+    WORD_CODE(
+        state, fetch,
+        _if_, T(7+2*nCALLt),                     /* compiling          */
+            CALL(bracket_tick),                  /* execute [']        */
+            _lit_comma_, _call_,
+            _lit_xt_, XT(defer_store), xt_comma, /* compile 'defer!'   */
+        _else_, T(3+2*nCALLt),
+            CALL(tick),                          /* ( xt2 xt1        ) */
+            CALL(defer_store),                   /* (                ) */
+        then, exit
+   )
+WORD_END(is)
+WORD(nip,              is,         DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD_START(of, nip)
     WORD_DSTACK(2,-1)
     WORD_RSTACK(0,0)
