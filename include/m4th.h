@@ -129,9 +129,9 @@ struct m4counteddata_s { /**< counted data                     */
     m4char addr[];       /**< bytes                            */
 };
 
-struct m4countedstring_s { /**< counted string                   */
-    m4char n;              /**< # of characters                  */
-    m4char addr[];         /**< characters. do NOT end with '\0' */
+struct m4countedstring_s { /**< counted string                     */
+    m4char n;              /**< # of characters                    */
+    m4char addr[0];        /**< n characters. do NOT end with '\0' */
 };
 
 struct m4dict_s {         /**< dictionary. used to implement wordlist                */
@@ -206,7 +206,7 @@ struct m4word_s {
     uint16_t flags;      /**< m4flags                                              */
     uint16_t code_n;     /**< forth code size, in m4token:s                        */
     int32_t data_n;      /**< data size, in bytes                                  */
-    m4token code[];
+    m4token code[0];     /**< code. actually code_n elements                       */
 };
 
 #include "hashmap_string.h" /* needs m4cell, m4ucell, m4string */

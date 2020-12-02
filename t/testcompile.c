@@ -121,33 +121,46 @@ static const m4testcompile testcompile_a[] = {
     {"valid-base?", {}, {}, {4, {/*inlined*/ m4two, m4_lit_, T(37), m4within}}},
 };
 
-/* both test_defer and test_defer_str are non-const: helps linker placing them near to each other */
-static m4countedstring test_defer_str = {10, "test_defer"};
+typedef struct m4named_word_s {
+    /* use a single struct to prevent compiler and linker from placing them too apart: */
+    /* the distance between 'str' and 'word' must fit the uint16_t 'm4word.name_off' */
+    m4countedstring str;
+    m4char name[15];
+    m4word word;
+    m4token code[2 + nCALLt];
+} m4named_word;
 
-static m4word test_defer = {
-    0,            /* prev_off          */
-    0,            /* name_off          */
-    {-1, 0},      /* eff  stackeffects */
-    {0, 0},       /* jump stackeffects */
-    0,            /* native_len        */
-    m4flag_defer, /* flags             */
-    3 + nCALLt,   /* code_n            */
-    0,            /* data_n            */
+static m4named_word test_defer = {
+    {10, {}}, /* addr[] is initialized below */
+    "test_defer",
+    {
+        0,            /* prev_off          */
+        16,           /* name_off          */
+        {-1, 0},      /* eff  stackeffects */
+        {0, 0},       /* jump stackeffects */
+        0,            /* native_len        */
+        m4flag_defer, /* flags             */
+        3 + nCALLt,   /* code_n            */
+        0,            /* data_n            */
+        {},           /* code[] is initialized below */
+    },
     {m4_call_, CELL(0), m4exit},
 };
 
-/* both test_value and test_value_str are non-const: helps linker placing them near to each other */
-static m4countedstring test_value_str = {10, "test_value"};
-
-static m4word test_value = {
-    0,            /* prev_off          */
-    0,            /* name_off          */
-    {0x10, 0},    /* eff  stackeffects */
-    {0, 0},       /* jump stackeffects */
-    0,            /* native_len        */
-    m4flag_value, /* flags             */
-    3 + nCALLt,   /* code_n            */
-    0,            /* data_n            */
+static m4named_word test_value = {
+    {10, {}}, /* addr[] is initialized below */
+    "test_value",
+    {
+        0,            /* prev_off          */
+        16,           /* name_off          */
+        {0x10, 0},    /* eff  stackeffects */
+        {0, 0},       /* jump stackeffects */
+        0,            /* native_len        */
+        m4flag_value, /* flags             */
+        3 + nCALLt,   /* code_n            */
+        0,            /* data_n            */
+        {},           /* code is initialized below */
+    },
     {m4_ip_to_data_addr_, m4fetch, m4exit},
 };
 
@@ -423,20 +436,17 @@ static m4code m4testcompile_init(const m4testcompile *t, m4countedcode *codegen_
     return t_codegen;
 }
 
-static void m4testcompile_wordlist_add(m4wordlist *wid, m4word *w, const m4countedstring *str) {
-    if (m4wordlist_find(wid, m4string_count(str))) {
+static void m4testcompile_wordlist_add(m4wordlist *wid, m4named_word *nw) {
+    if (m4wordlist_find(wid, m4string_count(&nw->str))) {
         return;
     }
-    const size_t name_off = (size_t)w - (size_t)str;
-    assert(name_off == (size_t)(uint16_t)name_off);
-    w->name_off = (uint16_t)name_off;
-    m4wordlist_add(wid, w);
+    m4wordlist_add(wid, &nw->word);
 }
 
 static void m4testcompile_fix(m4th *m) {
     m4wordlist *wid = m->searchorder.addr[m->searchorder.n - 1];
-    m4testcompile_wordlist_add(wid, &test_defer, &test_defer_str);
-    m4testcompile_wordlist_add(wid, &test_value, &test_value_str);
+    m4testcompile_wordlist_add(wid, &test_defer);
+    m4testcompile_wordlist_add(wid, &test_value);
 }
 
 static m4cell m4testcompile_run(m4th *m, const m4testcompile *t, m4code t_codegen) {
