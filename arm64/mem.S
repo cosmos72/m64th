@@ -235,6 +235,12 @@ FUNC_START(crc_string_simd)
         JB(    DTOP,   IMM(64),TO(crc_string_simd.by8))
 
         SUB2(IMM(64),  DTOP)
+
+        JZ(  LOCL,     TO(crc_string_simd.by64.loop))
+        RPUSH2(x11,x10)
+        RPUSH2(x9, x8)
+        RPUSH2(x7, x6)
+        RPUSH( x5)
 FUNC_ALIGN()
 LABEL(crc_string_simd.by64.loop)
         ldp    x4, x5, AT(REG1);
@@ -260,6 +266,13 @@ LABEL(crc_string_simd.by64.loop)
         ADD2(IMM(64),  DTOP)
         SUB2(  REG0,   REG1)               /* c-addr -= i              */
         SUB3(  DTOP,   REG0,   REG4)       /* d = left = u - i         */
+
+        JZ(    LOCL,   TO(crc_string_simd.by64.end))
+        RPOP(  x5)
+        RPOP2( x6, x7)
+        RPOP2( x8, x9)
+        RPOP2( x10,x11)
+LABEL(crc_string_simd.by64.end)
         JB(    REG4,   IMM(8), TO(crc_string_simd.upto7))
 
 LABEL(crc_string_simd.by8)
