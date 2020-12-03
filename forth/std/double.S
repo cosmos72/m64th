@@ -41,7 +41,7 @@ WORD_START(d_zero_equal,       d_zero_less)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
-        zero_equal, swap, zero_equal, and, exit
+        or, zero_equal, exit
     )
 WORD_END(d_zero_equal)
 

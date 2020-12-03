@@ -663,7 +663,7 @@
     X(15, "[compile-local]", _compile_local_) /* ( idx -- ) compile a local variable fetch */      \
     /* ( n1_before_pipe n2_after_pipe -- ) compile code to initialize local variables */           \
     X(22, "[compile-locals-enter]", _compile_locals_enter_)                                        \
-    X(8, "[finish]", _finish_)      /* ( sys -- ) finish compiling a word, make it findable   */   \
+    X(7, "[finish", _finish_)      /* ( sys -- ) finish compiling a word, make it findable   */   \
     X(8, "[inline]", _inline_)      /* ( nt -- ) inline a call to word into XT being compiled */   \
     X(10, "[optimize]", _optimize_) /* optimize current XT being compiled */                       \
     X(15, "[optimize-opts]", _optimize_opts_) /* ( opts -- ) optimize current XT being compiled */ \
