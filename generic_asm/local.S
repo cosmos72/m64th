@@ -668,19 +668,57 @@ FUNC_END(_locals_load_reg02_)
  */
 FUNC_START(_c_locals_save_)
 #if Ln > 0
-        JZ(    LOCL,   TO(_c_locals_save_.done))
-
-        RPUSH( RTOP)  /* in case it contains LOCL[-1] */
-        MOVE(  LOCL,   REG0)
-        /* load # of saved variables from LOCL[-1] - possibly was in RTOP */
-        LOAD(  REG2,  AT(LOCL, -SZ))
-        TOKEN_CALL_NOTHROW(FUNC(_locals_save_reg02_), _c_locals_save_.0)
-        RPOP(  RTOP)
-
-LABEL(_c_locals_save_.done)
+        JZ(    LOCL,   FUNC_RET(_c_locals_save_))
+#ifdef LF
+        RPUSHL(LF)
 #endif
-        NEXT0()
-FUNC_RAWEND(_c_locals_save_)
+#ifdef LE
+        RPUSHL(LE)
+#endif
+#ifdef LD
+        RPUSHL(LD)
+#endif
+#ifdef LC
+        RPUSHL(LC)
+#endif
+#ifdef LB
+        RPUSHL(LB)
+#endif
+#ifdef LA
+        RPUSHL(LA)
+#endif
+#ifdef L9
+        RPUSHL(L9)
+#endif
+#ifdef L8
+        RPUSHL(L8)
+#endif
+#ifdef L7
+        RPUSHL(L7)
+#endif
+#ifdef L6
+        RPUSHL(L6)
+#endif
+#ifdef L5
+        RPUSHL(L5)
+#endif
+#ifdef L4
+        RPUSHL(L4)
+#endif
+#ifdef L3
+        RPUSHL(L3)
+#endif
+#ifdef L2
+        RPUSHL(L2)
+#endif
+#ifdef L1
+        RPUSHL(L1)
+#endif
+#ifdef L0
+        RPUSHL(L0)
+#endif
+#endif
+FUNC_END(_c_locals_save_)
 
 
 
@@ -690,19 +728,57 @@ FUNC_RAWEND(_c_locals_save_)
  */
 FUNC_START(_c_locals_load_)
 #if Ln > 0
-        JZ(    LOCL,   TO(_c_locals_load_.done))
-
-        RPUSH( RTOP)  /* in case it contains LOCL[-1] */
-        MOVE(  LOCL,   REG0)
-        /* load # of saved variables from LOCL[-1] - possibly was in RTOP */
-        LOAD(  REG2,  AT(LOCL, -SZ))
-        TOKEN_CALL_NOTHROW(FUNC(_locals_load_reg02_), _c_locals_load_.0)
-        RPOP(  RTOP)
-
-LABEL(_c_locals_load_.done)
+        JZ(    LOCL,   FUNC_RET(_c_locals_load_))
+#ifdef L0
+        RPOPL( L0)
 #endif
-        NEXT0()
-FUNC_RAWEND(_c_locals_load_)
+#ifdef L1
+        RPOPL( L1)
+#endif
+#ifdef L2
+        RPOPL( L2)
+#endif
+#ifdef L3
+        RPOPL( L3)
+#endif
+#ifdef L4
+        RPOPL( L4)
+#endif
+#ifdef L5
+        RPOPL( L5)
+#endif
+#ifdef L6
+        RPOPL( L6)
+#endif
+#ifdef L7
+        RPOPL( L7)
+#endif
+#ifdef L8
+        RPOPL( L8)
+#endif
+#ifdef L9
+        RPOPL( L9)
+#endif
+#ifdef LA
+        RPOPL( LA)
+#endif
+#ifdef LB
+        RPOPL( LB)
+#endif
+#ifdef LC
+        RPOPL( LC)
+#endif
+#ifdef LD
+        RPOPL( LD)
+#endif
+#ifdef LE
+        RPOPL( LE)
+#endif
+#ifdef LF
+        RPOPL( LF)
+#endif
+#endif
+FUNC_END(_c_locals_load_)
 
 
 

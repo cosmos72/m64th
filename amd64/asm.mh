@@ -191,6 +191,8 @@
 #define MOVL(src, dst)        movq src,     dst;   /* dst  = src     move from/to local variable */
 #define LOADL(reg, at)        movq at,      reg;   /* reg  = *at     load local variable from mem */
 #define STORL(reg, at)        movq reg,     at;    /* *at  = reg     store local variable to mem */
+#define RPOPL(reg)            RPOP(REG1)    MOVL(REG1, reg)
+#define RPUSHL(reg)           MOVL(reg, REG1)  RPUSH(REG1)
 
 #define LD_sb(reg, at)        movsbq at, reg##_sb; /* reg = *(int8_t *)at  */
 #define LD_sh(reg, at)        movswq at, reg##_sh; /* reg = *(int16_t*)at  */

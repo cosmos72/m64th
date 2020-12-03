@@ -153,15 +153,20 @@
 #define R000h wzr /* 16 bit, always 0 */
 #define R000w wzr /* 32 bit, always 0 */
 
-#define L0 x10 /* local variable 0 */
-#define L1 x11 /* local variable 1 */
-#define L2 x12 /* local variable 2 */
-#define L3 x13 /* local variable 3 */
-#define L4 x14 /* local variable 4 */
-#define L5 x15 /* local variable 5 */
-#define L6 x16 /* local variable 6 */
-#define L7 x17 /* local variable 7 */
-#define Ln 8   /* number of local variables stored in registers */
+#define L0 x5 /* local variable 0 */
+#define L1 x6 /* local variable 1 */
+#define L2 x7 /* local variable 2 */
+#define L3 x8 /* local variable 3 */
+#define L4 x9 /* local variable 4 */
+#define L5 x10 /* local variable 5 */
+#define L6 x11 /* local variable 6 */
+#define L7 x12 /* local variable 7 */
+#define L8 x13 /* local variable 8 */
+#define L9 x14 /* local variable 9 */
+#define LA x15 /* local variable 10 */
+#define LB x16 /* local variable 11 */
+#define LC x17 /* local variable 12 */
+#define Ln 13  /* number of local variables stored in registers */
 
 /* clang-format off */
 
@@ -202,6 +207,8 @@
 #define MOVL(src,dst)     mov   dst, src;           /* dst  = src     move from/to local variable */
 #define LOADL(reg, ...)   ldr   reg, __VA_ARGS__;   /* reg  = *at     load local variable from mem */
 #define STORL(reg, ...)   str   reg, __VA_ARGS__;   /* *at  = reg     store local variable to mem */
+#define RPOPL(reg)        RPOP(reg)
+#define RPUSHL(reg)       RPUSH(reg)
 
 /* clang-format on */
 
