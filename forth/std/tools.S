@@ -29,8 +29,9 @@ WORD_START(dot_s, LASTWORD)
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
         sp_fetch, depth, one_minus, minus_one,                       /* ( dstk depth -1 ) */
-        _c_arg_3_, _c_call_, CELL(m4slice_print_stdout), _c_ret_0_,
-        exit
+        _c_locals_save_,
+            _c_arg_3_, _c_call_, CELL(m4slice_print_stdout), _c_ret_0_,
+        _c_locals_load_, exit
     )
 WORD_END(dot_s)
 WORD_START(see, dot_s)
@@ -58,8 +59,9 @@ WORD_START(words, see)
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
         user_var, T(0),                                        /* ( m4th+M4TH_OFF_ ) */
-        _c_arg_1_, _c_call_, CELL(m4th_c_print_all_words), _c_ret_0_,
-        exit
+        _c_locals_save_,
+            _c_arg_1_, _c_call_, CELL(m4th_c_print_all_words), _c_ret_0_,
+        _c_locals_load_, exit
     )
 WORD_END(words)
 

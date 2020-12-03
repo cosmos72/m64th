@@ -21,6 +21,8 @@
 #define M4TH_ARM64_SZ_MH
 
 #define SZ 8     /* sizeof(m4cell), sizeof(void*) and width of registers in bytes */
+#define SZ0 0    /* SZ * 0 */
+#define SZ1 1    /* SZ * 1 */
 #define SZ2 16   /* SZ * 2 */
 #define SZ3 24   /* SZ * 3 */
 #define SZ4 32   /* SZ * 4 */

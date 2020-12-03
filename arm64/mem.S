@@ -156,34 +156,31 @@ FUNC_START(move)
         SUB2(IMM(SZ8), REG2)                   /* b = dst_end - 8*SZ   */
 
 LABEL(move.work)
-        JB(    DTOP,   IMM(8), TO(move.by1))   /* < 8 cells => slow    */
-LABEL(move.by8)
-        ldp    x5, x6, AT(REG1, IMM(0));
-        ldp    x7, x8, AT(REG1, IMM(SZ2));
-        ldp    x9, x10,AT(REG1, IMM(SZ4));
-        ldp    x11,x12,AT(REG1, IMM(SZ6));
+        JB(    DTOP,   IMM(8), TO(move.by1cell))   /* < 8 cells => slow    */
+LABEL(move.by8cells)
+        /* q0 .. q31 are 128-bit SIMD registers */
+        ldp    q28,q29,AT(REG1);
+        ldp    q30,q31,AT(REG1, SZ4);
         SUB2(IMM(8),   DTOP)
-        stp    x5, x6, AT(REG2, IMM(0));
-        stp    x7, x8, AT(REG2, IMM(SZ2));
-        stp    x9, x10,AT(REG2, IMM(SZ4));
-        stp    x11,x12,AT(REG2, IMM(SZ6));
+        stp    q28,q29,AT(REG2);
+        stp    q30,q31,AT(REG2, SZ4);
         ADD2(  REG0,   REG1)
         ADD2(  REG0,   REG2)
-        JAE(   DTOP,   IMM(8),  TO(move.by8))
+        JAE(   DTOP,   IMM(8),  TO(move.by8cells))
 
-LABEL(move.by1)
+LABEL(move.by1cell)
         JEQ(   DTOP,   IMM(0),  TO(move.done))
         SAR2(IMM(3),   REG0)                   /* @ = +/- SZ           */
-        JG(    REG0,   IMM(0),  TO(move.by1.loop))
+        JG(    REG0,   IMM(0),  TO(move.by1cell.loop))
         ADD2(IMM(SZ7), REG1)                   /* a += 7*SZ            */
         ADD2(IMM(SZ7), REG2)                   /* b += 7*SZ            */
-LABEL(move.by1.loop)
+LABEL(move.by1cell.loop)
         LOAD(  REG4,   AT(REG1))
         SUB2(IMM(1),   DTOP)
         STOR(  REG4,   AT(REG2))
         ADD2(  REG0,   REG1)
         ADD2(  REG0,   REG2)
-        JNE(   DTOP,   IMM(0),  TO(move.by1.loop))
+        JNE(   DTOP,   IMM(0),  TO(move.by1cell.loop))
 
 LABEL(move.done)
         DPOP___DTOP()

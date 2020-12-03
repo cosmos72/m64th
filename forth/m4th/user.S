@@ -37,7 +37,9 @@ WORD_START(dot_rs, dot_rs)
     WORD_CODE(
         dup_to_r,                               /* push RTOP to return stack  */
         rp_fetch, rdepth, one_minus, minus_one, /* ( rstk rdepth -1 )         */
-        _c_arg_3_, _c_call_, CELL(m4slice_print_stdout), _c_ret_0_,
+        _c_locals_save_,
+            _c_arg_3_, _c_call_, CELL(m4slice_print_stdout), _c_ret_0_,
+        _c_locals_load_,
         r_from_drop, exit                       /* pop RTOP from return stack */
     )
 WORD_END(dot_rs)
@@ -190,7 +192,9 @@ WORD_START(disassemble_name, disassemble)
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
         one,                                           /* ( nt 1          ) */
-        _c_arg_2_, _c_call_, CELL(m4word_print_stdout), _c_ret_0_, exit
+        _c_locals_save_,
+            _c_arg_2_, _c_call_, CELL(m4word_print_stdout), _c_ret_0_,
+        _c_locals_load_, exit
     )
 WORD_END(disassemble_name)
 /* do-i+-loop  native-compiled version of do i+ loop */
@@ -214,9 +218,10 @@ WORD_START(du_div_mod, do_i_plus_loop)
         then,                                          /* ( ud1 ud2              ) */
         sp_fetch, dup,                                 /* ( ud1 x=ud2 &x &x      ) */
         cell_plus, cell_plus, swap,                    /* ( y=ud1 x=ud2 &y &x    ) */
-        _c_arg_2_, _c_call_, CELL(m4th_ud_div_mod), _c_ret_0_,
-                                                       /* ( du-rem du-quo        ) */
-        exit
+
+        _c_locals_save_,
+            _c_arg_2_, _c_call_, CELL(m4th_ud_div_mod), _c_ret_0_,
+        _c_locals_load_, exit                            /* ( du-rem du-quo        ) */
     )
 WORD_END(du_div_mod)
 WORD(dup_to_r,         du_div_mod,     DSTACK(1,1), RSTACK(0,1), WORD_R_PURE)
@@ -613,7 +618,9 @@ WORD_START(see_name,   to_uint)
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
         zero,                                                  /* ( nt 0          ) */
-        _c_arg_2_, _c_call_, CELL(m4word_print_stdout), _c_ret_0_, exit
+        _c_locals_save_,
+            _c_arg_2_, _c_call_, CELL(m4word_print_stdout), _c_ret_0_,
+        _c_locals_load_, exit
     )
 WORD_END(see_name)
 /**

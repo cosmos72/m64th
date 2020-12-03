@@ -41,7 +41,7 @@ WORD_START(_c_call_,   _c_arg_6_)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE_ALWAYS | M4FLAG_CONSUMES_IP_SZ | M4FLAG_COMPILE_ONLY)
-    WORD_CODE(_c_call_, exit)
+    WORD_CODE(_c_call_, CELL(0), exit)
 WORD_END(_c_call_)
 WORD(_c_ret_0_,          _c_call_,     DSTACK(0,0), RSTACK(0,0), M4FLAG_INLINE_ALWAYS)
 WORD(_c_ret_1_,          _c_ret_0_,    DSTACK(0,1), RSTACK(0,0), M4FLAG_INLINE_ALWAYS)
@@ -53,7 +53,11 @@ WORD_START(c_fread,   _c_ret_2_)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
-    WORD_CODE(_c_arg_3_, _c_call_, CELL(m4th_c_fread), _c_ret_2_, exit)
+    WORD_CODE(
+        _c_locals_save_,
+            _c_arg_3_, _c_call_, CELL(m4th_c_fread), _c_ret_2_,
+        _c_locals_load_, exit
+    )
 WORD_END(c_fread)
 /* ( FILE* c-addr u -- u' err ) call C functions fwrite() + fflush. usable for iobuf>func */
 WORD_START(c_fwrite_fflush,   c_fread)
@@ -62,7 +66,10 @@ WORD_START(c_fwrite_fflush,   c_fread)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
-    WORD_CODE(_c_arg_3_, _c_call_, CELL(m4th_c_fwrite_fflush), _c_ret_2_, exit)
+    WORD_CODE(
+        _c_locals_save_,
+            _c_arg_3_, _c_call_, CELL(m4th_c_fwrite_fflush), _c_ret_2_,
+        _c_locals_load_, exit)
 WORD_END(c_fwrite_fflush)
 /* ( prompt-addr c-addr u -- u' err ) call liblinenoise C function linenoise(). usable for iobuf>func */
 WORD_START(c_linenoise,   c_fwrite_fflush)
@@ -71,7 +78,10 @@ WORD_START(c_linenoise,   c_fwrite_fflush)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
-    WORD_CODE(_c_arg_3_, _c_call_, CELL(m4th_c_linenoise), _c_ret_2_, exit)
+    WORD_CODE(
+        _c_locals_save_,
+            _c_arg_3_, _c_call_, CELL(m4th_c_linenoise), _c_ret_2_,
+        _c_locals_load_, exit)
 WORD_END(c_linenoise)
 
 #undef LASTWORD

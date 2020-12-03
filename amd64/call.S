@@ -60,6 +60,13 @@ LABEL(th_run.stack_done)
         DPOP___DTOP()                             /* load first data   stack element */
         RPOP(  RTOP)                              /* load first return stack element */
         RPUSH(IMM(-1)) RPOP(RFFF)                 /* set RFFF = -1                   */
+
+#if Ln > 0
+        /* reload local variables saved by a previous 'bye', if any */
+        MOVE(  RTOP,  REG2)
+        MOVE(  LOCL,  REG0)
+        JNZ(   LOCL,  FUNC(_locals_load_reg02_))
+#endif
         NEXT0()                                   /* enter vm loop                   */
 FUNC_RAWEND(th_run)
 
@@ -75,12 +82,23 @@ FUNC_RAWEND(_vm_)
 
 /**
  * exit m4th interpreter and return to C.
- * 1. save m4th registers into struct (m4th*)
- * 2. load C registers
- * 3. return to C
+ * 1. save local variables to RSTK
+ * 2. save m4th registers into struct (m4th*)
+ * 3. load C registers
+ * 4. return to C
  */
 FUNC_START(bye)
         RPUSH( RTOP)                              /* save first return stack element */
+
+#if Ln > 0
+        /* save local variables to RSTK before exiting */
+        JZ(    LOCL,  TO(bye.continue))
+        MOVE(  LOCL,  REG0)
+        /* load # of saved variables from LOCL[-1] - possibly was in RTOP */
+        LOAD(  REG2,  AT(LOCL, -SZ))
+        TOKEN_CALL_NOTHROW(FUNC(_locals_save_reg02_), bye.0)
+LABEL(bye.continue)
+#endif
         DPUSH__DTOP()                             /* save first data   stack element */
         STOR(  LOCL,   AT(M4TH, M4TH_OFF_LSTK))   /* save local variables pointer    */
         STOR(  IP,     AT(M4TH, M4TH_OFF_IP))     /* save instruction  pointer       */
@@ -191,6 +209,7 @@ FUNC_END(_c_arg_6_)
 
 /* must be followed by C function address. call it. */
 FUNC_START(_c_call_)
+
         LOAD(  REG0,   AT(M4TH, M4TH_OFF_RSTK))
         JZ(    REG0,   TO(_c_call_.stack_c))
 

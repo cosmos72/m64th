@@ -42,8 +42,9 @@
 #define REG2 x2 /* scratch register 2 */
 #define REG3 x3 /* scratch register 3 */
 #define REG4 x4 /* scratch register 4 */
-/* additional scratch registers:      x5 .. x17           */
-/* additional callee-saved registers: x18 x29 x30         */
+/* additional scratch registers:      x5 .. x17            */
+/* note: x10 .. x17 are currently used for local variables */
+/* additional callee-saved registers: x18 x29 x30          */
 
 #define REG0b w0   /* low  8 bits of REG0 */
 #define REG0h w0   /* low 16 bits of REG0 */
@@ -152,6 +153,16 @@
 #define R000h wzr /* 16 bit, always 0 */
 #define R000w wzr /* 32 bit, always 0 */
 
+#define L0 x10 /* local variable 0 */
+#define L1 x11 /* local variable 1 */
+#define L2 x12 /* local variable 2 */
+#define L3 x13 /* local variable 3 */
+#define L4 x14 /* local variable 4 */
+#define L5 x15 /* local variable 5 */
+#define L6 x16 /* local variable 6 */
+#define L7 x17 /* local variable 7 */
+#define Ln 8   /* number of local variables stored in registers */
+
 /* clang-format off */
 
 #define ADD2(src,dst)     add   dst, dst, src;      /* dst += src     */
@@ -171,6 +182,7 @@
 #define INC1(dst)         add   dst, dst, 1;        /* dst++          */
 #define LOAD(reg, ...)    ldr   reg, __VA_ARGS__;   /* reg  = *at     */
 #define MOVE(src,dst)     mov   dst, src;           /* dst  = src     */
+#define MOVL(src, dst)    mov   dst, src;           /* dst  = src     move from/to local variable */
 #define MUL2(src,dst)     mul   dst, dst, src;      /* dst *= src     */
 #define NEG1(dst)         neg   dst, dst;           /* dst  = -dst    */
 #define NOT1(dst)         mvn   dst, dst;           /* dst  = ~dst    */
@@ -257,9 +269,11 @@
     cmp reg, val;                                                                                  \
     b.ne label;
 #define JNZ(reg, label) /* if reg != 0 jump to label    */ cbnz reg, label;
-#define JZ(reg, label) /* if reg == 0 jump to label    */ cbz reg, label;
-#define JUMP(label) /* unconditional jump to label ____________________________________________ */ \
+#define JZ(reg, label) /*  if reg == 0 jump to label    */ cbz reg, label;
+#define JUMP(label) /*     unconditional jump to label ________________________________________ */ \
     b label;
+#define JUMP_REG(reg) /*   unconditional jump to address stored in register ___________________ */ \
+    br reg;
 
 /* clang-format off */
 

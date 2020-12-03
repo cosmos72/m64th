@@ -150,6 +150,20 @@
 #define RIP   %rip  /* x86-64 instruction pointer             */
 #define VM    %rbp  /* pointer to '(vm)' bytecode interpreter */
 
+#define L0 %xmm0 /* local variable 0. only lowest 64 bits are used */
+#define L1 %xmm1 /* local variable 1. only lowest 64 bits are used */
+#define L2 %xmm2 /* local variable 2. only lowest 64 bits are used */
+#define L3 %xmm3 /* local variable 3. only lowest 64 bits are used */
+#define L4 %xmm4 /* local variable 4. only lowest 64 bits are used */
+#define L5 %xmm5 /* local variable 5. only lowest 64 bits are used */
+#define L6 %xmm6 /* local variable 6. only lowest 64 bits are used */
+#define L7 %xmm7 /* local variable 7. only lowest 64 bits are used */
+#define L8 %xmm8 /* local variable 8. only lowest 64 bits are used */
+#define L9 %xmm9 /* local variable 9. only lowest 64 bits are used */
+#define LA %xmm10 /* local variable 10. only lowest 64 bits are used */
+#define LB %xmm11 /* local variable 11. only lowest 64 bits are used */
+#define Ln 12 /* number of local variables stored in registers */
+
 #define ADD2(src, dst)        add  src,     dst;   /* dst += src     */
 #define ADD4(a, b,shl, dst)   lea  (a, b, 1<<(shl)), dst; /* dst  = a_reg + (b_reg << shl) */
 #define ADDI(src, imm, dst)   lea  imm(src),dst;   /* dst  = src + imm */
@@ -159,8 +173,9 @@
 #define ATxy(reg1, reg2, rmul)    (reg1,reg2,rmul) /* mem[reg1+reg2*rmul] */
 #define DEC1(dst)             dec  dst;            /* dst--          */
 #define INC1(dst)             inc  dst;            /* dst++          */
-#define LOAD(reg, at)         mov  at,      reg;   /* reg  = *at     */
+#define LOAD(reg, at)         movq at,      reg;   /* reg  = *at     */
 #define MOVE(src, dst)        mov  src,     dst;   /* dst  = src     */
+#define MOVL(src, dst)        movq src,     dst;   /* dst  = src     move from/to local variable */
 #define MUL2(src, dst)        imul src,     dst;   /* dst *= src     */
 #define NEG1(dst)             neg  dst;            /* dst  = -dst    */
 #define NOT1(dst)             not  dst;            /* dst  = ~dst    */
@@ -248,6 +263,8 @@
     jz label;
 #define JUMP(label) /*     unconditional jump to label _______________________________________ */  \
     jmp label;
+#define JUMP_REG(reg) /*   unconditional jump to address stored in register __________________ */  \
+    jmp *reg;
 
 #define ADDROF_4G(sym, dst) /* load symbol address into dst. symbol can be within +/- 4GB */       \
     lea sym(RIP), dst;

@@ -328,7 +328,9 @@
     X(8, "(c-call)", _c_call_)   /* must be followed by C function address. calls it. */           \
     X(9, "(c-ret-0)", _c_ret_0_) /* push 0 values returned by C function call */                   \
     X(9, "(c-ret-1)", _c_ret_1_) /* push 1 value  returned by C function call */                   \
-    X(9, "(c-ret-2)", _c_ret_2_) /* push 2 values returned by C function call */
+    X(9, "(c-ret-2)", _c_ret_2_) /* push 2 values returned by C function call */                   \
+    X(15, "(c-locals-load)", _c_locals_load_) /* reload local variables after a C call */          \
+    X(15, "(c-locals-save)", _c_locals_save_) /* save local variables before a C call */
 
 #define DICT_WORDS_M4TH_C(X)                                                                       \
     DICT_TOKENS_M4TH_C(X)                                                                          \

@@ -28,7 +28,9 @@ WORD_START(allocate, LASTWORD)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
-        _c_arg_1_, _c_call_, CELL(malloc), _c_ret_1_,           /* ( a-addr|0          ) */
+        _c_locals_save_,
+            _c_arg_1_, _c_call_, CELL(malloc), _c_ret_1_,       /* ( a-addr|0          ) */
+        _c_locals_load_,
         dup, zero_equal,                                        /* ( a-addr|0 t|f      ) */
         _lit_, T(M4ERR_FAILED_TO_ALLOCATE), and,                /* ( a-addr 0 | 0 err  ) */
         exit
@@ -41,7 +43,9 @@ WORD_START(free, allocate)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
-        _c_arg_1_, _c_call_, CELL(free), _c_ret_0_,             /* (                   ) */
+        _c_locals_save_,
+            _c_arg_1_, _c_call_, CELL(free), _c_ret_0_,         /* (                   ) */
+        _c_locals_load_,
         zero, exit                                              /* ( 0                 ) */
     )
 WORD_END(free)
@@ -53,7 +57,9 @@ WORD_START(resize, free)
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
         trail,                                                  /* ( a-addr1 a-addr1 u ) */
-        _c_arg_2_, _c_call_, CELL(realloc), _c_ret_1_,          /* ( a-addr1 a-addr2   ) */
+        _c_locals_save_,
+            _c_arg_2_, _c_call_, CELL(realloc), _c_ret_1_,      /* ( a-addr1 a-addr2   ) */
+        _c_locals_load_,
         _q_if_, T(3),                                           /* ( a-addr1 a-addr2   ) */
             nip, zero,                                          /* ( a-addr2 0         ) */
         _else_, T(4),                                           /* ( a-addr1 0         ) */

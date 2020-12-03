@@ -141,6 +141,8 @@
 #define FTBL r10 /* pointer to table m4func[m4token] containing asm function addresses */
 #define IP r11   /* instruction pointer */
 
+#define Ln 0 /* number of local variables stored in registers */
+
 /* clang-format off */
 
 #define ADD2(src,dst)     add   dst, dst, src;      /* dst += src     */
@@ -240,9 +242,11 @@
     cmp reg, val;                                                                                  \
     b.ne label;
 #define JNZ(reg, label) /* if reg != 0 jump to label    */ cbnz reg, label;
-#define JZ(reg, label) /* if reg == 0 jump to label    */ cbz reg, label;
-#define JUMP(label) /* unconditional jump to label ____________________________________________ */ \
+#define JZ(reg, label) /*  if reg == 0 jump to label    */ cbz reg, label;
+#define JUMP(label) /*     unconditional jump to label ________________________________________ */ \
     b label;
+#define JUMP_REG(reg) /*   unconditional jump to address stored in register ___________________ */ \
+    br reg;
 
 /* clang-format off */
 
