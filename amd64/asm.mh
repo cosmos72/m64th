@@ -175,7 +175,6 @@
 #define INC1(dst)             inc  dst;            /* dst++          */
 #define LOAD(reg, at)         movq at,      reg;   /* reg  = *at     */
 #define MOVE(src, dst)        mov  src,     dst;   /* dst  = src     */
-#define MOVL(src, dst)        movq src,     dst;   /* dst  = src     move from/to local variable */
 #define MUL2(src, dst)        imul src,     dst;   /* dst *= src     */
 #define NEG1(dst)             neg  dst;            /* dst  = -dst    */
 #define NOT1(dst)             not  dst;            /* dst  = ~dst    */
@@ -188,6 +187,10 @@
 #define XOR2(src, dst)        xor  src,     dst;   /* dst ^= src     */
 #define XSUB2(a,b)            sub  a, b;  neg b;   /* b    = a - b   */
 #define ZERO(dst)             xor  dst##w, dst##w; /* dst  = 0       */
+
+#define MOVL(src, dst)        movq src,     dst;   /* dst  = src     move from/to local variable */
+#define LOADL(reg, at)        movq at,      reg;   /* reg  = *at     load local variable from mem */
+#define STORL(reg, at)        movq reg,     at;    /* *at  = reg     store local variable to mem */
 
 #define LD_sb(reg, at)        movsbq at, reg##_sb; /* reg = *(int8_t *)at  */
 #define LD_sh(reg, at)        movswq at, reg##_sh; /* reg = *(int16_t*)at  */

@@ -501,50 +501,50 @@ LABEL(_locals_save_reg02_.work)
         JUMP_REG(      REG1)
 
 #ifdef LF
-        STOR(  LF,     AT(REG0, SZ15))
+        STORL( LF,     AT(REG0, SZ15))
 #endif
 #ifdef LE
-        STOR(  LE,     AT(REG0, SZ14))
+        STORL( LE,     AT(REG0, SZ14))
 #endif
 #ifdef LD
-        STOR(  LD,     AT(REG0, SZ13))
+        STORL( LD,     AT(REG0, SZ13))
 #endif
 #ifdef LC
-        STOR(  LC,     AT(REG0, SZ12))
+        STORL( LC,     AT(REG0, SZ12))
 #endif
 #ifdef LB
-        STOR(  LB,     AT(REG0, SZ11))
+        STORL( LB,     AT(REG0, SZ11))
 #endif
 #ifdef LA
-        STOR(  LA,     AT(REG0, SZ10))
+        STORL( LA,     AT(REG0, SZ10))
 #endif
 #ifdef L9
-        STOR(  L9,     AT(REG0, SZ9))
+        STORL( L9,     AT(REG0, SZ9))
 #endif
 #ifdef L8
-        STOR(  L8,     AT(REG0, SZ8))
+        STORL( L8,     AT(REG0, SZ8))
 #endif
 #ifdef L7
-        STOR(  L7,     AT(REG0, SZ7))
+        STORL( L7,     AT(REG0, SZ7))
 #endif
 #ifdef L6
-        STOR(  L6,     AT(REG0, SZ6))
+        STORL( L6,     AT(REG0, SZ6))
 #endif
 #ifdef L4
-        STOR(  L4,     AT(REG0, SZ4))
+        STORL( L4,     AT(REG0, SZ4))
 #endif
 #ifdef L3
-        STOR(  L3,     AT(REG0, SZ3))
+        STORL( L3,     AT(REG0, SZ3))
 #endif
 #ifdef L2
-        STOR(  L2,     AT(REG0, SZ2))
+        STORL( L2,     AT(REG0, SZ2))
 #endif
 #ifdef L1
-        STOR(  L1,     AT(REG0, SZ))
+        STORL( L1,     AT(REG0, SZ))
 #endif
 LABEL(_locals_save_reg02_.save1reg)
 #ifdef L0
-        STOR(  L0,     AT(REG0))
+        STORL( L0,     AT(REG0))
 #endif
 #endif /* Ln > 0 */
 
@@ -611,50 +611,50 @@ LABEL(_locals_load_reg02_.work)
         JUMP_REG(      REG1)
 
 #ifdef LF
-        LOAD(  LF,     AT(REG0, SZ15))
+        LOADL( LF,     AT(REG0, SZ15))
 #endif
 #ifdef LE
-        LOAD(  LE,     AT(REG0, SZ14))
+        LOADL( LE,     AT(REG0, SZ14))
 #endif
 #ifdef LD
-        LOAD(  LD,     AT(REG0, SZ13))
+        LOADL( LD,     AT(REG0, SZ13))
 #endif
 #ifdef LC
-        LOAD(  LC,     AT(REG0, SZ12))
+        LOADL( LC,     AT(REG0, SZ12))
 #endif
 #ifdef LB
-        LOAD(  LB,     AT(REG0, SZ11))
+        LOADL( LB,     AT(REG0, SZ11))
 #endif
 #ifdef LA
-        LOAD(  LA,     AT(REG0, SZ10))
+        LOADL( LA,     AT(REG0, SZ10))
 #endif
 #ifdef L9
-        LOAD(  L9,     AT(REG0, SZ9))
+        LOADL( L9,     AT(REG0, SZ9))
 #endif
 #ifdef L8
-        LOAD(  L8,     AT(REG0, SZ8))
+        LOADL( L8,     AT(REG0, SZ8))
 #endif
 #ifdef L7
-        LOAD(  L7,     AT(REG0, SZ7))
+        LOADL( L7,     AT(REG0, SZ7))
 #endif
 #ifdef L6
-        LOAD(  L6,     AT(REG0, SZ6))
+        LOADL( L6,     AT(REG0, SZ6))
 #endif
 #ifdef L4
-        LOAD(  L4,     AT(REG0, SZ4))
+        LOADL( L4,     AT(REG0, SZ4))
 #endif
 #ifdef L3
-        LOAD(  L3,     AT(REG0, SZ3))
+        LOADL( L3,     AT(REG0, SZ3))
 #endif
 #ifdef L2
-        LOAD(  L2,     AT(REG0, SZ2))
+        LOADL( L2,     AT(REG0, SZ2))
 #endif
 #ifdef L1
-        LOAD(  L1,     AT(REG0, SZ))
+        LOADL( L1,     AT(REG0, SZ))
 #endif
 LABEL(_locals_load_reg02_.load1reg)
 #ifdef L0
-        LOAD(  L0,     AT(REG0))
+        LOADL( L0,     AT(REG0))
 #endif
 #endif /* Ln > 0 */
 
