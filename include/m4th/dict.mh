@@ -566,8 +566,9 @@
     X(4, "(lf)", _lf_) /* fetch 15-th local variable */                                            \
     X(4, "(lx)", _lx_) /* followed by T(N) fetch N-th local variable */                            \
     /* followed by T(n), reserve space for n local variables */                                    \
-    X(14, "(locals-enter)", _locals_enter_)                                                        \
-    X(13, "(locals-exit)", _locals_exit_) /* release space of last reserved local variables */     \
+    X(16, "(locals-enter-x)", _locals_enter_x_)                                                    \
+    /* followed by T(n), release space of last reserved local variables */                         \
+    X(15, "(locals-exit-x)", _locals_exit_x_)                                                      \
     X(6, "(loop)", _loop_)                                                                         \
     X(9, "(missing)", _missing_)                                                                   \
     X(4, "(of)", _of_)           /* ( x y -- x| ) execution semantics of 'of'      */              \
@@ -663,7 +664,7 @@
     X(15, "[compile-local]", _compile_local_) /* ( idx -- ) compile a local variable fetch */      \
     /* ( n1_before_pipe n2_after_pipe -- ) compile code to initialize local variables */           \
     X(22, "[compile-locals-enter]", _compile_locals_enter_)                                        \
-    X(7, "[finish", _finish_)      /* ( sys -- ) finish compiling a word, make it findable   */   \
+    X(7, "[finish", _finish_)       /* ( sys -- ) finish compiling a word, make it findable   */   \
     X(8, "[inline]", _inline_)      /* ( nt -- ) inline a call to word into XT being compiled */   \
     X(10, "[optimize]", _optimize_) /* optimize current XT being compiled */                       \
     X(15, "[optimize-opts]", _optimize_opts_) /* ( opts -- ) optimize current XT being compiled */ \

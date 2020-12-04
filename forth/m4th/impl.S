@@ -729,17 +729,24 @@ WORD_START(_locals_clear_,_locals_add_)
         cell_store_1, exit   /* set l.end */   /* (                  ) */
     )
 WORD_END(_locals_clear_)
-WORD_START(_locals_enter_,     _locals_clear_)
+WORD_START(_locals_enter_x_,   _locals_clear_)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,-1)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_INLINE_ALWAYS)
-    WORD_CODE(_locals_enter_, T(0), exit)
-WORD_END(_locals_enter_)
-WORD(_locals_exit_,    _locals_enter_, DSTACK(0,0), RSTACK(-1,0), WORD_IMPURE | M4FLAG_COMPILE_ONLY)
+    WORD_CODE(_locals_enter_x_, T(0), exit)
+WORD_END(_locals_enter_x_)
+WORD_START(_locals_exit_x_,   _locals_enter_x_)
+    WORD_DSTACK(0,0)
+    WORD_RSTACK(-1,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_INLINE_ALWAYS)
+    WORD_CODE(_locals_exit_x_, T(0), exit)
+WORD_END(_locals_enter_x_)
 /* ( ls c-addr u -- idx|-1 ) find local variable */
-WORD_START(_locals_find_,      _locals_exit_)
+WORD_START(_locals_find_,      _locals_exit_x_)
     WORD_DSTACK(3,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -1385,17 +1392,17 @@ WORD_START(_compile_locals_enter_, _compile_local_)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY)
     WORD_CODE(
-        tuck, plus,                 /*                 ( n2 n=n1+n2                 ) */
-        _q_if0_, T(3),              /*                 ( 0 0                        ) */
-            two_drop, exit,         /*                 (                            ) */
-        then,                       /*                 ( n2 n                       ) */
-        _lit_comma_, _locals_enter_,/* compile '(locals-enter)'                       */
-        tuck,                       /*                 ( n n2 n                     ) */
-        token_comma,                /* compile T(n)    ( n n2                       ) */
-        _q_do_, T(6),               /*                 (                  ) ( R: n i ) */
-            _lit_comma_, _to_lx_,   /* compile '(>lx)' (                  ) ( R: n i ) */
-            i, token_comma,         /* compile T(i)    (                  ) ( R: n i ) */
-        _loop_, T(-6),              /*                 (                            ) */
+        tuck, plus,                   /*               ( n2 n=n1+n2                 ) */
+        _q_if0_, T(3),                /*               ( 0 0                        ) */
+            two_drop, exit,           /*               (                            ) */
+        then,                         /*               ( n2 n                       ) */
+        _lit_comma_, _locals_enter_x_,/* compile '(locals-enter)'                     */
+        tuck,                         /*               ( n n2 n                     ) */
+        token_comma,                  /* compile T(n)  ( n n2                       ) */
+        _q_do_, T(6),                 /*               (                 ) ( R: n i ) */
+            _lit_comma_, _to_lx_,     /* compile '(>lx)'  (              ) ( R: n i ) */
+            i, token_comma,           /* compile T(i)  (                 ) ( R: n i ) */
+        _loop_, T(-6),                /*               (                            ) */
         exit
     )
 WORD_END(_compile_locals_enter_)

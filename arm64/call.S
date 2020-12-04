@@ -64,13 +64,6 @@ LABEL(th_run.stack_done)
         LOAD(  HERE, AT(M4TH, M4TH_OFF_HERE))   /* load HERE pointer               */
         DPOP___DTOP()                           /* load first data   stack element */
         RPOP(  RTOP)                            /* load first return stack element */
-
-#if Ln > 0
-        /* reload local variables saved by a previous 'bye', if any */
-        MOVE(  RTOP,  REG2)
-        MOVE(  LOCL,  REG0)
-        JNZ(   LOCL,  FUNC(_locals_load_reg02_))
-#endif
         NEXT0()                                 /* enter vm loop                   */
 FUNC_RAWEND(th_run)
 
@@ -91,18 +84,8 @@ FUNC_RAWEND(_vm_)
  * return to C
  */
 FUNC_START(bye)
-        RPUSH( RTOP)                            /* save first return stack element */
-
-#if Ln > 0
-        /* save local variables to RSTK before exiting */
-        JZ(    LOCL,  TO(bye.continue))
-        MOVE(  LOCL,  REG0)
-        /* load # of saved variables from LOCL[-1] - possibly was in RTOP */
-        LOAD(  REG2,  AT(LOCL, -SZ))
-        TOKEN_CALL_NOTHROW(FUNC(_locals_save_reg02_), bye.0)
-LABEL(bye.continue)
-#endif
         DPUSH__DTOP()                           /* save first data   stack element */
+        RPUSH( RTOP)                            /* save first return stack element */
         STOR(  HERE, AT(M4TH, M4TH_OFF_HERE))   /* save HERE pointer               */
         STOR(  VM,   AT(M4TH, M4TH_OFF_VM))     /* save VM pointer                 */
         STOR(  FTBL, AT(M4TH, M4TH_OFF_FTABLE)) /* save table m4token -> m4func    */

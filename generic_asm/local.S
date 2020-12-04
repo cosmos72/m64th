@@ -437,233 +437,429 @@ FUNC_START(_dup_to_lx_)
 FUNC_END(_dup_to_lx_)
 
 
-/* (locals-enter) ( R: -- locl ln-1 ... l1 l0 n ) followed by T(N), reserve space for N local variables */
-FUNC_START(_locals_enter_)
-#ifdef __aarch64__
-        LD_ut( REG2,   AT(IP), SZt)        /* b = n; IP += SZt i.e. skip T(n) */
-#else
-        LD_ut( REG2,   AT(IP))             /* b = n                           */
-        ADD2(IMM(SZt), IP)                 /* IP += SZt i.e. skip T(n)        */
-#endif
-        MOVE(  LOCL,   REG3)               /* c = outer LOCL                  */
-        RPUSH2(RTOP,   LOCL)               /* ( R: LOCL _                   ) */
-        MOVE(  REG2,   RTOP)               /* ( R: LOCL n                   ) */
-        NEG1(  REG2)                       /* b = -n                          */
-        ADD4(  RSTK,   REG2, PSZ,  RSTK)   /* ( R: LOCL ln-1 ... l1 l0 n    ) */
-        MOVE(  RSTK,   LOCL)               /* LOCL = &l0                      */
-
-#if Ln > 0
-        /* if outer LOCL is 0, local variables were not in use => nothing to save */
-        MOVE(  RSTK,   REG0)               /* @ = &lo needed by _locals_save_reg02_ */
-        NEG1(  REG2)                       /* b = n                           */
-        JNZ(   REG3,   FUNC(_locals_save_reg02_))
-#endif
-        NEXT0()
-FUNC_RAWEND(_locals_enter_)
-
-
 /**
+ * enter a forth function that uses local variables.
  * if some local variables are actually registers i.e. Ln > 0
- * we must save them now in the space we just reserved, before caller overwrites them.
+ * they may be used by some function upper in the call stack:
+ * we must spill them now to RAM, before the new function tries to use them.
  *
  * input:
- * REG0 = base address where to save local variables
- * REG2 = n number of local variables to save.
+ * REG1 = new RSTK address to set, also = new LOCL to set
  */
-FUNC_START(_locals_save_reg02_)
-#if defined(__x86_64__)
-#define MUL_by_sizeof_STOR_Lx(reg) MUL2(IMM(6), reg)
-#elif defined(__aarch64__)
-#define MUL_by_sizeof_STOR_Lx(reg) SHL2(IMM(2), reg)
-#elif Ln > 0
-#error please configure how many bytes are needed by asm instructions STOR(Lx, AT(REG0, SZx)) below
-#endif
-
-#if Ln > 0
-        /* paranoia... we should only be called with base address != 0 */
-        JZ(    REG0,   FUNC_RET(_locals_save_reg02_))
-
-        /* paranoia... we should only be called with n > 0 */
-        JZ(    REG2,   FUNC_RET(_locals_save_reg02_))
-        JBE(   REG2,   IMM(Ln),    TO(_locals_save_reg02_.work))
-
-        /* caller asked for more local variables than available L0...Lx       */
-        /* additional variables will be in return stack                       */
-        MOVI(  Ln,     REG2)
-
-LABEL(_locals_save_reg02_.work)
-        NEG1(  REG2)
-        INC1(  REG2)
-        MUL_by_sizeof_STOR_Lx(REG2) /* a = (1-n) * sizeof_each_asm_instruction */
-
-        ADDROF_1M(TO(_locals_save_reg02_.save1reg), REG1)
-        ADD2(  REG2,   REG1)
-        JUMP_REG(      REG1)
-
+FUNC_START(_locals_spill_regs_)
+LABEL(_locals_spill_regs_.16)
 #ifdef LF
-        STORL( LF,     AT(REG0, SZ15))
+        STORL( LF,     AT(REG1, SZ15))
 #endif
+LABEL(_locals_spill_regs_.15)
 #ifdef LE
-        STORL( LE,     AT(REG0, SZ14))
+        STORL( LE,     AT(REG1, SZ14))
 #endif
+LABEL(_locals_spill_regs_.14)
 #ifdef LD
-        STORL( LD,     AT(REG0, SZ13))
+        STORL( LD,     AT(REG1, SZ13))
 #endif
+LABEL(_locals_spill_regs_.13)
 #ifdef LC
-        STORL( LC,     AT(REG0, SZ12))
+        STORL( LC,     AT(REG1, SZ12))
 #endif
+LABEL(_locals_spill_regs_.12)
 #ifdef LB
-        STORL( LB,     AT(REG0, SZ11))
+        STORL( LB,     AT(REG1, SZ11))
 #endif
+LABEL(_locals_spill_regs_.11)
 #ifdef LA
-        STORL( LA,     AT(REG0, SZ10))
+        STORL( LA,     AT(REG1, SZ10))
 #endif
+LABEL(_locals_spill_regs_.10)
 #ifdef L9
-        STORL( L9,     AT(REG0, SZ9))
+        STORL( L9,     AT(REG1, SZ9))
 #endif
+LABEL(_locals_spill_regs_.09)
 #ifdef L8
-        STORL( L8,     AT(REG0, SZ8))
+        STORL( L8,     AT(REG1, SZ8))
 #endif
+LABEL(_locals_spill_regs_.08)
 #ifdef L7
-        STORL( L7,     AT(REG0, SZ7))
+        STORL( L7,     AT(REG1, SZ7))
 #endif
+LABEL(_locals_spill_regs_.07)
 #ifdef L6
-        STORL( L6,     AT(REG0, SZ6))
+        STORL( L6,     AT(REG1, SZ6))
 #endif
+LABEL(_locals_spill_regs_.06)
+#ifdef L5
+        STORL( L5,     AT(REG1, SZ5))
+#endif
+LABEL(_locals_spill_regs_.05)
 #ifdef L4
-        STORL( L4,     AT(REG0, SZ4))
+        STORL( L4,     AT(REG1, SZ4))
 #endif
+LABEL(_locals_spill_regs_.04)
 #ifdef L3
-        STORL( L3,     AT(REG0, SZ3))
+        STORL( L3,     AT(REG1, SZ3))
 #endif
+LABEL(_locals_spill_regs_.03)
 #ifdef L2
-        STORL( L2,     AT(REG0, SZ2))
+        STORL( L2,     AT(REG1, SZ2))
 #endif
+LABEL(_locals_spill_regs_.02)
 #ifdef L1
-        STORL( L1,     AT(REG0, SZ))
+        STORL( L1,     AT(REG1, SZ))
 #endif
-LABEL(_locals_save_reg02_.save1reg)
+LABEL(_locals_spill_regs_.01)
 #ifdef L0
-        STORL( L0,     AT(REG0))
-#endif
-#endif /* Ln > 0 */
-
-FUNC_END(_locals_save_reg02_)
-
-
-/* (locals-exit) ( R: locl ln-1 ... l1 l0 n -- ) release space for last reserved local variables */
-FUNC_START(_locals_exit_)
-
-        MOVE(  RTOP,   REG2)               /* b = n                            */
-        MOVE(  LOCL,   REG0)               /* @ = inner LOCL                   */
-
-#ifdef __x86_64__
-        leaq   SZ2(RSTK, RTOP, SZ),  RSTK;
-        LOAD(  LOCL,   AT(RSTK, -SZ2))
-        LOAD(  RTOP,   AT(RSTK, -SZ))
-#else
-        ADD4(  RSTK,   RTOP, PSZ,  RSTK)   /* ( R: LOCL n                    ) */
-        RPOP2( LOCL,   RTOP)               /* ( R:                           ) */
+        STORL( L0,     AT(REG1))
 #endif
 
-        /* if outer LOCL == 0, no need to restore local variables */
-        JNZ(   LOCL,   FUNC(_locals_load_reg02_))
-FUNC_END(_locals_exit_)
+LABEL(_locals_spill_regs_.finish)
+        STOR(  RTOP,   AT(RSTK, -SZ))
+        MOVE(  LOCL,   RTOP)
+        MOVE(  REG1,   RSTK)
+        MOVE(  REG1,   LOCL)
+        NEXT0()
+FUNC_RAWEND(_locals_spill_regs_)
+
+/* (locals-enter-01) ( R: -- l0 locl ) reserve space for 1 local variable */
+FUNC_START(_locals_enter_01_)
+        ADDI(  RSTK,   -SZ2,   REG1)
+        JNZ(   LOCL,   TO(_locals_spill_regs_.01))
+        JUMP(  TO(_locals_spill_regs_.finish))
+FUNC_RAWEND(_locals_enter_01_)
+
+/* (locals-enter-02) ( R: -- l1 l0 locl ) reserve space for 2 local variables */
+FUNC_START(_locals_enter_02_)
+        ADDI(  RSTK,   -SZ3,   REG1)
+        JNZ(   LOCL,   TO(_locals_spill_regs_.02))
+        JUMP(  TO(_locals_spill_regs_.finish))
+FUNC_RAWEND(_locals_enter_02_)
+
+/* (locals-enter-03) ( R: -- l2 .. l0 locl ) reserve space for 3 local variables */
+FUNC_START(_locals_enter_03_)
+        ADDI(  RSTK,   -SZ4,   REG1)
+        JNZ(   LOCL,   TO(_locals_spill_regs_.03))
+        JUMP(  TO(_locals_spill_regs_.finish))
+FUNC_RAWEND(_locals_enter_03_)
+
+/* (locals-enter-04) ( R: -- l2 .. l0 locl ) reserve space for 4 local variables */
+FUNC_START(_locals_enter_04_)
+        ADDI(  RSTK,   -SZ5,   REG1)
+        JNZ(   LOCL,   TO(_locals_spill_regs_.04))
+        JUMP(  TO(_locals_spill_regs_.finish))
+FUNC_RAWEND(_locals_enter_04_)
+
+/* (locals-enter-05) ( R: -- l2 .. l0 locl ) reserve space for 5 local variables */
+FUNC_START(_locals_enter_05_)
+        ADDI(  RSTK,   -SZ6,   REG1)
+        JNZ(   LOCL,   TO(_locals_spill_regs_.05))
+        JUMP(  TO(_locals_spill_regs_.finish))
+FUNC_RAWEND(_locals_enter_05_)
+
+/* (locals-enter-06) ( R: -- l2 .. l0 locl ) reserve space for 6 local variables */
+FUNC_START(_locals_enter_06_)
+        ADDI(  RSTK,   -SZ7,   REG1)
+        JNZ(   LOCL,   TO(_locals_spill_regs_.06))
+        JUMP(  TO(_locals_spill_regs_.finish))
+FUNC_RAWEND(_locals_enter_06_)
+
+/* (locals-enter-07) ( R: -- l2 .. l0 locl ) reserve space for 7 local variables */
+FUNC_START(_locals_enter_07_)
+        ADDI(  RSTK,   -SZ8,   REG1)
+        JNZ(   LOCL,   TO(_locals_spill_regs_.07))
+        JUMP(  TO(_locals_spill_regs_.finish))
+FUNC_RAWEND(_locals_enter_07_)
+
+/* (locals-enter-08) ( R: -- l2 .. l0 locl ) reserve space for 8 local variables */
+FUNC_START(_locals_enter_08_)
+        ADDI(  RSTK,   -SZ9,   REG1)
+        JNZ(   LOCL,   TO(_locals_spill_regs_.08))
+        JUMP(  TO(_locals_spill_regs_.finish))
+FUNC_RAWEND(_locals_enter_08_)
+
+/* (locals-enter-09) ( R: -- l2 .. l0 locl ) reserve space for 9 local variables */
+FUNC_START(_locals_enter_09_)
+        ADDI(  RSTK,   -SZ10,  REG1)
+        JNZ(   LOCL,   TO(_locals_spill_regs_.09))
+        JUMP(  TO(_locals_spill_regs_.finish))
+FUNC_RAWEND(_locals_enter_09_)
+
+/* (locals-enter-10) ( R: -- l2 .. l0 locl ) reserve space for 3 local variables */
+FUNC_START(_locals_enter_10_)
+        ADDI(  RSTK,   -SZ11,  REG1)
+        JNZ(   LOCL,   TO(_locals_spill_regs_.10))
+        JUMP(  TO(_locals_spill_regs_.finish))
+FUNC_RAWEND(_locals_enter_10_)
+
+/* (locals-enter-11) ( R: -- l2 .. l0 locl ) reserve space for 3 local variables */
+FUNC_START(_locals_enter_11_)
+        ADDI(  RSTK,   -SZ12,  REG1)
+        JNZ(   LOCL,   TO(_locals_spill_regs_.11))
+        JUMP(  TO(_locals_spill_regs_.finish))
+FUNC_RAWEND(_locals_enter_11_)
+
+/* (locals-enter-12) ( R: -- l2 .. l0 locl ) reserve space for 3 local variables */
+FUNC_START(_locals_enter_12_)
+        ADDI(  RSTK,   -SZ13,  REG1)
+        JNZ(   LOCL,   TO(_locals_spill_regs_.12))
+        JUMP(  TO(_locals_spill_regs_.finish))
+FUNC_RAWEND(_locals_enter_12_)
+
+/* (locals-enter-13) ( R: -- l2 .. l0 locl ) reserve space for 3 local variables */
+FUNC_START(_locals_enter_13_)
+        ADDI(  RSTK,   -SZ14,  REG1)
+        JNZ(   LOCL,   TO(_locals_spill_regs_.13))
+        JUMP(  TO(_locals_spill_regs_.finish))
+FUNC_RAWEND(_locals_enter_13_)
+
+/* (locals-enter-14) ( R: -- l2 .. l0 locl ) reserve space for 3 local variables */
+FUNC_START(_locals_enter_14_)
+        ADDI(  RSTK,   -SZ15,  REG1)
+        JNZ(   LOCL,   TO(_locals_spill_regs_.14))
+        JUMP(  TO(_locals_spill_regs_.finish))
+FUNC_RAWEND(_locals_enter_14_)
+
+/* (locals-enter-15) ( R: -- l2 .. l0 locl ) reserve space for 3 local variables */
+FUNC_START(_locals_enter_15_)
+        ADDI(  RSTK,   -SZ16,  REG1)
+        JNZ(   LOCL,   TO(_locals_spill_regs_.15))
+        JUMP(  TO(_locals_spill_regs_.finish))
+FUNC_RAWEND(_locals_enter_15_)
+
+/* (locals-enter-16) ( R: -- l2 .. l0 locl ) reserve space for 3 local variables */
+FUNC_START(_locals_enter_16_)
+        ADDI(  RSTK,   -SZ17,  REG1)
+        JNZ(   LOCL,   TO(_locals_spill_regs_.16))
+        JUMP(  TO(_locals_spill_regs_.finish))
+FUNC_RAWEND(_locals_enter_16_)
+
+/* (locals-enter-x) ( R: -- ln-1 ... l1 l0 locl ) */
+/* must be followed by T(N), reserves space for N local variables. N must be >= Ln */
+FUNC_START(_locals_enter_x_)
+        LD_ut( REG1,   AT(IP))
+        ADD2(IMM(SZt), IP)
+        NOT1(  REG1)                      /* a = -n-1       */
+        ADD4(  RSTK,   REG1,PSZ,   REG1)  /* a = new RSTK   */
+        JNZ(   LOCL,   FUNC(_locals_spill_regs_))
+        JUMP(  TO(_locals_spill_regs_.finish))
+FUNC_RAWEND(_locals_enter_x_)
+
+
+
+
 
 /**
+ * exit from a forth function that uses local variables.
  * if some local variables are actually registers i.e. Ln > 0
  * we must reload them now, before caller tries to use them.
  *
  * input:
- * REG0 = base address to load local variables from
- * REG2 = n number of local variables to load.
+ * REG1 = new RSTK address to set.
  */
-FUNC_START(_locals_load_reg02_)
-#if defined(__x86_64__)
-#define MUL_by_sizeof_LOAD_Lx(reg) MUL2(IMM(6), reg)
-#define LOAD_Lx_asm_bytes 6
-#elif defined(__aarch64__)
-#define MUL_by_sizeof_LOAD_Lx(reg) SHL2(IMM(2), reg)
-#elif Ln > 0
-#error please configure how many bytes are needed by asm instructions LOAD(Lx, AT(REG0, SZx)) below
-#endif
-
-#if Ln > 0
-        /* paranoia... we should only be called with base address != 0 */
-        JZ(    REG0,   FUNC_RET(_locals_load_reg02_))
-
-        /* paranoia... we should only be called with n > 0 */
-        JZ(    REG2,   FUNC_RET(_locals_load_reg02_))
-
-        JBE(   REG2,   IMM(Ln), TO(_locals_load_reg02_.work))
-
-        /* inner LOCL used more local variables than available L0...Lx         */
-        /* additional variables are in return stack => no need to restore them */
-        MOVI(  Ln,     REG2)
-
-LABEL(_locals_load_reg02_.work)
-        NEG1(  REG2)
-        INC1(  REG2)
-        MUL_by_sizeof_LOAD_Lx( REG2) /* a = (1-n) * sizeof_each_asm_instruction */
-
-        ADDROF_1M(TO(_locals_load_reg02_.load1reg), REG1)
-        ADD2(  REG2,   REG1)
-        JUMP_REG(      REG1)
-
+FUNC_START(_locals_reload_regs_)
+LABEL(_locals_reload_regs_.16)
 #ifdef LF
-        LOADL( LF,     AT(REG0, SZ15))
+        LOADL( LF,     AT(LOCL, SZ15))
 #endif
+LABEL(_locals_reload_regs_.15)
 #ifdef LE
-        LOADL( LE,     AT(REG0, SZ14))
+        LOADL( LE,     AT(LOCL, SZ14))
 #endif
+LABEL(_locals_reload_regs_.14)
 #ifdef LD
-        LOADL( LD,     AT(REG0, SZ13))
+        LOADL( LD,     AT(LOCL, SZ13))
 #endif
+LABEL(_locals_reload_regs_.13)
 #ifdef LC
-        LOADL( LC,     AT(REG0, SZ12))
+        LOADL( LC,     AT(LOCL, SZ12))
 #endif
+LABEL(_locals_reload_regs_.12)
 #ifdef LB
-        LOADL( LB,     AT(REG0, SZ11))
+        LOADL( LB,     AT(LOCL, SZ11))
 #endif
+LABEL(_locals_reload_regs_.11)
 #ifdef LA
-        LOADL( LA,     AT(REG0, SZ10))
+        LOADL( LA,     AT(LOCL, SZ10))
 #endif
+LABEL(_locals_reload_regs_.10)
 #ifdef L9
-        LOADL( L9,     AT(REG0, SZ9))
+        LOADL( L9,     AT(LOCL, SZ9))
 #endif
+LABEL(_locals_reload_regs_.09)
 #ifdef L8
-        LOADL( L8,     AT(REG0, SZ8))
+        LOADL( L8,     AT(LOCL, SZ8))
 #endif
+LABEL(_locals_reload_regs_.08)
 #ifdef L7
-        LOADL( L7,     AT(REG0, SZ7))
+        LOADL( L7,     AT(LOCL, SZ7))
 #endif
+LABEL(_locals_reload_regs_.07)
 #ifdef L6
-        LOADL( L6,     AT(REG0, SZ6))
+        LOADL( L6,     AT(LOCL, SZ6))
 #endif
+LABEL(_locals_reload_regs_.06)
+#ifdef L5
+        LOADL( L5,     AT(LOCL, SZ5))
+#endif
+LABEL(_locals_reload_regs_.05)
 #ifdef L4
-        LOADL( L4,     AT(REG0, SZ4))
+        LOADL( L4,     AT(LOCL, SZ4))
 #endif
+LABEL(_locals_reload_regs_.04)
 #ifdef L3
-        LOADL( L3,     AT(REG0, SZ3))
+        LOADL( L3,     AT(LOCL, SZ3))
 #endif
+LABEL(_locals_reload_regs_.03)
 #ifdef L2
-        LOADL( L2,     AT(REG0, SZ2))
+        LOADL( L2,     AT(LOCL, SZ2))
 #endif
+LABEL(_locals_reload_regs_.02)
 #ifdef L1
-        LOADL( L1,     AT(REG0, SZ))
+        LOADL( L1,     AT(LOCL, SZ))
 #endif
-LABEL(_locals_load_reg02_.load1reg)
+LABEL(_locals_reload_regs_.01)
 #ifdef L0
-        LOADL( L0,     AT(REG0))
+        LOADL( L0,     AT(LOCL))
 #endif
-#endif /* Ln > 0 */
 
-FUNC_END(_locals_load_reg02_)
+LABEL(_locals_reload_regs_.finish)
+        MOVE(  RTOP,   LOCL)
+        LOAD(  RTOP,   AT(REG1, -SZ))
+        MOVE(  REG1,   RSTK)
+        NEXT0()
+FUNC_RAWEND(_locals_reload_regs_)
+
+
+/* (locals-exit-01) ( R: l0 outer-locl -- ) release space for last reserved local variables */
+FUNC_START(_locals_exit_01_)
+        ADDI(  RSTK,   SZ2,    REG1)         /* updated RSTK */
+        JNZ(   RTOP,   TO(_locals_reload_regs_.01))
+        JUMP(  TO(_locals_reload_regs_.finish))
+FUNC_RAWEND(_locals_exit_01_)
+
+
+/* (locals-exit-02) ( R: l1 l0 outer-locl -- ) release space for last reserved local variables */
+FUNC_START(_locals_exit_02_)
+        ADDI(  RSTK,   SZ3,    REG1)         /* updated RSTK */
+        JNZ(   RTOP,   TO(_locals_reload_regs_.02))
+        JUMP(  TO(_locals_reload_regs_.finish))
+FUNC_RAWEND(_locals_exit_02_)
+
+
+/* (locals-exit-03) ( R: l2 .. l0 outer-locl -- ) release space for last reserved local variables */
+FUNC_START(_locals_exit_03_)
+        ADDI(  RSTK,   SZ4,    REG1)         /* updated RSTK */
+        JNZ(   RTOP,   TO(_locals_reload_regs_.03))
+        JUMP(  TO(_locals_reload_regs_.finish))
+FUNC_RAWEND(_locals_exit_03_)
+
+
+/* (locals-exit-04) ( R: l3 .. l0 outer-locl -- ) release space for last reserved local variables */
+FUNC_START(_locals_exit_04_)
+        ADDI(  RSTK,   SZ5,    REG1)         /* updated RSTK */
+        JNZ(   RTOP,   TO(_locals_reload_regs_.04))
+        JUMP(  TO(_locals_reload_regs_.finish))
+FUNC_RAWEND(_locals_exit_04_)
+
+
+/* (locals-exit-05) ( R: l4 .. l0 outer-locl -- ) release space for last reserved local variables */
+FUNC_START(_locals_exit_05_)
+        ADDI(  RSTK,   SZ6,    REG1)         /* updated RSTK */
+        JNZ(   RTOP,   TO(_locals_reload_regs_.05))
+        JUMP(  TO(_locals_reload_regs_.finish))
+FUNC_RAWEND(_locals_exit_05_)
+
+/* (locals-exit-06) ( R: l5 .. l0 outer-locl -- ) release space for last reserved local variables */
+FUNC_START(_locals_exit_06_)
+        ADDI(  RSTK,   SZ7,    REG1)         /* updated RSTK */
+        JNZ(   RTOP,   TO(_locals_reload_regs_.06))
+        JUMP(  TO(_locals_reload_regs_.finish))
+FUNC_RAWEND(_locals_exit_06_)
+
+/* (locals-exit-07) ( R: l6 .. l0 outer-locl -- ) release space for last reserved local variables */
+FUNC_START(_locals_exit_07_)
+        ADDI(  RSTK,   SZ8,    REG1)         /* updated RSTK */
+        JNZ(   RTOP,   TO(_locals_reload_regs_.07))
+        JUMP(  TO(_locals_reload_regs_.finish))
+FUNC_RAWEND(_locals_exit_07_)
+
+/* (locals-exit-08) ( R: l7 .. l0 outer-locl -- ) release space for last reserved local variables */
+FUNC_START(_locals_exit_08_)
+        ADDI(  RSTK,   SZ9,    REG1)         /* updated RSTK */
+        JNZ(   RTOP,   TO(_locals_reload_regs_.08))
+        JUMP(  TO(_locals_reload_regs_.finish))
+FUNC_RAWEND(_locals_exit_08_)
+
+/* (locals-exit-09) ( R: l8 .. l0 outer-locl -- ) release space for last reserved local variables */
+FUNC_START(_locals_exit_09_)
+        ADDI(  RSTK,   SZ10,   REG1)         /* updated RSTK */
+        JNZ(   RTOP,   TO(_locals_reload_regs_.09))
+        JUMP(  TO(_locals_reload_regs_.finish))
+FUNC_RAWEND(_locals_exit_09_)
+
+/* (locals-exit-10) ( R: l9 .. l0 outer-locl -- ) release space for last reserved local variables */
+FUNC_START(_locals_exit_10_)
+        ADDI(  RSTK,   SZ11,   REG1)         /* updated RSTK */
+        JNZ(   RTOP,   TO(_locals_reload_regs_.10))
+        JUMP(  TO(_locals_reload_regs_.finish))
+FUNC_RAWEND(_locals_exit_10_)
+
+/* (locals-exit-11) ( R: la .. l0 outer-locl -- ) release space for last reserved local variables */
+FUNC_START(_locals_exit_11_)
+        ADDI(  RSTK,   SZ12,   REG1)         /* updated RSTK */
+        JNZ(   RTOP,   TO(_locals_reload_regs_.11))
+        JUMP(  TO(_locals_reload_regs_.finish))
+FUNC_RAWEND(_locals_exit_11_)
+
+/* (locals-exit-12) ( R: lb .. l0 outer-locl -- ) release space for last reserved local variables */
+FUNC_START(_locals_exit_12_)
+        ADDI(  RSTK,   SZ13,   REG1)         /* updated RSTK */
+        JNZ(   RTOP,   TO(_locals_reload_regs_.12))
+        JUMP(  TO(_locals_reload_regs_.finish))
+FUNC_RAWEND(_locals_exit_12_)
+
+/* (locals-exit-d) ( R: lc .. l0 outer-locl -- ) release space for last reserved local variables */
+FUNC_START(_locals_exit_d_)
+        ADDI(  RSTK,   SZ14,   REG1)         /* updated RSTK */
+        JNZ(   RTOP,   TO(_locals_reload_regs_.13))
+        JUMP(  TO(_locals_reload_regs_.finish))
+FUNC_RAWEND(_locals_exit_d_)
+
+/* (locals-exit-e) ( R: ld .. l0 outer-locl -- ) release space for last reserved local variables */
+FUNC_START(_locals_exit_e_)
+        ADDI(  RSTK,   SZ15,   REG1)         /* updated RSTK */
+        JNZ(   RTOP,   TO(_locals_reload_regs_.14))
+        JUMP(  TO(_locals_reload_regs_.finish))
+FUNC_RAWEND(_locals_exit_e_)
+
+/* (locals-exit-f) ( R: le .. l0 outer-locl -- ) release space for last reserved local variables */
+FUNC_START(_locals_exit_f_)
+        ADDI(  RSTK,   SZ16,   REG1)         /* updated RSTK */
+        JNZ(   RTOP,   TO(_locals_reload_regs_.15))
+        JUMP(  TO(_locals_reload_regs_.finish))
+FUNC_RAWEND(_locals_exit_f_)
+
+/* (locals-exit-g) ( R: lf .. l0 outer-locl -- ) release space for last reserved local variables */
+FUNC_START(_locals_exit_g_)
+        ADDI(  RSTK,   SZ17,   REG1)         /* updated RSTK */
+        JNZ(   RTOP,   TO(_locals_reload_regs_.16))
+        JUMP(  TO(_locals_reload_regs_.finish))
+FUNC_RAWEND(_locals_exit_g_)
+
+/* (locals-exit-x) ( R: .. lf .. l0 outer-locl -- ) release space for last reserved local variables */
+/* must be followed by T(N), releases space for N local variables. N must be >= Ln */
+FUNC_START(_locals_exit_x_)
+        LD_ut( REG1,   AT(IP))
+        ADD2(IMM(SZt), IP)
+        ADD2(IMM(1),   REG1)                 /* also release space for saved LOCL */
+        ADD4(  RSTK,   REG1,PSZ,   REG1)     /* updated RSTK */
+        JNZ(   RTOP,   FUNC(_locals_reload_regs_))
+        JUMP(  TO(_locals_reload_regs_.finish))
+FUNC_RAWEND(_locals_exit_x_)
 
 
 
 /*
- * save forth local variables before a C function call.
+ * save all forth local variables before a C function call.
  * must be invoked before _c_arg_*_
  */
 FUNC_START(_c_locals_save_)
@@ -723,7 +919,7 @@ FUNC_END(_c_locals_save_)
 
 
 /*
- * reload forth local variables after a C function call.
+ * reload all forth local variables after a C function call.
  * must be invoked after _c_ret_*_
  */
 FUNC_START(_c_locals_load_)

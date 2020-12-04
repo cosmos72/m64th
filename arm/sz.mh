@@ -37,6 +37,8 @@
 #define SZ13 52 /* SZ * 13 */
 #define SZ14 56 /* SZ * 14 */
 #define SZ15 60 /* SZ * 15 */
+#define SZ16 64 /* SZ * 16 */
+#define SZ17 68 /* SZ * 17 */
 #define PSZ 2   /* (1 << PSZ) == SZ */
 
 #define SZt 2  /* sizeof(m4token) in bytes */

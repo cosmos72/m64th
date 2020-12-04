@@ -375,10 +375,11 @@ WORD_START(exit, execute)
         CALL(_throw_if_not_compiling_),
         user_var, T(M4TH_USER_VAR_LOCALS), fetch,      /* ( ls|0                 ) */
         question_dup,                                  /* ( ls ls |0             ) */
-        _if_, T(7),                                    /* ( ls                   ) */
-            fetch,                                     /* ( ls.n                 ) */
-            _if_, T(3),                                /* (                      ) */
-                _lit_comma_, _locals_exit_, /* compile '(locals-exit)'             */
+        _if_, T(9),                                    /* ( ls                   ) */
+            fetch, question_dup,                       /* ( ls.n ls.n | 0        ) */
+            _if_, T(4),                                /* ( ls.n                 ) */
+                _lit_comma_, _locals_exit_x_, /* compile '(locals-exit-x)'         */
+                token_comma,                  /* compile T(ls.n)                   */
             then,                                      /* (                      ) */
         then,                                          /* (                      ) */
         _lit_comma_, exit,           /* compile 'exit'    (                      ) */
