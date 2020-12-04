@@ -853,6 +853,7 @@ static const m4token test_tokens_lx_t3[] = {m4_lx_, 3};
 static const m4token test_tokens_drop_drop[] = {m4drop, m4drop};
 static const m4token test_tokens_r_from_plus_to_r[] = {m4r_from, m4plus, m4to_r};
 static const m4token test_tokens_if_t_then[] = {m4_if_, (m4token)-1, m4then};
+static const m4token test_tokens_lx_t_drop[] = {m4_lx_, T(7), m4drop};
 static const m4token test_tokens_if0_t_else[] = {m4_if0_, (m4token)-1, m4_else_};
 static const m4token test_tokens__lit__0xffff_and[] = {m4_lit_, 0xffff, m4and};
 static const m4token test_tokens_qif_t_dup_then[] = {m4_q_if_, (m4token)-1, m4dup, m4then};
@@ -980,6 +981,12 @@ static m4testexecute testexecute_e[] = {
      {{1, {(m4cell)test_tokens_if_t_then}}, {}},
      {{}, {}},
      {1, {m4drop}}},
+    {"{(lx) T(_) drop} (optimize-3local)",
+     {CALL(_optimize_3local_),           /* ( counted-tokens ) */
+      CALL(countedtokens_comma), m4bye}, /* (                ) */
+     {{1, {(m4cell)test_tokens_lx_t_drop}}, {}},
+     {{}, {}},
+     {}},
     {"{(?if) T(_) dup then} (optimize-4token)",
      {CALL(_optimize_4token_),           /* ( counted-tokens ) */
       CALL(countedtokens_comma), m4bye}, /* (                ) */

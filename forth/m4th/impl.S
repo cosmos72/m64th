@@ -1213,11 +1213,37 @@ WORD_START(_optimize_3jump_, _optimize_3token_)
     )
 WORD_END(_optimize_3jump_)
 /**
+ * find an optimized sequence to replace three tokens being compiled,
+ * related to local variables.
+ * if no optimized sequence was found, return 0
+ * ( tok-addr -- counted-tokens|0 )
+ */
+WORD_START(_optimize_3local_, _optimize_3jump_)
+    WORD_DSTACK(1,1)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_DATA_TOKENS)
+    WORD_CODE_AND_DATA(_optimize_3local_,
+      WORD_CODE_TOKENS(/* generated from file impl.forth - see source and comments there */
+        /*38*/
+        _ip_to_data_addr_, over,                    /* ( tok-addr &data tok-addr ) */
+        token_fetch, _lit_tok_, _lx_, equal, and,   /* ( tok-addr &data|0        ) */
+        swap, token_fetch_2, _lit_tok_, drop, equal,/* ( &data|0 t|f             ) */
+        and, exit                                   /* ( &data|0                 ) */
+        /* '(lx) T(n) drop' optimizes to a noop */
+      ),
+      WORD_DATA_TOKENS(
+          T(0)
+      )
+    )
+WORD_END(_optimize_3local_)
+/**
  * find an optimized sequence to replace four tokens being compiled.
  * if no optimized sequence was found, return 0
  * ( tok-addr -- counted-tokens|0 )
  */
-WORD_START(_optimize_4token_, _optimize_3jump_)
+WORD_START(_optimize_4token_, _optimize_3local_)
     WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -1284,6 +1310,7 @@ WORD_START(_optimize_tokens_, _optimize_4token_)
         T(2|M4OPTS_PRIO_LOW),  XT(_optimize_2token_lowprio_),
         T(3|M4OPTS_PRIO_HIGH), XT(_optimize_3token_),
         T(3|M4OPTS_PRIO_HIGH), XT(_optimize_3jump_),
+        T(3|M4OPTS_PRIO_HIGH), XT(_optimize_3local_),
         T(4|M4OPTS_PRIO_HIGH), XT(_optimize_4token_),
         T(0)
       )

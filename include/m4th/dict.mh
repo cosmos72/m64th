@@ -669,6 +669,9 @@
     /* find an optimized sequence to replace three tokens being compiled, */                       \
     /* which may be part of control flow i.e. 'if' 'else' 'case' etc.  */                          \
     X(16, "(optimize-3jump)", _optimize_3jump_) /* ( tok-addr -- counted-tokens|0 ) */             \
+    /* find an optimized sequence to replace three tokens being compiled, */                       \
+    /* related to local variables.  */                                                             \
+    X(17, "(optimize-3local)", _optimize_3local_) /* ( tok-addr -- counted-tokens|0 ) */           \
     /*  find an optimized sequence to replace 3 tokens being compiled. */                          \
     X(17, "(optimize-3token)", _optimize_3token_) /* ( tok-addr -- counted-tokens|0 ) */           \
     /*  find an optimized sequence to replace 4 tokens being compiled. */                          \
