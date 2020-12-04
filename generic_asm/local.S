@@ -520,128 +520,128 @@ LABEL(_locals_spill_regs_.finish)
         NEXT0()
 FUNC_RAWEND(_locals_spill_regs_)
 
-/* (locals-enter-01) ( R: -- l0 locl ) reserve space for 1 local variable */
-FUNC_START(_locals_enter_01_)
+/* (lenter-1) ( R: -- l0 locl ) reserve space for 1 local variable */
+FUNC_START(_lenter_1_)
         ADDI(  RSTK,   -SZ2,   REG1)
         JNZ(   LOCL,   TO(_locals_spill_regs_.01))
         JUMP(  TO(_locals_spill_regs_.finish))
-FUNC_RAWEND(_locals_enter_01_)
+FUNC_RAWEND(_lenter_1_)
 
-/* (locals-enter-02) ( R: -- l1 l0 locl ) reserve space for 2 local variables */
-FUNC_START(_locals_enter_02_)
+/* (lenter-2) ( R: -- l1 l0 locl ) reserve space for 2 local variables */
+FUNC_START(_lenter_2_)
         ADDI(  RSTK,   -SZ3,   REG1)
         JNZ(   LOCL,   TO(_locals_spill_regs_.02))
         JUMP(  TO(_locals_spill_regs_.finish))
-FUNC_RAWEND(_locals_enter_02_)
+FUNC_RAWEND(_lenter_2_)
 
-/* (locals-enter-03) ( R: -- l2 .. l0 locl ) reserve space for 3 local variables */
-FUNC_START(_locals_enter_03_)
+/* (lenter-3) ( R: -- l2 .. l0 locl ) reserve space for 3 local variables */
+FUNC_START(_lenter_3_)
         ADDI(  RSTK,   -SZ4,   REG1)
         JNZ(   LOCL,   TO(_locals_spill_regs_.03))
         JUMP(  TO(_locals_spill_regs_.finish))
-FUNC_RAWEND(_locals_enter_03_)
+FUNC_RAWEND(_lenter_3_)
 
-/* (locals-enter-04) ( R: -- l2 .. l0 locl ) reserve space for 4 local variables */
-FUNC_START(_locals_enter_04_)
+/* (lenter-4) ( R: -- l3 .. l0 locl ) reserve space for 4 local variables */
+FUNC_START(_lenter_4_)
         ADDI(  RSTK,   -SZ5,   REG1)
         JNZ(   LOCL,   TO(_locals_spill_regs_.04))
         JUMP(  TO(_locals_spill_regs_.finish))
-FUNC_RAWEND(_locals_enter_04_)
+FUNC_RAWEND(_lenter_4_)
 
-/* (locals-enter-05) ( R: -- l2 .. l0 locl ) reserve space for 5 local variables */
-FUNC_START(_locals_enter_05_)
+/* (lenter-5) ( R: -- l4 .. l0 locl ) reserve space for 5 local variables */
+FUNC_START(_lenter_5_)
         ADDI(  RSTK,   -SZ6,   REG1)
         JNZ(   LOCL,   TO(_locals_spill_regs_.05))
         JUMP(  TO(_locals_spill_regs_.finish))
-FUNC_RAWEND(_locals_enter_05_)
+FUNC_RAWEND(_lenter_5_)
 
-/* (locals-enter-06) ( R: -- l2 .. l0 locl ) reserve space for 6 local variables */
-FUNC_START(_locals_enter_06_)
+/* (lenter-6) ( R: -- l5 .. l0 locl ) reserve space for 6 local variables */
+FUNC_START(_lenter_6_)
         ADDI(  RSTK,   -SZ7,   REG1)
         JNZ(   LOCL,   TO(_locals_spill_regs_.06))
         JUMP(  TO(_locals_spill_regs_.finish))
-FUNC_RAWEND(_locals_enter_06_)
+FUNC_RAWEND(_lenter_6_)
 
-/* (locals-enter-07) ( R: -- l2 .. l0 locl ) reserve space for 7 local variables */
-FUNC_START(_locals_enter_07_)
+/* (lenter-7) ( R: -- l6 .. l0 locl ) reserve space for 7 local variables */
+FUNC_START(_lenter_7_)
         ADDI(  RSTK,   -SZ8,   REG1)
         JNZ(   LOCL,   TO(_locals_spill_regs_.07))
         JUMP(  TO(_locals_spill_regs_.finish))
-FUNC_RAWEND(_locals_enter_07_)
+FUNC_RAWEND(_lenter_7_)
 
-/* (locals-enter-08) ( R: -- l2 .. l0 locl ) reserve space for 8 local variables */
-FUNC_START(_locals_enter_08_)
+/* (lenter-8) ( R: -- l7 .. l0 locl ) reserve space for 8 local variables */
+FUNC_START(_lenter_8_)
         ADDI(  RSTK,   -SZ9,   REG1)
         JNZ(   LOCL,   TO(_locals_spill_regs_.08))
         JUMP(  TO(_locals_spill_regs_.finish))
-FUNC_RAWEND(_locals_enter_08_)
+FUNC_RAWEND(_lenter_8_)
 
-/* (locals-enter-09) ( R: -- l2 .. l0 locl ) reserve space for 9 local variables */
-FUNC_START(_locals_enter_09_)
+/* (lenter-9) ( R: -- l8 .. l0 locl ) reserve space for 9 local variables */
+FUNC_START(_lenter_9_)
         ADDI(  RSTK,   -SZ10,  REG1)
         JNZ(   LOCL,   TO(_locals_spill_regs_.09))
         JUMP(  TO(_locals_spill_regs_.finish))
-FUNC_RAWEND(_locals_enter_09_)
+FUNC_RAWEND(_lenter_9_)
 
-/* (locals-enter-10) ( R: -- l2 .. l0 locl ) reserve space for 3 local variables */
-FUNC_START(_locals_enter_10_)
+/* (lenter-a) ( R: -- l9 .. l0 locl ) reserve space for 3 local variables */
+FUNC_START(_lenter_a_)
         ADDI(  RSTK,   -SZ11,  REG1)
         JNZ(   LOCL,   TO(_locals_spill_regs_.10))
         JUMP(  TO(_locals_spill_regs_.finish))
-FUNC_RAWEND(_locals_enter_10_)
+FUNC_RAWEND(_lenter_a_)
 
-/* (locals-enter-11) ( R: -- l2 .. l0 locl ) reserve space for 3 local variables */
-FUNC_START(_locals_enter_11_)
+/* (lenter-b) ( R: -- la .. l0 locl ) reserve space for 3 local variables */
+FUNC_START(_lenter_b_)
         ADDI(  RSTK,   -SZ12,  REG1)
         JNZ(   LOCL,   TO(_locals_spill_regs_.11))
         JUMP(  TO(_locals_spill_regs_.finish))
-FUNC_RAWEND(_locals_enter_11_)
+FUNC_RAWEND(_lenter_b_)
 
-/* (locals-enter-12) ( R: -- l2 .. l0 locl ) reserve space for 3 local variables */
-FUNC_START(_locals_enter_12_)
+/* (lenter-c) ( R: -- lb .. l0 locl ) reserve space for 3 local variables */
+FUNC_START(_lenter_c_)
         ADDI(  RSTK,   -SZ13,  REG1)
         JNZ(   LOCL,   TO(_locals_spill_regs_.12))
         JUMP(  TO(_locals_spill_regs_.finish))
-FUNC_RAWEND(_locals_enter_12_)
+FUNC_RAWEND(_lenter_c_)
 
-/* (locals-enter-13) ( R: -- l2 .. l0 locl ) reserve space for 3 local variables */
-FUNC_START(_locals_enter_13_)
+/* (lenter-d) ( R: -- lc .. l0 locl ) reserve space for 3 local variables */
+FUNC_START(_lenter_d_)
         ADDI(  RSTK,   -SZ14,  REG1)
         JNZ(   LOCL,   TO(_locals_spill_regs_.13))
         JUMP(  TO(_locals_spill_regs_.finish))
-FUNC_RAWEND(_locals_enter_13_)
+FUNC_RAWEND(_lenter_d_)
 
-/* (locals-enter-14) ( R: -- l2 .. l0 locl ) reserve space for 3 local variables */
-FUNC_START(_locals_enter_14_)
+/* (lenter-e) ( R: -- ld .. l0 locl ) reserve space for 3 local variables */
+FUNC_START(_lenter_e_)
         ADDI(  RSTK,   -SZ15,  REG1)
         JNZ(   LOCL,   TO(_locals_spill_regs_.14))
         JUMP(  TO(_locals_spill_regs_.finish))
-FUNC_RAWEND(_locals_enter_14_)
+FUNC_RAWEND(_lenter_e_)
 
-/* (locals-enter-15) ( R: -- l2 .. l0 locl ) reserve space for 3 local variables */
-FUNC_START(_locals_enter_15_)
+/* (lenter-f) ( R: -- le .. l0 locl ) reserve space for 3 local variables */
+FUNC_START(_lenter_f_)
         ADDI(  RSTK,   -SZ16,  REG1)
         JNZ(   LOCL,   TO(_locals_spill_regs_.15))
         JUMP(  TO(_locals_spill_regs_.finish))
-FUNC_RAWEND(_locals_enter_15_)
+FUNC_RAWEND(_lenter_f_)
 
-/* (locals-enter-16) ( R: -- l2 .. l0 locl ) reserve space for 3 local variables */
-FUNC_START(_locals_enter_16_)
+/* (lenter-g) ( R: -- lf .. l0 locl ) reserve space for 3 local variables */
+FUNC_START(_lenter_g_)
         ADDI(  RSTK,   -SZ17,  REG1)
         JNZ(   LOCL,   TO(_locals_spill_regs_.16))
         JUMP(  TO(_locals_spill_regs_.finish))
-FUNC_RAWEND(_locals_enter_16_)
+FUNC_RAWEND(_lenter_g_)
 
-/* (locals-enter-x) ( R: -- ln-1 ... l1 l0 locl ) */
+/* (lenter-x) ( R: -- ln-1 ... l1 l0 locl ) */
 /* must be followed by T(N), reserves space for N local variables. N must be >= Ln */
-FUNC_START(_locals_enter_x_)
+FUNC_START(_lenter_x_)
         LD_ut( REG1,   AT(IP))
         ADD2(IMM(SZt), IP)
         NOT1(  REG1)                      /* a = -n-1       */
         ADD4(  RSTK,   REG1,PSZ,   REG1)  /* a = new RSTK   */
         JNZ(   LOCL,   FUNC(_locals_spill_regs_))
         JUMP(  TO(_locals_spill_regs_.finish))
-FUNC_RAWEND(_locals_enter_x_)
+FUNC_RAWEND(_lenter_x_)
 
 
 
@@ -729,132 +729,132 @@ LABEL(_locals_reload_regs_.finish)
 FUNC_RAWEND(_locals_reload_regs_)
 
 
-/* (locals-exit-01) ( R: l0 outer-locl -- ) release space for last reserved local variables */
-FUNC_START(_locals_exit_01_)
+/* (lexit-1) ( R: l0 outer-locl -- ) release space for last reserved local variables */
+FUNC_START(_lexit_1_)
         ADDI(  RSTK,   SZ2,    REG1)         /* updated RSTK */
         JNZ(   RTOP,   TO(_locals_reload_regs_.01))
         JUMP(  TO(_locals_reload_regs_.finish))
-FUNC_RAWEND(_locals_exit_01_)
+FUNC_RAWEND(_lexit_1_)
 
 
-/* (locals-exit-02) ( R: l1 l0 outer-locl -- ) release space for last reserved local variables */
-FUNC_START(_locals_exit_02_)
+/* (lexit-2) ( R: l1 l0 outer-locl -- ) release space for last reserved local variables */
+FUNC_START(_lexit_2_)
         ADDI(  RSTK,   SZ3,    REG1)         /* updated RSTK */
         JNZ(   RTOP,   TO(_locals_reload_regs_.02))
         JUMP(  TO(_locals_reload_regs_.finish))
-FUNC_RAWEND(_locals_exit_02_)
+FUNC_RAWEND(_lexit_2_)
 
 
-/* (locals-exit-03) ( R: l2 .. l0 outer-locl -- ) release space for last reserved local variables */
-FUNC_START(_locals_exit_03_)
+/* (lexit-3) ( R: l2 .. l0 outer-locl -- ) release space for last reserved local variables */
+FUNC_START(_lexit_3_)
         ADDI(  RSTK,   SZ4,    REG1)         /* updated RSTK */
         JNZ(   RTOP,   TO(_locals_reload_regs_.03))
         JUMP(  TO(_locals_reload_regs_.finish))
-FUNC_RAWEND(_locals_exit_03_)
+FUNC_RAWEND(_lexit_3_)
 
 
-/* (locals-exit-04) ( R: l3 .. l0 outer-locl -- ) release space for last reserved local variables */
-FUNC_START(_locals_exit_04_)
+/* (lexit-4) ( R: l3 .. l0 outer-locl -- ) release space for last reserved local variables */
+FUNC_START(_lexit_4_)
         ADDI(  RSTK,   SZ5,    REG1)         /* updated RSTK */
         JNZ(   RTOP,   TO(_locals_reload_regs_.04))
         JUMP(  TO(_locals_reload_regs_.finish))
-FUNC_RAWEND(_locals_exit_04_)
+FUNC_RAWEND(_lexit_4_)
 
 
-/* (locals-exit-05) ( R: l4 .. l0 outer-locl -- ) release space for last reserved local variables */
-FUNC_START(_locals_exit_05_)
+/* (lexit-5) ( R: l4 .. l0 outer-locl -- ) release space for last reserved local variables */
+FUNC_START(_lexit_5_)
         ADDI(  RSTK,   SZ6,    REG1)         /* updated RSTK */
         JNZ(   RTOP,   TO(_locals_reload_regs_.05))
         JUMP(  TO(_locals_reload_regs_.finish))
-FUNC_RAWEND(_locals_exit_05_)
+FUNC_RAWEND(_lexit_5_)
 
-/* (locals-exit-06) ( R: l5 .. l0 outer-locl -- ) release space for last reserved local variables */
-FUNC_START(_locals_exit_06_)
+/* (lexit-6) ( R: l5 .. l0 outer-locl -- ) release space for last reserved local variables */
+FUNC_START(_lexit_6_)
         ADDI(  RSTK,   SZ7,    REG1)         /* updated RSTK */
         JNZ(   RTOP,   TO(_locals_reload_regs_.06))
         JUMP(  TO(_locals_reload_regs_.finish))
-FUNC_RAWEND(_locals_exit_06_)
+FUNC_RAWEND(_lexit_6_)
 
-/* (locals-exit-07) ( R: l6 .. l0 outer-locl -- ) release space for last reserved local variables */
-FUNC_START(_locals_exit_07_)
+/* (lexit-7) ( R: l6 .. l0 outer-locl -- ) release space for last reserved local variables */
+FUNC_START(_lexit_7_)
         ADDI(  RSTK,   SZ8,    REG1)         /* updated RSTK */
         JNZ(   RTOP,   TO(_locals_reload_regs_.07))
         JUMP(  TO(_locals_reload_regs_.finish))
-FUNC_RAWEND(_locals_exit_07_)
+FUNC_RAWEND(_lexit_7_)
 
-/* (locals-exit-08) ( R: l7 .. l0 outer-locl -- ) release space for last reserved local variables */
-FUNC_START(_locals_exit_08_)
+/* (lexit-8) ( R: l7 .. l0 outer-locl -- ) release space for last reserved local variables */
+FUNC_START(_lexit_8_)
         ADDI(  RSTK,   SZ9,    REG1)         /* updated RSTK */
         JNZ(   RTOP,   TO(_locals_reload_regs_.08))
         JUMP(  TO(_locals_reload_regs_.finish))
-FUNC_RAWEND(_locals_exit_08_)
+FUNC_RAWEND(_lexit_8_)
 
-/* (locals-exit-09) ( R: l8 .. l0 outer-locl -- ) release space for last reserved local variables */
-FUNC_START(_locals_exit_09_)
+/* (lexit-9) ( R: l8 .. l0 outer-locl -- ) release space for last reserved local variables */
+FUNC_START(_lexit_9_)
         ADDI(  RSTK,   SZ10,   REG1)         /* updated RSTK */
         JNZ(   RTOP,   TO(_locals_reload_regs_.09))
         JUMP(  TO(_locals_reload_regs_.finish))
-FUNC_RAWEND(_locals_exit_09_)
+FUNC_RAWEND(_lexit_9_)
 
-/* (locals-exit-10) ( R: l9 .. l0 outer-locl -- ) release space for last reserved local variables */
-FUNC_START(_locals_exit_10_)
+/* (lexit-a) ( R: l9 .. l0 outer-locl -- ) release space for last reserved local variables */
+FUNC_START(_lexit_a_)
         ADDI(  RSTK,   SZ11,   REG1)         /* updated RSTK */
         JNZ(   RTOP,   TO(_locals_reload_regs_.10))
         JUMP(  TO(_locals_reload_regs_.finish))
-FUNC_RAWEND(_locals_exit_10_)
+FUNC_RAWEND(_lexit_a_)
 
-/* (locals-exit-11) ( R: la .. l0 outer-locl -- ) release space for last reserved local variables */
-FUNC_START(_locals_exit_11_)
+/* (lexit-b) ( R: la .. l0 outer-locl -- ) release space for last reserved local variables */
+FUNC_START(_lexit_b_)
         ADDI(  RSTK,   SZ12,   REG1)         /* updated RSTK */
         JNZ(   RTOP,   TO(_locals_reload_regs_.11))
         JUMP(  TO(_locals_reload_regs_.finish))
-FUNC_RAWEND(_locals_exit_11_)
+FUNC_RAWEND(_lexit_b_)
 
-/* (locals-exit-12) ( R: lb .. l0 outer-locl -- ) release space for last reserved local variables */
-FUNC_START(_locals_exit_12_)
+/* (lexit-c) ( R: lb .. l0 outer-locl -- ) release space for last reserved local variables */
+FUNC_START(_lexit_c_)
         ADDI(  RSTK,   SZ13,   REG1)         /* updated RSTK */
         JNZ(   RTOP,   TO(_locals_reload_regs_.12))
         JUMP(  TO(_locals_reload_regs_.finish))
-FUNC_RAWEND(_locals_exit_12_)
+FUNC_RAWEND(_lexit_c_)
 
-/* (locals-exit-d) ( R: lc .. l0 outer-locl -- ) release space for last reserved local variables */
-FUNC_START(_locals_exit_d_)
+/* (lexit-d) ( R: lc .. l0 outer-locl -- ) release space for last reserved local variables */
+FUNC_START(_lexit_d_)
         ADDI(  RSTK,   SZ14,   REG1)         /* updated RSTK */
         JNZ(   RTOP,   TO(_locals_reload_regs_.13))
         JUMP(  TO(_locals_reload_regs_.finish))
-FUNC_RAWEND(_locals_exit_d_)
+FUNC_RAWEND(_lexit_d_)
 
-/* (locals-exit-e) ( R: ld .. l0 outer-locl -- ) release space for last reserved local variables */
-FUNC_START(_locals_exit_e_)
+/* (lexit-e) ( R: ld .. l0 outer-locl -- ) release space for last reserved local variables */
+FUNC_START(_lexit_e_)
         ADDI(  RSTK,   SZ15,   REG1)         /* updated RSTK */
         JNZ(   RTOP,   TO(_locals_reload_regs_.14))
         JUMP(  TO(_locals_reload_regs_.finish))
-FUNC_RAWEND(_locals_exit_e_)
+FUNC_RAWEND(_lexit_e_)
 
-/* (locals-exit-f) ( R: le .. l0 outer-locl -- ) release space for last reserved local variables */
-FUNC_START(_locals_exit_f_)
+/* (lexit-f) ( R: le .. l0 outer-locl -- ) release space for last reserved local variables */
+FUNC_START(_lexit_f_)
         ADDI(  RSTK,   SZ16,   REG1)         /* updated RSTK */
         JNZ(   RTOP,   TO(_locals_reload_regs_.15))
         JUMP(  TO(_locals_reload_regs_.finish))
-FUNC_RAWEND(_locals_exit_f_)
+FUNC_RAWEND(_lexit_f_)
 
-/* (locals-exit-g) ( R: lf .. l0 outer-locl -- ) release space for last reserved local variables */
-FUNC_START(_locals_exit_g_)
+/* (lexit-g) ( R: lf .. l0 outer-locl -- ) release space for last reserved local variables */
+FUNC_START(_lexit_g_)
         ADDI(  RSTK,   SZ17,   REG1)         /* updated RSTK */
         JNZ(   RTOP,   TO(_locals_reload_regs_.16))
         JUMP(  TO(_locals_reload_regs_.finish))
-FUNC_RAWEND(_locals_exit_g_)
+FUNC_RAWEND(_lexit_g_)
 
-/* (locals-exit-x) ( R: .. lf .. l0 outer-locl -- ) release space for last reserved local variables */
+/* (lexit-x) ( R: .. lf .. l0 outer-locl -- ) release space for last reserved local variables */
 /* must be followed by T(N), releases space for N local variables. N must be >= Ln */
-FUNC_START(_locals_exit_x_)
+FUNC_START(_lexit_x_)
         LD_ut( REG1,   AT(IP))
         ADD2(IMM(SZt), IP)
         ADD2(IMM(1),   REG1)                 /* also release space for saved LOCL */
         ADD4(  RSTK,   REG1,PSZ,   REG1)     /* updated RSTK */
         JNZ(   RTOP,   FUNC(_locals_reload_regs_))
         JUMP(  TO(_locals_reload_regs_.finish))
-FUNC_RAWEND(_locals_exit_x_)
+FUNC_RAWEND(_lexit_x_)
 
 
 
@@ -979,7 +979,10 @@ FUNC_END(_c_locals_load_)
 
 
 
-/* lp@ ( -- addr-of-locals ) get current local variables address */
+/**
+ * lp@ ( -- addr-of-locals ) get current local variables address.
+ * only partially useful, as most local variables are usually stored in registers
+ */
 FUNC_START(lp_fetch)
         DPUSH__DTOP()
         MOVE(  LOCL,   DTOP)

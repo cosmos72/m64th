@@ -729,24 +729,56 @@ WORD_START(_locals_clear_,_locals_add_)
         cell_store_1, exit   /* set l.end */   /* (                  ) */
     )
 WORD_END(_locals_clear_)
-WORD_START(_locals_enter_x_,   _locals_clear_)
+WORD_NONATIVE(_lenter_1_,    _locals_clear_,   DSTACK(0,0), RSTACK(0,2), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS)
+WORD_NONATIVE(_lenter_2_,    _lenter_1_, DSTACK(0,0), RSTACK(0,3), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS)
+WORD_NONATIVE(_lenter_3_,    _lenter_2_, DSTACK(0,0), RSTACK(0,4), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS)
+WORD_NONATIVE(_lenter_4_,    _lenter_3_, DSTACK(0,0), RSTACK(0,5), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS)
+WORD_NONATIVE(_lenter_5_,    _lenter_4_, DSTACK(0,0), RSTACK(0,6), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS)
+WORD_NONATIVE(_lenter_6_,    _lenter_5_, DSTACK(0,0), RSTACK(0,7), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS)
+WORD_NONATIVE(_lenter_7_,    _lenter_6_, DSTACK(0,0), RSTACK(0,8), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS)
+WORD_NONATIVE(_lenter_8_,    _lenter_7_, DSTACK(0,0), RSTACK(0,9), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS)
+WORD_NONATIVE(_lenter_9_,    _lenter_8_, DSTACK(0,0), RSTACK(0,10), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS)
+WORD_NONATIVE(_lenter_a_,    _lenter_9_, DSTACK(0,0), RSTACK(0,11), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS)
+WORD_NONATIVE(_lenter_b_,    _lenter_a_, DSTACK(0,0), RSTACK(0,12), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS)
+WORD_NONATIVE(_lenter_c_,    _lenter_b_, DSTACK(0,0), RSTACK(0,13), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS)
+WORD_NONATIVE(_lenter_d_,    _lenter_c_, DSTACK(0,0), RSTACK(0,14), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS)
+WORD_NONATIVE(_lenter_e_,    _lenter_d_, DSTACK(0,0), RSTACK(0,-1), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS)
+WORD_NONATIVE(_lenter_f_,    _lenter_e_, DSTACK(0,0), RSTACK(0,-1), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS)
+WORD_NONATIVE(_lenter_g_,    _lenter_f_, DSTACK(0,0), RSTACK(0,-1), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS)
+WORD_START(_lenter_x_,   _lenter_g_)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,-1)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_INLINE_ALWAYS)
-    WORD_CODE(_locals_enter_x_, T(0), exit)
-WORD_END(_locals_enter_x_)
-WORD_START(_locals_exit_x_,   _locals_enter_x_)
+    WORD_CODE(_lenter_x_, T(0), exit)
+WORD_END(_lenter_x_)
+WORD_START(_lexit_x_,   _lenter_x_)
     WORD_DSTACK(0,0)
     WORD_RSTACK(-1,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_INLINE_ALWAYS)
-    WORD_CODE(_locals_exit_x_, T(0), exit)
-WORD_END(_locals_enter_x_)
+    WORD_CODE(_lexit_x_, T(0), exit)
+WORD_END(_lexit_x_)
+WORD_NONATIVE(_lexit_1_,    _lexit_x_, DSTACK(0,0), RSTACK(2,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS)
+WORD_NONATIVE(_lexit_2_,    _lexit_1_, DSTACK(0,0), RSTACK(3,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS)
+WORD_NONATIVE(_lexit_3_,    _lexit_2_, DSTACK(0,0), RSTACK(4,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS)
+WORD_NONATIVE(_lexit_4_,    _lexit_3_, DSTACK(0,0), RSTACK(5,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS)
+WORD_NONATIVE(_lexit_5_,    _lexit_4_, DSTACK(0,0), RSTACK(6,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS)
+WORD_NONATIVE(_lexit_6_,    _lexit_5_, DSTACK(0,0), RSTACK(7,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS)
+WORD_NONATIVE(_lexit_7_,    _lexit_6_, DSTACK(0,0), RSTACK(8,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS)
+WORD_NONATIVE(_lexit_8_,    _lexit_7_, DSTACK(0,0), RSTACK(9,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS)
+WORD_NONATIVE(_lexit_9_,    _lexit_8_, DSTACK(0,0), RSTACK(10,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS)
+WORD_NONATIVE(_lexit_a_,    _lexit_9_, DSTACK(0,0), RSTACK(11,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS)
+WORD_NONATIVE(_lexit_b_,    _lexit_a_, DSTACK(0,0), RSTACK(12,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS)
+WORD_NONATIVE(_lexit_c_,    _lexit_b_, DSTACK(0,0), RSTACK(13,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS)
+WORD_NONATIVE(_lexit_d_,    _lexit_c_, DSTACK(0,0), RSTACK(14,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS)
+WORD_NONATIVE(_lexit_e_,    _lexit_d_, DSTACK(0,0), RSTACK(-1,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS)
+WORD_NONATIVE(_lexit_f_,    _lexit_e_, DSTACK(0,0), RSTACK(-1,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS)
+WORD_NONATIVE(_lexit_g_,    _lexit_f_, DSTACK(0,0), RSTACK(-1,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS)
 /* ( ls c-addr u -- idx|-1 ) find local variable */
-WORD_START(_locals_find_,      _locals_exit_x_)
+WORD_START(_locals_find_, _lexit_g_)
     WORD_DSTACK(3,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -1382,10 +1414,10 @@ WORD_START(_compile_local_, _compile_sys_lit_)
     )
 WORD_END(_compile_local_)
 /*
- * [compile-locals-enter]   ( n1_before_pipe n2_after_pipe -- )
+ * [compile-lenter]   ( n1_before_pipe n2_after_pipe -- )
  * compile code to initialize local variables
  */
-WORD_START(_compile_locals_enter_, _compile_local_)
+WORD_START(_compile_lenter_, _compile_local_)
     WORD_DSTACK(2,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -1396,7 +1428,7 @@ WORD_START(_compile_locals_enter_, _compile_local_)
         _q_if0_, T(3),                /*               ( 0 0                        ) */
             two_drop, exit,           /*               (                            ) */
         then,                         /*               ( n2 n                       ) */
-        _lit_comma_, _locals_enter_x_,/* compile '(locals-enter)'                     */
+        _lit_comma_, _lenter_x_,/* compile '(lenter)'                     */
         tuck,                         /*               ( n n2 n                     ) */
         token_comma,                  /* compile T(n)  ( n n2                       ) */
         _q_do_, T(6),                 /*               (                 ) ( R: n i ) */
@@ -1405,13 +1437,13 @@ WORD_START(_compile_locals_enter_, _compile_local_)
         _loop_, T(-6),                /*               (                            ) */
         exit
     )
-WORD_END(_compile_locals_enter_)
+WORD_END(_compile_lenter_)
 /*
  * ( sys+ -- sys+ cs-depth ) must be followed by category.
  * find category in control stack and return its cs-depth.
  * Stops at colon-sys, throws if not found.
  */
-WORD_START(_cs_find_lit_, _compile_locals_enter_)
+WORD_START(_cs_find_lit_, _compile_lenter_)
     WORD_DSTACK(0,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()

@@ -50,5 +50,5 @@ also forth definitions
       swap invert                              ( n_after n_before     )
    then                                        ( n_after n_before     )
    swap                                        ( n_before n_after     )
-   [compile-locals-enter]                      (                      )
+   [compile-lenter]                      (                      )
 ; immediate

@@ -548,27 +548,57 @@
     X(12, "(lit-string)", _lit_string_)                                                            \
     X(9, "(lit-tok)", _lit_tok_)                                                                   \
     X(8, "(lit-xt)", _lit_xt_)                                                                     \
-    X(4, "(l0)", _l0_) /* fetch 0-th local variable */                                             \
-    X(4, "(l1)", _l1_) /* fetch 1-st local variable */                                             \
-    X(4, "(l2)", _l2_) /* fetch 2-nd local variable */                                             \
-    X(4, "(l3)", _l3_) /* fetch 3-rd local variable */                                             \
-    X(4, "(l4)", _l4_) /* fetch 4-th local variable */                                             \
-    X(4, "(l5)", _l5_) /* fetch 5-th local variable */                                             \
-    X(4, "(l6)", _l6_) /* fetch 6-th local variable */                                             \
-    X(4, "(l7)", _l7_) /* fetch 7-th local variable */                                             \
-    X(4, "(l8)", _l8_) /* fetch 8-th local variable */                                             \
-    X(4, "(l9)", _l9_) /* fetch 9-th local variable */                                             \
-    X(4, "(la)", _la_) /* fetch 10-th local variable */                                            \
-    X(4, "(lb)", _lb_) /* fetch 11-th local variable */                                            \
-    X(4, "(lc)", _lc_) /* fetch 12-th local variable */                                            \
-    X(4, "(ld)", _ld_) /* fetch 13-th local variable */                                            \
-    X(4, "(le)", _le_) /* fetch 14-th local variable */                                            \
-    X(4, "(lf)", _lf_) /* fetch 15-th local variable */                                            \
-    X(4, "(lx)", _lx_) /* followed by T(N) fetch N-th local variable */                            \
-    /* followed by T(n), reserve space for n local variables */                                    \
-    X(16, "(locals-enter-x)", _locals_enter_x_)                                                    \
-    /* followed by T(n), release space of last reserved local variables */                         \
-    X(15, "(locals-exit-x)", _locals_exit_x_)                                                      \
+    X(4, "(l0)", _l0_)              /* fetch 0-th local variable */                                \
+    X(4, "(l1)", _l1_)              /* fetch 1-st local variable */                                \
+    X(4, "(l2)", _l2_)              /* fetch 2-nd local variable */                                \
+    X(4, "(l3)", _l3_)              /* fetch 3-rd local variable */                                \
+    X(4, "(l4)", _l4_)              /* fetch 4-th local variable */                                \
+    X(4, "(l5)", _l5_)              /* fetch 5-th local variable */                                \
+    X(4, "(l6)", _l6_)              /* fetch 6-th local variable */                                \
+    X(4, "(l7)", _l7_)              /* fetch 7-th local variable */                                \
+    X(4, "(l8)", _l8_)              /* fetch 8-th local variable */                                \
+    X(4, "(l9)", _l9_)              /* fetch 9-th local variable */                                \
+    X(4, "(la)", _la_)              /* fetch 10-th local variable */                               \
+    X(4, "(lb)", _lb_)              /* fetch 11-th local variable */                               \
+    X(4, "(lc)", _lc_)              /* fetch 12-th local variable */                               \
+    X(4, "(ld)", _ld_)              /* fetch 13-th local variable */                               \
+    X(4, "(le)", _le_)              /* fetch 14-th local variable */                               \
+    X(4, "(lf)", _lf_)              /* fetch 15-th local variable */                               \
+    X(4, "(lx)", _lx_)              /* followed by T(N), fetch N-th local variable */              \
+    X(10, "(lenter-1)", _lenter_1_) /* reserve space for 1 local variable  */                      \
+    X(10, "(lenter-2)", _lenter_2_) /* reserve space for 2 local variables */                      \
+    X(10, "(lenter-3)", _lenter_3_) /* reserve space for 3 local variables */                      \
+    X(10, "(lenter-4)", _lenter_4_) /* reserve space for 4 local variables */                      \
+    X(10, "(lenter-5)", _lenter_5_) /* reserve space for 5 local variables */                      \
+    X(10, "(lenter-6)", _lenter_6_) /* reserve space for 6 local variables */                      \
+    X(10, "(lenter-7)", _lenter_7_) /* reserve space for 7 local variables */                      \
+    X(10, "(lenter-8)", _lenter_8_) /* reserve space for 8 local variables */                      \
+    X(10, "(lenter-9)", _lenter_9_) /* reserve space for 9 local variables */                      \
+    X(10, "(lenter-a)", _lenter_a_) /* reserve space for 10 local variables */                     \
+    X(10, "(lenter-b)", _lenter_b_) /* reserve space for 11 local variables */                     \
+    X(10, "(lenter-c)", _lenter_c_) /* reserve space for 12 local variables */                     \
+    X(10, "(lenter-d)", _lenter_d_) /* reserve space for 13 local variables */                     \
+    X(10, "(lenter-e)", _lenter_e_) /* reserve space for 14 local variables */                     \
+    X(10, "(lenter-f)", _lenter_f_) /* reserve space for 15 local variables */                     \
+    X(10, "(lenter-g)", _lenter_g_) /* reserve space for 16 local variables */                     \
+    X(10, "(lenter-x)", _lenter_x_) /* followed by T(N), reserve space for N local variables */    \
+    X(9, "(lexit-x)", _lexit_x_)    /* followed by T(N), release space for N local variables */    \
+    X(9, "(lexit-1)", _lexit_1_)    /* release space for 1 local variable  */                      \
+    X(9, "(lexit-2)", _lexit_2_)    /* release space for 2 local variables */                      \
+    X(9, "(lexit-3)", _lexit_3_)    /* release space for 3 local variables */                      \
+    X(9, "(lexit-4)", _lexit_4_)    /* release space for 4 local variables */                      \
+    X(9, "(lexit-5)", _lexit_5_)    /* release space for 5 local variables */                      \
+    X(9, "(lexit-6)", _lexit_6_)    /* release space for 6 local variables */                      \
+    X(9, "(lexit-7)", _lexit_7_)    /* release space for 7 local variables */                      \
+    X(9, "(lexit-8)", _lexit_8_)    /* release space for 8 local variables */                      \
+    X(9, "(lexit-9)", _lexit_9_)    /* release space for 9 local variables */                      \
+    X(9, "(lexit-a)", _lexit_a_)    /* release space for 10 local variables */                     \
+    X(9, "(lexit-b)", _lexit_b_)    /* release space for 11 local variables */                     \
+    X(9, "(lexit-c)", _lexit_c_)    /* release space for 12 local variables */                     \
+    X(9, "(lexit-d)", _lexit_d_)    /* release space for 13 local variables */                     \
+    X(9, "(lexit-e)", _lexit_e_)    /* release space for 14 local variables */                     \
+    X(9, "(lexit-f)", _lexit_f_)    /* release space for 15 local variables */                     \
+    X(9, "(lexit-g)", _lexit_g_)    /* release space for 16 local variables */                     \
     X(6, "(loop)", _loop_)                                                                         \
     X(9, "(missing)", _missing_)                                                                   \
     X(4, "(of)", _of_)           /* ( x y -- x| ) execution semantics of 'of'      */              \
@@ -663,7 +693,7 @@
     X(10, "({:found|)", _brace_colon_found_pipe_)                                                  \
     X(15, "[compile-local]", _compile_local_) /* ( idx -- ) compile a local variable fetch */      \
     /* ( n1_before_pipe n2_after_pipe -- ) compile code to initialize local variables */           \
-    X(22, "[compile-locals-enter]", _compile_locals_enter_)                                        \
+    X(22, "[compile-lenter]", _compile_lenter_)                                                    \
     X(7, "[finish", _finish_)       /* ( sys -- ) finish compiling a word, make it findable   */   \
     X(8, "[inline]", _inline_)      /* ( nt -- ) inline a call to word into XT being compiled */   \
     X(10, "[optimize]", _optimize_) /* optimize current XT being compiled */                       \

@@ -74,7 +74,7 @@ WORD_START(_brace_colon_,      _local_)
         _if_, T(3),
             swap, invert,
         then,
-        swap, CALL(_compile_locals_enter_), exit
+        swap, CALL(_compile_lenter_), exit
     )
 WORD_END(_brace_colon_)
 

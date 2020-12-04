@@ -508,48 +508,48 @@
 #define M4_dup_to_lx_ M4_i(128) /* followed by T(n), dup  & store n-th local variable */
 #undef M4____gap                /*                                         */
 #undef M4____gap                /*                                         */
-#define M4_locals_enter_01_ M4_i(131) /* reserve space for 1 local variables */
-#define M4_locals_enter_02_ M4_i(132) /* reserve space for 2 local variables */
-#define M4_locals_enter_03_ M4_i(133) /* reserve space for 3 local variables */
-#define M4_locals_enter_04_ M4_i(134) /* reserve space for 4 local variables */
-#define M4_locals_enter_05_ M4_i(135) /* reserve space for 5 local variables */
-#define M4_locals_enter_06_ M4_i(136) /* reserve space for 6 local variables */
-#define M4_locals_enter_07_ M4_i(137) /* reserve space for 7 local variables */
-#define M4_locals_enter_08_ M4_i(138) /* reserve space for 8 local variables */
-#define M4_locals_enter_09_ M4_i(139) /* reserve space for 9 local variables */
-#define M4_locals_enter_10_ M4_i(140) /* reserve space for 10 local variables */
-#define M4_locals_enter_11_ M4_i(141) /* reserve space for 11 local variables */
-#define M4_locals_enter_12_ M4_i(142) /* reserve space for 12 local variables */
-#define M4_locals_enter_13_ M4_i(143) /* reserve space for 13 local variables */
-#define M4_locals_enter_14_ M4_i(144) /* reserve space for 14 local variables */
-#define M4_locals_enter_15_ M4_i(145) /* reserve space for 15 local variables */
-#define M4_locals_enter_16_ M4_i(146) /* reserve space for 16 local variables */
-#undef M4____gap                      /*                                         */
-#define M4_locals_enter_x_ M4_i(148)  /* followed by T(n), reserve space for n local variables */
-#define M4_locals_exit_x_ M4_i(149)   /* followed by T(n), release space for n local variables */
-#undef M4____gap                      /*                                         */
-#define M4_locals_exit_01_ M4_i(151)  /* release space for 1 local variables */
-#define M4_locals_exit_02_ M4_i(152)  /* release space for 2 local variables */
-#define M4_locals_exit_03_ M4_i(153)  /* release space for 3 local variables */
-#define M4_locals_exit_04_ M4_i(154)  /* release space for 4 local variables */
-#define M4_locals_exit_05_ M4_i(155)  /* release space for 5 local variables */
-#define M4_locals_exit_06_ M4_i(156)  /* release space for 6 local variables */
-#define M4_locals_exit_07_ M4_i(157)  /* release space for 7 local variables */
-#define M4_locals_exit_08_ M4_i(158)  /* release space for 8 local variables */
-#define M4_locals_exit_09_ M4_i(159)  /* release space for 9 local variables */
-#define M4_locals_exit_10_ M4_i(160)  /* release space for 10 local variables */
-#define M4_locals_exit_11_ M4_i(161)  /* release space for 11 local variables */
-#define M4_locals_exit_12_ M4_i(162)  /* release space for 12 local variables */
-#define M4_locals_exit_13_ M4_i(163)  /* release space for 13 local variables */
-#define M4_locals_exit_14_ M4_i(164)  /* release space for 14 local variables */
-#define M4_locals_exit_15_ M4_i(165)  /* release space for 15 local variables */
-#define M4_locals_exit_16_ M4_i(166)  /* release space for 16 local variables */
-#undef M4____gap                      /*                                         */
-#define M4_loop_ M4_i(168)            /* (loop)    followed by IP offset to jump       */
-#define M4_missing_ 0         /* (missing) called instead of invalid/unimplemented function */
-#define M4_of_ M4_i(170)      /* (of)      followed by IP offset to jump       */
-#define M4_recurse_ M4_i(171) /* (recurse) followed by IP offset to jump       */
-#define M4_repeat_ M4_i(172)  /* (repeat)  followed by IP offset to jump       */
+#define M4_lenter_1_ M4_i(131)  /* reserve space for 1 local variables */
+#define M4_lenter_2_ M4_i(132)  /* reserve space for 2 local variables */
+#define M4_lenter_3_ M4_i(133)  /* reserve space for 3 local variables */
+#define M4_lenter_4_ M4_i(134)  /* reserve space for 4 local variables */
+#define M4_lenter_5_ M4_i(135)  /* reserve space for 5 local variables */
+#define M4_lenter_6_ M4_i(136)  /* reserve space for 6 local variables */
+#define M4_lenter_7_ M4_i(137)  /* reserve space for 7 local variables */
+#define M4_lenter_8_ M4_i(138)  /* reserve space for 8 local variables */
+#define M4_lenter_9_ M4_i(139)  /* reserve space for 9 local variables */
+#define M4_lenter_a_ M4_i(140)  /* reserve space for 10 local variables */
+#define M4_lenter_b_ M4_i(141)  /* reserve space for 11 local variables */
+#define M4_lenter_c_ M4_i(142)  /* reserve space for 12 local variables */
+#define M4_lenter_d_ M4_i(143)  /* reserve space for 13 local variables */
+#define M4_lenter_e_ M4_i(144)  /* reserve space for 14 local variables */
+#define M4_lenter_f_ M4_i(145)  /* reserve space for 15 local variables */
+#define M4_lenter_g_ M4_i(146)  /* reserve space for 16 local variables */
+#undef M4____gap                /*                                         */
+#define M4_lenter_x_ M4_i(148)  /* followed by T(n), reserve space for n local variables */
+#define M4_lexit_x_ M4_i(149)   /* followed by T(n), release space for n local variables */
+#undef M4____gap                /*                                         */
+#define M4_lexit_1_ M4_i(151)   /* release space for 1 local variables */
+#define M4_lexit_2_ M4_i(152)   /* release space for 2 local variables */
+#define M4_lexit_3_ M4_i(153)   /* release space for 3 local variables */
+#define M4_lexit_4_ M4_i(154)   /* release space for 4 local variables */
+#define M4_lexit_5_ M4_i(155)   /* release space for 5 local variables */
+#define M4_lexit_6_ M4_i(156)   /* release space for 6 local variables */
+#define M4_lexit_7_ M4_i(157)   /* release space for 7 local variables */
+#define M4_lexit_8_ M4_i(158)   /* release space for 8 local variables */
+#define M4_lexit_9_ M4_i(159)   /* release space for 9 local variables */
+#define M4_lexit_a_ M4_i(160)   /* release space for 10 local variables */
+#define M4_lexit_b_ M4_i(161)   /* release space for 11 local variables */
+#define M4_lexit_c_ M4_i(162)   /* release space for 12 local variables */
+#define M4_lexit_d_ M4_i(163)   /* release space for 13 local variables */
+#define M4_lexit_e_ M4_i(164)   /* release space for 14 local variables */
+#define M4_lexit_f_ M4_i(165)   /* release space for 15 local variables */
+#define M4_lexit_g_ M4_i(166)   /* release space for 16 local variables */
+#undef M4____gap                /*                                         */
+#define M4_loop_ M4_i(168)      /* (loop)    followed by IP offset to jump       */
+#define M4_missing_ 0           /* (missing) called instead of invalid/unimplemented function */
+#define M4_of_ M4_i(170)        /* (of)      followed by IP offset to jump       */
+#define M4_recurse_ M4_i(171)   /* (recurse) followed by IP offset to jump       */
+#define M4_repeat_ M4_i(172)    /* (repeat)  followed by IP offset to jump       */
 #define M4_return_to_native_ M4_i(173) /* (return-to-native) return to native code*/
 #undef M4____gap                       /*                                         */
 #define M4_until_ M4_i(175)            /* (until)  followed by IP offset to jump if dtop == 0 */

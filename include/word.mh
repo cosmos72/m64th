@@ -114,6 +114,14 @@
     WORD_FLAGS(flags)                                                                              \
     WORD_CODE(name, exit)
 
+#define WORD_BODY_NONATIVE(name, flags, dstack, rstack)                                              \
+    WORD_##dstack                                                                                  \
+    WORD_##rstack                                                                                  \
+    WORD_STACK_NONE()      /* simple words do not jump */                                          \
+    WORD_NATIVE_NONE()                                                                          \
+    WORD_FLAGS(flags)                                                                              \
+    WORD_CODE(name, exit)
+
 /* clang-format on */
 
 #define WORD_IMPURE M4FLAG_INLINE
@@ -125,6 +133,11 @@
 #define WORD(name, prev, dstack, rstack, flags)                                                    \
     WORD_START(name, prev)                                                                         \
     WORD_BODY_SIMPLE(name, flags, dstack, rstack)                                                  \
+    WORD_END(name)
+
+#define WORD_NONATIVE(name, prev, dstack, rstack, flags)                                           \
+    WORD_START(name, prev)                                                                         \
+    WORD_BODY_NONATIVE(name, flags, dstack, rstack)                                                \
     WORD_END(name)
 
 #endif /* M4TH_INCLUDE_WORD_MH */

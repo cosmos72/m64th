@@ -378,7 +378,7 @@ WORD_START(exit, execute)
         _if_, T(9),                                    /* ( ls                   ) */
             fetch, question_dup,                       /* ( ls.n ls.n | 0        ) */
             _if_, T(4),                                /* ( ls.n                 ) */
-                _lit_comma_, _locals_exit_x_, /* compile '(locals-exit-x)'         */
+                _lit_comma_, _lexit_x_, /* compile '(lexit-x)'         */
                 token_comma,                  /* compile T(ls.n)                   */
             then,                                      /* (                      ) */
         then,                                          /* (                      ) */
