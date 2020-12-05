@@ -218,7 +218,17 @@ WORD_START(endof,      endcase)
         exit                                           /* ( endof-sys           ) */
     )
 WORD_END(endof)
-WORD(false,            endof,      DSTACK(0,1), RSTACK(0,0), WORD_PURE)
+WORD_START(erase,      endof)
+    WORD_DSTACK(2,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_STORE)
+    WORD_CODE(
+        zero, fill, exit
+    )
+WORD_END(erase)
+WORD(false,            erase,      DSTACK(0,1), RSTACK(0,0), WORD_PURE)
 WORD_START(hex,        false)
     WORD_STACK_NONE()  /* stack effect if not jumping */
     WORD_STACK_NONE()  /* stack effect if jumping */

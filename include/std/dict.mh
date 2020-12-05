@@ -188,6 +188,7 @@
     X(6, "defer!", defer_store)                                                                    \
     X(6, "defer@", defer_fetch)                                                                    \
     X(5, "endof", endof)                                                                           \
+    X(5, "erase", erase)                                                                           \
     X(3, "hex", hex)                                                                               \
     X(2, "is", is)                                                                                 \
     X(2, "of", of)                                                                                 \
