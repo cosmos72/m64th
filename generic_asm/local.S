@@ -840,7 +840,7 @@ FUNC_RAWEND(_lexit_f_)
 
 /* (lexit-g) ( R: lf .. l0 outer-locl -- ) release space for last reserved local variables */
 FUNC_START(_lexit_g_)
-        ADDI(  RSTK,   SZ17,   REG1)         /* updated RSTK */
+        ADDI(  RSTK,   SZ17,   REG1)           /* updated RSTK */
         JNZ(   RTOP,   TO(_locals_reload_regs_.16))
         JUMP(  TO(_locals_reload_regs_.finish))
 FUNC_RAWEND(_lexit_g_)
@@ -850,8 +850,8 @@ FUNC_RAWEND(_lexit_g_)
 FUNC_START(_lexit_x_)
         LD_ut( REG1,   AT(IP))
         ADD2(IMM(SZt), IP)
-        ADD2(IMM(1),   REG1)                 /* also release space for saved LOCL */
-        ADD4(  RSTK,   REG1,PSZ,   REG1)     /* updated RSTK */
+        ADD2(IMM(1),   REG1)                   /* also release space for saved LOCL */
+        ADD4(  RSTK,   REG1,PSZ,   REG1)       /* updated RSTK */
         JNZ(   RTOP,   FUNC(_locals_reload_regs_))
         JUMP(  TO(_locals_reload_regs_.finish))
 FUNC_RAWEND(_lexit_x_)
@@ -864,57 +864,11 @@ FUNC_RAWEND(_lexit_x_)
  */
 FUNC_START(_c_locals_save_)
 #if Ln > 0
-        JZ(    LOCL,   FUNC_RET(_c_locals_save_))
-#ifdef LF
-        RPUSHL(LF)
+        ADDI(  RSTK,   -(Ln+1)*SZ, REG1)       /* a = new RSTK   */
+        JNZ(   LOCL,   FUNC(_locals_spill_regs_))
 #endif
-#ifdef LE
-        RPUSHL(LE)
-#endif
-#ifdef LD
-        RPUSHL(LD)
-#endif
-#ifdef LC
-        RPUSHL(LC)
-#endif
-#ifdef LB
-        RPUSHL(LB)
-#endif
-#ifdef LA
-        RPUSHL(LA)
-#endif
-#ifdef L9
-        RPUSHL(L9)
-#endif
-#ifdef L8
-        RPUSHL(L8)
-#endif
-#ifdef L7
-        RPUSHL(L7)
-#endif
-#ifdef L6
-        RPUSHL(L6)
-#endif
-#ifdef L5
-        RPUSHL(L5)
-#endif
-#ifdef L4
-        RPUSHL(L4)
-#endif
-#ifdef L3
-        RPUSHL(L3)
-#endif
-#ifdef L2
-        RPUSHL(L2)
-#endif
-#ifdef L1
-        RPUSHL(L1)
-#endif
-#ifdef L0
-        RPUSHL(L0)
-#endif
-#endif
-FUNC_END(_c_locals_save_)
+        NEXT0()
+FUNC_RAWEND(_c_locals_save_)
 
 
 
@@ -924,57 +878,11 @@ FUNC_END(_c_locals_save_)
  */
 FUNC_START(_c_locals_load_)
 #if Ln > 0
-        JZ(    LOCL,   FUNC_RET(_c_locals_load_))
-#ifdef L0
-        RPOPL( L0)
+        ADDI(  RSTK,   (Ln+1)*SZ,  REG1)       /* a = new RSTK   */
+        JNZ(   LOCL,   FUNC(_locals_reload_regs_))
 #endif
-#ifdef L1
-        RPOPL( L1)
-#endif
-#ifdef L2
-        RPOPL( L2)
-#endif
-#ifdef L3
-        RPOPL( L3)
-#endif
-#ifdef L4
-        RPOPL( L4)
-#endif
-#ifdef L5
-        RPOPL( L5)
-#endif
-#ifdef L6
-        RPOPL( L6)
-#endif
-#ifdef L7
-        RPOPL( L7)
-#endif
-#ifdef L8
-        RPOPL( L8)
-#endif
-#ifdef L9
-        RPOPL( L9)
-#endif
-#ifdef LA
-        RPOPL( LA)
-#endif
-#ifdef LB
-        RPOPL( LB)
-#endif
-#ifdef LC
-        RPOPL( LC)
-#endif
-#ifdef LD
-        RPOPL( LD)
-#endif
-#ifdef LE
-        RPOPL( LE)
-#endif
-#ifdef LF
-        RPOPL( LF)
-#endif
-#endif
-FUNC_END(_c_locals_load_)
+        NEXT0()
+FUNC_RAWEND(_c_locals_load_)
 
 
 
