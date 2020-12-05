@@ -171,6 +171,8 @@ static const m4testcompile testcompile_b[] = {
     {"[ 4 constant four", {}, {}, {2, {m4four, m4exit}}},
     {"[ $7eef constant my-number", {}, {}, {3, {m4_lit_, T(0x7eef), m4exit}}},
     {"[ create w", {}, {}, {3 + nCALLt, {m4_ip_to_data_addr_, CALL(noop), m4exit}}},
+    {"[ :noname 1", {}, {2, {M4FLAG_NONAME, m4colon}}, {1, {m4one}}},
+    {"[ :noname 2 ; execute", {}, {1, {2}}, {2, {m4two, m4exit}}},
     {"[ defer df", {}, {}, {2 + nCALLt, {CALL(_defer_uninitialized_), m4exit}}},
     {"[ defer dg ' dg defer@", {}, {1, {0}}, {2 + nCALLt, {CALL(_defer_uninitialized_), m4exit}}},
     {"[ defer dh ' dh ' min over defer! defer@",

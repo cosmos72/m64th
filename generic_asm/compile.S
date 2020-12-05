@@ -253,7 +253,7 @@ FUNC_END(state)
 
 /**
  * Temporarily switch from compiling to interpreting.
- * Update m4th.lastw.code_n (needed by ';') then set m4th.xt to 0
+ * Update m4th.lastw.code_n (needed by ';') then set m4th.xt = state to 0
  */
 FUNC_START(left_bracket)
         LOAD(  REG2,       AT(M4TH, M4TH_OFF_XT))

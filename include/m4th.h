@@ -71,6 +71,7 @@ typedef enum m4flags_e {
     m4flag_may_jump = M4FLAG_MAY_JUMP,
     m4flag_mem_fetch = M4FLAG_MEM_FETCH,
     m4flag_mem_store = M4FLAG_MEM_STORE,
+    m4flag_noname = M4FLAG_NONAME, /* does not fit m4word.flags, only used in ( colon-sys ) */
     m4flag_noopt_mask = M4FLAG_NOOPT_MASK,
     m4flag_create = M4FLAG_CREATE,
     m4flag_defer = M4FLAG_DEFER,

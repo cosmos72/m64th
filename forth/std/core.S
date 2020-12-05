@@ -161,7 +161,7 @@ WORD_START(colon,      two_swap)
     )
 WORD_END(colon)
 WORD_START(semi,       colon)
-    WORD_DSTACK(2,0)
+    WORD_DSTACK(2,-1)   /* ( sys -- xt| )  xt if created with :noname */
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()

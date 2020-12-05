@@ -87,4 +87,7 @@
  */
 #define M4FLAG_REEXEC_AFTER_OPTIMIZE (1 << 14)
 
+/* does not fit m4flags, only stored in ( colon-sys ) */
+#define M4FLAG_NONAME (1 << 16)
+
 #endif /* M4TH_INCLUDE_FLAG_MH */

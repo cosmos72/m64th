@@ -30,7 +30,22 @@ WORD(zero_more,        zero_ne,    DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(two_to_r,         zero_more,  DSTACK(2,0), RSTACK(0,2), WORD_R_PURE)
 WORD(two_r_fetch,      two_to_r,   DSTACK(0,2), RSTACK(2,2), WORD_R_PURE)
 WORD(two_r_from,       two_r_fetch,DSTACK(0,2), RSTACK(2,0), WORD_R_PURE)
-WORD(ne,               two_r_from, DSTACK(2,1), RSTACK(0,0), WORD_PURE)
+WORD_START(colon_noname,   two_r_from)
+    WORD_DSTACK(0,2)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        zero, zero, name_comma,                        /* ( nt                           ) */
+        dup, to_latest,                                /* ( nt                           ) */
+        _lit4s_, INT(M4FLAG_NONAME),                   /* ( nt m4flags                   ) */
+        dup, flip, name_to_flags_store,                /* ( m4flags                      ) */
+        _lit_tok_, colon,                              /* ( colon-sys                    ) */
+        CALL(_user_locals_clear_), right_bracket, exit /* ( colon-sys                    ) */
+    )
+WORD_END(colon_noname)
+WORD(ne,               colon_noname, DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD_START(dot_paren,  ne)
     WORD_STACK_NONE()  /* stack effect if not jumping */
     WORD_STACK_NONE()  /* stack effect if not jumping */

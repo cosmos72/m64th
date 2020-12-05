@@ -1541,24 +1541,29 @@ WORD_START(_endof_,    _does_exit_)
         CALL(endof), exit
     )
 WORD_END(_endof_)
-/* ( sys -- ) finish compiling a word, make it findable */
+/* ( sys -- xt| ) finish compiling a word, make it findable. */
+/* return xt if word is created with :noname */
 WORD_START(_finish_, _endof_)
-    WORD_DSTACK(2,0)
+    WORD_DSTACK(2,-1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE)
     WORD_CODE(
-        _check_lit_tok_, colon,
-        CALL(exit), /* compile 'exit' */
-        drop, _lit_, T(M4FLAG_NOOPT_MASK), and,
+        _check_lit_tok_, colon,                        /* ( colon-sys          ) */
+        CALL(exit), /* compile 'exit' */               /* ( colon-sys          ) */
+        drop, dup, _lit_, T(M4FLAG_NOOPT_MASK), and,   /* ( m4flags flag       ) */
         /* optimize only if (word.flags & M4FLAG_NOOPT_MASK) == 0 */
-        _if0_, T(2+nCALLt),
-            CALL(_optimize_),
-        then,
-        CALL(_user_locals_clear_),
+        _if0_, T(2+nCALLt),                            /* ( m4flags            ) */
+            CALL(_optimize_),                          /* ( m4flags            ) */
+        then,                                          /* ( m4flags            ) */
+        CALL(_user_locals_clear_),                     /* ( m4flags            ) */
         left_bracket, align, /* also align HERE to current word's data */
-        latest, get_current, wordlist_add, exit
+        latest, get_current, wordlist_add,             /* ( m4flags            ) */
+        _lit4s_, INT(M4FLAG_NONAME), and,              /* ( flag               ) */
+        _if_, T(3),                                    /* (                    ) */
+            latest, name_to_xt,                        /* ( xt                 ) */
+        then, exit
     )
 WORD_END(_finish_)
 WORD_START(_inline_, _finish_)
@@ -1597,8 +1602,7 @@ WORD_END(_of_)
  * ( -- )
  */
 WORD_START(_optimize_, _of_)
-    WORD_DSTACK(0,0)
-    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE)
