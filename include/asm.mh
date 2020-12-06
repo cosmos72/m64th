@@ -31,6 +31,8 @@
 
 /* clang-format off */
 
+#define TOKEN_MAX ((1<<(8*SZt))-1)
+
 #define AT_0(addr, i, _)                AT0(addr)
 #define AT_x(addr, i, _)                ATx(addr, i)
 #define AT_xy(addr, i, shift)           ATxy(addr, i, shift)

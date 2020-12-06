@@ -370,7 +370,8 @@ WORD_START(name_inline_query,  name_comma)
         name_to_code_n, eight, less, exit
     )
 WORD_END(name_inline_query)
-WORD(name_to_code,         name_inline_query,  DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(name_to_asm_n,        name_inline_query,  DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(name_to_code,         name_to_asm_n,      DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 WORD(name_to_code_n,       name_to_code,       DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 WORD(name_to_data,         name_to_code_n,     DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 WORD(name_to_data_addr,    name_to_data,       DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
@@ -690,7 +691,28 @@ DEF_WORD_FETCH_TYP(token,      token_store_8)
 
 WORD(token_align,      token_fetch_8,  DSTACK(0,0), RSTACK(0,0), WORD_IMPURE)
 WORD(token_aligned,    token_align,    DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(token_to_name,    token_aligned,  DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
+WORD_START(token_to_asm,  token_aligned)
+    WORD_DSTACK(1,2)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        dup, token_to_asm_addr,                     /* ( token m4func|0          ) */
+        swap, token_to_name,                        /* ( m4func|0 nt|0           ) */
+        over, zero_ne, and,                         /* ( m4func|0 nt|0           ) */
+        _q_if0_, T(4),                              /* ( m4func 0                ) */
+            nip, zero, exit,                        /* ( 0 0                     ) */
+        then,                                       /* ( m4func nt               ) */
+        name_to_asm_n,                              /* ( m4func u|-1             ) */
+        dup, invert,                                /* ( m4func u|-1 flag        ) */
+        _if0_, T(5),                                /* ( m4func -1               ) */
+            two_drop, zero, zero,                   /* ( 0 0                     ) */
+        then, exit                                  /* ( m4func u | 0 0          ) */
+    )
+WORD_END(token_to_asm)
+WORD(token_to_asm_addr,token_to_asm,   DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
+WORD(token_to_name,  token_to_asm_addr,DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
 WORD(token_comma,      token_to_name,  DSTACK(1,0), RSTACK(0,0), WORD_IMPURE)
 WORD_START(tokens_comma,   token_comma)
     WORD_DSTACK(2,0)

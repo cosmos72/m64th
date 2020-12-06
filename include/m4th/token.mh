@@ -320,20 +320,20 @@
 #define M4iobuf_data_n M4_(10)  /* iobuf>data>n ( io -- u    ) get data length = size - position */
 #define M4iobuf_free_data M4_(11)   /* ( io -- c-addr u ) get free data, from size to max        */
 #define M4iobuf_empty_query M4_(12) /* iobuf-empty? ( io -- t|f  ) true if iobuf data is empty  */
-#define M4iobuf_err M4_(13)    /* iobuf>err    ( io -- addr ) get address of iobuf.err           */
-#define M4iobuf_func M4_(14)   /* iobuf>func   ( io -- addr ) get address of iobuf I/O function  */
-#define M4iobuf_handle M4_(15) /* iobuf>handle ( io -- addr ) get address of iobuf handle  */
-#define M4iobuf_max M4_(16)    /* iobuf>max    ( io -- u    ) get iobuf max size i.e. capacity   */
-#define M4iobuf_pos M4_(17)    /* iobuf>pos    ( io -- addr ) get address of iobuf position      */
-#define M4iobuf_end M4_(18)    /* iobuf>end    ( io -- addr ) get address of iobuf end position  */
-#undef M4____gap               /*                                         */
-#undef M4____gap               /*                                         */
-#define M4latest M4_(21)       /* latest       (    -- nt   ) get last defined word              */
-#define M4to_latest M4_(22)    /* to-latest      ( nt --       ) set last defined word       */
-#undef M4____gap               /*                                         */
-#define M4name_comma M4_(24)   /* name,       ( c-addr u --   ) create a new name        */
-#undef M4____gap               /*                                         */
-#define M4name_to_code M4_(26) /* ( nt -- addr u  ) get code array from name */
+#define M4iobuf_err M4_(13)     /* iobuf>err    ( io -- addr ) get address of iobuf.err           */
+#define M4iobuf_func M4_(14)    /* iobuf>func   ( io -- addr ) get address of iobuf I/O function  */
+#define M4iobuf_handle M4_(15)  /* iobuf>handle ( io -- addr ) get address of iobuf handle  */
+#define M4iobuf_max M4_(16)     /* iobuf>max    ( io -- u    ) get iobuf max size i.e. capacity   */
+#define M4iobuf_pos M4_(17)     /* iobuf>pos    ( io -- addr ) get address of iobuf position      */
+#define M4iobuf_end M4_(18)     /* iobuf>end    ( io -- addr ) get address of iobuf end position  */
+#undef M4____gap                /*                                         */
+#undef M4____gap                /*                                         */
+#define M4latest M4_(21)        /* latest       (    -- nt   ) get last defined word              */
+#define M4to_latest M4_(22)     /* to-latest      ( nt --       ) set last defined word       */
+#undef M4____gap                /*                                         */
+#define M4name_comma M4_(24)    /* name,       ( c-addr u --   ) create a new name        */
+#define M4name_to_asm_n M4_(25) /* ( nt -- u|-1 ) get native_len from name      */
+#define M4name_to_code M4_(26)  /* ( nt -- addr u  ) get code array from name   */
 #define M4name_to_code_n M4_(27)       /* ( nt -- u       ) get code size from name    */
 #define M4name_to_data M4_(28)         /* ( nt -- addr u  ) get data array from name   */
 #define M4name_to_data_addr M4_(29)    /* ( nt -- addr    ) get data address from name */
@@ -349,16 +349,16 @@
 #define M4obuf_write_string M4_(39) /* obuf-write-string ( io c -- err ) write string to iobuf  */
 #define M4out_to_obuf M4_(40) /* out>obuf         (      -- io  ) get current output as iobuf */
 #undef M4____gap              /*                                         */
-#undef M4____gap              /*                                         */
-#define M4searchorder_clear M4_(43)   /* ( SO: wid_u-1 .. wid_0 -- )                   */
-#define M4searchorder_depth M4_(44)   /* ( SO: wid_u-1 .. wid_0 -- same ) ( -- u )     */
-#define M4searchorder_drop M4_(45)    /* ( SO: wid -- )                                */
-#define M4searchorder_dup M4_(46)     /* ( SO: wid -- wid wid )                        */
-#define M4searchorder_pick M4_(47)    /* ( SO: wid_u-1 .. wid_0 -- same ) ( -- wid_u ) */
-#define M4searchorder_store_0 M4_(48) /* ( SO: wid1 -- wid2 ) ( wid2 -- )              */
+#define M4searchorder_clear M4_(42)   /* ( SO: wid_u-1 .. wid_0 -- )                   */
+#define M4searchorder_depth M4_(43)   /* ( SO: wid_u-1 .. wid_0 -- same ) ( -- u )     */
+#define M4searchorder_drop M4_(44)    /* ( SO: wid -- )                                */
+#define M4searchorder_dup M4_(45)     /* ( SO: wid -- wid wid )                        */
+#define M4searchorder_pick M4_(46)    /* ( SO: wid_u-1 .. wid_0 -- same ) ( -- wid_u ) */
+#define M4searchorder_store_0 M4_(47) /* ( SO: wid1 -- wid2 ) ( wid2 -- )              */
 #undef M4____gap                      /*                                         */
-#define M4token_to_name M4_(50)       /* token>name ( token -- nt|0 ) convert token to name */
-#define M4user_var M4_(51)            /* user-var ( -- addr ) followed by index of user var */
+#define M4token_to_asm_addr M4_(49)   /* token>asm>addr ( token -- addr|0 ) get ASM for token */
+#define M4token_to_name M4_(50)       /* token>name ( token -- nt|0 ) convert token to name   */
+#define M4user_var M4_(51)            /* user-var ( -- addr ) followed by index of user var   */
 #undef M4____gap                      /*                                         */
 #define M4wordlist_to_last M4_(53)    /* ( wid -- nt ) get last name in a wordlist            */
 #define M4wordlist_to_string M4_(54)  /* ( wid -- c-addr u ) convert wid to string            */
