@@ -1554,11 +1554,13 @@ WORD_START(_finish_, _endof_)
         CALL(exit), /* compile 'exit' */               /* ( colon-sys          ) */
         drop, dup, _lit_, T(M4FLAG_NOOPT_MASK), and,   /* ( m4flags flag       ) */
         /* optimize only if (word.flags & M4FLAG_NOOPT_MASK) == 0 */
-        _if0_, T(2+nCALLt),                            /* ( m4flags            ) */
+        _if0_, T(3+2*nCALLt),                          /* ( m4flags            ) */
             CALL(_optimize_),                          /* ( m4flags            ) */
+            CALL(xt_to_asm),                           /* ( m4flags            ) */
         then,                                          /* ( m4flags            ) */
         CALL(_user_locals_clear_),                     /* ( m4flags            ) */
-        left_bracket, align, /* also align HERE to current word's data */
+        left_bracket,        /* stop compiling, set state[0] = XT = 0 */
+        align,               /* align HERE to current word's data  */
         latest, get_current, wordlist_add,             /* ( m4flags            ) */
         _lit4s_, INT(M4FLAG_NONAME), and,              /* ( flag               ) */
         _if_, T(3),                                    /* (                    ) */

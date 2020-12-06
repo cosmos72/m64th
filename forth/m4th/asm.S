@@ -64,5 +64,57 @@ WORD_START(token_to_asm_n, token_to_asm)
     )
 WORD_END(token_to_asm_n)
 WORD(token_to_asm_addr,    token_to_asm_n, DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
+/* ( -- ) attempt to compile to native ASM all tokens between XT and HERE */
+WORD_START(xt_to_asm, token_to_asm_addr)
+    WORD_DSTACK(0,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(0)
+    WORD_CODE(
+        exit,
+        CALL(xt_to_asm_q),                          /* ( t|f                             ) */
+        _if0_, T(2),                                /* (                                 ) */
+            exit,                                   /* (                                 ) */
+        then,                                       /* (                                 ) */
+        /* skip final 'exit' token */
+        here, one_token, minus, state, fetch,       /* ( here-SZt xt                     ) */
+        do,                                         /* (                 ) ( R: end pos  ) */
+            i, token_fetch, dup,                    /* ( tok             ) ( R: end pos  ) */
+            CALL(token_to_asm),                     /* ( tok addr u      ) ( R: end pos  ) */
+            asm_comma,                              /* ( tok             ) ( R: end pos  ) */
+            token_to_name, name_to_flags, flags_to_consumed_tokens,
+            one_plus, tokens,                       /* ( consumed_bytes  ) ( R: end pos  ) */
+        _plus_loop_, T(-12-nCALLt),                 /* (                 )                 */
+        exit
+    )
+WORD_END(xt_to_asm)
+/* ( -- t|f ) return t if all tokens between XT and HERE can be compiled to native ASM */
+WORD_START(xt_to_asm_q,    xt_to_asm)
+    WORD_DSTACK(0,1)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(0)
+    WORD_CODE(
+        /* skip final 'exit' token */
+        here, one_token, minus, state, fetch,       /* ( here-SZt xt     )                 */
+        two_dup, less_equal,                        /* ( here-SZt xt t|f )                 */
+        _if_, T(4),                                 /* ( here-SZt xt     )                 */
+            two_drop, false, exit,                  /* ( false           )                 */
+        then,
+        do,                                         /* (                 ) ( R: end pos  ) */
+            i, token_fetch, dup,                    /* ( tok tok         ) ( R: end pos  ) */
+            CALL(token_to_asm_n), invert,           /* ( tok 0|-u-1      ) ( R: end pos  ) */
+            _if0_, T(4),                            /* ( tok             ) ( R: end pos  ) */
+                unloop, drop, false, exit,          /* ( false           )                 */
+            then,                                   /* ( tok             ) ( R: end pos  ) */
+            token_to_name, name_to_flags, flags_to_consumed_tokens,
+            one_plus, tokens,                       /* ( consumed_bytes  ) ( R: end pos  ) */
+        _plus_loop_, T(-19-nCALLt),                 /* (                 )                 */
+        true, exit                                  /* ( true            )                 */
+    )
+WORD_END(xt_to_asm_q)
+
 #undef LASTWORD
-#define LASTWORD token_to_asm_addr
+#define LASTWORD xt_to_asm_q
