@@ -83,7 +83,7 @@ WORD_START(paren,      tick)
     WORD_STACK_NONE()
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
-    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE)
+    WORD_FLAGS(M4FLAG_IMMEDIATE | M4FLAG_INLINE)
     WORD_CODE(
         _lit_, T(')'), CALL(parse), two_drop, exit
     )
@@ -136,7 +136,19 @@ WORD_START(dot,        minus)
         num_end, type, exit
     )
 WORD_END(dot)
-WORD(div,              dot,        DSTACK(2,1), RSTACK(0,0), WORD_PURE)
+/* ( -- ) read string delimited by "
+ * compile code to display it */
+WORD_START(dot_quote,  dot)
+    WORD_DSTACK(0,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE)
+    WORD_CODE(
+        CALL(s_quote), _lit_comma_, type, exit
+    )
+WORD_END(dot_quote)
+WORD(div,              dot_quote,  DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(div_mod,          div,        DSTACK(2,2), RSTACK(0,0), WORD_PURE)
 WORD(zero_less,        div_mod,    DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(zero_equal,       zero_less,  DSTACK(1,1), RSTACK(0,0), WORD_PURE)

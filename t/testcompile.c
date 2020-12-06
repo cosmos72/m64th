@@ -116,6 +116,7 @@ static const m4testcompile testcompile_a[] = {
     {"c, short, int, ,", {}, {}, {4, {m4c_comma, m4short_comma, m4int_comma, m4comma}}},
     /* ------------------------------- immediate words ---------------------- */
     {"s\"  fubar\"", {}, {}, {3, {LIT_STRING(6, " fubar")}}},
+    {".\"  abcde\"", {}, {}, {4, {LIT_STRING(6, " abcde"), m4type}}},
     /* ------------------------------- words -------------------------------- */
     {"compile,", {}, {}, {1 + nCALLt, {CALL(compile_comma)}}},
     {"valid-base?", {}, {}, {4, {/*inlined*/ m4two, m4_lit_, T(37), m4within}}},
