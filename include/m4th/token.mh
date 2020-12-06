@@ -20,7 +20,7 @@
 #ifndef M4TH_INCLUDE_TOKEN_M4TH_MH
 #define M4TH_INCLUDE_TOKEN_M4TH_MH
 
-/*
+/**
  *
  *
  *
@@ -256,16 +256,15 @@
 #undef M4____gap                         /*                                         */
 #define M4do_i_plus_loop M4_u(217)       /* do i + loop           */
 
-/* */
-/* */
-/* */
-/* */
-/* */
-/* */
-/* */
-/* */
-/* */
-/* */
+/**
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ */
 /* 'm4th-c' wordlist */
 #define M4_c(x) ((x) + 730)
 #define M4_c_arg_0_ M4_c(0)  /* prepare 0 args for C function call    */
@@ -295,15 +294,16 @@
 #define M4_c_locals_load_ M4_c(25) /* reload local variables from RSTK after a C call */
 #define M4_c_locals_save_ M4_c(26) /* save local variables to RSTK before a C call    */
 
-/* */
-/* */
-/* */
-/* */
-/* */
-/* */
-/* */
-/* */
-/* */
+/**
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ */
 /* 'm4th-core' wordlist */
 #define M4_(x) ((x) + 760)
 /* ( counted-tokens -- tok-addr u ) get address and count of countedtokens */
@@ -366,13 +366,14 @@
 #define M4wordlist_reset M4_(56)      /* ( wid --    ) remove all user-defined names from wid */
 #define M4xt_to_name M4_(57)          /* xt>name       ( XT -- nt ) get name from XT */
 
-/* */
-/* */
-/* */
-/* */
-/* */
-/* */
-/* */
+/**
+ *
+ *
+ *
+ *
+ *
+ *
+ */
 /* 'm4th-impl' wordlist */
 #define M4_i(x) ((x) + 820)
 #define M4minus_two M4_i(-2)       /* -2                    */

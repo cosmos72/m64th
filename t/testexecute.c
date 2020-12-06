@@ -1635,7 +1635,7 @@ static m4testexecute testexecute_g[] = {
      {}},
     {"name>flags",
      {m4name_to_flags, m4bye},
-     {{1, {(m4cell)&WORD_SYM(noop)}}, {}},
+     {{1, {(m4cell)&WORD_SYM(two_dup)}}, {}},
      {{1, {WORD_PURE}}, {}},
      {}},
     {"name>code",
@@ -1918,7 +1918,6 @@ m4cell m4th_testexecute(m4th *m, FILE *out) {
     m4testcount count = {};
     m4cell i;
 #if 0
-    extern m4wordlist m4wordlist_m4th_user;
     m4wordlist_find(&m4wordlist_m4th_user, m4string_make("ex-message!", 11));
 #endif
     m4array_copy_to_tarray(crc1byte_array, crc1byte_code);

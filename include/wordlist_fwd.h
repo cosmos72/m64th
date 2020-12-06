@@ -42,6 +42,14 @@ extern m4wordlist m4wordlist_forth_root;
  */
 extern m4wordlist m4wordlist_m4th_user;
 /**
+ * Contains words to generate native assembly.
+ */
+extern m4wordlist m4wordlist_m4th_asm;
+/**
+ * Contains words to call C functions from forth.
+ */
+extern m4wordlist m4wordlist_m4th_c;
+/**
  * Contains words that directly interact with m4th implementation.
  */
 extern m4wordlist m4wordlist_m4th_core;

@@ -258,6 +258,7 @@
     X(17, "hashmap-find/cell", hashmap_find_cell) /* ( map key -- key' &val|0 ) find key in map */ \
     X(16, "hashmap-find/int", hashmap_find_int)   /* ( map key -- key' &val|0 ) find key in map */ \
     X(9, "interpret", interpret)       /* one iteration of forth interpret/compile loop  */        \
+    X(8, "m4th-asm", m4th_asm)         /* set first wordlist in searchorder to m4th-asm  */        \
     X(6, "m4th-c", m4th_c)             /* set first wordlist in searchorder to m4th-c    */        \
     X(9, "m4th-core", m4th_core)       /* set first wordlist in searchorder to m4th-core */        \
     X(9, "m4th-impl", m4th_impl)       /* set first wordlist in searchorder to m4th-impl */        \
@@ -316,6 +317,29 @@
     /*X(5, "cells", cells)         */ /* already in forth 'core' word set               */         \
     /*                             */ /*                                                */
 
+/* ------- m4th-asm ----------------------------------------------------------------------------- */
+#define DICT_TOKENS_M4TH_ASM(X)                                                                    \
+    X(10, "name>asm>n", name_to_asm_n) /* ( nt  -- u|-1    ) get ASM native_len from name */       \
+    /* ( token -- asm-addr | 0 ) get m4func ASM address for token */                               \
+    X(14, "token>asm>addr", token_to_asm_addr)
+
+#define DICT_WORDS_M4TH_ASM(X)                                                                     \
+    DICT_TOKENS_M4TH_ASM(X)                                                                        \
+    /* ( token -- asm-addr u | 0 0 ) get ASM m4func address and size for token */                  \
+    X(9, "token>asm", token_to_asm)
+
+/**
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ */
+
 /* ------- m4th-c ------------------------------------------------------------------------------- */
 #define DICT_TOKENS_M4TH_C(X)                                                                      \
     X(9, "(c-arg-0)", _c_arg_0_) /* prepare 0 args for C function call    */                       \
@@ -362,7 +386,6 @@
     X(6, "latest", latest)               /* (    -- nt   ) get last defined word             */    \
     X(9, "to-latest", to_latest)         /* ( nt --      ) set last defined word             */    \
     X(5, "name,", name_comma)            /* ( c-addr u -- nt ) create a new name             */    \
-    X(10, "name>asm>n", name_to_asm_n)   /* ( nt  -- u|-1    ) get native_len from name      */    \
     X(9, "name>code", name_to_code)      /* ( nt  -- taddr n ) get code array from name      */    \
     X(11, "name>code>n", name_to_code_n) /* ( nt -- u        ) get code size from name       */    \
     X(9, "name>data", name_to_data)      /* ( nt -- addr u   ) get data array of name        */    \
@@ -385,9 +408,7 @@
     X(15, "searchorder-dup", searchorder_dup)   /* ( SO: wid -- wid wid )                      */  \
     X(16, "searchorder-pick", searchorder_pick) /* ( SO: wid_u .. wid_0 -- same ) ( -- wid_u ) */  \
     X(15, "searchorder[0]!", searchorder_store_0) /* ( wid -- ) overwrite searchorder 0-th elem */ \
-    /* ( token -- asm-addr | 0 ) get m4func address for token */                                   \
-    X(14, "token>asm>addr", token_to_asm_addr)                                                     \
-    X(10, "token>name", token_to_name) /* ( token -- nt|0 ) convert token to name */               \
+    X(10, "token>name", token_to_name)            /* ( token -- nt|0 ) convert token to name */    \
     X(8, "user-var", user_var) /*        ( -- addr ) must be followed by index of user variable */ \
     X(13, "wordlist>last", wordlist_to_last)     /* ( wid -- nt ) get last name in wordlist  */    \
     X(15, "wordlist>string", wordlist_to_string) /* ( wid -- c-addr u ) convert wid to string   */ \
@@ -458,8 +479,6 @@
     X(7, "tokens,", tokens_comma)         /* ( tok-addr u -- )       compile u tokens     */       \
     X(11, "token-align", token_align)     /* alias of _SZt_align,    no dedicated m4token */       \
     X(13, "token-aligned", token_aligned) /* alias of _SZt_aligned,  no dedicated m4token */       \
-    /* ( token -- asm-addr u | 0 0 ) get m4func address and size for token */                      \
-    X(9, "token>asm", token_to_asm)                                                                \
     X(13, "wordlist-find", wordlist_find) /* ( c-addr u wid -- nt|0 -1|0|1 ) search in wordlist */
 
 /* ------- m4th-impl ---------------------------------------------------------------------------- */
@@ -735,10 +754,18 @@
     X(6, "u>char", u_to_char) /* convert unsigned number to to char in current base */
 
 /* ------- m4th-* ------------------------------------------------------------------------------- */
-#define DICT_WORDS_M4TH(X) /* contains all DICT_WORDS_M4TH_* */                                    \
-    DICT_WORDS_M4TH_USER(X) DICT_WORDS_M4TH_C(X) DICT_WORDS_M4TH_CORE(X) DICT_WORDS_M4TH_IMPL(X)
+#define DICT_WORDS_M4TH(X)  /* contains all DICT_WORDS_M4TH_* */                                   \
+    DICT_WORDS_M4TH_USER(X) /*                                                            */       \
+    DICT_WORDS_M4TH_ASM(X)  /*                                                            */       \
+    DICT_WORDS_M4TH_C(X)    /*                                                            */       \
+    DICT_WORDS_M4TH_CORE(X) /*                                                            */       \
+    DICT_WORDS_M4TH_IMPL(X) /*                                                            */
 
-#define DICT_TOKENS_M4TH(X) /* contains all DICT_TOKENS_M4TH_* */                                  \
-    DICT_TOKENS_M4TH_USER(X) DICT_TOKENS_M4TH_C(X) DICT_TOKENS_M4TH_CORE(X) DICT_TOKENS_M4TH_IMPL(X)
+#define DICT_TOKENS_M4TH(X)  /* contains all DICT_TOKENS_M4TH_* */                                 \
+    DICT_TOKENS_M4TH_USER(X) /*                                                            */      \
+    DICT_TOKENS_M4TH_ASM(X)  /*                                                            */      \
+    DICT_TOKENS_M4TH_C(X)    /*                                                            */      \
+    DICT_TOKENS_M4TH_CORE(X) /*                                                            */      \
+    DICT_TOKENS_M4TH_IMPL(X)
 
 #endif /* M4TH_INCLUDE_DICT_M4TH_MH */

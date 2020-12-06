@@ -71,6 +71,7 @@ MARKER(asm_data_start)
 
 WORDLIST(forth)
 WORDLIST(forth_root)
+WORDLIST(m4th_asm)
 WORDLIST(m4th_c)
 WORDLIST(m4th_core)
 WORDLIST(m4th_impl)

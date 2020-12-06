@@ -311,12 +311,6 @@ const m4cell *m4th_state(const m4th *m);
 /* add wid to the top of search order */
 void m4th_also(m4th *m, m4wordlist *wid);
 
-extern m4wordlist m4wordlist_forth;
-extern m4wordlist m4wordlist_forth_root;
-extern m4wordlist m4wordlist_m4th_user;
-extern m4wordlist m4wordlist_m4th_core;
-extern m4wordlist m4wordlist_m4th_impl;
-
 /* start compiling a new word */
 void m4th_colon(m4th *m, m4string name);
 

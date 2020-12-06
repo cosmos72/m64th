@@ -63,6 +63,15 @@
 
 /**/
 
+DICT_START(m4th_asm)
+DICT_WORDS_M4TH_ASM(WORDNAME)
+#include "m4th/asm.S"
+DICT_BODY(m4th_asm, LASTWORD)
+DICT_END(m4th_asm)
+
+/**/
+/**/
+
 DICT_START(m4th_c)
 DICT_WORDS_M4TH_C(WORDNAME)
 #include "m4th/c.S"

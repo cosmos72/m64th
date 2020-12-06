@@ -420,8 +420,20 @@ WORD_START(interpret,  i_prime)
 WORD_END(interpret)
 /* ( c-addr u ch -- u' ) get position of given char or CR/LF in string, whatever comes first */
 WORD(line_find_char,   interpret,      DSTACK(3,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+/* replace first wordlist in search order with m4th_asm wordlist ( SO: wid -- m4th_asm ) */
+WORD_START(m4th_asm,   line_find_char)
+    WORD_DSTACK(0,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        _lit_cell_, CELL(m4wordlist_m4th_asm),         /* ( wid                ) */
+        searchorder_store_0, exit                      /* (                    ) */
+    )
+WORD_END(m4th_asm)
 /* replace first wordlist in search order with m4th_c wordlist ( SO: wid -- m4th_c ) */
-WORD_START(m4th_c,     line_find_char)
+WORD_START(m4th_c,     m4th_asm)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
