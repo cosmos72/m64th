@@ -325,8 +325,8 @@
 
 #define DICT_WORDS_M4TH_ASM(X)                                                                     \
     DICT_TOKENS_M4TH_ASM(X)                                                                        \
-    /* ( token -- asm-addr u | 0 0 ) get ASM m4func address and size for token */                  \
-    X(9, "token>asm", token_to_asm)
+    X(9, "token>asm", token_to_asm) /* ( token -- addr u | 0 0 ) get token ASM address and len */  \
+    X(11, "token>asm>n", token_to_asm_n) /* ( token -- u|-1 ) get token ASM len */
 
 /**
  *

@@ -33,22 +33,35 @@ WORD_START(token_to_asm,   name_to_asm_n)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
-    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_FLAGS(0)
     WORD_CODE(
         dup, token_to_asm_addr,                     /* ( token m4func|0          ) */
-        swap, token_to_name,                        /* ( m4func|0 nt|0           ) */
-        over, zero_ne, and,                         /* ( m4func|0 nt|0           ) */
         _q_if0_, T(4),                              /* ( m4func 0                ) */
             nip, zero, exit,                        /* ( 0 0                     ) */
-        then,                                       /* ( m4func nt               ) */
-        name_to_asm_n,                              /* ( m4func u|-1             ) */
+        then,                                       /* ( token m4func            ) */
+        swap, CALL(token_to_asm_n),                 /* ( m4func u|-1             ) */
         dup, invert,                                /* ( m4func u|-1 flag        ) */
         _if0_, T(4),                                /* ( m4func -1               ) */
-            two_drop, zero, zero,                   /* ( 0 0                     ) */
+            nip, invert, zero,                      /* ( 0 0                     ) */
         then, exit                                  /* ( m4func u | 0 0          ) */
     )
 WORD_END(token_to_asm)
-WORD(token_to_asm_addr,    token_to_asm,   DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
+WORD_START(token_to_asm_n, token_to_asm)
+    WORD_DSTACK(1,1)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(0)
+    WORD_CODE(
+        token_to_name,                              /* ( nt|0                    ) */
+        _q_if_, T(3),                               /* ( nt                      ) */
+            name_to_asm_n,                          /* ( u|-1                    ) */
+        _else_, T(2),                               /* ( 0                       ) */
+            invert,                                 /* ( -1                      ) */
+        then, exit                                  /* ( u|-1                    ) */
+    )
+WORD_END(token_to_asm_n)
+WORD(token_to_asm_addr,    token_to_asm_n, DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
 
 #undef LASTWORD
 #define LASTWORD token_to_asm_addr
