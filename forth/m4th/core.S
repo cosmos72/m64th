@@ -706,7 +706,7 @@ WORD_START(token_to_asm,  token_aligned)
         then,                                       /* ( m4func nt               ) */
         name_to_asm_n,                              /* ( m4func u|-1             ) */
         dup, invert,                                /* ( m4func u|-1 flag        ) */
-        _if0_, T(5),                                /* ( m4func -1               ) */
+        _if0_, T(4),                                /* ( m4func -1               ) */
             two_drop, zero, zero,                   /* ( 0 0                     ) */
         then, exit                                  /* ( m4func u | 0 0          ) */
     )
