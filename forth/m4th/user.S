@@ -601,17 +601,10 @@ WORD(one_cell,         one_uint,       DSTACK(0,1), RSTACK(0,0), WORD_PURE) /* 8
 WORD(short_comma,      one_cell,       DSTACK(1,0), RSTACK(0,0), WORD_IMPURE)
 WORD(int_comma,        short_comma,    DSTACK(1,0), RSTACK(0,0), WORD_IMPURE)
 /* ( c-addr u -- ) store 1-byte u then string data at HERE */
-WORD_START(countedstring_comma, int_comma)
-    WORD_DSTACK(2,0)
-    WORD_RSTACK(0,0)
-    WORD_STACK_NONE()
-    WORD_NATIVE_NONE() /* uses IP-relative JUMP, cannot inline in native code */
-    WORD_FLAGS(M4FLAG_INLINE)
-    WORD_CODE(
-        countedstring_comma, exit
-    )
-WORD_END(countedstring_comma)
-WORD(short_align, countedstring_comma, DSTACK(0,0), RSTACK(0,0), WORD_IMPURE)
+WORD_NONATIVE(countedstring_comma,     int_comma,   DSTACK(2,0), RSTACK(0,0), WORD_IMPURE)
+/* ( c-addr u -- ) store string data at HERE */
+WORD_NONATIVE(string_comma,    countedstring_comma, DSTACK(2,0), RSTACK(0,0), WORD_IMPURE)
+WORD(short_align,      string_comma,   DSTACK(0,0), RSTACK(0,0), WORD_IMPURE)
 WORD(int_align,        short_align,    DSTACK(0,0), RSTACK(0,0), WORD_IMPURE)
 WORD(short_aligned,    int_align,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(int_aligned,      short_aligned,  DSTACK(1,1), RSTACK(0,0), WORD_PURE)

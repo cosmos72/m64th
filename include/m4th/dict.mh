@@ -112,7 +112,8 @@
     /*                              */ /*                                               */         \
     X(6, "short,", short_comma)                                                                    \
     X(4, "int,", int_comma)                                                                        \
-    X(14, "countedstring,", countedstring_comma) /* ( c-addr u -- )                    */          \
+    X(14, "countedstring,", countedstring_comma) /* ( c-addr u -- ) append countedstring to HERE*/ \
+    X(7, "string,", string_comma)                /* ( c-addr u -- ) append string to HERE */       \
     /*                              */ /*                                               */         \
     X(11, "short-align", short_align)                                                              \
     X(9, "int-align", int_align)                                                                   \
@@ -325,6 +326,7 @@
 
 #define DICT_WORDS_M4TH_ASM(X)                                                                     \
     DICT_TOKENS_M4TH_ASM(X)                                                                        \
+    X(4, "asm,", asm_comma)         /* ( addr u  -- ) append ASM code to HERE */                   \
     X(9, "token>asm", token_to_asm) /* ( token -- addr u | 0 0 ) get token ASM address and len */  \
     X(11, "token>asm>n", token_to_asm_n) /* ( token -- u|-1 ) get token ASM len */
 

@@ -31,6 +31,7 @@
 #define m4_2s_comma m4short_comma
 #define m4_4s_comma m4int_comma
 #define m4_8s_comma m4comma
+#define m4asm_comma m4string_comma
 #define m4token_comma CAT3(m4_, SZt, s_comma)
 #define m4xt_comma CAT3(m4_, SZ, s_comma)
 
@@ -196,6 +197,7 @@
 #define M4_2s_comma M4short_comma
 #define M4_4s_comma M4int_comma
 #define M4_8s_comma M4comma
+#define M4asm_comma M4string_comma
 #define M4token_comma CAT3(M4_, SZt, s_comma)
 #define M4xt_comma CAT3(M4_, SZ, s_comma)
 

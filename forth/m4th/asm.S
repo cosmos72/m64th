@@ -27,7 +27,9 @@
 /* --- m4th-asm --------------------------------------------------------------------------------- */
 /* ---------------------------------------------------------------------------------------------- */
 
-WORD(name_to_asm_n,        name_to_asm_n,  DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+/* ( addr u -- ) store ASM code at HERE */
+WORD_NONATIVE(asm_comma,   asm_comma,      DSTACK(2,0), RSTACK(0,0), WORD_IMPURE)
+WORD(name_to_asm_n,        asm_comma,      DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 WORD_START(token_to_asm,   name_to_asm_n)
     WORD_DSTACK(1,2)
     WORD_RSTACK(0,0)
@@ -37,12 +39,12 @@ WORD_START(token_to_asm,   name_to_asm_n)
     WORD_CODE(
         dup, token_to_asm_addr,                     /* ( token m4func|0          ) */
         _q_if0_, T(4),                              /* ( m4func 0                ) */
-            nip, zero, exit,                        /* ( 0 0                     ) */
+            nip, dup, exit,                         /* ( 0 0                     ) */
         then,                                       /* ( token m4func            ) */
         swap, CALL(token_to_asm_n),                 /* ( m4func u|-1             ) */
         dup, invert,                                /* ( m4func u|-1 flag        ) */
         _if0_, T(4),                                /* ( m4func -1               ) */
-            nip, invert, zero,                      /* ( 0 0                     ) */
+            nip, invert, dup,                       /* ( 0 0                     ) */
         then, exit                                  /* ( m4func u | 0 0          ) */
     )
 WORD_END(token_to_asm)

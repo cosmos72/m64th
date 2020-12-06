@@ -244,20 +244,20 @@
 #define M4int_comma M4_u(211)            /* int,    append   (int32_t)dtop to HERE  */
 #define M4uint_comma M4int_comma         /* uint,   append  (uint32_t)dtop to HERE  */
 #define M4countedstring_comma M4_u(212)  /* ( c-addr u -- ) append countedstring to HERE */
-#undef M4____gap                         /*                                         */
-#define M4short_align M4_u(213)          /*  short-align  align HERE to sizeof(short)       */
+#define M4string_comma M4_u(213)         /* ( c-addr u -- ) append string to HERE   */
+/*                                    */ /*                                         */
+#define M4short_align M4_u(214)          /*  short-align  align HERE to sizeof(short)       */
 #define M4ushort_align M4short_align     /* ushort-align  align HERE to sizeof(ushort)      */
-#define M4int_align M4_u(214)            /*    int-align  align HERE to sizeof(int)         */
+#define M4int_align M4_u(215)            /*    int-align  align HERE to sizeof(int)         */
 #define M4uint_align M4int_align         /*   uint-align  align HERE to sizeof(uint)        */
-#define M4short_aligned M4_u(215)        /*      short-aligned  align dtop to sizeof(short) */
+#define M4short_aligned M4_u(216)        /*      short-aligned  align dtop to sizeof(short) */
 #define M4ushort_aligned M4short_aligned /* ushort-aligned  align dtop to sizeof(ushort)    */
-#define M4int_aligned M4_u(216)          /*    int-aligned  align dtop to sizeof(int)       */
+#define M4int_aligned M4_u(217)          /*    int-aligned  align dtop to sizeof(int)       */
 #define M4uint_aligned M4int_aligned     /*   uint-aligned  align dtop to sizeof(uint)      */
-#undef M4____gap                         /*                                         */
-#define M4do_i_plus_loop M4_u(217)       /* do i + loop           */
+/*                                    */ /*                                         */
+#define M4do_i_plus_loop M4_u(218)       /* do i + loop           */
 
 /**
- *
  *
  *
  *

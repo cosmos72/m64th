@@ -209,10 +209,16 @@ FUNC_START(countedstring_comma)
         JA(    DTOP,   IMM(0xff),  FUNC(_throw_reg0_))
         STORb( DTOP,   AT(HERE))
         INC1(  HERE)                                   /* here++            */
+        /* fallthrough */
+
+/* string, ( c-addr u -- ) m4th-user */
+FUNC_DEF(string_comma)
         DPUSH( HERE)                                   /* ( c-addr here u ) */
         ADD2(  DTOP,   HERE)                           /* here += u         */
         JUMP(  FUNC(cmove))
-FUNC_RAWEND(countedstring_comma)
+FUNC_RAWEND(string_comma)
+FUNC_SIZE(countedstring_comma)
+
 
 
 #ifndef M4FIMMEDIATE
