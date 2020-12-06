@@ -27,28 +27,28 @@
  */
 /* 'm4th-user' wordlist */
 #define M4_u(x) ((x) + 510)
-#define M4less_equal M4_u(0)  /* <=                                      */
-#define M4more_equal M4_u(1)  /* >=                                      */
-#define M4q_2du_to_2u M4_u(2) /* ( du1 du2 -- u1 u2 t | du1 du2 f ) narrow double-width numbers */
-#define M4q_du_to_u M4_u(3)   /* ( du -- u t | du f ) narrow a double-width number  */
-#define M4zero_less_equal M4_u(4)        /* 0<=                                     */
-#define M4zero_more_equal M4_u(5)        /* 0>=                                     */
-#define M4two_plus M4_u(6)               /* 2+                                      */
-#define M4two_minus M4_u(7)              /* 2-                                      */
-#define M4two_sm_div M4_u(8)             /* 2sm/ symmetric divide by 2              */
-#undef M4____gap                         /*                                         */
-#define M4four_times M4_u(10)            /* 4*                                      */
-#define M4four_plus M4_u(11)             /* 4+                                      */
-#define M4four_minus M4_u(12)            /* 4-                                      */
-#define M4four_div M4_u(13)              /* 4/   floored divide by 4                */
-#define M4four_sm_div M4_u(14)           /* 4sm/ symmetric divide by 4              */
-#define M4eight_times M4_u(15)           /* 8*                                      */
-#define M4eight_plus M4_u(16)            /* 8+                                      */
-#define M4eight_minus M4_u(17)           /* 8-                                      */
-#define M4eight_div M4_u(18)             /* 8/   floored divide by 8                */
-#define M4eight_sm_div M4_u(19)          /* 8/sm symmetric divide by 8              */
-#undef M4____gap                         /*                                         */
-#undef M4____gap                         /*                                         */
+#define M4less_equal M4_u(0)      /* <=                                      */
+#define M4more_equal M4_u(1)      /* >=                                      */
+#undef M4____gap                  /*                                         */
+#undef M4____gap                  /*                                         */
+#define M4zero_less_equal M4_u(4) /* 0<=                                     */
+#define M4zero_more_equal M4_u(5) /* 0>=                                     */
+#define M4two_plus M4_u(6)        /* 2+                                      */
+#define M4two_minus M4_u(7)       /* 2-                                      */
+#define M4two_sm_div M4_u(8)      /* 2sm/ symmetric divide by 2              */
+#undef M4____gap                  /*                                         */
+#define M4four_times M4_u(10)     /* 4*                                      */
+#define M4four_plus M4_u(11)      /* 4+                                      */
+#define M4four_minus M4_u(12)     /* 4-                                      */
+#define M4four_div M4_u(13)       /* 4/   floored divide by 4                */
+#define M4four_sm_div M4_u(14)    /* 4sm/ symmetric divide by 4              */
+#define M4eight_times M4_u(15)    /* 8*                                      */
+#define M4eight_plus M4_u(16)     /* 8+                                      */
+#define M4eight_minus M4_u(17)    /* 8-                                      */
+#define M4eight_div M4_u(18)      /* 8/   floored divide by 8                */
+#define M4eight_sm_div M4_u(19)   /* 8/sm symmetric divide by 8              */
+/* ( du1 du2 -- u1 u2 t | du1 du2 f ) attempt to narrow double-width nums */
+#define M4two_du_to_2u_q M4_u(21)
 #define M4two_dup_two_to_r M4_u(22)      /* 2dup_2>r  equivalent to: 2dup 2>r       */
 #define M4two_nip M4_u(23)               /* 2nip      equivalent to: 2swap 2drop    */
 #define M4two_pick M4_u(24)              /* 2pick                                   */
@@ -71,33 +71,33 @@
 #define M4crc_string M4_u(41)            /* ( c-addr u -- crc32 ) compute CRC32c of a string  */
 #undef M4____gap                         /*                                         */
 #undef M4____gap                         /*                                         */
-#undef M4____gap                         /*                                         */
-#define M4dup_to_r M4_u(45)              /* dup>r                   equivalent to: dup  >r    */
-#define M4ex_message_store M4_u(46)      /* ( c-addr u -- ) save string as exception message  */
-#define M4ex_message_fetch M4_u(47)      /* ( -- c-addr u ) fetch exception message string    */
-#define M4flip M4_u(48)                  /* flip ( a b c -- c b a ) equivalent to: swap rot   */
-#undef M4____gap                         /*                                         */
-#undef M4____gap                         /*                                         */
-#define M4hop M4_u(51)                   /* hop       equivalent to: 2   pick       */
-#define M4i_times M4_u(52)               /* i*                                      */
-#define M4i_plus M4_u(53)                /* i+                                      */
-#define M4i_minus M4_u(54)               /* i-                                      */
-#define M4i_prime M4_u(55)               /* i'                                      */
-#undef M4____gap                         /*                                         */
-#define M4line_find_char M4_u(57)        /* ( c-addr u ch -- u' ) get index of char or CR */
-#define M4noop M4_u(58)                  /* noop                                    */
-#define M4n_to_drop M4_u(59)             /* n>drop ( xn .. x1 n -- ) drop n cells   */
-#undef M4____gap                         /*                                         */
-#define M4r_one_plus M4_u(61)            /* r1+       equivalent to: r>  1+   >r    */
-#define M4r_one_minus M4_u(62)           /* r1-       equivalent to: r>  1-   >r    */
-#define M4r_store M4_u(63)               /* r!        equivalent to: r>  drop >r    */
-#define M4r_plus_store M4_u(64)          /* r+!       equivalent to: r>  +    >r    */
-#define M4r_from_drop M4_u(65)           /* r>drop    equivalent to: r>  drop       */
-#define M4rdepth M4_u(66)                /* rdepth    get return stack depth        */
-#undef M4____gap                         /*                                         */
-#define M4minus_roll M4_u(68)            /* -roll     rotate in opposite direction than "roll" */
-#define M4minus_rot M4_u(69)             /* -rot      equivalent to: rot rot        */
-#undef M4____gap                         /*                                         */
+#define M4du_to_u_q M4_u(44) /* ( du -- u t | du f ) attempt to narrow a double-width number  */
+#define M4dup_to_r M4_u(45)  /* dup>r                   equivalent to: dup  >r    */
+#define M4ex_message_store M4_u(46)  /* ( c-addr u -- ) save string as exception message  */
+#define M4ex_message_fetch M4_u(47)  /* ( -- c-addr u ) fetch exception message string    */
+#define M4flip M4_u(48)              /* flip ( a b c -- c b a ) equivalent to: swap rot   */
+#undef M4____gap                     /*                                         */
+#undef M4____gap                     /*                                         */
+#define M4hop M4_u(51)               /* hop       equivalent to: 2   pick       */
+#define M4i_times M4_u(52)           /* i*                                      */
+#define M4i_plus M4_u(53)            /* i+                                      */
+#define M4i_minus M4_u(54)           /* i-                                      */
+#define M4i_prime M4_u(55)           /* i'                                      */
+#undef M4____gap                     /*                                         */
+#define M4line_find_char M4_u(57)    /* ( c-addr u ch -- u' ) get index of char or CR */
+#define M4noop M4_u(58)              /* noop                                    */
+#define M4n_to_drop M4_u(59)         /* n>drop ( xn .. x1 n -- ) drop n cells   */
+#undef M4____gap                     /*                                         */
+#define M4r_one_plus M4_u(61)        /* r1+       equivalent to: r>  1+   >r    */
+#define M4r_one_minus M4_u(62)       /* r1-       equivalent to: r>  1-   >r    */
+#define M4r_store M4_u(63)           /* r!        equivalent to: r>  drop >r    */
+#define M4r_plus_store M4_u(64)      /* r+!       equivalent to: r>  +    >r    */
+#define M4r_from_drop M4_u(65)       /* r>drop    equivalent to: r>  drop       */
+#define M4rdepth M4_u(66)            /* rdepth    get return stack depth        */
+#undef M4____gap                     /*                                         */
+#define M4minus_roll M4_u(68)        /* -roll     rotate in opposite direction than "roll" */
+#define M4minus_rot M4_u(69)         /* -rot      equivalent to: rot rot        */
+#undef M4____gap                     /*                                         */
 #define M4sp_fetch M4_u(71)          /* sp@ ( x -- x addr-of-x ) get current data stack address */
 #define M4squared M4_u(72)           /* squared   equivalent to: dup *          */
 #undef M4____gap                     /*                                         */

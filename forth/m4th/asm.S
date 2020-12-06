@@ -64,6 +64,5 @@ WORD_START(token_to_asm_n, token_to_asm)
     )
 WORD_END(token_to_asm_n)
 WORD(token_to_asm_addr,    token_to_asm_n, DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
-
 #undef LASTWORD
 #define LASTWORD token_to_asm_addr

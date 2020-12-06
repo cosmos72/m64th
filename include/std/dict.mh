@@ -177,7 +177,7 @@
 
 #define DICT_WORDS_FORTH_CORE_EXT(X)                                                               \
     DICT_TOKENS_FORTH_CORE_EXT(X)                                                                  \
-    /* the following words are implemented in forth, thus no dedicated m4token value */            \
+    /* the following words are implemented in forth - no dedicated m4token value */                \
     X(2, ".(", dot_paren)                                                                          \
     X(7, ":noname", colon_noname)                                                                  \
     X(3, "?do", question_do)                                                                       \

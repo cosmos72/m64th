@@ -24,31 +24,31 @@
 
 /* attempt to narrow a double-width unsigned number            */
 /* ?du>u ( du -- u t | du f )                                  */
-FUNC_START(q_du_to_u)
-        JNZ(   DTOP,   TO(q_du_to_u.false))    /* dtop = du.high               */
+FUNC_START(du_to_u_q)
+        JNZ(   DTOP,   TO(du_to_u_q.false))    /* dtop = du.high               */
 
-LABEL(q_du_to_u.true)
+LABEL(du_to_u_q.true)
 #ifdef RFFF
         MOVE(  RFFF,   DTOP)                   /* ( u t                      ) */
 #else
         MOVI(  -1,     DTOP)                   /* ( u t                      ) */
 #endif
-        JUMP(  FUNC_RET(q_du_to_u))
+        JUMP(  FUNC_RET(du_to_u_q))
 
-LABEL(q_du_to_u.false)
+LABEL(du_to_u_q.false)
         DPUSH__DTOP()                          /* ( du _                     ) */
         ZERO(DTOP)                             /* ( du f                     ) */
-FUNC_END(q_du_to_u)
+FUNC_END(du_to_u_q)
 
 
 /* attempt to narrow two double-width unsigned numbers         */
-/* ?2du>2u ( du1 du2 -- u1 u2 t | du1 du2 f )                  */
-FUNC_START(q_2du_to_2u)
-        JNZ(   DTOP,   TO(q_2du_to_2u.false))  /* dtop = du2.high              */
+/* 2du>2u? ( du1 du2 -- u1 u2 t | du1 du2 f )                  */
+FUNC_START(two_du_to_2u_q)
+        JNZ(   DTOP,   TO(two_du_to_2u_q.false))  /* dtop = du2.high              */
         LOAD(  REG1,   AT(DSTK, SZ))           /* a = du1.high                 */
-        JNZ(   REG1,   TO(q_2du_to_2u.false))
+        JNZ(   REG1,   TO(two_du_to_2u_q.false))
 
-LABEL(q_2du_to_2u.true)
+LABEL(two_du_to_2u_q.true)
         LOAD(  REG2,   AT(DSTK))               /* b = du2.low                  */
 #ifdef RFFF
         MOVE(  RFFF,   DTOP)                   /* ( u1 _ _ t                 ) */
@@ -57,12 +57,12 @@ LABEL(q_2du_to_2u.true)
 #endif
         STOR(  REG2,   AT(DSTK, SZ))           /* ( u1 u2 _ t                ) */
         ADD2(IMM(SZ),  DSTK)                   /* ( u1 u2 t                  ) */
-        JUMP(  FUNC_RET(q_2du_to_2u))
+        JUMP(  FUNC_RET(two_du_to_2u_q))
 
-LABEL(q_2du_to_2u.false)
+LABEL(two_du_to_2u_q.false)
         DPUSH__DTOP()                          /* ( du1 du2 _                ) */
         ZERO(DTOP)                             /* ( du1 du2 f                ) */
-FUNC_END(q_2du_to_2u)
+FUNC_END(two_du_to_2u_q)
 
 
 FUNC_START(two_drop)       /* 2drop    */

@@ -45,13 +45,12 @@ WORD_START(dot_rs, dot_rs)
 WORD_END(dot_rs)
 WORD(less_equal,       dot_rs,         DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(more_equal,       less_equal,     DSTACK(2,1), RSTACK(0,0), WORD_PURE)
-WORD(q_du_to_u,        more_equal,     DSTACK(2,-1),RSTACK(0,0), WORD_PURE)
-WORD(q_2du_to_2u,      q_du_to_u,      DSTACK(4,-1),RSTACK(0,0), WORD_PURE)
-WORD(zero_less_equal,  q_2du_to_2u,    DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD(zero_less_equal,  more_equal,    DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(zero_more_equal, zero_less_equal, DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(two_plus,        zero_more_equal, DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(two_minus,        two_plus,       DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(two_dup_two_to_r, two_minus,      DSTACK(2,2), RSTACK(0,2), WORD_R_PURE)
+WORD(two_du_to_2u_q,   two_minus,      DSTACK(4,-1),RSTACK(0,0), WORD_PURE)
+WORD(two_dup_two_to_r, two_du_to_2u_q, DSTACK(2,2), RSTACK(0,2), WORD_R_PURE)
 WORD(two_nip,         two_dup_two_to_r,DSTACK(4,2), RSTACK(0,0), WORD_PURE)
 WORD(two_pick,         two_nip,        DSTACK(1,2), RSTACK(0,0), WORD_IMPURE) /* DSTACK(x+1,x+2) */
 WORD(two_r_from_two_drop, two_pick,    DSTACK(0,0), RSTACK(2,0), WORD_R_PURE)
@@ -211,7 +210,7 @@ WORD_START(du_div_mod, do_i_plus_loop)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_PURE)
     WORD_CODE(
-        q_2du_to_2u,                                   /* ( ud1 ud2 f | u1 u2 t  ) */
+        two_du_to_2u_q,                                   /* ( ud1 ud2 f | u1 u2 t  ) */
         _if_, T(7),    /* 64bit division */            /* ( u1 u2                ) */
             u_div_mod,                                 /* ( rem quo              ) */
             swap, u_to_d, rot, u_to_d, exit,           /* ( du-rem du-quo        ) */
@@ -224,7 +223,8 @@ WORD_START(du_div_mod, do_i_plus_loop)
         _c_locals_load_, exit                            /* ( du-rem du-quo        ) */
     )
 WORD_END(du_div_mod)
-WORD(dup_to_r,         du_div_mod,     DSTACK(1,1), RSTACK(0,1), WORD_R_PURE)
+WORD(du_to_u_q,        du_div_mod,     DSTACK(2,-1),RSTACK(0,0), WORD_PURE)
+WORD(dup_to_r,         du_to_u_q,      DSTACK(1,1), RSTACK(0,1), WORD_R_PURE)
 WORD(ex_message_store, dup_to_r,       DSTACK(2,0), RSTACK(0,0), WORD_IMPURE)
 WORD(ex_message_fetch,ex_message_store,DSTACK(0,2), RSTACK(0,0), WORD_IMPURE)
 /* ( ex -- c-addr u ) get exception name */
