@@ -326,7 +326,7 @@
 
 #define DICT_WORDS_M4TH_ASM(X)                                                                     \
     DICT_TOKENS_M4TH_ASM(X)                                                                        \
-    X(4, "asm,", asm_comma)         /* ( addr u  -- ) append ASM code to HERE */                   \
+    X(4, "asm,", asm_comma)         /* ( addr u  -- ) append ASM code to ASM-HERE */               \
     X(9, "token>asm", token_to_asm) /* ( token -- addr u | 0 0 ) get token ASM address and len */  \
     X(11, "token>asm>n", token_to_asm_n) /* ( token -- u|-1 ) get token ASM len */                 \
     /* ( -- ) attempt to compile to native ASM all tokens between XT and HERE */                   \
