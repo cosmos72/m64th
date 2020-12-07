@@ -20,15 +20,11 @@ also m4th-core
 also m4th-asm definitions
 
 
-\ return t if all tokens between XT and HERE can be compiled to native ASM
-: xt>asm?   ( -- u t|f )
-   0                                                   ( 0                 )
-   here 1token - state @  \ skip final 'exit' token    ( 0 here-SZt xt     )
-   2dup <=                                             ( 0 here-SZt xt t|f )
-   if                                                  ( 0 here-SZt xt     )
-      2drop false exit                                 ( 0 false           )
-   then                                                ( 0                 )
-   do                                                  ( u                 )
+\ return required len and true if all tokens between XT and HERE
+\ can be compiled to native ASM, otherwise false
+: xt>asm>n  ( -- u t|f )
+   0 here state @                                      ( 0 here xt         )
+   ?do                                                 ( u                 )
       i token@ dup                                     ( u tok tok         ) ( R: end pos  )
       token>asm>n 0=                                   ( u tok n|0 t|f     ) ( R: end pos  )
       if                                               ( u tok 0           ) ( R: end pos  )
@@ -41,4 +37,4 @@ also m4th-asm definitions
     true                                               ( u true            )
 ;
 
-disassemble-upto xt>asm?
+disassemble-upto xt>asm>n

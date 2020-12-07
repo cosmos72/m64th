@@ -319,8 +319,18 @@
     /*X(5, "cells", cells)         */ /* already in forth 'core' word set               */         \
     /*                             */ /*                                                */
 
+/**
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ */
 /* ------- m4th-asm ----------------------------------------------------------------------------- */
 #define DICT_TOKENS_M4TH_ASM(X)                                                                    \
+    X(9, "(asm-ret)", _asm_exit_)                                                                  \
     X(4, "asm,", asm_comma)            /* ( addr u  -- ) append ASM code to ASM-HERE */            \
     X(10, "name>asm>n", name_to_asm_n) /* ( nt  -- u true | 0 false ) get name ASM native_len */   \
     /* ( token -- asm-addr | 0 ) get m4func ASM address for token */                               \
@@ -334,8 +344,8 @@
     /* ( -- ) attempt to compile to native ASM all tokens between XT and HERE */                   \
     X(6, "xt>asm", xt_to_asm)                                                                      \
     /* ( -- u t|f ) return required len and true if all tokens between XT and HERE */              \
-    /* can be compiled to native ASM */                                                            \
-    X(7, "xt>asm?", xt_to_asm_q)
+    /* can be compiled to native ASM, otherwise false */                                           \
+    X(8, "xt>asm>n", xt_to_asm_n)
 
 /**
  *
@@ -345,10 +355,7 @@
  *
  *
  *
- *
- *
  */
-
 /* ------- m4th-c ------------------------------------------------------------------------------- */
 #define DICT_TOKENS_M4TH_C(X)                                                                      \
     X(9, "(c-arg-0)", _c_arg_0_) /* prepare 0 args for C function call    */                       \
@@ -638,7 +645,6 @@
     X(4, "(of)", _of_)           /* ( x y -- x| ) execution semantics of 'of'      */              \
     X(9, "(recurse)", _recurse_) /* ( x y -- x| ) execution semantics of 'recurse' */              \
     X(8, "(repeat)", _repeat_)                                                                     \
-    X(18, "(return-to-native)", _return_to_native_)                                                \
     X(7, "(until)", _until_)                                                                       \
     X(8, "(until0)", _until0_)                                                                     \
     X(7, "(while)", _while_)                                                                       \

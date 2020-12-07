@@ -292,11 +292,5 @@ FUNC_START(_exec_xt_from_native_)
     ASM_RET()
 WORD_CODE_ALIGN()
 LABEL(_exec_xt_from_native_.vm_code)
-    WORD_CODE_TOKENS(execute, _return_to_native_)
+    WORD_CODE_TOKENS(execute, _asm_exit_)
 FUNC_RAWEND(_exec_xt_from_native_)
-
-
-/* return to native code */
-FUNC_START(_return_to_native_)
-    ASM_RET()
-FUNC_END(_return_to_native_)

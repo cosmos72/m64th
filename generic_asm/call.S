@@ -21,6 +21,13 @@
 
 /* clang-format off */
 
+
+/* return to native code */
+FUNC_START(_asm_exit_)
+        ASM_RET()
+FUNC_END(_asm_exit_)
+
+
 /** must be followed by an XT. calls it. */
 FUNC_START(_call_)
         RPUSH( RTOP)               /* save RTOP                     */

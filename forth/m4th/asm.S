@@ -27,8 +27,10 @@
 /* --- m4th-asm --------------------------------------------------------------------------------- */
 /* ---------------------------------------------------------------------------------------------- */
 
+/* ( -- ) return to native code */
+WORD(_asm_exit_,           _asm_exit_,     DSTACK(0,0), RSTACK(0,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS | M4FLAG_JUMP)
 /* ( addr u -- ) store assembly code at ASM_HERE and update ASM_HERE */
-WORD_NONATIVE(asm_comma,   asm_comma,      DSTACK(2,0), RSTACK(0,0), WORD_IMPURE)
+WORD_NONATIVE(asm_comma,   _asm_exit_,     DSTACK(2,0), RSTACK(0,0), WORD_IMPURE)
 /* ( len -- ) reserve at least len bytes in ASM buffer */
 WORD_START(asm_reserve,    asm_comma)
     WORD_DSTACK(1,0)
@@ -51,16 +53,37 @@ WORD_START(token_to_asm,   name_to_asm_n)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
-    WORD_FLAGS(0)
-    WORD_CODE(
-        dup, token_to_asm_addr,                     /* ( token m4func|0          ) */
-        _q_if0_, T(4),                              /* ( m4func 0                ) */
-            nip, dup, exit,                         /* ( 0 0                     ) */
-        then,                                       /* ( token m4func            ) */
-        swap, CALL(token_to_asm_n),                 /* ( m4func u|0 t|f          ) */
-        _if0_, T(3),                                /* ( m4func 0                ) */
-            nip, dup,                               /* ( 0 0                     ) */
-        then, exit                                  /* ( m4func u | 0 0          ) */
+    WORD_FLAGS(M4FLAG_DATA_TOKENS)
+    WORD_CODE_AND_DATA(token_to_asm,
+      WORD_CODE_TOKENS(
+        _ip_to_data_,                               /* ( token &data n  )               */
+        bounds, rot,                                /* ( end beg token  )               */
+        dup, token_to_asm_addr,                     /* ( end beg token m4func|0 )       */
+        _if0_, T(6),                                /* ( end beg token  )               */
+            nip, two_drop, zero, dup, exit,         /* ( 0 0            )               */
+        then,                                       /* ( end beg token  )               */
+        minus_rot,                                  /* ( token end beg  )               */
+        do,                                         /* ( token          ) ( R: end pos) */
+            dup, i, token_fetch, equal,             /* ( token t|f      ) ( R: end pos) */
+            _if_, T(6),                             /* ( token          ) ( R: end pos) */
+                /* found a replacement token, use it instead */
+                drop, i, token_fetch_1,             /* ( token'         ) ( R: end pos) */
+                _leave_, T(5),                      /* ( token          )               */
+            then,                                   /* ( token          ) ( R: end pos) */
+            two, tokens,                            /* ( token          ) ( R: end pos) */
+        _plus_loop_, T(-14),                        /* ( token          )               */
+        dup, token_to_asm_addr,                     /* ( token m4func|0 )               */
+        _q_if0_, T(4),                              /* ( token 0        )               */
+           nip, dup, exit,                          /* ( 0 0            )               */
+        then,                                       /* ( token m4func   )               */
+        swap, token_to_name, name_to_asm_n,         /* ( m4func u t|f   )               */
+        _if0_, T(4),                                /* ( m4func 0       )               */
+            nip, dup, exit,                         /* ( 0 false        )               */
+        then, exit                                  /* ( m4func u | 0 0 )               */
+      ),
+      WORD_DATA_TOKENS(
+        exit, _asm_exit_        /* 'exit' becomes '(asm-ret)' in native ASM */
+      )
     )
 WORD_END(token_to_asm)
 /* ( token -- u true | 0 false ) get token ASM len */
@@ -71,12 +94,8 @@ WORD_START(token_to_asm_n, token_to_asm)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
-        token_to_name,                              /* ( nt|0                    ) */
-        _q_if_, T(3),                               /* ( nt                      ) */
-            name_to_asm_n,                          /* ( u true | 0 false        ) */
-        _else_, T(2),                               /* ( 0                       ) */
-            dup,                                    /* ( 0 false                 ) */
-        then, exit                                  /* ( u true | 0 false        ) */
+        CALL(token_to_asm),                         /* ( addr u | 0 0            ) */
+        swap, zero_ne, exit                         /* ( u true | 0 false        ) */
     )
 WORD_END(token_to_asm_n)
 WORD(token_to_asm_addr,    token_to_asm_n, DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
@@ -88,13 +107,13 @@ WORD_START(xt_to_asm, token_to_asm_addr)
     WORD_NATIVE_NONE()
     WORD_FLAGS(0)
     WORD_CODE(
-        CALL(xt_to_asm_q),                          /* ( native_len t|f                  ) */
+        exit,  /* TO BE TESTED */
+        CALL(xt_to_asm_n),                          /* ( native_len t|f                  ) */
         _if0_, T(2),                                /* ( native_len                      ) */
             nip, exit,                              /* (                                 ) */
         then,                                       /* ( native_len                      ) */
         CALL(asm_reserve),                          /* (                                 ) */
-        /* skip final 'exit' token */
-        here, one_token, minus, state_fetch,        /* ( here-SZt xt                     ) */
+        here, state_fetch,                          /* ( here xt                         ) */
         do,                                         /* (                 ) ( R: end pos  ) */
             i, token_fetch, dup,                    /* ( tok tok         ) ( R: end pos  ) */
             CALL(token_to_asm),                     /* ( tok addr u      ) ( R: end pos  ) */
@@ -106,21 +125,16 @@ WORD_START(xt_to_asm, token_to_asm_addr)
     )
 WORD_END(xt_to_asm)
 /* ( -- u t|f ) return required len and true if all tokens between XT and HERE
- * can be compiled to native ASM */
-WORD_START(xt_to_asm_q,    xt_to_asm)
+ * can be compiled to native ASM, otherwise 0 and false */
+WORD_START(xt_to_asm_n,    xt_to_asm)
     WORD_DSTACK(0,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_FLAGS(0)
     WORD_CODE(/* generated from asm.forth - see source and comments there */
-        zero,
-        here, one_token, minus, state_fetch,
-        two_dup, less_equal,
-        _if_, T(4),
-            two_drop, false, exit,
-        then,
-        _do_, T(20+nCALLt),
+        zero, here, state_fetch,
+        _q_do_, T(20+nCALLt),
             i, token_fetch, dup,
             CALL(token_to_asm_n),
             _if0_, T(4),
@@ -132,7 +146,7 @@ WORD_START(xt_to_asm_q,    xt_to_asm)
         _plus_loop_, T(-20-nCALLt),
         true, exit
     )
-WORD_END(xt_to_asm_q)
+WORD_END(xt_to_asm_n)
 
 #undef LASTWORD
-#define LASTWORD xt_to_asm_q
+#define LASTWORD xt_to_asm_n

@@ -905,16 +905,8 @@ WORD_START(_repl_type_ack_, _repeat_)
         type, exit
     )
 WORD_END(_repl_type_ack_)
-WORD_START(_return_to_native_, _repl_type_ack_)
-    WORD_STACK_NONE() /* stack effect when not jumping */
-    WORD_DSTACK(0,0)  /* stack effect when jumping */
-    WORD_RSTACK(1,0)
-    WORD_NATIVE_LEN(_return_to_native_)
-    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS | M4FLAG_JUMP)
-    WORD_CODE(_return_to_native_, exit)
-WORD_END(_return_to_native_)
 /* (>lx,) ( c-addr u idx -- ) compile a store to local variable */
-WORD_START(_to_lx_comma_, _return_to_native_)
+WORD_START(_to_lx_comma_, _repl_type_ack_)
     WORD_DSTACK(3,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
