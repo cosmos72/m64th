@@ -321,13 +321,13 @@
 
 /* ------- m4th-asm ----------------------------------------------------------------------------- */
 #define DICT_TOKENS_M4TH_ASM(X)                                                                    \
+    X(4, "asm,", asm_comma)            /* ( addr u  -- ) append ASM code to ASM-HERE */            \
     X(10, "name>asm>n", name_to_asm_n) /* ( nt  -- u|-1    ) get ASM native_len from name */       \
     /* ( token -- asm-addr | 0 ) get m4func ASM address for token */                               \
     X(14, "token>asm>addr", token_to_asm_addr)
 
 #define DICT_WORDS_M4TH_ASM(X)                                                                     \
     DICT_TOKENS_M4TH_ASM(X)                                                                        \
-    X(4, "asm,", asm_comma)         /* ( addr u  -- ) append ASM code to ASM-HERE */               \
     X(9, "token>asm", token_to_asm) /* ( token -- addr u | 0 0 ) get token ASM address and len */  \
     X(11, "token>asm>n", token_to_asm_n) /* ( token -- u|-1 ) get token ASM len */                 \
     /* ( -- ) attempt to compile to native ASM all tokens between XT and HERE */                   \

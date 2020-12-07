@@ -133,29 +133,6 @@ FUNC_START(crc_cell_simd)
 FUNC_END(crc_cell_simd)
 
 
-/* crc-string ( c-addr u -- crc ) m4th-user: compute CRC32c of a string */
-FUNC_START(crc_string)
-        MOVE(  DTOP,   REG2)               /* b = u                    */
-        MOVE(  RFFFw,  REG3w)              /* c = 0xffffffff           */
-        DPOP___DTOP()                      /* dtop = c-addr            */
-        JZ(    REG2,   TO(crc_string.done))
-        ZERO(  REG0)                       /* @ = 0                    */
-        ADDROF_4G(m4th_crctable,   REG4)   /* d = table                */
-FUNC_ALIGN()
-LABEL(crc_string.loop)
-        LD_ub( REG1,   AT(DTOP, REG0, 1))  /* a = c-addr[@] = str[i]   */
-        INC1(  REG0)                       /* @++                      */
-        XOR2(  REG3b,  REG1b)              /* a = str[i] ^ (crc & 0xFF)*/
-        SHR2(  IMM(8), REG3w)              /* crc >>= 8                */
-        LD_uw( REG1,   AT(REG4, REG1, SZ)) /* a = table[a]             */
-        XOR2(  REG1w,  REG3w)              /* crc ^= table[a]          */
-        JB(    REG0,   REG2,   TO(crc_string.loop))
-LABEL(crc_string.done)
-        NOT1(  REG3w)
-        MOVE(  REG3w,  DTOPw)
-FUNC_END(crc_string)
-
-
 /* crc-string/simd ( c-addr u -- crc ) m4th-user: compute CRC32c of a string */
 FUNC_START(crc_string_simd)
         ZERO(  REG1)                       /* a = 0                    */

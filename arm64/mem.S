@@ -200,6 +200,7 @@ FUNC_END(crc_cell_simd)
 
 
 /* crc-string ( c-addr u -- crc ) compute CRC32c of a string */
+#define M4FCRC_STRING
 FUNC_START(crc_string)     /* crc-string ( c-addr u -- crc ) m4th-user */
         MOVE(  DTOP,   REG2)               /* b = u                    */
         MOVI(  0xffffffff, REG3w)          /* c = 0xffffffff           */

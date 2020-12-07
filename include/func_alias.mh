@@ -27,7 +27,6 @@
 #define m4f_2s_comma m4fshort_comma
 #define m4f_4s_comma m4fint_comma
 #define m4f_8s_comma m4fcomma
-#define m4fasm_comma m4fstring_comma
 #define m4ftoken_comma CAT3(m4f_, SZt, s_comma)
 #define m4fxt_comma CAT3(m4f_, SZ, s_comma)
 

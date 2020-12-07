@@ -45,7 +45,7 @@
 #define M4TH_OFF_HERE SZ4            /* offset of m4th->mem.curr = HERE */
 #define M4TH_OFF_MEM_END SZ5         /* offset of m4th->mem.end         */
 #define M4TH_OFF_ASM_BEG SZ6         /* offset of m4th->asm.start       */
-#define M4TH_OFF_ASM_CURR SZ7        /* offset of m4th->asm.curr        */
+#define M4TH_OFF_ASM_FUNC SZ7        /* offset of m4th->asm.curr        */
 #define M4TH_OFF_ASM_END SZ8         /* offset of m4th->asm.end         */
 #define M4TH_OFF_ASM_HERE SZ9        /* offset of m4th->asm_here = ASM_HERE */
 #define M4TH_OFF_HANDLER SZ10        /* offset of m4th->handler         */

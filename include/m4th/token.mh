@@ -264,10 +264,19 @@
  *
  *
  *
+ */
+/* 'm4th-asm' wordlist */
+#define M4_a(x) ((x) + 730)
+#define M4asm_comma M4_a(0)         /* ( addr u -- ) append ASM code to ASM-HERE            */
+#define M4name_to_asm_n M4_a(1)     /* ( nt -- u|-1 ) get ASM native_len from name          */
+#define M4token_to_asm_addr M4_a(2) /* token>asm>addr ( token -- addr|0 ) get ASM for token */
+
+/**
+ *
  *
  */
 /* 'm4th-c' wordlist */
-#define M4_c(x) ((x) + 730)
+#define M4_c(x) ((x) + 740)
 #define M4_c_arg_0_ M4_c(0)  /* prepare 0 args for C function call    */
 #define M4_c_arg_1_ M4_c(1)  /* prepare 1 arg  for C function call    */
 #define M4_c_arg_2_ M4_c(2)  /* prepare 2 args for C function call    */
@@ -306,7 +315,7 @@
  *
  */
 /* 'm4th-core' wordlist */
-#define M4_(x) ((x) + 760)
+#define M4_(x) ((x) + 770)
 /* ( counted-tokens -- tok-addr u ) get address and count of countedtokens */
 #define M4count_tokens M4_(0)
 #define M4flags_to_consumed_tokens M4_(1) /* ( flags -- u ) get # consumed tokens from flags */
@@ -321,20 +330,20 @@
 #define M4iobuf_data_n M4_(10)  /* iobuf>data>n ( io -- u    ) get data length = size - position */
 #define M4iobuf_free_data M4_(11)   /* ( io -- c-addr u ) get free data, from size to max        */
 #define M4iobuf_empty_query M4_(12) /* iobuf-empty? ( io -- t|f  ) true if iobuf data is empty  */
-#define M4iobuf_err M4_(13)     /* iobuf>err    ( io -- addr ) get address of iobuf.err           */
-#define M4iobuf_func M4_(14)    /* iobuf>func   ( io -- addr ) get address of iobuf I/O function  */
-#define M4iobuf_handle M4_(15)  /* iobuf>handle ( io -- addr ) get address of iobuf handle  */
-#define M4iobuf_max M4_(16)     /* iobuf>max    ( io -- u    ) get iobuf max size i.e. capacity   */
-#define M4iobuf_pos M4_(17)     /* iobuf>pos    ( io -- addr ) get address of iobuf position      */
-#define M4iobuf_end M4_(18)     /* iobuf>end    ( io -- addr ) get address of iobuf end position  */
-#undef M4____gap                /*                                         */
-#undef M4____gap                /*                                         */
-#define M4latest M4_(21)        /* latest       (    -- nt   ) get last defined word              */
-#define M4to_latest M4_(22)     /* to-latest      ( nt --       ) set last defined word       */
-#undef M4____gap                /*                                         */
-#define M4name_comma M4_(24)    /* name,       ( c-addr u --   ) create a new name        */
-#define M4name_to_asm_n M4_(25) /* ( nt -- u|-1 ) get native_len from name      */
-#define M4name_to_code M4_(26)  /* ( nt -- addr u  ) get code array from name   */
+#define M4iobuf_err M4_(13)    /* iobuf>err    ( io -- addr ) get address of iobuf.err           */
+#define M4iobuf_func M4_(14)   /* iobuf>func   ( io -- addr ) get address of iobuf I/O function  */
+#define M4iobuf_handle M4_(15) /* iobuf>handle ( io -- addr ) get address of iobuf handle  */
+#define M4iobuf_max M4_(16)    /* iobuf>max    ( io -- u    ) get iobuf max size i.e. capacity   */
+#define M4iobuf_pos M4_(17)    /* iobuf>pos    ( io -- addr ) get address of iobuf position      */
+#define M4iobuf_end M4_(18)    /* iobuf>end    ( io -- addr ) get address of iobuf end position  */
+#undef M4____gap               /*                                         */
+#undef M4____gap               /*                                         */
+#define M4latest M4_(21)       /* latest       (    -- nt   ) get last defined word              */
+#define M4to_latest M4_(22)    /* to-latest      ( nt --       ) set last defined word       */
+#undef M4____gap               /*                                         */
+#define M4name_comma M4_(24)   /* name,       ( c-addr u --   ) create a new name        */
+#undef M4____gap               /*                                         */
+#define M4name_to_code M4_(26) /* ( nt -- addr u  ) get code array from name   */
 #define M4name_to_code_n M4_(27)       /* ( nt -- u       ) get code size from name    */
 #define M4name_to_data M4_(28)         /* ( nt -- addr u  ) get data array from name   */
 #define M4name_to_data_addr M4_(29)    /* ( nt -- addr    ) get data address from name */
@@ -357,7 +366,7 @@
 #define M4searchorder_pick M4_(46)    /* ( SO: wid_u-1 .. wid_0 -- same ) ( -- wid_u ) */
 #define M4searchorder_store_0 M4_(47) /* ( SO: wid1 -- wid2 ) ( wid2 -- )              */
 #undef M4____gap                      /*                                         */
-#define M4token_to_asm_addr M4_(49)   /* token>asm>addr ( token -- addr|0 ) get ASM for token */
+#undef M4____gap                      /*                                         */
 #define M4token_to_name M4_(50)       /* token>name ( token -- nt|0 ) convert token to name   */
 #define M4user_var M4_(51)            /* user-var ( -- addr ) followed by index of user var   */
 #undef M4____gap                      /*                                         */
@@ -376,7 +385,7 @@
  *
  */
 /* 'm4th-impl' wordlist */
-#define M4_i(x) ((x) + 820)
+#define M4_i(x) ((x) + 830)
 #define M4minus_two M4_i(-2)       /* -2                    */
 #define M4minus_one M4_i(-1)       /* -1                    */
 #define M4zero M4_i(0)             /* 0                     */

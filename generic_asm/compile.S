@@ -197,6 +197,16 @@ FUNC_END(comma)
 #endif
 
 
+/* asm, ( addr u -- ) m4th-asm */
+FUNC_START(asm_comma)
+        LOAD(  REG1,   AT(M4TH, M4TH_OFF_ASM_HERE))
+        DPUSH( REG1)                                   /* ( addr asm-here u )   */
+        ADD2(  DTOP,   REG1)
+        STOR(  REG1,   AT(M4TH, M4TH_OFF_ASM_HERE))    /* asm-here += u         */
+        JUMP(  FUNC(cmove))
+FUNC_RAWEND(asm_comma)
+
+
 /**
  * countedstring, ( c-addr u -- ) m4th-user
 

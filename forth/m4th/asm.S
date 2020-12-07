@@ -27,7 +27,7 @@
 /* --- m4th-asm --------------------------------------------------------------------------------- */
 /* ---------------------------------------------------------------------------------------------- */
 
-/* ( addr u -- ) store ASM code at HERE */
+/* ( addr u -- ) store assembly code at ASM_HERE and update ASM_HERE */
 WORD_NONATIVE(asm_comma,   asm_comma,      DSTACK(2,0), RSTACK(0,0), WORD_IMPURE)
 WORD(name_to_asm_n,        asm_comma,      DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 WORD_START(token_to_asm,   name_to_asm_n)
