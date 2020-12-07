@@ -28,8 +28,8 @@ FUNC_START(name_to_asm_n)  /* ( nt -- native_len true | 0 false ) */
         LD_uh( REG1,   AT(DTOP, WORD_OFF_NATIVE_LEN)) /* dtop = native_len    */
         MOVI(0xffff,   REG2)
         cmp    REG1,   REG2;
-        csel   REG1,   xzr,    REG1,   eq;
-        csneg  DTOP,   xzr,    xzr,    eq;
+        csel   REG1,   REG1,   xzr,    ne;
+        csetm  DTOP,   ne;
         DPUSH( REG1)
 FUNC_END(name_to_asm_n)
 
