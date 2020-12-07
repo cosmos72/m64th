@@ -31,8 +31,23 @@
 WORD(_asm_exit_,           _asm_exit_,     DSTACK(0,0), RSTACK(0,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS | M4FLAG_JUMP)
 /* ( addr u -- ) store assembly code at ASM_HERE and update ASM_HERE */
 WORD_NONATIVE(asm_comma,   _asm_exit_,     DSTACK(2,0), RSTACK(0,0), WORD_IMPURE)
-/* ( len -- ) reserve at least len bytes in ASM buffer */
-WORD_START(asm_reserve,    asm_comma)
+/* ( -- addr ) mark code in ASM buffer as READ+EXEC, and return its beginning.
+ * also updates ASM-HERE */
+WORD_START(asm_make_func,    asm_comma)
+    WORD_DSTACK(0,1)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        user_var_m4th,
+        _c_locals_save_,
+            _c_arg_1_, _c_call_, CELL(m4th_asm_make_func), _c_ret_1_,
+        _c_locals_load_, exit
+    )
+WORD_END(asm_make_func)
+/* ( len -- ) reserve at least len bytes in ASM buffer, and mark it as READ+WRITE+EXEC */
+WORD_START(asm_reserve,    asm_make_func)
     WORD_DSTACK(1,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -113,6 +128,7 @@ WORD_START(xt_to_asm, token_to_asm_addr)
             nip, exit,                              /* (                                 ) */
         then,                                       /* ( native_len                      ) */
         CALL(asm_reserve),                          /* (                                 ) */
+
         here, state_fetch,                          /* ( here xt                         ) */
         do,                                         /* (                 ) ( R: end pos  ) */
             i, token_fetch, dup,                    /* ( tok tok         ) ( R: end pos  ) */
@@ -121,6 +137,13 @@ WORD_START(xt_to_asm, token_to_asm_addr)
             token_to_name, name_to_flags, flags_to_consumed_tokens,
             one_plus, tokens,                       /* ( consumed_bytes  ) ( R: end pos  ) */
         _plus_loop_, T(-12-nCALLt),                 /* (                 )                 */
+
+        CALL(asm_make_func),                        /* ( asm-native-addr )                 */
+
+        here, state_fetch, sub, allot,  /* remove all compiled tokens */
+        _lit_comma_, _call_native_,     /* compile '(call-native)'    */
+        comma,                          /* compile asm-native-addr    */
+        _lit_comma_, exit,              /* compile 'exit'             */
         exit
     )
 WORD_END(xt_to_asm)

@@ -338,6 +338,7 @@
 
 #define DICT_WORDS_M4TH_ASM(X)                                                                     \
     DICT_TOKENS_M4TH_ASM(X)                                                                        \
+    X(13, "asm-make-func", asm_make_func) /* ( -- addr ) make ASM code executable and return it */ \
     X(11, "asm-reserve", asm_reserve) /* ( len -- ) reserve at least len bytes in ASM buffer */    \
     X(9, "token>asm", token_to_asm) /* ( token -- addr u | 0 0 ) get token ASM address and len */  \
     X(11, "token>asm>n", token_to_asm_n) /* ( token -- u true | 0 false ) get token ASM len */     \

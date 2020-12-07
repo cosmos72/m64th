@@ -331,6 +331,21 @@ m4cell m4th_knows(const m4th *m, const m4wordlist *wid);
  */
 m4cell m4th_test(m4th *m, FILE *out);
 
+/**
+ * C implementation of asm-reserve.
+ * reserves space for at least 'len' bytes in ASM buffer
+ * and protects it as READ+WRITE+EXEC
+ */
+void m4th_asm_reserve(m4th *m, m4ucell len);
+
+/**
+ * C implementation of asm-make-func:
+ * 1. protect the ASM buffer as READ+EXEC
+ * 2. set m4th.asm_.curr = m4mem_funcalign_up(m->asm_here).
+ * 3. return original value of m4th.asm_.curr
+ */
+m4char *m4th_asm_make_func(m4th *m);
+
 void *m4mem_allocate(size_t bytes);          /** malloc() wrapper, calls exit(1) on failure */
 void m4mem_free(void *ptr);                  /** free() wrapper */
 void *m4mem_resize(void *ptr, size_t bytes); /** realloc() wrapper, calls exit(1) on failure */
