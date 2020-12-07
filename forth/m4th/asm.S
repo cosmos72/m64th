@@ -123,8 +123,16 @@ WORD_START(xt_to_asm, token_to_asm_addr)
     WORD_FLAGS(0)
     WORD_CODE(
         exit,  /* TO BE TESTED */
+
+        /* attempt to compile to ASM only functions containing > 3 tokens                  */
+        _num_compiled_,                             /* ( #compiled_tokens                ) */
+        three, less_equal,                          /* ( t|f                             ) */
+        _if_, T(2),                                 /* (                                 ) */
+            exit,                                   /* (                                 ) */
+        then,                                       /* (                                 ) */
+
         CALL(xt_to_asm_n),                          /* ( native_len t|f                  ) */
-        _if0_, T(2),                                /* ( native_len                      ) */
+        _if0_, T(3),                                /* ( native_len                      ) */
             nip, exit,                              /* (                                 ) */
         then,                                       /* ( native_len                      ) */
         CALL(asm_reserve),                          /* (                                 ) */
@@ -138,13 +146,20 @@ WORD_START(xt_to_asm, token_to_asm_addr)
             one_plus, tokens,                       /* ( consumed_bytes  ) ( R: end pos  ) */
         _plus_loop_, T(-12-nCALLt),                 /* (                 )                 */
 
-        CALL(asm_make_func),                        /* ( asm-native-addr )                 */
+        CALL(asm_make_func), to_r,                  /* (                 ) ( R: asm-native-addr ) */
 
-        here, state_fetch, sub, allot,  /* remove all compiled tokens */
+
+        one_cell, div_token, two_plus,              /* ( token-offset    ) ( R: asm-native-addr ) */
+        CALL(xt_shift_tokens),                      /* (                 ) ( R: asm-native-addr ) */
+
+        here, dup, state_fetch, sub,                /* ( here xt-here    ) ( R: asm-native-addr ) */
+        allot,                          /* reset HERE = XT            */
+
         _lit_comma_, _call_native_,     /* compile '(call-native)'    */
-        comma,                          /* compile asm-native-addr    */
+        r_from, comma,                  /* compile asm-native-addr    */
         _lit_comma_, exit,              /* compile 'exit'             */
-        exit
+
+        here, minus, allot, exit        /* restore HERE               */
     )
 WORD_END(xt_to_asm)
 /* ( -- u t|f ) return required len and true if all tokens between XT and HERE
@@ -170,6 +185,20 @@ WORD_START(xt_to_asm_n,    xt_to_asm)
         true, exit
     )
 WORD_END(xt_to_asm_n)
-
+/* ( token-offset -- ) move forward by specified number of tokens
+ * all tokens between XT and HERE. updates HERE */
+WORD_START(xt_shift_tokens,    xt_to_asm_n)
+    WORD_DSTACK(1,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(0)
+    WORD_CODE(
+        tokens, here, tuck, plus,                   /* ( here here+off       ) */
+        _num_compiled_, tokens,                     /* ( here here+off len   ) */
+        minus_cmove_count,                          /* ( xt xt+off           ) */
+        sub, allot, exit                            /* (                     ) */
+    )
+WORD_END(xt_shift_tokens)
 #undef LASTWORD
 #define LASTWORD xt_to_asm_n

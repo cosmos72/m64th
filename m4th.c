@@ -152,7 +152,8 @@ static size_t m4mem_pagesize_ceil(size_t bytes) {
 
 /* align up addr to a multiple of funcalign = SZ */
 static m4char *m4mem_funcalign_up(m4char *addr) {
-    return (m4char *)(((size_t)addr + SZ - 1) & ~(size_t)SZ);
+    const size_t SZm1 = SZ - 1;
+    return (m4char *)(((size_t)addr + SZm1) & ~SZm1);
 }
 
 int m4protect_to_mmap_prot(m4protect prot) {

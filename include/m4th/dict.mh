@@ -346,7 +346,9 @@
     X(6, "xt>asm", xt_to_asm)                                                                      \
     /* ( -- u t|f ) return required len and true if all tokens between XT and HERE */              \
     /* can be compiled to native ASM, otherwise false */                                           \
-    X(8, "xt>asm>n", xt_to_asm_n)
+    X(8, "xt>asm>n", xt_to_asm_n)                                                                  \
+    /*  move forward by specified number of tokens all tokens between XT and HERE. updates HERE */ \
+    X(15, "xt-shift-tokens", xt_shift_tokens) /* ( token_offset -- ) */
 
 /**
  *
