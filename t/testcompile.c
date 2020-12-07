@@ -531,6 +531,9 @@ m4cell m4th_testcompile(m4th *m, FILE *out) {
     if (!m4th_knows(m, &m4wordlist_m4th_core)) {
         m4th_also(m, &m4wordlist_m4th_core);
     }
+    if (!m4th_knows(m, &m4wordlist_m4th_asm)) {
+        m4th_also(m, &m4wordlist_m4th_asm);
+    }
 
     for (i = 0; i < (m4cell)N_OF(t); i++) {
         for (j = 0; j < n[i]; j++) {

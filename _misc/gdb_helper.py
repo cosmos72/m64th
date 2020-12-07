@@ -53,7 +53,7 @@ class PrintForthDataStack(gdb.Command):
             int(frame.read_register(regs[1])), # rtop
             int(frame.read_register(regs[2])), # dstk
             int(frame.read_register(regs[3])), # rstk
-            int(frame.read_register(regs[4])) - self.sz*14, # m4th
+            int(frame.read_register(regs[4])) - self.sz*16, # m4th
             int(frame.read_register(regs[5])) - self.szt)   # ip
     def stack_print(self, inf, label, top, stk, n):
         gdb.write("%s <%d> " % (label, n))

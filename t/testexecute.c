@@ -1618,7 +1618,7 @@ static m4testexecute testexecute_g[] = {
     {"'nip token>asm",
      {CALL(token_to_asm), m4bye},
      {{1, {m4nip}}, {}},
-     {{2, {(m4cell)m4fnip, 4}}, {}}, // correct for both amd64 and arm64
+     {{2, {(m4cell)m4fnip, 4}}, {}}, /* correct for both amd64 and arm64 */
      {}},
 #endif
     {"'(if) token>asm", {CALL(token_to_asm), m4bye}, {{1, {m4_if_}}, {}}, {{2, {0, 0}}, {}}, {}},
@@ -1663,6 +1663,17 @@ static m4testexecute testexecute_g[] = {
      {{1, {(m4cell)&WORD_SYM(dup)}}, {}},
      {{1, {DXT(dup)}}, {}},
      {}},
+    /* ----------------------------- xt ------------------------------------- */
+    {"{1} xt>asm?",
+     {m4token_comma, m4token_comma, CALL(xt_to_asm_q), m4nip, m4bye},
+     {{2, {m4exit, m4one}}, {}},
+     {{1, {ttrue}}, {}},
+     {2, {m4one, m4exit}}},
+    {"{exit} xt>asm?",
+     {m4token_comma, m4token_comma, CALL(xt_to_asm_q), m4nip, m4bye},
+     {{2, {m4exit, m4exit}}, {}},
+     {{1, {tfalse}}, {}},
+     {2, {m4exit, m4exit}}},
     /* ----------------------------- wordlist ------------------------------- */
     {"wordlist>last",
      {m4wordlist_to_last, m4bye},

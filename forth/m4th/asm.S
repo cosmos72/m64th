@@ -73,7 +73,7 @@ WORD_START(xt_to_asm, token_to_asm_addr)
     WORD_FLAGS(0)
     WORD_CODE(
         exit,
-        CALL(xt_to_asm_q),                          /* ( t|f                             ) */
+        CALL(xt_to_asm_q), nip,                     /* ( t|f                             ) */
         _if0_, T(2),                                /* (                                 ) */
             exit,                                   /* (                                 ) */
         then,                                       /* (                                 ) */
@@ -89,30 +89,31 @@ WORD_START(xt_to_asm, token_to_asm_addr)
         exit
     )
 WORD_END(xt_to_asm)
-/* ( -- t|f ) return t if all tokens between XT and HERE can be compiled to native ASM */
+/* ( -- u t|f ) return t if all tokens between XT and HERE can be compiled to native ASM */
 WORD_START(xt_to_asm_q,    xt_to_asm)
-    WORD_DSTACK(0,1)
+    WORD_DSTACK(0,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_FLAGS(0)
-    WORD_CODE(
-        /* skip final 'exit' token */
-        here, one_token, minus, state_fetch,        /* ( here-SZt xt     )                 */
-        two_dup, less_equal,                        /* ( here-SZt xt t|f )                 */
-        _if_, T(4),                                 /* ( here-SZt xt     )                 */
-            two_drop, false, exit,                  /* ( false           )                 */
+    WORD_CODE(/* generated from asm.forth - see source and comments there */
+        zero,
+        here, one_token, minus, state_fetch,
+        two_dup, less_equal,
+        _if_, T(4),
+            two_drop, false, exit,
         then,
-        do,                                         /* (                 ) ( R: end pos  ) */
-            i, token_fetch, dup,                    /* ( tok tok         ) ( R: end pos  ) */
-            CALL(token_to_asm_n), invert,           /* ( tok 0|-u-1      ) ( R: end pos  ) */
-            _if0_, T(4),                            /* ( tok             ) ( R: end pos  ) */
-                unloop, drop, false, exit,          /* ( false           )                 */
-            then,                                   /* ( tok             ) ( R: end pos  ) */
+        _do_, T(23+nCALLt),
+            i, token_fetch, dup,
+            CALL(token_to_asm_n), dup, invert,
+            _if0_, T(5),
+                unloop, two_drop, false, exit,
+            then,
+            rot, plus, swap,
             token_to_name, name_to_flags, flags_to_consumed_tokens,
-            one_plus, tokens,                       /* ( consumed_bytes  ) ( R: end pos  ) */
-        _plus_loop_, T(-19-nCALLt),                 /* (                 )                 */
-        true, exit                                  /* ( true            )                 */
+            one_plus, tokens,
+        _plus_loop_, T(-23-nCALLt),
+        true, exit
     )
 WORD_END(xt_to_asm_q)
 
