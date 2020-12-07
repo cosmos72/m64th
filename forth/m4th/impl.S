@@ -235,7 +235,7 @@ WORD_START(_create_,   _continue_)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
-        state, fetch, zero_ne,                         /* ( m4flags t|f                  ) */
+        state_fetch, zero_ne,                          /* ( m4flags t|f                  ) */
             _lit_, T(M4ERR_COMPILER_NESTING), and, throw,
         CALL(parse_name),                              /* ( m4flags c-addr u             ) */
         dup, zero_equal,                               /* ( m4flags c-addr u t|f         ) */
@@ -288,7 +288,7 @@ WORD_START(_eval_name_,_else_)
          * compile, exit                                (                          )
          */
         over, name_to_xt, minus_rot,
-        state, fetch,
+        state_fetch,
         _if0_, T(12+nCALLt),
             drop, name_to_flags,
             _lit2s_, SHORT(M4FLAG_COMPILE_ONLY), and,
@@ -316,7 +316,7 @@ WORD_START(_eval_number_, _eval_name_)
          *    postpone literal                       (                          )
          * then                                      ( x | --                   )
          */
-        state, fetch,
+        state_fetch,
         _if_, T(2+nCALLt),
             CALL(literal),
         then, exit
@@ -896,7 +896,7 @@ WORD_START(_repl_type_ack_, _repeat_)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
-        state, fetch,
+        state_fetch,
         _if_, T(3+nSTRt(10)),
             LIT_STRING(10, " compiled\n"),
         _else_, T(2+nSTRt(4)),
@@ -921,7 +921,7 @@ WORD_START(_to_lx_comma_, _return_to_native_)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY)
     WORD_CODE(
-        state, fetch,                                        /* ( c-addr u idx flag   ) */
+        state_fetch,                                         /* ( c-addr u idx flag   ) */
         _if0_, T(6),                                         /* ( c-addr u idx        ) */
             drop, ex_message_store,                          /* (                     ) */
             _lit_, T(M4ERR_INTERPRETING_COMPILE_ONLY_WORD),  /* (                     ) */
@@ -940,7 +940,7 @@ WORD_START(_to_value_, _to_lx_comma_)
     WORD_NATIVE_NONE()
     WORD_FLAGS(0)
     WORD_CODE(
-        state, fetch,                                        /* ( nt flag             ) */
+        state_fetch,                                         /* ( nt flag             ) */
         _if0_, T(3),                                         /* ( nt                  ) */
             /* interpreting. store immediately to nt body       ( x nt                ) */
             name_to_data_addr,                               /* ( x addr              ) */
@@ -1643,9 +1643,9 @@ WORD_START(_optimize_once_, _optimize_opts_)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE)
     WORD_CODE(/* generated from file impl.forth - see source and comments there */
-        /*25*/ zero, state, fetch, here, dup_to_r,
+        /*23*/ zero, state_fetch, here, dup_to_r,
         sub, two_div, rot, CALL(_optimize_xt_comma_),
-        r_from, state, fetch, over,
+        r_from, state_fetch, over,
         here, sub, cmove_count, nip,
         here, minus, allot, exit
     )
@@ -1662,13 +1662,13 @@ WORD_START(_optimize_xt_comma_, _optimize_once_)
     WORD_NATIVE_NONE()
     WORD_FLAGS(0)
     WORD_CODE(/* generated from file impl.forth - see source and comments there */
-        /*31*/ zero, two_to_r,
+        /*30*/ zero, two_to_r,
         begin,
-        _q_while_, T(18+nCALLt),
-            over, two_times, state, fetch, plus, over,
+        _q_while_, T(17+nCALLt),
+            over, two_times, state_fetch, plus, over,
             r2nd_fetch, CALL(_optimize_tokens_comma_),
             r_fetch, or, r_store, tuck, minus, flip, plus, swap,
-        _repeat_, T(-20-nCALLt),
+        _repeat_, T(-19-nCALLt),
         two_drop, r_from, r_from_drop, exit
     )
 WORD_END(_optimize_xt_comma_)
@@ -1690,7 +1690,7 @@ WORD_START(_recompile_, _optimize_xt_comma_)
          * ' colon (check)                             ( sys             ) ( R: here )
          * cs-drop r> drop                             (                 )
          */
-        here, dup, state, fetch, sub, allot,
+        here, dup, state_fetch, sub, allot,
         to_r, zero, _lit_tok_, colon,
         begin,
             here, r_fetch, u_less,
@@ -1887,7 +1887,7 @@ WORD_START(_throw_if_not_compiling_, _throw_compile_only_xt_)
         /* state @ 0=
          * M4ERR_INTERPRETING_COMPILE_ONLY_WORD and throw
          */
-        state, fetch, zero_equal,
+        state_fetch, zero_equal,
         _lit_, T(M4ERR_INTERPRETING_COMPILE_ONLY_WORD), and, throw,
         exit
     )

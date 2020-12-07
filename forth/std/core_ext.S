@@ -84,7 +84,7 @@ WORD_START(action_of, again)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_CODE(
-        state, fetch,
+        state_fetch,
         _if_, T(7+2*nCALLt),                     /* compiling          */
             CALL(bracket_tick),                  /* execute [']        */
             _lit_comma_, _call_,
@@ -253,7 +253,7 @@ WORD_START(is,         holds)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_CODE(
-        state, fetch,
+        state_fetch,
         _if_, T(7+2*nCALLt),                     /* compiling          */
             CALL(bracket_tick),                  /* execute [']        */
             _lit_comma_, _call_,

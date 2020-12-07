@@ -72,7 +72,7 @@ WORD_START(compiler_abort, compile_string_comma)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
-        state, fetch, zero_ne,                             /* ( t|f                    ) */
+        state_fetch, zero_ne,                              /* ( t|f                    ) */
         zero, state, store,  /* set interpretation state      ( t|f                    ) */
         latest, and,                                       /* ( nt|0                   ) */
         _q_if0_, T(3),                                     /* ( 0                      ) */

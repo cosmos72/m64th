@@ -257,6 +257,12 @@ FUNC_START(state)
         ADDI(  M4TH, M4TH_OFF_XT, DTOP)                /* &m4th.xt is also used as STATE */
 FUNC_END(state)
 
+
+FUNC_START(state_fetch)
+        DPUSH__DTOP()
+        LOAD(  DTOP, AT(M4TH, M4TH_OFF_XT))            /* m4th.xt is also used as STATE @ */
+FUNC_END(state_fetch)
+
 /**
  * Temporarily switch from compiling to interpreting.
  * Update m4th.lastw.code_n (needed by ';') then set m4th.xt = state to 0

@@ -78,7 +78,7 @@ WORD_START(xt_to_asm, token_to_asm_addr)
             exit,                                   /* (                                 ) */
         then,                                       /* (                                 ) */
         /* skip final 'exit' token */
-        here, one_token, minus, state, fetch,       /* ( here-SZt xt                     ) */
+        here, one_token, minus, state_fetch,        /* ( here-SZt xt                     ) */
         do,                                         /* (                 ) ( R: end pos  ) */
             i, token_fetch, dup,                    /* ( tok             ) ( R: end pos  ) */
             CALL(token_to_asm),                     /* ( tok addr u      ) ( R: end pos  ) */
@@ -98,7 +98,7 @@ WORD_START(xt_to_asm_q,    xt_to_asm)
     WORD_FLAGS(0)
     WORD_CODE(
         /* skip final 'exit' token */
-        here, one_token, minus, state, fetch,       /* ( here-SZt xt     )                 */
+        here, one_token, minus, state_fetch,        /* ( here-SZt xt     )                 */
         two_dup, less_equal,                        /* ( here-SZt xt t|f )                 */
         _if_, T(4),                                 /* ( here-SZt xt     )                 */
             two_drop, false, exit,                  /* ( false           )                 */

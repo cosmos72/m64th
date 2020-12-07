@@ -88,6 +88,7 @@
     X(4, "-rot", minus_rot)       /* equivalent to: rot rot                          */            \
     X(3, "sp@", sp_fetch)         /* ( x --- x addr-of-x ) get current data stack address */       \
     X(7, "squared", squared)      /* equivalent to: dup *                            */            \
+    X(6, "state@", state_fetch)   /* equivalent to: state @                          */            \
     X(7, "string=", string_equal) /* ( addr1 addr2 u -- addr1 addr2 u t|f )          */            \
     X(10, "string-ci=", string_ci_equal) /* ( addr1 addr2 u -- addr1 addr2 u t|f )          */     \
     X(17, "string-find-blank", string_find_blank) /* ( c-addr u -- u' )                     */     \

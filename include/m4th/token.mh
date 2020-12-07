@@ -100,14 +100,15 @@
 #undef M4____gap                     /*                                         */
 #define M4sp_fetch M4_u(71)          /* sp@ ( x -- x addr-of-x ) get current data stack address */
 #define M4squared M4_u(72)           /* squared   equivalent to: dup *          */
+#define M4state_fetch M4_u(73)       /* state@    equivalent to: state @        */
 #undef M4____gap                     /*                                         */
-#define M4string_equal M4_u(74)      /* string=    ( c-addr1 c-addr2 u -- t|f ) */
-#define M4string_ci_equal M4_u(75)   /* string-ci= ( c-addr1 c-addr2 u -- t|f ) */
-#define M4string_find_blank M4_u(76) /* ( c-addr u -- u' ) get index of first char <= ' ' */
-#define M4string_find_char M4_u(77)  /* ( c-addr u ch -- u' ) get index of first ch       */
-#define M4string_find_nonblank M4_u(78) /* ( c-addr u -- u' ) get index of first char > ' '  */
-#define M4string_to_lower M4_u(79)      /* ( src dst u -- dst u ) copy and convert to lowercase */
-#undef M4____gap                        /*                                         */
+#undef M4____gap                     /*                                         */
+#define M4string_equal M4_u(75)      /* string=    ( c-addr1 c-addr2 u -- t|f ) */
+#define M4string_ci_equal M4_u(76)   /* string-ci= ( c-addr1 c-addr2 u -- t|f ) */
+#define M4string_find_blank M4_u(77) /* ( c-addr u -- u' ) get index of first char <= ' ' */
+#define M4string_find_char M4_u(78)  /* ( c-addr u ch -- u' ) get index of first ch       */
+#define M4string_find_nonblank M4_u(79) /* ( c-addr u -- u' ) get index of first char > ' '  */
+#define M4string_to_lower M4_u(80)      /* ( src dst u -- dst u ) copy and convert to lowercase */
 #undef M4____gap                        /*                                         */
 #define M4sub M4_u(82)                  /* sub       equivalent to: swap -         */
 #define M4trail M4_u(83)                /* trail     equivalent to: over swap      */

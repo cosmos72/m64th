@@ -145,7 +145,7 @@ WORD_START(dot_quote,  dot)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_IMMEDIATE)
     WORD_CODE(
-        state, fetch,
+        state_fetch,
         _if0_, T(6+nCALLt),       /* interpreting => type string immediately */
             _lit_, T('"'), CALL(parse),                 /* ( c-addr u      ) */
             type, exit,

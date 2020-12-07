@@ -234,6 +234,8 @@ struct m4th_s {                /**< m4th forth interpreter and compiler         
     const m4word **wtable;     /**< table m4token -> m4word*                     */
     m4iobuf *in;               /**< input  buffer                                */
     m4iobuf *out;              /**< output buffer                                */
+    m4word *lastw;             /**< last defined forth word                      */
+    m4xt xt;                   /**< XT being compiled. also used for STATE       */
                                /*                                                */
     const void *vm;            /**< pointer to '(vm)' bytecode interpreter       */
     const void *c_regs[1];     /**< m4th_run() may save C registers here         */
@@ -243,11 +245,11 @@ struct m4th_s {                /**< m4th forth interpreter and compiler         
     uint16_t user_next;        /**< next available cell in user variables        */
     uint8_t pict_start;        /**< offset from HERE to beginning of pictured output buffer */
     uint8_t unused0[3];        /**<                                              */
-    m4word *lastw;             /**< last defined forth word                      */
-    m4xt xt;                   /**< XT being compiled. also used for STATE       */
     m4locals *locals;          /**< local variables of XT being compiled         */
     m4cell base;               /**< current BASE                                 */
     m4cbuf mem;                /**< start, HERE and end of data space            */
+    m4cbuf asm_;               /**< start, curr and end of assembly space        */
+    m4char *asm_here;          /**< end of current ASM function = ASM-HERE       */
     m4cell handler;            /**< exception handler installed by CATCH         */
     m4cell ex;                 /**< exception set by THROW                       */
     m4string ex_message;       /**< exception message, set manually before THROW */

@@ -628,11 +628,12 @@ WORD_START(see_name,   to_uint)
         _c_locals_load_, exit
     )
 WORD_END(see_name)
+WORD(state_fetch,          see_name,           DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 /**
  * string-find-blank ( c-addr u -- u' ) return index of first blank (i.e. char <= 32) in string.
  * return string length if not found.
  */
-WORD(string_find_blank,    see_name,           DSTACK(2,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(string_find_blank,    state_fetch,        DSTACK(2,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 /**
  * string-find-char ( c-addr u ch -- u' ) return index of first ch in string.
  * return string length if not found.

@@ -46,6 +46,7 @@ enum {
     inbuf_n = 1024,
     outbuf_n = 1024,
     dataspace_n = 65536,
+    asm_n = 16384,
 };
 
 typedef char m4th_assert_sizeof_m4token_equal_SZt[(sizeof(m4token) == SZt) ? 1 : -1];
@@ -573,6 +574,19 @@ static m4cbuf m4cbuf_alloc(m4ucell size) {
 static void m4cbuf_free(m4cbuf *arg) {
     if (arg) {
         m4mem_free(arg->start);
+    }
+}
+
+static m4cbuf m4cbuf_mmap(m4ucell size) {
+    m4ucell bytes = m4mem_round_to_page(size);
+    m4char *p = (m4char *)m4mem_map(bytes);
+    m4cbuf ret = {p, p, p + bytes};
+    return ret;
+}
+
+static void m4cbuf_munmap(m4cbuf *arg) {
+    if (arg) {
+        m4mem_unmap(arg->start, arg->end - arg->start);
     }
 }
 
@@ -1270,6 +1284,8 @@ m4th *m4th_new(m4th_opt options) {
     m->xt = NULL;
     m->locals = NULL;
     m->mem = m4cbuf_alloc(dataspace_n);
+    m->asm_ = m4cbuf_mmap(asm_n);
+    m->asm_here = m->asm_.curr;
     m->base = 10;
     m->handler = m->ex = 0;
     m->ex_message.addr = NULL;
@@ -1291,6 +1307,7 @@ m4th *m4th_new(m4th_opt options) {
 
 void m4th_del(m4th *m) {
     if (m) {
+        m4cbuf_munmap(&m->asm_);
         m4cbuf_free(&m->mem);
         m4iobuf_del(m->out);
         m4iobuf_del(m->in);
@@ -1319,6 +1336,7 @@ void m4th_clear(m4th *m) {
         m->locals->end = m->locals->n = 0;
     }
     m->mem.curr = m->mem.start;
+    m->asm_here = m->asm_.curr = m->asm_.start;
     m->handler = m->ex = 0;
     m->ex_message.addr = NULL;
     m->ex_message.n = 0;
