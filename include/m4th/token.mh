@@ -366,9 +366,9 @@
 #define M4searchorder_pick M4_(46)    /* ( SO: wid_u-1 .. wid_0 -- same ) ( -- wid_u ) */
 #define M4searchorder_store_0 M4_(47) /* ( SO: wid1 -- wid2 ) ( wid2 -- )              */
 #undef M4____gap                      /*                                         */
-#undef M4____gap                      /*                                         */
-#define M4token_to_name M4_(50)       /* token>name ( token -- nt|0 ) convert token to name   */
-#define M4user_var M4_(51)            /* user-var ( -- addr ) followed by index of user var   */
+#define M4token_to_name M4_(49)       /* token>name ( token -- nt|0 ) convert token to name   */
+#define M4user_var M4_(50)            /* user-var ( -- addr ) followed by index of user var   */
+#define M4user_var_m4th M4_(51)       /* user-var-m4th ( -- m ) get current m4th address      */
 #undef M4____gap                      /*                                         */
 #define M4wordlist_to_last M4_(53)    /* ( wid -- nt ) get last name in a wordlist            */
 #define M4wordlist_to_string M4_(54)  /* ( wid -- c-addr u ) convert wid to string            */
@@ -377,7 +377,6 @@
 #define M4xt_to_name M4_(57)          /* xt>name       ( XT -- nt ) get name from XT */
 
 /**
- *
  *
  *
  *

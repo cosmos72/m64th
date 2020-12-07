@@ -330,11 +330,18 @@ FUNC_START(user_var)
         DPUSH__DTOP()
         LD_ut( REG1,       AT(IP)) /* a = index */
 #if M4TH_OFF_USER != 0
-        ADD2(  IMM(M4TH_OFF_USER/SZ), REG1)
+        ADD2(  IMM(M4TH_OFF_USER/SZ),  REG1)
 #endif
-        ADD4(  M4TH,       REG1, PSZ, DTOP)
+        ADD4(  M4TH,       REG1,PSZ,   DTOP)
         NEXTT()
 FUNC_RAWEND(user_var)
+
+
+/* user-var-m4th ( -- m ) return current m4th* */
+FUNC_START(user_var_m4th)
+        DPUSH__DTOP()
+        ADDI(  M4TH,   -M4TH_OFF_,     DTOP)
+FUNC_END(user_var_m4th)
 
 
 FUNC_START(wordlist_add) /* ( nt wid -- ) add name to wordlist */

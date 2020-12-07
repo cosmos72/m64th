@@ -218,7 +218,6 @@ void m4th_c_searchorder_print_all_words(const m4searchorder *searchorder, FILE *
     linenoiseFreeCompletions(&strings);
 }
 
-void m4th_c_print_all_words(const m4char *user_var_0) {
-    const m4th *m = (const m4th *)(user_var_0 - M4TH_OFF_);
+void m4th_c_print_all_words(const m4th *m) {
     m4th_c_searchorder_print_all_words(&m->searchorder, stdout);
 }

@@ -574,19 +574,21 @@ static m4cbuf m4cbuf_alloc(m4ucell size) {
 static void m4cbuf_free(m4cbuf *arg) {
     if (arg) {
         m4mem_free(arg->start);
+        arg->end = arg->curr = arg->start = NULL;
     }
 }
 
-static m4cbuf m4cbuf_mmap(m4ucell size) {
+static m4cbuf m4cbuf_map(m4ucell size) {
     m4ucell bytes = m4mem_round_to_page(size);
     m4char *p = (m4char *)m4mem_map(bytes);
     m4cbuf ret = {p, p, p + bytes};
     return ret;
 }
 
-static void m4cbuf_munmap(m4cbuf *arg) {
+static void m4cbuf_unmap(m4cbuf *arg) {
     if (arg) {
         m4mem_unmap(arg->start, arg->end - arg->start);
+        arg->end = arg->curr = arg->start = NULL;
     }
 }
 
@@ -1284,7 +1286,7 @@ m4th *m4th_new(m4th_opt options) {
     m->xt = NULL;
     m->locals = NULL;
     m->mem = m4cbuf_alloc(dataspace_n);
-    m->asm_ = m4cbuf_mmap(asm_n);
+    m->asm_ = m4cbuf_map(asm_n);
     m->asm_here = m->asm_.curr;
     m->base = 10;
     m->handler = m->ex = 0;
@@ -1307,7 +1309,7 @@ m4th *m4th_new(m4th_opt options) {
 
 void m4th_del(m4th *m) {
     if (m) {
-        m4cbuf_munmap(&m->asm_);
+        m4cbuf_unmap(&m->asm_);
         m4cbuf_free(&m->mem);
         m4iobuf_del(m->out);
         m4iobuf_del(m->in);
@@ -1431,6 +1433,20 @@ m4cell m4locals_find(const m4locals *ls, m4string localname) {
         l = m4locals_next(ls, l);
     }
     return -1;
+}
+
+/* C implementation of asm-reserve */
+void m4th_asm_reserve(m4th *m, m4ucell len) {
+    if (len <= (m4ucell)(m->asm_.end - m->asm_.curr)) {
+        return;
+    }
+    if (m->asm_.curr == m->asm_.start) {
+        m4cbuf_unmap(&m->asm_);
+    } else {
+        /* old buffer is still in use, cannot be unmapped */
+    }
+    m->asm_ = m4cbuf_map(len >= asm_n ? len : asm_n);
+    m->asm_here = m->asm_.curr;
 }
 
 /* C implementation of ':' i.e. start compiling a new word */

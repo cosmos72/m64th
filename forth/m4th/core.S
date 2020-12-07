@@ -710,11 +710,12 @@ WORD_START(user_var,   tokens_comma)
     WORD_FLAGS(M4FLAG_INLINE_ALWAYS | M4FLAG_CONSUMES_IP_2)
     WORD_CODE(user_var, T(-1), exit)
 WORD_END(user_var)
+WORD(user_var_m4th,    user_var,       DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 /**
  * wordlist-find ( c-addr u wid -- nt|0 -1|0|1 ) search word by name in wordlist.
  * return 0 if not found. return 1 if word is immediate, otherwise return -1
  */
-WORD_START(wordlist_find, user_var)
+WORD_START(wordlist_find, user_var_m4th)
     WORD_DSTACK(3,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()

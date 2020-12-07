@@ -58,7 +58,7 @@ WORD_START(words, see)
     WORD_NATIVE_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
-        user_var, T(0),                                        /* ( m4th+M4TH_OFF_ ) */
+        user_var_m4th,
         _c_locals_save_,
             _c_arg_1_, _c_call_, CELL(m4th_c_print_all_words), _c_ret_0_,
         _c_locals_load_, exit

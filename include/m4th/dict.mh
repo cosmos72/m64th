@@ -328,6 +328,7 @@
 
 #define DICT_WORDS_M4TH_ASM(X)                                                                     \
     DICT_TOKENS_M4TH_ASM(X)                                                                        \
+    X(11, "asm-reserve", asm_reserve) /* ( len -- ) reserve at least len bytes in ASM buffer */    \
     X(9, "token>asm", token_to_asm) /* ( token -- addr u | 0 0 ) get token ASM address and len */  \
     X(11, "token>asm>n", token_to_asm_n) /* ( token -- u true | 0 false ) get token ASM len */     \
     /* ( -- ) attempt to compile to native ASM all tokens between XT and HERE */                   \
@@ -418,6 +419,7 @@
     X(15, "searchorder[0]!", searchorder_store_0) /* ( wid -- ) overwrite searchorder 0-th elem */ \
     X(10, "token>name", token_to_name)            /* ( token -- nt|0 ) convert token to name */    \
     X(8, "user-var", user_var) /*        ( -- addr ) must be followed by index of user variable */ \
+    X(13, "user-var-m4th", user_var_m4th)        /* ( -- m ) get current m4th address */           \
     X(13, "wordlist>last", wordlist_to_last)     /* ( wid -- nt ) get last name in wordlist  */    \
     X(15, "wordlist>string", wordlist_to_string) /* ( wid -- c-addr u ) convert wid to string   */ \
     X(12, "wordlist-add", wordlist_add)          /*   ( nt wid -- ) add name to wordlist       */  \

@@ -29,8 +29,22 @@
 
 /* ( addr u -- ) store assembly code at ASM_HERE and update ASM_HERE */
 WORD_NONATIVE(asm_comma,   asm_comma,      DSTACK(2,0), RSTACK(0,0), WORD_IMPURE)
+/* ( len -- ) reserve at least len bytes in ASM buffer */
+WORD_START(asm_reserve,    asm_comma)
+    WORD_DSTACK(1,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_NATIVE_NONE()
+    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_CODE(
+        user_var_m4th, swap,
+        _c_locals_save_,
+            _c_arg_2_, _c_call_, CELL(m4th_asm_reserve), _c_ret_0_,
+        _c_locals_load_, exit
+    )
+WORD_END(asm_reserve)
 /* ( nt -- u true | 0 false ) get name ASM native_len */
-WORD(name_to_asm_n,        asm_comma,      DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(name_to_asm_n,        asm_reserve,    DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 /* ( tok -- addr u | 0 0 ) get token ASM address and len */
 WORD_START(token_to_asm,   name_to_asm_n)
     WORD_DSTACK(1,2)
@@ -74,11 +88,11 @@ WORD_START(xt_to_asm, token_to_asm_addr)
     WORD_NATIVE_NONE()
     WORD_FLAGS(0)
     WORD_CODE(
-        exit,
-        CALL(xt_to_asm_q), nip,                     /* ( t|f                             ) */
-        _if0_, T(2),                                /* (                                 ) */
-            exit,                                   /* (                                 ) */
-        then,                                       /* (                                 ) */
+        CALL(xt_to_asm_q),                          /* ( native_len t|f                  ) */
+        _if0_, T(2),                                /* ( native_len                      ) */
+            nip, exit,                              /* (                                 ) */
+        then,                                       /* ( native_len                      ) */
+        CALL(asm_reserve),                          /* (                                 ) */
         /* skip final 'exit' token */
         here, one_token, minus, state_fetch,        /* ( here-SZt xt                     ) */
         do,                                         /* (                 ) ( R: end pos  ) */
