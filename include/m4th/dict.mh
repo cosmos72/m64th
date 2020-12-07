@@ -332,7 +332,8 @@
     X(11, "token>asm>n", token_to_asm_n) /* ( token -- u true | 0 false ) get token ASM len */     \
     /* ( -- ) attempt to compile to native ASM all tokens between XT and HERE */                   \
     X(6, "xt>asm", xt_to_asm)                                                                      \
-    /* ( -- t|f ) return true if all tokens between XT and HERE can be compiled to ASM */          \
+    /* ( -- u t|f ) return required len and true if all tokens between XT and HERE */              \
+    /* can be compiled to native ASM */                                                            \
     X(7, "xt>asm?", xt_to_asm_q)
 
 /**

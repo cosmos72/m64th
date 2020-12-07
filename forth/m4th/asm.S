@@ -55,13 +55,14 @@ WORD_START(token_to_asm_n, token_to_asm)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
-    WORD_FLAGS(0)
+    WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
         token_to_name,                              /* ( nt|0                    ) */
-        _q_if0_, T(3),                              /* ( 0                       ) */
-            dup, exit,                              /* ( 0 false                 ) */
-        then,                                       /* ( nt                      ) */
-        name_to_asm_n, exit                         /* ( u t | 0 f               ) */
+        _q_if_, T(3),                               /* ( nt                      ) */
+            name_to_asm_n,                          /* ( u true | 0 false        ) */
+        _else_, T(2),                               /* ( 0                       ) */
+            dup,                                    /* ( 0 false                 ) */
+        then, exit                                  /* ( u true | 0 false        ) */
     )
 WORD_END(token_to_asm_n)
 WORD(token_to_asm_addr,    token_to_asm_n, DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
@@ -90,7 +91,8 @@ WORD_START(xt_to_asm, token_to_asm_addr)
         exit
     )
 WORD_END(xt_to_asm)
-/* ( -- u t|f ) return t if all tokens between XT and HERE can be compiled to native ASM */
+/* ( -- u t|f ) return required len and true if all tokens between XT and HERE
+ * can be compiled to native ASM */
 WORD_START(xt_to_asm_q,    xt_to_asm)
     WORD_DSTACK(0,2)
     WORD_RSTACK(0,0)
