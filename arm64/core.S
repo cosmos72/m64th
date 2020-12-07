@@ -24,6 +24,16 @@
 /* clang-format off */
 
 
+FUNC_START(name_to_asm_n)  /* ( nt -- native_len true | 0 false ) */
+        LD_uh( REG1,   AT(DTOP, WORD_OFF_NATIVE_LEN)) /* dtop = native_len    */
+        MOVI(0xffff,   REG2)
+        cmp    REG1,   REG2;
+        csel   REG1,   xzr,    REG1,   eq;
+        csneg  DTOP,   xzr,    xzr,    eq;
+        DPUSH( REG1)
+FUNC_END(name_to_asm_n)
+
+
 FUNC_START(name_to_prev) /* ( nt -- nt'|0 ) */
         LOAD(  REG1,   AT(DTOP, WORD_OFF_PREV_OFF))    /* a = nt.prev_off  */
         SUB2(  REG1,   DTOP)                           /* dtop = nt'       */

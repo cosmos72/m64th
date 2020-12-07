@@ -153,23 +153,6 @@ LABEL(name_comma.str_done)                             /* ( addr                
 FUNC_END(name_comma)
 
 
-FUNC_START(name_to_asm_n)  /* ( nt -- native_len|-1 ) */
-        LD_uh( DTOP,       AT(DTOP, WORD_OFF_NATIVE_LEN)) /* dtop = native_len    */
-#if defined(__x86_64__)
-        cmp    IMM(TOKEN_MAX), DTOP;
-        cmove  RFFF,           DTOP;
-#elif defined(__aarch64__)
-        MOVI(  IMM(TOKEN_MAX), REG1)
-        MOVI(  -1,             REG2)
-        cmp    DTOP,           REG1;
-        csel   DTOP,   REG2,   DTOP,   eq;
-#else
-        JEQ(   DTOP,   IMM(TOKEN_MAX), FUNC_RET(name_to_asm_n))
-        MOVI(  -1,         DTOP)                          /* dtop = -1            */
-#endif
-FUNC_END(name_to_asm_n)
-
-
 FUNC_START(name_to_code)   /* ( nt -- xt u ) */
         ADDI(  DTOP,       WORD_OFF_XT,   REG1)        /* a = w.code         */
         LD_uh( DTOP,       AT(DTOP, WORD_OFF_CODE_N))  /* dtop = w.code_n    */

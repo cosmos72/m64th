@@ -29,7 +29,9 @@
 
 /* ( addr u -- ) store assembly code at ASM_HERE and update ASM_HERE */
 WORD_NONATIVE(asm_comma,   asm_comma,      DSTACK(2,0), RSTACK(0,0), WORD_IMPURE)
-WORD(name_to_asm_n,        asm_comma,      DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+/* ( nt -- u true | 0 false ) get name ASM native_len */
+WORD(name_to_asm_n,        asm_comma,      DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+/* ( tok -- addr u | 0 0 ) get token ASM address and len */
 WORD_START(token_to_asm,   name_to_asm_n)
     WORD_DSTACK(1,2)
     WORD_RSTACK(0,0)
@@ -41,26 +43,25 @@ WORD_START(token_to_asm,   name_to_asm_n)
         _q_if0_, T(4),                              /* ( m4func 0                ) */
             nip, dup, exit,                         /* ( 0 0                     ) */
         then,                                       /* ( token m4func            ) */
-        swap, CALL(token_to_asm_n),                 /* ( m4func u|-1             ) */
-        dup, invert,                                /* ( m4func u|-1 flag        ) */
-        _if0_, T(4),                                /* ( m4func -1               ) */
-            nip, invert, dup,                       /* ( 0 0                     ) */
+        swap, CALL(token_to_asm_n),                 /* ( m4func u|0 t|f          ) */
+        _if0_, T(3),                                /* ( m4func 0                ) */
+            nip, dup,                               /* ( 0 0                     ) */
         then, exit                                  /* ( m4func u | 0 0          ) */
     )
 WORD_END(token_to_asm)
+/* ( token -- u true | 0 false ) get token ASM len */
 WORD_START(token_to_asm_n, token_to_asm)
-    WORD_DSTACK(1,1)
+    WORD_DSTACK(1,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_NATIVE_NONE()
     WORD_FLAGS(0)
     WORD_CODE(
         token_to_name,                              /* ( nt|0                    ) */
-        _q_if_, T(3),                               /* ( nt                      ) */
-            name_to_asm_n,                          /* ( u|-1                    ) */
-        _else_, T(2),                               /* ( 0                       ) */
-            invert,                                 /* ( -1                      ) */
-        then, exit                                  /* ( u|-1                    ) */
+        _q_if0_, T(3),                              /* ( 0                       ) */
+            dup, exit,                              /* ( 0 false                 ) */
+        then,                                       /* ( nt                      ) */
+        name_to_asm_n, exit                         /* ( u t | 0 f               ) */
     )
 WORD_END(token_to_asm_n)
 WORD(token_to_asm_addr,    token_to_asm_n, DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
@@ -80,7 +81,7 @@ WORD_START(xt_to_asm, token_to_asm_addr)
         /* skip final 'exit' token */
         here, one_token, minus, state_fetch,        /* ( here-SZt xt                     ) */
         do,                                         /* (                 ) ( R: end pos  ) */
-            i, token_fetch, dup,                    /* ( tok             ) ( R: end pos  ) */
+            i, token_fetch, dup,                    /* ( tok tok         ) ( R: end pos  ) */
             CALL(token_to_asm),                     /* ( tok addr u      ) ( R: end pos  ) */
             asm_comma,                              /* ( tok             ) ( R: end pos  ) */
             token_to_name, name_to_flags, flags_to_consumed_tokens,
@@ -103,16 +104,16 @@ WORD_START(xt_to_asm_q,    xt_to_asm)
         _if_, T(4),
             two_drop, false, exit,
         then,
-        _do_, T(23+nCALLt),
+        _do_, T(20+nCALLt),
             i, token_fetch, dup,
-            CALL(token_to_asm_n), dup, invert,
-            _if0_, T(5),
-                unloop, two_drop, false, exit,
+            CALL(token_to_asm_n),
+            _if0_, T(4),
+                unloop, nip, exit,
             then,
             rot, plus, swap,
             token_to_name, name_to_flags, flags_to_consumed_tokens,
             one_plus, tokens,
-        _plus_loop_, T(-23-nCALLt),
+        _plus_loop_, T(-20-nCALLt),
         true, exit
     )
 WORD_END(xt_to_asm_q)
