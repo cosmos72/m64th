@@ -334,8 +334,20 @@ m4cell m4th_test(m4th *m, FILE *out);
 void *m4mem_allocate(size_t bytes);          /** malloc() wrapper, calls exit(1) on failure */
 void m4mem_free(void *ptr);                  /** free() wrapper */
 void *m4mem_resize(void *ptr, size_t bytes); /** realloc() wrapper, calls exit(1) on failure */
-void *m4mem_map(size_t bytes);               /** mmap() wrapper, calls exit(1) on failure */
-void m4mem_unmap(void *ptr, size_t bytes);   /** munmap() wrapper */
+
+enum m4protect_e {
+    m4protect_none = 0,
+    m4protect_read = 1,
+    m4protect_write = 2,
+    m4protect_exec = 4,
+    m4protect_read_write = m4protect_read | m4protect_write,
+    m4protect_read_write_exec = m4protect_read_write | m4protect_exec,
+};
+typedef enum m4protect_e m4protect;
+
+void *m4mem_map(size_t bytes, m4protect prot); /** mmap() wrapper, calls exit(1) on failure */
+void m4mem_unmap(void *ptr, size_t bytes);     /** munmap() wrapper */
+void m4mem_protect(void *ptr, size_t bytes, m4protect prot); /* mprotect() wrapper */
 
 m4cell m4code_equal(m4code src, m4code dst);
 void m4code_print(m4code src, m4printmode mode, FILE *out);

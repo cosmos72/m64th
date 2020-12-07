@@ -217,7 +217,7 @@ FUNC_END(_c_ret_2_)
 
 /** must be followed by address of native forth code. call it. */
 FUNC_START(_call_native_)
-        LOAD(  REG0,   AT(IP),   IMM(SZ)) /* post-increment */
+        LOAD(  REG0,   AT(IP),   IMM(SZ)) /* post-increment                  */
         RPUSH(  lr)                    /* save lr                            */
         blr    REG0;                   /* call native code, overwrites lr    */
         RPOP(   lr)                    /* load lr                            */

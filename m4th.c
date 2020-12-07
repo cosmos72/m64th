@@ -124,9 +124,9 @@ static void m4mem_oom(size_t bytes) {
 }
 
 #ifdef __unix__
-static size_t m4mem_page = 0;
 
 static size_t m4mem_getpagesize() {
+    static size_t m4mem_page = 0;
     if (m4mem_page == 0) {
         m4mem_page =
 #if defined(_SC_PAGESIZE)
@@ -144,16 +144,28 @@ static size_t m4mem_getpagesize() {
     return m4mem_page;
 }
 
-static size_t m4mem_round_to_page(size_t bytes) {
+/* round up 'bytes' to a multiple of page size */
+static size_t m4mem_pagesize_ceil(size_t bytes) {
     const size_t page = m4mem_getpagesize();
     return (bytes + page - 1) / page * page;
 }
 
-void *m4mem_map(size_t bytes) {
+/* align up addr to a multiple of funcalign = SZ */
+static m4char *m4mem_funcalign_up(m4char *addr) {
+    return (m4char *)(((size_t)addr + SZ - 1) & ~(size_t)SZ);
+}
+
+int m4protect_to_mmap_prot(m4protect prot) {
+    return (prot & m4protect_read ? PROT_READ : 0) |   /* ___________________ */
+           (prot & m4protect_write ? PROT_WRITE : 0) | /* ___________________ */
+           (prot & m4protect_exec ? PROT_EXEC : 0);
+}
+
+void *m4mem_map(size_t bytes, m4protect prot) {
     void *ptr = NULL;
     if (bytes != 0) {
-        bytes = m4mem_round_to_page(bytes);
-        if ((ptr = mmap(NULL, bytes, PROT_READ | PROT_WRITE,
+        bytes = m4mem_pagesize_ceil(bytes);
+        if ((ptr = mmap(NULL, bytes, m4protect_to_mmap_prot(prot),
                         MAP_PRIVATE | MAP_ANONYMOUS
 #ifdef MAP_STACK
                             | MAP_STACK /* for BSD */
@@ -169,16 +181,29 @@ void *m4mem_map(size_t bytes) {
 
 void m4mem_unmap(void *ptr, size_t bytes) {
     if (bytes != 0) {
-        bytes = m4mem_round_to_page(bytes);
+        bytes = m4mem_pagesize_ceil(bytes);
         munmap(ptr, bytes);
     }
 }
+void m4mem_protect(void *ptr, size_t bytes, m4protect prot) {
+    if (bytes != 0) {
+        mprotect(ptr, bytes, m4protect_to_mmap_prot(prot));
+    }
+}
+
 #else /* ! __unix__ */
-void *m4mem_map(size_t bytes) {
+void *m4mem_map(size_t bytes, m4protect prot) {
+    (void)prot;
     return m4mem_allocate(bytes);
 }
 void m4mem_unmap(void *ptr, size_t bytes) {
+    (void)bytes;
     m4mem_free(ptr);
+}
+void m4mem_protect(void *ptr, size_t bytes, m4protect prot) {
+    (void)ptr;
+    (void)bytes;
+    (void)prot;
 }
 #endif
 
@@ -578,9 +603,9 @@ static void m4cbuf_free(m4cbuf *arg) {
     }
 }
 
-static m4cbuf m4cbuf_map(m4ucell size) {
-    m4ucell bytes = m4mem_round_to_page(size);
-    m4char *p = (m4char *)m4mem_map(bytes);
+static m4cbuf m4cbuf_map(m4ucell size, m4protect prot) {
+    m4ucell bytes = m4mem_pagesize_ceil(size);
+    m4char *p = (m4char *)m4mem_map(bytes, prot);
     m4cbuf ret = {p, p, p + bytes};
     return ret;
 }
@@ -589,6 +614,12 @@ static void m4cbuf_unmap(m4cbuf *arg) {
     if (arg) {
         m4mem_unmap(arg->start, arg->end - arg->start);
         arg->end = arg->curr = arg->start = NULL;
+    }
+}
+
+static void m4cbuf_protect(m4cbuf *arg, m4protect prot) {
+    if (arg) {
+        m4mem_protect(arg->start, arg->end - arg->start, prot);
     }
 }
 
@@ -818,7 +849,7 @@ static void m4iobuf_del(m4iobuf *arg) {
 /* ----------------------- m4stack ----------------------- */
 
 m4stack m4stack_alloc(m4ucell size) {
-    m4cell *p = (m4cell *)m4mem_map(size * sizeof(m4cell));
+    m4cell *p = (m4cell *)m4mem_map(size * sizeof(m4cell), m4protect_read_write);
     m4stack ret = {p, p + size - 1, p + size - 1};
     return ret;
 }
@@ -1286,7 +1317,7 @@ m4th *m4th_new(m4th_opt options) {
     m->xt = NULL;
     m->locals = NULL;
     m->mem = m4cbuf_alloc(dataspace_n);
-    m->asm_ = m4cbuf_map(asm_n);
+    m->asm_ = m4cbuf_map(asm_n, m4protect_read_write);
     m->asm_here = m->asm_.curr;
     m->base = 10;
     m->handler = m->ex = 0;
@@ -1435,9 +1466,14 @@ m4cell m4locals_find(const m4locals *ls, m4string localname) {
     return -1;
 }
 
-/* C implementation of asm-reserve */
+/**
+ * C implementation of asm-reserve.
+ * reserves space for at least 'len' bytes in ASM buffer
+ * and protects it as READ+WRITE+EXEC
+ */
 void m4th_asm_reserve(m4th *m, m4ucell len) {
     if (len <= (m4ucell)(m->asm_.end - m->asm_.curr)) {
+        m4cbuf_protect(&m->asm_, m4protect_read_write_exec);
         return;
     }
     if (m->asm_.curr == m->asm_.start) {
@@ -1445,8 +1481,27 @@ void m4th_asm_reserve(m4th *m, m4ucell len) {
     } else {
         /* old buffer is still in use, cannot be unmapped */
     }
-    m->asm_ = m4cbuf_map(len >= asm_n ? len : asm_n);
+    m->asm_ = m4cbuf_map(len >= asm_n ? len : asm_n, m4protect_read_write_exec);
     m->asm_here = m->asm_.curr;
+}
+
+/**
+ * C implementation of asm-make-func:
+ * 1. protect the ASM buffer as READ+EXEC
+ * 2. set m4th.asm_.curr = m4mem_funcalign_up(m->asm_here).
+ * 3. return original value of m4th.asm_.curr
+ */
+m4char *m4th_asm_make_func(m4th *m) {
+    m4char *beg = m->asm_.start;
+    m4char *func_beg = m->asm_.curr;
+    m4char *func_end = m->asm_here;
+    m4char *end = m->asm_.end;
+    if (func_end <= func_beg || func_end > end) {
+        return NULL;
+    }
+    mprotect(beg, (size_t)(end - beg), PROT_READ | PROT_EXEC);
+    m->asm_.curr = m4mem_funcalign_up(func_end);
+    return func_beg;
 }
 
 /* C implementation of ':' i.e. start compiling a new word */

@@ -199,7 +199,12 @@ FUNC_END(comma)
 
 /* asm, ( addr u -- ) m4th-asm */
 FUNC_START(asm_comma)
-        LOAD(  REG1,   AT(M4TH, M4TH_OFF_ASM_HERE))
+        LOAD(  REG1,   AT(M4TH, M4TH_OFF_ASM_HERE))    /* a = asm-here          */
+        LOAD(  REG2,   AT(M4TH, M4TH_OFF_ASM_END))     /* b = asm-end           */
+        SUB2(  REG1,   REG2)                           /* b = free_bytes        */
+        MOVI(  M4ERR_ASM_OVERFLOW, REG0)
+        JA(    DTOP,   REG2,    FUNC(_throw_reg0_))
+
         DPUSH( REG1)                                   /* ( addr asm-here u )   */
         ADD2(  DTOP,   REG1)
         STOR(  REG1,   AT(M4TH, M4TH_OFF_ASM_HERE))    /* asm-here += u         */

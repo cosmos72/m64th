@@ -66,6 +66,7 @@
 #define M4ERR_NOT_DEFER -256 /* not created by DEFER, cannot use DEFER* IS ACTION-OF on it */
 #define M4ERR_DEFER_UNINITIALIZED -257 /* word created with DEFER is not initialized */
 #define M4ERR_LOCALS_OVERFLOW -258
+#define M4ERR_ASM_OVERFLOW -259
 /* ... */
 #define M4ERR_C_ERRNO -3500 /* error is M4ERR_C_ERRNO - errno */
 

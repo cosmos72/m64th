@@ -69,8 +69,9 @@ typedef enum m4err_id_e {
     m4err_not_defer = M4ERR_NOT_DEFER,                                           /* -256 */
     m4err_defer_uninitialized = M4ERR_DEFER_UNINITIALIZED,                       /* -257 */
     m4err_locals_overflow = M4ERR_LOCALS_OVERFLOW,                               /* -258 */
-
-    m4err_c_errno = M4ERR_C_ERRNO, /* error is M4ERR_C_ERRNO - errno */
+    m4err_asm_overflow = M4ERR_ASM_OVERFLOW,                                     /* -259 */
+    /* ... */                                                                    /*      */
+    m4err_c_errno = M4ERR_C_ERRNO, /* error is M4ERR_C_ERRNO - errno               -3500 */
 } m4err_id;
 
 #endif /* M4TH_INCLUDE_ERR_MH */
