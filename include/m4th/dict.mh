@@ -338,6 +338,8 @@
     X(13, "asm-make-func", asm_make_func) /* ( -- addr ) make ASM code executable and return it */ \
     X(11, "asm-reserve", asm_reserve) /* ( len -- ) reserve at least len bytes in ASM buffer */    \
     X(9, "token>asm", token_to_asm) /* ( token -- addr u | 0 0 ) get token ASM address and len */  \
+    /* ( tok -- tok' ) get replacement token for compiling token to ASM */                         \
+    X(19, "(token>asm-replace)", _token_to_asm_replace_)                                           \
     X(11, "token>asm>n", token_to_asm_n) /* ( token -- u true | 0 false ) get token ASM len */     \
     /* ( -- ) attempt to compile to native ASM all tokens between XT and HERE */                   \
     X(6, "xt>asm", xt_to_asm)                                                                      \
