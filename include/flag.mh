@@ -90,8 +90,8 @@
 #define M4FLAG_REEXEC_AFTER_OPTIMIZE (1 << 14)
 
 /*
- * word contains '(call-asm)' to invoke native ASM, followed by unexecuted tokens:
- * they are kept to allow inlining
+ * word contains exactly '(call-asm)' to invoke native ASM,
+ * followed by unexecuted tokens: they are kept to allow inlining
  */
 #define M4FLAG_CALL_ASM (1 << 15)
 

@@ -1583,7 +1583,7 @@ WORD_START(_inline_, _finish_)
         _lit2s_, SHORT(M4FLAG_CALL_ASM), and,          /* ( code u flag        ) */
         _if_, T(18),                                   /* ( code u             ) */
             /* word contains '(call-asm) CELL(address) exit ...tokens... exit'   */
-            /* if tokens len > 4 then inline '(call-asm) CELL(address)'          */
+            /* if tokens len > 5 then inline '(call-asm) CELL(address)'          */
             /* otherwise inline '...tokens...'                                   */
             dup, _lit_, T(nCALLt+7), more,             /* ( code u t|f         ) */
             _if_, T(5),                                /* ( code u             ) */

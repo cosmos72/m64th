@@ -180,7 +180,8 @@ WORD_START(_xt_to_asm_finish_, xt_to_asm)
         here, minus, allot,        /* restore HERE             (         )                 */
 
         latest, name_to_flags,                      /* ( m4flags         )                 */
-        _lit_, T(M4FLAG_CALL_ASM), or,              /* ( m4flags'        )                 */
+        _lit2s_, SHORT(M4FLAG_INLINE_ALWAYS|M4FLAG_CALL_ASM),
+        or,                                         /* ( m4flags'        )                 */
         latest, name_to_flags_store, exit           /* (                 )                 */
     )
 WORD_END(_xt_to_asm_finish_)
