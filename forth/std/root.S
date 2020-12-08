@@ -30,7 +30,7 @@ WORD_START(forth_wordlist, forth_wordlist)
     WORD_DSTACK(0,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
+    WORD_ASM_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
         _lit_cell_, CELL(m4wordlist_forth),            /* extern C symbol      */
@@ -46,7 +46,7 @@ WORD_START(m4th_user,  forth_wordlist)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
+    WORD_ASM_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
         _lit_cell_, CELL(m4wordlist_m4th_user),        /* ( wid                ) */

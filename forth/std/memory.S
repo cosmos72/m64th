@@ -25,7 +25,7 @@ WORD_START(allocate, LASTWORD)
     WORD_DSTACK(1,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
+    WORD_ASM_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
         _c_locals_save_,
@@ -40,7 +40,7 @@ WORD_START(free, allocate)
     WORD_DSTACK(1,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
+    WORD_ASM_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
         _c_locals_save_,
@@ -53,7 +53,7 @@ WORD_START(resize, free)
     WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
+    WORD_ASM_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
         trail,                                                  /* ( a-addr1 a-addr1 u ) */

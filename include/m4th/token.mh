@@ -267,13 +267,13 @@
  */
 /* 'm4th-asm' wordlist */
 #define M4_a(x) ((x) + 730)
-#define M4_asm_exit_ M4_a(0)        /* ( -- )        return to native code                  */
-#define M4asm_comma M4_a(1)         /* ( addr u -- ) append ASM code to ASM-HERE            */
-#define M4name_to_asm_n M4_a(2)     /* ( nt -- u|-1 ) get ASM native_len from name          */
-#define M4token_to_asm_addr M4_a(3) /* token>asm>addr ( token -- addr|0 ) get ASM for token */
+#define M4_asm_exit_ M4_a(0)          /* ( --              ) return to native code            */
+#define M4asm_comma M4_a(1)           /* ( addr u --       ) append ASM code to ASM-HERE      */
+#define M4name_to_asm_n M4_a(2)       /* ( nt -- u true | 0 false ) get name.asm_len          */
+#define M4name_to_asm_n_store M4_a(3) /* ( u nt --         ) set name.asm_len                 */
+#define M4token_to_asm_addr M4_a(4)   /* ( token -- addr|0 ) get ASM code address for token   */
 
 /**
- *
  */
 /* 'm4th-c' wordlist */
 #define M4_c(x) ((x) + 740)

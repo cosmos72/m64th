@@ -29,7 +29,7 @@ WORD_START(forth,          LASTWORD)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
+    WORD_ASM_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
         /*6*/ CALL(forth_wordlist), searchorder_store_0, exit
@@ -39,7 +39,7 @@ WORD_START(get_order, forth)
     WORD_DSTACK(0,-1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
+    WORD_ASM_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE_AND_DATA(get_order,
         WORD_CODE_TOKENS(
@@ -51,7 +51,7 @@ WORD_START(order, get_order)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
+    WORD_ASM_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE_AND_DATA(order,
         WORD_CODE_TOKENS(
@@ -63,7 +63,7 @@ WORD_START(set_order, order)
     WORD_DSTACK(-1, 0)
     WORD_RSTACK(0, 0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
+    WORD_ASM_NONE()
     WORD_FLAGS(0)
     WORD_CODE_AND_DATA(set_order,
         WORD_CODE_TOKENS(

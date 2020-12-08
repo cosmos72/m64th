@@ -26,7 +26,7 @@ WORD_START(also,       LASTWORD)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
+    WORD_ASM_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
         searchorder_dup, exit
@@ -41,7 +41,7 @@ WORD_START(wordlist,   set_current)
     WORD_DSTACK(0,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
+    WORD_ASM_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
         _c_locals_save_,

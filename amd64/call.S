@@ -263,7 +263,7 @@ FUNC_START(_call_native_)
 FUNC_RAWEND(_call_native_)
 
 
-/** pop m4token from dstack and call it. works only for tokens with native_len != -1 */
+/** pop m4token from dstack and call it. works only for tokens with asm_len != -1 */
 FUNC_START(_exec_token_)
         LD_ut( REG3,   DTOPt)      /* c = m4token                           */
         DPOP___DTOP()              /* reload dstack top                     */

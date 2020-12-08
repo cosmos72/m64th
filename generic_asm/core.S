@@ -145,12 +145,19 @@ LABEL(name_comma.str_done)                             /* ( addr                
         init_R000_REG1()                               /* a = 0                   */
         init_RFFF_REG2()                               /* b = -1                  */
         STOR(  R000_REG1,  AT(HERE, WORD_OFF_PREV_OFF))/* w.prev_off = 0          */
-        STOR(  RFFF_REG2,  AT(HERE, WORD_OFF_NAME_OFF))/* w.name_off = nt.eff = nt.jump = nt.native_len = -1 */
+        STOR(  RFFF_REG2,  AT(HERE, WORD_OFF_NAME_OFF))/* w.name_off = nt.eff = nt.jump = nt.asm_len = -1 */
         STORh( DTOP,       AT(HERE, WORD_OFF_NAME_OFF))/* w.name_off = dtop       */
         STOR(  R000_REG1,  AT(HERE, WORD_OFF_FLAGS))   /* w.flags = w.code_n = w.data_n = 0 */
         MOVE(  HERE,       DTOP)                       /* ( w                   ) */
         ADD2(  IMM(WORD_OFF_XT), HERE)                 /* here = w.code           */
 FUNC_END(name_comma)
+
+
+FUNC_START(name_to_asm_n_store)  /* ( asm_len nt -- ) */
+        DPOP(  REG1)                                   /* a = asm_len */
+        STORh( REG1,       AT(DTOP, WORD_OFF_ASM_LEN))
+        DPOP___DTOP()
+FUNC_END(name_to_asm_n_store)
 
 
 FUNC_START(name_to_code)   /* ( nt -- xt u ) */

@@ -316,6 +316,10 @@ void m4flags_print(m4flags fl, m4printmode mode, FILE *out) {
         fputs((mode == m4mode_user ? "|data_tokens" : "|M4FLAG_DATA_TOKENS") + skip, out);
     }
     switch (fl & m4flag_noopt_mask) {
+    case m4flag_noasm:
+        skip = printed++ ? 0 : 1;
+        fputs((mode == m4mode_user ? "|noasm" : "|M4FLAG_NOASM") + skip, out);
+        break;
     case m4flag_create:
         skip = printed++ ? 0 : 1;
         fputs((mode == m4mode_user ? "|create" : "|M4FLAG_CREATE") + skip, out);
@@ -334,6 +338,10 @@ void m4flags_print(m4flags fl, m4printmode mode, FILE *out) {
         fputs((mode == m4mode_user ? "|reexec_after_optimize" : "|M4FLAG_REEXEC_AFTER_OPTIMIZE") +
                   skip,
               out);
+    }
+    if (fl & m4flag_call_asm) {
+        skip = printed++ ? 0 : 1;
+        fputs((mode == m4mode_user ? "|call_asm" : "|M4FLAG_CALL_ASM") + skip, out);
     }
 }
 
@@ -1113,17 +1121,17 @@ static void m4word_codeanddata_print(const m4word *w, m4printmode mode, FILE *ou
     }
 }
 
-static void m4nativelen_print(const m4word *w, m4printmode mode, FILE *out) {
+static void m4asmlen_print(const m4word *w, m4printmode mode, FILE *out) {
     if (mode == m4mode_user) {
-        if (w->native_len != (uint16_t)-1) {
-            fprintf(out, "\n    native_len:  \t%d", (int)w->native_len);
+        if (w->asm_len != (uint16_t)-1) {
+            fprintf(out, "\n    asm_len:     \t%d", (int)w->asm_len);
         }
-    } else if (w->native_len == (uint16_t)-1) {
-        fputs("\n    WORD_NATIVE_NONE()", out);
-    } else if (w->native_len == 0) {
-        fputs("\n    WORD_NATIVE_LEN_0()", out);
+    } else if (w->asm_len == (uint16_t)-1) {
+        fputs("\n    WORD_ASM_NONE()", out);
+    } else if (w->asm_len == 0) {
+        fputs("\n    WORD_ASM_LEN_0()", out);
     } else {
-        fputs("\n    WORD_NATIVE_LEN(", out);
+        fputs("\n    WORD_ASM_LEN(", out);
         m4string_print(m4word_ident(w), m4mode_user, out);
         fputc(')', out);
     }
@@ -1159,7 +1167,7 @@ void m4word_print(const m4word *w, m4printmode mode, FILE *out) {
         fputc('\n', out);
         m4stackeffects_print(w->jump, "_jump", mode, out);
     }
-    m4nativelen_print(w, mode, out);
+    m4asmlen_print(w, mode, out);
     if (mode != m4mode_user) {
         m4word_print_flags(w, mode, out);
     }
@@ -1518,7 +1526,7 @@ m4string m4th_asm_make_func(m4th *m) {
     }
     m4mem_protect(beg, (size_t)(end - beg), m4protect_read_exec);
     m4mem_clear_icache(func_beg, func_end);
-    m->asm_.curr = m4mem_funcalign_up(func_end);
+    m->asm_here = m->asm_.curr = m4mem_funcalign_up(func_end);
     return m4string_make(func_beg, (m4ucell)(func_end - func_beg));
 }
 

@@ -20,15 +20,15 @@
 #ifndef M4TH_INCLUDE_WORD_MH
 #define M4TH_INCLUDE_WORD_MH
 
-#define WORD_OFF_PREV_OFF 0    /* offset of m4word.prev_off   */
-#define WORD_OFF_NAME_OFF 8    /* offset of m4word.name_off   */
-#define WORD_OFF_STK_EFF 10    /* offset of m4word.eff        */
-#define WORD_OFF_STK_JMP 12    /* offset of m4word.jump       */
-#define WORD_OFF_NATIVE_LEN 14 /* offset of m4word.native_len */
-#define WORD_OFF_FLAGS 16      /* offset of m4word.flags      */
-#define WORD_OFF_CODE_N 18     /* offset of m4word.code_n     */
-#define WORD_OFF_DATA_N 20     /* offset of m4word.data_n     */
-#define WORD_OFF_XT 24         /* offset of m4word.code       */
+#define WORD_OFF_PREV_OFF 0 /* offset of m4word.prev_off   */
+#define WORD_OFF_NAME_OFF 8 /* offset of m4word.name_off   */
+#define WORD_OFF_STK_EFF 10 /* offset of m4word.eff        */
+#define WORD_OFF_STK_JMP 12 /* offset of m4word.jump       */
+#define WORD_OFF_ASM_LEN 14 /* offset of m4word.asm_len */
+#define WORD_OFF_FLAGS 16   /* offset of m4word.flags      */
+#define WORD_OFF_CODE_N 18  /* offset of m4word.code_n     */
+#define WORD_OFF_DATA_N 20  /* offset of m4word.data_n     */
+#define WORD_OFF_XT 24      /* offset of m4word.code       */
 
 #define WORD_SYM(name) m4w_##name
 
@@ -55,9 +55,9 @@
 #define WORD_RSTACK(in, out) /*     */ .byte /**/ ((in)&0xF) | (((out)&0xF) << 4);
 #define WORD_STACK_NONE() /*        */ WORD_DSTACK(0, 0) WORD_RSTACK(0, 0)
 #define WORD_STACK_ANY() /*         */ WORD_DSTACK(-1, -1) WORD_RSTACK(-1, -1)
-#define WORD_NATIVE_LEN(name) /*    */ .2byte FUNC_RET(name) - FUNC(name);
-#define WORD_NATIVE_LEN_0() /*      */ .2byte 0;
-#define WORD_NATIVE_NONE() /*       */ .2byte 0xFFFF;
+#define WORD_ASM_LEN(name) /*    */ .2byte FUNC_RET(name) - FUNC(name);
+#define WORD_ASM_LEN_0() /*      */ .2byte 0;
+#define WORD_ASM_NONE() /*       */ .2byte 0xFFFF;
 #define WORD_FLAGS(flags) /*        */ .2byte flags;
 
 #define WORD_CODE_N(n_instr) /*     */ .2byte n_instr;
@@ -110,15 +110,15 @@
     WORD_##dstack                                                                                  \
     WORD_##rstack                                                                                  \
     WORD_STACK_NONE()      /* simple words do not jump */                                          \
-    WORD_NATIVE_LEN(name)                                                                          \
+    WORD_ASM_LEN(name)                                                                          \
     WORD_FLAGS(flags)                                                                              \
     WORD_CODE(name, exit)
 
-#define WORD_BODY_NONATIVE(name, flags, dstack, rstack)                                              \
+#define WORD_BODY_NOASM(name, flags, dstack, rstack)                                              \
     WORD_##dstack                                                                                  \
     WORD_##rstack                                                                                  \
     WORD_STACK_NONE()      /* simple words do not jump */                                          \
-    WORD_NATIVE_NONE()                                                                          \
+    WORD_ASM_NONE()                                                                          \
     WORD_FLAGS(flags)                                                                              \
     WORD_CODE(name, exit)
 
@@ -135,9 +135,9 @@
     WORD_BODY_SIMPLE(name, flags, dstack, rstack)                                                  \
     WORD_END(name)
 
-#define WORD_NONATIVE(name, prev, dstack, rstack, flags)                                           \
+#define WORD_NOASM(name, prev, dstack, rstack, flags)                                              \
     WORD_START(name, prev)                                                                         \
-    WORD_BODY_NONATIVE(name, flags, dstack, rstack)                                                \
+    WORD_BODY_NOASM(name, flags, dstack, rstack)                                                   \
     WORD_END(name)
 
 #endif /* M4TH_INCLUDE_WORD_MH */

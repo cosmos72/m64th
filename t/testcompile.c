@@ -139,7 +139,7 @@ static m4named_word test_defer = {
         16,           /* name_off          */
         {-1, 0},      /* eff  stackeffects */
         {0, 0},       /* jump stackeffects */
-        0,            /* native_len        */
+        -1,           /* asm_len           */
         m4flag_defer, /* flags             */
         3 + nCALLt,   /* code_n            */
         0,            /* data_n            */
@@ -156,7 +156,7 @@ static m4named_word test_value = {
         16,           /* name_off          */
         {0x10, 0},    /* eff  stackeffects */
         {0, 0},       /* jump stackeffects */
-        0,            /* native_len        */
+        -1,           /* asm_len           */
         m4flag_value, /* flags             */
         3 + nCALLt,   /* code_n            */
         0,            /* data_n            */

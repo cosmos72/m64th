@@ -25,7 +25,7 @@ WORD_START(dot_s, LASTWORD)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
+    WORD_ASM_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
         sp_fetch, depth, one_minus, minus_one,                       /* ( dstk depth -1 ) */
@@ -38,7 +38,7 @@ WORD_START(see, dot_s)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
+    WORD_ASM_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
         CALL(parse_name), two_dup, CALL(string_to_name),       /* ( c-addr u nt|0 wid|0 -1|0|1 ) */
@@ -55,7 +55,7 @@ WORD_START(words, see)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
+    WORD_ASM_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
         user_var_m4th,

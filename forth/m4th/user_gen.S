@@ -28,7 +28,7 @@ WORD_START(clearstack, LASTWORD)
     WORD_DSTACK(-1,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
+    WORD_ASM_NONE()
     WORD_FLAGS(M4FLAG_INLINE|M4FLAG_PURE)
     WORD_CODE(
         /*3*/ depth, n_to_drop, exit
@@ -39,7 +39,7 @@ WORD_START(string2_equal, clearstack)
     WORD_DSTACK(4,3)
     WORD_RSTACK(0,0)
     WORD_STACK_ANY()
-    WORD_NATIVE_NONE()
+    WORD_ASM_NONE()
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
     WORD_CODE(
         /*14*/ rot, tuck, equal,
@@ -55,7 +55,7 @@ WORD_START(string2_ne, string2_equal)
     WORD_DSTACK(4,3)
     WORD_RSTACK(0,0)
     WORD_STACK_ANY()
-    WORD_NATIVE_NONE()
+    WORD_ASM_NONE()
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
     WORD_CODE(
         /* optimizes better than "string2= invert" */
@@ -66,7 +66,7 @@ WORD_START(wordlist_upto_name, string2_ne)
     WORD_DSTACK(2,-1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
+    WORD_ASM_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE_AND_DATA(wordlist_upto_name,
         WORD_CODE_TOKENS(
@@ -78,7 +78,7 @@ WORD_START(disassemble_names, wordlist_upto_name)
     WORD_DSTACK(-1,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
+    WORD_ASM_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE_AND_DATA(disassemble_names,
         WORD_CODE_TOKENS(
@@ -89,7 +89,7 @@ WORD_END(disassemble_names)
 WORD_START(disassemble_upto, disassemble_names)
     WORD_STACK_NONE()
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
+    WORD_ASM_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE_AND_DATA(disassemble_upto,
         WORD_CODE_TOKENS(

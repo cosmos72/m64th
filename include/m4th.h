@@ -57,6 +57,7 @@ typedef char
 
 /** m4word flags */
 typedef enum m4flags_e {
+    m4flag_call_asm = M4FLAG_CALL_ASM,
     m4flag_compile_only = M4FLAG_COMPILE_ONLY,
     m4flag_consumes_ip_mask = M4FLAG_CONSUMES_IP_MASK,
     m4flag_consumes_ip_2 = M4FLAG_CONSUMES_IP_2,
@@ -71,6 +72,7 @@ typedef enum m4flags_e {
     m4flag_may_jump = M4FLAG_MAY_JUMP,
     m4flag_mem_fetch = M4FLAG_MEM_FETCH,
     m4flag_mem_store = M4FLAG_MEM_STORE,
+    m4flag_noasm = M4FLAG_NOASM,
     m4flag_noname = M4FLAG_NONAME, /* does not fit m4word.flags, only used in ( colon-sys ) */
     m4flag_noopt_mask = M4FLAG_NOOPT_MASK,
     m4flag_create = M4FLAG_CREATE,
@@ -203,7 +205,7 @@ struct m4word_s {
     uint16_t name_off;   /**< offset of m4countedstring, in bytes. 0 = not present */
     m4stackeffects eff;  /**< stack effects if not jumping                         */
     m4stackeffects jump; /**< stack effects if jumping                             */
-    uint16_t native_len; /**< native code size, in bytes. 0xFFFF if not available  */
+    uint16_t asm_len;    /**< native code size, in bytes. 0xFFFF if not available  */
     uint16_t flags;      /**< m4flags                                              */
     uint16_t code_n;     /**< forth code size, in m4token:s                        */
     int32_t data_n;      /**< data size, in bytes                                  */

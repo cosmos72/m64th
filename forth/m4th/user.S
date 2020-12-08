@@ -32,7 +32,7 @@
 WORD_START(dot_rs, dot_rs)
     WORD_STACK_NONE()
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
+    WORD_ASM_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
         dup_to_r,                               /* push RTOP to return stack  */
@@ -58,7 +58,7 @@ WORD_START(two_roll,   two_r_from_two_drop)
     WORD_DSTACK(1,0) /* DSTACK(x+1,x) */
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE() /* uses %rip-relative TOKEN_CALL_NOTHROW */
+    WORD_ASM_NONE() /* uses %rip-relative TOKEN_CALL_NOTHROW */
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(two_roll, exit)
 WORD_END(two_roll)
@@ -66,7 +66,7 @@ WORD_START(minus_two_roll,   two_roll)
     WORD_DSTACK(1,0) /* DSTACK(x+1,x) */
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE() /* uses %rip-relative TOKEN_CALL_NOTHROW */
+    WORD_ASM_NONE() /* uses %rip-relative TOKEN_CALL_NOTHROW */
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(minus_two_roll, exit)
 WORD_END(minus_two_roll)
@@ -91,7 +91,7 @@ WORD_START(break,      bounds)
     WORD_STACK_NONE()  /* stack effect if not jumping */
     WORD_DSTACK(0,0)   /* stack effect if jumping */
     WORD_RSTACK(0,0)
-    WORD_NATIVE_NONE()
+    WORD_ASM_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_JUMP | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_CODE(
         _compile_jump_lit_, _break_, _break_, exit
@@ -113,7 +113,7 @@ WORD_START(crc_cell, minus_cmove_count)
     WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE() /* uses %ip-relative TOKEN_CALL_NOTHROW() - cannot inline in native code */
+    WORD_ASM_NONE() /* uses %ip-relative TOKEN_CALL_NOTHROW() - cannot inline in native code */
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
     WORD_CODE(crc_cell, exit)
 WORD_END(crc_cell)
@@ -122,7 +122,7 @@ WORD_START(crc_string, crc_cell)
     WORD_DSTACK(2,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE() /* on x86-64 used %ip-relative LEA m4th_crctable(%rip) - cannot inline in native code */
+    WORD_ASM_NONE() /* on x86-64 used %ip-relative LEA m4th_crctable(%rip) - cannot inline in native code */
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
     WORD_CODE(crc_string, exit)
 WORD_END(crc_string)
@@ -130,7 +130,7 @@ WORD_START(continue,   crc_string)
     WORD_STACK_NONE()  /* stack effect if not jumping */
     WORD_DSTACK(0,0)   /* stack effect if jumping */
     WORD_RSTACK(0,0)
-    WORD_NATIVE_NONE()
+    WORD_ASM_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_JUMP | M4FLAG_INLINE | M4FLAG_IMMEDIATE)
     WORD_CODE(
         _compile_jump_lit_, _continue_, _continue_, exit
@@ -140,7 +140,7 @@ WORD_START(minus_cs_roll,   continue)
     WORD_DSTACK(1,0) /* DSTACK(x+1,x) */
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE() /* uses %rip-relative TOKEN_CALL_NOTHROW */
+    WORD_ASM_NONE() /* uses %rip-relative TOKEN_CALL_NOTHROW */
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(minus_cs_roll, exit)
 WORD_END(minus_cs_roll)
@@ -151,7 +151,7 @@ WORD_START(defer_to_validate, d_to_hi)
     WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
+    WORD_ASM_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
         xt_to_validate,                                          /* ( xt                  ) */
@@ -169,7 +169,7 @@ WORD_START(disassemble, defer_to_validate)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
+    WORD_ASM_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
         CALL(parse_name), two_dup, CALL(string_to_name),        /* ( c-addr u nt|0 wid|0 -1|0|1 ) */
@@ -187,7 +187,7 @@ WORD_START(disassemble_name, disassemble)
     WORD_DSTACK(1,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
+    WORD_ASM_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
         one,                                           /* ( nt 1          ) */
@@ -207,7 +207,7 @@ WORD_START(du_div_mod, do_i_plus_loop)
     WORD_DSTACK(4,4)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
+    WORD_ASM_NONE()
     WORD_FLAGS(M4FLAG_PURE)
     WORD_CODE(
         two_du_to_2u_q,                                   /* ( ud1 ud2 f | u1 u2 t  ) */
@@ -232,7 +232,7 @@ WORD_START(ex_to_string, ex_message_fetch)
     WORD_DSTACK(1,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
+    WORD_ASM_NONE()
     WORD_FLAGS(0)
     WORD_CODE(
         dup, zero_more_equal, _if_, T(5),              /* ( ex                 ) */
@@ -256,7 +256,7 @@ WORD_START(fallthrough,      ex_to_string)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
+    WORD_ASM_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE)
     WORD_CODE(
         _check_lit_tok_, _of_,                            /* ( of-sys                    ) */
@@ -271,7 +271,7 @@ WORD_START(forth_root, fallthrough)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
+    WORD_ASM_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
         _lit_cell_, CELL(m4wordlist_forth_root),       /* ( wid              ) */
@@ -284,7 +284,7 @@ WORD_START(hashmap_find_cell, flip)
     WORD_DSTACK(2,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
+    WORD_ASM_NONE()
     WORD_FLAGS(0)
     WORD_CODE(
         dup_to_r, over,                                /* ( map key map         ) ( R: key     ) */
@@ -318,7 +318,7 @@ WORD_START(hashmap_find_int, hashmap_find_cell)
     WORD_DSTACK(2,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
+    WORD_ASM_NONE()
     WORD_FLAGS(M4FLAG_MEM_FETCH)
     WORD_CODE(
         dup_to_r, over,                                /* ( map key map         ) ( R: key     ) */
@@ -372,7 +372,7 @@ WORD_START(interpret,  i_prime)
     WORD_DSTACK(-1,-1)
     WORD_RSTACK(-1,-1)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
+    WORD_ASM_NONE()
     WORD_FLAGS(0)
     WORD_CODE(
         /* parse-name                                   ( c-addr u                 )
@@ -425,7 +425,7 @@ WORD_START(m4th_asm,   line_find_char)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
+    WORD_ASM_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
         _lit_cell_, CELL(m4wordlist_m4th_asm),         /* ( wid                ) */
@@ -437,7 +437,7 @@ WORD_START(m4th_c,     m4th_asm)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
+    WORD_ASM_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
         _lit_cell_, CELL(m4wordlist_m4th_c),           /* ( wid                ) */
@@ -449,7 +449,7 @@ WORD_START(m4th_core,  m4th_c)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
+    WORD_ASM_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
         _lit_cell_, CELL(m4wordlist_m4th_core),        /* ( wid                ) */
@@ -461,7 +461,7 @@ WORD_START(m4th_impl,  m4th_core)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
+    WORD_ASM_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
         _lit_cell_, CELL(m4wordlist_m4th_impl),        /* ( wid                ) */
@@ -484,7 +484,7 @@ WORD_START(repl,  rdepth)
     WORD_DSTACK(-1,-1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
+    WORD_ASM_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
         /* begin                                       ( ...           )
@@ -536,7 +536,7 @@ WORD_START(minus_roll, sub)
     WORD_DSTACK(1,0) /* DSTACK(x+1,x)   */
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE() /* uses %rip-relative TOKEN_CALL_NOTHROW, cannot inline in native code */
+    WORD_ASM_NONE() /* uses %rip-relative TOKEN_CALL_NOTHROW, cannot inline in native code */
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(minus_roll, exit)
 WORD_END(minus_roll)
@@ -546,7 +546,7 @@ WORD_START(type_exception,   minus_rot)
     WORD_DSTACK(1,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
+    WORD_ASM_NONE()
     WORD_FLAGS(0)
     WORD_CODE(
         /* ?if0                                        ( 0             )
@@ -601,9 +601,9 @@ WORD(one_cell,         one_uint,       DSTACK(0,1), RSTACK(0,0), WORD_PURE) /* 8
 WORD(short_comma,      one_cell,       DSTACK(1,0), RSTACK(0,0), WORD_IMPURE)
 WORD(int_comma,        short_comma,    DSTACK(1,0), RSTACK(0,0), WORD_IMPURE)
 /* ( c-addr u -- ) store 1-byte u then string data at HERE */
-WORD_NONATIVE(countedstring_comma,     int_comma,   DSTACK(2,0), RSTACK(0,0), WORD_IMPURE)
+WORD_NOASM(countedstring_comma,     int_comma,   DSTACK(2,0), RSTACK(0,0), WORD_IMPURE)
 /* ( c-addr u -- ) store string data at HERE */
-WORD_NONATIVE(string_comma,    countedstring_comma, DSTACK(2,0), RSTACK(0,0), WORD_IMPURE)
+WORD_NOASM(string_comma,    countedstring_comma, DSTACK(2,0), RSTACK(0,0), WORD_IMPURE)
 WORD(short_align,      string_comma,   DSTACK(0,0), RSTACK(0,0), WORD_IMPURE)
 WORD(int_align,        short_align,    DSTACK(0,0), RSTACK(0,0), WORD_IMPURE)
 WORD(short_aligned,    int_align,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
@@ -619,7 +619,7 @@ WORD_START(see_name,   to_uint)
     WORD_DSTACK(1,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
+    WORD_ASM_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
         zero,                                                  /* ( nt 0          ) */
@@ -658,7 +658,7 @@ WORD_START(string_to_number, string_to_lower)
     WORD_DSTACK(2,4)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
+    WORD_ASM_NONE()
     WORD_FLAGS(0) /* multiple exits => cannot inline */
     WORD_CODE(
         /* ?if0
@@ -705,7 +705,7 @@ WORD_START(string_ci_ne,  string_ci_equal)
     WORD_DSTACK(3,4)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
+    WORD_ASM_NONE()
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
     /* "string-ci= 0=" optimizes better than "string-ci= invert" */
     WORD_CODE(string_ci_equal, zero_equal, exit)
@@ -714,7 +714,7 @@ WORD_START(string_ne,  string_ci_ne)
     WORD_DSTACK(3,4)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
+    WORD_ASM_NONE()
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
     /* "string= 0=" optimizes better than "string= invert" */
     WORD_CODE(string_equal, zero_equal, exit)
@@ -730,7 +730,7 @@ WORD_START(valid_base_q, u_div_mod)
     WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
+    WORD_ASM_NONE()
     WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
     WORD_CODE(
         two, _lit_, T(37),             /* base 2 37                    */

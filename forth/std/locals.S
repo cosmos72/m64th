@@ -26,7 +26,7 @@ WORD_START(_local_,            LASTWORD)
     WORD_DSTACK(2,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
+    WORD_ASM_NONE()
     WORD_FLAGS(0)
     WORD_CODE(
         CALL(_user_locals_allocate_),          /* ( c-addr u ls              ) */
@@ -44,7 +44,7 @@ WORD_END(_local_)
 WORD_START(_brace_colon_,      _local_)
     WORD_STACK_NONE()
     WORD_STACK_NONE()
-    WORD_NATIVE_NONE()
+    WORD_ASM_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE)
     WORD_CODE(/* generated from file impl.forth - see source and comments there */
         /*94*/ zero, zero, two_to_r,

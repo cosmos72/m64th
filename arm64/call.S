@@ -224,7 +224,7 @@ FUNC_START(_call_native_)
 FUNC_END(_call_native_)
 
 
-/** pop m4token from dstack and call it. works only for tokens with native_len != -1 */
+/** pop m4token from dstack and call it. works only for tokens with asm_len != -1 */
 FUNC_START(_exec_token_)
         ubfx   REG0t,  DTOP_ut, 0, SZt*8;  /* REG0 = m4token                */
         LOAD(  REG0,   AT(FTBL, REG0, SZ)) /* REG0 = m4func                 */

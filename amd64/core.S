@@ -53,8 +53,8 @@ FUNC_START(iobuf_empty_query)
 FUNC_END(iobuf_empty_query)
 
 
-FUNC_START(name_to_asm_n)  /* ( nt -- native_len true | 0 false ) */
-        LD_uh( REG1,       AT(DTOP, WORD_OFF_NATIVE_LEN)) /* dtop = native_len    */
+FUNC_START(name_to_asm_n)  /* ( nt -- asm_len true | 0 false ) */
+        LD_uh( REG1,       AT(DTOP, WORD_OFF_ASM_LEN)) /* dtop = asm_len    */
         ZERO(  REG0)
         MOVE(  RFFF,       DTOP)
         cmp    REG1t,      RFFFt;
