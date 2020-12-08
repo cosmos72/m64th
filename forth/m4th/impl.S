@@ -1574,15 +1574,32 @@ WORD_START(_inline_, _finish_)
     WORD_ASM_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY) /* multiple exits => cannot inline */
     WORD_CODE(
-        name_to_code, one_minus, /* ( code n-1 )  skip 'exit' at the end of XT */
-        dup, zero, less_equal, _if_, T(2),
-            exit,              /* inline length is <= 0 */
-        then,                  /* ( code n-1 )   */
-        zero, do,
-            dup, token_fetch,  /* ( code token ) */
-            token_comma,
-            token_plus,        /* ( code++ )     */
-        _loop_, T(-6), drop, exit
+        /* also skip 'exit' at the end of XT */
+        dup,  name_to_code, one_minus,                 /* ( nt code n-1        ) */
+        dup, zero, less_equal, _if_, T(4),             /* ( nt code n-1        ) */
+            nip, two_drop, exit,/* inline length is <= 0  (                    ) */
+        then,                                          /* ( nt code u          ) */
+        rot, name_to_flags,                            /* ( code u m4flags     ) */
+        _lit2s_, SHORT(M4FLAG_CALL_ASM), and,          /* ( code u flag        ) */
+        _if_, T(18),                                   /* ( code u             ) */
+            /* word contains '(call-asm) CELL(address) exit ...tokens... exit'   */
+            /* if tokens len > 4 then inline '(call-asm) CELL(address)'          */
+            /* otherwise inline '...tokens...'                                   */
+            dup, _lit_, T(nCALLt+7), more,             /* ( code u t|f         ) */
+            _if_, T(5),                                /* ( code u             ) */
+                /* keep only '(call-asm) CELL(address)'                          */
+                drop, _lit_, T(nCALLt+1),              /* ( code u'            ) */
+            _else_, T(6),                              /* ( code u             ) */
+                /* keep only '...tokens...'                                      */
+                tokens, _lit_, T(SZ+2*SZt),            /* ( code nbytes nskip  ) */
+                div_string, div_token,                 /* ( code' u'           ) */
+            then,                                      /* ( code u             ) */
+        then,                                          /* ( code u             ) */
+        zero, do,                                      /* ( code       ) ( R: u pos ) */
+            dup, token_fetch,                          /* ( code token ) ( R: u pos ) */
+            token_comma,                               /* ( code       ) ( R: u pos ) */
+            token_plus,                                /* ( code'      ) ( R: u pos ) */
+        _loop_, T(-6), drop, exit                      /* (            )         */
     )
 WORD_END(_inline_)
 WORD_START(_of_, _inline_)

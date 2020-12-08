@@ -361,7 +361,7 @@ WORD_START(name_inline_query,  name_comma)
     WORD_FLAGS(M4FLAG_MEM_FETCH) /* multiple exits => cannot inline */
     WORD_CODE(
         dup, name_to_flags,
-        dup, _lit2s_, SHORT(M4FLAG_INLINE_ALWAYS), and, _if_, T(4),
+        dup, _lit2s_, SHORT(M4FLAG_INLINE_ALWAYS|M4FLAG_CALL_ASM), and, _if_, T(4),
             two_drop, true, exit,
         then,
         _lit2s_, SHORT(M4FLAG_INLINE), and, _if0_, T(4),
