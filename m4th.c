@@ -34,9 +34,12 @@
 #include <stdlib.h> /* exit(), free(), malloc() */
 #include <string.h> /* memset()  */
 
-#ifdef __unix__
+#if defined(__unix__)
 #include <sys/mman.h> /* mmap(), munmap() */
-#include <unistd.h>   /* sysconf() */
+#include <unistd.h>   /* sysconf(), Android cacheflush() */
+
+#elif defined(_WIN32)
+#include <windows.h> /* GetCurrentProcess(), FlushInstructionCache() */
 #endif
 
 enum {
@@ -1486,13 +1489,26 @@ void m4th_asm_reserve(m4th *m, m4ucell len) {
     m->asm_here = m->asm_.curr;
 }
 
+/* clear CPU instruction cache in the range beg..end */
+static void m4mem_clear_icache(void *beg, void *end) {
+#if defined(__ANDROID__)
+    cacheflush((uintptr_t)beg, (uintptr_t)end, 0);
+#elif defined(_WIN32)
+    FlushInstructionCache(GetCurrentProcess(), beg, (size_t)(end - beg));
+#elif defined(__GNUC__) // also catches __clang__
+    __builtin___clear_cache(beg, end);
+#else
+#warning unsupported system, please fix m4mem_clear_icache()
+#endif
+}
+
 /**
  * C implementation of asm-make-func:
  * 1. protect the ASM buffer as READ+EXEC
  * 2. set m4th.asm_.curr = m4mem_funcalign_up(m->asm_here).
  * 3. return original value of m4th.asm_.curr
  */
-m4char *m4th_asm_make_func(m4th *m) {
+const void *m4th_asm_make_func(m4th *m) {
     m4char *beg = m->asm_.start;
     m4char *func_beg = m->asm_.curr;
     m4char *func_end = m->asm_here;
@@ -1500,7 +1516,8 @@ m4char *m4th_asm_make_func(m4th *m) {
     if (func_end <= func_beg || func_end > end) {
         return NULL;
     }
-    mprotect(beg, (size_t)(end - beg), PROT_READ | PROT_EXEC);
+    m4mem_protect(beg, (size_t)(end - beg), m4protect_read_exec);
+    m4mem_clear_icache(func_beg, func_end);
     m->asm_.curr = m4mem_funcalign_up(func_end);
     return func_beg;
 }
