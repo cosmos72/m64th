@@ -99,42 +99,39 @@ LABEL(cmove.done)
 FUNC_END(cmove_count)
 
 
-/* -cmove/count ( src-addr dst-addr u -- src-addr-u dst-addr-u ) m4th-user */
-/* backward copy u bytes from src-1..src-u to dst-1..dst-u and return updated addresses */
+/* -cmove/count ( src-addr dst-addr u -- src-addr+u dst-addr+u ) m4th-user */
+/* backward copy u bytes from src..src+u-1 to dst..dst+u-1 and return updated addresses */
 FUNC_START(minus_cmove_count)
-        NEG1(  DTOP)                       /* dtop = -u               */
-        LOAD(  REG1,   AT(DSTK, SZ))       /* a = src                 */
-        DPOP(  REG2)                       /* b = dst                 */
-        ZERO(  REG0)                       /* @ = index               */
-        JA(    DTOP,   IMM(-SZ),TO(minus_cmove_1.test)) /* copying < SZ bytes => slow        */
-        JAE(   REG2,   REG1,   TO(minus_cmove_SZ.init)) /* copying to higher address => fast */
+        LOAD(  REG1,   AT(DSTK, SZ))       /* a = src        */
+        DPOP(  REG2)                       /* b = dst        */
+        MOVE(  DTOP,   REG0)               /* @ = u          */
+        JB(    DTOP,   IMM(SZ),TO(minus_cmove_1.test))  /* copying < SZ bytes => slow        */
+        JAE(   REG2,   REG1,   TO(minus_cmove_SZ))      /* copying to higher address => fast */
         SUB3(  REG1,   REG2,   REG3)                    /* c = src - dst                     */
         JB(    REG3,   IMM(SZ),TO(minus_cmove_1))       /* copying to too near address => slow */
-LABEL(minus_cmove_SZ.init)
-        ADD2(  IMM(SZ),DTOP)               /* dtop = -u + SZ */
         /* copy SZ bytes per iteration */
 FUNC_ALIGN()
 LABEL(minus_cmove_SZ)
-        SUB2(  IMM(SZ),REG0)               /* index -= SZ    */
-        LOAD(  REG3,   AT(REG1, REG0))     /* c = src[index] */
-        STOR(  REG3,   AT(REG2, REG0))     /* dst[index] = c */
-        JA(    REG0,   DTOP,   TO(minus_cmove_SZ))/* loop if index > -u i.e. still > SZ bytes to copy */
+        SUB2(  IMM(SZ),DTOP)               /* dtop -= SZ     */
+        LOAD(  REG3,   AT(REG1, DTOP))     /* c = src[dtop]  */
+        STOR(  REG3,   AT(REG2, DTOP))     /* dst[dtop] = c  */
+        JA(    DTOP,   IMM(SZ),TO(minus_cmove_SZ)) /* loop if dtop > SZ */
         /* copy last SZ bytes */
-        LOAD(  REG3,   AT(REG1, DTOP))     /* c = src[-u+SZ] */
-        STOR(  REG3,   AT(REG2, DTOP))     /* dst[-u+SZ] = c */
-        SUB2(  IMM(SZ),DTOP)               /* dtop = -u      */
+        LOAD(  REG3,   AT(REG1))           /* c = src[0]     */
+        STOR(  REG3,   AT(REG2))           /* dst[0] = c     */
         JUMP(  TO(minus_cmove.done))
         /* copy 1 byte per iteration */
+FUNC_ALIGN()
 LABEL(minus_cmove_1)
-        SUB2(  IMM(1), REG0)               /* index--        */
-        LD_ub( REG3,   AT(REG1, REG0))     /* c = src[index] */
-        STORb( REG3,   AT(REG2, REG0))     /* dst[index] = c */
+        DEC1(  DTOP)                       /* dtop--         */
+        LD_ub( REG3,   AT(REG1, DTOP))     /* c = src[dtop]  */
+        STORb( REG3,   AT(REG2, DTOP))     /* dst[dtop] = c  */
 LABEL(minus_cmove_1.test)
-        JA(    REG0,   DTOP,   TO(minus_cmove_1))/* loop if index > -u */
+        JNZ(   DTOP,   TO(minus_cmove_1))  /* loop if dtop != 0 */
 LABEL(minus_cmove.done)
-        ADD2(  DTOP,   REG1)               /* src -= u       */
-        ADD2(  REG2,   DTOP)               /* dtop = dst - u */
-        STOR(  REG1,   AT(DSTK))           /* ( src-u dst-u )*/
+        ADD2(  REG0,   REG1)               /* src += u       */
+        ADD4(  REG2,   REG0,0,  DTOP)      /* ( _ dst+u     )*/
+        STOR(  REG1,   AT(DSTK))           /* ( src+u dst+u )*/
 FUNC_END(minus_cmove_count)
 
 
@@ -156,8 +153,8 @@ FUNC_START(move)
         SUB2(IMM(SZ8), REG2)                   /* b = dst_end - 8*SZ   */
 
 LABEL(move.work)
-        JB(    DTOP,   IMM(8), TO(move.by1cell))   /* < 8 cells => slow    */
-LABEL(move.by8cells)
+        JB(    DTOP,   IMM(8), TO(move.1SZ))   /* < 8 cells => slow    */
+LABEL(move.8SZ)
         /* q0 .. q31 are 128-bit SIMD registers */
         ldp    q28,q29,AT(REG1);
         ldp    q30,q31,AT(REG1, SZ4);
@@ -166,21 +163,21 @@ LABEL(move.by8cells)
         stp    q30,q31,AT(REG2, SZ4);
         ADD2(  REG0,   REG1)
         ADD2(  REG0,   REG2)
-        JAE(   DTOP,   IMM(8),  TO(move.by8cells))
+        JAE(   DTOP,   IMM(8),  TO(move.8SZ))
 
-LABEL(move.by1cell)
+LABEL(move.1SZ)
         JEQ(   DTOP,   IMM(0),  TO(move.done))
         SAR2(IMM(3),   REG0)                   /* @ = +/- SZ           */
-        JG(    REG0,   IMM(0),  TO(move.by1cell.loop))
+        JG(    REG0,   IMM(0),  TO(move.1SZ.loop))
         ADD2(IMM(SZ7), REG1)                   /* a += 7*SZ            */
         ADD2(IMM(SZ7), REG2)                   /* b += 7*SZ            */
-LABEL(move.by1cell.loop)
+LABEL(move.1SZ.loop)
         LOAD(  REG4,   AT(REG1))
         SUB2(IMM(1),   DTOP)
         STOR(  REG4,   AT(REG2))
         ADD2(  REG0,   REG1)
         ADD2(  REG0,   REG2)
-        JNE(   DTOP,   IMM(0),  TO(move.by1cell.loop))
+        JNE(   DTOP,   IMM(0),  TO(move.1SZ.loop))
 
 LABEL(move.done)
         DPOP___DTOP()

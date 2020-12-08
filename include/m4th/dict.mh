@@ -54,11 +54,8 @@
     X(9, "atomic1+!", atomic_one_plus_store) /* ( addr   -- n' ) atomically increment cell by 1 */ \
     X(6, "bounds", bounds)          /* ( c-addr u -- c-addr+u c-addr ) get string bounds        */ \
     X(10, "breakpoint", breakpoint) /* ( -- ) debugger breakpoint */                               \
-    /* ( src dst u -- src+u dst+u ) forward copy u bytes, */                                       \
-    /*  and post-increment addresses after copying each byte  */                                   \
-    X(11, "cmove/count", cmove_count)                                                              \
-    /* ( src dst u -- src-u dst-u ) backward copy u bytes, */                                      \
-    /*  and pre-decrement addresses before copying each byte  */                                   \
+    X(11, "cmove/count", cmove_count) /* ( src dst u -- src+u dst+u ) forward copy u bytes */      \
+                                      /* ( src dst u -- src+u dst+u ) backward copy u bytes */     \
     X(12, "-cmove/count", minus_cmove_count)                                                       \
     X(8, "crc-cell", crc_cell)      /* ( x -- crc32 ) compute CRC32c of a cell                  */ \
     X(10, "crc-string", crc_string) /* ( c-addr u -- crc32 ) compute CRC32c of a string         */ \
@@ -349,7 +346,7 @@
     /* ( -- u t|f ) return required len and true if all tokens between XT and HERE */              \
     /* can be compiled to native ASM, otherwise false */                                           \
     X(8, "xt>asm>n", xt_to_asm_n)                                                                  \
-    /*  move forward by specified number of tokens all tokens between XT and HERE. updates HERE */ \
+    /*  move forward by specified token offset all tokens between XT and HERE. updates HERE */     \
     X(15, "xt-shift-tokens", xt_shift_tokens) /* ( token_offset -- ) */
 
 /**

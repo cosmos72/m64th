@@ -79,24 +79,26 @@ FUNC_START(cmove_count)
 FUNC_END(cmove_count)
 
 
-/* -cmove/count ( src_addr dst_addr u -- src_addr-u dst_addr-u ) m4th-user */
-/* backward copy u bytes from src-1..src-u to dst-1..dst-u and return updated addresses */
+/* -cmove/count ( src_addr dst_addr u -- src_addr+u dst_addr+u ) m4th-user */
+/* backward copy u bytes from src..src+u-1 to dst..dst+u-1 and return updated addresses */
 FUNC_START(minus_cmove_count)
         ADDI(  DSTK,   SZ,     %rdx)   /* %rdx = DSTK + SZ           */
         LOAD(  %rdi,   AT(DSTK))       /* %rdi = dst                 */
         LOAD(  %rsi,   AT(DSTK, SZ))   /* %rsi = src: clobbers DSTK  */
         MOVE(  DTOP,   %rcx)           /* %rcx = u                   */
-        DEC1(  %rsi)
-        DEC1(  %rdi)
+        lea   -1(%rsi,DTOP),   %rsi;   /* %rsi = src + u - 1         */
+        lea   -1(%rdi,DTOP),   %rdi;   /* %rdi = dst + u - 1         */
 
         std;                           /* backward direction         */
         rep    movsb (%rsi), (%rdi);   /* copy bytes                 */
         cld;                           /* restore direction flag     */
+                                       /* %rsi = src - 1             */
+                                       /* %rdi = dst - 1             */
 
-        INC1(  %rsi)
-        ADDI(  %rdi,   1, DTOP)        /* ( src  _ dst' )            */
-        STOR(  %rsi,   AT(%rdx))       /* ( src' _ dst' )            */
-        MOVE(  %rdx,   DSTK)           /* reload DSTK                */
+        lea    1(%rsi,DTOP),   %rsi;   /* %rsi = src + u             */
+        lea    1(%rdi,DTOP),   DTOP;   /* ( _ _ dst+u     )          */
+        STOR(  %rsi,   AT(%rdx))       /* ( src+u _ dst+u )          */
+        MOVE(  %rdx,   DSTK)           /* ( src+u dst+u   )          */
 FUNC_END(minus_cmove_count)
 
 

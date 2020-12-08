@@ -104,7 +104,7 @@ WORD(breakpoint,        break,         DSTACK(0,0), RSTACK(0,0), WORD_IMPURE)
  */
 WORD(cmove_count,       breakpoint,    DSTACK(3,2), RSTACK(0,0), WORD_IMPURE)
 /**
- * -cmove/count ( src dst u -- src-u dst-u ) backward copy u bytes from src-1..src-u to dst-1..dst-u
+ * -cmove/count ( src dst u -- src+u dst+u ) backward copy u bytes from src..src+u-1 to dst..dst+u-1
  * and return updated addresses
  */
 WORD(minus_cmove_count, cmove_count,   DSTACK(3,2), RSTACK(0,0), WORD_IMPURE)

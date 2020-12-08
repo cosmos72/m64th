@@ -31,7 +31,7 @@ WORD_DEF_SYM(mystr)
 FUNC_START(main)
         movl   $1000000000,%ecx;
 LABEL(main.again)
-        leaq   WORD_SYM(mystr)(%rip),  %rsi;
+        lea    WORD_SYM(mystr)(%rip),  %rsi;
 #if 1
         lodsq  (%rsi),     %rax;
 #else
