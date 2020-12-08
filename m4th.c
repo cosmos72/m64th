@@ -1491,12 +1491,12 @@ void m4th_asm_reserve(m4th *m, m4ucell len) {
 
 /* clear CPU instruction cache in the range beg..end */
 static void m4mem_clear_icache(void *beg, void *end) {
-#if defined(__ANDROID__)
+#if defined(__GNUC__) // also catches __clang__
+    __builtin___clear_cache(beg, end);
+#elif defined(__ANDROID__)
     cacheflush((uintptr_t)beg, (uintptr_t)end, 0);
 #elif defined(_WIN32)
     FlushInstructionCache(GetCurrentProcess(), beg, (size_t)(end - beg));
-#elif defined(__GNUC__) // also catches __clang__
-    __builtin___clear_cache(beg, end);
 #else
 #warning unsupported system, please fix m4mem_clear_icache()
 #endif
