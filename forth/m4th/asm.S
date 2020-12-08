@@ -145,7 +145,7 @@ WORD_START(xt_to_asm,      token_to_asm_addr)
             one_plus, tokens,                       /* ( consumed_bytes  ) ( R: end pos  ) */
         _plus_loop_, T(-12-nCALLt),                 /* (                 )                 */
 
-        CALL(_xt_to_asm_finish_), exit
+        CALL(_xt_to_asm_finish_), exit              /* (                 )                 */
     )
 WORD_END(xt_to_asm)
 /* ( -- ) register already-compiled ASM code for current XT */
