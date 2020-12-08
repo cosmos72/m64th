@@ -163,7 +163,7 @@ FUNC_START(_loop_)
         JEQ(   RTOP,   AT(RSTK), TO(_loop_.leave)) /* leave if i == i'            */
         RELJUMP()
 LABEL(_loop_.leave)
-        LOAD(  RTOP,   AT(RSTK, SZ))               /* load new top of rstack      */
-        ADD2(  IMM(SZ2),   RSTK)                   /* drop i' i from return stack */
+        RPOP(  RTOP)                               /* drop i' from return stack   */
+        RPOP(  RTOP)                               /* reload RTOP                 */
         NEXTT()                                    /* skip IP offset              */
 FUNC_RAWEND(_loop_)

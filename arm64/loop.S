@@ -67,7 +67,8 @@ FUNC_DEF(_do_)
 
 
 #define M4FDO
-FUNC_DEF(do) /* FUNC_START(do) */
+FUNC_DEF(do)
+/* FUNC_START(do) */
         RPUSH( RTOP)                 /* save rtop             */
         MOVE(  DTOP,   RTOP)         /* rtop = i              */
         DPOP2( REG1,   DTOP)         /* a = i', reload dtop   */

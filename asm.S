@@ -38,6 +38,7 @@ MARKER(asm_func_start)
 #include "amd64/core.S"
 #include "amd64/loop.S"
 #include "amd64/mem.S"
+#include "amd64/native.S"
 #elif defined(__aarch64__)
 #include "arm64/arith.S"
 #include "arm64/double.S"
@@ -46,6 +47,7 @@ MARKER(asm_func_start)
 #include "arm64/core.S"
 #include "arm64/loop.S"
 #include "arm64/mem.S"
+#include "arm64/native.S"
 #else
 #error "unsupported architecture: expecting x86_64 (amd64) or aarch64 (arm64)"
 #endif
@@ -59,6 +61,7 @@ MARKER(asm_func_start)
 #include "generic_asm/loop.S"
 #include "generic_asm/local.S"
 #include "generic_asm/mem.S"
+#include "generic_asm/native.S"
 
 #include "generic_asm/test.S" /* only used for test & benchmark */
 
