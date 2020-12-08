@@ -1545,10 +1545,17 @@ WORD_START(_finish_, _endof_)
         _check_lit_tok_, colon,                        /* ( colon-sys          ) */
         CALL(exit), /* compile 'exit' */               /* ( colon-sys          ) */
         drop, dup, _lit_, T(M4FLAG_NOOPT_MASK), and,   /* ( m4flags flag       ) */
-        /* optimize only if (word.flags & M4FLAG_NOOPT_MASK) == 0 */
-        _if0_, T(3+2*nCALLt),                          /* ( m4flags            ) */
-            CALL(_optimize_),                          /* ( m4flags            ) */
-            CALL(xt_to_asm),                           /* ( m4flags            ) */
+        _lit_, T(M4FLAG_NOASM), two_dup, less,         /* ( m4flags flag noasm t|f ) */
+        minus_rot, less_equal,                         /* ( m4flags <noasm <=noasm ) */
+        _if_, T(7+2*nCALLt),                           /* ( m4flags <noasm     ) */
+        /* optimize only if (nt.flags & M4FLAG_NOOPT_MASK) <= M4FLAG_NOASM       */
+            CALL(_optimize_),                          /* ( m4flags <noasm     ) */
+            _if_, T(2+nCALLt),                         /* ( m4flags            ) */
+        /* compile to ASM only if (nt.flags & M4FLAG_NOOPT_MASK) < M4FLAG_NOASM  */
+                CALL(xt_to_asm),                       /* ( m4flags            ) */
+            then,                                      /* ( m4flags            ) */
+        _else_, T(2),                                  /* ( m4flags <noasm     ) */
+            drop,                                      /* ( m4flags            ) */
         then,                                          /* ( m4flags            ) */
         CALL(_user_locals_clear_),                     /* ( m4flags            ) */
         left_bracket,        /* stop compiling, set state[0] = XT = 0 */

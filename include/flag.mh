@@ -72,20 +72,28 @@
 #define M4FLAG_DATA_TOKENS (1 << 10) /** word data contains m4tokens */
 
 #define M4FLAG_NOOPT_MASK (7 << 11) /** word must not be optimized */
+/**< instruct the compiler not convert word to native ASM */
+#define M4FLAG_NOASM (1 << 11)
 /**< word defined with CREATE - do not optimize away CALL(noop) */
-#define M4FLAG_CREATE (1 << 11)
+#define M4FLAG_CREATE (2 << 11)
 /**< word defined with DEFER - do not optimize/inline CALL((defer-uninitialized)) */
-#define M4FLAG_DEFER (2 << 11)
+#define M4FLAG_DEFER (3 << 11)
 /**< word defined with VALUE - do not optimize/inline */
-#define M4FLAG_VALUE (3 << 11)
-/**< instruct the compiler not to optimize word */
-#define M4FLAG_NOOPT (4 << 11)
+#define M4FLAG_VALUE (4 << 11)
+/**< instruct the compiler not to optimize word in any way */
+#define M4FLAG_NOOPT (5 << 11)
 
 /**
  * < instruct the compiler to re-execute (immediate) word after optimization.
  * needed to recompute jump offsets
  */
 #define M4FLAG_REEXEC_AFTER_OPTIMIZE (1 << 14)
+
+/*
+ * word contains '(call-asm)' to invoke native ASM, followed by unexecuted tokens:
+ * they are kept to allow inlining
+ */
+#define M4FLAG_CALL_ASM (1 << 15)
 
 /* does not fit m4flags, only stored in ( colon-sys ) */
 #define M4FLAG_NONAME (1 << 16)

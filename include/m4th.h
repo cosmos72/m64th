@@ -344,7 +344,7 @@ void m4th_asm_reserve(m4th *m, m4ucell len);
  * 2. set m4th.asm_.curr = m4mem_funcalign_up(m->asm_here).
  * 3. return original value of m4th.asm_.curr
  */
-const void *m4th_asm_make_func(m4th *m);
+m4string m4th_asm_make_func(m4th *m);
 
 void *m4mem_allocate(size_t bytes);          /** malloc() wrapper, calls exit(1) on failure */
 void m4mem_free(void *ptr);                  /** free() wrapper */

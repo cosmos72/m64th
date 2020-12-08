@@ -1508,18 +1508,18 @@ static void m4mem_clear_icache(void *beg, void *end) {
  * 2. set m4th.asm_.curr = m4mem_funcalign_up(m->asm_here).
  * 3. return original value of m4th.asm_.curr
  */
-const void *m4th_asm_make_func(m4th *m) {
+m4string m4th_asm_make_func(m4th *m) {
     m4char *beg = m->asm_.start;
     m4char *func_beg = m->asm_.curr;
     m4char *func_end = m->asm_here;
     m4char *end = m->asm_.end;
     if (func_end <= func_beg || func_end > end) {
-        return NULL;
+        return m4string_make(NULL, 0);
     }
     m4mem_protect(beg, (size_t)(end - beg), m4protect_read_exec);
     m4mem_clear_icache(func_beg, func_end);
     m->asm_.curr = m4mem_funcalign_up(func_end);
-    return func_beg;
+    return m4string_make(func_beg, (m4ucell)(func_end - func_beg));
 }
 
 /* C implementation of ':' i.e. start compiling a new word */
