@@ -48,11 +48,11 @@
     .cfi_endproc;                                                                                  \
     FUNC_SIZE(name)
 
-/* clang-format off */
+#define FUNC_START_ASM(name) FUNC_START(name)
 
-#define FUNC_DEF_RET(name)                                                                         \
-    FUNC_RET(name) :                                                                               \
-    FUNC_SIZE(name)
+#define FUNC_END_ASM(name) FUNC_RET(name) : FUNC_RAWEND(name)
+
+/* clang-format off */
 
 #define FUNC_END(name)                                                                             \
     FUNC_RET(name) :                                                                               \

@@ -27,37 +27,42 @@
 /* --- m4th-asm --------------------------------------------------------------------------------- */
 /* ---------------------------------------------------------------------------------------------- */
 
-/* ( addr u -- ) store assembly code at ASM_HERE and update ASM_HERE */
-WORD_START(_asm_catch_,    _asm_catch_)
-    WORD_DSTACK(-1,-1) /* stack effect when not jumping */
-    WORD_RSTACK(0,0)
-    WORD_DSTACK(1,0)   /* stack effect when jumping */
-    WORD_RSTACK(0,1)
-    /*
-     * (catch-xt-from-asm) uses %rip-relative call to m4f_vm_ and uses %rip-relative data:
-     * cannot inline into native code
-     */
-    WORD_ASM_NONE()
-    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_MAY_JUMP)
-    WORD_CODE(_asm_catch_, exit)
-WORD_END(_asm_catch_)
-WORD_START(_asm_execute_,  _asm_catch_)
-    WORD_DSTACK(-1,-1) /* stack effect when not jumping */
-    WORD_RSTACK(0,0)
-    WORD_DSTACK(1,0)   /* stack effect when jumping */
-    WORD_RSTACK(0,1)
-    /*
-     * (exec-xt-from-asm) uses %rip-relative call to m4f_vm_ and uses %rip-relative data:
-     * cannot inline into native code
-     */
-    WORD_ASM_NONE()
-    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_MAY_JUMP)
-    WORD_CODE(_asm_execute_, exit)
-WORD_END(_asm_execute_)
+WORD(_asm_q_if_,           _asm_q_if_, DSTACK(1,1), RSTACK(0,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS | M4FLAG_MAY_JUMP)
+WORD(_asm_q_if0_,          _asm_q_if_, DSTACK(1,1), RSTACK(0,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS | M4FLAG_MAY_JUMP)
+WORD(_asm_else_,           _asm_q_if0_,DSTACK(0,0), RSTACK(0,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS | M4FLAG_JUMP)
+WORD(_asm_if_,             _asm_else_, DSTACK(1,0), RSTACK(0,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS | M4FLAG_MAY_JUMP)
+WORD(_asm_if0_,            _asm_if_,   DSTACK(1,0), RSTACK(0,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS | M4FLAG_MAY_JUMP)
 /* ( -- ) return from ASM to ASM */
-WORD(_asm_ret_,            _asm_execute_,  DSTACK(0,0), RSTACK(0,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS | M4FLAG_JUMP)
+WORD(_asm_ret_,            _asm_if0_,  DSTACK(0,0), RSTACK(0,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS | M4FLAG_JUMP)
+WORD_START(_asm_vm_catch_, _asm_ret_)
+    WORD_DSTACK(-1,-1) /* stack effect when not jumping */
+    WORD_RSTACK(0,0)
+    WORD_DSTACK(1,0)   /* stack effect when jumping */
+    WORD_RSTACK(0,1)
+    /*
+     * (asm/vm-catch) uses %rip-relative call to m4f_vm_ and uses %rip-relative data:
+     * cannot inline into native code
+     */
+    WORD_ASM_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_MAY_JUMP)
+    WORD_CODE(_asm_vm_catch_, exit)
+WORD_END(_asm_vm_catch_)
+WORD_START(_asm_vm_execute_,  _asm_vm_catch_)
+    WORD_DSTACK(-1,-1) /* stack effect when not jumping */
+    WORD_RSTACK(0,0)
+    WORD_DSTACK(1,0)   /* stack effect when jumping */
+    WORD_RSTACK(0,1)
+    /*
+     * (asm/vm-execute) uses %rip-relative call to m4f_vm_ and uses %rip-relative data:
+     * cannot inline into native code
+     */
+    WORD_ASM_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_MAY_JUMP)
+    WORD_CODE(_asm_vm_execute_, exit)
+WORD_END(_asm_vm_execute_)
 /* ( -- ) return from VM to native ASM code */
-WORD_NOASM(_vm_return_to_asm_, _asm_ret_,  DSTACK(0,0), RSTACK(0,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS | M4FLAG_JUMP)
+WORD_NOASM(_vm_return_to_asm_, _asm_vm_execute_,   DSTACK(0,0), RSTACK(0,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS | M4FLAG_JUMP)
+/* ( addr u -- ) store assembly code at ASM_HERE and update ASM_HERE */
 WORD_NOASM(asm_comma, _vm_return_to_asm_,  DSTACK(2,0), RSTACK(0,0), WORD_IMPURE)
 /* ( -- addr u ) mark code in ASM buffer as READ+EXEC, and return its range.
  * also updates ASM-HERE */

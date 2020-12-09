@@ -328,12 +328,17 @@
  */
 /* ------- m4th-asm ----------------------------------------------------------------------------- */
 #define DICT_TOKENS_M4TH_ASM(X)                                                                    \
-    /* pop XT and use '(vm)' to execute it using 'catch'. can be invoked only from ASM */          \
-    X(11, "(asm/catch)", _asm_catch_) /* ( ... xt -- err ... ) */                                  \
-    /* pop XT and use '(vm)' to execute it. can be invoked only from ASM */                        \
-    X(13, "(asm/execute)", _asm_execute_) /* ( ... xt -- ... ) */                                  \
-    X(9, "(asm/ret)", _asm_ret_)          /* return from ASM to ASM                     */         \
-    X(18, "(vm-return-to/asm)", _vm_return_to_asm_) /* return from VM to native ASM */             \
+    X(9, "(asm/?if)", _asm_q_if_)    /* native ASM only: implement '(?if)  */                      \
+    X(10, "(asm/?if0)", _asm_q_if0_) /* native ASM only: implement '(?if0) */                      \
+    X(10, "(asm/else)", _asm_else_)  /* native ASM only: implement '(else) */                      \
+    X(8, "(asm/if)", _asm_if_)       /* native ASM only: implement '(if)   */                      \
+    X(9, "(asm/if0)", _asm_if0_)     /* native ASM only: implement '(if0)  */                      \
+    X(9, "(asm/ret)", _asm_ret_)     /* native ASM only: return from ASM to ASM */                 \
+    /* native ASM only: pop XT and use '(vm)' to 'catch' it.  */                                   \
+    X(14, "(asm/vm-catch)", _asm_vm_catch_) /* ( ... xt -- err ... ) */                            \
+    /* native ASM only: pop XT and use '(vm)' to execute it. */                                    \
+    X(16, "(asm/vm-execute)", _asm_vm_execute_)     /* ( ... xt -- ... ) */                        \
+    X(18, "(vm-return-to/asm)", _vm_return_to_asm_) /* return from VM to ASM                */     \
     X(4, "asm,", asm_comma)                   /* ( addr u  -- ) append ASM code to ASM-HERE */     \
     X(10, "name>asm>n", name_to_asm_n)        /* ( nt -- u true | 0 false ) get nt.asm_len  */     \
     X(11, "name>asm>n!", name_to_asm_n_store) /* ( u nt -- ) set nt.asm_len                 */     \

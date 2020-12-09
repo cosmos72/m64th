@@ -267,26 +267,26 @@
  */
 /* 'm4th-asm' wordlist */
 #define M4_a(x) ((x) + 730)
-#define M4_asm_catch_ M4_a(0)         /* usable only by native ASM: pop XT and 'catch' it     */
-#define M4_asm_execute_ M4_a(1)       /* usable only by native ASM: pop XT and execute it     */
-#define M4_asm_ret_ M4_a(2)           /* ( --              ) return from ASM to ASM           */
-#define M4_vm_return_to_asm_ M4_a(3)  /* ( --              ) return from VM to native ASM code*/
-#define M4asm_comma M4_a(4)           /* ( addr u --       ) append ASM code to ASM-HERE      */
-#define M4name_to_asm_n M4_a(5)       /* ( nt -- u true | 0 false ) get name.asm_len          */
-#define M4name_to_asm_n_store M4_a(6) /* ( u nt --         ) set name.asm_len                 */
-#define M4token_to_asm_addr M4_a(7)   /* ( token -- addr|0 ) get ASM code address for token   */
+#define M4_asm_q_if_ M4_a(0)           /* native ASM only: implement '(?if)'                 */
+#define M4_asm_q_if0_ M4_a(1)          /* native ASM only: implement '(?if0)'                */
+#define M4_asm_else_ M4_a(2)           /* native ASM only: implement '(else)'                */
+#define M4_asm_if_ M4_a(3)             /* native ASM only: implement '(if)'                  */
+#define M4_asm_if0_ M4_a(4)            /* native ASM only: implement '(if0)'                 */
+#define M4_asm_ret_ M4_a(5)            /* native ASM only: return from ASM to ASM            */
+#define M4_asm_vm_catch_ M4_a(6)       /* native ASM only: pop XT and 'catch' it using VM    */
+#define M4_asm_vm_execute_ M4_a(7)     /* native ASM only: pop XT and execute it using VM    */
+#undef M4____gap                       /*                                                    */
+#define M4_vm_return_to_asm_ M4_a(9)   /* return from VM to native ASM code                  */
+#undef M4____gap                       /*                                                    */
+#define M4asm_comma M4_a(11)           /* ( addr u --       ) append ASM code to ASM-HERE    */
+#define M4name_to_asm_n M4_a(12)       /* ( nt -- u true | 0 false ) get name.asm_len        */
+#define M4name_to_asm_n_store M4_a(13) /* ( u nt --         ) set name.asm_len               */
+#define M4token_to_asm_addr M4_a(14)   /* ( token -- addr|0 ) get ASM code address for token */
 
 /**
- *
- *
- *
- *
- *
- *
- *
  */
 /* 'm4th-c' wordlist */
-#define M4_c(x) ((x) + 740)
+#define M4_c(x) ((x) + 750)
 #define M4_c_arg_0_ M4_c(0)  /* prepare 0 args for C function call    */
 #define M4_c_arg_1_ M4_c(1)  /* prepare 1 arg  for C function call    */
 #define M4_c_arg_2_ M4_c(2)  /* prepare 2 args for C function call    */
@@ -325,7 +325,7 @@
  *
  */
 /* 'm4th-core' wordlist */
-#define M4_(x) ((x) + 770)
+#define M4_(x) ((x) + 780)
 /* ( counted-tokens -- tok-addr u ) get address and count of countedtokens */
 #define M4count_tokens M4_(0)
 #define M4flags_to_consumed_tokens M4_(1) /* ( flags -- u ) get # consumed tokens from flags */
@@ -394,7 +394,7 @@
  *
  */
 /* 'm4th-impl' wordlist */
-#define M4_i(x) ((x) + 830)
+#define M4_i(x) ((x) + 840)
 #define M4minus_two M4_i(-2)       /* -2                    */
 #define M4minus_one M4_i(-1)       /* -1                    */
 #define M4zero M4_i(0)             /* 0                     */
