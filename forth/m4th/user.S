@@ -98,11 +98,13 @@ WORD_START(break,      bounds)
     )
 WORD_END(break)
 WORD(breakpoint,        break,         DSTACK(0,0), RSTACK(0,0), WORD_IMPURE)
+/* ( a b flag -- a|b ) if flags is nonzero return a, otherwise b */
+WORD(choose,            breakpoint,    DSTACK(3,0), RSTACK(0,0), WORD_PURE)
 /**
  * cmove/count ( src dst u -- src+u dst+u ) forward copy u bytes from src..src+u-1 to dst..dst+u-1
  * and return updated addresses
  */
-WORD(cmove_count,       breakpoint,    DSTACK(3,2), RSTACK(0,0), WORD_IMPURE)
+WORD(cmove_count,       choose,        DSTACK(3,2), RSTACK(0,0), WORD_IMPURE)
 /**
  * -cmove/count ( src dst u -- src+u dst+u ) backward copy u bytes from src..src+u-1 to dst..dst+u-1
  * and return updated addresses

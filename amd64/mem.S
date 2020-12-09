@@ -175,7 +175,7 @@ LABEL(crc_string_simd.by8.loop)
         ADD2(  IMM(8),     REG2)
 
 LABEL(crc_string_simd.upto7)
-        lea    TO(crc_string_simd.jumps)(%rip), REG4
+        ADDROF_1M(TO(crc_string_simd.jumps), REG4)
         ADD2(  REG2,       REG3)           /* c = c-addr + u           */
         SUB2(  REG1,       REG2)           /* b = left = u - i         */
         ADD4(  REG4, REG2, 1, REG4) /* each jmp below occupies 2 bytes */

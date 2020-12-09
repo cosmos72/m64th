@@ -187,6 +187,15 @@ FUNC_START(abs)
 FUNC_END(abs)
 
 
+/* choose ( a b flag -- a|b ) m4th-user if flag is nonzero return a, else b */
+FUNC_START(choose)
+        cmp    DTOP,   IMM(0);
+        cset   REG1,   ne;
+        LOAD(  DTOP,   AT(DSTK, REG1, SZ))
+        ADD2(IMM(SZ2), DSTK)
+FUNC_END(choose)
+
+
 FUNC_START(lshift)
         DPOP(  REG1)
         lsl    DTOP,   REG1,   DTOP;

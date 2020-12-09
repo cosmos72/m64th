@@ -67,9 +67,9 @@
 #define M4cmove_count M4_u(37)           /* ( src_addr dst_addr u -- src_addr+u dst-addr+u )  */
 #define M4minus_cmove_count M4_u(38)     /* ( src_addr dst_addr u -- src_addr-u dst_addr-u )  */
 #undef M4____gap                         /*                                         */
-#define M4crc_cell M4_u(40)              /* ( x -- crc32 ) compute CRC32c of a cell           */
-#define M4crc_string M4_u(41)            /* ( c-addr u -- crc32 ) compute CRC32c of a string  */
-#undef M4____gap                         /*                                         */
+#define M4choose M4_u(40)                /* ( a b flag -- a|b) if flag return a, else return b */
+#define M4crc_cell M4_u(41)              /* ( x -- crc32 ) compute CRC32c of a cell           */
+#define M4crc_string M4_u(42)            /* ( c-addr u -- crc32 ) compute CRC32c of a string  */
 #undef M4____gap                         /*                                         */
 #define M4du_to_u_q M4_u(44) /* ( du -- u t | du f ) attempt to narrow a double-width number  */
 #define M4dup_to_r M4_u(45)  /* dup>r                   equivalent to: dup  >r    */
@@ -267,13 +267,23 @@
  */
 /* 'm4th-asm' wordlist */
 #define M4_a(x) ((x) + 730)
-#define M4_asm_exit_ M4_a(0)          /* ( --              ) return to native code            */
+#define M4_asm_ret_ M4_a(0)           /* ( --              ) return from ASM to ASM           */
 #define M4asm_comma M4_a(1)           /* ( addr u --       ) append ASM code to ASM-HERE      */
-#define M4name_to_asm_n M4_a(2)       /* ( nt -- u true | 0 false ) get name.asm_len          */
-#define M4name_to_asm_n_store M4_a(3) /* ( u nt --         ) set name.asm_len                 */
-#define M4token_to_asm_addr M4_a(4)   /* ( token -- addr|0 ) get ASM code address for token   */
+#define M4_catch_xt_from_asm_ M4_a(2) /* usable only by native ASM: pop XT and 'catch' it     */
+#define M4_exec_xt_from_asm_ M4_a(3)  /* usable only by native ASM: pop XT and execute it     */
+#define M4name_to_asm_n M4_a(4)       /* ( nt -- u true | 0 false ) get name.asm_len          */
+#define M4name_to_asm_n_store M4_a(5) /* ( u nt --         ) set name.asm_len                 */
+#define M4_vm_return_to_asm_ M4_a(6)  /* ( --              ) return from VM to native ASM code*/
+#define M4token_to_asm_addr M4_a(7)   /* ( token -- addr|0 ) get ASM code address for token   */
 
 /**
+ *
+ *
+ *
+ *
+ *
+ *
+ *
  */
 /* 'm4th-c' wordlist */
 #define M4_c(x) ((x) + 740)
@@ -414,7 +424,7 @@
 #define M4_break_ M4_i(24)          /* (break)         followed by IP offset to jump              */
 #define M4_break_if_ M4_i(25)       /* (break-if)      followed by IP offset to jump if dtop <> 0 */
 #define M4_break_if0_ M4_i(26)      /* (break-if0)     followed by IP offset to jump if dtop == 0 */
-#define M4_call_native_ M4_i(27)    /* (call-native)   followed by native code address. calls it. */
+#define M4_call_asm_ M4_i(27)       /* (call-asm)   followed by native code address. calls it. */
 #define M4_call_ M4_i(28)           /* (call)       followed by XT. calls it.                  */
 #undef M4____gap                    /*                                                            */
 #define M4_catch_beg_ M4_i(30)      /* (catch-beg)     first  half of 'catch'                     */
@@ -429,13 +439,13 @@
 #define M4_else_ M4_i(39)           /* (else)          followed by IP offset to jump              */
 #define M4_endof_ M4_i(40)          /* (endof)         followed by IP offset to jump              */
 #define M4_exec_token_ M4_i(41)     /* pop token, exec it. It must be 'inline' and not consume IP */
-#define M4_exec_xt_from_native_ M4_i(42) /* pop XT and execute it from native code     */
-#define M4_fallthrough_ M4_i(43)         /* (fallthrough) followed by IP offset to jump*/
-#define M4_if_ M4_i(44)                  /* (if)     followed by IP offset to jump     */
-#define M4_if0_ M4_i(45)                 /* (if0)    followed by IP offset to jump     */
-#define M4_ignore_ M4_i(46)              /* (ignore) followed by IP offset, ignores it */
-#define M4_ip_ M4_i(47)                  /* (ip)      get vm's current instruction pointer */
-#define M4_ip_to_data_ M4_i(48)      /* (ip>data) must be 1st instr in word. return word's data */
+#undef M4____gap                    /*                                         */
+#define M4_fallthrough_ M4_i(43)    /* (fallthrough) followed by IP offset to jump*/
+#define M4_if_ M4_i(44)             /* (if)     followed by IP offset to jump     */
+#define M4_if0_ M4_i(45)            /* (if0)    followed by IP offset to jump     */
+#define M4_ignore_ M4_i(46)         /* (ignore) followed by IP offset, ignores it */
+#define M4_ip_ M4_i(47)             /* (ip)      get vm's current instruction pointer */
+#define M4_ip_to_data_ M4_i(48)     /* (ip>data) must be 1st instr in word. return word's data */
 #define M4_ip_to_data_addr_ M4_i(49) /* must be 1st instr in word. return word's data>addr      */
 #undef M4____gap                     /*                                         */
 #define M4_leave_ M4_i(51)           /* (leave)  followed by IP offset to jump          */

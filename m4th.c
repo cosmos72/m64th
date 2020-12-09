@@ -339,9 +339,9 @@ void m4flags_print(m4flags fl, m4printmode mode, FILE *out) {
                   skip,
               out);
     }
-    if (fl & m4flag_call_asm) {
+    if (fl & m4flag_asm) {
         skip = printed++ ? 0 : 1;
-        fputs((mode == m4mode_user ? "|call_asm" : "|M4FLAG_CALL_ASM") + skip, out);
+        fputs((mode == m4mode_user ? "|call_asm" : "|M4FLAG_ASM") + skip, out);
     }
 }
 

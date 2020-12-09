@@ -27,10 +27,8 @@
 /* --- m4th-asm --------------------------------------------------------------------------------- */
 /* ---------------------------------------------------------------------------------------------- */
 
-/* ( -- ) return to native code */
-WORD(_asm_exit_,           _asm_exit_,     DSTACK(0,0), RSTACK(0,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS | M4FLAG_JUMP)
 /* ( addr u -- ) store assembly code at ASM_HERE and update ASM_HERE */
-WORD_NOASM(asm_comma,   _asm_exit_,     DSTACK(2,0), RSTACK(0,0), WORD_IMPURE)
+WORD_NOASM(asm_comma,        asm_comma,    DSTACK(2,0), RSTACK(0,0), WORD_IMPURE)
 /* ( -- addr u ) mark code in ASM buffer as READ+EXEC, and return its range.
  * also updates ASM-HERE */
 WORD_START(asm_make_func,    asm_comma)
@@ -60,12 +58,42 @@ WORD_START(asm_reserve,    asm_make_func)
         _c_locals_load_, exit
     )
 WORD_END(asm_reserve)
-/* ( nt -- u true | 0 false ) get name ASM asm_len */
-WORD(name_to_asm_n,        asm_reserve,    DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+/* ( -- ) return from ASM to ASM */
+WORD(_asm_ret_,            asm_reserve,    DSTACK(0,0), RSTACK(0,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS | M4FLAG_JUMP)
+WORD_START(_catch_xt_from_asm_, _asm_ret_)
+    WORD_DSTACK(-1,-1) /* stack effect when not jumping */
+    WORD_RSTACK(0,0)
+    WORD_DSTACK(1,0)   /* stack effect when jumping */
+    WORD_RSTACK(0,1)
+    /*
+     * (catch-xt-from-asm) uses %rip-relative call to m4f_vm_ and uses %rip-relative data:
+     * cannot inline into native code
+     */
+    WORD_ASM_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_MAY_JUMP)
+    WORD_CODE(_catch_xt_from_asm_, exit)
+WORD_END(_catch_xt_from_asm_)
+WORD_START(_exec_xt_from_asm_, _catch_xt_from_asm_)
+    WORD_DSTACK(-1,-1) /* stack effect when not jumping */
+    WORD_RSTACK(0,0)
+    WORD_DSTACK(1,0)   /* stack effect when jumping */
+    WORD_RSTACK(0,1)
+    /*
+     * (exec-xt-from-asm) uses %rip-relative call to m4f_vm_ and uses %rip-relative data:
+     * cannot inline into native code
+     */
+    WORD_ASM_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_MAY_JUMP)
+    WORD_CODE(_exec_xt_from_asm_, exit)
+WORD_END(_exec_xt_from_asm_)
+/* ( nt -- u true | 0 false ) get nt.asm_len */
+WORD(name_to_asm_n,    _exec_xt_from_asm_, DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 /* ( u nt -- ) set name ASM asm_len */
 WORD(name_to_asm_n_store,  name_to_asm_n,  DSTACK(2,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE)
+/* ( -- ) return from VM to native ASM code */
+WORD_NOASM(_vm_return_to_asm_,name_to_asm_n_store,DSTACK(0,0), RSTACK(0,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS | M4FLAG_JUMP)
 /* ( tok -- addr u | 0 0 ) get token ASM address and len */
-WORD_START(token_to_asm,   name_to_asm_n_store)
+WORD_START(token_to_asm,   _vm_return_to_asm_)
     WORD_DSTACK(1,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -118,7 +146,7 @@ WORD_START(_token_to_asm_replace_, token_to_asm_n)
         exit                                        /* ( token          )               */
       ),
       WORD_DATA_TOKENS(
-        exit, _asm_exit_        /* 'exit' becomes '(asm-exit)' in native ASM */
+        exit, _asm_ret_        /* 'exit' becomes '(asm-ret)' in native ASM */
       )
     )
 WORD_END(_token_to_asm_replace_)
@@ -171,16 +199,16 @@ WORD_START(_xt_to_asm_finish_, xt_to_asm)
         CALL(xt_shift_tokens),                      /* (                 ) ( R: asm-addr ) */
 
         here, dup, state_fetch, sub,                /* ( here xt-here    ) ( R: asm-addr ) */
-        allot,                     /* reset HERE = XT  ( here            ) ( R: asm-addr ) */
+        allot,                   /* reset HERE = XT    ( here            ) ( R: asm-addr ) */
 
-        _lit_comma_, _call_native_,/* compile '(call-native)'  ( here    ) ( R: asm-addr ) */
-        r_from, comma,             /* compile asm-addr         ( here    )                 */
-        _lit_comma_, exit,         /* compile 'exit'           ( here    )                 */
+        _lit_comma_, _call_asm_, /* compile '(call-asm)' ( here          ) ( R: asm-addr ) */
+        r_from, comma,           /* compile asm-addr     ( here          )                 */
+        _lit_comma_, exit,       /* compile 'exit'       ( here          )                 */
 
-        here, minus, allot,        /* restore HERE             (         )                 */
+        here, minus, allot,      /* restore HERE         (               )                 */
 
         latest, name_to_flags,                      /* ( m4flags         )                 */
-        _lit2s_, SHORT(M4FLAG_INLINE_ALWAYS|M4FLAG_CALL_ASM),
+        _lit2s_, SHORT(M4FLAG_INLINE_ALWAYS|M4FLAG_ASM),
         or,                                         /* ( m4flags'        )                 */
         latest, name_to_flags_store, exit           /* (                 )                 */
     )

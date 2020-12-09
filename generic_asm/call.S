@@ -22,10 +22,10 @@
 /* clang-format off */
 
 
-/* return to native code */
-FUNC_START(_asm_exit_)
+/* return from ASM to ASM */
+FUNC_START(_asm_ret_)
         ASM_RET()
-FUNC_END(_asm_exit_)
+FUNC_END(_asm_ret_)
 
 
 /** must be followed by an XT. calls it. */
@@ -188,11 +188,11 @@ FUNC_START(_recurse_)
         RPUSH( RTOP)               /* save RTOP                     */
         ADDI(  IP,     SZt,RTOP)   /* save return address = IP+SZt  */
         LD_st( REG3,     AT(IP))   /* c = jump offset               */
-#ifdef __x86_64__
-        lea    SZt(IP, REG3, SZt), IP; /* set target IP             */
+#ifdef ADD5
+        ADD5(IP, REG3,PSZt, SZt, IP)  /* set target IP             */
 #else
-        ADD2(IMM(SZt), IP)             /* skip IP offset            */
-        ADD4(  IP,     REG3,PSZt, IP)  /* set target IP             */
+        ADD2(IMM(SZt), IP)            /* skip IP offset            */
+        ADD4(IP, REG3,PSZt,      IP)  /* set target IP             */
 #endif
         NEXT0()                    /* jump                          */
 FUNC_RAWEND(_recurse_)

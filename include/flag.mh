@@ -93,7 +93,7 @@
  * word contains exactly '(call-asm)' to invoke native ASM,
  * followed by unexecuted tokens: they are kept to allow inlining
  */
-#define M4FLAG_CALL_ASM (1 << 15)
+#define M4FLAG_ASM (1 << 15)
 
 /* does not fit m4flags, only stored in ( colon-sys ) */
 #define M4FLAG_NONAME (1 << 16)

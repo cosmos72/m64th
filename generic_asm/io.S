@@ -185,7 +185,7 @@ FUNC_START(obuf_write_char)
         LOAD(  REG1,   AT(DSTK))                       /* a = io                 */
         LOAD(  REG2,   AT(REG1, IOBUF_OFF_END))        /* b = io.end             */
         /* check if enough space in iobuf, i.e. io.end < io.max */
-#ifdef __x86_64__
+#ifdef JUMP_ARG2_AT
         JAE(   REG2,   AT(REG1, IOBUF_OFF_MAX), TO(obuf_write_char.slow))
 #else
         LOAD(  REG3,   AT(REG1, IOBUF_OFF_MAX))        /* c = io.max              */
@@ -203,7 +203,7 @@ LABEL(obuf_write_char.slow)
         ADDROF_4G( WORD_SYM(_obuf_flush_write_char_), REG2) /* b = word           */
         DPUSH__DTOP()                                  /* dstk ( io ch _        ) */
         ADDI(  REG2,   WORD_OFF_XT, DTOP)              /* dstk ( io ch xt       ) */
-        ASM_CALL(FUNC(_exec_xt_from_native_))          /* dstk ( err            ) */
+        ASM_CALL(FUNC(_exec_xt_from_asm_))             /* dstk ( err            ) */
 FUNC_END(obuf_write_char)
 
 
@@ -213,7 +213,7 @@ FUNC_START(obuf_write_string)
         LOAD(  REG2,   AT(REG1, IOBUF_OFF_END))        /* b = io.end              */
         ADD4(  DTOP,   REG2, 0, REG3)                  /* c = io.end + u          */
         /* check if enough space in iobuf, i.e. io.end + u <= io.max */
-#ifdef __x86_64__
+#ifdef JUMP_ARG2_AT
         JA(    REG3,   AT(REG1, IOBUF_OFF_MAX), TO(obuf_write_string.slow))
 #else
         LOAD(  REG4,   AT(REG1, IOBUF_OFF_MAX))        /* d = io.max              */
@@ -234,7 +234,7 @@ LABEL(obuf_write_string.slow)
         ADDROF_4G( WORD_SYM(_obuf_flush_write_string_), REG2) /* b = word           */
         DPUSH__DTOP()                                  /* dstk ( io c-addr u _    ) */
         ADDI(  REG2,   WORD_OFF_XT, DTOP)              /* dstk ( io c-addr u xt   ) */
-        ASM_CALL(FUNC(_exec_xt_from_native_))          /* dstk ( err              ) */
+        ASM_CALL(FUNC(_exec_xt_from_asm_))             /* dstk ( err              ) */
 FUNC_END(obuf_write_string)
 
 

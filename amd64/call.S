@@ -253,14 +253,14 @@ FUNC_START(_c_ret_2_)
 FUNC_END(_c_ret_2_)
 
 
-/** must be followed by address of native forth code. call it. */
-FUNC_START(_call_native_)
+/** must be followed by address of native ASM. call it. */
+FUNC_START(_call_asm_)
         LOAD(  REG1,   AT(IP))
         ADD2(IMM(SZ),  IP)         /* skip native function address                */
         RPUSH(  VM)                /* native code ends with ASM_RET(),            */
                                    /* which pops address at %rsp and jumps to it  */
-        jmp    *REG1;              /* tail-call optimization: jump to native code */
-FUNC_RAWEND(_call_native_)
+        jmp    *REG1;              /* tail-call optimization: jump to native ASM  */
+FUNC_RAWEND(_call_asm_)
 
 
 /** pop m4token from dstack and call it. works only for tokens with asm_len != -1 */
@@ -268,29 +268,54 @@ FUNC_START(_exec_token_)
         LD_ut( REG3,   DTOPt)      /* c = m4token                           */
         DPOP___DTOP()              /* reload dstack top                     */
         jmp    *(FTBL, REG3, SZ);  /* tail-call optimization: jump to token */
+        /* the token will return to '(vm)' when done                        */
 FUNC_RAWEND(_exec_token_)
 
 
 /**
- * pop XT from dstack and call it.
- * This function is called from native code with ASM_CALL()
- * => use ASM_RET() to return
+ * pop XT from dstack and use 'catch' to run it.
+ * This function is called *only* from native ASM code with ASM_CALL()
+ * => it must use ASM_RET() to return when finished.
  */
-FUNC_START(_exec_xt_from_native_)
-    RPUSH( IP)                 /* save IP                           */
-    RPUSH( VM)                 /* save VM                           */
-    LOAD(  VM, AT(M4TH, M4TH_OFF_VM))  /* set VM   = m4th->vm       */
-    ADDROF_1M(TO(_exec_xt_from_native_.vm_code), IP)
+FUNC_START(_catch_xt_from_asm_)
+        ADDROF_1M(TO(_catch_xt_from_asm_.tokens), REG0) /* @ = tokens to execute */
 
-    /* enter '(vm)' interpreter, let token 'execute' pop dtop = xt  */
-    /* pushes return address to stack,                              */
-    /* it will be popped by (return-to-native)                      */
-    call  *VM;
+        JUMP(  TO(_exec_xt_from_asm_.reg0))
+FUNC_RAWEND(_catch_xt_from_asm_)
 
-    RPOP(  VM)                 /* load VM                           */
-    RPOP(  IP)                 /* load IP                           */
-    ASM_RET()
+
+/**
+ * pop XT from dstack and use '(vm)' to execute it.
+ * This function is called *only* from native ASM code with ASM_CALL()
+ * => it must use ASM_RET() to return when finished.
+ */
+FUNC_START(_exec_xt_from_asm_)
+        ADDROF_1M(TO(_exec_xt_from_asm_.tokens), REG0) /* @ = tokens to execute */
+
+LABEL(_exec_xt_from_asm_.reg0)
+        RPUSH( IP)                        /* save IP                    */
+        RPUSH( VM)                        /* save VM                    */
+        LOAD(  VM, AT(M4TH, M4TH_OFF_VM)) /* set VM = m4th->vm          */
+        MOVE(  REG0,   IP)                /* set IP = tokens to execute */
+        /* enter '(vm)' interpreter, let token 'execute' pop dtop = xt  */
+        JUMP_REG(VM)
+        /* '(vm)' interpreter will execute '_vm_return_to_asm_' when done  */
+        /* which reloads the registers saved above then returns to ASM  */
+FUNC_RAWEND(_exec_xt_from_asm_)
+
+
+/* return from VM to native ASM code. it's the bottom half of _exec_xt_from_asm_ */
+FUNC_START(_vm_return_to_asm_)
+        RPOP(  VM)                 /* load IP                           */
+        RPOP(  IP)                 /* load VM                           */
+        ASM_RET()                  /* return to ASM                     */
+FUNC_RAWEND(_vm_return_to_asm_)
+
+
 WORD_CODE_ALIGN()
-LABEL(_exec_xt_from_native_.vm_code)
-    WORD_CODE_TOKENS(execute, _asm_exit_)
-FUNC_RAWEND(_exec_xt_from_native_)
+LABEL(_catch_xt_from_asm_.tokens)
+        WORD_CODE_TOKENS(_catch_beg_, _catch_end_, _vm_return_to_asm_)
+
+WORD_CODE_ALIGN()
+LABEL(_exec_xt_from_asm_.tokens)
+    WORD_CODE_TOKENS(execute, _vm_return_to_asm_)

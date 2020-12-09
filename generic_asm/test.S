@@ -43,14 +43,14 @@ FUNC_START(do_i_plus_loop)
 ASM_ALIGN(3) /* *much* faster at least on x86-64 */
 LABEL(test_sum_forth.iter)
         /* i_plus */
-        ADD2(  RTOP, DTOP)
+        ADD2(  RTOP,   DTOP)
         /* loop */
         INC1(  RTOP)                               /* increment i          */
-#ifdef __x86_64__
+#ifdef JUMP_ARG2_AT
         JNE(   RTOP,   AT(RSTK), TO(test_sum_forth.iter)) /* repeat if i != i'    */
 #else
-        LOAD(  REG1, AT(RSTK))                     /* a = i'               */
-        JNE(   REG1, RTOP, TO(test_sum_forth.iter))/* repeat if i != i'    */
+        LOAD(  REG1,   AT(RSTK))                     /* a = i'               */
+        JNE(   REG1,   RTOP, TO(test_sum_forth.iter))/* repeat if i != i'    */
 #endif
         LOAD(  RTOP,   AT(RSTK, SZ))               /* load new top of rstack      */
         ADD2(  IMM(SZ2),   RSTK)                   /* drop i' i from return stack */
@@ -75,7 +75,7 @@ FUNC_START(test_crc_plus_native_forth)
         DPUSH__DTOP()
         LOAD(  DTOP,   AT(DSTK, SZ))
         /* xor */
-#ifdef __x86_64__
+#ifdef ARITH_ARG1_AT
         XOR2(  AT(DSTK),   DTOP)
         ADD2(  IMM(8), DSTK)
 #else
@@ -105,7 +105,7 @@ FUNC_START(test_crc_plus_native_forth)
         /* eight rshift */
         SHR2(  IMM(8), DTOP)
         /* xor */
-#ifdef __x86_64__
+#ifdef ARITH_ARG1_AT
         XOR2(  AT(DSTK),   DTOP)
         ADD2(  IMM(8), DSTK)
 #else
@@ -118,8 +118,16 @@ FUNC_START(test_crc_plus_native_forth)
 FUNC_RAWEND(test_crc_plus_native_forth)
 
 
+FUNC_START(test_catch_xt_from_native)
+        ASM_CALL(FUNC(_catch_xt_from_asm_))
+        /* this pretends to be native code: */
+        /* called with ASM_CALL(), must return with ASM_RET() */
+        ASM_RET()
+FUNC_RAWEND(test_catch_xt_from_native)
+
+
 FUNC_START(test_exec_xt_from_native)
-        ASM_CALL(FUNC(_exec_xt_from_native_))
+        ASM_CALL(FUNC(_exec_xt_from_asm_))
         /* this pretends to be native code: */
         /* called with ASM_CALL(), must return with ASM_RET() */
         ASM_RET()

@@ -57,7 +57,7 @@ typedef char
 
 /** m4word flags */
 typedef enum m4flags_e {
-    m4flag_call_asm = M4FLAG_CALL_ASM,
+    m4flag_asm = M4FLAG_ASM,
     m4flag_compile_only = M4FLAG_COMPILE_ONLY,
     m4flag_consumes_ip_mask = M4FLAG_CONSUMES_IP_MASK,
     m4flag_consumes_ip_2 = M4FLAG_CONSUMES_IP_2,

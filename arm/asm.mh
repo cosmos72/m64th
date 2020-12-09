@@ -194,15 +194,18 @@
 #define STORw(reg, at) str reg##w, at;  /* *(uint32_t*)at  = reg */
 #define STORt(reg, at) strh reg##t, at; /* *(m4token *)at  = reg */
 
-#define ASM_CALL(func) ASM_CALL_BODY(func) /* raw/native assembly: call function        */
-#define ASM_CALL_BODY(func) bl func;       /*                                           */
-#define ASM_RET() bx lr;                   /* raw/native assembly: return */
+#define ASM_CALL(func)               /* raw/native assembly: call function        */               \
+    RPUSH(lr)                        /*                                           */               \
+    ASM_CALL_BODY(func)              /*                                           */               \
+    RPOP(lr)                         /*                                           */
+#define ASM_CALL_BODY(func) bl func; /*                                           */
+#define ASM_RET() bx lr;             /* raw/native assembly: return               */
 
 #define TOKEN_CALL_PREPARE() /* prepare to call token from another token ______________________ */ \
     RPUSH(VM)
 #define TOKEN_CALL_CLEANUP() /* cleanup after call token->token _______________________________ */ \
     RPOP(VM)
-#define TOKEN_CALL_BODY(func, retlabel) /* actually call token->token _________________________ */ \
+#define TOKEN_CALL_BODY(func, retlabel) /* actually call token from another token _____________ */ \
     ADDROF_1M(TO(retlabel), VM)                                                                    \
     jmp func;                                                                                      \
     LABEL(retlabel)

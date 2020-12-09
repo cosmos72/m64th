@@ -33,16 +33,18 @@
 
 #define TOKEN_MAX ((1<<(8*SZt))-1)
 
-#define AT_0(addr, i, _)                AT0(addr)
-#define AT_x(addr, i, _)                ATx(addr, i)
-#define AT_xy(addr, i, shift)           ATxy(addr, i, shift)
-#define AT_(addr, i, shift, kind, ...)  AT_##kind(addr, i, shift)
+#define AT_0(  addr, _, __, _3)           AT0(addr)
+#define AT_x(  addr, offset, _, __)       ATx(addr, offset)
+#define AT_xy( addr, i, shift, _)         ATxy(addr, i, shift)
+#define AT_xyz(addr, i, shift, offset)    ATxyz(addr, i, shift, offset)
+#define AT_(addr, i, shift, offset, kind, ...)  AT_##kind(addr, i, shift, offset)
 /**
- * expand AT(reg)            -> AT_0 (reg)
- * expand AT(reg, imm)       -> AT_x (reg, imm)
- * expand AT(reg1,reg2,rmul) -> AT_xy(reg1,reg2,rmul)
+ * expand AT(reg)                   -> AT_0  (reg)
+ * expand AT(reg, imm)              -> AT_x  (reg, imm)
+ * expand AT(reg1,reg2,rmul)        -> AT_xy (reg1,reg2,rmul)
+ * expand AT(reg1,reg2,rmul,offset) -> AT_xyz(reg1,reg2,rmul,offset)
  */
-#define AT(...)                         AT_(__VA_ARGS__, xy, x, 0)
+#define AT(...)                         AT_(__VA_ARGS__, xyz, xy, x, 0)
 
 /* align register at n = some power of two */
 #define ALIGN(n, reg)                                                                              \

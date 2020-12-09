@@ -52,10 +52,11 @@
     X(5, "2tuck", two_tuck)      /*             ( a b c d     -- c d a b c d )                  */ \
     X(8, "atomic+!", atomic_plus_store)      /* ( n addr -- n' ) atomically increment cell by n */ \
     X(9, "atomic1+!", atomic_one_plus_store) /* ( addr   -- n' ) atomically increment cell by 1 */ \
-    X(6, "bounds", bounds)          /* ( c-addr u -- c-addr+u c-addr ) get string bounds        */ \
-    X(10, "breakpoint", breakpoint) /* ( -- ) debugger breakpoint */                               \
-    X(11, "cmove/count", cmove_count) /* ( src dst u -- src+u dst+u ) forward copy u bytes */      \
-                                      /* ( src dst u -- src+u dst+u ) backward copy u bytes */     \
+    X(6, "bounds", bounds)          /*   ( c-addr u -- c-addr+u c-addr ) get string bounds      */ \
+    X(10, "breakpoint", breakpoint) /*   ( -- ) debugger breakpoint                             */ \
+    X(6, "choose", choose)          /*   ( a b flag -- a|b ) if flag return a, otherwise b      */ \
+    X(11, "cmove/count", cmove_count) /* ( src dst u -- src+u dst+u ) forward copy u bytes      */ \
+                                      /* ( src dst u -- src+u dst+u ) backward copy u bytes     */ \
     X(12, "-cmove/count", minus_cmove_count)                                                       \
     X(8, "crc-cell", crc_cell)      /* ( x -- crc32 ) compute CRC32c of a cell                  */ \
     X(10, "crc-string", crc_string) /* ( c-addr u -- crc32 ) compute CRC32c of a string         */ \
@@ -327,12 +328,17 @@
  */
 /* ------- m4th-asm ----------------------------------------------------------------------------- */
 #define DICT_TOKENS_M4TH_ASM(X)                                                                    \
-    X(9, "(asm-ret)", _asm_exit_)                                                                  \
-    X(4, "asm,", asm_comma)                   /* ( addr u  -- ) append ASM code to ASM-HERE */     \
+    X(4, "asm,", asm_comma)      /* ( addr u  -- ) append ASM code to ASM-HERE */                  \
+    X(9, "(asm-ret)", _asm_ret_) /* return from native ASM                     */                  \
+    /* pop XT and use '(vm)' to execute it using 'catch'. can be invoked only from ASM */          \
+    X(19, "(catch-xt-from-asm)", _catch_xt_from_asm_) /* ( ... xt -- err ... ) */                  \
+    /* pop XT and use '(vm)' to execute it. can be invoked only from ASM */                        \
+    X(18, "(exec-xt-from-asm)", _exec_xt_from_asm_) /* ( ... xt -- ... ) */                        \
     X(10, "name>asm>n", name_to_asm_n)        /* ( nt -- u true | 0 false ) get nt.asm_len  */     \
     X(11, "name>asm>n!", name_to_asm_n_store) /* ( u nt -- ) set nt.asm_len                 */     \
     /* ( token -- asm-addr | 0 ) get token ASM address */                                          \
-    X(14, "token>asm>addr", token_to_asm_addr)
+    X(14, "token>asm>addr", token_to_asm_addr)                                                     \
+    X(18, "(vm-return-to-asm)", _vm_return_to_asm_) /* return from VM to native ASM */
 
 #define DICT_WORDS_M4TH_ASM(X)                                                                     \
     DICT_TOKENS_M4TH_ASM(X)                                                                        \
@@ -523,6 +529,8 @@
     X(5, "(>le)", _to_le_) /* store 14-th local variable */                                        \
     X(5, "(>lf)", _to_lf_) /* store 15-th local variable */                                        \
     X(5, "(>lx)", _to_lx_) /* followed by T(N) store N-th local variable */                        \
+    X(14, "(?continue-if)", _q_continue_if_)                                                       \
+    X(15, "(?continue-if0)", _q_continue_if0_)                                                     \
     X(5, "(?do)", _q_do_)                                                                          \
     X(5, "(?if)", _q_if_)                                                                          \
     X(6, "(?if0)", _q_if0_)                                                                        \
@@ -533,52 +541,53 @@
     X(7, "(again)", _again_)                                                                       \
     X(7, "(ahead)", _ahead_)                                                                       \
     X(7, "(break)", _break_)                                                                       \
-    X(13, "(call-native)", _call_native_)                                                          \
-    X(6, "(call)", _call_)                                                                         \
+    X(10, "(call-asm)", _call_asm_)           /* call forth code compiled to native ASM */         \
+    X(6, "(call)", _call_)                    /* call forth XT                     */              \
     X(11, "(catch-beg)", _catch_beg_)         /* first half of 'catch'             */              \
     X(11, "(catch-end)", _catch_end_)         /* second half of 'catch'            */              \
     X(15, "(check-lit-tok)", _check_lit_tok_) /* ( x -- x ) followed by expected x: a token */     \
     X(10, "(continue)", _continue_)           /* execution semantics of 'continue' */              \
-    X(4, "(do)", _do_)                        /* execution semantics of 'do'       */              \
-    X(11, "(does-exit)", _does_exit_)         /* alias of exit. used immediately after (does) */   \
-    X(9, "(drop&l0)", _drop_l0_)              /* drop & fetch 0-th local variable */               \
-    X(9, "(drop&l1)", _drop_l1_)              /* drop & fetch 1-st local variable */               \
-    X(9, "(drop&l2)", _drop_l2_)              /* drop & fetch 2-nd local variable */               \
-    X(9, "(drop&l3)", _drop_l3_)              /* drop & fetch 3-rd local variable */               \
-    X(9, "(drop&l4)", _drop_l4_)              /* drop & fetch 4-th local variable */               \
-    X(9, "(drop&l5)", _drop_l5_)              /* drop & fetch 5-th local variable */               \
-    X(9, "(drop&l6)", _drop_l6_)              /* drop & fetch 6-th local variable */               \
-    X(9, "(drop&l7)", _drop_l7_)              /* drop & fetch 7-th local variable */               \
-    X(9, "(drop&l8)", _drop_l8_)              /* drop & fetch 8-th local variable */               \
-    X(9, "(drop&l9)", _drop_l9_)              /* drop & fetch 9-th local variable */               \
-    X(9, "(drop&la)", _drop_la_)              /* drop & fetch 10-th local variable */              \
-    X(9, "(drop&lb)", _drop_lb_)              /* drop & fetch 11-th local variable */              \
-    X(9, "(drop&lc)", _drop_lc_)              /* drop & fetch 12-th local variable */              \
-    X(9, "(drop&ld)", _drop_ld_)              /* drop & fetch 14-th local variable */              \
-    X(9, "(drop&le)", _drop_le_)              /* drop & fetch 14-th local variable */              \
-    X(9, "(drop&lf)", _drop_lf_)              /* drop & fetch 15-th local variable */              \
-    X(9, "(drop&lx)", _drop_lx_)              /* drop & fetch N-th local variable */               \
-    X(8, "(dup>l0)", _dup_to_l0_)             /*  dup & store 0-th local variable */               \
-    X(8, "(dup>l1)", _dup_to_l1_)             /*  dup & store 1-st local variable */               \
-    X(8, "(dup>l2)", _dup_to_l2_)             /*  dup & store 2-nd local variable */               \
-    X(8, "(dup>l3)", _dup_to_l3_)             /*  dup & store 3-rd local variable */               \
-    X(8, "(dup>l4)", _dup_to_l4_)             /*  dup & store 4-th local variable */               \
-    X(8, "(dup>l5)", _dup_to_l5_)             /*  dup & store 5-th local variable */               \
-    X(8, "(dup>l6)", _dup_to_l6_)             /*  dup & store 6-th local variable */               \
-    X(8, "(dup>l7)", _dup_to_l7_)             /*  dup & store 7-th local variable */               \
-    X(8, "(dup>l8)", _dup_to_l8_)             /*  dup & store 8-th local variable */               \
-    X(8, "(dup>l9)", _dup_to_l9_)             /*  dup & store 9-th local variable */               \
-    X(8, "(dup>la)", _dup_to_la_)             /*  dup & store 10-th local variable */              \
-    X(8, "(dup>lb)", _dup_to_lb_)             /*  dup & store 11-th local variable */              \
-    X(8, "(dup>lc)", _dup_to_lc_)             /*  dup & store 12-th local variable */              \
-    X(8, "(dup>ld)", _dup_to_ld_)             /*  dup & store 13-th local variable */              \
-    X(8, "(dup>le)", _dup_to_le_)             /*  dup & store 14-th local variable */              \
-    X(8, "(dup>lf)", _dup_to_lf_)             /*  dup & store 15-th local variable */              \
-    X(8, "(dup>lx)", _dup_to_lx_)             /*  dup & store  N-th local variable */              \
-    X(6, "(else)", _else_)                    /* execution semantics of 'else'     */              \
-    X(7, "(endof)", _endof_)                  /* execution semantics of 'endof'    */              \
+    X(13, "(continue-if)", _continue_if_)                                                          \
+    X(14, "(continue-if0)", _continue_if0_)                                                        \
+    X(4, "(do)", _do_)                /* execution semantics of 'do'       */                      \
+    X(11, "(does-exit)", _does_exit_) /* alias of exit. used immediately after (does) */           \
+    X(9, "(drop&l0)", _drop_l0_)      /* drop & fetch 0-th local variable */                       \
+    X(9, "(drop&l1)", _drop_l1_)      /* drop & fetch 1-st local variable */                       \
+    X(9, "(drop&l2)", _drop_l2_)      /* drop & fetch 2-nd local variable */                       \
+    X(9, "(drop&l3)", _drop_l3_)      /* drop & fetch 3-rd local variable */                       \
+    X(9, "(drop&l4)", _drop_l4_)      /* drop & fetch 4-th local variable */                       \
+    X(9, "(drop&l5)", _drop_l5_)      /* drop & fetch 5-th local variable */                       \
+    X(9, "(drop&l6)", _drop_l6_)      /* drop & fetch 6-th local variable */                       \
+    X(9, "(drop&l7)", _drop_l7_)      /* drop & fetch 7-th local variable */                       \
+    X(9, "(drop&l8)", _drop_l8_)      /* drop & fetch 8-th local variable */                       \
+    X(9, "(drop&l9)", _drop_l9_)      /* drop & fetch 9-th local variable */                       \
+    X(9, "(drop&la)", _drop_la_)      /* drop & fetch 10-th local variable */                      \
+    X(9, "(drop&lb)", _drop_lb_)      /* drop & fetch 11-th local variable */                      \
+    X(9, "(drop&lc)", _drop_lc_)      /* drop & fetch 12-th local variable */                      \
+    X(9, "(drop&ld)", _drop_ld_)      /* drop & fetch 14-th local variable */                      \
+    X(9, "(drop&le)", _drop_le_)      /* drop & fetch 14-th local variable */                      \
+    X(9, "(drop&lf)", _drop_lf_)      /* drop & fetch 15-th local variable */                      \
+    X(9, "(drop&lx)", _drop_lx_)      /* drop & fetch N-th local variable */                       \
+    X(8, "(dup>l0)", _dup_to_l0_)     /*  dup & store 0-th local variable */                       \
+    X(8, "(dup>l1)", _dup_to_l1_)     /*  dup & store 1-st local variable */                       \
+    X(8, "(dup>l2)", _dup_to_l2_)     /*  dup & store 2-nd local variable */                       \
+    X(8, "(dup>l3)", _dup_to_l3_)     /*  dup & store 3-rd local variable */                       \
+    X(8, "(dup>l4)", _dup_to_l4_)     /*  dup & store 4-th local variable */                       \
+    X(8, "(dup>l5)", _dup_to_l5_)     /*  dup & store 5-th local variable */                       \
+    X(8, "(dup>l6)", _dup_to_l6_)     /*  dup & store 6-th local variable */                       \
+    X(8, "(dup>l7)", _dup_to_l7_)     /*  dup & store 7-th local variable */                       \
+    X(8, "(dup>l8)", _dup_to_l8_)     /*  dup & store 8-th local variable */                       \
+    X(8, "(dup>l9)", _dup_to_l9_)     /*  dup & store 9-th local variable */                       \
+    X(8, "(dup>la)", _dup_to_la_)     /*  dup & store 10-th local variable */                      \
+    X(8, "(dup>lb)", _dup_to_lb_)     /*  dup & store 11-th local variable */                      \
+    X(8, "(dup>lc)", _dup_to_lc_)     /*  dup & store 12-th local variable */                      \
+    X(8, "(dup>ld)", _dup_to_ld_)     /*  dup & store 13-th local variable */                      \
+    X(8, "(dup>le)", _dup_to_le_)     /*  dup & store 14-th local variable */                      \
+    X(8, "(dup>lf)", _dup_to_lf_)     /*  dup & store 15-th local variable */                      \
+    X(8, "(dup>lx)", _dup_to_lx_)     /*  dup & store  N-th local variable */                      \
+    X(6, "(else)", _else_)            /* execution semantics of 'else'     */                      \
+    X(7, "(endof)", _endof_)          /* execution semantics of 'endof'    */                      \
     X(12, "(exec-token)", _exec_token_)                                                            \
-    X(21, "(exec-xt-from-native)", _exec_xt_from_native_)                                          \
     X(13, "(fallthrough)", _fallthrough_) /* jump to next 'of' inside a 'case' */                  \
     X(4, "(if)", _if_)                                                                             \
     X(5, "(if0)", _if0_)                                                                           \
@@ -721,6 +730,10 @@
     X(17, "(optimize-3token)", _optimize_3token_) /* ( tok-addr -- counted-tokens|0 ) */           \
     /*  find an optimized sequence to replace 4 tokens being compiled. */                          \
     X(17, "(optimize-4token)", _optimize_4token_) /* ( tok-addr -- counted-tokens|0 ) */           \
+    /*  find an optimized sequence to replace 5 tokens being compiled. */                          \
+    X(17, "(optimize-5token)", _optimize_5token_) /* ( tok-addr -- counted-tokens|0 ) */           \
+    /*  find an optimized sequence to replace 7 tokens being compiled. */                          \
+    X(17, "(optimize-7token)", _optimize_7token_) /* ( tok-addr -- counted-tokens|0 ) */           \
     /*  find an optimized sequence to replace N tokens being compiled. */                          \
     X(17, "(optimize-tokens)", _optimize_tokens_) /* ( tok-addr u -- counted-tokens u' | 0 0 ) */  \
     /* copy and optimize at least one token from src to HERE. updates HERE src and u */            \

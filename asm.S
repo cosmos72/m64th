@@ -58,8 +58,8 @@ MARKER(asm_func_start)
 #include "generic_asm/compile.S"
 #include "generic_asm/core.S"
 #include "generic_asm/io.S"
-#include "generic_asm/loop.S"
 #include "generic_asm/local.S"
+#include "generic_asm/loop.S"
 #include "generic_asm/mem.S"
 #include "generic_asm/native.S"
 

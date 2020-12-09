@@ -30,27 +30,31 @@
 #define m4ftoken_comma CAT3(m4f_, SZt, s_comma)
 #define m4fxt_comma CAT3(m4f_, SZ, s_comma)
 
-#define m4fbegin m4fnoop           /* begin       noop, used as compile marker   */
-#define m4f_again_ m4f_jump_       /* (again)     unconditional jump             */
-#define m4f_ahead_ m4f_jump_       /* (ahead)     unconditional jump             */
-#define m4f_break_ m4f_jump_       /* (break)     unconditional jump             */
-#define m4fcase m4fnoop            /* (case)      noop, used as compile marker   */
-#define m4f_continue_ m4f_jump_    /* (continue)  unconditional jump             */
-#define m4f_does_exit_ m4fexit     /* (does-exit) alias of exit                  */
-#define m4fendcase m4fdrop         /* endcase                                    */
-#define m4f_endof_ m4f_jump_       /* (endof)     unconditional jump             */
-#define m4f_else_ m4f_jump_        /* (else)      unconditional jump             */
-#define m4f_fallthrough_ m4f_jump_ /* (fallthrough) unconditional jump           */
-#define m4f_repeat_ m4f_jump_      /* (repeat)    unconditional jump             */
-#define m4fthen m4fnoop            /* then        noop, used as compile marker   */
-#define m4f_until_ m4f_if_         /* (until)     conditional jump if dtop == 0  */
-#define m4f_until0_ m4f_if0_       /* (until0)    conditional jump if dtop <> 0  */
-#define m4f_q_until_ m4f_q_if_     /* (?until)    conditional jump if dtop == 0  */
-#define m4f_q_until0_ m4f_q_if0_   /* (?until0)   conditional jump if dtop <> 0  */
-#define m4f_while_ m4f_if_         /* (while)     conditional jump if dtop == 0  */
-#define m4f_while0_ m4f_if0_       /* (while0)    conditional jump if dtop <> 0  */
-#define m4f_q_while_ m4f_q_if_     /* (?while)    conditional jump if dtop == 0  */
-#define m4f_q_while0_ m4f_q_if0_   /* (?while0)   conditional jump if dtop <> 0  */
+#define m4fbegin m4fnoop              /* begin       noop, used as compile marker   */
+#define m4f_again_ m4f_jump_          /* (again)     unconditional jump             */
+#define m4f_ahead_ m4f_jump_          /* (ahead)     unconditional jump             */
+#define m4f_break_ m4f_jump_          /* (break)     unconditional jump             */
+#define m4fcase m4fnoop               /* (case)      noop, used as compile marker   */
+#define m4f_continue_ m4f_jump_       /* (continue)  unconditional jump             */
+#define m4f_continue_if_ m4f_if0_     /* (continue-if)  conditional jump if dtop <> 0 */
+#define m4f_continue_if0_ m4f_if_     /* (continue-if0) conditional jump if dtop == 0 */
+#define m4f_does_exit_ m4fexit        /* (does-exit) alias of exit                  */
+#define m4fendcase m4fdrop            /* endcase                                    */
+#define m4f_endof_ m4f_jump_          /* (endof)     unconditional jump             */
+#define m4f_else_ m4f_jump_           /* (else)      unconditional jump             */
+#define m4f_fallthrough_ m4f_jump_    /* (fallthrough) unconditional jump           */
+#define m4f_repeat_ m4f_jump_         /* (repeat)    unconditional jump             */
+#define m4fthen m4fnoop               /* then        noop, used as compile marker   */
+#define m4f_until_ m4f_if_            /* (until)     conditional jump if dtop == 0  */
+#define m4f_until0_ m4f_if0_          /* (until0)    conditional jump if dtop <> 0  */
+#define m4f_q_continue_if_ m4f_q_if0_ /* (?continue-if)  conditional jump if dtop <> 0 */
+#define m4f_q_continue_if0_ m4f_q_if_ /* (?continue-if0) conditional jump if dtop == 0 */
+#define m4f_q_until_ m4f_q_if_        /* (?until)    conditional jump if dtop == 0  */
+#define m4f_q_until0_ m4f_q_if0_      /* (?until0)   conditional jump if dtop <> 0  */
+#define m4f_while_ m4f_if_            /* (while)     conditional jump if dtop == 0  */
+#define m4f_while0_ m4f_if0_          /* (while0)    conditional jump if dtop <> 0  */
+#define m4f_q_while_ m4f_q_if_        /* (?while)    conditional jump if dtop == 0  */
+#define m4f_q_while0_ m4f_q_if0_      /* (?while0)   conditional jump if dtop <> 0  */
 
 /** these are implemented in forth - thus no corresponding assembly function */
 #define m4f_inline_ m4f_missing_

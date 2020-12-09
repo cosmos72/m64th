@@ -44,7 +44,21 @@ WORD_START(_plus_loop_, _plus_loop_)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_INLINE_ALWAYS | M4FLAG_IMMEDIATE | M4FLAG_MAY_JUMP |M4FLAG_REEXEC_AFTER_OPTIMIZE)
     WORD_CODE(CALL(plus_loop), exit)
 WORD_END(_plus_loop_)
-WORD_START(_q_do_, _plus_loop_)
+WORD_START(_q_continue_if_, _plus_loop_)
+    WORD_STACK_NONE()
+    WORD_STACK_NONE()
+    WORD_ASM_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_INLINE_ALWAYS | M4FLAG_IMMEDIATE | M4FLAG_MAY_JUMP | M4FLAG_REEXEC_AFTER_OPTIMIZE)
+    WORD_CODE(_compile_jump_lit_, _q_continue_if_, _continue_, exit)
+WORD_END(_q_continue_if_)
+WORD_START(_q_continue_if0_, _q_continue_if_)
+    WORD_STACK_NONE()
+    WORD_STACK_NONE()
+    WORD_ASM_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_INLINE_ALWAYS | M4FLAG_IMMEDIATE | M4FLAG_MAY_JUMP | M4FLAG_REEXEC_AFTER_OPTIMIZE)
+    WORD_CODE(_compile_jump_lit_, _q_continue_if0_, _continue_, exit)
+WORD_END(_q_continue_if0_)
+WORD_START(_q_do_, _q_continue_if0_)
     WORD_DSTACK(2,0) /* stack effect when not jumping */
     WORD_RSTACK(0,2)
     WORD_DSTACK(2,0) /* stack effect when jumping */
@@ -162,15 +176,15 @@ WORD_START(_break_,        _ahead_)
        CALL(break), exit
     )
 WORD_END(_break_)
-WORD_START(_call_native_, _break_)
+WORD_START(_call_asm_, _break_)
     WORD_DSTACK(-1,-1) /* stack effect of called code */
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()  /* stack effect when calling */
-    WORD_ASM_NONE() /* (call-native) uses tail-call optimization: cannot inline into native code */
+    WORD_ASM_NONE() /* (call-asm) uses tail-call optimization: cannot inline into native code */
     WORD_FLAGS(M4FLAG_CONSUMES_IP_SZ | M4FLAG_INLINE_ALWAYS)
-    WORD_CODE(_call_native_, exit)
-WORD_END(_call_native_)
-WORD_START(_call_,  _call_native_)
+    WORD_CODE(_call_asm_, exit)
+WORD_END(_call_asm_)
+WORD_START(_call_,  _call_asm_)
     WORD_DSTACK(-1,-1) /* stack effect of called XT */
     WORD_RSTACK(0,0)
     WORD_DSTACK(0,0)   /* stack effect when calling */
@@ -227,8 +241,26 @@ WORD_START(_continue_, _catch_end_)
        CALL(continue), exit
     )
 WORD_END(_continue_)
+WORD_START(_continue_if_, _continue_)
+    WORD_DSTACK(1,0)
+    WORD_RSTACK(0,0)
+    WORD_DSTACK(1,0)
+    WORD_RSTACK(0,0)
+    WORD_ASM_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_INLINE_ALWAYS | M4FLAG_IMMEDIATE | M4FLAG_MAY_JUMP | M4FLAG_REEXEC_AFTER_OPTIMIZE)
+    WORD_CODE(_compile_jump_lit_, _continue_if_, _continue_, exit)
+WORD_END(_continue_if_)
+WORD_START(_continue_if0_, _continue_if_)
+    WORD_DSTACK(1,0)
+    WORD_RSTACK(0,0)
+    WORD_DSTACK(1,0)
+    WORD_RSTACK(0,0)
+    WORD_ASM_NONE()
+    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_INLINE_ALWAYS | M4FLAG_IMMEDIATE | M4FLAG_MAY_JUMP | M4FLAG_REEXEC_AFTER_OPTIMIZE)
+    WORD_CODE(_compile_jump_lit_, _continue_if0_, _continue_, exit)
+WORD_END(_continue_if0_)
 /* ( m4flags -- sys ) read non-blanks string, create a new word for it. set LATEST */
-WORD_START(_create_,   _continue_)
+WORD_START(_create_,   _continue_if0_)
     WORD_DSTACK(1,2)   /* stack effect if not jumping */
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()  /* stack effect if jumping */
@@ -330,21 +362,8 @@ WORD_START(_exec_token_, _eval_number_)
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(_exec_token_, exit)
 WORD_END(_exec_token_)
-WORD_START(_exec_xt_from_native_, _exec_token_)
-    WORD_DSTACK(-1,-1) /* stack effect when not jumping */
-    WORD_RSTACK(0,0)
-    WORD_DSTACK(1,0)   /* stack effect when jumping */
-    WORD_RSTACK(0,1)
-    /*
-     * (exec-xt-from-native) uses %rip-relative call to m4f_vm_ and has embedded data after ret:
-     * cannot inline into native code
-     */
-    WORD_ASM_NONE()
-    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_MAY_JUMP)
-    WORD_CODE(_exec_xt_from_native_, exit)
-WORD_END(_exec_xt_from_native_)
 /* jump to next 'of' inside a 'case' */
-WORD_START(_fallthrough_,      _exec_xt_from_native_)
+WORD_START(_fallthrough_,      _exec_token_)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -729,9 +748,9 @@ WORD_START(_locals_clear_,_locals_add_)
         cell_store_1, exit   /* set l.end */   /* (                  ) */
     )
 WORD_END(_locals_clear_)
-WORD_NOASM(_lenter_1_,    _locals_clear_,   DSTACK(0,0), RSTACK(0,2), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS)
-WORD_NOASM(_lenter_2_,    _lenter_1_, DSTACK(0,0), RSTACK(0,3), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS)
-WORD_NOASM(_lenter_3_,    _lenter_2_, DSTACK(0,0), RSTACK(0,4), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS)
+WORD(      _lenter_1_,    _locals_clear_,   DSTACK(0,0), RSTACK(0,2), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS)
+WORD(      _lenter_2_,    _lenter_1_, DSTACK(0,0), RSTACK(0,3), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS)
+WORD(      _lenter_3_,    _lenter_2_, DSTACK(0,0), RSTACK(0,4), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS)
 WORD_NOASM(_lenter_4_,    _lenter_3_, DSTACK(0,0), RSTACK(0,5), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS)
 WORD_NOASM(_lenter_5_,    _lenter_4_, DSTACK(0,0), RSTACK(0,6), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS)
 WORD_NOASM(_lenter_6_,    _lenter_5_, DSTACK(0,0), RSTACK(0,7), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS)
@@ -761,9 +780,9 @@ WORD_START(_lexit_x_,   _lenter_x_)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_CONSUMES_IP_SZt | M4FLAG_INLINE_ALWAYS)
     WORD_CODE(_lexit_x_, T(0), exit)
 WORD_END(_lexit_x_)
-WORD_NOASM(_lexit_1_,    _lexit_x_, DSTACK(0,0), RSTACK(2,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS)
-WORD_NOASM(_lexit_2_,    _lexit_1_, DSTACK(0,0), RSTACK(3,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS)
-WORD_NOASM(_lexit_3_,    _lexit_2_, DSTACK(0,0), RSTACK(4,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS)
+WORD      (_lexit_1_,    _lexit_x_, DSTACK(0,0), RSTACK(2,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS)
+WORD      (_lexit_2_,    _lexit_1_, DSTACK(0,0), RSTACK(3,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS)
+WORD(      _lexit_3_,    _lexit_2_, DSTACK(0,0), RSTACK(4,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS)
 WORD_NOASM(_lexit_4_,    _lexit_3_, DSTACK(0,0), RSTACK(5,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS)
 WORD_NOASM(_lexit_5_,    _lexit_4_, DSTACK(0,0), RSTACK(6,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS)
 WORD_NOASM(_lexit_6_,    _lexit_5_, DSTACK(0,0), RSTACK(7,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS)
@@ -1243,26 +1262,125 @@ WORD_START(_optimize_4token_, _optimize_3local_)
     WORD_FLAGS(M4FLAG_DATA_TOKENS)
     WORD_CODE_AND_DATA(_optimize_4token_,
       WORD_CODE_TOKENS(
-        /* _q_if_ T(n) dup then => ?dup */
-        _ip_to_data_addr_, over, token_fetch,          /* ( addr &data tok0     ) */
-        _lit_tok_, _q_if_, equal, and,                 /* ( addr &data|0        ) */
-        over, token_fetch_2,                           /* ( addr &data|0 tok2   ) */
-        _lit_tok_, dup, equal, and,                    /* ( addr &data|0'       ) */
-        swap, token_fetch_3,                           /* ( &data|0 tok3        ) */
-        _lit_tok_, then, equal, and,                   /* ( &data|0'            ) */
-        exit                                           /* ( &data|0             ) */
+        _ip_to_data_, bounds,                          /* ( addr end beg        )                */
+        do,                                            /* ( addr                ) ( R: end pos ) */
+            dup, token_fetch,                          /* ( addr tok0           ) ( R: end pos ) */
+            i, token_fetch, equal,                     /* ( addr t|f            ) ( R: end pos ) */
+        _continue_if0_, T(21),                         /* ( addr                ) ( R: end pos ) */
+            dup, token_fetch_2,                        /* ( addr tok2           ) ( R: end pos ) */
+            i, token_fetch_2, equal,                   /* ( addr t|f            ) ( R: end pos ) */
+        _continue_if0_, T(14),                         /* ( addr                ) ( R: end pos ) */
+            dup, token_fetch_3,                        /* ( addr tok3           ) ( R: end pos ) */
+            i, token_fetch_3, equal,                   /* ( addr t|f            ) ( R: end pos ) */
+        _continue_if0_, T(7),                          /* ( addr                ) ( R: end pos ) */
+            drop, i, four, tokens, plus,               /* ( counted-tokens      ) ( R: end pos ) */
+            unloop, exit,                              /* ( counted-tokens      )                */
+
+            six, tokens,                               /* ( addr +loop-offset   ) ( R: end pos ) */
+        _plus_loop_, T(-32),                           /* ( addr                )                */
+        drop, zero, exit                               /* ( 0                   )                */
       ),
       WORD_DATA_TOKENS(
-        T(1), question_dup
+        _q_if_, T(0), dup, then, /*=>*/ T(1), question_dup
       )
     )
 WORD_END(_optimize_4token_)
+/**
+ * find an optimized sequence to replace five tokens being compiled.
+ * if no optimized sequence was found, return 0
+ * ( tok-addr -- counted-tokens|0 )
+ */
+WORD_START(_optimize_5token_, _optimize_4token_)
+    WORD_DSTACK(1,1)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_ASM_NONE()
+    WORD_FLAGS(M4FLAG_DATA_TOKENS)
+    WORD_CODE_AND_DATA(_optimize_5token_,
+      WORD_CODE_TOKENS(
+        _ip_to_data_, bounds,                          /* ( addr end beg        )                */
+        do,                                            /* ( addr                ) ( R: end pos ) */
+            dup, token_fetch,                          /* ( addr tok0           ) ( R: end pos ) */
+            i, token_fetch, equal,                     /* ( addr t|f            ) ( R: end pos ) */
+        _continue_if0_, T(21),                         /* ( addr                ) ( R: end pos ) */
+            dup, token_fetch_2,                        /* ( addr tok2           ) ( R: end pos ) */
+            i, token_fetch_2, equal,                   /* ( addr t|f            ) ( R: end pos ) */
+        _continue_if0_, T(14),                         /* ( addr                ) ( R: end pos ) */
+            dup, token_fetch_4,                        /* ( addr tok3           ) ( R: end pos ) */
+            i, token_fetch_4, equal,                   /* ( addr t|f            ) ( R: end pos ) */
+        _continue_if0_, T(7),                          /* ( addr                ) ( R: end pos ) */
+            drop, i, five, tokens, plus,               /* ( counted-tokens      ) ( R: end pos ) */
+            unloop, exit,                              /* ( counted-tokens      )                */
+
+            eight, tokens,                             /* ( addr +loop-offset   ) ( R: end pos ) */
+        _plus_loop_, T(-32),                           /* ( addr                )                */
+        drop, zero, exit                               /* ( 0                   )                */
+      ),
+      WORD_DATA_TOKENS(
+        /* the final '_missing_' must be a token consuming no IP. */
+        /* it will be replaced with correct jump offset by [recompile] */
+        _if_, T(0), _continue_, T(0), then, /*=>*/ T(2), _continue_if_, _missing_,
+        _if0_, T(0), _continue_, T(0), then, /*=>*/ T(2), _continue_if0_, _missing_,
+        _q_if_, T(0), _continue_, T(0), then, /*=>*/ T(2), _q_continue_if_, _missing_,
+        _q_if0_, T(0), _continue_, T(0), then, /*=>*/ T(2), _q_continue_if0_, _missing_
+      )
+    )
+WORD_END(_optimize_5token_)
+/**
+ * find an optimized sequence to replace seven tokens being compiled.
+ * if no optimized sequence was found, return 0
+ * ( tok-addr -- counted-tokens|0 )
+ */
+WORD_START(_optimize_7token_, _optimize_5token_)
+    WORD_DSTACK(1,1)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_ASM_NONE()
+    WORD_FLAGS(M4FLAG_DATA_TOKENS)
+    WORD_CODE_AND_DATA(_optimize_7token_,
+      WORD_CODE_TOKENS(
+        _ip_to_data_, bounds,                          /* ( addr end beg        )                */
+        do,                                            /* ( addr                ) ( R: end pos ) */
+            dup, token_fetch,                          /* ( addr tok0           ) ( R: end pos ) */
+            i, token_fetch, equal,                     /* ( addr t|f            ) ( R: end pos ) */
+        _continue_if0_, T(35),                         /* ( addr                ) ( R: end pos ) */
+            dup, token_fetch_2,                        /* ( addr tok2           ) ( R: end pos ) */
+            i, token_fetch_2, equal,                   /* ( addr t|f            ) ( R: end pos ) */
+        _continue_if0_, T(28),                         /* ( addr                ) ( R: end pos ) */
+            dup, token_fetch_3,                        /* ( addr tok3           ) ( R: end pos ) */
+            i, token_fetch_3, equal,                   /* ( addr t|f            ) ( R: end pos ) */
+        _continue_if0_, T(21),                         /* ( addr                ) ( R: end pos ) */
+            dup, token_fetch_5,                        /* ( addr tok5           ) ( R: end pos ) */
+            i, token_fetch_5, equal,                   /* ( addr t|f            ) ( R: end pos ) */
+        _continue_if0_, T(14),                         /* ( addr                ) ( R: end pos ) */
+            dup, token_fetch_6,                        /* ( addr tok5           ) ( R: end pos ) */
+            i, token_fetch_6, equal,                   /* ( addr t|f            ) ( R: end pos ) */
+        _continue_if0_, T(7),                          /* ( addr                ) ( R: end pos ) */
+            drop, i, seven, tokens, plus,              /* ( counted-tokens      ) ( R: end pos ) */
+            unloop, exit,                              /* ( counted-tokens      )                */
+
+            _lit_, T(12), tokens,                      /* ( addr +loop-offset   ) ( R: end pos ) */
+        _plus_loop_, T(-47),                           /* ( addr                )                */
+        drop, zero, exit                               /* ( 0                   )                */
+      ),
+      WORD_DATA_TOKENS(
+        _if_,    T(0), drop, _else_, T(0), nip,  then, /*=>*/ T(1), choose, T(0), T(0), T(0),
+        _if0_,   T(0), drop, _else_, T(0), nip,  then, /*=>*/ T(2), zero_equal, choose, T(0), T(0),
+        _if_,    T(0), nip,  _else_, T(0), drop, then, /*=>*/ T(2), zero_equal, choose, T(0), T(0),
+        _if0_,   T(0), nip,  _else_, T(0), drop, then, /*=>*/ T(1), choose, T(0), T(0), T(0),
+        _q_if_,  T(0), drop, _else_, T(0), nip,  then, /*=>*/ T(2), dup, choose, T(0), T(0),
+        _q_if0_, T(0), drop, _else_, T(0), nip,  then, /*=>*/ T(3), dup, zero_equal, choose, T(0),
+        _q_if_,  T(0), nip,  _else_, T(0), drop, then, /*=>*/ T(3), dup, zero_equal, choose, T(0),
+        _q_if0_, T(0), nip,  _else_, T(0), drop, then, /*=>*/ T(2), dup, choose, T(0), T(0)
+      )
+    )
+WORD_END(_optimize_7token_)
 /**
  * find an optimized sequence to replace N tokens being compiled.
  * return address of optimized sequence and u' = number of consumed tokens, or 0 0
  * ( tok-addr u opts -- counted-tokens u' | 0 0 )
  */
-WORD_START(_optimize_tokens_, _optimize_4token_)
+WORD_START(_optimize_tokens_, _optimize_7token_)
     WORD_DSTACK(3,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -1304,6 +1422,8 @@ WORD_START(_optimize_tokens_, _optimize_4token_)
         T(3|M4OPTS_PRIO_HIGH), XT(_optimize_3jump_),
         T(3|M4OPTS_PRIO_HIGH), XT(_optimize_3local_),
         T(4|M4OPTS_PRIO_HIGH), XT(_optimize_4token_),
+        T(5|M4OPTS_PRIO_HIGH), XT(_optimize_5token_),
+        T(7|M4OPTS_PRIO_HIGH), XT(_optimize_7token_),
         T(0)
       )
     )
@@ -1580,7 +1700,7 @@ WORD_START(_inline_, _finish_)
             nip, two_drop, exit,/* inline length is <= 0  (                    ) */
         then,                                          /* ( nt code u          ) */
         rot, name_to_flags,                            /* ( code u m4flags     ) */
-        _lit2s_, SHORT(M4FLAG_CALL_ASM), and,          /* ( code u flag        ) */
+        _lit2s_, SHORT(M4FLAG_ASM), and,          /* ( code u flag        ) */
         _if_, T(18),                                   /* ( code u             ) */
             /* word contains '(call-asm) CELL(address) exit ...tokens... exit'   */
             /* if tokens len > 5 then inline '(call-asm) CELL(address)'          */

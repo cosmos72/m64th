@@ -436,6 +436,106 @@ FUNC_START(_dup_to_lx_)
         ADD2(IMM(SZt), IP)
 FUNC_END(_dup_to_lx_)
 
+/*
+ *
+ * -------------------------- (lenter-*) (lexit-*) -----------------------------
+ *
+ */
+
+/* (lenter-1) ( R: -- l0 locl ) reserve space for 1 local variable */
+FUNC_START(_lenter_1_)
+        STOR(  RTOP,   AT(RSTK, -SZ))
+#ifdef L0
+        STORL( L0,     AT(RSTK, -SZ2))
+#endif
+        MOVE(  LOCL,   RTOP)
+        ADDI(  RSTK,   -SZ2,   LOCL)
+        SUB2(IMM(SZ2), RSTK)
+FUNC_END(_lenter_1_)
+
+
+/* (lenter-2) ( R: -- l1 l0 locl ) reserve space for 2 local variables */
+FUNC_START(_lenter_2_)
+        STOR(  RTOP,   AT(RSTK, -SZ))
+#ifdef L1
+        STORL( L1,     AT(RSTK, -SZ2))
+#endif
+#ifdef L0
+        STORL( L0,     AT(RSTK, -SZ3))
+#endif
+        MOVE(  LOCL,   RTOP)
+        ADDI(  RSTK,   -SZ3,   LOCL)
+        SUB2(IMM(SZ3), RSTK)
+FUNC_END(_lenter_2_)
+
+
+/* (lenter-3) ( R: -- l2 l1 l0 locl ) reserve space for 3 local variables */
+FUNC_START(_lenter_3_)
+        STOR(  RTOP,   AT(RSTK, -SZ))
+#if Ln >= 3
+        JZ(    LOCL,   TO(_lenter_3_.nosave))
+#ifdef L2
+        STORL( L2,     AT(RSTK, -SZ2))
+#endif
+#ifdef L1
+        STORL( L1,     AT(RSTK, -SZ3))
+#endif
+#ifdef L0
+        STORL( L0,     AT(RSTK, -SZ4))
+#endif
+LABEL(_lenter_3_.nosave)
+#endif /* Ln >= 3 */
+        MOVE(  LOCL,   RTOP)
+        ADDI(  RSTK,   -SZ4,   LOCL)
+        SUB2(IMM(SZ4), RSTK)
+FUNC_END(_lenter_3_)
+
+
+/* (lexit-1) ( R: l0 outer-locl -- ) release space for last reserved local variables */
+FUNC_START(_lexit_1_)
+        MOVE(  RTOP,   LOCL)
+#ifdef L0
+        LOADL( L0,     AT(RSTK))
+#endif
+        LOAD(  RTOP,   AT(RSTK, SZ))
+        ADD2(IMM(SZ2), RSTK)
+FUNC_END(_lexit_1_)
+
+
+/* (lexit-2) ( R: l1 l0 outer-locl -- ) release space for last reserved local variables */
+FUNC_START(_lexit_2_)
+        MOVE(  RTOP,   LOCL)
+#ifdef L0
+        LOADL( L0,     AT(RSTK))
+#endif
+#ifdef L1
+        LOADL( L1,     AT(RSTK, SZ))
+#endif
+        LOAD(  RTOP,   AT(RSTK, SZ2))
+        ADD2(IMM(SZ3), RSTK)
+FUNC_END(_lexit_2_)
+
+
+/* (lexit-3) ( R: ls l1 l0 outer-locl -- ) release space for last reserved local variables */
+FUNC_START(_lexit_3_)
+        MOVE(  RTOP,   LOCL)
+#if Ln >= 3
+        JZ(    RTOP,   TO(_lexit_3_.noload))
+#ifdef L0
+        LOADL( L0,     AT(RSTK))
+#endif
+#ifdef L1
+        LOADL( L1,     AT(RSTK, SZ))
+#endif
+#ifdef L2
+        LOADL( L2,     AT(RSTK, SZ2))
+#endif
+LABEL(_lexit_3_.noload)
+#endif /* Ln >= 3 */
+        LOAD(  RTOP,   AT(RSTK, SZ3))
+        ADD2(IMM(SZ4), RSTK)
+FUNC_END(_lexit_3_)
+
 
 /**
  * enter a forth function that uses local variables.
@@ -520,26 +620,6 @@ LABEL(_locals_spill_regs_.finish)
         NEXT0()
 FUNC_RAWEND(_locals_spill_regs_)
 
-/* (lenter-1) ( R: -- l0 locl ) reserve space for 1 local variable */
-FUNC_START(_lenter_1_)
-        ADDI(  RSTK,   -SZ2,   REG1)
-        JNZ(   LOCL,   TO(_locals_spill_regs_.01))
-        JUMP(  TO(_locals_spill_regs_.finish))
-FUNC_RAWEND(_lenter_1_)
-
-/* (lenter-2) ( R: -- l1 l0 locl ) reserve space for 2 local variables */
-FUNC_START(_lenter_2_)
-        ADDI(  RSTK,   -SZ3,   REG1)
-        JNZ(   LOCL,   TO(_locals_spill_regs_.02))
-        JUMP(  TO(_locals_spill_regs_.finish))
-FUNC_RAWEND(_lenter_2_)
-
-/* (lenter-3) ( R: -- l2 .. l0 locl ) reserve space for 3 local variables */
-FUNC_START(_lenter_3_)
-        ADDI(  RSTK,   -SZ4,   REG1)
-        JNZ(   LOCL,   TO(_locals_spill_regs_.03))
-        JUMP(  TO(_locals_spill_regs_.finish))
-FUNC_RAWEND(_lenter_3_)
 
 /* (lenter-4) ( R: -- l3 .. l0 locl ) reserve space for 4 local variables */
 FUNC_START(_lenter_4_)
@@ -727,31 +807,6 @@ LABEL(_locals_reload_regs_.finish)
         MOVE(  REG1,   RSTK)
         NEXT0()
 FUNC_RAWEND(_locals_reload_regs_)
-
-
-/* (lexit-1) ( R: l0 outer-locl -- ) release space for last reserved local variables */
-FUNC_START(_lexit_1_)
-        ADDI(  RSTK,   SZ2,    REG1)         /* updated RSTK */
-        JNZ(   RTOP,   TO(_locals_reload_regs_.01))
-        JUMP(  TO(_locals_reload_regs_.finish))
-FUNC_RAWEND(_lexit_1_)
-
-
-/* (lexit-2) ( R: l1 l0 outer-locl -- ) release space for last reserved local variables */
-FUNC_START(_lexit_2_)
-        ADDI(  RSTK,   SZ3,    REG1)         /* updated RSTK */
-        JNZ(   RTOP,   TO(_locals_reload_regs_.02))
-        JUMP(  TO(_locals_reload_regs_.finish))
-FUNC_RAWEND(_lexit_2_)
-
-
-/* (lexit-3) ( R: l2 .. l0 outer-locl -- ) release space for last reserved local variables */
-FUNC_START(_lexit_3_)
-        ADDI(  RSTK,   SZ4,    REG1)         /* updated RSTK */
-        JNZ(   RTOP,   TO(_locals_reload_regs_.03))
-        JUMP(  TO(_locals_reload_regs_.finish))
-FUNC_RAWEND(_lexit_3_)
-
 
 /* (lexit-4) ( R: l3 .. l0 outer-locl -- ) release space for last reserved local variables */
 FUNC_START(_lexit_4_)

@@ -142,7 +142,7 @@ FUNC_END(two_sm_div)
 
 FUNC_START(four_sm_div)    /* 4sm/ m4th-user symmetric divide by 4 */
         test   DTOP,   DTOP
-        lea    3(DTOP),REG1;  /* add 3 if negative */
+        ADDI(  DTOP,3, REG1)  /* add 3 if negative */
         cmovs  REG1,   DTOP;
         sar    IMM(2), DTOP;  /* because sar rounds toward -infinity */
 FUNC_END(four_sm_div)
@@ -150,7 +150,7 @@ FUNC_END(four_sm_div)
 
 FUNC_START(eight_sm_div)   /* 8sm/ m4th-user symmetric divide by 8 */
         test   DTOP,   DTOP
-        lea    7(DTOP),REG1;  /* add 7 if negative */
+        ADDI(  DTOP,7, REG1)  /* add 7 if negative */
         cmovs  REG1,   DTOP;
         sar    IMM(3), DTOP;  /* because sar rounds toward -infinity */
 FUNC_END(eight_sm_div)
@@ -160,7 +160,7 @@ FUNC_START(less)           /* <   */
         MOVE(  DTOP,   REG2)
         DPOP___DTOP()
         cmp    REG2,   DTOP;
-        MOVI(  0,      DTOP)      /* xor would affect EFLAGS */
+        MOVI(  0,      DTOP)       /* xor would affect EFLAGS */
         cmovl  RFFF,   DTOP;
 FUNC_END(less)
 
@@ -169,7 +169,7 @@ FUNC_START(less_equal)     /* <=   m4th-user */
         MOVE(  DTOP,   REG2)
         DPOP___DTOP()
         cmp    REG2,   DTOP;
-        MOVI(  0,      DTOP)      /* xor would affect EFLAGS */
+        MOVI(  0,      DTOP)       /* xor would affect EFLAGS */
         cmovle RFFF,   DTOP;
 FUNC_END(less_equal)
 
@@ -178,7 +178,7 @@ FUNC_START(ne)             /* <>   core ext */
         MOVE(  DTOP,   REG2)
         DPOP___DTOP()
         cmp    REG2,   DTOP;
-        MOVI(  0,      DTOP)      /* xor would affect EFLAGS */
+        MOVI(  0,      DTOP)       /* xor would affect EFLAGS */
         cmovne RFFF,   DTOP;
 FUNC_END(ne)
 
@@ -187,7 +187,7 @@ FUNC_START(equal)          /* = */
         MOVE(  DTOP,   REG2)
         DPOP___DTOP()
         cmp    REG2,   DTOP;
-        MOVI(  0,      DTOP)      /* xor would affect EFLAGS */
+        MOVI(  0,      DTOP)       /* xor would affect EFLAGS */
         cmove  RFFF,   DTOP;
 FUNC_END(equal)
 
@@ -196,7 +196,7 @@ FUNC_START(more)           /* > */
         MOVE(  DTOP,   REG2)
         DPOP___DTOP()
         cmp    REG2,   DTOP;
-        MOVI(  0,      DTOP)      /* xor would affect EFLAGS */
+        MOVI(  0,      DTOP)       /* xor would affect EFLAGS */
         cmovg  RFFF,   DTOP;
 FUNC_END(more)
 
@@ -205,7 +205,7 @@ FUNC_START(more_equal)     /* >=   m4th-user */
         MOVE(  DTOP,   REG2)
         DPOP___DTOP()
         cmp    REG2,   DTOP;
-        MOVI(  0,      DTOP)      /* xor would affect EFLAGS */
+        MOVI(  0,      DTOP)       /* xor would affect EFLAGS */
         cmovge RFFF,   DTOP;
 FUNC_END(more_equal)
 
@@ -215,6 +215,16 @@ FUNC_START(abs)            /* abs */
         NEG1(  REG1)
         cmovg  REG1,   DTOP;
 FUNC_END(abs)
+
+
+/* choose ( a b flag -- a|b ) m4th-user if flag return a, else b */
+FUNC_START(choose)
+        test   DTOP,   DTOP;
+        MOVI(  0,      REG1)       /* xor would affect EFLAGS */
+        cmovz  RFFF,   REG1;
+        LOAD(  DTOP,   AT(DSTK, REG1,SZ, SZ))
+        ADD2(IMM(SZ2), DSTK)
+FUNC_END(choose)
 
 
 FUNC_START(lshift)         /* lshift */

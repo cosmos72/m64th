@@ -172,14 +172,17 @@ FUNC_END(_c_arg_6_)
 FUNC_START(_c_call_)
         /* cannot use x0..x8 here, they are used by c-args-[N] and c-ret-[N] */
         LOAD(  x9, AT(IP), IMM(SZ))    /* post-increment                     */
-        RPUSH( lr)                     /* save lr                            */
         LOAD( x10, AT(M4TH, M4TH_OFF_RSTK))
+
+        /* lr is already saved upon entering _vm_, either by m4th_run()      */
+        /* or by _{catch,exec}_xt_from_asm_ => we can clobber it             */
+
         JZ(   x10, TO(_c_call_.stack_c))
 
         /* m4th->rstack.curr != 0 thus RSTK points to dedicated memory       */
         /* and sp points to C stack: nothing to fix                          */
         blr    x9;                     /* call C func, overwrites lr         */
-        JUMP(  TO(_c_call_.finish))
+        JUMP(  FUNC_RET(_c_call_))
 
 LABEL(_c_call_.stack_c)
         /* m4th->rstack.curr == 0 thus RSTK points to C stack, possibly below sp: */
@@ -189,8 +192,6 @@ LABEL(_c_call_.stack_c)
         /* decrease sp to ensure we do not write below it                    */
         SUB2(IMM(4096),   sp)
 
-LABEL(_c_call_.finish)
-        RPOP(  lr)                     /* load lr                            */
 FUNC_END(_c_call_)
 
 
@@ -215,13 +216,15 @@ FUNC_START(_c_ret_2_)
 FUNC_END(_c_ret_2_)
 
 
-/** must be followed by address of native forth code. call it. */
-FUNC_START(_call_native_)
-        LOAD(  REG0,   AT(IP),   IMM(SZ)) /* post-increment                  */
-        RPUSH(  lr)                    /* save lr                            */
-        blr    REG0;                   /* call native code, overwrites lr    */
-        RPOP(   lr)                    /* load lr                            */
-FUNC_END(_call_native_)
+/** must be followed by address of native ASM code. call it. */
+FUNC_START(_call_asm_)
+        LOAD(  REG0,   AT(IP),   IMM(SZ)) /* post-increment                    */
+        /* lr was already saved upon entering _vm_ either by m4th_run()        */
+        /* or by _{catch,exec}_xt_from_asm_ => we can clobber it               */
+        MOVE(  VM,     lr)
+        /* tail-call optimization: call native code. it will return to lr = VM */
+        br    REG0;
+FUNC_RAWEND(_call_asm_)
 
 
 /** pop m4token from dstack and call it. works only for tokens with asm_len != -1 */
@@ -230,25 +233,57 @@ FUNC_START(_exec_token_)
         LOAD(  REG0,   AT(FTBL, REG0, SZ)) /* REG0 = m4func                 */
         DPOP___DTOP()                      /* reload dstack top             */
         br     REG0;                       /* tail-call optimization: jump to token */
+        /* the token will return to '(vm)' when done                        */
 FUNC_RAWEND(_exec_token_)
 
 
 /**
- * pop XT from dstack and call it.
- * This function is called from native code with ASM_CALL()
- * => use ASM_RET() to return
+ * pop XT from dstack and use 'catch' to run it.
+ * This function is called *only* from native ASM code with ASM_CALL()
+ * => it must use ASM_RET() to return when finished.
  */
-FUNC_START(_exec_xt_from_native_)
-    RPUSH2(IP, VM)             /* save IP, VM                       */
-    RPUSH( lr)                 /* save lr                           */
-    LOAD(  VM, AT(M4TH, M4TH_OFF_VM))  /* set VM   = m4th->vm       */
-    ADDROF_1M(TO(_exec_xt_from_native_.vm_code), IP)
-    /* enter '(vm)' interpreter, let token 'execute' pop dtop = xt  */
-    blr    VM;
-    RPOP(  lr)                 /* load lr                           */
-    RPOP2( VM, IP)             /* load VM, IP                       */
-    ASM_RET()
+FUNC_START(_catch_xt_from_asm_)
+        ADDROF_1M(TO(_catch_xt_from_asm_.tokens), REG0) /* @ = tokens to execute */
+
+        JUMP(  TO(_exec_xt_from_asm_.reg0))
+FUNC_RAWEND(_catch_xt_from_asm_)
+
+
+/**
+ * pop XT from dstack and execute it.
+ * This function is called *only* from native ASM code with ASM_CALL()
+ * => it must use ASM_RET() to return when finished.
+ */
+FUNC_START(_exec_xt_from_asm_)
+        ADDROF_1M(TO(_exec_xt_from_asm_.tokens), REG0) /* @ = tokens to execute */
+
+LABEL(_exec_xt_from_asm_.reg0)
+        RPUSH2(RTOP, IP)           /* save RTOP, IP                     */
+        RPUSH( VM)                 /* save VM                           */
+        MOVE(  lr,   RTOP)         /* save lr = return address          */
+
+        LOAD(  VM, AT(M4TH, M4TH_OFF_VM)) /* set VM = m4th->vm          */
+        MOVE(  REG0, IP)                  /* set IP = tokens to execute */
+        /* enter '(vm)' interpreter, let token 'execute' pop dtop = xt  */
+        br     VM;
+        /* '(vm)' interpreter will execute '_vm_return_to_asm_' when done  */
+        /* which reloads the registers saved above then returns to ASM  */
+FUNC_RAWEND(_exec_xt_from_asm_)
+
+
+/* return from VM to native ASM code. it's the bottom half of _exec_xt_from_asm_ */
+FUNC_START(_vm_return_to_asm_)
+        MOVE(  RTOP, lr)           /* load lr = return address          */
+        RPOP(  VM)                 /* load VM                           */
+        RPOP2( IP,   RTOP)         /* load IP, RTOP                     */
+        ASM_RET()                  /* return to ASM                     */
+FUNC_RAWEND(_vm_return_to_asm_)
+
+
 WORD_CODE_ALIGN()
-LABEL(_exec_xt_from_native_.vm_code)
-    WORD_CODE_TOKENS(execute, _asm_exit_)
-FUNC_RAWEND(_exec_xt_from_native_)
+LABEL(_catch_xt_from_asm_.tokens)
+        WORD_CODE_TOKENS(_catch_beg_, _catch_end_, _vm_return_to_asm_)
+
+WORD_CODE_ALIGN()
+LABEL(_exec_xt_from_asm_.tokens)
+        WORD_CODE_TOKENS(execute, _vm_return_to_asm_)

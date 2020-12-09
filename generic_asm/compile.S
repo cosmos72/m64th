@@ -26,7 +26,7 @@
 /** [#compiled] ( -- u ) code size i.e. # of tokens in XT being compiled  */
 FUNC_START(_num_compiled_)
         DPUSH__DTOP()
-#ifdef __x86_64__
+#ifdef ARITH_ARG1_AT
         MOVE(  HERE,       DTOP)                       /* dtop = here           */
         SUB2(  AT(M4TH, M4TH_OFF_XT),  DTOP)           /* dtop = here - m4th.xt */
 #else
@@ -39,7 +39,7 @@ FUNC_END(_num_compiled_)
 
 /** [#compiled.reg0] ( -- ) set reg0 = code size i.e. # of tokens in XT being compiled  */
 FUNC_START(_num_compiled_reg0_)
-#ifdef __x86_64__
+#ifdef ARITH_ARG1_AT
         MOVE(  HERE,       REG0)                       /* @ = here           */
         SUB2(  AT(M4TH, M4TH_OFF_XT),  REG0)           /* @ = here - m4th.xt */
 #else

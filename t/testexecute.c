@@ -69,6 +69,7 @@ static const m4token testdata_any[] = {
 /* -------------- m4test -------------- */
 
 void m4ftest_crc_plus_native_forth(m4arg _); /* implemented in generic_asm/test.S */
+void m4ftest_catch_xt_from_native(m4arg _);  /* implemented in generic_asm/test.S */
 void m4ftest_exec_xt_from_native(m4arg _);   /* implemented in generic_asm/test.S */
 
 #define _1e9 ((m4cell)1000000000)
@@ -100,7 +101,7 @@ static m4testexecute testexecute_a[] = {
      {}},
 #elif 0
     {"1e8 0 do over crc+-native-forth loop nip",
-     {m4do, m4over, m4_call_native_, CELL(m4ftest_crc_plus_native_forth), m4_loop_, T(-4 - nCALLt),
+     {m4do, m4over, m4_call_asm_, CELL(m4ftest_crc_plus_native_forth), m4_loop_, T(-4 - nCALLt),
       m4nip, m4bye},
      {{4, {'t', 0xffffffff, 1e8, 0}}, {}},
      {{1, {0x773edc4e}}, {}},
@@ -169,8 +170,10 @@ static m4testexecute testexecute_a[] = {
     {"and", {m4and, m4bye}, {{2, {-7, 14}}, {}}, {{1, {-7 & 14}}, {}}, {}},
     {"bl", {m4bl, m4bye}, {{}, {}}, {{1, {' '}}, {}}, {}},
     {"bounds", {m4bounds, m4bye}, {{2, {5, 6}}, {}}, {{2, {11, 5}}, {}}, {}},
+    {"1 2 flag choose", {m4choose, m4bye}, {{3, {1, 2, -3}}, {}}, {{1, {1}}, {}}, {}},
+    {"1 2 false choose", {m4choose, m4bye}, {{3, {1, 2, 0}}, {}}, {{1, {2}}, {}}, {}},
     /*                                                                          */
-    {"depth", {m4depth, m4bye}, {{}, {}}, {{1, {}}, {}}, {}},
+    {"depth", {m4depth, m4bye}, {{}, {}}, {{1, {0}}, {}}, {}},
     {"_ depth", {m4depth, m4bye}, {{1, {3}}, {}}, {{2, {3, 1}}, {}}, {}},
     {"_ _ depth", {m4depth, m4bye}, {{2, {3, 4}}, {}}, {{3, {3, 4, 2}}, {}}, {}},
     {"_ drop", {m4drop, m4bye}, {{1, {1}}, {}}, {{}, {}}, {}},
@@ -607,17 +610,27 @@ static m4testexecute testexecute_d[] = {
      {{2, {(m4cell) "immediate", 9}}, {}},
      {{1, {0x5ecabe1c /* m4th_crc_string("immediate", 9)*/}}, {}},
      {}},
-    {"(call-native) crc+-native-forth",
-     {m4_call_native_, CELL(m4ftest_crc_plus_native_forth), m4bye},
+    {"(call-asm) crc+-native-forth",
+     {m4_call_asm_, CELL(m4ftest_crc_plus_native_forth), m4bye},
      {{2, {0xffffffff, 't'}}, {}},
      {{1, {0x1b806fbc}}, {}},
      {}},
     {"' one (exec-token)", {m4_exec_token_, m4bye}, {{1, {m4one}}, {}}, {{1, {1}}, {}}, {}},
     {"' noop (exec-token)", {m4_exec_token_, m4bye}, {{1, {m4noop}}, {}}, {{}, {}}, {}},
     {"(exec-xt-from-native)",
-     {m4_call_native_, CELL(m4ftest_exec_xt_from_native), m4bye},
+     {m4_call_asm_, CELL(m4ftest_exec_xt_from_native), m4bye},
      {{1, {DXT(three)}}, {}},
      {{1, {3}}, {}},
+     {}},
+    {"' 5 (catch-xt-from-native)",
+     {m4_call_asm_, CELL(m4ftest_catch_xt_from_native), m4bye},
+     {{1, {DXT(five)}}, {}},
+     {{2, {5, 0}}, {}},
+     {}},
+    {"-2 ' throw (catch-xt-from-native)",
+     {m4_call_asm_, CELL(m4ftest_catch_xt_from_native), m4bye},
+     {{2, {-2, DXT(throw)}}, {}},
+     {{2, {-1 /*argument of executed word: clobbered*/, -2}}, {}},
      {}},
     /* test that execute on empty stack calls abort */
     {"execute", {m4execute}, {{}, {}}, {{}, {}}, {}},
@@ -856,8 +869,12 @@ static const m4token test_tokens_if_t_then[] = {m4_if_, (m4token)-1, m4then};
 static const m4token test_tokens_lx_t_drop[] = {m4_lx_, T(7), m4drop};
 static const m4token test_tokens_if0_t_else[] = {m4_if0_, (m4token)-1, m4_else_};
 static const m4token test_tokens__lit__0xffff_and[] = {m4_lit_, 0xffff, m4and};
-static const m4token test_tokens_qif_t_dup_then[] = {m4_q_if_, (m4token)-1, m4dup, m4then};
-/*
+static const m4token test_tokens_qif_t_dup_then[] = {m4_q_if_, -1, m4dup, m4then};
+static const m4token test_tokens_qif_t_continue_t_then[] = {m4_q_if_, -1, m4_continue_, -1, m4then};
+static const m4token test_tokens_qif_t_drop_else_t_nip_then[] =
+    /**/ {m4_if_, -1, m4drop, m4_else_, -1, m4nip, m4then};
+/**
+ *
  */
 static m4testexecute testexecute_e[] = {
     /* ---------------------- hashmap/cell --------------------- */
@@ -993,6 +1010,18 @@ static m4testexecute testexecute_e[] = {
      {{1, {(m4cell)test_tokens_qif_t_dup_then}}, {}},
      {{}, {}},
      {1, {m4question_dup}}},
+    {"{(?if) T(_) (continue) T(_) then} (optimize-5token)",
+     {CALL(_optimize_5token_),           /* ( counted-tokens ) */
+      CALL(countedtokens_comma), m4bye}, /* (                ) */
+     {{1, {(m4cell)test_tokens_qif_t_continue_t_then}}, {}},
+     {{}, {}},
+     {2, {m4_q_continue_if_, m4_missing_}}},
+    {"{(if) T(_) drop (else) T(_) nip then} (optimize-7token)",
+     {CALL(_optimize_7token_),           /* ( counted-tokens ) */
+      CALL(countedtokens_comma), m4bye}, /* (                ) */
+     {{1, {(m4cell)test_tokens_qif_t_drop_else_t_nip_then}}, {}},
+     {{}, {}},
+     {1, {m4choose}}},
     {"{_missing_} 1 (optimize-tokens)",
      {CALL(_optimize_tokens_), m4bye}, /* ( counted-tokens u' ) */
      {{3, {(m4cell)test_tokens__missing_, 1, M4OPTS_PRIO_HIGH}}, {}},

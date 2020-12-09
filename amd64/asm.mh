@@ -164,51 +164,56 @@
 #define LB %xmm11 /* local variable 11. only lowest 64 bits are used */
 #define Ln 12 /* number of local variables stored in registers */
 
-#define ADD2(src, dst)        add  src,     dst;   /* dst += src     */
-#define ADD4(a, b,shl, dst)   lea  (a, b, 1<<(shl)), dst; /* dst  = a_reg + (b_reg << shl) */
-#define ADDI(src, imm, dst)   lea  imm(src),dst;   /* dst  = src + imm */
-#define AND2(src, dst)        and  src,     dst;   /* dst &= src     */
-#define AT0( reg)                  (reg)           /* mem[reg]       */
-#define ATx( reg,  imm)            imm(reg)        /* mem[reg+imm]   */
-#define ATxy(reg1, reg2, rmul)    (reg1,reg2,rmul) /* mem[reg1+reg2*rmul] */
-#define DEC1(dst)             dec  dst;            /* dst--          */
-#define INC1(dst)             inc  dst;            /* dst++          */
-#define LOAD(reg, at)         movq at,      reg;   /* reg  = *at     */
-#define MOVE(src, dst)        mov  src,     dst;   /* dst  = src     */
-#define MUL2(src, dst)        imul src,     dst;   /* dst *= src     */
-#define NEG1(dst)             neg  dst;            /* dst  = -dst    */
-#define NOT1(dst)             not  dst;            /* dst  = ~dst    */
-#define ORR2(src, dst)        or   src,     dst;   /* dst |= src     */
-#define SAR2(src, dst)        sar  src,     dst;   /* dst >>= src    signed   */
-#define SHL2(src, dst)        shl  src,     dst;   /* dst <<= src    */
-#define SHR2(src, dst)        shr  src,     dst;   /* dst >>= src    unsigned */
-#define SUB2(src, dst)        sub  src,     dst;   /* dst -= src     */
-#define STOR(reg, at)         movq reg,     at;    /* *at  = reg     */
-#define XOR2(src, dst)        xor  src,     dst;   /* dst ^= src     */
-#define XSUB2(a,b)            sub  a, b;  neg b;   /* b    = a - b   */
-#define ZERO(dst)             xor  dst##w, dst##w; /* dst  = 0       */
+#define ADD2(src, dst)             add  src,     dst;             /* dst += src     */
+#define ADD4(a, b,shl, dst)        lea  (a, b, 1<<(shl)), dst;    /* dst  = a_reg + (b_reg << shl) */
+#define ADD5(a, b,shl, imm, dst)   lea  imm(a, b, 1<<(shl)), dst; /* dst  = a_reg + (b_reg << shl) + imm */
+#define ADDI(src, imm, dst)        lea  imm(src),dst;             /* dst  = src + imm */
+#define AND2(src, dst)             and  src,     dst;             /* dst &= src     */
+#define AT0( reg)                       (reg)                     /* mem[reg]       */
+#define ATx( reg,  imm)                 imm(reg)                  /* mem[reg+imm]   */
+#define ATxy(reg1, reg2, rmul)             (reg1,reg2,rmul)       /* mem[reg1+reg2*rmul] */
+#define ATxyz(reg1,reg2, rmul,imm)      imm(reg1,reg2,rmul)       /* mem[reg1+reg2*rmul+imm] */
+#define DEC1(dst)                  dec  dst;            /* dst--          */
+#define INC1(dst)                  inc  dst;            /* dst++          */
+#define LOAD(reg, at)              movq at,      reg;   /* reg  = *at     */
+#define MOVE(src, dst)             mov  src,     dst;   /* dst  = src     */
+#define MUL2(src, dst)             imul src,     dst;   /* dst *= src     */
+#define NEG1(dst)                  neg  dst;            /* dst  = -dst    */
+#define NOT1(dst)                  not  dst;            /* dst  = ~dst    */
+#define ORR2(src, dst)             or   src,     dst;   /* dst |= src     */
+#define SAR2(src, dst)             sar  src,     dst;   /* dst >>= src    signed   */
+#define SHL2(src, dst)             shl  src,     dst;   /* dst <<= src    */
+#define SHR2(src, dst)             shr  src,     dst;   /* dst >>= src    unsigned */
+#define SUB2(src, dst)             sub  src,     dst;   /* dst -= src     */
+#define STOR(reg, at)              movq reg,     at;    /* *at  = reg     */
+#define XOR2(src, dst)             xor  src,     dst;   /* dst ^= src     */
+#define XSUB2(a,b)                 sub  a, b;  neg b;   /* b    = a - b   */
+#define ZERO(dst)                  xor  dst##w, dst##w; /* dst  = 0       */
 
-#define MOVL(src, dst)        movq src,     dst;   /* dst  = src     move from/to local variable */
-#define LOADL(reg, at)        movq at,      reg;   /* reg  = *at     load local variable from mem */
-#define STORL(reg, at)        movq reg,     at;    /* *at  = reg     store local variable to mem */
+#define MOVL(src, dst)             movq src,     dst;   /* dst  = src     move from/to local variable */
+#define LOADL(reg, at)             movq at,      reg;   /* reg  = *at     load local variable from mem */
+#define STORL(reg, at)             movq reg,     at;    /* *at  = reg     store local variable to mem */
 
-#define LD_sb(reg, at)        movsbq at, reg##_sb; /* reg = *(int8_t *)at  */
-#define LD_sh(reg, at)        movswq at, reg##_sh; /* reg = *(int16_t*)at  */
-#define LD_sw(reg, at)        movslq at, reg##_sw; /* reg = *(int32_t*)at  */
-#define LD_st(reg, at)        movswq at, reg##_st; /* reg = *(signed m4token*)at */
+#define LD_sb(reg, at)             movsbq at, reg##_sb; /* reg = *(int8_t *)at  */
+#define LD_sh(reg, at)             movswq at, reg##_sh; /* reg = *(int16_t*)at  */
+#define LD_sw(reg, at)             movslq at, reg##_sw; /* reg = *(int32_t*)at  */
+#define LD_st(reg, at)             movswq at, reg##_st; /* reg = *(signed m4token*)at */
 
-#define LD_ub(reg, at)        movzbl at, reg##_ub; /* reg = *(uint8_t *)at  */
-#define LD_uh(reg, at)        movzwl at, reg##_uh; /* reg = *(uint16_t*)at  */
-#define LD_uw(reg, at)        movl   at, reg##_uw; /* reg = *(uint32_t*)at  */
-#define LD_ut(reg, at)        movzwl at, reg##_ut; /* reg = *(unsigned m4token*)at */
+#define LD_ub(reg, at)             movzbl at, reg##_ub; /* reg = *(uint8_t *)at  */
+#define LD_uh(reg, at)             movzwl at, reg##_uh; /* reg = *(uint16_t*)at  */
+#define LD_uw(reg, at)             movl   at, reg##_uw; /* reg = *(uint32_t*)at  */
+#define LD_ut(reg, at)             movzwl at, reg##_ut; /* reg = *(unsigned m4token*)at */
 
 /* no difference between signed and unsigned STOR* */
-#define STORb(reg, at)        movb   reg##b,   at; /* *(uint8_t *)at  = reg */
-#define STORh(reg, at)        movw   reg##h,   at; /* *(uint16_t*)at  = reg */
-#define STORw(reg, at)        movl   reg##w,   at; /* *(uint32_t*)at  = reg */
-#define STORt(reg, at)        movw   reg##t,   at; /* *(m4token *)at  = reg */
+#define STORb(reg, at)             movb   reg##b,   at; /* *(uint8_t *)at  = reg */
+#define STORh(reg, at)             movw   reg##h,   at; /* *(uint16_t*)at  = reg */
+#define STORw(reg, at)             movl   reg##w,   at; /* *(uint32_t*)at  = reg */
+#define STORt(reg, at)             movw   reg##t,   at; /* *(m4token *)at  = reg */
 
 /* clang-format on */
+
+#define ARITH_ARG1_AT 1 /* first argument of binary operations can be AT(...) */
+#define JUMP_ARG2_AT 1  /* second argument of conditional jumps can be AT(...) */
 
 #define ASM_CALL(func) ASM_CALL_BODY(func) /* raw/native assembly: call function        */
 #define ASM_CALL_BODY(func) call func;     /*                                           */
@@ -270,9 +275,9 @@
     jmp *reg;
 
 #define ADDROF_4G(sym, dst) /* load symbol address into dst. symbol can be within +/- 4GB */       \
-    lea sym(RIP), dst;
+    ADDI(RIP, sym, dst)
 #define ADDROF_1M(sym, dst) /* load symbol address into dst. symbol can be within +/- 1MB */       \
-    lea sym(RIP), dst;
+    ADDI(RIP, sym, dst)
 
 #define DPUSH(reg) /* push reg to second data stack element */                                     \
     STOR(reg, AT(DSTK, -SZ))                                                                       \
