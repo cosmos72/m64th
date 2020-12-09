@@ -21,24 +21,16 @@
 
 #include "../dispatch/asm.mh"
 
+
 FUNC_START(_asm_if_)
-        test   %rax,  %rax;
+        test   DTOP,  DTOP;
         DPOP___DTOP()                  /* preserves EFLAGS        */
         jz     FUNC(_missing_);
 FUNC_RAWEND(_asm_if_)
 
 
 FUNC_START(_asm_if0_)
-        test   %rax,  %rax;
+        test   DTOP,  DTOP;
         DPOP___DTOP()                  /* preserves EFLAGS        */
         jnz    FUNC(_missing_);
 FUNC_RAWEND(_asm_if0_)
-
-
-FUNC_START(_asm_loop_)
-        INC1(  RTOP)                 /* increment i                 */
-        JNE(   RTOP,   AT(RSTK), FUNC(_missing_))/* loop if i != i' */
-LABEL(_asm_loop_.jump)
-        RPOP(  RTOP)                 /* drop i' from return stack   */
-        RPOP(  RTOP)                 /* reload RTOP                 */
-FUNC_RAWEND(_asm_loop_)

@@ -33,13 +33,3 @@ FUNC_START(_asm_if0_)
         DPOP___DTOP()
         b.ne   FUNC(_missing_);
 FUNC_RAWEND(_asm_if0_)
-
-
-FUNC_START(_asm_loop_)
-        LOAD(  REG0,   AT(RSTK))
-        INC1(  RTOP)                 /* increment i                 */
-        JNE(   RTOP,   REG0,   FUNC(_missing_)) /* loop if i != i'  */
-LABEL(_asm_loop_.jump)
-        RPOP(  RTOP)                 /* drop i' from return stack   */
-        RPOP(  RTOP)                 /* reload RTOP                 */
-FUNC_RAWEND(_asm_loop_)
