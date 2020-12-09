@@ -328,17 +328,17 @@
  */
 /* ------- m4th-asm ----------------------------------------------------------------------------- */
 #define DICT_TOKENS_M4TH_ASM(X)                                                                    \
-    X(4, "asm,", asm_comma)      /* ( addr u  -- ) append ASM code to ASM-HERE */                  \
-    X(9, "(asm-ret)", _asm_ret_) /* return from native ASM                     */                  \
+    X(4, "asm,", asm_comma) /* ( addr u  -- ) append ASM code to ASM-HERE */                       \
     /* pop XT and use '(vm)' to execute it using 'catch'. can be invoked only from ASM */          \
-    X(19, "(catch-xt-from-asm)", _catch_xt_from_asm_) /* ( ... xt -- err ... ) */                  \
+    X(11, "(asm/catch)", _asm_catch_) /* ( ... xt -- err ... ) */                                  \
     /* pop XT and use '(vm)' to execute it. can be invoked only from ASM */                        \
-    X(18, "(exec-xt-from-asm)", _exec_xt_from_asm_) /* ( ... xt -- ... ) */                        \
+    X(13, "(asm/execute)", _asm_execute_)     /* ( ... xt -- ... ) */                              \
+    X(9, "(asm/ret)", _asm_ret_)              /* return from ASM to ASM                     */     \
     X(10, "name>asm>n", name_to_asm_n)        /* ( nt -- u true | 0 false ) get nt.asm_len  */     \
     X(11, "name>asm>n!", name_to_asm_n_store) /* ( u nt -- ) set nt.asm_len                 */     \
     /* ( token -- asm-addr | 0 ) get token ASM address */                                          \
     X(14, "token>asm>addr", token_to_asm_addr)                                                     \
-    X(18, "(vm-return-to-asm)", _vm_return_to_asm_) /* return from VM to native ASM */
+    X(18, "(vm-return-to/asm)", _vm_return_to_asm_) /* return from VM to native ASM */
 
 #define DICT_WORDS_M4TH_ASM(X)                                                                     \
     DICT_TOKENS_M4TH_ASM(X)                                                                        \

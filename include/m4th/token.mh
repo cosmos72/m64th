@@ -267,10 +267,10 @@
  */
 /* 'm4th-asm' wordlist */
 #define M4_a(x) ((x) + 730)
-#define M4_asm_ret_ M4_a(0)           /* ( --              ) return from ASM to ASM           */
-#define M4asm_comma M4_a(1)           /* ( addr u --       ) append ASM code to ASM-HERE      */
-#define M4_catch_xt_from_asm_ M4_a(2) /* usable only by native ASM: pop XT and 'catch' it     */
-#define M4_exec_xt_from_asm_ M4_a(3)  /* usable only by native ASM: pop XT and execute it     */
+#define M4asm_comma M4_a(0)           /* ( addr u --       ) append ASM code to ASM-HERE      */
+#define M4_asm_catch_ M4_a(1)         /* usable only by native ASM: pop XT and 'catch' it     */
+#define M4_asm_execute_ M4_a(2)       /* usable only by native ASM: pop XT and execute it     */
+#define M4_asm_ret_ M4_a(3)           /* ( --              ) return from ASM to ASM           */
 #define M4name_to_asm_n M4_a(4)       /* ( nt -- u true | 0 false ) get name.asm_len          */
 #define M4name_to_asm_n_store M4_a(5) /* ( u nt --         ) set name.asm_len                 */
 #define M4_vm_return_to_asm_ M4_a(6)  /* ( --              ) return from VM to native ASM code*/

@@ -60,7 +60,7 @@ WORD_START(asm_reserve,    asm_make_func)
 WORD_END(asm_reserve)
 /* ( -- ) return from ASM to ASM */
 WORD(_asm_ret_,            asm_reserve,    DSTACK(0,0), RSTACK(0,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS | M4FLAG_JUMP)
-WORD_START(_catch_xt_from_asm_, _asm_ret_)
+WORD_START(_asm_catch_, _asm_ret_)
     WORD_DSTACK(-1,-1) /* stack effect when not jumping */
     WORD_RSTACK(0,0)
     WORD_DSTACK(1,0)   /* stack effect when jumping */
@@ -71,9 +71,9 @@ WORD_START(_catch_xt_from_asm_, _asm_ret_)
      */
     WORD_ASM_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_MAY_JUMP)
-    WORD_CODE(_catch_xt_from_asm_, exit)
-WORD_END(_catch_xt_from_asm_)
-WORD_START(_exec_xt_from_asm_, _catch_xt_from_asm_)
+    WORD_CODE(_asm_catch_, exit)
+WORD_END(_asm_catch_)
+WORD_START(_asm_execute_, _asm_catch_)
     WORD_DSTACK(-1,-1) /* stack effect when not jumping */
     WORD_RSTACK(0,0)
     WORD_DSTACK(1,0)   /* stack effect when jumping */
@@ -84,10 +84,10 @@ WORD_START(_exec_xt_from_asm_, _catch_xt_from_asm_)
      */
     WORD_ASM_NONE()
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_MAY_JUMP)
-    WORD_CODE(_exec_xt_from_asm_, exit)
-WORD_END(_exec_xt_from_asm_)
+    WORD_CODE(_asm_execute_, exit)
+WORD_END(_asm_execute_)
 /* ( nt -- u true | 0 false ) get nt.asm_len */
-WORD(name_to_asm_n,    _exec_xt_from_asm_, DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(name_to_asm_n,    _asm_execute_, DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
 /* ( u nt -- ) set name ASM asm_len */
 WORD(name_to_asm_n_store,  name_to_asm_n,  DSTACK(2,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE)
 /* ( -- ) return from VM to native ASM code */

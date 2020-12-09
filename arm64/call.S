@@ -242,11 +242,11 @@ FUNC_RAWEND(_exec_token_)
  * This function is called *only* from native ASM code with ASM_CALL()
  * => it must use ASM_RET() to return when finished.
  */
-FUNC_START(_catch_xt_from_asm_)
-        ADDROF_1M(TO(_catch_xt_from_asm_.tokens), REG0) /* @ = tokens to execute */
+FUNC_START(_asm_catch_)
+        ADDROF_1M(TO(_asm_catch_.tokens), REG0) /* @ = tokens to execute */
 
-        JUMP(  TO(_exec_xt_from_asm_.reg0))
-FUNC_RAWEND(_catch_xt_from_asm_)
+        JUMP(  TO(_asm_execute_.reg0))
+FUNC_RAWEND(_asm_catch_)
 
 
 /**
@@ -254,10 +254,10 @@ FUNC_RAWEND(_catch_xt_from_asm_)
  * This function is called *only* from native ASM code with ASM_CALL()
  * => it must use ASM_RET() to return when finished.
  */
-FUNC_START(_exec_xt_from_asm_)
-        ADDROF_1M(TO(_exec_xt_from_asm_.tokens), REG0) /* @ = tokens to execute */
+FUNC_START(_asm_execute_)
+        ADDROF_1M(TO(_asm_execute_.tokens), REG0) /* @ = tokens to execute */
 
-LABEL(_exec_xt_from_asm_.reg0)
+LABEL(_asm_execute_.reg0)
         RPUSH2(RTOP, IP)           /* save RTOP, IP                     */
         RPUSH( VM)                 /* save VM                           */
         MOVE(  lr,   RTOP)         /* save lr = return address          */
@@ -268,10 +268,10 @@ LABEL(_exec_xt_from_asm_.reg0)
         br     VM;
         /* '(vm)' interpreter will execute '_vm_return_to_asm_' when done  */
         /* which reloads the registers saved above then returns to ASM  */
-FUNC_RAWEND(_exec_xt_from_asm_)
+FUNC_RAWEND(_asm_execute_)
 
 
-/* return from VM to native ASM code. it's the bottom half of _exec_xt_from_asm_ */
+/* return from VM to native ASM code. it's the bottom half of _asm_execute_ */
 FUNC_START(_vm_return_to_asm_)
         MOVE(  RTOP, lr)           /* load lr = return address          */
         RPOP(  VM)                 /* load VM                           */
@@ -281,9 +281,9 @@ FUNC_RAWEND(_vm_return_to_asm_)
 
 
 WORD_CODE_ALIGN()
-LABEL(_catch_xt_from_asm_.tokens)
+LABEL(_asm_catch_.tokens)
         WORD_CODE_TOKENS(_catch_beg_, _catch_end_, _vm_return_to_asm_)
 
 WORD_CODE_ALIGN()
-LABEL(_exec_xt_from_asm_.tokens)
+LABEL(_asm_execute_.tokens)
         WORD_CODE_TOKENS(execute, _vm_return_to_asm_)

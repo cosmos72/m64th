@@ -119,7 +119,7 @@ FUNC_RAWEND(test_crc_plus_native_forth)
 
 
 FUNC_START(test_catch_xt_from_native)
-        ASM_CALL(FUNC(_catch_xt_from_asm_))
+        ASM_CALL(FUNC(_asm_catch_))
         /* this pretends to be native code: */
         /* called with ASM_CALL(), must return with ASM_RET() */
         ASM_RET()
@@ -127,7 +127,7 @@ FUNC_RAWEND(test_catch_xt_from_native)
 
 
 FUNC_START(test_exec_xt_from_native)
-        ASM_CALL(FUNC(_exec_xt_from_asm_))
+        ASM_CALL(FUNC(_asm_execute_))
         /* this pretends to be native code: */
         /* called with ASM_CALL(), must return with ASM_RET() */
         ASM_RET()
