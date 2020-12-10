@@ -338,15 +338,22 @@
     X(14, "(asm/vm-catch)", _asm_vm_catch_) /* ( ... xt -- err ... ) */                            \
     /* native ASM only: pop XT and use '(vm)' to execute it. */                                    \
     X(16, "(asm/vm-execute)", _asm_vm_execute_)     /* ( ... xt -- ... ) */                        \
-    X(18, "(vm-return-to/asm)", _vm_return_to_asm_) /* return from VM to ASM                */     \
-    X(4, "asm,", asm_comma)                   /* ( addr u  -- ) append ASM code to ASM-HERE */     \
-    X(10, "name>asm>n", name_to_asm_n)        /* ( nt -- u true | 0 false ) get nt.asm_len  */     \
-    X(11, "name>asm>n!", name_to_asm_n_store) /* ( u nt -- ) set nt.asm_len                 */     \
+    X(18, "(vm-return-to/asm)", _vm_return_to_asm_) /* return from VM to ASM                    */ \
+    X(4, "asm,", asm_comma)                   /* ( addr u  -- ) append ASM code to ASM-HERE     */ \
+    X(8, "asm-here", asm_here)                /* ( -- addr ) get ASM_HERE = current ASM address */ \
+    X(8, "asm-size", asm_size)                /* ( -- u    ) get ASM_HERE - ASM_START in bytes  */ \
+    X(9, "asm-start", asm_start)              /* ( -- addr ) get ASM_START = start of ASM code  */ \
+    X(10, "name>asm>n", name_to_asm_n)        /* ( nt -- u true | 0 false ) get nt.asm_len      */ \
+    X(11, "name>asm>n!", name_to_asm_n_store) /* ( u nt -- ) set nt.asm_len                     */ \
     /* ( token -- asm-addr | 0 ) get token ASM address */                                          \
     X(14, "token>asm>addr", token_to_asm_addr)
 
 #define DICT_WORDS_M4TH_ASM(X)                                                                     \
     DICT_TOKENS_M4TH_ASM(X)                                                                        \
+    /* ( orig -- ) resolve an ASM jump to here */                                                  \
+    X(23, "[asm-resolve-jump-here]", _asm_resolve_jump_here_)                                      \
+    /* ( dest -- ) resolve an ASM jump from here */                                                \
+    X(24, "[asm-resolve-jump-there]", _asm_resolve_jump_there_)                                    \
     X(13, "asm-make-func", asm_make_func) /* ( -- addr ) make ASM code executable and return it */ \
     X(11, "asm-reserve", asm_reserve) /* ( len -- ) reserve at least len bytes in ASM buffer */    \
     X(9, "token>asm", token_to_asm) /* ( token -- addr u | 0 0 ) get token ASM address and len */  \
@@ -773,8 +780,8 @@
     X(11, "[recompile]", _recompile_)             /* rebuild XT jump offsets after optimization */ \
     X(17, "[recompile-token]", _recompile_token_) /* recompile one token after optimization */     \
     X(22, "[resolve-begin-repeat]", _resolve_begin_repeat_) /* common back-end of 'begin..' */     \
-    X(19, "[resolve-jump-here]", _resolve_jump_here_)       /* resolve a jump to here       */     \
-    X(20, "[resolve-jump-there]", _resolve_jump_there_)     /* resolve a jump from here     */     \
+    X(19, "[resolve-jump-here]", _resolve_jump_here_)   /* ( orig -- ) resolve a jump to here */   \
+    X(20, "[resolve-jump-there]", _resolve_jump_there_) /* ( dest -- ) resolve a jump from here */ \
     X(17, "[resolve-jump-to]", _resolve_jump_to_) /* resolve a jump to specified offset     */     \
     X(14, "[resolve-loop]", _resolve_loop_) /* common back-end of 'loop' and '+loop'        */     \
     X(20, "(token-consumed-ip,)", _token_consumed_ip_comma_) /* ( tok -- ) */                      \

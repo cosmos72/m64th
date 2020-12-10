@@ -47,7 +47,7 @@ WORD_START(_asm_vm_catch_, _asm_ret_)
     WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_MAY_JUMP)
     WORD_CODE(_asm_vm_catch_, exit)
 WORD_END(_asm_vm_catch_)
-WORD_START(_asm_vm_execute_,  _asm_vm_catch_)
+WORD_START(_asm_vm_execute_,   _asm_vm_catch_)
     WORD_DSTACK(-1,-1) /* stack effect when not jumping */
     WORD_RSTACK(0,0)
     WORD_DSTACK(1,0)   /* stack effect when jumping */
@@ -64,9 +64,11 @@ WORD_END(_asm_vm_execute_)
 WORD_NOASM(_vm_return_to_asm_, _asm_vm_execute_,   DSTACK(0,0), RSTACK(0,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS | M4FLAG_JUMP)
 /* ( addr u -- ) store assembly code at ASM_HERE and update ASM_HERE */
 WORD_NOASM(asm_comma, _vm_return_to_asm_,  DSTACK(2,0), RSTACK(0,0), WORD_IMPURE)
+/* ( -- addr ) get ASM_HERE = current ASM address */
+WORD(asm_here,             asm_comma,  DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 /* ( -- addr u ) mark code in ASM buffer as READ+EXEC, and return its range.
  * also updates ASM-HERE */
-WORD_START(asm_make_func,  asm_comma)
+WORD_START(asm_make_func,  asm_here)
     WORD_DSTACK(0,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -79,8 +81,12 @@ WORD_START(asm_make_func,  asm_comma)
         _c_locals_load_, exit
     )
 WORD_END(asm_make_func)
+/* ( -- u    ) get ASM_HERE - ASM_START in bytes  */
+WORD(asm_size,         asm_make_func,  DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
+/* ( -- addr ) get ASM_START = start of ASM code  */
+WORD(asm_start,            asm_size,   DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 /* ( len -- ) reserve at least len bytes in ASM buffer, and mark it as READ+WRITE+EXEC */
-WORD_START(asm_reserve,    asm_make_func)
+WORD_START(asm_reserve,    asm_start)
     WORD_DSTACK(1,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()

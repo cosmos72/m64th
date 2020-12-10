@@ -624,7 +624,9 @@ static m4cbuf m4cbuf_map(m4ucell size, m4protect prot) {
 
 static void m4cbuf_unmap(m4cbuf *arg) {
     if (arg) {
-        m4mem_unmap(arg->start, arg->end - arg->start);
+        if (arg->end > arg->start) {
+            m4mem_unmap(arg->start, arg->end - arg->start);
+        }
         arg->end = arg->curr = arg->start = NULL;
     }
 }
@@ -1329,7 +1331,8 @@ m4th *m4th_new(m4th_opt options) {
     m->xt = NULL;
     m->locals = NULL;
     m->mem = m4cbuf_alloc(dataspace_n);
-    m->asm_ = m4cbuf_map(asm_n, m4protect_read_write);
+    /* m->asm_ is allocated on demand */
+    memset(&m->asm_, 0, sizeof(m->asm_));
     m->asm_here = m->asm_.curr;
     m->base = 10;
     m->handler = m->ex = 0;
@@ -1489,6 +1492,7 @@ void m4th_asm_reserve(m4th *m, m4ucell len) {
         return;
     }
     if (m->asm_.curr == m->asm_.start) {
+        /* old buffer is empty, unmap it */
         m4cbuf_unmap(&m->asm_);
     } else {
         /* old buffer is still in use, cannot be unmapped */

@@ -275,16 +275,16 @@
 #define M4_asm_ret_ M4_a(5)            /* native ASM only: return from ASM to ASM            */
 #define M4_asm_vm_catch_ M4_a(6)       /* native ASM only: pop XT and 'catch' it using VM    */
 #define M4_asm_vm_execute_ M4_a(7)     /* native ASM only: pop XT and execute it using VM    */
+#define M4_vm_return_to_asm_ M4_a(8)   /* return from VM to native ASM code                  */
 #undef M4____gap                       /*                                                    */
-#define M4_vm_return_to_asm_ M4_a(9)   /* return from VM to native ASM code                  */
-#undef M4____gap                       /*                                                    */
-#define M4asm_comma M4_a(11)           /* ( addr u --       ) append ASM code to ASM-HERE    */
-#define M4name_to_asm_n M4_a(12)       /* ( nt -- u true | 0 false ) get name.asm_len        */
-#define M4name_to_asm_n_store M4_a(13) /* ( u nt --         ) set name.asm_len               */
-#define M4token_to_asm_addr M4_a(14)   /* ( token -- addr|0 ) get ASM code address for token */
+#define M4asm_comma M4_a(10)           /* ( addr u --       ) append ASM code to ASM-HERE    */
+#define M4asm_here M4_a(11)            /* (     -- addr ) get ASM_HERE = current ASM address */
+#define M4asm_size M4_a(12)            /* (     -- u    ) get ASM_HERE - ASM_START           */
+#define M4asm_start M4_a(13)           /* (     -- addr ) get ASM_START = start of ASM code  */
+#define M4name_to_asm_n M4_a(14)       /* ( nt -- u true | 0 false ) get name.asm_len        */
+#define M4name_to_asm_n_store M4_a(15) /* ( u nt --         ) set name.asm_len               */
+#define M4token_to_asm_addr M4_a(16)   /* ( token -- addr|0 ) get ASM code address for token */
 
-/**
- */
 /* 'm4th-c' wordlist */
 #define M4_c(x) ((x) + 750)
 #define M4_c_arg_0_ M4_c(0)  /* prepare 0 args for C function call    */

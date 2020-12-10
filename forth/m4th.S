@@ -66,6 +66,12 @@
 DICT_START(m4th_asm)
 DICT_WORDS_M4TH_ASM(WORDNAME)
 #include "m4th/asm.S"
+
+#if defined(__x86_64__)
+#include "m4th/asm_amd64.S"
+#elif defined(__aarch64__)
+#include "m4th/asm_arm64.S"
+#endif
 DICT_BODY(m4th_asm, LASTWORD)
 DICT_END(m4th_asm)
 

@@ -21,6 +21,7 @@
 
 #include "../dispatch/asm.mh"
 
+
 FUNC_START_ASM(_asm_q_if_)
         JZ(    DTOP,   FUNC(_missing_))
 FUNC_END_ASM(_asm_q_if_)
@@ -60,3 +61,30 @@ LABEL(_asm_loop_.jump)
         RPOP(  RTOP)                 /* drop i' from return stack   */
         RPOP(  RTOP)                 /* reload RTOP                 */
 FUNC_END_ASM(_asm_loop_)
+
+
+/* ( -- addr ) get ASM_HERE = current ASM address */
+FUNC_START(asm_here)
+        DPUSH__DTOP()
+        LOAD( DTOP,    AT(M4TH, M4TH_OFF_ASM_HERE))
+FUNC_END(asm_here)
+
+
+/* ( -- addr ) get ASM_START = start of ASM code */
+FUNC_START(asm_start)
+        DPUSH__DTOP()
+        LOAD( DTOP,    AT(M4TH, M4TH_OFF_ASM_BEG))
+FUNC_END(asm_start)
+
+
+/* ( -- u ) get ASM_HERE - ASM_START */
+FUNC_START(asm_size)
+        DPUSH__DTOP()
+        LOAD( DTOP,    AT(M4TH, M4TH_OFF_ASM_HERE))
+#ifdef ARITH_ARG1_AT
+        SUB2( AT(M4TH, M4TH_OFF_ASM_BEG),  DTOP)
+#else
+        LOAD( REG1,    AT(M4TH, M4TH_OFF_ASM_BEG))
+        SUB2( REG1,    DTOP)
+#endif
+FUNC_END(asm_size)

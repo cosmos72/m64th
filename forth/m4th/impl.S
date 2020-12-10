@@ -1501,7 +1501,7 @@ WORD_END(_check_lit_tok_)
 /*
  * ( token category -- sys )
  * append unresolved jump to XT being compiled i.e. token and T(-1),
- * then push sys to dstack i.e. jump_address (= # of tokens of XT being compiled) and category.
+ * then push sys to dstack i.e. jump_location (= # of tokens of XT being compiled) and category.
  */
 WORD_START(_compile_jump_, _check_lit_tok_)
     WORD_DSTACK(2,2)
@@ -1514,7 +1514,7 @@ WORD_END(_compile_jump_)
 /*
  * ( -- sys ) must be followed by m4token and its category.
  * append unresolved jump to XT being compiled i.e. m4token and T(-1),
- * then push sys to dstack i.e. jump_address (= # of tokens of XT being compiled) and category.
+ * then push sys to dstack i.e. jump_location (= # of tokens of XT being compiled) and category.
  */
 WORD_START(_compile_jump_lit_, _compile_jump_)
     WORD_DSTACK(0,2)
@@ -1527,7 +1527,7 @@ WORD_END(_compile_jump_lit_)
 /*
  * ( -- sys ) must be followed by m4token and its category.
  * append the token to XT being compiled,
- * then push sys to dstack i.e. jump_address (= # of tokens of XT being compiled) and category.
+ * then push sys to dstack i.e. jump_location (= # of tokens of XT being compiled) and category.
  */
 WORD_START(_compile_sys_lit_, _compile_jump_lit_)
     WORD_DSTACK(0,2)
@@ -1892,7 +1892,7 @@ WORD_END(_resolve_begin_repeat_)
  * Resolve the most recent unresolved jump, setting its destination to 'here'.
  * Called by 'else' and 'then' to resolve the jump offset of a preceding 'if' or 'else'.
  * Called by '[resolve-loop]' to resolve the jump offset of a preceding 'leave' or '?do'
- * ( jump_address jump_category -- )
+ * ( jump_location jump_category -- )
  */
 WORD_START(_resolve_jump_here_, _resolve_begin_repeat_)
     WORD_DSTACK(2,0)
@@ -1910,7 +1910,7 @@ WORD_END(_resolve_jump_here_)
 /**
  * Resolve a jump from here[-1] to topmost jump-sys on control stack.
  * Called by 'again' and '[resolve-loop]'
- * ( jump_address jump_category -- )
+ * ( jump_location jump_category -- )
  */
 WORD_START(_resolve_jump_there_, _resolve_jump_here_)
     WORD_DSTACK(2,0)
@@ -1927,7 +1927,7 @@ WORD_START(_resolve_jump_there_, _resolve_jump_here_)
 WORD_END(_resolve_jump_there_)
 /**
  * Resolve the most recent unresolved jump, setting its relative displacement to n.
- * ( jump_address jump_category n -- )
+ * ( jump_location jump_category n -- )
  */
 WORD_START(_resolve_jump_to_, _resolve_jump_there_)
     WORD_DSTACK(3,0)
