@@ -1,5 +1,5 @@
 # m64th
-m64th is a 64-bit forth compiler, interpreter and REPL
+m64th is a 64-bit embeddable forth compiler, interpreter and REPL
 
 ## Current status
 **BETA** i.e. REPL and many simple words are implemented, including `:` to define new words.
