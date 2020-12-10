@@ -194,7 +194,8 @@ LABEL(_c_call_.stack_c)
 
 LABEL(_c_call_.done)
         RPOP(  lr)
-FUNC_END(_c_call_)
+        NEXT0()
+FUNC_RAWEND(_c_call_)
 
 
 /* push 0 values returned by C function call */

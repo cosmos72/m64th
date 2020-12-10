@@ -230,7 +230,9 @@ LABEL(_c_call_.finish)
         LOAD(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))    /* reload DSTK = %rsi             */
         LOAD(  LOCL,   AT(M4TH, M4TH_OFF_LSTK))    /* reload LOCL = %r9              */
         RPUSH(IMM(-1)) RPOP(RFFF)                  /* set RFFF = -1                  */
-FUNC_END(_c_call_)
+
+        NEXT0()
+FUNC_RAWEND(_c_call_)
 
 
 /* push 0 values returned by C function call */
