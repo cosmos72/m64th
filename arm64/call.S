@@ -32,9 +32,9 @@
  */
 FUNC_START(th_run)
         stp    x29,  lr,   AT(sp, -SZ12)!;      /* make space for C registers on stack */
-	.cfi_def_cfa_offset SZ12
-	.cfi_offset 29, -SZ12
-	.cfi_offset 30, -SZ11
+        .cfi_def_cfa_offset SZ12
+        .cfi_offset 29, -SZ12
+        .cfi_offset 30, -SZ11
         MOVE(  sp,   x29)                       /* update x29: helps debuggers     */
         stp    x19,  x20,  AT(sp, SZ2);         /* save C registers                */
         stp    x21,  x22,  AT(sp, SZ4);         /* not clobbered: x18              */
@@ -110,9 +110,9 @@ FUNC_START(bye)
         ldp    x25,  x26,  AT(sp, SZ8);
         ldp    x27,  x28,  AT(sp, SZ10);
         ldp    x29,  lr,   AT(sp), SZ12;
-	.cfi_restore 30
-	.cfi_restore 29
-	.cfi_def_cfa_offset 0
+        .cfi_restore 30
+        .cfi_restore 29
+        .cfi_def_cfa_offset 0
         ret;                                    /* return to C                     */
 FUNC_RAWEND(bye)
 
@@ -174,15 +174,15 @@ FUNC_START(_c_call_)
         LOAD(  x9, AT(IP), IMM(SZ))    /* post-increment                     */
         LOAD( x10, AT(M4TH, M4TH_OFF_RSTK))
 
-        /* lr is already saved upon entering _vm_, either by m4th_run()      */
-        /* or by _{catch,exec}_xt_from_asm_ => we can clobber it             */
+        /* save & restore lr around any call that clobbers it, not to break google-gprof */
+        RPUSH( lr)
 
         JZ(   x10, TO(_c_call_.stack_c))
 
         /* m4th->rstack.curr != 0 thus RSTK points to dedicated memory       */
         /* and sp points to C stack: nothing to fix                          */
         blr    x9;                     /* call C func, overwrites lr         */
-        JUMP(  FUNC_RET(_c_call_))
+        JUMP(  TO(_c_call_.done))
 
 LABEL(_c_call_.stack_c)
         /* m4th->rstack.curr == 0 thus RSTK points to C stack, possibly below sp: */
@@ -192,6 +192,8 @@ LABEL(_c_call_.stack_c)
         /* decrease sp to ensure we do not write below it                    */
         SUB2(IMM(4096),   sp)
 
+LABEL(_c_call_.done)
+        RPOP(  lr)
 FUNC_END(_c_call_)
 
 
@@ -219,21 +221,21 @@ FUNC_END(_c_ret_2_)
 /** must be followed by address of native ASM code. call it. */
 FUNC_START(_call_asm_)
         LOAD(  REG0,   AT(IP),   IMM(SZ)) /* post-increment                    */
-        /* lr was already saved upon entering _vm_ either by m4th_run()        */
-        /* or by _{catch,exec}_xt_from_asm_ => we can clobber it               */
-        MOVE(  VM,     lr)
-        /* tail-call optimization: call native code. it will return to lr = VM */
-        br    REG0;
+        /* save & restore lr around any call that clobbers it, not to break google-gprof */
+        RPUSH( lr)
+        blr    REG0;
+        RPOP(  lr)
+        NEXT0()
 FUNC_RAWEND(_call_asm_)
 
 
 /** pop m4token from dstack and call it. works only for tokens with asm_len != -1 */
 FUNC_START(_exec_token_)
-        ubfx   REG0t,  DTOP_ut, 0, SZt*8;  /* REG0 = m4token                */
-        LOAD(  REG0,   AT(FTBL, REG0, SZ)) /* REG0 = m4func                 */
-        DPOP___DTOP()                      /* reload dstack top             */
+        ubfx   REG0t,  DTOP_ut, 0, SZt*8;  /* REG0 = m4token                 */
+        LOAD(  REG0,   AT(FTBL, REG0, SZ)) /* REG0 = m4func                  */
+        DPOP___DTOP()                      /* reload dstack top              */
         br     REG0;                       /* tail-call optimization: jump to token */
-        /* the token will return to '(vm)' when done                        */
+        /* the token will return to '(vm)' when done                         */
 FUNC_RAWEND(_exec_token_)
 
 
@@ -258,14 +260,16 @@ FUNC_START(_asm_vm_execute_)
         ADDROF_1M(TO(_asm_vm_execute_.tokens), REG0) /* @ = tokens to execute */
 
 LABEL(_asm_vm_execute_.reg0)
+        /**
+         * no need to save lr here: every place that clobbers lr
+         * is in charge of saving & restoring it, not to break google-gprof
+         */
         RPUSH2(RTOP, IP)           /* save RTOP, IP                     */
-        RPUSH( VM)                 /* save VM                           */
-        MOVE(  lr,   RTOP)         /* save lr = return address          */
-
+        MOVE(  VM,   RTOP)         /* save VM                           */
         LOAD(  VM, AT(M4TH, M4TH_OFF_VM)) /* set VM = m4th->vm          */
         MOVE(  REG0, IP)                  /* set IP = tokens to execute */
         /* enter '(vm)' interpreter, let token 'execute' pop dtop = xt  */
-        br     VM;
+        JUMP_REG(VM)
         /* '(vm)' interpreter will execute '_vm_return_to_asm_' when done  */
         /* which reloads the registers saved above then returns to ASM  */
 FUNC_RAWEND(_asm_vm_execute_)
@@ -273,8 +277,11 @@ FUNC_RAWEND(_asm_vm_execute_)
 
 /* return from VM to native ASM code. it's the bottom half of _asm_vm_execute_ */
 FUNC_START(_vm_return_to_asm_)
-        MOVE(  RTOP, lr)           /* load lr = return address          */
-        RPOP(  VM)                 /* load VM                           */
+        /**
+         * no need to restore lr here: every place that clobbers lr
+         * is in charge of saving & restoring it, not to break google-gprof
+         */
+        MOVE(  RTOP, VM)           /* load VM                           */
         RPOP2( IP,   RTOP)         /* load IP, RTOP                     */
         ASM_RET()                  /* return to ASM                     */
 FUNC_RAWEND(_vm_return_to_asm_)
