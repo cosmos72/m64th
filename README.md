@@ -1,5 +1,5 @@
-# m4th
-m4th is a forth compiler, interpreter and REPL
+# m64th
+m64th is a 64-bit forth compiler, interpreter and REPL
 
 ## Current status
 **BETA** i.e. REPL and many simple words are implemented, including `:` to define new words.
@@ -18,7 +18,7 @@ Windows is definitely not supported - volunteers welcome.
 
 ## Legal
 
-m4th is released under the terms of the
+m64th is released under the terms of the
 [GNU Lesser General Public License](https://www.gnu.org/licenses/lgpl-3.0.en.html),
 as published by the Free Software Foundation, either version 3 of the License,
 or (at your option) any later version.
