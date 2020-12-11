@@ -275,20 +275,20 @@
 #define M6_asm_if_ M6_a(5)             /* native ASM only: implement '(if)'                  */
 #define M6_asm_if0_ M6_a(6)            /* native ASM only: implement '(if0)'                 */
 #define M6_asm_ret_ M6_a(7)            /* native ASM only: return from ASM to ASM            */
-#define M6_asm_vm_catch_ M6_a(8)       /* native ASM only: pop XT and 'catch' it using VM    */
-#define M6_asm_vm_execute_ M6_a(9)     /* native ASM only: pop XT and execute it using VM    */
-#define M6_vm_return_to_asm_ M6_a(10)  /* return from VM to native ASM code                  */
+#define M6_asm_then_ M6_a(8)           /* native ASM only: implement 'then'                  */
+#define M6_asm_vm_catch_ M6_a(9)       /* native ASM only: pop XT and 'catch' it using VM    */
+#define M6_asm_vm_execute_ M6_a(10)    /* native ASM only: pop XT and execute it using VM    */
+#define M6_vm_return_to_asm_ M6_a(11)  /* return from VM to native ASM code                  */
 #undef M6____gap                       /*                                                    */
-#define M6asm_comma M6_a(12)           /* ( addr u --       ) append ASM code to ASM-HERE    */
-#define M6asm_here M6_a(13)            /* (     -- addr ) get ASM_HERE = current ASM address */
-#define M6asm_size M6_a(14)            /* (     -- u    ) get ASM_HERE - ASM_START           */
-#define M6asm_start M6_a(15)           /* (     -- addr ) get ASM_START = start of ASM code  */
-#define M6name_to_asm_n M6_a(16)       /* ( nt -- u true | 0 false ) get name.asm_len        */
-#define M6name_to_asm_n_store M6_a(17) /* ( u nt --         ) set name.asm_len               */
-#define M6token_to_asm_addr M6_a(18)   /* ( token -- addr|0 ) get ASM code address for token */
+#define M6asm_comma M6_a(13)           /* ( addr u --       ) append ASM code to ASM-HERE    */
+#define M6asm_here M6_a(14)            /* (     -- addr ) get ASM_HERE = current ASM address */
+#define M6asm_size M6_a(15)            /* (     -- u    ) get ASM_HERE - ASM_START           */
+#define M6asm_start M6_a(16)           /* (     -- addr ) get ASM_START = start of ASM code  */
+#define M6name_to_asm_n M6_a(17)       /* ( nt -- u true | 0 false ) get name.asm_len        */
+#define M6name_to_asm_n_store M6_a(18) /* ( u nt --         ) set name.asm_len               */
+#define M6token_to_asm_addr M6_a(19)   /* ( token -- addr|0 ) get ASM code address for token */
 
 /**
- *
  *
  *
  *

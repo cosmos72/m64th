@@ -1661,8 +1661,12 @@ static m6testexecute testexecute_g[] = {
      {{1, {m6nip}}, {}},
      {{2, {(m6cell)m6fnip, 4}}, {}}, /* correct for both amd64 and arm64 */
      {}},
+    {"'(if) token>asm",
+     {CALL(token_to_asm), m6drop, m6bye}, /* ASM len varies, drop it */
+     {{1, {m6_if_}}, {}},
+     {{1, {(m6cell)m6f_asm_if_}}, {}},
+     {}},
 #endif
-    {"'(if) token>asm", {CALL(token_to_asm), m6bye}, {{1, {m6_if_}}, {}}, {{2, {0, 0}}, {}}, {}},
     /* ----------------------------- name ----------------------------------- */
     {"' noop name>asm>n",
      {m6name_to_asm_n, m6bye},
@@ -1970,9 +1974,7 @@ m6cell m64th_testexecute(m64th *m, FILE *out) {
     };
     m6testcount count = {};
     m6cell i;
-#if 0
-    m6wordlist_find(&m6wordlist_m64th_user, m6string_make("ex-message!", 11));
-#endif
+
     m6array_copy_to_tarray(crc1byte_array, crc1byte_code);
     /* printf("crc('t') = %u\n", (unsigned)m64th_crc1byte(0xffffffff, 't')); */
 

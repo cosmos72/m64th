@@ -203,11 +203,13 @@ WORD_START(token_to_asm_replace, token_to_asm_n)
                 _leave_, T(5),                      /* ( token          )               */
             then,                                   /* ( token          ) ( R: end pos) */
             two, tokens,                            /* ( token          ) ( R: end pos) */
-        _plus_loop_, T(-14),                        /* ( token          )               */
+        _plus_loop_, T(-16),                        /* ( token          )               */
         exit                                        /* ( token          )               */
       ),
       WORD_DATA_TOKENS(
-        exit, _asm_ret_        /* 'exit' becomes '(asm-ret)' in native ASM */
+        _if_, _asm_if_,        /* '(if)' becomes '(asm/if)' in native ASM  */
+        then, _asm_then_,      /* 'then' becomes '(asm/then) in native ASM */
+        exit, _asm_ret_        /* and so on ...                            */
       )
     )
 WORD_END(token_to_asm_replace)
