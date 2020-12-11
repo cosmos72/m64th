@@ -45,6 +45,15 @@ WORD_END(_asm_if_)
 WORD(_asm_if0_,            _asm_if_,   DSTACK(1,0), RSTACK(0,0), M6FLAG_COMPILE_ONLY | M6FLAG_INLINE_ALWAYS | M6FLAG_MAY_JUMP)
 /* ( -- ) return from ASM to ASM */
 WORD(_asm_ret_,            _asm_if0_,  DSTACK(0,0), RSTACK(0,0), M6FLAG_COMPILE_ONLY | M6FLAG_INLINE_ALWAYS | M6FLAG_JUMP)
+WORD_START(_asm_then_,     _asm_ret_)
+    WORD_STACK_NONE()
+    WORD_STACK_NONE()
+    WORD_ASM_NONE()
+    WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_IMMEDIATE | M6FLAG_INLINE_ALWAYS | M6FLAG_REEXEC_AFTER_OPTIMIZE)
+    WORD_CODE(
+        CALL(_asm_resolve_jump_here_), exit
+    )
+WORD_END(then)
 WORD_START(_asm_vm_catch_, _asm_ret_)
     WORD_DSTACK(-1,-1) /* stack effect when not jumping */
     WORD_RSTACK(0,0)

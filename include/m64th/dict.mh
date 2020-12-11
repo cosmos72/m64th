@@ -330,11 +330,11 @@
 /* ------- m64th-asm -----------------------------------------------------------------------------
  */
 #define DICT_TOKENS_M64TH_ASM(X)                                                                   \
-    X(9, "(asm/?if)", _asm_q_if_)    /* native ASM only: implement '(?if)  */                      \
-    X(10, "(asm/?if0)", _asm_q_if0_) /* native ASM only: implement '(?if0) */                      \
-    X(10, "(asm/else)", _asm_else_)  /* native ASM only: implement '(else) */                      \
-    X(8, "(asm/if)", _asm_if_)       /* native ASM only: implement '(if)   */                      \
-    X(9, "(asm/if0)", _asm_if0_)     /* native ASM only: implement '(if0)  */                      \
+    X(9, "(asm/?if)", _asm_q_if_)    /* native ASM only: implement '(?if)'  */                     \
+    X(10, "(asm/?if0)", _asm_q_if0_) /* native ASM only: implement '(?if0)' */                     \
+    X(10, "(asm/else)", _asm_else_)  /* native ASM only: implement '(else)' */                     \
+    X(8, "(asm/if)", _asm_if_)       /* native ASM only: implement '(if)'   */                     \
+    X(9, "(asm/if0)", _asm_if0_)     /* native ASM only: implement '(if0)'  */                     \
     X(9, "(asm/ret)", _asm_ret_)     /* native ASM only: return from ASM to ASM */                 \
     /* native ASM only: pop XT and use '(vm)' to 'catch' it.  */                                   \
     X(14, "(asm/vm-catch)", _asm_vm_catch_) /* ( ... xt -- err ... ) */                            \
@@ -353,6 +353,7 @@
 
 #define DICT_WORDS_M64TH_ASM(X)                                                                    \
     DICT_TOKENS_M64TH_ASM(X)                                                                       \
+    X(10, "(asm/then)", _asm_then_) /* native ASM only: implement 'then'  */                       \
     /* ( -- ) install already compiled ASM code into current XT */                                 \
     X(15, "(xt>asm-finish)", _xt_to_asm_finish_)                                                   \
     /* ( orig -- ) resolve an ASM jump to here */                                                  \

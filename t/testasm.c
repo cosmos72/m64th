@@ -28,8 +28,25 @@
 #include <stdio.h>  /* fprintf() fputs() */
 
 static m6testasm testasm_a[] = {
-#if 0
-    {"(asm/if)", {CALL(_asm_if_), m6bye}, {}, {2, {2, m6_asm_if_}}, {}},
+#if defined(__aarch64__)
+    {"(asm/if)",
+     {CALL(_asm_if_), m6bye},
+     {},
+     {2, {12 /*ASM len*/, m6_asm_if_}},
+     /* ASM bytes */
+     {(const m6char *)"\x9f\x02\x00\xf1\xb4\x86@\xf8\x80\xa8\xffT", 12}},
+#elif defined(__x86_64__)
+    {"(asm/if)",
+     {CALL(_asm_if_), m6bye},
+     {},
+     {2, {11 /*ASM len*/, m6_asm_if_}},
+     /* ASM bytes */
+     {(const m6char *)"H\x85\xc0H\xad\x0f\x84M\xf6\xff\xff", 11}},
+    {"(asm/if) (asm/then)",
+     {CALL(_asm_if_), CALL(_asm_then_), m6bye},
+     {},
+     {},
+     {(const m6char *)"H\x85\xc0H\xad\x0f\x84\x00\x00\x00\x00", 11}},
 #endif
 };
 
@@ -96,7 +113,7 @@ m6cell m64th_testasm(m64th *m, FILE *out) {
     const m6testasm *t[] = {testasm_a};
     const m6cell n[] = {N_OF(testasm_a)};
 
-    m6countedcode code_buf;
+    m6countedcode code_buf = {m6test_code_n, {}};
     m6string actual_asm_codegen = {};
     m6cell i, j, run = 0, fail = 0;
 
