@@ -1,20 +1,20 @@
 /**
  * Copyright (C) 2020 Massimiliano Ghilardi
  *
- * This file is part of m4th.
+ * This file is part of m64th.
  *
- * m4th is free software: you can redistribute it and/or modify
+ * m64th is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation, either version 3
  * of the License, or (at your option) any later version.
  *
- * m4th is distributed in the hope that it will be useful,
+ * m64th is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
+ * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #include "../dispatch/asm.mh"
@@ -22,14 +22,14 @@
 /* clang-format off */
 
 
-#define M4FTWO_NIP
-FUNC_START(two_nip)        /* 2nip     m4th-user */
+#define M6FTWO_NIP
+FUNC_START(two_nip)        /* 2nip     m64th-user */
         LOAD(  REG1,   AT(DSTK))
         str    REG1,   [DSTK, SZ2]!;
 FUNC_END(two_nip)
 
 
-/* 2pick ( du ... d1 d0 u -- du ... d1 d0 du ) m4th-user */
+/* 2pick ( du ... d1 d0 u -- du ... d1 d0 du ) m64th-user */
 FUNC_START(two_pick)
         ADD4(  DSTK,   DTOP,   IMM(PSZ+1), REG1)
         ldp    DTOP,   REG2,   AT(REG1);
@@ -38,7 +38,7 @@ FUNC_END(two_pick)
 
 
 /* 2rot  ( a b c d e f -- c d e f a b ) */
-#define M4FTWO_ROT
+#define M6FTWO_ROT
 FUNC_START(two_rot)
         ldp    REG2,   REG1,   AT(DSTK, SZ3);  /* b, a            */
         ldp    REG4,   REG3,   AT(DSTK, SZ);   /* d, c            */
@@ -50,8 +50,8 @@ FUNC_START(two_rot)
 FUNC_END(two_rot)
 
 
-/* -2rot  ( a b c d e f -- e f a b c d ) m4th-user */
-#define M4FMINUS_TWO_ROT
+/* -2rot  ( a b c d e f -- e f a b c d ) m64th-user */
+#define M6FMINUS_TWO_ROT
 FUNC_START(minus_two_rot)
         ldp    REG0,   REG4,   AT(DSTK);       /* e, d            */
         ldp    REG3,   REG2,   AT(DSTK, SZ2);  /* c, b            */
@@ -64,7 +64,7 @@ FUNC_END(minus_two_rot)
 
 
 /* 2swap ( a b c d -- c d a b ) */
-#define M4FTWO_SWAP
+#define M6FTWO_SWAP
 FUNC_START(two_swap)
         ldp    REG1,   REG2, AT(DSTK);
         ldr    REG3,         AT(DSTK, SZ2);

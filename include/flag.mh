@@ -1,101 +1,101 @@
 /**
  * Copyright (C) 2020 Massimiliano Ghilardi
  *
- * This file is part of m4th.
+ * This file is part of m64th.
  *
- * m4th is free software: you can redistribute it and/or modify
+ * m64th is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation, either version 3
  * of the License, or (at your option) any later version.
  *
- * m4th is distributed in the hope that it will be useful,
+ * m64th is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
+ * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_INCLUDE_FLAG_MH
-#define M4TH_INCLUDE_FLAG_MH
+#ifndef M64TH_INCLUDE_FLAG_MH
+#define M64TH_INCLUDE_FLAG_MH
 
-/* macros that are part of m4th public API */
+/* macros that are part of m64th public API */
 
-/* m4th searchorder */
-#define M4TH_SEARCHORDER_MAX 15 /**< maximum # of wordlists in search order */
+/* m64th searchorder */
+#define M64TH_SEARCHORDER_MAX 15 /**< maximum # of wordlists in search order */
 
-/* m4th state */
-#define M4STATE_INTERPRET 0 /**< m4th is interpreting. By forth 2012, must be = 0  */
+/* m64th state */
+#define M6STATE_INTERPRET 0 /**< m64th is interpreting. By forth 2012, must be = 0  */
 
-/* m4word flags */
-#define M4FLAG_COMPILE_ONLY (1 << 0)  /**< word cannot interpreted - only compiled     */
-#define M4FLAG_IMMEDIATE (1 << 1)     /**< word is executed immediately                */
-#define M4FLAG_INLINE (1 << 2)        /**< forth code of word can be inlined           */
-#define M4FLAG_INLINE_ALWAYS (1 << 3) /**< forth code of word *must* always be inlined */
+/* m6word flags */
+#define M6FLAG_COMPILE_ONLY (1 << 0)  /**< word cannot interpreted - only compiled     */
+#define M6FLAG_IMMEDIATE (1 << 1)     /**< word is executed immediately                */
+#define M6FLAG_INLINE (1 << 2)        /**< forth code of word can be inlined           */
+#define M6FLAG_INLINE_ALWAYS (1 << 3) /**< forth code of word *must* always be inlined */
 
-#define M4FLAG_JUMP_MASK (3 << 4)
+#define M6FLAG_JUMP_MASK (3 << 4)
 /**
  * word always jumps to some other instruction than the following one.
- * incompatible with M4FLAG_PURE
+ * incompatible with M6FLAG_PURE
  */
-#define M4FLAG_JUMP (1 << 4)
+#define M6FLAG_JUMP (1 << 4)
 /**
  * word may jump to some other instruction than the following one.
- * incompatible with M4FLAG_PURE
+ * incompatible with M6FLAG_PURE
  */
-#define M4FLAG_MAY_JUMP (2 << 4)
+#define M6FLAG_MAY_JUMP (2 << 4)
 
-#define M4FLAG_PURE_MASK (3 << 4)
+#define M6FLAG_PURE_MASK (3 << 4)
 /**
  * results are a fixed arithmetic algorithm depending only
  * on numeric value of arguments:
  * the word does not dereference any pointer (not even local, global or user variables)
  * and does not use the instruction pointer or any other external state or data.
  *
- * incompatible with M4FLAG_CONSUMES_IP_* and M4FLAG_*JUMP
+ * incompatible with M6FLAG_CONSUMES_IP_* and M6FLAG_*JUMP
  */
-#define M4FLAG_PURE (3 << 4)
+#define M6FLAG_PURE (3 << 4)
 
-#define M4FLAG_CONSUMES_IP_MASK ((3 << 6) | M4FLAG_INLINE_ALWAYS)
+#define M6FLAG_CONSUMES_IP_MASK ((7 << 6) | M6FLAG_INLINE_ALWAYS)
 /**
- * word must be followed by 1, 2, 4 or 8 bytes, which are used (not modified) and jumped over.
+ * word must be followed by 2, 4, 8 or 10 bytes, which are used (not modified) and jumped over.
  *
- * implies M4FLAG_INLINE_ALWAYS, incompatible with M4FLAG_PURE.
+ * implies M6FLAG_INLINE_ALWAYS, incompatible with M6FLAG_PURE.
  */
-#define M4FLAG_CONSUMES_IP_2 ((1 << 6) | M4FLAG_INLINE_ALWAYS)
-#define M4FLAG_CONSUMES_IP_4 ((2 << 6) | M4FLAG_INLINE_ALWAYS)
-#define M4FLAG_CONSUMES_IP_8 ((3 << 6) | M4FLAG_INLINE_ALWAYS)
+#define M6FLAG_CONSUMES_IP_2 ((1 << 6) | M6FLAG_INLINE_ALWAYS)
+#define M6FLAG_CONSUMES_IP_4 ((2 << 6) | M6FLAG_INLINE_ALWAYS)
+#define M6FLAG_CONSUMES_IP_8 ((3 << 6) | M6FLAG_INLINE_ALWAYS)
+#define M6FLAG_CONSUMES_IP_10 ((5 << 6) | M6FLAG_INLINE_ALWAYS)
 
-#define M4FLAG_MEM_FETCH (1 << 8)    /** word dereferences pointer argument(s) and reads from it */
-#define M4FLAG_MEM_STORE (1 << 9)    /** word dereferences pointer arguments(s) and writes to it */
-#define M4FLAG_DATA_TOKENS (1 << 10) /** word data contains m4tokens */
+#define M6FLAG_MEM_FETCH (1 << 9)    /** word dereferences pointer argument(s) and reads from it */
+#define M6FLAG_MEM_STORE (1 << 10)   /** word dereferences pointer arguments(s) and writes to it */
+#define M6FLAG_DATA_TOKENS (1 << 11) /** word data contains m6tokens */
 
-#define M4FLAG_NOOPT_MASK (7 << 11) /** word must not be optimized */
+#define M6FLAG_OPT_MASK (7 << 12) /** control how word should be optimized - see next flags */
+/*
+ * word contains exactly '(call-asm)' to invoke native ASM,
+ * followed by unexecuted tokens: they are kept to allow inlining
+ */
+#define M6FLAG_ASM (1 << 12)
 /**< instruct the compiler not convert word to native ASM */
-#define M4FLAG_NOASM (1 << 11)
+#define M6FLAG_NOASM (2 << 12)
 /**< word defined with CREATE - do not optimize away CALL(noop) */
-#define M4FLAG_CREATE (2 << 11)
+#define M6FLAG_CREATE (3 << 12)
 /**< word defined with DEFER - do not optimize/inline CALL((defer-uninitialized)) */
-#define M4FLAG_DEFER (3 << 11)
+#define M6FLAG_DEFER (4 << 12)
 /**< word defined with VALUE - do not optimize/inline */
-#define M4FLAG_VALUE (4 << 11)
+#define M6FLAG_VALUE (5 << 12)
 /**< instruct the compiler not to optimize word in any way */
-#define M4FLAG_NOOPT (5 << 11)
+#define M6FLAG_NOOPT (6 << 12)
 
 /**
  * < instruct the compiler to re-execute (immediate) word after optimization.
  * needed to recompute jump offsets
  */
-#define M4FLAG_REEXEC_AFTER_OPTIMIZE (1 << 14)
+#define M6FLAG_REEXEC_AFTER_OPTIMIZE (1 << 15)
 
-/*
- * word contains exactly '(call-asm)' to invoke native ASM,
- * followed by unexecuted tokens: they are kept to allow inlining
- */
-#define M4FLAG_ASM (1 << 15)
+/* does not fit m6flags, only stored in ( colon-sys ) */
+#define M6FLAG_NONAME (1 << 16)
 
-/* does not fit m4flags, only stored in ( colon-sys ) */
-#define M4FLAG_NONAME (1 << 16)
-
-#endif /* M4TH_INCLUDE_FLAG_MH */
+#endif /* M64TH_INCLUDE_FLAG_MH */

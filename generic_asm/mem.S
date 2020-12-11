@@ -1,20 +1,20 @@
 /**
  * Copyright (C) 2020 Massimiliano Ghilardi
  *
- * This file is part of m4th.
+ * This file is part of m64th.
  *
- * m4th is free software: you can redistribute it and/or modify
+ * m64th is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation, either version 3
  * of the License, or (at your option) any later version.
  *
- * m4th is distributed in the hope that it will be useful,
+ * m64th is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
+ * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #include "../dispatch/asm.mh"
@@ -24,7 +24,7 @@
 
 /* ----------------------- fetch ----------------------- */
 
-/* byte@    ( addr -- n )   m4th-user */
+/* byte@    ( addr -- n )   m64th-user */
 FUNC_START(byte_fetch)
         LD_sb(DTOP,    AT(DTOP))
 FUNC_END(byte_fetch)
@@ -36,25 +36,25 @@ FUNC_START(c_fetch)
 FUNC_END(c_fetch)
 
 
-/* short@   ( addr -- n )   m4th-user */
+/* short@   ( addr -- n )   m64th-user */
 FUNC_START(short_fetch)
         LD_sh(DTOP,    AT(DTOP))
 FUNC_END(short_fetch)
 
 
-/* ushort@  ( addr -- u )  m4th-user */
+/* ushort@  ( addr -- u )  m64th-user */
 FUNC_START(ushort_fetch)
         LD_uh(DTOP,    AT(DTOP))
 FUNC_END(ushort_fetch)
 
 
-/* int@     ( addr -- n )  m4th-user */
+/* int@     ( addr -- n )  m64th-user */
 FUNC_START(int_fetch)
         LD_sw(DTOP,    AT(DTOP))
 FUNC_END(int_fetch)
 
 
-/* uint@    ( addr -- u )  m4th-user */
+/* uint@    ( addr -- u )  m64th-user */
 FUNC_START(uint_fetch)
         LD_uw(DTOP,    AT(DTOP))
 FUNC_END(uint_fetch)
@@ -76,7 +76,7 @@ FUNC_END(two_fetch)
 
 /* ----------------------- store ----------------------- */
 
-#ifndef M4FC_STORE
+#ifndef M6FC_STORE
 /* c!      ( u addr -- )    forth-core */
 FUNC_START(c_store)
         DPOP(  REG1)
@@ -94,8 +94,8 @@ FUNC_START(count)
 FUNC_END(count)
 
 
-#ifndef M4FSHORT_STORE
-/* short!   ( n addr -- ) m4th-user */
+#ifndef M6FSHORT_STORE
+/* short!   ( n addr -- ) m64th-user */
 FUNC_START(short_store)
         DPOP(  REG1)
         STORh( REG1,  AT(DTOP))
@@ -104,8 +104,8 @@ FUNC_END(short_store)
 #endif
 
 
-#ifndef M4FINT_STORE
-/* int!     ( n addr -- )   m4th-user */
+#ifndef M6FINT_STORE
+/* int!     ( n addr -- )   m64th-user */
 FUNC_START(int_store)
         DPOP(  REG1)
         STORw( REG1,   AT(DTOP))
@@ -114,7 +114,7 @@ FUNC_END(int_store)
 #endif
 
 
-#ifndef M4FSTORE
+#ifndef M6FSTORE
 /* !        ( n addr -- )   forth-core */
 FUNC_START(store)
         DPOP(  REG1)
@@ -192,17 +192,17 @@ DEF_FUNC_STORE()
 
 /* ----------------------- misc ------------------------ */
 
-#ifndef M4FCMOVE
+#ifndef M6FCMOVE
 /* cmove ( src_addr dst_addr u -- ) 'string' word set */
 FUNC_START(cmove)
         TOKEN_CALL_NOTHROW(FUNC(cmove_count), cmove.0)   /* ( src' dst'    ) */
         LOAD(  DTOP,   AT(DSTK, SZ))
         ADD2(IMM(SZ2), DSTK)
 FUNC_END(cmove)
-#endif /* M4FCMOVE */
+#endif /* M6FCMOVE */
 
 
-/* crc-cell ( x -- crc ) m4th-user: compute CRC32c of a cell */
+/* crc-cell ( x -- crc ) m64th-user: compute CRC32c of a cell */
 FUNC_START(crc_cell)
         DPUSH__DTOP()                          /* ( x _                  ) */
         STOR(  DSTK,   AT(DSTK, -SZ))
@@ -213,8 +213,8 @@ FUNC_START(crc_cell)
 FUNC_END(crc_cell)
 
 
-#ifndef M4FCRC_STRING
-/* crc-string ( c-addr u -- crc ) m4th-user: compute CRC32c of a string */
+#ifndef M6FCRC_STRING
+/* crc-string ( c-addr u -- crc ) m64th-user: compute CRC32c of a string */
 FUNC_START(crc_string)
         MOVE(  DTOP,   REG2)               /* b = u                    */
 #ifdef RFFFw
@@ -225,7 +225,7 @@ FUNC_START(crc_string)
         DPOP___DTOP()                      /* dtop = c-addr            */
         JZ(    REG2,   TO(crc_string.done))
         ZERO(  REG0)                       /* @ = 0                    */
-        ADDROF_4G(m4th_crctable,   REG4)   /* d = table                */
+        ADDROF_4G(m64th_crctable,   REG4)   /* d = table                */
 FUNC_ALIGN()
 LABEL(crc_string.loop)
         LD_ub( REG1,   AT(DTOP, REG0, 1))  /* a = c-addr[@] = str[i]   */
@@ -239,10 +239,10 @@ LABEL(crc_string.done)
         NOT1(  REG3w)
         MOVE(  REG3w,  DTOPw)
 FUNC_END(crc_string)
-#endif /* M4FCRC_STRING */
+#endif /* M6FCRC_STRING */
 
 
-#ifndef M4FDIV_STRING
+#ifndef M6FDIV_STRING
 /* /string ( c-addr u n -- c-addr' u' )  forth-string */
 FUNC_START(div_string)
         MOVE(  DTOP,   REG1)           /* a = n       */
@@ -252,7 +252,7 @@ FUNC_START(div_string)
         ADD2(  REG1,   REG2)           /* c-addr += n */
         STOR(  REG2,   AT(DSTK))
 FUNC_END(div_string)
-#endif /* M4FDIV_STRING */
+#endif /* M6FDIV_STRING */
 
 
 /* ( c-addr u ch -- u' ) get index of char or CR */
@@ -272,7 +272,7 @@ LABEL(line_find_char.done)
 FUNC_END(line_find_char)
 
 
-#ifndef M4FROLL
+#ifndef M6FROLL
 /* ( xu xu_1 ... x1 x0 u -- xu_1 ... x1 x0 xu ) */
 FUNC_START(roll)
         LOAD(  REG1,   AT(DSTK, DTOP, SZ)) /* a = xu                             */
@@ -287,7 +287,7 @@ FUNC_END(roll)
 #endif
 
 
-#ifndef M4FMINUS_ROLL
+#ifndef M6FMINUS_ROLL
 /* ( xu xu_1 ... x1 x0 u -- x0 xu xu_1 ... x1 ) */
 FUNC_START(minus_roll)
         ADD4(  DSTK,   DTOP, PSZ, REG0)    /* @ = address of xu   */
@@ -304,7 +304,7 @@ FUNC_RAWEND(minus_roll)
 #endif
 
 
-#ifndef M4FTWO_ROLL
+#ifndef M6FTWO_ROLL
 /* ( du du_1 ... d1 d0 u -- du_1 ... d1 d0 du ) */
 FUNC_START(two_roll)
         SHL2(IMM(1),   DTOP)               /* dtop <<= 1                         */
@@ -323,7 +323,7 @@ FUNC_RAWEND(two_roll)
 #endif
 
 
-#ifndef M4FMINUS_TWO_ROLL
+#ifndef M6FMINUS_TWO_ROLL
 /* ( dx_u ... d1 d0 u -- d0 dx_u ... d1 ) */
 FUNC_START(minus_two_roll)
         SHL2(IMM(1),   DTOP)               /* dtop <<= 1                         */
@@ -347,16 +347,16 @@ FUNC_RAWEND(minus_two_roll)
 
 /**
  * string-ci=  ( c-addr1 c-addr2 u -- c-addr1 c-addr2 u t|f )
- * m4th-user: compare two strings, ignoring case
+ * m64th-user: compare two strings, ignoring case
  */
 FUNC_START(string_ci_equal)
         LOAD(  REG2,   AT(DSTK))       /* b = addr2 */
         LOAD(  REG1,   AT(DSTK, SZ))   /* a = addr1 */
         DPUSH__DTOP()
 #ifdef __x86_64__ /* we need an additional register */
-#define M4FSTRING_CI_EQUAL_USE_RTOP
+#define M6FSTRING_CI_EQUAL_USE_RTOP
 #endif
-#ifdef M4FSTRING_CI_EQUAL_USE_RTOP
+#ifdef M6FSTRING_CI_EQUAL_USE_RTOP
         RPUSH( RTOP)
 #endif
         JEQ(   REG1,   REG2,    TO(string_ci_equal.true))   /* addr1 == addr2 */
@@ -365,7 +365,7 @@ FUNC_START(string_ci_equal)
         JB(    DTOP,   IMM(SZ), TO(string_ci_equal.byte))
 
         SUB2(IMM(SZ),  DTOP)
-#ifdef M4FSTRING_CI_EQUAL_USE_RTOP
+#ifdef M6FSTRING_CI_EQUAL_USE_RTOP
         movabs IMM(0x2020202020202020), RTOP;
 #endif
 LABEL(string_ci_equal.cell)
@@ -381,7 +381,7 @@ LABEL(string_ci_equal.true)
         JUMP(  TO(string_ci_equal.done))
 
 LABEL(string_ci_equal.cell.fallback)
-#ifdef M4FSTRING_CI_EQUAL_USE_RTOP
+#ifdef M6FSTRING_CI_EQUAL_USE_RTOP
         ORR2(  RTOP,   REG3)
         ORR2(  RTOP,   REG4)
 #else
@@ -415,7 +415,7 @@ LABEL(string_ci_equal.false)
         ZERO(  DTOP)
 
 LABEL(string_ci_equal.done)
-#ifdef M4FSTRING_CI_EQUAL_USE_RTOP
+#ifdef M6FSTRING_CI_EQUAL_USE_RTOP
         RPOP(  RTOP)          /* restore RTOP */
 #endif
 FUNC_END(string_ci_equal)
@@ -423,7 +423,7 @@ FUNC_END(string_ci_equal)
 
 /**
  * string-find-blank ( c-addr u -- u' )
- * m4th-user: return index of first blank (i.e. char <= 32) in string.
+ * m64th-user: return index of first blank (i.e. char <= 32) in string.
  * return string length if not found.
  */
 FUNC_START(string_find_blank)
@@ -442,7 +442,7 @@ FUNC_END(string_find_blank)
 
 /**
  * string-find-char ( c-addr u ch -- u' )
- * m4th-user: return index of first ch in string.
+ * m64th-user: return index of first ch in string.
  * return string length if not found.
  */
 FUNC_START(string_find_char)
@@ -460,7 +460,7 @@ FUNC_END(string_find_char)
 
 /*
  * string-find-nonblank ( c-addr u -- u' )
- * m4th-user: get index of first non-blank (i.e. char > 32) in string.
+ * m64th-user: get index of first non-blank (i.e. char > 32) in string.
  * return string length if not found.
  */
 FUNC_START(string_find_nonblank)
@@ -479,7 +479,7 @@ FUNC_END(string_find_nonblank)
 
 /*
  * string>lower ( c-addr-src c-addr-dst u -- c-addr-dst u )
- * m4th-user: copy a string converting it to lower case
+ * m64th-user: copy a string converting it to lower case
  */
 FUNC_START(string_to_lower)
         LOAD(  REG2,   AT(DSTK))           /* b = dst = c-addr-dst   */
@@ -492,12 +492,12 @@ FUNC_START(string_to_lower)
         NEG1(  DTOP)                       /* n = -u                 */
         JA(    DTOP,   IMM(-SZ),TO(string_to_lower.byte))   /* < SZ bytes         */
 #ifdef __x86_64__
-#define M4FSTRING_TO_LOWER_USE_REG0
+#define M6FSTRING_TO_LOWER_USE_REG0
         movabs IMM(0x2020202020202020), REG0;
 #endif
 LABEL(string_to_lower.cell)
         /* copy SZ bytes at time */
-#ifdef M4FSTRING_TO_LOWER_USE_REG0
+#ifdef M6FSTRING_TO_LOWER_USE_REG0
         MOVE(  REG0,   REG4)               /* d = mask               */
         LOAD(  REG3,   AT(REG1, DTOP, 1))  /* c = src[i..i+7]        */
         ORR2(  REG3,   REG4)               /* d = src[i..i+7] | mask */

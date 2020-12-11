@@ -1,33 +1,33 @@
 /**
  * Copyright (C) 2020 Massimiliano Ghilardi
  *
- * This file is part of m4th.
+ * This file is part of m64th.
  *
- * m4th is free software: you can redistribute it and/or modify
+ * m64th is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation, either version 3
  * of the License, or (at your option) any later version.
  *
- * m4th is distributed in the hope that it will be useful,
+ * m64th is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
+ * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_INCLUDE_WORDLIST_MH
-#define M4TH_INCLUDE_WORDLIST_MH
+#ifndef M64TH_INCLUDE_WORDLIST_MH
+#define M64TH_INCLUDE_WORDLIST_MH
 
 #include "hashmap.mh"
 
-#define M4WORDLIST_OFF_DICT 0                     /* offset of m4wordlist->dict     */
-#define M4WORDLIST_OFF_LAST SZ                    /* offset of m4wordlist->last     */
-#define M4WORDLIST_OFF_MAP SZ2                    /* offset of m4wordlist->map      */
-#define M4WORDLIST_SZ (SZ2 + M4HASHMAP_SZ_STRING) /* sizeof(m4wordlist)             */
+#define M6WORDLIST_OFF_DICT 0                     /* offset of m6wordlist->dict     */
+#define M6WORDLIST_OFF_LAST SZ                    /* offset of m6wordlist->last     */
+#define M6WORDLIST_OFF_MAP SZ2                    /* offset of m6wordlist->map      */
+#define M6WORDLIST_SZ (SZ2 + M6HASHMAP_SZ_STRING) /* sizeof(m6wordlist)             */
 
-#define WORDLIST_SYM(name) m4wordlist_##name
+#define WORDLIST_SYM(name) m6wordlist_##name
 
 /* clang-format off */
 
@@ -46,6 +46,6 @@
 #define WORDLIST(name)                                                                             \
     WORDLIST_DEF_SYM(name)                                                                         \
     CAT3(., SZ, byte) DICT_SYM(name);                                                              \
-    .fill M4WORDLIST_SZ - M4WORDLIST_OFF_LAST, 1, 0;
+    .fill M6WORDLIST_SZ - M6WORDLIST_OFF_LAST, 1, 0;
 
-#endif /* M4TH_INCLUDE_WORDLIST_MH */
+#endif /* M64TH_INCLUDE_WORDLIST_MH */

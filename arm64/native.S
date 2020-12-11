@@ -1,35 +1,35 @@
 /**
  * Copyright (C) 2020 Massimiliano Ghilardi
  *
- * This file is part of m4th.
+ * This file is part of m64th.
  *
- * m4th is free software: you can redistribute it and/or modify
+ * m64th is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation, either version 3
  * of the License, or (at your option) any later version.
  *
- * m4th is distributed in the hope that it will be useful,
+ * m64th is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
+ * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 /* clang-format off */
 
 #include "../dispatch/asm.mh"
 
-FUNC_START_ASM(_asm_if_)
+FUNC_START(_asm_if_)
         cmp    DTOP,   IMM(0);
         DPOP___DTOP()
         b.eq   FUNC(_missing_);
-FUNC_END_ASM(_asm_if_)
+FUNC_ASMEND(_asm_if_)
 
 
-FUNC_START_ASM(_asm_if0_)
+FUNC_START(_asm_if0_)
         cmp    DTOP,   IMM(0);
         DPOP___DTOP()
         b.ne   FUNC(_missing_);
-FUNC_END_ASM(_asm_if0_)
+FUNC_ASMEND(_asm_if0_)

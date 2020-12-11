@@ -1,24 +1,24 @@
 /**
  * Copyright (C) 2020 Massimiliano Ghilardi
  *
- * This file is part of m4th.
+ * This file is part of m64th.
  *
- * m4th is free software: you can redistribute it and/or modify
+ * m64th is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation, either version 3
  * of the License, or (at your option) any later version.
  *
- * m4th is distributed in the hope that it will be useful,
+ * m64th is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
+ * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_AMD64_ASM_MH
-#define M4TH_AMD64_ASM_MH
+#ifndef M64TH_AMD64_ASM_MH
+#define M64TH_AMD64_ASM_MH
 
 #include "../include/asm.mh"
 #include "../include/macro.mh"
@@ -44,108 +44,108 @@
 #define REG0b   %r10b /* low  8 bits of REG0 */
 #define REG0h   %r10w /* low 16 bits of REG0 */
 #define REG0w   %r10d /* low 32 bits of REG0 */
-#define REG0t   %r10w /* (m4token)REG0        */
+#define REG0t   %r10w /* (m6token)REG0        */
 #define REG0_sb %r10  /* sign-extend  8 bits into REG0 */
 #define REG0_sh %r10  /* sign-extend 16 bits into REG0 */
 #define REG0_sw %r10  /* sign-extend 32 bits into REG0 */
-#define REG0_st %r10  /* sign-extend m4token into REG0 */
+#define REG0_st %r10  /* sign-extend m6token into REG0 */
 #define REG0_ub %r10d /* zero-extend  8 bits into REG0 */
 #define REG0_uh %r10d /* zero-extend 16 bits into REG0 */
 #define REG0_uw %r10d /* zero-extend 32 bits into REG0 */
-#define REG0_ut %r10d /* zero-extend m4token into REG0 */
+#define REG0_ut %r10d /* zero-extend m6token into REG0 */
 
 #define REG1b   %dil /* low  8 bits of REG1 */
 #define REG1h   %di  /* low 16 bits of REG1 */
 #define REG1w   %edi /* low 32 bits of REG1 */
-#define REG1t   %di  /* (m4token)REG1       */
+#define REG1t   %di  /* (m6token)REG1       */
 #define REG1_sb %rdi /* sign-extend  8 bits into REG1 */
 #define REG1_sh %rdi /* sign-extend 16 bits into REG1 */
 #define REG1_sw %rdi /* sign-extend 32 bits into REG1 */
-#define REG1_st %rdi /* sign-extend m4token into REG1 */
+#define REG1_st %rdi /* sign-extend m6token into REG1 */
 #define REG1_ub %edi /* zero-extend  8 bits into REG1 */
 #define REG1_uh %edi /* zero-extend 16 bits into REG1 */
 #define REG1_uw %edi /* zero-extend 32 bits into REG1 */
-#define REG1_ut %edi /* zero-extend m4token into REG1 */
+#define REG1_ut %edi /* zero-extend m6token into REG1 */
 
 #define REG2b   %cl  /* low  8 bits of REG2 */
 #define REG2h   %cx  /* low 16 bits of REG2 */
 #define REG2w   %ecx /* low 32 bits of REG2 */
-#define REG2t   %cx  /* (m4token)REG2       */
+#define REG2t   %cx  /* (m6token)REG2       */
 #define REG2_sb %rcx /* sign-extend  8 bits into REG2 */
 #define REG2_sh %rcx /* sign-extend 16 bits into REG2 */
 #define REG2_sw %rcx /* sign-extend 32 bits into REG2 */
-#define REG2_st %rcx /* sign-extend m4token into REG2 */
+#define REG2_st %rcx /* sign-extend m6token into REG2 */
 #define REG2_ub %ecx /* zero-extend  8 bits into REG2 */
 #define REG2_uh %ecx /* zero-extend 16 bits into REG2 */
 #define REG2_uw %ecx /* zero-extend 32 bits into REG2 */
-#define REG2_ut %ecx /* zero-extend m4token into REG2 */
+#define REG2_ut %ecx /* zero-extend m6token into REG2 */
 
 #define REG3b   %dl  /* low  8 bits of REG3 */
 #define REG3h   %dx  /* low 16 bits of REG3 */
 #define REG3w   %edx /* low 32 bits of REG3 */
-#define REG3t   %dx  /* (m4token)REG3       */
+#define REG3t   %dx  /* (m6token)REG3       */
 #define REG3_sb %rdx /* sign-extend  8 bits into REG3 */
 #define REG3_sh %rdx /* sign-extend 16 bits into REG3 */
 #define REG3_sw %rdx /* sign-extend 32 bits into REG3 */
-#define REG3_st %rdx /* sign-extend m4token into REG3 */
+#define REG3_st %rdx /* sign-extend m6token into REG3 */
 #define REG3_ub %edx /* zero-extend  8 bits into REG3 */
 #define REG3_uh %edx /* zero-extend 16 bits into REG3 */
 #define REG3_uw %edx /* zero-extend 32 bits into REG3 */
-#define REG3_ut %edx /* zero-extend m4token into REG3 */
+#define REG3_ut %edx /* zero-extend m6token into REG3 */
 
 #define REG4b   %r8b /* low  8 bits of REG4 */
 #define REG4h   %r8w /* low 16 bits of REG4 */
 #define REG4w   %r8d /* low 32 bits of REG4 */
-#define REG4t   %r8w /* (m4token)REG4        */
+#define REG4t   %r8w /* (m6token)REG4        */
 #define REG4_sb %r8  /* sign-extend  8 bits into REG4 */
 #define REG4_sh %r8  /* sign-extend 16 bits into REG4 */
 #define REG4_sw %r8  /* sign-extend 32 bits into REG4 */
-#define REG4_st %r8  /* sign-extend m4token into REG4 */
+#define REG4_st %r8  /* sign-extend m6token into REG4 */
 #define REG4_ub %r8d /* zero-extend  8 bits into REG4 */
 #define REG4_uh %r8d /* zero-extend 16 bits into REG4 */
 #define REG4_uw %r8d /* zero-extend 32 bits into REG4 */
-#define REG4_ut %r8d /* zero-extend m4token into REG4 */
+#define REG4_ut %r8d /* zero-extend m6token into REG4 */
 
 #define DTOP    %rax  /* value of first data stack element */
 #define DTOPb   %al   /* low  8 bits of DTOP */
 #define DTOPh   %ax   /* low 16 bits of DTOP */
 #define DTOPw   %eax  /* low 32 bits of DTOP */
-#define DTOPt   %ax   /* (m4token)DTOP        */
+#define DTOPt   %ax   /* (m6token)DTOP        */
 #define DTOP_sb %rax  /* sign-extend  8 bits into DTOP */
 #define DTOP_sh %rax  /* sign-extend 16 bits into DTOP */
 #define DTOP_sw %rax  /* sign-extend 32 bits into DTOP */
-#define DTOP_st %rax  /* sign-extend m4token into DTOP */
+#define DTOP_st %rax  /* sign-extend m6token into DTOP */
 #define DTOP_ub %eax  /* zero-extend  8 bits into DTOP */
 #define DTOP_uh %eax  /* zero-extend 16 bits into DTOP */
 #define DTOP_uw %eax  /* zero-extend 32 bits into DTOP */
-#define DTOP_ut %eax  /* zero-extend m4token into DTOP */
+#define DTOP_ut %eax  /* zero-extend m6token into DTOP */
 
 #define RTOP    %rbx  /* value of first data stack element */
 #define RTOPb   %bl   /* low  8 bits of RTOP */
 #define RTOPh   %bx   /* low 16 bits of RTOP */
 #define RTOPw   %ebx  /* low 32 bits of RTOP */
-#define RTOPt   %bx   /* (m4token)RTOP        */
+#define RTOPt   %bx   /* (m6token)RTOP        */
 #define RTOP_sb %rbx  /* sign-extend  8 bits into RTOP */
 #define RTOP_sh %rbx  /* sign-extend 16 bits into RTOP */
 #define RTOP_sw %rbx  /* sign-extend 32 bits into RTOP */
-#define RTOP_st %rbx  /* sign-extend m4token into RTOP */
+#define RTOP_st %rbx  /* sign-extend m6token into RTOP */
 #define RTOP_ub %ebx  /* zero-extend  8 bits into RTOP */
 #define RTOP_uh %ebx  /* zero-extend 16 bits into RTOP */
 #define RTOP_uw %ebx  /* zero-extend 32 bits into RTOP */
-#define RTOP_ut %ebx  /* zero-extend m4token into RTOP */
+#define RTOP_ut %ebx  /* zero-extend m6token into RTOP */
 
 #define RFFF    %r11  /* always contains -1    */
 #define RFFFb   %r11b /*  8 bits, all set to 1 */
 #define RFFFh   %r11w /* 16 bits, all set to 1 */
 #define RFFFw   %r11d /* 32 bits, all set to 1 */
-#define RFFFt   %r11w /* (m4token)-1           */
+#define RFFFt   %r11w /* (m6token)-1           */
 
 #define DSTK  %rsi  /* pointer to second data stack element             */
 #define RSTK  %rsp  /* pointer to second return stack element           */
 #define LOCL  %r9   /* pointer to local variables (inside return stack) */
-#define M4TH  %r13  /* pointer to C struct field &m4th->user            */
+#define M64TH  %r13  /* pointer to C struct field &m64th->user            */
 #define HERE  %r14  /* pointer to first available code/data location    */
-#define FTBL  %r12  /* pointer to table m4func[m4token] containing asm function addresses */
+#define FTBL  %r12  /* pointer to table m6func[m6token] containing asm function addresses */
 #define IP    %r15  /* forth bytecode instruction pointer     */
 #define RIP   %rip  /* x86-64 instruction pointer             */
 #define VM    %rbp  /* pointer to '(vm)' bytecode interpreter */
@@ -154,7 +154,7 @@
 #define L1 %xmm1 /* local variable 1. only lowest 64 bits are used */
 #define L2 %xmm2 /* local variable 2. only lowest 64 bits are used */
 #define L3 %xmm3 /* local variable 3. only lowest 64 bits are used */
-#define L4 %xmm4 /* local variable 4. only lowest 64 bits are used */
+#define L4 %xmm6 /* local variable 4. only lowest 64 bits are used */
 #define L5 %xmm5 /* local variable 5. only lowest 64 bits are used */
 #define L6 %xmm6 /* local variable 6. only lowest 64 bits are used */
 #define L7 %xmm7 /* local variable 7. only lowest 64 bits are used */
@@ -197,18 +197,18 @@
 #define LD_sb(reg, at)             movsbq at, reg##_sb; /* reg = *(int8_t *)at  */
 #define LD_sh(reg, at)             movswq at, reg##_sh; /* reg = *(int16_t*)at  */
 #define LD_sw(reg, at)             movslq at, reg##_sw; /* reg = *(int32_t*)at  */
-#define LD_st(reg, at)             movswq at, reg##_st; /* reg = *(signed m4token*)at */
+#define LD_st(reg, at)             movswq at, reg##_st; /* reg = *(signed m6token*)at */
 
 #define LD_ub(reg, at)             movzbl at, reg##_ub; /* reg = *(uint8_t *)at  */
 #define LD_uh(reg, at)             movzwl at, reg##_uh; /* reg = *(uint16_t*)at  */
 #define LD_uw(reg, at)             movl   at, reg##_uw; /* reg = *(uint32_t*)at  */
-#define LD_ut(reg, at)             movzwl at, reg##_ut; /* reg = *(unsigned m4token*)at */
+#define LD_ut(reg, at)             movzwl at, reg##_ut; /* reg = *(unsigned m6token*)at */
 
 /* no difference between signed and unsigned STOR* */
 #define STORb(reg, at)             movb   reg##b,   at; /* *(uint8_t *)at  = reg */
 #define STORh(reg, at)             movw   reg##h,   at; /* *(uint16_t*)at  = reg */
 #define STORw(reg, at)             movl   reg##w,   at; /* *(uint32_t*)at  = reg */
-#define STORt(reg, at)             movw   reg##t,   at; /* *(m4token *)at  = reg */
+#define STORt(reg, at)             movw   reg##t,   at; /* *(m6token *)at  = reg */
 
 /* clang-format on */
 
@@ -344,4 +344,4 @@
     lea SZt(IP, REG3, SZt), IP; /* IP = TARGET_IP                                            */    \
     NEXT0()                     /* jump to TARGET_IP                                         */
 
-#endif /* M4TH_AMD64_ASM_MH */
+#endif /* M64TH_AMD64_ASM_MH */

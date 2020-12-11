@@ -1,20 +1,20 @@
 /**
  * Copyright (C) 2020 Massimiliano Ghilardi
  *
- * This file is part of m4th.
+ * This file is part of m64th.
  *
- * m4th is free software: you can redistribute it and/or modify
+ * m64th is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation, either version 3
  * of the License, or (at your option) any later version.
  *
- * m4th is distributed in the hope that it will be useful,
+ * m64th is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
+ * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #include "../dispatch/asm.mh"
@@ -68,7 +68,7 @@ FUNC_DEF(_do_)
 /* FUNC_RAWEND(_do_)   */
 
 
-#define M4FDO
+#define M6FDO
 FUNC_DEF(do)
 /* FUNC_START(do) */
         RPUSH( RTOP)                 /* save rtop             */
@@ -118,7 +118,7 @@ FUNC_END(_if0_)
  * must be followed by IP offset to jump.
  * IP offset = 0 means first instruction after (?if) itself
  */
-#define M4F_Q_IF_
+#define M6F_Q_IF_
 FUNC_START(_q_if_)
         LD_st( REG3,   AT(IP))         /* c = jump offset         */
         ADD2(IMM(SZt), IP)             /* skip IP offset          */
@@ -134,7 +134,7 @@ FUNC_END(_q_if_)
  * must be followed by IP offset to jump.
  * IP offset = 0 means first instruction after (?if0) itself
  */
-#define M4F_Q_IF0_
+#define M6F_Q_IF0_
 FUNC_START(_q_if0_)
         LD_st( REG3,   AT(IP))         /* c = jump offset         */
         ADD2(IMM(SZt), IP)             /* skip IP offset          */

@@ -1,24 +1,24 @@
 /**
  * Copyright (C) 2020 Massimiliano Ghilardi
  *
- * This file is part of m4th.
+ * This file is part of m64th.
  *
- * m4th is free software: you can redistribute it and/or modify
+ * m64th is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation, either version 3
  * of the License, or (at your option) any later version.
  *
- * m4th is distributed in the hope that it will be useful,
+ * m64th is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
+ * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_INCLUDE_ALIGN_MH
-#define M4TH_INCLUDE_ALIGN_MH
+#ifndef M64TH_INCLUDE_ALIGN_MH
+#define M64TH_INCLUDE_ALIGN_MH
 
 #define ASM_ALIGN(... /* psz, padding */) .p2align __VA_ARGS__;
 
@@ -32,4 +32,4 @@
  */
 #define FUNC_ALIGN() ASM_ALIGN(3)
 
-#endif /* M4TH_INCLUDE_ASM_MH */
+#endif /* M64TH_INCLUDE_ASM_MH */

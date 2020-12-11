@@ -1,20 +1,20 @@
 /**
  * Copyright (C) 2020 Massimiliano Ghilardi
  *
- * This file is part of m4th.
+ * This file is part of m64th.
  *
- * m4th is free software: you can redistribute it and/or modify
+ * m64th is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation, either version 3
  * of the License, or (at your option) any later version.
  *
- * m4th is distributed in the hope that it will be useful,
+ * m64th is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
+ * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #include "../dispatch/asm.mh"
@@ -24,9 +24,9 @@
 /* #> ( xd -- c-addr u ) drop xd, return the pictured numeric output
  * as a user-modifiable string */
 FUNC_START(num_end)
-        LD_ub( DTOP,   AT(M4TH, M4TH_OFF_PICT_START))   /* dtop = pict_start       */
+        LD_ub( DTOP,   AT(M64TH, M64TH_OFF_PICT_START))   /* dtop = pict_start       */
         ADD4(  HERE,   DTOP,0, REG2)                   /* b = c-addr             */
-        SUB2(  IMM(M4TH_PICT_MAXSIZE), DTOP)            /* dtop = -u              */
+        SUB2(  IMM(M64TH_PICT_MAXSIZE), DTOP)            /* dtop = -u              */
         STOR(  REG2,   AT(DSTK))                       /* ( c-addr -u          ) */
         NEG1(  DTOP)                                   /* ( c-addr u           ) */
 FUNC_END(num_end)
@@ -34,14 +34,14 @@ FUNC_END(num_end)
 
 /* <# ( -- ) initialize the pictured numeric output */
 FUNC_START(num_start)
-        MOVI(  M4TH_PICT_MAXSIZE,       REG1)
-        STORb( REG1,   AT(M4TH, M4TH_OFF_PICT_START))   /* pict_start = initial value */
+        MOVI(  M64TH_PICT_MAXSIZE,       REG1)
+        STORb( REG1,   AT(M64TH, M64TH_OFF_PICT_START))   /* pict_start = initial value */
 FUNC_END(num_start)
 
 
 /* emit ( ch -- ) write one char to current output */
 FUNC_START(emit)
-        LOAD(  REG1,   AT(M4TH, M4TH_OFF_OUT))         /* a = io                 */
+        LOAD(  REG1,   AT(M64TH, M64TH_OFF_OUT))         /* a = io                 */
         DPUSH( REG1)                                   /* dstk ( io ch         ) */
         TOKEN_CALL_NOTHROW(FUNC(obuf_write_char), emit.0) /* dstk ( err        ) */
         DPOP___DTOP()                                  /* dstk (               ) */
@@ -50,25 +50,25 @@ FUNC_END(emit)
 
 /* hold ( ch -- ) add one char to the beginning of pictured numeric output */
 FUNC_START(hold)
-        LD_ub( REG1,   AT(M4TH, M4TH_OFF_PICT_START))   /* a = pict_start          */
-        MOVI(M4ERR_PICTURED_NUMERIC_OUTPUT_STRING_OVERFLOW, REG0)
+        LD_ub( REG1,   AT(M64TH, M64TH_OFF_PICT_START))   /* a = pict_start          */
+        MOVI(M6ERR_PICTURED_NUMERIC_OUTPUT_STRING_OVERFLOW, REG0)
         JZ(    REG1,   FUNC(_throw_reg0_))
 LABEL(hold.ok)
         DEC1(  REG1)                                   /* a = pict_start - 1      */
         STORb( DTOP,   AT(HERE, REG1,1))               /* here[pict_start-1] = ch */
-        STORb( REG1,   AT(M4TH, M4TH_OFF_PICT_START))   /* --pict_start            */
+        STORb( REG1,   AT(M64TH, M64TH_OFF_PICT_START))   /* --pict_start            */
         DPOP___DTOP()
 FUNC_END(hold)
 
 
 /* holds ( c-addr u -- ) add a string to the beginning of pictured numeric output */
 FUNC_START(holds)
-        LD_ub( REG1,   AT(M4TH, M4TH_OFF_PICT_START))   /* a = pict_start          */
-        MOVI(M4ERR_PICTURED_NUMERIC_OUTPUT_STRING_OVERFLOW, REG0)
+        LD_ub( REG1,   AT(M64TH, M64TH_OFF_PICT_START))   /* a = pict_start          */
+        MOVI(M6ERR_PICTURED_NUMERIC_OUTPUT_STRING_OVERFLOW, REG0)
         JB(    REG1,   DTOP,   FUNC(_throw_reg0_))
 LABEL(holds.ok)
         SUB2(  DTOP,   REG1)                           /* a = pict_start - u      */
-        STORb( REG1,   AT(M4TH, M4TH_OFF_PICT_START))   /* pict_start -= u         */
+        STORb( REG1,   AT(M64TH, M64TH_OFF_PICT_START))   /* pict_start -= u         */
         ADD2(  HERE,   REG1)                           /* a = here + pict_start'  */
         DPUSH( REG1)                                   /* ( c-addr pic-out u   ) */
         JUMP(  FUNC(cmove))                            /* (                    ) */
@@ -78,7 +78,7 @@ FUNC_RAWEND(holds)
 /* in>ibuf ( -- io ) get current input as iobuf */
 FUNC_START(in_to_ibuf)
         DPUSH__DTOP()
-        LOAD(  DTOP,   AT(M4TH, M4TH_OFF_IN))
+        LOAD(  DTOP,   AT(M64TH, M64TH_OFF_IN))
 FUNC_END(in_to_ibuf)
 
 
@@ -167,7 +167,7 @@ FUNC_END(iobuf_end)
 /* ( -- char ) receive one character */
 FUNC_START(key)
         DPUSH__DTOP()
-        LOAD(  REG1,   AT(M4TH, M4TH_OFF_IN))
+        LOAD(  REG1,   AT(M64TH, M64TH_OFF_IN))
         LOAD(  REG2,   AT(REG1, IOBUF_OFF_POS))
         LOAD(  REG3,   AT(REG1, IOBUF_OFF_END))
         MOVE(  IMM_1,  DTOP)
@@ -241,13 +241,13 @@ FUNC_END(obuf_write_string)
 /* out>obuf ( -- io ) get current output as iobuf */
 FUNC_START(out_to_obuf)
         DPUSH__DTOP()
-        LOAD(  DTOP,   AT(M4TH, M4TH_OFF_OUT))
+        LOAD(  DTOP,   AT(M64TH, M64TH_OFF_OUT))
 FUNC_END(out_to_obuf)
 
 
 /* type ( c-addr u -- ) write string to current output */
 FUNC_START(type)
-        LOAD(  REG1,   AT(M4TH, M4TH_OFF_OUT))         /* a = io                 */
+        LOAD(  REG1,   AT(M64TH, M64TH_OFF_OUT))         /* a = io                 */
         LOAD(  REG2,   AT(DSTK))                       /* b = c-addr             */
         STOR(  REG1,   AT(DSTK))                       /* dstk ( io u          ) */
         DPUSH( REG2)                                   /* dstk ( io c-addr u   ) */

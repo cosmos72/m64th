@@ -1,23 +1,23 @@
 #
 # Copyright (C) 2020 Massimiliano Ghilardi
 #
-# This file is part of m4th.
+# This file is part of m64th.
 #
-# m4th is free software: you can redistribute it and/or modify
+# m64th is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License
 # as published by the Free Software Foundation, either version 3
 # of the License, or (at your option) any later version.
 #
-# m4th is distributed in the hope that it will be useful,
+# m64th is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public License
-# along with m4th.  If not, see <https://www.gnu.org/licenses/>.
+# along with m64th.  If not, see <https://www.gnu.org/licenses/>.
 
 #
-# this file adds command z to gdb, for printing the status of m4th forth virtual machine.
+# this file adds command z to gdb, for printing the status of m64th forth virtual machine.
 #
 # installation: add the line
 #   source /FULL/PATH/TO/gdb_helper.py
@@ -31,9 +31,9 @@ class PrintForthDataStack(gdb.Command):
         self.szt = 2
     def invoke(self, arg, from_tty):
         inf = gdb.selected_inferior()
-        (dtop,rtop,dstk,rstk,m4th,ip) = self.read_registers(inf)
-        dend = int(gdb.parse_and_eval("((m4th *)%d)->dstack.end" % m4th))
-        rend = int(gdb.parse_and_eval("((m4th *)%d)->rstack.end" % m4th))
+        (dtop,rtop,dstk,rstk,m64th,ip) = self.read_registers(inf)
+        dend = int(gdb.parse_and_eval("((m64th *)%d)->dstack.end" % m64th))
+        rend = int(gdb.parse_and_eval("((m64th *)%d)->rstack.end" % m64th))
         dn = int((dend - dstk) / self.sz) + 1
         rn = int((rend - rstk) / self.sz) + 1
         self.stack_print(inf, "dstack", dtop, dstk, dn)
@@ -53,7 +53,7 @@ class PrintForthDataStack(gdb.Command):
             int(frame.read_register(regs[1])), # rtop
             int(frame.read_register(regs[2])), # dstk
             int(frame.read_register(regs[3])), # rstk
-            int(frame.read_register(regs[4])) - self.sz*16, # m4th
+            int(frame.read_register(regs[4])) - self.sz*16, # m64th
             int(frame.read_register(regs[5])) - self.szt)   # ip
     def stack_print(self, inf, label, top, stk, n):
         gdb.write("%s <%d> " % (label, n))
@@ -92,13 +92,13 @@ class PrintForthDataStack(gdb.Command):
             tok = self.token_at(inf, addr)
             gdb.write(tok)
             gdb.write(" ")
-            if tok == "bye" or tok == "m4bye":
+            if tok == "bye" or tok == "m6bye":
                 break
             addr += self.szt
         gdb.write("\n")
     def token_at(self, inf, addr):
-        s = str(gdb.parse_and_eval("(enum m4_token_e)*(m4token*)%d" % addr))
-        if len(s) > 2 and s[:2] == "m4":
+        s = str(gdb.parse_and_eval("(enum m6_token_e)*(m6token*)%d" % addr))
+        if len(s) > 2 and s[:2] == "m6":
             s = s[2:]
         return s
 

@@ -1,20 +1,20 @@
 /**
  * Copyright (C) 2020 Massimiliano Ghilardi
  *
- * This file is part of m4th.
+ * This file is part of m64th.
  *
- * m4th is free software: you can redistribute it and/or modify
+ * m64th is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation, either version 3
  * of the License, or (at your option) any later version.
  *
- * m4th is distributed in the hope that it will be useful,
+ * m64th is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
+ * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 /* clang-format off */
@@ -27,7 +27,7 @@ WORD_START(blank,      div_string)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_ASM_NONE()
-    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_STORE)
+    WORD_FLAGS(M6FLAG_INLINE | M6FLAG_MEM_STORE)
     WORD_CODE(bl, fill, exit)
 WORD_END(blank)
 WORD_START(cmove,      blank)
@@ -35,7 +35,7 @@ WORD_START(cmove,      blank)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_ASM_NONE() /* uses %ip-relative TOKEN_CALL_NOTHROW(), cannot inline in native code */
-    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH | M4FLAG_MEM_STORE)
+    WORD_FLAGS(M6FLAG_INLINE | M6FLAG_MEM_FETCH | M6FLAG_MEM_STORE)
     WORD_CODE(cmove, exit)
 WORD_END(cmove)
 

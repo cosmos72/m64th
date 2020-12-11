@@ -10,25 +10,25 @@ ASFLAGS=$(FLAGS)
 LD=$(CC)
 LDFLAGS=$(FLAGS)
 
-OBJS=asm.o cffi.o impl.o m4th.o
+OBJS=asm.o cffi.o impl.o m64th.o
 
-all: gen m4th test
+all: gen m64th test
 
 clean:
-	rm -f gen m4th test *.out ./*.gprof ./*.o ./*~ */*.o */*~ linenoise/linenoise_example linenoise/history.txt
+	rm -f gen m64th test *.out ./*.gprof ./*.o ./*~ */*.o */*~ linenoise/linenoise_example linenoise/history.txt
 
-asm.o:  asm.S  $(wildcard *.mh */*.mh include/*/*.mh */*.S forth/*.S forth/*/*.S)
-cffi.o: cffi.c $(wildcard *.h *.mh include/*.h include/*.mh include/*/*.mh c/*.h c/*.c linenoise/*.h linenoise/*.c)
-gen.o:  gen.c  $(wildcard *.h *.mh include/*.h include/*.mh include/*/*.mh)
-impl.o: impl.c $(wildcard *.h *.mh include/*.h include/*.mh include/*/*.mh)
-m4th.o: m4th.c $(wildcard *.h *.mh include/*.h include/*.mh include/*/*.mh)
-main.o: main.c $(wildcard *.h *.mh include/*.h include/*.mh include/*/*.mh)
-test.o: test.c $(wildcard *.h *.mh include/*.h include/*.mh include/*/*.mh t/*.h t/*.c)
+asm.o:   asm.S   $(wildcard *.mh */*.mh include/*/*.mh */*.S forth/*.S forth/*/*.S)
+cffi.o:  cffi.c  $(wildcard *.h *.mh include/*.h include/*.mh include/*/*.mh c/*.h c/*.c linenoise/*.h linenoise/*.c)
+gen.o:   gen.c   $(wildcard *.h *.mh include/*.h include/*.mh include/*/*.mh)
+impl.o:  impl.c  $(wildcard *.h *.mh include/*.h include/*.mh include/*/*.mh)
+m64th.o: m64th.c $(wildcard *.h *.mh include/*.h include/*.mh include/*/*.mh)
+main.o:  main.c  $(wildcard *.h *.mh include/*.h include/*.mh include/*/*.mh)
+test.o:  test.c  $(wildcard *.h *.mh include/*.h include/*.mh include/*/*.mh t/*.h t/*.c)
 
 gen: $(OBJS) gen.o
 	$(LD) $(LDFLAGS) -o $@ $^
 
-m4th: $(OBJS) main.o
+m64th: $(OBJS) main.o
 	$(LD) $(LDFLAGS) -o $@ $^
 
 test: $(OBJS) test.o

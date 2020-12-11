@@ -1,20 +1,20 @@
 /**
  * Copyright (C) 2020 Massimiliano Ghilardi
  *
- * This file is part of m4th.
+ * This file is part of m64th.
  *
- * m4th is free software: you can redistribute it and/or modify
+ * m64th is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation, either version 3
  * of the License, or (at your option) any later version.
  *
- * m4th is distributed in the hope that it will be useful,
+ * m64th is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
+ * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #include "impl.h"
@@ -37,8 +37,8 @@ typedef struct {
     uint64_t hi, lo;
 } uint128_forth_stack;
 
-void m4th_ud_div_mod(uint128_forth_stack *dividend_in_remainder_out,
-                     uint128_forth_stack *divisor_in_quotient_out) {
+void m64th_ud_div_mod(uint128_forth_stack *dividend_in_remainder_out,
+                      uint128_forth_stack *divisor_in_quotient_out) {
     const uint128_t dividend =
         (uint128_t)dividend_in_remainder_out->hi << 64 | dividend_in_remainder_out->lo;
     const uint128_t divisor =
@@ -54,9 +54,9 @@ void m4th_ud_div_mod(uint128_forth_stack *dividend_in_remainder_out,
 /******************************************************************************/
 /* C implementation of CRC32c                                                 */
 /******************************************************************************/
-m4cell m4th_crctable[256];
+m6cell m64th_crctable[256];
 
-void m4th_crcinit(m4cell table[256]) {
+void m64th_crcinit(m6cell table[256]) {
     uint32_t i, j;
 
     if (table[255] != 0) {
@@ -77,26 +77,26 @@ void m4th_crcinit(m4cell table[256]) {
     }
 }
 
-uint32_t m4th_crc1byte(uint32_t crc, unsigned char byte) {
-    return (crc >> 8) ^ m4th_crctable[(crc & 0xff) ^ byte];
+uint32_t m64th_crc1byte(uint32_t crc, unsigned char byte) {
+    return (crc >> 8) ^ m64th_crctable[(crc & 0xff) ^ byte];
 }
 
-uint32_t m4th_crc_array(const void *addr, const m4ucell nbytes) {
-    assert(m4th_crctable[0xff]);
-    const m4char *p = (const m4char *)addr;
+uint32_t m64th_crc_array(const void *addr, const m6ucell nbytes) {
+    assert(m64th_crctable[0xff]);
+    const m6char *p = (const m6char *)addr;
     uint32_t crc = ~(uint32_t)0;
     for (size_t i = 0; i < nbytes; i++) {
-        crc = m4th_crc1byte(crc, p[i]);
+        crc = m64th_crc1byte(crc, p[i]);
     }
     return ~crc;
 }
 
-uint32_t m4th_crc_cell(m4cell key) {
-    return m4th_crc_array(&key, sizeof(key));
+uint32_t m64th_crc_cell(m6cell key) {
+    return m64th_crc_array(&key, sizeof(key));
 }
 
-uint32_t m4th_crc_string(m4string str) {
-    return m4th_crc_array(str.addr, str.n);
+uint32_t m64th_crc_string(m6string str) {
+    return m64th_crc_array(str.addr, str.n);
 }
 
 #if defined(__x86_64__)
@@ -104,7 +104,7 @@ uint32_t m4th_crc_string(m4string str) {
 #include <cpuid.h>
 
 /* C wrapper for cpuid() */
-static void m4th_cpuid(unsigned level, unsigned count, unsigned ret[4]) {
+static void m64th_cpuid(unsigned level, unsigned count, unsigned ret[4]) {
     unsigned max_level = __get_cpuid_max(level & 0x80000000ul, NULL);
     ret[0] = ret[1] = ret[2] = ret[3] = 0;
     if (max_level != 0 && level <= max_level) {
@@ -113,11 +113,11 @@ static void m4th_cpuid(unsigned level, unsigned count, unsigned ret[4]) {
 }
 
 /* amd64: use cpuid to detect CRC32c CPU instructions - they are part of SSE4.2 */
-m4cell m4th_cpu_features_detect(void) {
+m6cell m64th_cpu_features_detect(void) {
     unsigned ret[4];
-    m4th_cpuid(1, 0, ret);
-    return (ret[2] & bit_SSE4_2) ? m4th_cpu_feature_crc32c | m4th_cpu_feature_atomic_add
-                                 : m4th_cpu_feature_atomic_add;
+    m64th_cpuid(1, 0, ret);
+    return (ret[2] & bit_SSE4_2) ? m64th_cpu_feature_crc32c | m64th_cpu_feature_atomic_add
+                                 : m64th_cpu_feature_atomic_add;
 }
 
 #elif defined(__aarch64__) && defined(__linux__)
@@ -128,14 +128,14 @@ m4cell m4th_cpu_features_detect(void) {
  * arm64+Linux: use Linux specific getauxval(AT_HWCAP)
  * to detect CRC32c and atomic CPU instructions
  */
-m4cell m4th_cpu_features_detect(void) {
+m6cell m64th_cpu_features_detect(void) {
     unsigned long hwcap = getauxval(AT_HWCAP);
-    m4cell ret = 0;
+    m6cell ret = 0;
     if (hwcap & HWCAP_CRC32) {
-        ret |= m4th_cpu_feature_crc32c;
+        ret |= m64th_cpu_feature_crc32c;
     }
     if (hwcap & HWCAP_ATOMICS) {
-        ret |= m4th_cpu_feature_atomic_add;
+        ret |= m64th_cpu_feature_atomic_add;
     }
     return ret;
 }
@@ -145,20 +145,20 @@ m4cell m4th_cpu_features_detect(void) {
 #include <cpu-features.h>
 /* arm64+Android: use Android specific android_getCpuFeatures() to detect CRC32c CPU
    instructions */
-m4cell m4th_cpu_features_detect(void) {
+m6cell m64th_cpu_features_detect(void) {
     uint64_t features = android_getCpuFeatures();
-    return (features & ANDROID_CPU_ARM64_FEATURE_CRC32) ? m4th_cpu_feature_crc32c : 0;
+    return (features & ANDROID_CPU_ARM64_FEATURE_CRC32) ? m64th_cpu_feature_crc32c : 0;
 }
 
 #else
 
 /* no support to detect CRC32c CPU instructions on this arch/OS pair */
-m4cell m4th_cpu_features_detect(void) {
-    return m4th_cpu_feature_cannot_detect;
+m6cell m64th_cpu_features_detect(void) {
+    return m64th_cpu_feature_cannot_detect;
 }
 
 #endif
 
-void m4th_cpu_features_autoenable() {
-    m4th_cpu_features_enable(m4th_cpu_features_detect());
+void m64th_cpu_features_autoenable() {
+    m64th_cpu_features_enable(m64th_cpu_features_detect());
 }

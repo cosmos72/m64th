@@ -1,27 +1,27 @@
 /**
  * Copyright (C) 2020 Massimiliano Ghilardi
  *
- * This file is part of m4th.
+ * This file is part of m64th.
  *
- * m4th is free software: you can redistribute it and/or modify
+ * m64th is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation, either version 3
  * of the License, or (at your option) any later version.
  *
- * m4th is distributed in the hope that it will be useful,
+ * m64th is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
+ * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #include "../dispatch/asm.mh"
 
 /* clang-format off */
 
-/* 2pick ( du du-1 ... d1 d0 u -- du-1 ... d1 d0 du ) m4th-user */
+/* 2pick ( du du-1 ... d1 d0 u -- du-1 ... d1 d0 du ) m64th-user */
 FUNC_START(two_pick)
         shl    DTOP;
         mov    SZ(DSTK, DTOP, SZ), REG1;
@@ -30,7 +30,7 @@ FUNC_START(two_pick)
 FUNC_END(two_pick)
 
 
-#define M4FTWO_TO_R
+#define M6FTWO_TO_R
 FUNC_START(two_to_r)       /* 2>r      */
         LOAD(  REG1,   AT(DSTK))
         RPUSH2(RTOP,   REG1)
@@ -40,8 +40,8 @@ FUNC_START(two_to_r)       /* 2>r      */
 FUNC_END(two_to_r)
 
 
-#define M4FTWO_DUP_TWO_TO_R
-FUNC_START(two_dup_two_to_r)   /* 2dup 2>r  m4th-user */
+#define M6FTWO_DUP_TWO_TO_R
+FUNC_START(two_dup_two_to_r)   /* 2dup 2>r  m64th-user */
         STOR(  RTOP,       AT(RSTK, -SZ))
         LOAD(  REG1,       AT(DSTK))
         MOVE(  DTOP,       RTOP)
@@ -50,7 +50,7 @@ FUNC_START(two_dup_two_to_r)   /* 2dup 2>r  m4th-user */
 FUNC_END(two_dup_two_to_r)
 
 
-#define M4FTWO_R_FROM
+#define M6FTWO_R_FROM
 FUNC_START(two_r_from)     /* 2r>      */
         RPOP(  REG1)
         DPUSH2(DTOP,   REG1)

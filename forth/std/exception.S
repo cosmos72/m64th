@@ -1,20 +1,20 @@
 /**
  * Copyright (C) 2020 Massimiliano Ghilardi
  *
- * This file is part of m4th.
+ * This file is part of m64th.
  *
- * m4th is free software: you can redistribute it and/or modify
+ * m64th is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation, either version 3
  * of the License, or (at your option) any later version.
  *
- * m4th is distributed in the hope that it will be useful,
+ * m64th is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
+ * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 /* clang-format off */
@@ -26,7 +26,7 @@ WORD_START(abort,      LASTWORD)
     WORD_DSTACK(0,-1) /* stack effect when throwing */
     WORD_RSTACK(0,-1)
     WORD_ASM_NONE()
-    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_JUMP)
+    WORD_FLAGS(M6FLAG_INLINE | M6FLAG_JUMP)
     WORD_CODE(minus_one, throw, exit)
 WORD_END(abort)
 WORD_START(abort_quote, abort)
@@ -34,7 +34,7 @@ WORD_START(abort_quote, abort)
     WORD_DSTACK(0,-1) /* stack effect when throwing */
     WORD_RSTACK(0,-1)
     WORD_ASM_NONE()
-    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_COMPILE_ONLY | M4FLAG_IMMEDIATE)
+    WORD_FLAGS(M6FLAG_INLINE | M6FLAG_COMPILE_ONLY | M6FLAG_IMMEDIATE)
     WORD_CODE(
         CALL(s_quote),                                    /* reads and compiles literal string */
         _lit_xt_, XT(_abort_quote_), CALL(compile_comma), /* compiles (abort-quote)            */
@@ -46,7 +46,7 @@ WORD_START(catch,      abort_quote)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_ASM_NONE()
-    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_FLAGS(M6FLAG_INLINE)
     WORD_CODE(_catch_beg_, _catch_end_, exit)
 WORD_END(catch)
 WORD_START(throw,      catch)
@@ -55,7 +55,7 @@ WORD_START(throw,      catch)
     WORD_DSTACK(1,-1) /* stack effect when throwing */
     WORD_RSTACK(0,-1)
     WORD_ASM_NONE() /* uses IP-relative jump to 'bye', cannot inline in native code */
-    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MAY_JUMP)
+    WORD_FLAGS(M6FLAG_INLINE | M6FLAG_MAY_JUMP)
     WORD_CODE(throw, exit)
 WORD_END(throw)
 

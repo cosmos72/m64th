@@ -1,36 +1,36 @@
 /**
  * Copyright (C) 2020 Massimiliano Ghilardi
  *
- * This file is part of m4th.
+ * This file is part of m64th.
  *
- * m4th is free software: you can redistribute it and/or modify
+ * m64th is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation, either version 3
  * of the License, or (at your option) any later version.
  *
- * m4th is distributed in the hope that it will be useful,
+ * m64th is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
+ * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_INCLUDE_WORD_MH
-#define M4TH_INCLUDE_WORD_MH
+#ifndef M64TH_INCLUDE_WORD_MH
+#define M64TH_INCLUDE_WORD_MH
 
-#define WORD_OFF_PREV_OFF 0 /* offset of m4word.prev_off   */
-#define WORD_OFF_NAME_OFF 8 /* offset of m4word.name_off   */
-#define WORD_OFF_STK_EFF 10 /* offset of m4word.eff        */
-#define WORD_OFF_STK_JMP 12 /* offset of m4word.jump       */
-#define WORD_OFF_ASM_LEN 14 /* offset of m4word.asm_len */
-#define WORD_OFF_FLAGS 16   /* offset of m4word.flags      */
-#define WORD_OFF_CODE_N 18  /* offset of m4word.code_n     */
-#define WORD_OFF_DATA_N 20  /* offset of m4word.data_n     */
-#define WORD_OFF_XT 24      /* offset of m4word.code       */
+#define WORD_OFF_PREV_OFF 0 /* offset of m6word.prev_off   */
+#define WORD_OFF_NAME_OFF 8 /* offset of m6word.name_off   */
+#define WORD_OFF_STK_EFF 10 /* offset of m6word.eff        */
+#define WORD_OFF_STK_JMP 12 /* offset of m6word.jump       */
+#define WORD_OFF_ASM_LEN 14 /* offset of m6word.asm_len */
+#define WORD_OFF_FLAGS 16   /* offset of m6word.flags      */
+#define WORD_OFF_CODE_N 18  /* offset of m6word.code_n     */
+#define WORD_OFF_DATA_N 20  /* offset of m6word.data_n     */
+#define WORD_OFF_XT 24      /* offset of m6word.code       */
 
-#define WORD_SYM(name) m4w_##name
+#define WORD_SYM(name) m6w_##name
 
 #define WORD_DECL_SYM(name)                                                                        \
     .globl WORD_SYM(name);                                                                         \
@@ -73,7 +73,7 @@
 #define WORD_CODE_START(name) /*    */ .L.WORD_SYM(name).code_start:
 #define WORD_CODE_END(name) /*      */ .L.WORD_SYM(name).code_end:
 #define WORD_CODE_RAW(...) /*       */ CAT3(., SZt, byte) __VA_ARGS__;
-#define WORD_CODE_TOKEN(token) /*   */ M4ASM_BYTES(token)
+#define WORD_CODE_TOKEN(token) /*   */ M6ASM_BYTES(token)
 #define WORD_CODE_TOKENS(...) /*    */ WRAP_ARGS(WORD_CODE_TOKEN, __VA_ARGS__)
 
 #define WORD_DATA_START(name) /*    */ ASM_ALIGN(PSZ, 0) /**/.L.WORD_SYM(name).data_start:
@@ -83,13 +83,13 @@
 #define WORD_DATA_INTS(...) /*      */ .4byte __VA_ARGS__;
 #define WORD_DATA_CELLS(...) /*     */ CAT3(., SZ, byte) __VA_ARGS__;
 #define WORD_DATA_STRINGS(...) /*   */ .ascii __VA_ARGS__;
-#define WORD_DATA_TOKEN(token) /*   */ CAT3(., M4SIZEOF(token), byte) M4TOKEN_VAL(token);
+#define WORD_DATA_TOKEN(token) /*   */ CAT3(., M6SIZEOF(token), byte) M6TOKEN_VAL(token);
 #define WORD_DATA_TOKENS(...) /*    */ WRAP_ARGS(WORD_DATA_TOKEN, __VA_ARGS__)
 
 #define WORD_END(name) /*           */ .size WORD_SYM(name), .- WORD_SYM(name);
 
 #define WORD_CODE(...)                                                                             \
-    WORD_CODE_N(M4SUM_SIZEOF(__VA_ARGS__) / SZt)                                                   \
+    WORD_CODE_N(M6SUM_SIZEOF(__VA_ARGS__) / SZt)                                                   \
     WORD_DATA_N_BYTES(0)                                                                           \
     WORD_CODE_ALIGN()                                                                              \
     WORD_CODE_TOKENS(__VA_ARGS__)
@@ -124,11 +124,11 @@
 
 /* clang-format on */
 
-#define WORD_IMPURE M4FLAG_INLINE
+#define WORD_IMPURE M6FLAG_INLINE
 /* result only depends on input, only accesses dstack (not rstack or memory)*/
-#define WORD_PURE (M4FLAG_INLINE | M4FLAG_PURE)
+#define WORD_PURE (M6FLAG_INLINE | M6FLAG_PURE)
 /* result only depends on input, only accesses dstack and rstack (not memory)*/
-#define WORD_R_PURE (M4FLAG_INLINE_ALWAYS | M4FLAG_PURE | M4FLAG_COMPILE_ONLY)
+#define WORD_R_PURE (M6FLAG_INLINE_ALWAYS | M6FLAG_PURE | M6FLAG_COMPILE_ONLY)
 
 #define WORD(name, prev, dstack, rstack, flags)                                                    \
     WORD_START(name, prev)                                                                         \
@@ -140,4 +140,4 @@
     WORD_BODY_NOASM(name, flags, dstack, rstack)                                                   \
     WORD_END(name)
 
-#endif /* M4TH_INCLUDE_WORD_MH */
+#endif /* M64TH_INCLUDE_WORD_MH */

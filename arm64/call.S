@@ -1,34 +1,34 @@
 /**
  * Copyright (C) 2020 Massimiliano Ghilardi
  *
- * This file is part of m4th.
+ * This file is part of m64th.
  *
- * m4th is free software: you can redistribute it and/or modify
+ * m64th is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation, either version 3
  * of the License, or (at your option) any later version.
  *
- * m4th is distributed in the hope that it will be useful,
+ * m64th is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
+ * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #include "../dispatch/asm.mh"
 
-#define m4fth_run m4th_run
+#define m6fth_run m64th_run
 
 /* clang-format off */
 
 /**
- * m4th_run: enter m4th interpreter from C.
+ * m64th_run: enter m64th interpreter from C.
  * save C registers,
- * load m4th registers from struct (m4th*)
+ * load m64th registers from struct (m64th*)
  *      passed in x0 as per arm64 ABI,
- * execute m4th->code.start[0] and subsequent instructions until m4bye is found.
+ * execute m64th->code.start[0] and subsequent instructions until m6bye is found.
  */
 FUNC_START(th_run)
         stp    x29,  lr,   AT(sp, -SZ12)!;      /* make space for C registers on stack */
@@ -41,68 +41,68 @@ FUNC_START(th_run)
         stp    x23,  x24,  AT(sp, SZ6);
         stp    x25,  x26,  AT(sp, SZ8);
         stp    x27,  x28,  AT(sp, SZ10);
-        ADDI(  x0,   M4TH_OFF_,  M4TH)          /* load m4th pointer               */
-        STOR(  x29,  AT(M4TH, M4TH_OFF_C_REG0)) /* save C stack pointer            */
-        LOAD(  DSTK, AT(M4TH, M4TH_OFF_DSTK))   /* load data   stack pointer       */
+        ADDI(  x0,   M64TH_OFF_,  M64TH)          /* load m64th pointer               */
+        STOR(  x29,  AT(M64TH, M64TH_OFF_C_REG0)) /* save C stack pointer            */
+        LOAD(  DSTK, AT(M64TH, M64TH_OFF_DSTK))   /* load data   stack pointer       */
 
-        /* if m4th->rstack.curr == 0, no dedicated forth return stack is available */
+        /* if m64th->rstack.curr == 0, no dedicated forth return stack is available */
         /* => use C stack as forth return stack                                    */
-        LOAD(  RSTK, AT(M4TH, M4TH_OFF_RSTK))   /* load return stack pointer       */
+        LOAD(  RSTK, AT(M64TH, M64TH_OFF_RSTK))   /* load return stack pointer       */
         JNZ(   RSTK, TO(th_run.stack_done))
 LABEL(th_run.stack_c)
         MOVE(  x29,  RSTK)
-        STOR(  x29,  AT(M4TH, M4TH_OFF_REND))
+        STOR(  x29,  AT(M64TH, M64TH_OFF_REND))
         /* decrease sp to ensure we do not write below it:                         */
         /* required by aarch64 procedure call standard, checked by valgrind        */
         SUB2(IMM(4096),    sp)
 
 LABEL(th_run.stack_done)
-        LOAD(  LOCL, AT(M4TH, M4TH_OFF_LSTK))   /* load local variables pointer    */
-        LOAD(  IP,   AT(M4TH, M4TH_OFF_IP))     /* load instruction  pointer       */
-        LOAD(  FTBL, AT(M4TH, M4TH_OFF_FTABLE)) /* load table m4token -> m4func    */
-        LOAD(  VM,   AT(M4TH, M4TH_OFF_VM))     /* load VM pointer                 */
-        LOAD(  HERE, AT(M4TH, M4TH_OFF_HERE))   /* load HERE pointer               */
+        LOAD(  LOCL, AT(M64TH, M64TH_OFF_LSTK))   /* load local variables pointer    */
+        LOAD(  IP,   AT(M64TH, M64TH_OFF_IP))     /* load instruction  pointer       */
+        LOAD(  FTBL, AT(M64TH, M64TH_OFF_FTABLE)) /* load table m6token -> m6func    */
+        LOAD(  VM,   AT(M64TH, M64TH_OFF_VM))     /* load VM pointer                 */
+        LOAD(  HERE, AT(M64TH, M64TH_OFF_HERE))   /* load HERE pointer               */
         DPOP___DTOP()                           /* load first data   stack element */
         RPOP(  RTOP)                            /* load first return stack element */
         NEXT0()                                 /* enter vm loop                   */
 FUNC_RAWEND(th_run)
 
 
-/** forth vm main loop: fetch m4token instructions and execute them */
+/** forth vm main loop: fetch m6token instructions and execute them */
 FUNC_START(_vm_)
         /* cannot use x0..x8 here: they are used by c-arg-[N] and c-ret-[N] */
-        ldrh   w9,     AT(IP), SZt;        /* load m4token of current vm instruction */
+        ldrh   w9,     AT(IP), SZt;        /* load m6token of current vm instruction */
                                            /* then increment vm IP                   */
-        LOAD(  x9,     AT(FTBL, x9, SZ))   /* load m4func of current vm instruction  */
+        LOAD(  x9,     AT(FTBL, x9, SZ))   /* load m6func of current vm instruction  */
         br     x9;                         /* execute vm instruction                 */
 FUNC_RAWEND(_vm_)
 
 /**
- * exit m4th interpreter and return to C:
- * save m4th registers into struct (m4th*)
+ * exit m64th interpreter and return to C:
+ * save m64th registers into struct (m64th*)
  * load C registers
  * return to C
  */
 FUNC_START(bye)
         DPUSH__DTOP()                           /* save first data   stack element */
         RPUSH( RTOP)                            /* save first return stack element */
-        STOR(  HERE, AT(M4TH, M4TH_OFF_HERE))   /* save HERE pointer               */
-        STOR(  VM,   AT(M4TH, M4TH_OFF_VM))     /* save VM pointer                 */
-        STOR(  FTBL, AT(M4TH, M4TH_OFF_FTABLE)) /* save table m4token -> m4func    */
-        STOR(  IP,   AT(M4TH, M4TH_OFF_IP))     /* save instruction  pointer       */
-        STOR(  LOCL, AT(M4TH, M4TH_OFF_LSTK))   /* save local variables pointer    */
+        STOR(  HERE, AT(M64TH, M64TH_OFF_HERE))   /* save HERE pointer               */
+        STOR(  VM,   AT(M64TH, M64TH_OFF_VM))     /* save VM pointer                 */
+        STOR(  FTBL, AT(M64TH, M64TH_OFF_FTABLE)) /* save table m6token -> m6func    */
+        STOR(  IP,   AT(M64TH, M64TH_OFF_IP))     /* save instruction  pointer       */
+        STOR(  LOCL, AT(M64TH, M64TH_OFF_LSTK))   /* save local variables pointer    */
 
-        /* if m4th->rstack.curr == 0, no forth return stack is available           */
+        /* if m64th->rstack.curr == 0, no forth return stack is available           */
         /* => we used C stack as forth return stack                                */
-        LOAD(  REG1, AT(M4TH, M4TH_OFF_RSTK))
+        LOAD(  REG1, AT(M64TH, M64TH_OFF_RSTK))
         cmp    REG1, IMM(0);
         csel   RSTK, REG1, RSTK, eq;
-        STOR(  RSTK, AT(M4TH, M4TH_OFF_RSTK))
+        STOR(  RSTK, AT(M64TH, M64TH_OFF_RSTK))
 
-        STOR(  DSTK, AT(M4TH, M4TH_OFF_DSTK))   /* save data   stack pointer       */
+        STOR(  DSTK, AT(M64TH, M64TH_OFF_DSTK))   /* save data   stack pointer       */
 
-        LOAD(  x0,   AT(M4TH, M4TH_OFF_EX))     /* load return value = m4th.ex     */
-        LOAD(  x1,   AT(M4TH, M4TH_OFF_C_REG0)) /* load C stack pointer            */
+        LOAD(  x0,   AT(M64TH, M64TH_OFF_EX))     /* load return value = m64th.ex     */
+        LOAD(  x1,   AT(M64TH, M64TH_OFF_C_REG0)) /* load C stack pointer            */
         MOVE(  x1,   sp)
         ldp    x19,  x20,  AT(sp, SZ2);         /* load C registers                */
         ldp    x21,  x22,  AT(sp, SZ4);         /* not clobbered: x18              */
@@ -172,20 +172,20 @@ FUNC_END(_c_arg_6_)
 FUNC_START(_c_call_)
         /* cannot use x0..x8 here, they are used by c-args-[N] and c-ret-[N] */
         LOAD(  x9, AT(IP), IMM(SZ))    /* post-increment                     */
-        LOAD( x10, AT(M4TH, M4TH_OFF_RSTK))
+        LOAD( x10, AT(M64TH, M64TH_OFF_RSTK))
 
         /* save & restore lr around any call that clobbers it, not to break google-gprof */
         RPUSH( lr)
 
         JZ(   x10, TO(_c_call_.stack_c))
 
-        /* m4th->rstack.curr != 0 thus RSTK points to dedicated memory       */
+        /* m64th->rstack.curr != 0 thus RSTK points to dedicated memory       */
         /* and sp points to C stack: nothing to fix                          */
         blr    x9;                     /* call C func, overwrites lr         */
         JUMP(  TO(_c_call_.done))
 
 LABEL(_c_call_.stack_c)
-        /* m4th->rstack.curr == 0 thus RSTK points to C stack, possibly below sp: */
+        /* m64th->rstack.curr == 0 thus RSTK points to C stack, possibly below sp: */
         /* update sp before call, and restore it after call                  */
         AND3(  RSTK,IMM(-SZ2), sp)     /* set sp = RSTK, then align it       */
         blr    x9;                     /* call C func, overwrites lr         */
@@ -230,10 +230,10 @@ FUNC_START(_call_asm_)
 FUNC_RAWEND(_call_asm_)
 
 
-/** pop m4token from dstack and call it. works only for tokens with asm_len != -1 */
+/** pop m6token from dstack and call it. works only for tokens with asm_len != -1 */
 FUNC_START(_exec_token_)
-        ubfx   REG0t,  DTOP_ut, 0, SZt*8;  /* REG0 = m4token                 */
-        LOAD(  REG0,   AT(FTBL, REG0, SZ)) /* REG0 = m4func                  */
+        ubfx   REG0t,  DTOP_ut, 0, SZt*8;  /* REG0 = m6token                 */
+        LOAD(  REG0,   AT(FTBL, REG0, SZ)) /* REG0 = m6func                  */
         DPOP___DTOP()                      /* reload dstack top              */
         br     REG0;                       /* tail-call optimization: jump to token */
         /* the token will return to '(vm)' when done                         */
@@ -267,7 +267,7 @@ LABEL(_asm_vm_execute_.reg0)
          */
         RPUSH2(RTOP, IP)           /* save RTOP, IP                     */
         MOVE(  VM,   RTOP)         /* save VM                           */
-        LOAD(  VM, AT(M4TH, M4TH_OFF_VM)) /* set VM = m4th->vm          */
+        LOAD(  VM, AT(M64TH, M64TH_OFF_VM)) /* set VM = m64th->vm          */
         MOVE(  REG0, IP)                  /* set IP = tokens to execute */
         /* enter '(vm)' interpreter, let token 'execute' pop dtop = xt  */
         JUMP_REG(VM)

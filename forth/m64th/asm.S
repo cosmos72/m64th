@@ -1,50 +1,61 @@
 /**
  * Copyright (C) 2020 Massimiliano Ghilardi
  *
- * This file is part of m4th.
+ * This file is part of m64th.
  *
- * m4th is free software: you can redistribute it and/or modify
+ * m64th is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation, either version 3
  * of the License, or (at your option) any later version.
  *
- * m4th is distributed in the hope that it will be useful,
+ * m64th is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
+ * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #include "../../include/asm.mh"
 #include "../../include/dict.mh"
-#include "../../include/m4th/dict.mh"
+#include "../../include/m64th/dict.mh"
 
 /* clang-format off */
 
 /* ---------------------------------------------------------------------------------------------- */
-/* --- m4th-asm --------------------------------------------------------------------------------- */
+/* --- m64th-asm --------------------------------------------------------------------------------- */
 /* ---------------------------------------------------------------------------------------------- */
 
-WORD(_asm_q_if_,           _asm_q_if_, DSTACK(1,1), RSTACK(0,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS | M4FLAG_MAY_JUMP)
-WORD(_asm_q_if0_,          _asm_q_if_, DSTACK(1,1), RSTACK(0,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS | M4FLAG_MAY_JUMP)
-WORD(_asm_else_,           _asm_q_if0_,DSTACK(0,0), RSTACK(0,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS | M4FLAG_JUMP)
-WORD(_asm_if_,             _asm_else_, DSTACK(1,0), RSTACK(0,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS | M4FLAG_MAY_JUMP)
-WORD(_asm_if0_,            _asm_if_,   DSTACK(1,0), RSTACK(0,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS | M4FLAG_MAY_JUMP)
+WORD(_asm_q_if_,           _asm_q_if_, DSTACK(1,1), RSTACK(0,0), M6FLAG_COMPILE_ONLY | M6FLAG_INLINE_ALWAYS | M6FLAG_MAY_JUMP)
+WORD(_asm_q_if0_,          _asm_q_if_, DSTACK(1,1), RSTACK(0,0), M6FLAG_COMPILE_ONLY | M6FLAG_INLINE_ALWAYS | M6FLAG_MAY_JUMP)
+WORD(_asm_else_,           _asm_q_if0_,DSTACK(0,0), RSTACK(0,0), M6FLAG_COMPILE_ONLY | M6FLAG_INLINE_ALWAYS | M6FLAG_JUMP)
+WORD_START(_asm_if_,       _asm_else_)
+    WORD_DSTACK(1,0)
+    WORD_RSTACK(0,0)
+    WORD_DSTACK(1,0)
+    WORD_RSTACK(0,0)
+    WORD_ASM_LEN(_asm_if_)
+    WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_IMMEDIATE | M6FLAG_INLINE_ALWAYS | M6FLAG_MAY_JUMP | M6FLAG_REEXEC_AFTER_OPTIMIZE)
+    WORD_CODE(
+        _asm_lit_comma_, CELL(FUNC(_asm_if_)), T(FUNC_RET(_asm_if_) - FUNC(_asm_if_)),
+        asm_size, _lit_tok_, _asm_if_, exit
+    )
+WORD_END(_asm_if_)
+WORD(_asm_if0_,            _asm_if_,   DSTACK(1,0), RSTACK(0,0), M6FLAG_COMPILE_ONLY | M6FLAG_INLINE_ALWAYS | M6FLAG_MAY_JUMP)
 /* ( -- ) return from ASM to ASM */
-WORD(_asm_ret_,            _asm_if0_,  DSTACK(0,0), RSTACK(0,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS | M4FLAG_JUMP)
+WORD(_asm_ret_,            _asm_if0_,  DSTACK(0,0), RSTACK(0,0), M6FLAG_COMPILE_ONLY | M6FLAG_INLINE_ALWAYS | M6FLAG_JUMP)
 WORD_START(_asm_vm_catch_, _asm_ret_)
     WORD_DSTACK(-1,-1) /* stack effect when not jumping */
     WORD_RSTACK(0,0)
     WORD_DSTACK(1,0)   /* stack effect when jumping */
     WORD_RSTACK(0,1)
     /*
-     * (asm/vm-catch) uses %rip-relative call to m4f_vm_ and uses %rip-relative data:
+     * (asm/vm-catch) uses %rip-relative call to m6f_vm_ and uses %rip-relative data:
      * cannot inline into native code
      */
     WORD_ASM_NONE()
-    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_MAY_JUMP)
+    WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_INLINE | M6FLAG_MAY_JUMP)
     WORD_CODE(_asm_vm_catch_, exit)
 WORD_END(_asm_vm_catch_)
 WORD_START(_asm_vm_execute_,   _asm_vm_catch_)
@@ -53,17 +64,47 @@ WORD_START(_asm_vm_execute_,   _asm_vm_catch_)
     WORD_DSTACK(1,0)   /* stack effect when jumping */
     WORD_RSTACK(0,1)
     /*
-     * (asm/vm-execute) uses %rip-relative call to m4f_vm_ and uses %rip-relative data:
+     * (asm/vm-execute) uses %rip-relative call to m6f_vm_ and uses %rip-relative data:
      * cannot inline into native code
      */
     WORD_ASM_NONE()
-    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE | M4FLAG_MAY_JUMP)
+    WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_INLINE | M6FLAG_MAY_JUMP)
     WORD_CODE(_asm_vm_execute_, exit)
 WORD_END(_asm_vm_execute_)
 /* ( -- ) return from VM to native ASM code */
-WORD_NOASM(_vm_return_to_asm_, _asm_vm_execute_,   DSTACK(0,0), RSTACK(0,0), M4FLAG_COMPILE_ONLY | M4FLAG_INLINE_ALWAYS | M4FLAG_JUMP)
+WORD_NOASM(_vm_return_to_asm_, _asm_vm_execute_,   DSTACK(0,0), RSTACK(0,0), M6FLAG_COMPILE_ONLY | M6FLAG_INLINE_ALWAYS | M6FLAG_JUMP)
+/* ( -- ) register already-compiled ASM code for current XT */
+WORD_START(_xt_to_asm_finish_, _vm_return_to_asm_)
+    WORD_STACK_NONE()
+    WORD_STACK_NONE()
+    WORD_ASM_NONE()
+    WORD_FLAGS(0)
+    WORD_CODE(
+        CALL(asm_make_func),                        /* ( asm-addr asm-len)                 */
+        latest, name_to_asm_n_store, to_r,          /* (                 ) ( asm-addr    ) */
+
+        one_cell, div_token, two_plus,              /* ( token-offset    ) ( R: asm-addr ) */
+        CALL(xt_shift_tokens),                      /* (                 ) ( R: asm-addr ) */
+
+        here, dup, state_fetch, sub,                /* ( here xt-here    ) ( R: asm-addr ) */
+        allot,                   /* reset HERE = XT    ( here            ) ( R: asm-addr ) */
+
+        _lit_comma_, _call_asm_, /* compile '(call-asm)' ( here          ) ( R: asm-addr ) */
+        r_from, comma,           /* compile asm-addr     ( here          )                 */
+        _lit_comma_, exit,       /* compile 'exit'       ( here          )                 */
+
+        here, minus, allot,      /* restore HERE         (               )                 */
+
+        latest, name_to_flags,                      /* ( m6flags         )                 */
+        _lit2s_, SHORT(M6FLAG_INLINE_ALWAYS|M6FLAG_ASM),
+        or,                                         /* ( m6flags'        )                 */
+        latest, name_to_flags_store, exit           /* (                 )                 */
+    )
+WORD_END(_xt_to_asm_finish_)
+/* followed by CELL(asm-addr) T(len) just calls asm_comma with specified args */
+WORD_NOASM(_asm_lit_comma_,    _xt_to_asm_finish_, DSTACK(0,0), RSTACK(0,0), M6FLAG_COMPILE_ONLY | M6FLAG_INLINE_ALWAYS | M6FLAG_CONSUMES_IP_SZ_SZt)
 /* ( addr u -- ) store assembly code at ASM_HERE and update ASM_HERE */
-WORD_NOASM(asm_comma, _vm_return_to_asm_,  DSTACK(2,0), RSTACK(0,0), WORD_IMPURE)
+WORD_NOASM(asm_comma, _asm_lit_comma_, DSTACK(2,0), RSTACK(0,0), WORD_IMPURE)
 /* ( -- addr ) get ASM_HERE = current ASM address */
 WORD(asm_here,             asm_comma,  DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 /* ( -- addr u ) mark code in ASM buffer as READ+EXEC, and return its range.
@@ -73,11 +114,11 @@ WORD_START(asm_make_func,  asm_here)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_ASM_NONE()
-    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_FLAGS(M6FLAG_INLINE)
     WORD_CODE(
-        user_var_m4th,
+        user_var_m64th,
         _c_locals_save_,
-            _c_arg_1_, _c_call_, CELL(m4th_asm_make_func), _c_ret_2_,
+            _c_arg_1_, _c_call_, CELL(m64th_asm_make_func), _c_ret_2_,
         _c_locals_load_, exit
     )
 WORD_END(asm_make_func)
@@ -91,18 +132,18 @@ WORD_START(asm_reserve,    asm_start)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_ASM_NONE()
-    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_FLAGS(M6FLAG_INLINE)
     WORD_CODE(
-        user_var_m4th, swap,
+        user_var_m64th, swap,
         _c_locals_save_,
-            _c_arg_2_, _c_call_, CELL(m4th_asm_reserve), _c_ret_0_,
+            _c_arg_2_, _c_call_, CELL(m64th_asm_reserve), _c_ret_0_,
         _c_locals_load_, exit
     )
 WORD_END(asm_reserve)
 /* ( nt -- u true | 0 false ) get nt.asm_len */
-WORD(name_to_asm_n,        asm_reserve,    DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(name_to_asm_n,        asm_reserve,    DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M6FLAG_MEM_FETCH)
 /* ( u nt -- ) set name ASM asm_len */
-WORD(name_to_asm_n_store,  name_to_asm_n,  DSTACK(2,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE)
+WORD(name_to_asm_n_store,  name_to_asm_n,  DSTACK(2,2), RSTACK(0,0), WORD_IMPURE | M6FLAG_MEM_STORE)
 /* ( tok -- addr u | 0 0 ) get token ASM address and len */
 WORD_START(token_to_asm,   name_to_asm_n_store)
     WORD_DSTACK(1,2)
@@ -112,14 +153,14 @@ WORD_START(token_to_asm,   name_to_asm_n_store)
     WORD_FLAGS(0)
     WORD_CODE(
         CALL(token_to_asm_replace),                   /* ( token'         ) */
-        dup, token_to_asm_addr,                     /* ( token m4func|0 ) */
+        dup, token_to_asm_addr,                     /* ( token m6func|0 ) */
         _q_if0_, T(4),                              /* ( token 0        ) */
             nip, dup, exit,                         /* ( 0 0            ) */
-        then,                                       /* ( token m4func   ) */
-        swap, token_to_name, name_to_asm_n,         /* ( m4func u t|f   ) */
-        _if0_, T(4),                                /* ( m4func 0       ) */
+        then,                                       /* ( token m6func   ) */
+        swap, token_to_name, name_to_asm_n,         /* ( m6func u t|f   ) */
+        _if0_, T(4),                                /* ( m6func 0       ) */
             nip, dup, exit,                         /* ( 0 0            ) */
-        then, exit                                  /* ( m4func u       ) */
+        then, exit                                  /* ( m6func u       ) */
     )
 WORD_END(token_to_asm)
 /* ( token -- u true | 0 false ) get token ASM len */
@@ -128,7 +169,7 @@ WORD_START(token_to_asm_n,     token_to_asm)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_ASM_NONE()
-    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_FLAGS(M6FLAG_INLINE)
     WORD_CODE(
         CALL(token_to_asm),                         /* ( addr u | 0 0            ) */
         swap, zero_ne, exit                         /* ( u true | 0 false        ) */
@@ -140,7 +181,7 @@ WORD_START(token_to_asm_replace, token_to_asm_n)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_ASM_NONE()
-    WORD_FLAGS(M4FLAG_DATA_TOKENS)
+    WORD_FLAGS(M6FLAG_DATA_TOKENS)
     WORD_CODE_AND_DATA(token_to_asm_replace,
       WORD_CODE_TOKENS(
         _ip_to_data_,                               /* ( token &data n  )               */
@@ -169,8 +210,6 @@ WORD_START(xt_to_asm,      token_to_asm_addr)
     WORD_ASM_NONE()
     WORD_FLAGS(0)
     WORD_CODE(
-        // exit,  /* TO BE TESTED */
-
         /* attempt to compile to ASM only functions containing > 3 tokens                  */
         _num_compiled_,                             /* ( #compiled_tokens                ) */
         three, less_equal,                          /* ( t|f                             ) */
@@ -196,37 +235,9 @@ WORD_START(xt_to_asm,      token_to_asm_addr)
         CALL(_xt_to_asm_finish_), exit              /* (                 )                 */
     )
 WORD_END(xt_to_asm)
-/* ( -- ) register already-compiled ASM code for current XT */
-WORD_START(_xt_to_asm_finish_, xt_to_asm)
-    WORD_STACK_NONE()
-    WORD_STACK_NONE()
-    WORD_ASM_NONE()
-    WORD_FLAGS(0)
-    WORD_CODE(
-        CALL(asm_make_func),                        /* ( asm-addr asm-len)                 */
-        latest, name_to_asm_n_store, to_r,          /* (                 ) ( asm-addr    ) */
-
-        one_cell, div_token, two_plus,              /* ( token-offset    ) ( R: asm-addr ) */
-        CALL(xt_shift_tokens),                      /* (                 ) ( R: asm-addr ) */
-
-        here, dup, state_fetch, sub,                /* ( here xt-here    ) ( R: asm-addr ) */
-        allot,                   /* reset HERE = XT    ( here            ) ( R: asm-addr ) */
-
-        _lit_comma_, _call_asm_, /* compile '(call-asm)' ( here          ) ( R: asm-addr ) */
-        r_from, comma,           /* compile asm-addr     ( here          )                 */
-        _lit_comma_, exit,       /* compile 'exit'       ( here          )                 */
-
-        here, minus, allot,      /* restore HERE         (               )                 */
-
-        latest, name_to_flags,                      /* ( m4flags         )                 */
-        _lit2s_, SHORT(M4FLAG_INLINE_ALWAYS|M4FLAG_ASM),
-        or,                                         /* ( m4flags'        )                 */
-        latest, name_to_flags_store, exit           /* (                 )                 */
-    )
-WORD_END(_xt_to_asm_finish_)
 /* ( -- u t|f ) return required len and true if all tokens between XT and HERE
  * can be compiled to native ASM, otherwise 0 and false */
-WORD_START(xt_to_asm_n,    _xt_to_asm_finish_)
+WORD_START(xt_to_asm_n,    xt_to_asm)
     WORD_DSTACK(0,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()

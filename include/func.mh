@@ -1,31 +1,31 @@
 /**
  * Copyright (C) 2020 Massimiliano Ghilardi
  *
- * This file is part of m4th.
+ * This file is part of m64th.
  *
- * m4th is free software: you can redistribute it and/or modify
+ * m64th is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation, either version 3
  * of the License, or (at your option) any later version.
  *
- * m4th is distributed in the hope that it will be useful,
+ * m64th is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
+ * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_INCLUDE_FUNC_MH
-#define M4TH_INCLUDE_FUNC_MH
+#ifndef M64TH_INCLUDE_FUNC_MH
+#define M64TH_INCLUDE_FUNC_MH
 
 #include "align.mh" /* FUNC_ALIGN() */
 #include "func_alias.mh"
 
-#define FUNC(name) m4f##name
-
-#define FUNC_RET(name) .L.FUNC(name).next
+#define FUNC(name) m6f##name
+#define FUNC_RET(name) .L.FUNC(name).ret
+#define FUNC_ASMRET(name) m6f##name##_ret
 
 #define FUNC_DECL(name)                                                                            \
     .globl FUNC(name);                                                                             \
@@ -48,10 +48,6 @@
     .cfi_endproc;                                                                                  \
     FUNC_SIZE(name)
 
-#define FUNC_START_ASM(name) FUNC_START(name)
-
-#define FUNC_END_ASM(name) FUNC_RET(name) : FUNC_RAWEND(name)
-
 /* clang-format off */
 
 #define FUNC_END(name)                                                                             \
@@ -59,6 +55,11 @@
     NEXT()                                                                                         \
     FUNC_RAWEND(name)
 
+#define FUNC_ASMEND(name)                                                                          \
+    FUNC_RET(name) :                                                                               \
+    FUNC_ASMRET(name) :                                                                            \
+    FUNC_RAWEND(name)
+
 /* clang-format on */
 
-#endif /* M4TH_INCLUDE_FUNC_MH */
+#endif /* M64TH_INCLUDE_FUNC_MH */
