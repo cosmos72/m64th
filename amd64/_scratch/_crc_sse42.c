@@ -1,20 +1,20 @@
 /**
  * Copyright (C) 2020 Massimiliano Ghilardi
  *
- * This file is part of m4th.
+ * This file is part of m64th.
  *
- * m4th is free software: you can redistribute it and/or modify
+ * m64th is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation, either version 3
  * of the License, or (at your option) any later version.
  *
- * m4th is distributed in the hope that it will be useful,
+ * m64th is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
+ * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #ifdef __x86_64__
@@ -32,13 +32,13 @@
  * fdab62ec (c-arg-4)
  */
 
-/* must give same results as m4th_crc1byte() in impl.c */
-uint32_t m4th_crc1byte_asm(uint32_t crc, unsigned char byte) {
+/* must give same results as m64th_crc1byte() in impl.c */
+uint32_t m64th_crc1byte_asm(uint32_t crc, unsigned char byte) {
     return _mm_crc32_u8(crc, byte);
 }
 
-/* must give same results as m4th_crc_string() in impl.c */
-uint32_t m4th_crcstring_asm(const unsigned char *addr, const size_t n) {
+/* must give same results as m64th_crc_string() in impl.c */
+uint32_t m64th_crcstring_asm(const unsigned char *addr, const size_t n) {
     uint32_t crc = ~(uint32_t)0;
     size_t i = 0;
     for (; i + 8 <= n; i += 8) {

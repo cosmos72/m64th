@@ -1,20 +1,20 @@
 /**
  * Copyright (C) 2020 Massimiliano Ghilardi
  *
- * This file is part of m4th.
+ * This file is part of m64th.
  *
- * m4th is free software: you can redistribute it and/or modify
+ * m64th is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation, either version 3
  * of the License, or (at your option) any later version.
  *
- * m4th is distributed in the hope that it will be useful,
+ * m64th is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
+ * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #include "../dispatch/asm.mh"
@@ -24,7 +24,7 @@
 
 /* ----------------------- fetch ----------------------- */
 
-/* byte@    ( addr -- n )   m4th-user */
+/* byte@    ( addr -- n )   m64th-user */
 FUNC_START(byte_fetch)
         LD_sb(DTOP,    AT(DTOP))
 FUNC_END(byte_fetch)
@@ -36,25 +36,25 @@ FUNC_START(c_fetch)
 FUNC_END(c_fetch)
 
 
-/* short@   ( addr -- n )   m4th-user */
+/* short@   ( addr -- n )   m64th-user */
 FUNC_START(short_fetch)
         LD_sh(DTOP,    AT(DTOP))
 FUNC_END(short_fetch)
 
 
-/* ushort@  ( addr -- u )  m4th-user */
+/* ushort@  ( addr -- u )  m64th-user */
 FUNC_START(ushort_fetch)
         LD_uh(DTOP,    AT(DTOP))
 FUNC_END(ushort_fetch)
 
 
-/* int@     ( addr -- n )  m4th-user */
+/* int@     ( addr -- n )  m64th-user */
 FUNC_START(int_fetch)
         LD_sw(DTOP,    AT(DTOP))
 FUNC_END(int_fetch)
 
 
-/* uint@    ( addr -- u )  m4th-user */
+/* uint@    ( addr -- u )  m64th-user */
 FUNC_START(uint_fetch)
         LD_uw(DTOP,    AT(DTOP))
 FUNC_END(uint_fetch)
@@ -95,7 +95,7 @@ FUNC_END(count)
 
 
 #ifndef M4FSHORT_STORE
-/* short!   ( n addr -- ) m4th-user */
+/* short!   ( n addr -- ) m64th-user */
 FUNC_START(short_store)
         DPOP(  REG1)
         STORh( REG1,  AT(DTOP))
@@ -105,7 +105,7 @@ FUNC_END(short_store)
 
 
 #ifndef M4FINT_STORE
-/* int!     ( n addr -- )   m4th-user */
+/* int!     ( n addr -- )   m64th-user */
 FUNC_START(int_store)
         DPOP(  REG1)
         STORw( REG1,   AT(DTOP))
@@ -202,7 +202,7 @@ FUNC_END(cmove)
 #endif /* M4FCMOVE */
 
 
-/* crc-cell ( x -- crc ) m4th-user: compute CRC32c of a cell */
+/* crc-cell ( x -- crc ) m64th-user: compute CRC32c of a cell */
 FUNC_START(crc_cell)
         DPUSH__DTOP()                          /* ( x _                  ) */
         STOR(  DSTK,   AT(DSTK, -SZ))
@@ -214,7 +214,7 @@ FUNC_END(crc_cell)
 
 
 #ifndef M4FCRC_STRING
-/* crc-string ( c-addr u -- crc ) m4th-user: compute CRC32c of a string */
+/* crc-string ( c-addr u -- crc ) m64th-user: compute CRC32c of a string */
 FUNC_START(crc_string)
         MOVE(  DTOP,   REG2)               /* b = u                    */
 #ifdef RFFFw
@@ -225,7 +225,7 @@ FUNC_START(crc_string)
         DPOP___DTOP()                      /* dtop = c-addr            */
         JZ(    REG2,   TO(crc_string.done))
         ZERO(  REG0)                       /* @ = 0                    */
-        ADDROF_4G(m4th_crctable,   REG4)   /* d = table                */
+        ADDROF_4G(m64th_crctable,   REG4)   /* d = table                */
 FUNC_ALIGN()
 LABEL(crc_string.loop)
         LD_ub( REG1,   AT(DTOP, REG0, 1))  /* a = c-addr[@] = str[i]   */
@@ -347,7 +347,7 @@ FUNC_RAWEND(minus_two_roll)
 
 /**
  * string-ci=  ( c-addr1 c-addr2 u -- c-addr1 c-addr2 u t|f )
- * m4th-user: compare two strings, ignoring case
+ * m64th-user: compare two strings, ignoring case
  */
 FUNC_START(string_ci_equal)
         LOAD(  REG2,   AT(DSTK))       /* b = addr2 */
@@ -423,7 +423,7 @@ FUNC_END(string_ci_equal)
 
 /**
  * string-find-blank ( c-addr u -- u' )
- * m4th-user: return index of first blank (i.e. char <= 32) in string.
+ * m64th-user: return index of first blank (i.e. char <= 32) in string.
  * return string length if not found.
  */
 FUNC_START(string_find_blank)
@@ -442,7 +442,7 @@ FUNC_END(string_find_blank)
 
 /**
  * string-find-char ( c-addr u ch -- u' )
- * m4th-user: return index of first ch in string.
+ * m64th-user: return index of first ch in string.
  * return string length if not found.
  */
 FUNC_START(string_find_char)
@@ -460,7 +460,7 @@ FUNC_END(string_find_char)
 
 /*
  * string-find-nonblank ( c-addr u -- u' )
- * m4th-user: get index of first non-blank (i.e. char > 32) in string.
+ * m64th-user: get index of first non-blank (i.e. char > 32) in string.
  * return string length if not found.
  */
 FUNC_START(string_find_nonblank)
@@ -479,7 +479,7 @@ FUNC_END(string_find_nonblank)
 
 /*
  * string>lower ( c-addr-src c-addr-dst u -- c-addr-dst u )
- * m4th-user: copy a string converting it to lower case
+ * m64th-user: copy a string converting it to lower case
  */
 FUNC_START(string_to_lower)
         LOAD(  REG2,   AT(DSTK))           /* b = dst = c-addr-dst   */

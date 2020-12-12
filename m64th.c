@@ -1,29 +1,29 @@
 /**
  * Copyright (C) 2020 Massimiliano Ghilardi
  *
- * This file is part of m4th.
+ * This file is part of m64th.
  *
- * m4th is free software: you can redistribute it and/or modify
+ * m64th is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation, either version 3
  * of the License, or (at your option) any later version.
  *
- * m4th is distributed in the hope that it will be useful,
+ * m64th is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
+ * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "include/m4th.h"
+#include "include/m64th.h"
 #include "impl.h" /* tfalse, ttrue */
 #include "include/dict_all.mh"
 #include "include/dict_fwd.h"
 #include "include/func.mh"
 #include "include/func_fwd.h"
-#include "include/m4th.mh" /* M4TH_PICT_MAXSIZE */
+#include "include/m64th.mh" /* M4TH_PICT_MAXSIZE */
 #include "include/macro.mh"
 #include "include/word_fwd.h"
 #include "include/wordlist_fwd.h"
@@ -52,15 +52,15 @@ enum {
     asm_n = 16384,
 };
 
-typedef char m4th_assert_sizeof_m4token_equal_SZt[(sizeof(m4token) == SZt) ? 1 : -1];
-typedef char m4th_assert_sizeof_m4cell_equal_SZ[(sizeof(m4cell) == SZ) ? 1 : -1];
+typedef char m64th_assert_sizeof_m4token_equal_SZt[(sizeof(m4token) == SZt) ? 1 : -1];
+typedef char m64th_assert_sizeof_m4cell_equal_SZ[(sizeof(m4cell) == SZ) ? 1 : -1];
 
-static inline void dpush(m4th *m, m4cell x) {
+static inline void dpush(m64th *m, m4cell x) {
     *--m->dstack.curr = x;
 }
 
 #if 0  /* unused */
-static inline m4cell dpop(m4th *m) {
+static inline m4cell dpop(m64th *m) {
     return *m->dstack.curr++;
 }
 #endif /* 0 */
@@ -1235,7 +1235,7 @@ m4wordlist *m4wordlist_new(void) {
         return NULL;
     }
     memset(t, 0, sizeof(m4tuple));
-    crc = m4th_crc_cell((m4cell)t);
+    crc = m64th_crc_cell((m4cell)t);
     t->name_n = 12;
     memcpy(t->name, "wid-", 4);
     for (i = 0; i < 8; i++) {
@@ -1291,24 +1291,24 @@ void m4wordlist_print(const m4wordlist *wid, m4printmode mode, FILE *out) {
     m4dict_print(wid->dict, wid->last, mode, out);
 }
 
-/* ----------------------- m4th ----------------------- */
+/* ----------------------- m64th ----------------------- */
 
-void m4th_init(void) {
+void m64th_init(void) {
     static m4cell initialized = 0;
     if (!initialized) {
-        m4th_cpu_features_autoenable();
-        m4th_crcinit(m4th_crctable);
+        m64th_cpu_features_autoenable();
+        m64th_crcinit(m64th_crctable);
         initialized = ttrue;
     }
 }
 
-m4th *m4th_new(m4th_opt options) {
+m64th *m64th_new(m64th_opt options) {
     extern void m4f_vm_(m4arg _);
-    m4th *m;
+    m64th *m;
 
-    m4th_init();
+    m64th_init();
 
-    m = (m4th *)m4mem_allocate(sizeof(m4th));
+    m = (m64th *)m4mem_allocate(sizeof(m64th));
     m->dstack = m4stack_alloc(dstack_n);
     if (options & m4opt_return_stack_is_private) {
         m->rstack = m4stack_alloc(rstack_n);
@@ -1342,18 +1342,18 @@ m4th *m4th_new(m4th_opt options) {
     /* see https://forth-standard.org/standard/search/FORTH-WORDLIST */
     m->compile_wid = &m4wordlist_forth;
     memset(&m->searchorder, '\0', sizeof(m->searchorder));
-    /* put 'm4th-user' wordlist at lower priority:                        */
+    /* put 'm64th-user' wordlist at lower priority:                        */
     /* compilation wordlist is initially 'forth' and newly-defined words  */
     /* should shadow existing ones in either wordlist                     */
-    m4th_also(m, &m4wordlist_m4th_user);
-    m4th_also(m, &m4wordlist_forth);
+    m64th_also(m, &m4wordlist_m64th_user);
+    m64th_also(m, &m4wordlist_forth);
     /* redundancy: help users against removing 'forth' wordlist accidentally */
-    m4th_also(m, &m4wordlist_forth);
+    m64th_also(m, &m4wordlist_forth);
 
     return m;
 }
 
-void m4th_del(m4th *m) {
+void m64th_del(m64th *m) {
     if (m) {
         m4cbuf_unmap(&m->asm_);
         m4cbuf_free(&m->mem);
@@ -1367,7 +1367,7 @@ void m4th_del(m4th *m) {
 }
 
 /* does NOT modify m->state and user variables as m->base, m->searchorder... */
-void m4th_clear(m4th *m) {
+void m64th_clear(m64th *m) {
     extern void m4f_vm_(m4arg _);
 
     m->dstack.curr = m->dstack.end;
@@ -1390,11 +1390,11 @@ void m4th_clear(m4th *m) {
     m->ex_message.n = 0;
 }
 
-const m4cell *m4th_state(const m4th *m) {
+const m4cell *m64th_state(const m64th *m) {
     return (const m4cell *)&m->xt;
 }
 
-void m4th_also(m4th *m, m4wordlist *wid) {
+void m64th_also(m64th *m, m4wordlist *wid) {
     m4searchorder *s = &m->searchorder;
     if (wid != NULL && s->n < m4searchorder_max) {
         s->addr[s->n++] = wid;
@@ -1440,7 +1440,7 @@ static m4cell m4locals_set_indexes(m4locals *ls) {
 
 /* try to add a new local variable to m->locals. return ttrue if successful. */
 /* empty localname means 'end of local variables' */
-m4cell m4th_local(m4th *m, m4string localname) {
+m4cell m64th_local(m64th *m, m4string localname) {
     m4locals *ls = m->locals;
     m4local *l;
     m4ucell len = localname.n;
@@ -1486,7 +1486,7 @@ m4cell m4locals_find(const m4locals *ls, m4string localname) {
  * reserves space for at least 'len' bytes in ASM buffer
  * and protects it as READ+WRITE+EXEC
  */
-void m4th_asm_reserve(m4th *m, m4ucell len) {
+void m64th_asm_reserve(m64th *m, m4ucell len) {
     if (len <= (m4ucell)(m->asm_.end - m->asm_.curr)) {
         m4cbuf_protect(&m->asm_, m4protect_read_write_exec);
         return;
@@ -1517,10 +1517,10 @@ static void m4mem_clear_icache(void *beg, void *end) {
 /**
  * C implementation of asm-make-func:
  * 1. protect the ASM buffer as READ+EXEC
- * 2. set m4th.asm_.curr = m4mem_funcalign_up(m->asm_here).
- * 3. return original value of m4th.asm_.curr
+ * 2. set m64th.asm_.curr = m4mem_funcalign_up(m->asm_here).
+ * 3. return original value of m64th.asm_.curr
  */
-m4string m4th_asm_make_func(m4th *m) {
+m4string m64th_asm_make_func(m64th *m) {
     m4char *beg = m->asm_.start;
     m4char *func_beg = m->asm_.curr;
     m4char *func_end = m->asm_here;
@@ -1535,7 +1535,7 @@ m4string m4th_asm_make_func(m4th *m) {
 }
 
 /* C implementation of ':' i.e. start compiling a new word */
-void m4th_colon(m4th *m, m4string name) {
+void m64th_colon(m64th *m, m4string name) {
     m4char *here = m->mem.curr;
     m4word *w;
     if (!name.addr) {
@@ -1566,7 +1566,7 @@ void m4th_colon(m4th *m, m4string name) {
 }
 
 /* C implementation of ';' i.e. finish compiling a new word */
-void m4th_semi(m4th *m) {
+void m64th_semi(m64th *m) {
     m4token *here = (m4token *)m4_aligned_at(m->mem.curr, SZt);
     if (m->lastw == NULL) {
         return;
@@ -1578,7 +1578,7 @@ void m4th_semi(m4th *m) {
 }
 
 /* compute m->lastw->data_n (if not compiling) or m->lastw->code_n (if compiling) from HERE */
-void m4th_sync_lastw(m4th *m) {
+void m64th_sync_lastw(m64th *m) {
     m4word *w = m->lastw;
     if (w == NULL) {
         ;
@@ -1592,7 +1592,7 @@ void m4th_sync_lastw(m4th *m) {
     }
 }
 
-m4cell m4th_knows(const m4th *m, const m4wordlist *wid) {
+m4cell m64th_knows(const m64th *m, const m4wordlist *wid) {
     const m4searchorder *s = &m->searchorder;
     m4ucell i, n = s->n;
     if (wid == NULL) {
@@ -1606,7 +1606,7 @@ m4cell m4th_knows(const m4th *m, const m4wordlist *wid) {
     return tfalse;
 }
 
-m4cell m4th_execute_word(m4th *m, const m4word *w) {
+m4cell m64th_execute_word(m64th *m, const m4word *w) {
     m4token code[2 + SZ / SZt];
     const m4token *save_ip = m->ip;
     m4cell ret;
@@ -1617,14 +1617,14 @@ m4cell m4th_execute_word(m4th *m, const m4word *w) {
         code[1 + SZ / SZt] = m4bye;
     }
     m->ip = code;
-    ret = m4th_run(m);
+    ret = m64th_run(m);
     m->ip = save_ip;
     return ret;
 }
 
 /** wrapper around REPL */
-m4cell m4th_repl(m4th *m) {
-    return m4th_execute_word(m, &m4w_repl);
+m4cell m64th_repl(m64th *m) {
+    return m64th_execute_word(m, &m4w_repl);
 }
 
 /* ----------------------- optional cpu features ----------------------- */
@@ -1633,23 +1633,23 @@ extern void m4fcrc_cell_simd(m4arg _);
 extern void m4fcrc_string(m4arg _);
 extern void m4fcrc_string_simd(m4arg _);
 
-m4cell m4th_cpu_features_enabled(void) {
+m4cell m64th_cpu_features_enabled(void) {
     m4cell mask = 0;
     if (ftable[m4crc_cell] == m4fcrc_cell_simd || ftable[m4crc_string] == m4fcrc_string_simd) {
-        mask |= m4th_cpu_feature_crc32c;
+        mask |= m64th_cpu_feature_crc32c;
     }
     return mask;
 }
 
-void m4th_cpu_features_enable(m4cell mask) {
-    if (mask & m4th_cpu_feature_crc32c) {
+void m64th_cpu_features_enable(m4cell mask) {
+    if (mask & m64th_cpu_feature_crc32c) {
         ftable[m4crc_cell] = m4fcrc_cell_simd;
         ftable[m4crc_string] = m4fcrc_string_simd;
     }
 }
 
-void m4th_cpu_features_disable(m4cell mask) {
-    if (mask & m4th_cpu_feature_crc32c) {
+void m64th_cpu_features_disable(m4cell mask) {
+    if (mask & m64th_cpu_feature_crc32c) {
         ftable[m4crc_cell] = m4fcrc_cell;
         ftable[m4crc_string] = m4fcrc_string;
     }

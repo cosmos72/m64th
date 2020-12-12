@@ -1,20 +1,20 @@
 /**
  * Copyright (C) 2020 Massimiliano Ghilardi
  *
- * This file is part of m4th.
+ * This file is part of m64th.
  *
- * m4th is free software: you can redistribute it and/or modify
+ * m64th is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation, either version 3
  * of the License, or (at your option) any later version.
  *
- * m4th is distributed in the hope that it will be useful,
+ * m64th is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
+ * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #ifndef M4TH_ASM_S
@@ -70,19 +70,19 @@ SECTION_DATA() /* SECTION_RODATA() causes linker warning: relocation in read-onl
 MARKER(asm_data_start)
 
 #include "forth/std.S"
-#include "forth/m4th.S"
+#include "forth/m64th.S"
 
 WORDLIST(forth)
 WORDLIST(forth_root)
-WORDLIST(m4th_asm)
-WORDLIST(m4th_c)
-WORDLIST(m4th_core)
-WORDLIST(m4th_impl)
-WORDLIST(m4th_user)
+WORDLIST(m64th_asm)
+WORDLIST(m64th_c)
+WORDLIST(m64th_core)
+WORDLIST(m64th_impl)
+WORDLIST(m64th_user)
 
 MARKER(asm_data_end)
 
-        .ident "m4th 0.0.0"
+        .ident "m64th 0.0.0"
         .section .note.GNU-stack,"",@progbits
 
 #endif /* M4TH_ASM_S */

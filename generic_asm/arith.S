@@ -1,20 +1,20 @@
 /**
  * Copyright (C) 2020 Massimiliano Ghilardi
  *
- * This file is part of m4th.
+ * This file is part of m64th.
  *
- * m4th is free software: you can redistribute it and/or modify
+ * m64th is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation, either version 3
  * of the License, or (at your option) any later version.
  *
- * m4th is distributed in the hope that it will be useful,
+ * m64th is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
+ * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #include "../dispatch/asm.mh"
@@ -99,20 +99,20 @@ FUNC_END(minus)
 #endif
 
 
-FUNC_START(minus_two)      /* -2   m4th-impl */
+FUNC_START(minus_two)      /* -2   m64th-impl */
         DPUSH__DTOP()
         MOVI(  -2,     DTOP)
 FUNC_END(minus_two)
 
 
-FUNC_START(minus_one)      /* -1   m4th-impl */
+FUNC_START(minus_one)      /* -1   m64th-impl */
         DPUSH__DTOP()
         MOVE(  IMM_1,  DTOP)
 FUNC_END(minus_one)
 
 
 #ifndef M4FZERO
-FUNC_START(zero)           /* 0   m4th-impl */
+FUNC_START(zero)           /* 0   m64th-impl */
         DPUSH__DTOP()
         ZERO(  DTOP)
 FUNC_END(zero)
@@ -124,7 +124,7 @@ FUNC_START(zero_less)      /* 0< */
 FUNC_END(zero_less)
 
 
-FUNC_START(one)            /* 1    m4th-impl */
+FUNC_START(one)            /* 1    m64th-impl */
         DPUSH__DTOP()
         MOVI(  1,      DTOP)
 FUNC_END(one)
@@ -140,7 +140,7 @@ FUNC_START(one_minus)      /* 1-   */
 FUNC_END(one_minus)
 
 
-FUNC_START(two)            /* 2   m4th-impl */
+FUNC_START(two)            /* 2   m64th-impl */
         DPUSH__DTOP()
         MOVI(  2,      DTOP)
 FUNC_END(two)
@@ -151,12 +151,12 @@ FUNC_START(two_times)      /* 2*   */
 FUNC_END(two_times)
 
 
-FUNC_START(two_plus)       /* 2+  m4th-user */
+FUNC_START(two_plus)       /* 2+  m64th-user */
         ADD2(  IMM(2), DTOP)
 FUNC_END(two_plus)
 
 
-FUNC_START(two_minus)      /* 2-  m4th-user */
+FUNC_START(two_minus)      /* 2-  m64th-user */
         SUB2(  IMM(2), DTOP)
 FUNC_END(two_minus)
 
@@ -166,78 +166,78 @@ FUNC_START(two_div)        /* 2/   floored divide by 2 */
 FUNC_END(two_div)
 
 
-FUNC_START(three)          /* 3   m4th-impl */
+FUNC_START(three)          /* 3   m64th-impl */
         DPUSH__DTOP()
         MOVI(  3,      DTOP)
 FUNC_END(three)
 
 
-FUNC_START(four)           /* 4   m4th-impl */
+FUNC_START(four)           /* 4   m64th-impl */
         DPUSH__DTOP()
         MOVI(  4,      DTOP)
 FUNC_END(four)
 
 
-FUNC_START(four_times)     /* 4*  m4th-user */
+FUNC_START(four_times)     /* 4*  m64th-user */
         SHL2(  IMM(2), DTOP)
 FUNC_END(four_times)
 
 
-FUNC_START(four_plus)      /* 4+  m4th-user */
+FUNC_START(four_plus)      /* 4+  m64th-user */
         ADD2(  IMM(4), DTOP)
 FUNC_END(four_plus)
 
 
-FUNC_START(four_minus)     /* 4-  m4th-user */
+FUNC_START(four_minus)     /* 4-  m64th-user */
         SUB2(  IMM(4), DTOP)
 FUNC_END(four_minus)
 
 
-FUNC_START(four_div)       /* 4/   m4th-user floored divide by 4 */
+FUNC_START(four_div)       /* 4/   m64th-user floored divide by 4 */
         SAR2(  IMM(2), DTOP)  /* SAR2 rounds toward -infinity */
 FUNC_END(four_div)
 
 
-FUNC_START(five)           /* 5   m4th-impl */
+FUNC_START(five)           /* 5   m64th-impl */
         DPUSH__DTOP()
         MOVI(  5,      DTOP)
 FUNC_END(five)
 
 
-FUNC_START(six)            /* 6   m4th-impl */
+FUNC_START(six)            /* 6   m64th-impl */
         DPUSH__DTOP()
         MOVI(  6,      DTOP)
 FUNC_END(six)
 
 
-FUNC_START(seven)          /* 7   m4th-impl */
+FUNC_START(seven)          /* 7   m64th-impl */
         DPUSH__DTOP()
         MOVI(  7,      DTOP)
 FUNC_END(seven)
 
 
-FUNC_START(eight)          /* 8   m4th-impl */
+FUNC_START(eight)          /* 8   m64th-impl */
         DPUSH__DTOP()
         MOVI(  8,      DTOP)
 FUNC_END(eight)
 
 
-FUNC_START(eight_times)    /* 8*  m4th-user */
+FUNC_START(eight_times)    /* 8*  m64th-user */
         SHL2(  IMM(3), DTOP)
 FUNC_END(eight_times)
 
 
-FUNC_START(eight_plus)     /* 8+  m4th-user */
+FUNC_START(eight_plus)     /* 8+  m64th-user */
         ADD2(  IMM(8), DTOP)
 FUNC_END(eight_plus)
 
 
-FUNC_START(eight_minus)    /* 8-  m4th-user */
+FUNC_START(eight_minus)    /* 8-  m64th-user */
         SUB2(  IMM(8), DTOP)
 FUNC_END(eight_minus)
 
 
-FUNC_START(eight_div)      /* 8/   m4th-user floored divide by 8 */
+FUNC_START(eight_div)      /* 8/   m64th-user floored divide by 8 */
         SAR2(  IMM(3), DTOP)  /* SAR2 rounds toward -infinity */
 FUNC_END(eight_div)
 
@@ -248,12 +248,12 @@ FUNC_START(question_dup)   /* ?dup */
 FUNC_END(question_dup)
 
 
-FUNC_START(short_aligned)    /* short-aligned m4th-user */
+FUNC_START(short_aligned)    /* short-aligned m64th-user */
         ALIGN( 2,      DTOP)
 FUNC_END(short_aligned)
 
 
-FUNC_START(int_aligned)      /* int-aligned   m4th-user */
+FUNC_START(int_aligned)      /* int-aligned   m64th-user */
         ALIGN( 4,      DTOP)
 FUNC_END(int_aligned)
 
@@ -281,7 +281,7 @@ FUNC_START(bl)
 FUNC_END(bl)
 
 
-FUNC_START(bounds) /* bounds m4th-user ( c-addr u -- c-addr+u c-addr ) get string bounds */
+FUNC_START(bounds) /* bounds m64th-user ( c-addr u -- c-addr+u c-addr ) get string bounds */
         LOAD(  REG1,   AT(DSTK))
         MOVE(  REG1,   REG2)
         ADD2(  DTOP,   REG1)
@@ -290,7 +290,7 @@ FUNC_START(bounds) /* bounds m4th-user ( c-addr u -- c-addr+u c-addr ) get strin
 FUNC_END(bounds)
 
 
-FUNC_START(breakpoint)           /* breakpoint    m4th-user */
+FUNC_START(breakpoint)           /* breakpoint    m64th-user */
 #ifdef __x86_64__
         int3;
 #elif __aarch64__
@@ -317,7 +317,7 @@ FUNC_START(dup)
 FUNC_END(dup)
 
 
-FUNC_START(flip)          /* flip      m4th-user ( a b c -- c b a ) equivalent to: swap rot */
+FUNC_START(flip)          /* flip      m64th-user ( a b c -- c b a ) equivalent to: swap rot */
         LOAD(  REG1,   AT(DSTK, SZ))
         STOR(  DTOP,   AT(DSTK, SZ))
         MOVE(  REG1,   DTOP)
@@ -355,11 +355,11 @@ FUNC_START(nip)
 FUNC_END(nip)
 
 
-FUNC_START(noop)           /* no-op    m4th-user */
+FUNC_START(noop)           /* no-op    m64th-user */
 FUNC_END(noop)
 
 
-FUNC_START(n_to_drop)      /* n>drop ( xn .. x1 n -- ) m4th-user: drop n cells  */
+FUNC_START(n_to_drop)      /* n>drop ( xn .. x1 n -- ) m64th-user: drop n cells  */
         ADD4(  DSTK,   DTOP, PSZ,  DSTK)
         DPOP___DTOP()
 FUNC_END(n_to_drop)
@@ -385,14 +385,14 @@ FUNC_START(pick)
 FUNC_END(pick)
 
 
-/* hop ( a b c -- a b c a ) m4th-user equivalent to '2 pick' */
+/* hop ( a b c -- a b c a ) m64th-user equivalent to '2 pick' */
 FUNC_START(hop)
         DPUSH__DTOP()
         LOAD(  DTOP,   AT(DSTK, SZ2))
 FUNC_END(hop)
 
 
-FUNC_START(rdepth)          /* ( -- n ) m4th-user get return stack depth */
+FUNC_START(rdepth)          /* ( -- n ) m64th-user get return stack depth */
         DPUSH__DTOP()
         LOAD(  DTOP,   AT(M4TH, M4TH_OFF_REND))
         SUB2(  RSTK,   DTOP)
@@ -409,7 +409,7 @@ FUNC_START(rot)            /* rot   ( a b c -- b c a ) */
 FUNC_END(rot)
 
 
-FUNC_START(minus_rot)      /* -rot  ( a b c -- c a b ) m4th-user */
+FUNC_START(minus_rot)      /* -rot  ( a b c -- c a b ) m64th-user */
         LOAD(  REG1,   AT(DSTK,SZ))  /* REG1 = a */
         STOR(  DTOP,   AT(DSTK,SZ))  /* store  c */
         LOAD(  DTOP,   AT(DSTK))     /* DTOP = b */
@@ -417,19 +417,19 @@ FUNC_START(minus_rot)      /* -rot  ( a b c -- c a b ) m4th-user */
 FUNC_END(minus_rot)
 
 
-FUNC_START(sp_fetch)       /* sp@   m4th-user ( x -- x addr-of-x ) get current data stack address */
+FUNC_START(sp_fetch)       /* sp@   m64th-user ( x -- x addr-of-x ) get current data stack address */
         DPUSH__DTOP()
         MOVE(  DSTK,   DTOP)
 FUNC_END(sp_fetch)
 
 
-FUNC_START(squared)        /* squared  m4th-user equivalent to: dup * */
+FUNC_START(squared)        /* squared  m64th-user equivalent to: dup * */
         MUL2(  DTOP,   DTOP)
 FUNC_END(squared)
 
 
 #ifndef M4FSUB
-FUNC_START(sub)            /* sub      m4th-user equivalent to: swap - */
+FUNC_START(sub)            /* sub      m64th-user equivalent to: swap - */
         DPOP(  REG1)
         SUB2(  REG1,   DTOP)
 FUNC_END(sub)
@@ -443,7 +443,7 @@ FUNC_START(swap)           /* remember: x86 instruction 'xchg' with memory opera
 FUNC_END(swap)
 
 
-FUNC_START(trail)          /* trail    m4th-user ( a b -- a a b ) equivalent to: over swap */
+FUNC_START(trail)          /* trail    m64th-user ( a b -- a a b ) equivalent to: over swap */
         LOAD(  REG1,   AT(DSTK))
         DPUSH( REG1)
 FUNC_END(trail)

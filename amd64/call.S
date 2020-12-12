@@ -1,35 +1,35 @@
 /**
  * Copyright (C) 2020 Massimiliano Ghilardi
  *
- * This file is part of m4th.
+ * This file is part of m64th.
  *
- * m4th is free software: you can redistribute it and/or modify
+ * m64th is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation, either version 3
  * of the License, or (at your option) any later version.
  *
- * m4th is distributed in the hope that it will be useful,
+ * m64th is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
+ * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #include "../dispatch/asm.mh"
 #include "../include/word.mh" /* WORD_CODE_ALIGN(), WORD_CODE_TOKENS() */
 
-#define m4fth_run m4th_run
+#define m4fth_run m64th_run
 
 /* clang-format off */
 
 /**
- * m4th_run: enter m4th interpreter from C.
+ * m64th_run: enter m64th interpreter from C.
  * save C registers,
- * load m4th registers from struct (m4th*)
+ * load m64th registers from struct (m64th*)
  *      passed in %rdi as per SYS V amd64 ABI,
- * execute m4th->code.start[0] and subsequent instructions until m4bye is found.
+ * execute m64th->code.start[0] and subsequent instructions until m4bye is found.
  */
 FUNC_START(th_run)
         push   %rbp;                              /* save C registers                */
@@ -38,12 +38,12 @@ FUNC_START(th_run)
         push   %r13;
         push   %r14;
         push   %r15;
-        ADDI(  %rdi,   M4TH_OFF_,  M4TH)          /* load m4th pointer               */
+        ADDI(  %rdi,   M4TH_OFF_,  M4TH)          /* load m64th pointer               */
         STOR(  %rsp,   AT(M4TH, M4TH_OFF_C_REG0)) /* save C stack pointer            */
         LOAD(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))   /* load data   stack pointer       */
 
         /* changing %rsp to different stack breaks google-pprof: */
-        /* do it only if requested i.e. m4th->rstack.curr != 0   */
+        /* do it only if requested i.e. m64th->rstack.curr != 0   */
         LOAD(  REG1,   AT(M4TH, M4TH_OFF_RSTK))   /* load return stack pointer       */
         test   REG1,   REG1;
         cmovne REG1,   RSTK;
@@ -74,9 +74,9 @@ FUNC_RAWEND(_vm_)
 
 
 /**
- * exit m4th interpreter and return to C.
+ * exit m64th interpreter and return to C.
  * 1. save local variables to RSTK
- * 2. save m4th registers into struct (m4th*)
+ * 2. save m64th registers into struct (m64th*)
  * 3. load C registers
  * 4. return to C
  */
@@ -91,7 +91,7 @@ FUNC_START(bye)
 
         LOAD(  REG1,   AT(M4TH, M4TH_OFF_RSTK))   /* load return stack pointer       */
         test   REG1,   REG1;
-        /* if m4th->rstack.curr != 0, forth return stack is dedicated memory         */
+        /* if m64th->rstack.curr != 0, forth return stack is dedicated memory         */
         /* then save RSTK AT(M4TH, M4TH_OFF_RSTK)                                    */
         /* else write zero AT(M4TH, M4TH_OFF_REND)                                   */
         ADDI(  M4TH,   M4TH_OFF_RSTK, REG2)       /* RSTK should be saved here       */
@@ -102,7 +102,7 @@ FUNC_START(bye)
 
         STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))   /* save data   stack pointer       */
         LOAD(  %rsp,   AT(M4TH, M4TH_OFF_C_REG0)) /* load C stack pointer            */
-        LOAD(  %rax,   AT(M4TH, M4TH_OFF_EX))     /* load return value = m4th.ex     */
+        LOAD(  %rax,   AT(M4TH, M4TH_OFF_EX))     /* load return value = m64th.ex     */
         pop    %r15;                              /* load C registers                */
         pop    %r14;
         pop    %r13;
@@ -116,7 +116,7 @@ FUNC_RAWEND(bye)
 /* pop 0 args, prepare for C function call */
 FUNC_START(_c_arg_0_)
         SUB2(  IMM(SZ),DSTK)
-        /* save DSTK, LOCL to m4th. helps if C calls back into forth                 */
+        /* save DSTK, LOCL to m64th. helps if C calls back into forth                 */
         STOR(  LOCL,   AT(M4TH, M4TH_OFF_LSTK))    /* save LOCL = %r9  (clobbered)   */
         STOR(  DSTK,   AT(M4TH, M4TH_OFF_DSTK))    /* save DSTK = %rsi (clobbered)   */
         STOR(  DTOP,   AT(DSTK))                   /* will be reloaded by c-ret-[N]  */
@@ -196,19 +196,19 @@ FUNC_START(_c_call_)
         LOAD(  REG0,   AT(M4TH, M4TH_OFF_RSTK))
         JZ(    REG0,   TO(_c_call_.stack_c))
 
-        /* m4th->rstack.curr != 0 thus forth RSTK i.e. %rsp points to private memory:*/
+        /* m64th->rstack.curr != 0 thus forth RSTK i.e. %rsp points to private memory:*/
         /* => update %rsp to point to C stack before call, and restore it after call */
         STOR(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))
         LOAD(  %rsp,   AT(M4TH, M4TH_OFF_C_REG0))
         call   *AT(IP);
-        /* C functions may clobber m4th.c_regs[0] if they call back into forth       */
-        /* => restore m4th.c_regs[0] = C stack = %rsp now                            */
+        /* C functions may clobber m64th.c_regs[0] if they call back into forth       */
+        /* => restore m64th.c_regs[0] = C stack = %rsp now                            */
         STOR(  %rsp,   AT(M4TH, M4TH_OFF_C_REG0))
         LOAD(  RSTK,   AT(M4TH, M4TH_OFF_RSTK))
         JUMP(  TO(_c_call_.finish))
 
 LABEL(_c_call_.stack_c)
-        /* m4th->rstack.curr == 0 thus forth RSTK i.e. %rsp points to C stack:       */
+        /* m64th->rstack.curr == 0 thus forth RSTK i.e. %rsp points to C stack:       */
         /* per x86-64 SYSV ABI, we must align %rsp to 16 bytes                       */
         MOVE(  %rsp,   REG0)
         SUB2(IMM(SZ),  %rsp)
@@ -297,7 +297,7 @@ FUNC_START(_asm_vm_execute_)
 LABEL(_asm_vm_execute_.reg0)
         RPUSH( IP)                        /* save IP                    */
         RPUSH( VM)                        /* save VM                    */
-        LOAD(  VM, AT(M4TH, M4TH_OFF_VM)) /* set VM = m4th->vm          */
+        LOAD(  VM, AT(M4TH, M4TH_OFF_VM)) /* set VM = m64th->vm          */
         MOVE(  REG0,   IP)                /* set IP = tokens to execute */
         /* enter '(vm)' interpreter, let token 'execute' pop dtop = xt  */
         JUMP_REG(VM)

@@ -1,20 +1,20 @@
 /**
  * Copyright (C) 2020 Massimiliano Ghilardi
  *
- * This file is part of m4th.
+ * This file is part of m64th.
  *
- * m4th is free software: you can redistribute it and/or modify
+ * m64th is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation, either version 3
  * of the License, or (at your option) any later version.
  *
- * m4th is distributed in the hope that it will be useful,
+ * m64th is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
+ * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #include "../dispatch/asm.mh"
@@ -62,7 +62,7 @@ FUNC_START(atomic_plus_store_simd)
 FUNC_END(atomic_plus_store_simd)
 
 
-/* cmove/count ( src-addr dst-addr u -- src-addr+u dst-addr+u ) m4th-user */
+/* cmove/count ( src-addr dst-addr u -- src-addr+u dst-addr+u ) m64th-user */
 FUNC_START(cmove_count)
         LOAD(  REG1,   AT(DSTK, SZ))       /* a = src                 */
         DPOP(  REG2)                       /* b = dst                 */
@@ -99,7 +99,7 @@ LABEL(cmove.done)
 FUNC_END(cmove_count)
 
 
-/* -cmove/count ( src-addr dst-addr u -- src-addr+u dst-addr+u ) m4th-user */
+/* -cmove/count ( src-addr dst-addr u -- src-addr+u dst-addr+u ) m64th-user */
 /* backward copy u bytes from src..src+u-1 to dst..dst+u-1 and return updated addresses */
 FUNC_START(minus_cmove_count)
         LOAD(  REG1,   AT(DSTK, SZ))       /* a = src        */
@@ -184,7 +184,7 @@ LABEL(move.done)
 FUNC_END(move)
 
 
-/* crc-cell/simd ( x -- crc ) m4th-user: compute CRC32c of a cell */
+/* crc-cell/simd ( x -- crc ) m64th-user: compute CRC32c of a cell */
 FUNC_START(crc_cell_simd)
         MOVI(  0xffffffff, REG1w)      /* dtop = 0xffffffff        */
         /*
@@ -198,13 +198,13 @@ FUNC_END(crc_cell_simd)
 
 /* crc-string ( c-addr u -- crc ) compute CRC32c of a string */
 #define M4FCRC_STRING
-FUNC_START(crc_string)     /* crc-string ( c-addr u -- crc ) m4th-user */
+FUNC_START(crc_string)     /* crc-string ( c-addr u -- crc ) m64th-user */
         MOVE(  DTOP,   REG2)               /* b = u                    */
         MOVI(  0xffffffff, REG3w)          /* c = 0xffffffff           */
         DPOP___DTOP()                      /* dtop = c-addr            */
         JZ(    REG2,   TO(crc_string.done))
         ZERO(  REG0)                       /* @ = 0                    */
-        ADDROF_4G(m4th_crctable,   REG4)   /* d = table                */
+        ADDROF_4G(m64th_crctable,   REG4)   /* d = table                */
 FUNC_ALIGN()
 LABEL(crc_string.loop)
         LD_ub( REG1,   AT(DTOP, REG0, 1))  /* a = c-addr[@] = str[i]   */
@@ -360,7 +360,7 @@ LABEL(fill.done)
 FUNC_END(fill)
 
 
-FUNC_START(string_equal)   /* string=  ( addr1 addr2 u -- addr1 addr2 u t|f ) m4th-user */
+FUNC_START(string_equal)   /* string=  ( addr1 addr2 u -- addr1 addr2 u t|f ) m64th-user */
         ldp    REG2,   REG1,    AT(DSTK);              /* b = addr2, a = addr1 */
         DPUSH__DTOP()
         JEQ(   REG1,   REG2,    TO(string_equal.true)) /* addr1 == addr2 */

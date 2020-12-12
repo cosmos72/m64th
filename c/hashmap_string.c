@@ -1,20 +1,20 @@
 /**
  * Copyright (C) 2020 Massimiliano Ghilardi
  *
- * This file is part of m4th.
+ * This file is part of m64th.
  *
- * m4th is free software: you can redistribute it and/or modify
+ * m64th is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation, either version 3
  * of the License, or (at your option) any later version.
  *
- * m4th is distributed in the hope that it will be useful,
+ * m64th is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
+ * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 /******************************************************************************/
@@ -98,7 +98,7 @@ static const H(m4hashmap_entry_) *
 /* find key in map. return NULL if not found */
 const H(m4hashmap_entry_) * H(m4hashmap_find_)(const H(m4hashmap_) * map, m4string key) {
     if (map->size != 0) {
-        const m4ucell keyhash = m4th_crc_string(key);
+        const m4ucell keyhash = m64th_crc_string(key);
         const H(m4hashmap_entry_) *e = map->vec + H(m4hashmap_indexof_)(map, key, keyhash);
         if (H(m4hashmap_entry_present_)(e)) {
             return H(m4hashmap_find_in_collision_list_)(map, key, keyhash, e);
@@ -136,7 +136,7 @@ static void H(m4hash_store_)(H(m4hashmap_) * map, H(m4hashmap_entry_) * to, m4st
  * returns NULL on failure (if map is too full or key is already present)
  */
 const H(m4hashmap_entry_) * H(m4hashmap_insert_)(H(m4hashmap_) * map, m4string key, m4cell val) {
-    const m4ucell keyhash = m4th_crc_string(key);
+    const m4ucell keyhash = m64th_crc_string(key);
     m4ucell pos = H(m4hashmap_indexof_)(map, key, keyhash);
     H(m4hashmap_entry_) *entry = map->vec + pos;
     if (!H(m4hashmap_entry_present_)(entry)) {

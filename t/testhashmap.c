@@ -1,20 +1,20 @@
 /**
  * Copyright (C) 2020 Massimiliano Ghilardi
  *
- * This file is part of m4th.
+ * This file is part of m64th.
  *
- * m4th is free software: you can redistribute it and/or modify
+ * m64th is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation, either version 3
  * of the License, or (at your option) any later version.
  *
- * m4th is distributed in the hope that it will be useful,
+ * m64th is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
+ * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #ifndef M4TH_T_TESTHASHMAP_C
@@ -27,9 +27,9 @@
 #include <assert.h> /* assert() */
 #include <stdio.h>  /* fprintf() fputs() */
 
-/* -------------- m4th_testhashmap_int -------------- */
+/* -------------- m64th_testhashmap_int -------------- */
 
-m4cell m4th_testhashmap_int_opt2_rules(FILE *out) {
+m4cell m64th_testhashmap_int_opt2_rules(FILE *out) {
     m4ucell fail = 0;
     const m4string data = m4word_data(&WORD_SYM(_optimize_2token_), 0);
     const m4hashmap_int *map = (const m4hashmap_int *)data.addr;
@@ -38,18 +38,18 @@ m4cell m4th_testhashmap_int_opt2_rules(FILE *out) {
     const m4hashmap_entry_int *e = m4hashmap_find_int(map, key);
     if (e == NULL) {
         fprintf(out,
-                "m4th_testhashmap_int_opt2_rules() returned NULL instead of expected value %u\n",
+                "m64th_testhashmap_int_opt2_rules() returned NULL instead of expected value %u\n",
                 (unsigned)val);
         fail++;
     } else if (e->val != val) {
-        fprintf(out, "m4th_testhashmap_int_opt2_rules() returned %u instead of expected value %u\n",
+        fprintf(out, "m64th_testhashmap_int_opt2_rules() returned %u instead of expected value %u\n",
                 (unsigned)e->val, (unsigned)val);
         fail++;
     }
     return fail;
 }
 
-m4cell m4th_testhashmap_int(FILE *out) {
+m4cell m64th_testhashmap_int(FILE *out) {
     m4ucell i, n = 512, cap = 256, fail = 0;
     m4hashmap_int *map = m4hashmap_new_int(cap);
     m4int key;
@@ -81,7 +81,7 @@ m4cell m4th_testhashmap_int(FILE *out) {
             continue;
         }
     }
-    n++, fail += m4th_testhashmap_int_opt2_rules(out);
+    n++, fail += m64th_testhashmap_int_opt2_rules(out);
     if (fail == 0) {
         fprintf(out, "all %3u hashmap/i tests passed\n", (unsigned)n);
     }
@@ -89,16 +89,16 @@ m4cell m4th_testhashmap_int(FILE *out) {
     return fail;
 }
 
-/* -------------- m4th_testhashmap_string -------------- */
+/* -------------- m64th_testhashmap_string -------------- */
 
-static void m4th_testhashmap_fill(m4string *key, m4ucell len) {
+static void m64th_testhashmap_fill(m4string *key, m4ucell len) {
     m4char *addr = (m4char *)m4mem_allocate(len);
     memset(addr, (m4char)len | ' ', len);
     key->addr = addr;
     key->n = len;
 }
 
-m4cell m4th_testhashmap_string(FILE *out) {
+m4cell m64th_testhashmap_string(FILE *out) {
     enum { n = 470 };
     m4string key, keys[n] = {};
     m4cell val;
@@ -107,7 +107,7 @@ m4cell m4th_testhashmap_string(FILE *out) {
     const m4hashmap_entry_string *e;
     for (i = 0; i < n; i++) {
         assert(map->size == i);
-        m4th_testhashmap_fill(&key, i);
+        m64th_testhashmap_fill(&key, i);
         keys[i] = key;
         val = i;
         if (!m4hashmap_insert_string(map, key, val)) {

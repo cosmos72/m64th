@@ -1,34 +1,34 @@
 /**
  * Copyright (C) 2020 Massimiliano Ghilardi
  *
- * This file is part of m4th.
+ * This file is part of m64th.
  *
- * m4th is free software: you can redistribute it and/or modify
+ * m64th is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation, either version 3
  * of the License, or (at your option) any later version.
  *
- * m4th is distributed in the hope that it will be useful,
+ * m64th is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
+ * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #include "../dispatch/asm.mh"
 
-#define m4fth_run m4th_run
+#define m4fth_run m64th_run
 
 /* clang-format off */
 
 /**
- * m4th_run: enter m4th interpreter from C.
+ * m64th_run: enter m64th interpreter from C.
  * save C registers,
- * load m4th registers from struct (m4th*)
+ * load m64th registers from struct (m64th*)
  *      passed in x0 as per arm64 ABI,
- * execute m4th->code.start[0] and subsequent instructions until m4bye is found.
+ * execute m64th->code.start[0] and subsequent instructions until m4bye is found.
  */
 FUNC_START(th_run)
         stp    x29,  lr,   AT(sp, -SZ12)!;      /* make space for C registers on stack */
@@ -41,11 +41,11 @@ FUNC_START(th_run)
         stp    x23,  x24,  AT(sp, SZ6);
         stp    x25,  x26,  AT(sp, SZ8);
         stp    x27,  x28,  AT(sp, SZ10);
-        ADDI(  x0,   M4TH_OFF_,  M4TH)          /* load m4th pointer               */
+        ADDI(  x0,   M4TH_OFF_,  M4TH)          /* load m64th pointer               */
         STOR(  x29,  AT(M4TH, M4TH_OFF_C_REG0)) /* save C stack pointer            */
         LOAD(  DSTK, AT(M4TH, M4TH_OFF_DSTK))   /* load data   stack pointer       */
 
-        /* if m4th->rstack.curr == 0, no dedicated forth return stack is available */
+        /* if m64th->rstack.curr == 0, no dedicated forth return stack is available */
         /* => use C stack as forth return stack                                    */
         LOAD(  RSTK, AT(M4TH, M4TH_OFF_RSTK))   /* load return stack pointer       */
         JNZ(   RSTK, TO(th_run.stack_done))
@@ -78,8 +78,8 @@ FUNC_START(_vm_)
 FUNC_RAWEND(_vm_)
 
 /**
- * exit m4th interpreter and return to C:
- * save m4th registers into struct (m4th*)
+ * exit m64th interpreter and return to C:
+ * save m64th registers into struct (m64th*)
  * load C registers
  * return to C
  */
@@ -92,7 +92,7 @@ FUNC_START(bye)
         STOR(  IP,   AT(M4TH, M4TH_OFF_IP))     /* save instruction  pointer       */
         STOR(  LOCL, AT(M4TH, M4TH_OFF_LSTK))   /* save local variables pointer    */
 
-        /* if m4th->rstack.curr == 0, no forth return stack is available           */
+        /* if m64th->rstack.curr == 0, no forth return stack is available           */
         /* => we used C stack as forth return stack                                */
         LOAD(  REG1, AT(M4TH, M4TH_OFF_RSTK))
         cmp    REG1, IMM(0);
@@ -101,7 +101,7 @@ FUNC_START(bye)
 
         STOR(  DSTK, AT(M4TH, M4TH_OFF_DSTK))   /* save data   stack pointer       */
 
-        LOAD(  x0,   AT(M4TH, M4TH_OFF_EX))     /* load return value = m4th.ex     */
+        LOAD(  x0,   AT(M4TH, M4TH_OFF_EX))     /* load return value = m64th.ex     */
         LOAD(  x1,   AT(M4TH, M4TH_OFF_C_REG0)) /* load C stack pointer            */
         MOVE(  x1,   sp)
         ldp    x19,  x20,  AT(sp, SZ2);         /* load C registers                */
@@ -179,13 +179,13 @@ FUNC_START(_c_call_)
 
         JZ(   x10, TO(_c_call_.stack_c))
 
-        /* m4th->rstack.curr != 0 thus RSTK points to dedicated memory       */
+        /* m64th->rstack.curr != 0 thus RSTK points to dedicated memory       */
         /* and sp points to C stack: nothing to fix                          */
         blr    x9;                     /* call C func, overwrites lr         */
         JUMP(  TO(_c_call_.done))
 
 LABEL(_c_call_.stack_c)
-        /* m4th->rstack.curr == 0 thus RSTK points to C stack, possibly below sp: */
+        /* m64th->rstack.curr == 0 thus RSTK points to C stack, possibly below sp: */
         /* update sp before call, and restore it after call                  */
         AND3(  RSTK,IMM(-SZ2), sp)     /* set sp = RSTK, then align it       */
         blr    x9;                     /* call C func, overwrites lr         */
@@ -267,7 +267,7 @@ LABEL(_asm_vm_execute_.reg0)
          */
         RPUSH2(RTOP, IP)           /* save RTOP, IP                     */
         MOVE(  VM,   RTOP)         /* save VM                           */
-        LOAD(  VM, AT(M4TH, M4TH_OFF_VM)) /* set VM = m4th->vm          */
+        LOAD(  VM, AT(M4TH, M4TH_OFF_VM)) /* set VM = m64th->vm          */
         MOVE(  REG0, IP)                  /* set IP = tokens to execute */
         /* enter '(vm)' interpreter, let token 'execute' pop dtop = xt  */
         JUMP_REG(VM)

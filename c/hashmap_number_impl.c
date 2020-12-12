@@ -1,20 +1,20 @@
 /**
  * Copyright (C) 2020 Massimiliano Ghilardi
  *
- * This file is part of m4th.
+ * This file is part of m64th.
  *
- * m4th is free software: you can redistribute it and/or modify
+ * m64th is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation, either version 3
  * of the License, or (at your option) any later version.
  *
- * m4th is distributed in the hope that it will be useful,
+ * m64th is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
+ * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 /******************************************************************************/
@@ -68,7 +68,7 @@ static inline m4cell H(m4hashmap_entry_next_)(const H(m4hashmap_entry_) * e) {
 }
 
 static inline H(m4u) H(m4hashmap_indexof_)(const H(m4hashmap_) * map, H(m4) key) {
-    H(m4u) hash = m4th_crc_cell(key);
+    H(m4u) hash = m64th_crc_cell(key);
     H(m4u) lcap = map->lcap;
     H(m4u) cap = 1u << lcap;
     if (sizeof(H(m4)) > 4 && lcap > 32) {

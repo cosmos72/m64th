@@ -1,26 +1,26 @@
 /**
  * Copyright (C) 2020 Massimiliano Ghilardi
  *
- * This file is part of m4th.
+ * This file is part of m64th.
  *
- * m4th is free software: you can redistribute it and/or modify
+ * m64th is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation, either version 3
  * of the License, or (at your option) any later version.
  *
- * m4th is distributed in the hope that it will be useful,
+ * m64th is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
+ * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #include "impl.h"
 #include "include/dict_fwd.h"       /* m4dict_... */
 #include "include/hashmap_number.h" /* m4dict_... */
-#include "include/m4th.h"
+#include "include/m64th.h"
 #include "include/opt_rules.mh" /* OPT*_RULES */
 #include "include/word_fwd.h"   /* m4w_...    */
 
@@ -33,25 +33,25 @@
 const char license[] = "/**\n\
  * Copyright (C) 2020 Massimiliano Ghilardi\n\
  *\n\
- * This file is part of m4th.\n\
+ * This file is part of m64th.\n\
  *\n\
- * m4th is free software: you can redistribute it and/or modify\n\
+ * m64th is free software: you can redistribute it and/or modify\n\
  * it under the terms of the GNU Lesser General Public License\n\
  * as published by the Free Software Foundation, either version 3\n\
  * of the License, or (at your option) any later version.\n\
  *\n\
- * m4th is distributed in the hope that it will be useful,\n\
+ * m64th is distributed in the hope that it will be useful,\n\
  * but WITHOUT ANY WARRANTY; without even the implied warranty of\n\
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n\
  * GNU Lesser General Public License for more details.\n\
  *\n\
  * You should have received a copy of the GNU Lesser General Public License\n\
- * along with m4th.  If not, see <https://www.gnu.org/licenses/>.\n\
+ * along with m64th.  If not, see <https://www.gnu.org/licenses/>.\n\
  */\n\n\
 \n\
 /**\n\
  * For the curious: this output has the same copyright and license\n\
- * as the program m4th, because it's an extract of m4th sources.\n\
+ * as the program m64th, because it's an extract of m64th sources.\n\
  */\n\n";
 
 #define N_OF(array) (sizeof(array) / sizeof((array)[0]))
@@ -211,7 +211,7 @@ static void genopt_to_file(const char *path, void (*gen)(FILE *out)) {
 static void run_show_words(m4printmode mode, FILE *out) {
     const m4dict *dict[] = {
         /* &m4dict_forth_root, */
-        &m4dict_forth, &m4dict_m4th_user, &m4dict_m4th_c, &m4dict_m4th_core, &m4dict_m4th_impl,
+        &m4dict_forth, &m4dict_m64th_user, &m4dict_m64th_c, &m4dict_m64th_core, &m4dict_m64th_impl,
     };
     m4cell i;
     fputs(license, stdout);
@@ -220,29 +220,29 @@ static void run_show_words(m4printmode mode, FILE *out) {
     }
 }
 
-static inline void dpush(m4th *m, m4cell x) {
+static inline void dpush(m64th *m, m4cell x) {
     *--m->dstack.curr = x;
 }
 
 static void run_benchmark(FILE *out) {
     static const m4token code[] = {m4do,     m4two_dup,   m4crc_string, m4drop,
                                    m4_loop_, (m4token)-5, m4bye};
-    m4th *m = m4th_new(m4opt_return_stack_is_c_stack);
+    m64th *m = m64th_new(m4opt_return_stack_is_c_stack);
 #ifdef __x86_64__
     const double n = 1e9f;
 #else
     const double n = 1e8f;
 #endif
     fprintf(out, "benchmark: crc-string%s %g iterations... ",
-            (m4th_cpu_features_enabled() & m4th_cpu_feature_crc32c ? "/simd" : ""), n);
+            (m64th_cpu_features_enabled() & m64th_cpu_feature_crc32c ? "/simd" : ""), n);
     fflush(out);
     m->ip = code;
     dpush(m, (m4cell) "1234567890123456789012345678901234567890123456789012345678901234");
     dpush(m, 64);
     dpush(m, (m4cell)n);
     dpush(m, 0);
-    m4th_run(m);
-    m4th_del(m);
+    m64th_run(m);
+    m64th_del(m);
     fputs("done.\n", out);
 }
 
@@ -253,9 +253,9 @@ int main(int argc, char *argv[]) {
     m4cell cpu_features_disable_mask = argc >= 3 && !strcmp(argv[2], "nosimd") ? ttrue : tfalse;
     m4cell cpu_features;
 
-    m4th_init();
-    m4th_cpu_features_disable(cpu_features_disable_mask);
-    cpu_features = m4th_cpu_features_enabled();
+    m64th_init();
+    m64th_cpu_features_disable(cpu_features_disable_mask);
+    cpu_features = m64th_cpu_features_enabled();
 
     if (benchmark) {
 #if defined(__x86_64__)
@@ -265,10 +265,10 @@ int main(int argc, char *argv[]) {
 #else
 #define ARCH_STR_ " "
 #endif
-        if (cpu_features == m4th_cpu_feature_cannot_detect) {
+        if (cpu_features == m64th_cpu_feature_cannot_detect) {
             fputs("# no support to detect optional CPU features on this " ARCH_STR_ "CPU/OS\n",
                   stdout);
-        } else if (cpu_features & m4th_cpu_feature_crc32c) {
+        } else if (cpu_features & m64th_cpu_feature_crc32c) {
             fputs("# this " ARCH_STR_ "CPU has crc32c asm instructions\n", stdout);
         } else {
             fputs("# this " ARCH_STR_ "CPU does not have crc32c asm instructions\n", stdout);

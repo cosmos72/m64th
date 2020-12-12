@@ -1,20 +1,20 @@
 /**
  * Copyright (C) 2020 Massimiliano Ghilardi
  *
- * This file is part of m4th.
+ * This file is part of m64th.
  *
- * m4th is free software: you can redistribute it and/or modify
+ * m64th is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation, either version 3
  * of the License, or (at your option) any later version.
  *
- * m4th is distributed in the hope that it will be useful,
+ * m64th is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
+ * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #include "../dispatch/asm.mh"
@@ -87,7 +87,7 @@ FUNC_START(u_div_mod)
 FUNC_END(u_div_mod)
 
 
-FUNC_START(zero_less_equal)   /* 0<=  m4th-user   */
+FUNC_START(zero_less_equal)   /* 0<=  m64th-user   */
         cmp    DTOP,   IMM(0);
         csetm  DTOP,   le;
 FUNC_END(zero_less_equal)
@@ -111,19 +111,19 @@ FUNC_START(zero_more)      /* 0>   */
 FUNC_END(zero_more)
 
 
-FUNC_START(zero_more_equal)/* 0>=  m4th-user  */
+FUNC_START(zero_more_equal)/* 0>=  m64th-user  */
         cmp    DTOP,   IMM(0);
         csetm  DTOP,   ge;
 FUNC_END(zero_more_equal)
 
 
-FUNC_START(two_sm_div)     /* 2sm/ m4th-user symmetric divide by 2 */
+FUNC_START(two_sm_div)     /* 2sm/ m64th-user symmetric divide by 2 */
         add    DTOP,   DTOP,   DTOP, lsr IMM(63);
         asr    DTOP,   DTOP,   IMM(1);
 FUNC_END(two_sm_div)
 
 
-FUNC_START(four_sm_div)    /* 4sm/ m4th-user symmetric divide by 4 */
+FUNC_START(four_sm_div)    /* 4sm/ m64th-user symmetric divide by 4 */
         cmp    DTOP,   IMM(0);
         add    REG1,   DTOP,   IMM(3);     /* add 3 if negative */
         csel   DTOP,   REG1,   DTOP,   lt;
@@ -131,7 +131,7 @@ FUNC_START(four_sm_div)    /* 4sm/ m4th-user symmetric divide by 4 */
 FUNC_END(four_sm_div)
 
 
-FUNC_START(eight_sm_div)      /* 8/   m4th-user symmetric divide by 8 */
+FUNC_START(eight_sm_div)      /* 8/   m64th-user symmetric divide by 8 */
         cmp    DTOP,   IMM(0);
         add    REG1,   DTOP,   IMM(7);     /* add 7 if negative */
         csel   DTOP,   REG1,   DTOP,   lt;
@@ -146,7 +146,7 @@ FUNC_START(less)           /* <    */
 FUNC_END(less)
 
 
-FUNC_START(less_equal)     /* <=   m4th-user */
+FUNC_START(less_equal)     /* <=   m64th-user */
         DPOP(  REG2)
         cmp    REG2,   DTOP;
         csetm  DTOP,   le;
@@ -174,7 +174,7 @@ FUNC_START(more)           /* > */
 FUNC_END(more)
 
 
-FUNC_START(more_equal)     /* >=   m4th-user */
+FUNC_START(more_equal)     /* >=   m64th-user */
         DPOP(  REG2)
         cmp    REG2,   DTOP;
         csetm  DTOP,   ge;
@@ -187,7 +187,7 @@ FUNC_START(abs)
 FUNC_END(abs)
 
 
-/* choose ( a b flag -- a|b ) m4th-user if flag is nonzero return a, else b */
+/* choose ( a b flag -- a|b ) m64th-user if flag is nonzero return a, else b */
 FUNC_START(choose)
         cmp    DTOP,   IMM(0);
         cset   REG1,   ne;
@@ -230,27 +230,27 @@ FUNC_START(rshift)
 FUNC_END(rshift)
 
 
-FUNC_START(to_byte)        /* to-byte      m4th-user */
+FUNC_START(to_byte)        /* to-byte      m64th-user */
         sbfx   DTOP,   DTOP, 0, 8;
 FUNC_END(to_byte)
 
-FUNC_START(to_short)       /* to-short     m4th-user */
+FUNC_START(to_short)       /* to-short     m64th-user */
         sbfx   DTOP,   DTOP, 0, 16;
 FUNC_END(to_short)
 
-FUNC_START(to_int)         /* to-int       m4th-user */
+FUNC_START(to_int)         /* to-int       m64th-user */
         sbfx   DTOP,   DTOP, 0, 32;
 FUNC_END(to_int)
 
-FUNC_START(to_char)        /* to-char      m4th-user */
+FUNC_START(to_char)        /* to-char      m64th-user */
         ubfx   DTOPw,  DTOPw, 0, 8;
 FUNC_END(to_char)
 
-FUNC_START(to_ushort)      /* to-ushort    m4th-user */
+FUNC_START(to_ushort)      /* to-ushort    m64th-user */
         ubfx   DTOPw,  DTOPw, 0, 16;
 FUNC_END(to_ushort)
 
-FUNC_START(to_uint)        /* to-uint      m4th-user */
+FUNC_START(to_uint)        /* to-uint      m64th-user */
         ubfx   DTOPw,  DTOPw, 0, 32;
 FUNC_END(to_uint)
 
@@ -262,7 +262,7 @@ FUNC_START(u_less)         /* u<   */
 FUNC_END(u_less)
 
 
-FUNC_START(u_less_equal)   /* u<=      m4th-user */
+FUNC_START(u_less_equal)   /* u<=      m64th-user */
         DPOP(  REG2)
         cmp    REG2,   DTOP;
         csetm  DTOP,   ls;
@@ -276,7 +276,7 @@ FUNC_START(u_more)         /* u>       core ext */
 FUNC_END(u_more)
 
 
-FUNC_START(u_more_equal)   /* u>=      m4th-user */
+FUNC_START(u_more_equal)   /* u>=      m64th-user */
         DPOP(  REG2)
         cmp    REG2,   DTOP;
         csetm  DTOP,   hs;

@@ -1,20 +1,20 @@
 /**
  * Copyright (C) 2020 Massimiliano Ghilardi
  *
- * This file is part of m4th.
+ * This file is part of m64th.
  *
- * m4th is free software: you can redistribute it and/or modify
+ * m64th is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation, either version 3
  * of the License, or (at your option) any later version.
  *
- * m4th is distributed in the hope that it will be useful,
+ * m64th is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
+ * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #ifndef M4TH_T_TESTIO_C
@@ -24,8 +24,8 @@
 #include "../include/err.h"
 #include "../include/func_fwd.h"
 #include "../include/iobuf.mh"
-#include "../include/m4th.h"
-#include "../include/m4th.mh" /* M4TH_PICT_MAXSIZE */
+#include "../include/m64th.h"
+#include "../include/m64th.mh" /* M4TH_PICT_MAXSIZE */
 #include "../include/token.h"
 #include "../include/word_fwd.h"
 #include "testcommon.h"
@@ -495,8 +495,8 @@ static m4code m4testio_init(const m4testio *t, m4countedcode *code_buf) {
     return t_code;
 }
 
-static m4cell m4testio_run(m4th *m, const m4testio *t, const m4code *code) {
-    m4th_clear(m);
+static m4cell m4testio_run(m64th *m, const m4testio *t, const m4code *code) {
+    m64th_clear(m);
 
     m4countedstack_copy(&t->before.d, &m->dstack);
     m4countedstack_copy(&t->before.r, &m->rstack);
@@ -504,7 +504,7 @@ static m4cell m4testio_run(m4th *m, const m4testio *t, const m4code *code) {
     m4obuf_with_counteddata_fill(m->out, t->iobefore.out);
 
     m->ip = code->addr;
-    m4th_run(m);
+    m64th_run(m);
 
     return m4countedstack_equal(&t->after.d, &m->dstack) &&
            m4countedstack_equal(&t->after.r, &m->rstack) &&
@@ -512,7 +512,7 @@ static m4cell m4testio_run(m4th *m, const m4testio *t, const m4code *code) {
            m4obuf_with_counteddata_equal(m->out, t->ioafter.out);
 }
 
-static void m4testio_failed(const m4th *m, const m4testio *t, FILE *out) {
+static void m4testio_failed(const m64th *m, const m4testio *t, FILE *out) {
     if (out == NULL) {
         return;
     }
@@ -539,7 +539,7 @@ static void m4testio_failed(const m4th *m, const m4testio *t, FILE *out) {
     fputc('\n', out);
 }
 
-static void m4testio_bunch(m4th *m, const m4testio bunch[], m4cell n, m4testcount *count, FILE *out,
+static void m4testio_bunch(m64th *m, const m4testio bunch[], m4cell n, m4testcount *count, FILE *out,
                            m4ucell ibuf_capacity) {
     const m4iobuf ibuf = *m->in, obuf = *m->out;
     m4countedcode countedcode = {m4test_code_n, {}};
@@ -561,7 +561,7 @@ static void m4testio_bunch(m4th *m, const m4testio bunch[], m4cell n, m4testcoun
     *m->out = obuf;
 }
 
-m4cell m4th_testio(m4th *m, FILE *out) {
+m4cell m64th_testio(m64th *m, FILE *out) {
     m4testcount count = {};
     m4testio_global_init();
     m4testio_bunch(m, testio_a, N_OF(testio_a), &count, out, SZ2);

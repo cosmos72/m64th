@@ -1,20 +1,20 @@
 /**
  * Copyright (C) 2020 Massimiliano Ghilardi
  *
- * This file is part of m4th.
+ * This file is part of m64th.
  *
- * m4th is free software: you can redistribute it and/or modify
+ * m64th is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation, either version 3
  * of the License, or (at your option) any later version.
  *
- * m4th is distributed in the hope that it will be useful,
+ * m64th is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
+ * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #ifndef M4TH_INCLUDE_TOKEN_M4TH_MH
@@ -25,7 +25,7 @@
  *
  *
  */
-/* 'm4th-user' wordlist */
+/* 'm64th-user' wordlist */
 #define M4_u(x) ((x) + 510)
 #define M4less_equal M4_u(0)      /* <=                                      */
 #define M4more_equal M4_u(1)      /* >=                                      */
@@ -265,7 +265,7 @@
  *
  *
  */
-/* 'm4th-asm' wordlist */
+/* 'm64th-asm' wordlist */
 #define M4_a(x) ((x) + 730)
 #define M4_asm_q_if_ M4_a(0)           /* native ASM only: implement '(?if)'                 */
 #define M4_asm_q_if0_ M4_a(1)          /* native ASM only: implement '(?if0)'                */
@@ -285,7 +285,7 @@
 #define M4name_to_asm_n_store M4_a(15) /* ( u nt --         ) set name.asm_len               */
 #define M4token_to_asm_addr M4_a(16)   /* ( token -- addr|0 ) get ASM code address for token */
 
-/* 'm4th-c' wordlist */
+/* 'm64th-c' wordlist */
 #define M4_c(x) ((x) + 750)
 #define M4_c_arg_0_ M4_c(0)  /* prepare 0 args for C function call    */
 #define M4_c_arg_1_ M4_c(1)  /* prepare 1 arg  for C function call    */
@@ -298,9 +298,9 @@
 #undef M4_c_arg_8_           /*                                         */
 #undef M4____gap             /*                                         */
 #define M4_c_call_ M4_c(12)  /* must be followed by C function pointer. calls it. */
-#undef M4_c_call_sync_       /* save regs to m4th, call C function, reload regs   */
+#undef M4_c_call_sync_       /* save regs to m64th, call C function, reload regs   */
 #undef M4c_exec              /* pop C function pointer, call it */
-#undef M4c_exec_sync         /* save regs to m4th, pop C function pointer, call it, reload regs */
+#undef M4c_exec_sync         /* save regs to m64th, pop C function pointer, call it, reload regs */
 #undef M4_c_farg_1_          /* pop 1 floating point arg  for C function call */
 #undef M4_c_farg_2_          /* pop 2 floating point args for C function call */
 #undef M4_c_farg_3_          /* pop 3 floating point args for C function call */
@@ -324,7 +324,7 @@
  *
  *
  */
-/* 'm4th-core' wordlist */
+/* 'm64th-core' wordlist */
 #define M4_(x) ((x) + 780)
 /* ( counted-tokens -- tok-addr u ) get address and count of countedtokens */
 #define M4count_tokens M4_(0)
@@ -378,7 +378,7 @@
 #undef M4____gap                      /*                                         */
 #define M4token_to_name M4_(49)       /* token>name ( token -- nt|0 ) convert token to name   */
 #define M4user_var M4_(50)            /* user-var ( -- addr ) followed by index of user var   */
-#define M4user_var_m4th M4_(51)       /* user-var-m4th ( -- m ) get current m4th address      */
+#define M4user_var_m64th M4_(51)       /* user-var-m64th ( -- m ) get current m64th address      */
 #undef M4____gap                      /*                                         */
 #define M4wordlist_to_last M4_(53)    /* ( wid -- nt ) get last name in a wordlist            */
 #define M4wordlist_to_string M4_(54)  /* ( wid -- c-addr u ) convert wid to string            */
@@ -393,7 +393,7 @@
  *
  *
  */
-/* 'm4th-impl' wordlist */
+/* 'm64th-impl' wordlist */
 #define M4_i(x) ((x) + 840)
 #define M4minus_two M4_i(-2)       /* -2                    */
 #define M4minus_one M4_i(-1)       /* -1                    */

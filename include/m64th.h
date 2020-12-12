@@ -1,20 +1,20 @@
 /**
  * Copyright (C) 2020 Massimiliano Ghilardi
  *
- * This file is part of m4th.
+ * This file is part of m64th.
  *
- * m4th is free software: you can redistribute it and/or modify
+ * m64th is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation, either version 3
  * of the License, or (at your option) any later version.
  *
- * m4th is distributed in the hope that it will be useful,
+ * m64th is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
+ * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #ifndef M4TH_M4TH_H
@@ -46,13 +46,13 @@ typedef uint8_t m4stackeffect; /**< stack # in and # out. 0xF if unknown or vari
 typedef const m4token *m4xt;   /**< XT i.e. execution token            */
 
 typedef char
-    m4th_assert_sizeof_voidptr_less_equal_sizeof_m4cell[sizeof(void *) <= sizeof(m4cell) ? 1 : -1];
+    m64th_assert_sizeof_voidptr_less_equal_sizeof_m4cell[sizeof(void *) <= sizeof(m4cell) ? 1 : -1];
 
 typedef char
-    m4th_assert_sizeof_m4func_less_equal_sizeof_m4cell[sizeof(m4func) <= sizeof(m4cell) ? 1 : -1];
+    m64th_assert_sizeof_m4func_less_equal_sizeof_m4cell[sizeof(m4func) <= sizeof(m4cell) ? 1 : -1];
 
 typedef char
-    m4th_assert_sizeof_m4token_divides_sizeof_m4cell[(sizeof(m4cell) % sizeof(m4token) == 0) ? 1
+    m64th_assert_sizeof_m4token_divides_sizeof_m4cell[(sizeof(m4cell) % sizeof(m4token) == 0) ? 1
                                                                                              : -1];
 
 /** m4word flags */
@@ -84,7 +84,7 @@ typedef enum m4flags_e {
     m4flag_value = M4FLAG_VALUE,
 } m4flags;
 
-/** m4th state */
+/** m64th state */
 typedef enum m4_state_e {
     m4state_interpret = M4STATE_INTERPRET,
 } m4_state;
@@ -104,7 +104,7 @@ typedef struct m4pair_s m4pair;
 typedef struct m4searchorder_s m4searchorder;
 typedef struct m4stackeffects_s m4stackeffects;
 typedef struct m4string_s m4string;
-typedef struct m4th_s m4th;
+typedef struct m64th_s m64th;
 typedef struct m4word_s m4word;
 typedef struct m4wordlist_s m4wordlist;
 
@@ -227,7 +227,7 @@ struct m4searchorder_s {                 /**< counted array of wordlists */
     m4wordlist *addr[m4searchorder_max]; /* array of wordlists           */
 };
 
-struct m4th_s {                /**< m4th forth interpreter and compiler          */
+struct m64th_s {                /**< m64th forth interpreter and compiler          */
     m4stack dstack;            /**< data stack                                   */
     m4stack rstack;            /**< return stack                                 */
     m4cell *lstack;            /**< pointer to forth local variables (in return stack) */
@@ -240,7 +240,7 @@ struct m4th_s {                /**< m4th forth interpreter and compiler         
     m4xt xt;                   /**< XT being compiled. also used for STATE       */
                                /*                                                */
     const void *vm;            /**< pointer to '(vm)' bytecode interpreter       */
-    const void *c_regs[1];     /**< m4th_run() may save C registers here         */
+    const void *c_regs[1];     /**< m64th_run() may save C registers here         */
                                /*                                                */
                                /* USER variables, i.e. thread-local              */
     uint16_t user_size;        /**< # available cells in user variables          */
@@ -260,14 +260,14 @@ struct m4th_s {                /**< m4th forth interpreter and compiler         
     m4cell user_var[];         /**< further user variables                       */
 };
 
-/** m4th_new() options */
-typedef enum m4th_opt_e {
+/** m64th_new() options */
+typedef enum m64th_opt_e {
     /* default: forth return stack is shared with C stack  */
     m4opt_return_stack_is_c_stack = 0,
     /* forth return stack is private, allocated memory:
      * useful for testing tokens with side effects on return stack. */
     m4opt_return_stack_is_private = 1,
-} m4th_opt;
+} m64th_opt;
 
 /* m4*_print* options */
 typedef enum m4printmode_e {
@@ -282,71 +282,71 @@ typedef enum m4printmode_e {
 extern "C" {
 #endif
 
-/** initialize internal structures. called automatically by m4th_new() */
-void m4th_init(void);
+/** initialize internal structures. called automatically by m64th_new() */
+void m64th_init(void);
 
-/** create a new m4th struct */
-m4th *m4th_new(m4th_opt options);
+/** create a new m64th struct */
+m64th *m64th_new(m64th_opt options);
 
-/** delete an m4th struct */
-void m4th_del(m4th *m);
+/** delete an m64th struct */
+void m64th_del(m64th *m);
 
 /** start forth REPL */
-m4cell m4th_repl(m4th *m);
+m4cell m64th_repl(m64th *m);
 
-/** execute the specified m4word, then return. preserves m4th->ip */
-m4cell m4th_execute_word(m4th *m, const m4word *w);
+/** execute the specified m4word, then return. preserves m64th->ip */
+m4cell m64th_execute_word(m64th *m, const m4word *w);
 
 /**
  * low-level entry point from C. implemented in assembly.
- * execute m4th->ip and subsequent code until m4th_bye is found.
+ * execute m64th->ip and subsequent code until m64th_bye is found.
  */
-m4cell m4th_run(m4th *m);
+m4cell m64th_run(m64th *m);
 
 /**
  * clear data stack, return stack, input buffer and output buffer.
  * set ->ip to ->code.start
  */
-void m4th_clear(m4th *m);
+void m64th_clear(m64th *m);
 
 /** return address of state. state is zero when interpreting, nonzero when compiling */
-const m4cell *m4th_state(const m4th *m);
+const m4cell *m64th_state(const m64th *m);
 
 /* add wid to the top of search order */
-void m4th_also(m4th *m, m4wordlist *wid);
+void m64th_also(m64th *m, m4wordlist *wid);
 
 /* start compiling a new word */
-void m4th_colon(m4th *m, m4string name);
+void m64th_colon(m64th *m, m4string name);
 
 /* finish compiling a new word */
-void m4th_semi(m4th *m);
+void m64th_semi(m64th *m);
 
 /* compute m->lastw->data_n (if not compiling) or m->lastw->code_n (if compiling) from HERE */
-void m4th_sync_lastw(m4th *m);
+void m64th_sync_lastw(m64th *m);
 
 /* return <> 0 if search order contains wid */
-m4cell m4th_knows(const m4th *m, const m4wordlist *wid);
+m4cell m64th_knows(const m64th *m, const m4wordlist *wid);
 
 /**
  * perform self-test, return != 0 if failed.
  * if out != NULL, also print failed tests to out.
  */
-m4cell m4th_test(m4th *m, FILE *out);
+m4cell m64th_test(m64th *m, FILE *out);
 
 /**
  * C implementation of asm-reserve.
  * reserves space for at least 'len' bytes in ASM buffer
  * and protects it as READ+WRITE+EXEC
  */
-void m4th_asm_reserve(m4th *m, m4ucell len);
+void m64th_asm_reserve(m64th *m, m4ucell len);
 
 /**
  * C implementation of asm-make-func:
  * 1. protect the ASM buffer as READ+EXEC
- * 2. set m4th.asm_.curr = m4mem_funcalign_up(m->asm_here).
- * 3. return original value of m4th.asm_.curr
+ * 2. set m64th.asm_.curr = m4mem_funcalign_up(m->asm_here).
+ * 3. return original value of m64th.asm_.curr
  */
-m4string m4th_asm_make_func(m4th *m);
+m4string m64th_asm_make_func(m64th *m);
 
 void *m4mem_allocate(size_t bytes);          /** malloc() wrapper, calls exit(1) on failure */
 void m4mem_free(void *ptr);                  /** free() wrapper */
@@ -381,7 +381,7 @@ void m4flags_print(m4flags fl, m4printmode mode, FILE *out);
 
 /* try to add a new local variable to m->locals. return ttrue if successful. */
 /* empty localname means 'end of local variables' */
-m4cell m4th_local(m4th *m, m4string localname);
+m4cell m64th_local(m64th *m, m4string localname);
 /* return index of local variable if found, else -1 */
 /* use case-insensitive string comparison m4string_ci_equals() */
 m4cell m4locals_find(const m4locals *ls, m4string localname);

@@ -1,20 +1,20 @@
 /**
  * Copyright (C) 2020 Massimiliano Ghilardi
  *
- * This file is part of m4th.
+ * This file is part of m64th.
  *
- * m4th is free software: you can redistribute it and/or modify
+ * m64th is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation, either version 3
  * of the License, or (at your option) any later version.
  *
- * m4th is distributed in the hope that it will be useful,
+ * m64th is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
+ * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #ifndef M4TH_ARM64_ASM_MH
@@ -142,7 +142,7 @@
 #define DSTK x21 /* pointer to second data stack element             */
 #define RSTK x23 /* pointer to second return stack element           */
 #define LOCL x24 /* pointer to local variables (inside return stack) */
-#define M4TH x25 /* pointer to C struct field &m4th->user            */
+#define M4TH x25 /* pointer to C struct field &m64th->user            */
 #define HERE x26 /* pointer to first available code/data location    */
 #define FTBL x27 /* pointer to table m4func[m4token] containing asm function addresses */
 #define IP x28   /* forth bytecode instruction pointer               */

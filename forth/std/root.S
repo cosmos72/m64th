@@ -1,20 +1,20 @@
 /**
  * Copyright (C) 2020 Massimiliano Ghilardi
  *
- * This file is part of m4th.
+ * This file is part of m64th.
  *
- * m4th is free software: you can redistribute it and/or modify
+ * m64th is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation, either version 3
  * of the License, or (at your option) any later version.
  *
- * m4th is distributed in the hope that it will be useful,
+ * m64th is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
+ * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 /* clang-format off */
@@ -38,21 +38,21 @@ WORD_START(forth_wordlist, forth_wordlist)
     )
 WORD_END(forth_wordlist)
 /*
- * replace first wordlist in search order with m4th_user wordlist ( SO: * wid -- * m4th_user )
- * it is included in forth-root wordlist to allow adding m4th* wordlists to searchorder
+ * replace first wordlist in search order with m64th_user wordlist ( SO: * wid -- * m64th_user )
+ * it is included in forth-root wordlist to allow adding m64th* wordlists to searchorder
  * after they have been removed for any reason
  */
-WORD_START(m4th_user,  forth_wordlist)
+WORD_START(m64th_user,  forth_wordlist)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_ASM_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
     WORD_CODE(
-        _lit_cell_, CELL(m4wordlist_m4th_user),        /* ( wid                ) */
+        _lit_cell_, CELL(m4wordlist_m64th_user),        /* ( wid                ) */
         searchorder_store_0, exit                      /* (                    ) */
     )
-WORD_END(m4th_user)
+WORD_END(m64th_user)
 
 #undef LASTWORD
-#define LASTWORD m4th_user
+#define LASTWORD m64th_user

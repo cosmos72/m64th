@@ -1,24 +1,24 @@
 /**
  * Copyright (C) 2020 Massimiliano Ghilardi
  *
- * This file is part of m4th.
+ * This file is part of m64th.
  *
- * m4th is free software: you can redistribute it and/or modify
+ * m64th is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation, either version 3
  * of the License, or (at your option) any later version.
  *
- * m4th is distributed in the hope that it will be useful,
+ * m64th is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
+ * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #include "../include/dict.mh"
-#include "../include/m4th/dict.mh"
+#include "../include/m64th/dict.mh"
 
 /* helper macros to define words {byte,char,short,ushort,int,uint,cell,token}_fetch* */
 
@@ -63,48 +63,48 @@
 
 /**/
 
-DICT_START(m4th_asm)
+DICT_START(m64th_asm)
 DICT_WORDS_M4TH_ASM(WORDNAME)
-#include "m4th/asm.S"
+#include "m64th/asm.S"
 
 #if defined(__x86_64__)
-#include "m4th/asm_amd64.S"
+#include "m64th/asm_amd64.S"
 #elif defined(__aarch64__)
-#include "m4th/asm_arm64.S"
+#include "m64th/asm_arm64.S"
 #endif
-DICT_BODY(m4th_asm, LASTWORD)
-DICT_END(m4th_asm)
+DICT_BODY(m64th_asm, LASTWORD)
+DICT_END(m64th_asm)
 
 /**/
 /**/
 
-DICT_START(m4th_c)
+DICT_START(m64th_c)
 DICT_WORDS_M4TH_C(WORDNAME)
-#include "m4th/c.S"
-DICT_BODY(m4th_c, LASTWORD)
-DICT_END(m4th_c)
+#include "m64th/c.S"
+DICT_BODY(m64th_c, LASTWORD)
+DICT_END(m64th_c)
 
 /**/
 
-DICT_START(m4th_core)
+DICT_START(m64th_core)
 DICT_WORDS_M4TH_CORE(WORDNAME)
-#include "m4th/core.S"
-DICT_BODY(m4th_core, LASTWORD)
-DICT_END(m4th_core)
+#include "m64th/core.S"
+DICT_BODY(m64th_core, LASTWORD)
+DICT_END(m64th_core)
 
 /**/
 
-DICT_START(m4th_impl)
+DICT_START(m64th_impl)
 DICT_WORDS_M4TH_IMPL(WORDNAME)
-#include "m4th/impl.S"
-DICT_BODY(m4th_impl, LASTWORD)
-DICT_END(m4th_impl)
+#include "m64th/impl.S"
+DICT_BODY(m64th_impl, LASTWORD)
+DICT_END(m64th_impl)
 
 /**/
 
-DICT_START(m4th_user)
+DICT_START(m64th_user)
 DICT_WORDS_M4TH_USER(WORDNAME)
-#include "m4th/user.S"
-#include "m4th/user_gen.S"
-DICT_BODY(m4th_user, LASTWORD)
-DICT_END(m4th_user)
+#include "m64th/user.S"
+#include "m64th/user_gen.S"
+DICT_BODY(m64th_user, LASTWORD)
+DICT_END(m64th_user)

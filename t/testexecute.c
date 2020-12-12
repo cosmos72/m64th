@@ -1,20 +1,20 @@
 /**
  * Copyright (C) 2020 Massimiliano Ghilardi
  *
- * This file is part of m4th.
+ * This file is part of m64th.
  *
- * m4th is free software: you can redistribute it and/or modify
+ * m64th is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation, either version 3
  * of the License, or (at your option) any later version.
  *
- * m4th is distributed in the hope that it will be useful,
+ * m64th is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
+ * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #ifndef M4TH_T_TESTEXECUTE_C
@@ -25,8 +25,8 @@
 #include "../include/func_fwd.h"
 #include "../include/hashmap_number.h"
 #include "../include/iobuf.mh"
-#include "../include/m4th.h"
-#include "../include/m4th.mh"
+#include "../include/m64th.h"
+#include "../include/m64th.mh"
 #include "../include/token.h"
 #include "../include/word_fwd.h"
 #include "testcommon.h"
@@ -47,17 +47,17 @@ void m4array_n_copy_to_tarray_n(const m4cell array[], const m4cell array_n /*   
 /* -------------- crc1byte -------------- */
 
 /**
- * compiled forth version of m4th_crc1byte (see ../impl.c). forth source would be
+ * compiled forth version of m64th_crc1byte (see ../impl.c). forth source would be
  *
  * : crc+ ( crc char -- crc' )
- *   over xor >char cells m4th_crctable + @ swap 8 rshift xor
+ *   over xor >char cells m64th_crctable + @ swap 8 rshift xor
  * ;
  */
 static const m4cell crc1byte_array[] = {
-    m4over, m4xor,   m4to_char, m4cells, m4_lit_cell_, CELL(m4th_crctable), m4plus, m4fetch,
+    m4over, m4xor,   m4to_char, m4cells, m4_lit_cell_, CELL(m64th_crctable), m4plus, m4fetch,
     m4swap, m4eight, m4rshift,  m4xor,   m4exit,
 };
-/* initialized by m4th_testexecute() */
+/* initialized by m64th_testexecute() */
 static m4token crc1byte_code[N_OF(crc1byte_array)];
 
 /* -------------- [any-token-gives-cell?] -------------- */
@@ -590,7 +590,7 @@ static m4testexecute testexecute_d[] = {
     {"crc+",
      {m4_call_, CELL(crc1byte_code), m4bye},
      {{2, {0xffffffff, 't'}}, {}},
-     {{1, {0x1b806fbc /* m4th_crc1byte(0xffffffff, 't')*/}}, {}},
+     {{1, {0x1b806fbc /* m64th_crc1byte(0xffffffff, 't')*/}}, {}},
      {}},
     {"crc-cell",
      {m4crc_cell, m4bye},
@@ -598,17 +598,17 @@ static m4testexecute testexecute_d[] = {
        {'c' | SH('o', 1) | SH('n', 2) | SH('s', 3) | SH('t', 4) | SH('a', 5) | SH('n', 6) |
         SH('t', 7)}},
       {}},
-     {{1, {0x92cfc8c9 /* m4th_crc_string("constant", 8)*/}}, {}},
+     {{1, {0x92cfc8c9 /* m64th_crc_string("constant", 8)*/}}, {}},
      {}},
     {"\"constant\" crc-string",
      {m4crc_string, m4bye},
      {{2, {(m4cell) "constant", 8}}, {}},
-     {{1, {0x92cfc8c9 /* m4th_crc_string("constant", 8)*/}}, {}},
+     {{1, {0x92cfc8c9 /* m64th_crc_string("constant", 8)*/}}, {}},
      {}},
     {"\"immediate\" crc-string",
      {m4crc_string, m4bye},
      {{2, {(m4cell) "immediate", 9}}, {}},
-     {{1, {0x5ecabe1c /* m4th_crc_string("immediate", 9)*/}}, {}},
+     {{1, {0x5ecabe1c /* m64th_crc_string("immediate", 9)*/}}, {}},
      {}},
     {"(call-asm) crc+-native-forth",
      {m4_call_asm_, CELL(m4ftest_crc_plus_native_forth), m4bye},
@@ -1614,8 +1614,8 @@ static m4testexecute testexecute_g[] = {
     {"get-current", {m4get_current, m4bye}, {{}, {}}, {{1, {(m4cell)&m4wordlist_forth}}, {}}, {}},
     {"set-current",
      {m4get_current, m4swap, m4set_current, m4get_current, m4swap, m4set_current, m4bye},
-     {{1, {(m4cell)&m4wordlist_m4th_impl}}, {}},
-     {{1, {(m4cell)&m4wordlist_m4th_impl}}, {}},
+     {{1, {(m4cell)&m4wordlist_m64th_impl}}, {}},
+     {{1, {(m4cell)&m4wordlist_m64th_impl}}, {}},
      {}},
     /* ----------------------------- flags ---------------------------------- */
     {"ip_2 flags>consumed-tokens",
@@ -1733,7 +1733,7 @@ static m4testexecute testexecute_g[] = {
      {}},
     {"\"ex-message!\" wordlist-find",
      {CALL(wordlist_find), m4bye},
-     {{3, {(m4cell) "ex-message!", 11, (m4cell)&m4wordlist_m4th_user}}, {}},
+     {{3, {(m4cell) "ex-message!", 11, (m4cell)&m4wordlist_m64th_user}}, {}},
      {{2, {(m4cell)&WORD_SYM(ex_message_store), ttrue}}, {}},
      {}},
     {"\"dup\" search-wordlist",
@@ -1765,7 +1765,7 @@ static m4testexecute testexecute_g[] = {
     {"get-order",
      {CALL(get_order), m4bye},
      {{}, {}},
-     {{4, {(m4cell)&m4wordlist_m4th_user, (m4cell)&m4wordlist_forth, (m4cell)&m4wordlist_forth, 3}},
+     {{4, {(m4cell)&m4wordlist_m64th_user, (m4cell)&m4wordlist_forth, (m4cell)&m4wordlist_forth, 3}},
       {}},
      {}},
     {"' (if) name-inline?",
@@ -1874,11 +1874,11 @@ static m4code_pair m4testexecute_init(m4testexecute *t, m4countedcode_pair *code
     return pair;
 }
 
-static m4cell m4testexecute_run(m4th *m, m4testexecute *t, const m4code_pair *pair) {
-    m4th_clear(m);
+static m4cell m4testexecute_run(m64th *m, m4testexecute *t, const m4code_pair *pair) {
+    m64th_clear(m);
     if (t->codegen.n != 0) {
         m4string name = {};
-        m4th_colon(m, name);
+        m64th_colon(m, name);
     }
     m4testexecute_fix(t, pair);
 
@@ -1890,16 +1890,16 @@ static m4cell m4testexecute_run(m4th *m, m4testexecute *t, const m4code_pair *pa
 #endif /* 0 */
     m->ip = pair->first.addr;
 
-    m4th_run(m);
+    m64th_run(m);
 
-    m4th_sync_lastw(m);
+    m64th_sync_lastw(m);
 
     return m4countedstack_equal(&t->after.d, &m->dstack) &&
            m4countedstack_equal(&t->after.r, &m->rstack) &&
            m4code_equal(pair->second, m4word_code(m->lastw));
 }
 
-static void m4testexecute_failed(m4th *m, const m4testexecute *t, const m4code_pair *pair,
+static void m4testexecute_failed(m64th *m, const m4testexecute *t, const m4code_pair *pair,
                                  FILE *out) {
     if (out == NULL) {
         return;
@@ -1926,7 +1926,7 @@ static void m4testexecute_failed(m4th *m, const m4testexecute *t, const m4code_p
     fputc('\n', out);
 }
 
-static void m4th_testexecute_bunch(m4th *m, m4testexecute bunch[], m4cell n, m4testcount *count,
+static void m64th_testexecute_bunch(m64th *m, m4testexecute bunch[], m4cell n, m4testcount *count,
                                    FILE *out) {
     m4countedcode_pair countedcode_pair = {{m4test_code_n, {}}, {m4test_code_n, {}}};
     m4cell i, fail = 0;
@@ -1945,20 +1945,20 @@ static void m4th_testexecute_bunch(m4th *m, m4testexecute bunch[], m4cell n, m4t
     count->total += n;
 }
 
-void m4th_testbench_crc_c(FILE *out) {
+void m64th_testbench_crc_c(FILE *out) {
     m4ucell i, n = 1e8;
     uint32_t crc = ~(uint32_t)0;
     const uint32_t expected = 0x773edc4e;
     for (i = 0; i < n; i++) {
-        crc = m4th_crc1byte(crc, 't');
+        crc = m64th_crc1byte(crc, 't');
     }
     if (crc != expected) {
-        fprintf(out, "m4th_testbench_crc_c mismatch: expected 0x%lx, got 0x%lx\n", (long)expected,
+        fprintf(out, "m64th_testbench_crc_c mismatch: expected 0x%lx, got 0x%lx\n", (long)expected,
                 (long)crc);
     }
 }
 
-m4cell m4th_testexecute(m4th *m, FILE *out) {
+m4cell m64th_testexecute(m64th *m, FILE *out) {
     m4testexecute *t[] = {
         testexecute_a, testexecute_b, testexecute_c, testexecute_d,
         testexecute_e, testexecute_f, testexecute_g,
@@ -1970,13 +1970,13 @@ m4cell m4th_testexecute(m4th *m, FILE *out) {
     m4testcount count = {};
     m4cell i;
 #if 0
-    m4wordlist_find(&m4wordlist_m4th_user, m4string_make("ex-message!", 11));
+    m4wordlist_find(&m4wordlist_m64th_user, m4string_make("ex-message!", 11));
 #endif
     m4array_copy_to_tarray(crc1byte_array, crc1byte_code);
-    /* printf("crc('t') = %u\n", (unsigned)m4th_crc1byte(0xffffffff, 't')); */
+    /* printf("crc('t') = %u\n", (unsigned)m64th_crc1byte(0xffffffff, 't')); */
 
     for (i = 0; i < (m4cell)N_OF(t); i++) {
-        m4th_testexecute_bunch(m, t[i], n[i], &count, out);
+        m64th_testexecute_bunch(m, t[i], n[i], &count, out);
     }
 
     if (out != NULL) {

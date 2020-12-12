@@ -1,20 +1,20 @@
 /**
  * Copyright (C) 2020 Massimiliano Ghilardi
  *
- * This file is part of m4th.
+ * This file is part of m64th.
  *
- * m4th is free software: you can redistribute it and/or modify
+ * m64th is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation, either version 3
  * of the License, or (at your option) any later version.
  *
- * m4th is distributed in the hope that it will be useful,
+ * m64th is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
+ * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #include "../dispatch/asm.mh"
@@ -77,7 +77,7 @@ FUNC_START(two_dup)        /* 2dup     */
 FUNC_END(two_dup)
 
 #ifndef M4FTWO_NIP
-FUNC_START(two_nip)        /* 2nip     m4th-user */
+FUNC_START(two_nip)        /* 2nip     m64th-user */
         LOAD(  REG1,   AT(DSTK))
         STOR(  REG1,   AT(DSTK, SZ2))
         ADD2(  IMM(SZ2),   DSTK)
@@ -156,7 +156,7 @@ FUNC_END(two_tuck)
 
 
 #ifndef M4FTWO_DUP_TWO_TO_R
-FUNC_START(two_dup_two_to_r)   /* 2dup 2>r  ( a b -- a b ) ( R: -- a b ) m4th-user */
+FUNC_START(two_dup_two_to_r)   /* 2dup 2>r  ( a b -- a b ) ( R: -- a b ) m64th-user */
         LOAD(  REG1,       AT(DSTK))
         RPUSH2(RTOP,       REG1)
         MOVE(  DTOP,       RTOP)
@@ -184,7 +184,7 @@ FUNC_END(two_r_from)
 #endif
 
 
-FUNC_START(two_r_from_two_drop)/* 2r>2drop  m4th-user */
+FUNC_START(two_r_from_two_drop)/* 2r>2drop  m64th-user */
         LOAD(  RTOP,       AT(RSTK, SZ))
         ADD2(  IMM(SZ2),   RSTK)
 FUNC_END(two_r_from_two_drop)

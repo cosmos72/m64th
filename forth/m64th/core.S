@@ -1,31 +1,31 @@
 /**
  * Copyright (C) 2020 Massimiliano Ghilardi
  *
- * This file is part of m4th.
+ * This file is part of m64th.
  *
- * m4th is free software: you can redistribute it and/or modify
+ * m64th is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation, either version 3
  * of the License, or (at your option) any later version.
  *
- * m4th is distributed in the hope that it will be useful,
+ * m64th is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
+ * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #include "../../include/asm.mh"
 #include "../../include/dict.mh"
 #include "../../include/err.mh"
-#include "../../include/m4th/dict.mh"
+#include "../../include/m64th/dict.mh"
 
 /* clang-format off */
 
 /* ---------------------------------------------------------------------------------------------- */
-/* --- m4th-core -------------------------------------------------------------------------------- */
+/* --- m64th-core -------------------------------------------------------------------------------- */
 /* ---------------------------------------------------------------------------------------------- */
 
 WORD(div_token,        div_token,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
@@ -625,7 +625,7 @@ WORD(searchorder_dup,   searchorder_drop,  DSTACK(0,0), RSTACK(0,0), WORD_IMPURE
 WORD(searchorder_pick,  searchorder_dup,   DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
 /* searchorder[0]! ( wid -- ) set first wid in searchorder */
 WORD(searchorder_store_0,searchorder_pick, DSTACK(1,0), RSTACK(0,0), WORD_IMPURE)
-/* ( c-addr u -- idx true | -1 false ) find local variable in m4th->locals */
+/* ( c-addr u -- idx true | -1 false ) find local variable in m64th->locals */
 WORD_START(string_to_local,      searchorder_store_0)
     WORD_DSTACK(2,1)
     WORD_RSTACK(0,0)
@@ -698,7 +698,7 @@ WORD_START(tokens_comma,   token_comma)
     WORD_STACK_NONE()
     WORD_ASM_NONE()
     WORD_FLAGS(M4FLAG_INLINE)
-    WORD_CODE(/* generated from file m4th_core.forth - see source and comments there */
+    WORD_CODE(/* generated from file m64th_core.forth - see source and comments there */
         /*11*/ tokens, bounds, _q_do_, T(6), i, token_fetch, token_comma, one_token, _plus_loop_, T(-6), exit
     )
 WORD_END(tokens_comma)
@@ -710,12 +710,12 @@ WORD_START(user_var,   tokens_comma)
     WORD_FLAGS(M4FLAG_INLINE_ALWAYS | M4FLAG_CONSUMES_IP_2)
     WORD_CODE(user_var, T(-1), exit)
 WORD_END(user_var)
-WORD(user_var_m4th,    user_var,       DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
+WORD(user_var_m64th,    user_var,       DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 /**
  * wordlist-find ( c-addr u wid -- nt|0 -1|0|1 ) search word by name in wordlist.
  * return 0 if not found. return 1 if word is immediate, otherwise return -1
  */
-WORD_START(wordlist_find, user_var_m4th)
+WORD_START(wordlist_find, user_var_m64th)
     WORD_DSTACK(3,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()

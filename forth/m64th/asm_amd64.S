@@ -1,30 +1,30 @@
 /**
  * Copyright (C) 2020 Massimiliano Ghilardi
  *
- * This file is part of m4th.
+ * This file is part of m64th.
  *
- * m4th is free software: you can redistribute it and/or modify
+ * m64th is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation, either version 3
  * of the License, or (at your option) any later version.
  *
- * m4th is distributed in the hope that it will be useful,
+ * m64th is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
+ * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #include "../../include/asm.mh"
 #include "../../include/dict.mh"
-#include "../../include/m4th/dict.mh"
+#include "../../include/m64th/dict.mh"
 
 /* clang-format off */
 
 /* ---------------------------------------------------------------------------------------------- */
-/* --- m4th-asm   arch-specific words for amd64 ------------------------------------------------- */
+/* --- m64th-asm   arch-specific words for amd64 ------------------------------------------------- */
 /* ---------------------------------------------------------------------------------------------- */
 
 /* ( jump_location jump_category -- ) resolve an ASM jump to here */
@@ -37,7 +37,7 @@ WORD_START(_asm_resolve_jump_here_,  LASTWORD)
     WORD_CODE(
         /**
          * ASM relative jumps are quite simple on amd64:
-         * their jump offset occupies either 1 byte (not used by m4th) or 4 bytes,
+         * their jump offset occupies either 1 byte (not used by m64th) or 4 bytes,
          * and it's exactly the distance in bytes from the end of the jump instruction.
          */
         drop,                                  /* ( jump_location                  ) */

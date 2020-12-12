@@ -1,20 +1,20 @@
 /**
  * Copyright (C) 2020 Massimiliano Ghilardi
  *
- * This file is part of m4th.
+ * This file is part of m64th.
  *
- * m4th is free software: you can redistribute it and/or modify
+ * m64th is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation, either version 3
  * of the License, or (at your option) any later version.
  *
- * m4th is distributed in the hope that it will be useful,
+ * m64th is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
+ * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #include "../dispatch/asm.mh"
@@ -28,10 +28,10 @@ FUNC_START(_num_compiled_)
         DPUSH__DTOP()
 #ifdef ARITH_ARG1_AT
         MOVE(  HERE,       DTOP)                       /* dtop = here           */
-        SUB2(  AT(M4TH, M4TH_OFF_XT),  DTOP)           /* dtop = here - m4th.xt */
+        SUB2(  AT(M4TH, M4TH_OFF_XT),  DTOP)           /* dtop = here - m64th.xt */
 #else
-        LOAD(  DTOP,       AT(M4TH, M4TH_OFF_XT))      /* dtop = m4th.xt        */
-        XSUB2( HERE,       DTOP)                       /* dtop = here - m4th.xt */
+        LOAD(  DTOP,       AT(M4TH, M4TH_OFF_XT))      /* dtop = m64th.xt        */
+        XSUB2( HERE,       DTOP)                       /* dtop = here - m64th.xt */
 #endif
         SHR2(  IMM(PSZt),  DTOP)
 FUNC_END(_num_compiled_)
@@ -41,10 +41,10 @@ FUNC_END(_num_compiled_)
 FUNC_START(_num_compiled_reg0_)
 #ifdef ARITH_ARG1_AT
         MOVE(  HERE,       REG0)                       /* @ = here           */
-        SUB2(  AT(M4TH, M4TH_OFF_XT),  REG0)           /* @ = here - m4th.xt */
+        SUB2(  AT(M4TH, M4TH_OFF_XT),  REG0)           /* @ = here - m64th.xt */
 #else
-        LOAD(  REG0,       AT(M4TH, M4TH_OFF_XT))      /* @ = m4th.xt        */
-        XSUB2( HERE,       REG0)                       /* @ = here - m4th.xt */
+        LOAD(  REG0,       AT(M4TH, M4TH_OFF_XT))      /* @ = m64th.xt        */
+        XSUB2( HERE,       REG0)                       /* @ = here - m64th.xt */
 #endif
         SHR2(  IMM(PSZt),  REG0)
 FUNC_END(_num_compiled_reg0_)
@@ -171,7 +171,7 @@ FUNC_END(c_comma)
 
 
 #ifndef M4FSHORT_COMMA
-FUNC_START(short_comma)    /* short,   m4th-user */
+FUNC_START(short_comma)    /* short,   m64th-user */
         STORh( DTOP,       AT(HERE))
         ADD2(  IMM(2),     HERE)
         DPOP___DTOP()
@@ -180,7 +180,7 @@ FUNC_END(short_comma)
 
 
 #ifndef M4FINT_COMMA
-FUNC_START(int_comma)      /* int,     m4th-user */
+FUNC_START(int_comma)      /* int,     m64th-user */
         STORw( DTOP,       AT(HERE))
         ADD2(  IMM(4),     HERE)
         DPOP___DTOP()
@@ -197,7 +197,7 @@ FUNC_END(comma)
 #endif
 
 
-/* asm, ( addr u -- ) m4th-asm */
+/* asm, ( addr u -- ) m64th-asm */
 FUNC_START(asm_comma)
         LOAD(  REG1,   AT(M4TH, M4TH_OFF_ASM_HERE))    /* a = asm-here          */
         LOAD(  REG2,   AT(M4TH, M4TH_OFF_ASM_END))     /* b = asm-end           */
@@ -213,7 +213,7 @@ FUNC_RAWEND(asm_comma)
 
 
 /**
- * countedstring, ( c-addr u -- ) m4th-user
+ * countedstring, ( c-addr u -- ) m64th-user
 
  * implemented in assembly because 'name,' needs it,
  * and we want 'name,' to be assembly too,
@@ -226,7 +226,7 @@ FUNC_START(countedstring_comma)
         INC1(  HERE)                                   /* here++            */
         /* fallthrough */
 
-/* string, ( c-addr u -- ) m4th-user */
+/* string, ( c-addr u -- ) m64th-user */
 FUNC_DEF(string_comma)
         DPUSH( HERE)                                   /* ( c-addr here u ) */
         ADD2(  DTOP,   HERE)                           /* here += u         */
@@ -239,7 +239,7 @@ FUNC_SIZE(countedstring_comma)
 #ifndef M4FIMMEDIATE
 /* immediate ( -- ) mark last defined word as 'immediate' */
 FUNC_START(immediate)
-        LOAD(  REG1,   AT(M4TH, M4TH_OFF_LASTW))   /* a = w = m4th.lastw    */
+        LOAD(  REG1,   AT(M4TH, M4TH_OFF_LASTW))   /* a = w = m64th.lastw    */
         LD_uh( REG2,   AT(REG1, WORD_OFF_FLAGS))   /* b = w.flags           */
         ORR2(  IMM(M4FLAG_IMMEDIATE), REG2)        /* b |= m4flag_immediate */
         STORh( REG2,   AT(REG1, WORD_OFF_FLAGS))   /* w.flags = b           */
@@ -250,18 +250,18 @@ FUNC_END(immediate)
 /* latest ( -- nt ) get last defined word */
 FUNC_START(latest)
         DPUSH__DTOP()
-        LOAD(  DTOP,   AT(M4TH, M4TH_OFF_LASTW))   /* nt = m4th.lastw       */
+        LOAD(  DTOP,   AT(M4TH, M4TH_OFF_LASTW))   /* nt = m64th.lastw       */
 FUNC_END(latest)
 
 
 /* set-latest ( nt -- ) set last defined word */
 FUNC_START(to_latest)
-        STOR(  DTOP,   AT(M4TH, M4TH_OFF_LASTW))   /* m4th.lastw = nt       */
+        STOR(  DTOP,   AT(M4TH, M4TH_OFF_LASTW))   /* m64th.lastw = nt       */
         /* we really should NOT be compiling now, but in some tests we are  */
-        LOAD(  REG1,   AT(M4TH, M4TH_OFF_XT))      /* a = m4th.xt           */
+        LOAD(  REG1,   AT(M4TH, M4TH_OFF_XT))      /* a = m64th.xt           */
         JZ(    REG1,   TO(to_latest.done))
         ADD2(  IMM(WORD_OFF_XT),   DTOP)           /* dtop = nt.code        */
-        STOR(  DTOP,   AT(M4TH, M4TH_OFF_XT))      /* m4th.xt = dtop        */
+        STOR(  DTOP,   AT(M4TH, M4TH_OFF_XT))      /* m64th.xt = dtop        */
 LABEL(to_latest.done)
         DPOP___DTOP()
 FUNC_END(to_latest)
@@ -269,25 +269,25 @@ FUNC_END(to_latest)
 
 FUNC_START(state)
         DPUSH__DTOP()
-        ADDI(  M4TH, M4TH_OFF_XT, DTOP)                /* &m4th.xt is also used as STATE */
+        ADDI(  M4TH, M4TH_OFF_XT, DTOP)                /* &m64th.xt is also used as STATE */
 FUNC_END(state)
 
 
 FUNC_START(state_fetch)
         DPUSH__DTOP()
-        LOAD(  DTOP, AT(M4TH, M4TH_OFF_XT))            /* m4th.xt is also used as STATE @ */
+        LOAD(  DTOP, AT(M4TH, M4TH_OFF_XT))            /* m64th.xt is also used as STATE @ */
 FUNC_END(state_fetch)
 
 /**
  * Temporarily switch from compiling to interpreting.
- * Update m4th.lastw.code_n (needed by ';') then set m4th.xt = state to 0
+ * Update m64th.lastw.code_n (needed by ';') then set m64th.xt = state to 0
  */
 FUNC_START(left_bracket)
         LOAD(  REG2,       AT(M4TH, M4TH_OFF_XT))
         JZ(    REG2,       FUNC_RET(left_bracket))    /* noop if interpreting  */
 
-        XSUB2( HERE,       REG2)                       /* b = here - m4th.xt    */
-        LOAD(  REG1,       AT(M4TH, M4TH_OFF_LASTW))   /* a = m4th.lastw        */
+        XSUB2( HERE,       REG2)                       /* b = here - m64th.xt    */
+        LOAD(  REG1,       AT(M4TH, M4TH_OFF_LASTW))   /* a = m64th.lastw        */
         SHR2(  IMM(PSZt),  REG2)                       /* b = #compiled         */
         STORh( REG2,       AT(REG1, WORD_OFF_CODE_N))  /* lastw.code_n = b      */
 
@@ -298,16 +298,16 @@ FUNC_END(left_bracket)
 
 /**
  * Start or resume compiling.
- * Set state = m4th.xt to code address of m4th.lastw.
+ * Set state = m64th.xt to code address of m64th.lastw.
  */
 FUNC_START(right_bracket)
         /* TODO check if enough space */
         MOVI(  M4ERR_ZERO_LENGTH_NAME, REG0)           /* @ = err               */
-        LOAD(  REG1,       AT(M4TH, M4TH_OFF_LASTW))   /* a = w = m4th.lastw    */
+        LOAD(  REG1,       AT(M4TH, M4TH_OFF_LASTW))   /* a = w = m64th.lastw    */
         JZ(    REG1,       FUNC(_throw_reg0_))         /* no latest word: throw */
         MOVI(  M4ERR_COMPILER_NESTING, REG0)           /* @ = err               */
-        LOAD(  REG3,       AT(M4TH, M4TH_OFF_XT))      /* c = m4th.xt           */
+        LOAD(  REG3,       AT(M4TH, M4TH_OFF_XT))      /* c = m64th.xt           */
         ADD2(  IMM(WORD_OFF_XT),   REG1)               /* a = xt = w.code       */
         JNZ(   REG3,       FUNC(_throw_reg0_))         /* compiling: throw      */
-        STOR(  REG1,       AT(M4TH, M4TH_OFF_XT))      /* m4th.xt = w.code      */
+        STOR(  REG1,       AT(M4TH, M4TH_OFF_XT))      /* m64th.xt = w.code      */
 FUNC_END(right_bracket)

@@ -1,27 +1,27 @@
 /**
  * Copyright (C) 2020 Massimiliano Ghilardi
  *
- * This file is part of m4th.
+ * This file is part of m64th.
  *
- * m4th is free software: you can redistribute it and/or modify
+ * m64th is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation, either version 3
  * of the License, or (at your option) any later version.
  *
- * m4th is distributed in the hope that it will be useful,
+ * m64th is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
+ * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #ifndef M4TH_T_TESTCOMPILE_C
 #define M4TH_T_TESTCOMPILE_C
 
 #include "../impl.h"
-#include "../include/m4th.h"
+#include "../include/m64th.h"
 #include "../include/word_fwd.h"
 #include "../include/wordlist_fwd.h"
 #include "testcommon.h"
@@ -446,13 +446,13 @@ static void m4testcompile_wordlist_add(m4wordlist *wid, m4named_word *nw) {
     m4wordlist_add_word(wid, &nw->word);
 }
 
-static void m4testcompile_fix(m4th *m) {
+static void m4testcompile_fix(m64th *m) {
     m4wordlist *wid = m->searchorder.addr[m->searchorder.n - 1];
     m4testcompile_wordlist_add(wid, &test_defer);
     m4testcompile_wordlist_add(wid, &test_value);
 }
 
-static m4cell m4testcompile_run(m4th *m, const m4testcompile *t, m4code t_codegen) {
+static m4cell m4testcompile_run(m64th *m, const m4testcompile *t, m4code t_codegen) {
     m4word *w;
     m4ucell input_n = strlen(t->input);
     const m4countedstack empty = {};
@@ -462,7 +462,7 @@ static m4cell m4testcompile_run(m4th *m, const m4testcompile *t, m4code t_codege
     printf("%s\n", t->input);
 #endif
 
-    m4th_clear(m);
+    m64th_clear(m);
 
     w = m->lastw = (m4word *)m->mem.start;
     memset(w, '\0', sizeof(m4word));
@@ -478,9 +478,9 @@ static m4cell m4testcompile_run(m4th *m, const m4testcompile *t, m4code t_codege
 
     m4testcompile_fix(m);
 
-    m4th_repl(m);
+    m64th_repl(m);
 
-    m4th_sync_lastw(m);
+    m64th_sync_lastw(m);
 
     return m4countedstack_equal(&t->dafter, &m->dstack) &&
            m4countedstack_equal(&empty, &m->rstack) /**/ &&
@@ -492,7 +492,7 @@ static void m4testcompile_print(const m4testcompile *t, FILE *out) {
     fputc(' ', out);
 }
 
-static void m4testcompile_failed(m4th *m, const m4testcompile *t, m4code t_codegen, FILE *out) {
+static void m4testcompile_failed(m64th *m, const m4testcompile *t, m4code t_codegen, FILE *out) {
     const m4countedstack empty = {};
     if (out == NULL) {
         return;
@@ -522,7 +522,7 @@ static void m4testcompile_failed(m4th *m, const m4testcompile *t, m4code t_codeg
     fputc('\n', out);
 }
 
-m4cell m4th_testcompile(m4th *m, FILE *out) {
+m4cell m64th_testcompile(m64th *m, FILE *out) {
     const m4testcompile *t[] = {testcompile_a, testcompile_b, testcompile_c, testcompile_d,
                                 testcompile_e};
     const m4cell n[] = {N_OF(testcompile_a), N_OF(testcompile_b), N_OF(testcompile_c),
@@ -531,11 +531,11 @@ m4cell m4th_testcompile(m4th *m, FILE *out) {
     m4countedcode codegen_buf;
     m4cell i, j, run = 0, fail = 0;
 
-    if (!m4th_knows(m, &m4wordlist_m4th_core)) {
-        m4th_also(m, &m4wordlist_m4th_core);
+    if (!m64th_knows(m, &m4wordlist_m64th_core)) {
+        m64th_also(m, &m4wordlist_m64th_core);
     }
-    if (!m4th_knows(m, &m4wordlist_m4th_asm)) {
-        m4th_also(m, &m4wordlist_m4th_asm);
+    if (!m64th_knows(m, &m4wordlist_m64th_asm)) {
+        m64th_also(m, &m4wordlist_m64th_asm);
     }
 
     for (i = 0; i < (m4cell)N_OF(t); i++) {

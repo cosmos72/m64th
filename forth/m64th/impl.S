@@ -1,20 +1,20 @@
 /**
  * Copyright (C) 2020 Massimiliano Ghilardi
  *
- * This file is part of m4th.
+ * This file is part of m64th.
  *
- * m4th is free software: you can redistribute it and/or modify
+ * m64th is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation, either version 3
  * of the License, or (at your option) any later version.
  *
- * m4th is distributed in the hope that it will be useful,
+ * m64th is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with m4th.  If not, see <https://www.gnu.org/licenses/>.
+ * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #include "../../dispatch/sz.mh" /* SZ SZt */
@@ -23,7 +23,7 @@
 #include "../../include/err.mh"
 #include "../../include/hashmap.mh"
 #include "../../include/locals.mh"
-#include "../../include/m4th/dict.mh"
+#include "../../include/m64th/dict.mh"
 #include "../../include/opt2_hash.mh"
 #include "../../include/opt2_midprio_hash.mh"
 #include "../../include/opt3_hash.mh"
@@ -32,7 +32,7 @@
 /* clang-format off */
 
 /* ---------------------------------------------------------------------------------------------- */
-/* --- m4th-impl -------------------------------------------------------------------------------- */
+/* --- m64th-impl -------------------------------------------------------------------------------- */
 /* ---------------------------------------------------------------------------------------------- */
 
 WORD_START(_plus_loop_, _plus_loop_)
@@ -2047,7 +2047,7 @@ WORD_START(_token_consumed_ip_comma_,  _throw_if_not_compiling_)
         drop, exit
     )
 WORD_END(_token_consumed_ip_comma_)
-/* ( -- ls ) allocate m4th->locals data structure if not present */
+/* ( -- ls ) allocate m64th->locals data structure if not present */
 WORD_START(_user_locals_allocate_,     _token_consumed_ip_comma_)
     WORD_DSTACK(0,1)
     WORD_RSTACK(0,0)
@@ -2062,10 +2062,10 @@ WORD_START(_user_locals_allocate_,     _token_consumed_ip_comma_)
         drop,                                          /* ( &ls                             ) */
         CALL(_locals_allocate_),                       /* ( &ls ls                          ) */
         tuck, swap,                                    /* ( ls ls &ls                       ) */
-        store, exit              /* set m4th.locals */ /* ( ls                              ) */
+        store, exit              /* set m64th.locals */ /* ( ls                              ) */
     )
 WORD_END(_user_locals_allocate_)
-/* ( -- )    remove all local variables from m4th->locals */
+/* ( -- )    remove all local variables from m64th->locals */
 WORD_START(_user_locals_clear_,_user_locals_allocate_)
     WORD_DSTACK(0,0)
     WORD_RSTACK(0,0)
@@ -2077,7 +2077,7 @@ WORD_START(_user_locals_clear_,_user_locals_allocate_)
         CALL(_locals_clear_), exit
     )
 WORD_END(_user_locals_clear_)
-/* ( -- ) set indexes of local variables in m4th->locals */
+/* ( -- ) set indexes of local variables in m64th->locals */
 WORD_START(_user_locals_set_idx_,      _user_locals_clear_)
     WORD_STACK_NONE()
     WORD_STACK_NONE()
