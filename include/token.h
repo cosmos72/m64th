@@ -33,16 +33,16 @@ extern "C" {
 
 #if defined(__cplusplus) && __cplusplus >= 201103L
 
-/** small enum representing a forth instruction. same as m6token */
-enum m6_token : uint16_t { DICT_TOKENS_ALL(M6TOKEN_ENTRY) };
 /** small enum representing a forth instruction */
-typedef m6_token m6token;
+enum m6token : uint16_t { DICT_TOKENS_ALL(M6TOKEN_ENTRY) };
+/** small enum representing a forth instruction. same as m6token */
+typedef m6token m6token_e;
 
 #else /* !defined(__cplusplus) || __cplusplus < 201103L */
 
 /** enum representing a forth instruction. use m6token for accurate sizeof() */
-typedef enum m6_token_e { DICT_TOKENS_ALL(M6TOKEN_ENTRY) } m6_token;
-/** small integer representing a forth instruction. use m6_token for symbolic names */
+typedef enum m6token_e { DICT_TOKENS_ALL(M6TOKEN_ENTRY) } m6token_e;
+/** small integer representing a forth instruction. use m6token_e for symbolic names */
 typedef uint16_t m6token;
 
 #endif /* defined(__cplusplus) && __cplusplus >= 201103L */

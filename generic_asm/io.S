@@ -234,7 +234,7 @@ LABEL(obuf_write_string.slow)
         ADDROF_4G( WORD_SYM(_obuf_flush_write_string_), REG2) /* b = word           */
         DPUSH__DTOP()                                  /* dstk ( io c-addr u _    ) */
         ADDI(  REG2,   WORD_OFF_XT, DTOP)              /* dstk ( io c-addr u xt   ) */
-        ASM_CALL(FUNC(_asm_vm_execute_))             /* dstk ( err              ) */
+        ASM_CALL(FUNC(_asm_vm_execute_))               /* dstk ( err              ) */
 FUNC_END(obuf_write_string)
 
 
@@ -247,10 +247,10 @@ FUNC_END(out_to_obuf)
 
 /* type ( c-addr u -- ) write string to current output */
 FUNC_START(type)
-        LOAD(  REG1,   AT(M64TH, M64TH_OFF_OUT))         /* a = io                 */
+        LOAD(  REG1,   AT(M64TH, M64TH_OFF_OUT))       /* a = io                 */
         LOAD(  REG2,   AT(DSTK))                       /* b = c-addr             */
         STOR(  REG1,   AT(DSTK))                       /* dstk ( io u          ) */
         DPUSH( REG2)                                   /* dstk ( io c-addr u   ) */
-        TOKEN_CALL_NOTHROW(FUNC(obuf_write_string), type.0)  /* dstk ( err           ) */
+        TOKEN_CALL_NOTHROW(FUNC(obuf_write_string), type.0) /* dstk ( err      ) */
         DPOP___DTOP()                                  /* dstk (               ) */
 FUNC_END(type)

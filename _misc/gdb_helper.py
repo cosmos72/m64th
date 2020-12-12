@@ -97,7 +97,7 @@ class PrintForthDataStack(gdb.Command):
             addr += self.szt
         gdb.write("\n")
     def token_at(self, inf, addr):
-        s = str(gdb.parse_and_eval("(enum m6_token_e)*(m6token*)%d" % addr))
+        s = str(gdb.parse_and_eval("(m6token_e)*(m6token*)%d" % addr))
         if len(s) > 2 and s[:2] == "m6":
             s = s[2:]
         return s

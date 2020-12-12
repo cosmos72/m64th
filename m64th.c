@@ -25,6 +25,7 @@
 #include "include/func_fwd.h"
 #include "include/m64th.mh" /* M64TH_PICT_MAXSIZE */
 #include "include/macro.mh"
+#include "include/token.h"
 #include "include/word_fwd.h"
 #include "include/wordlist_fwd.h"
 
@@ -54,6 +55,11 @@ enum {
 
 typedef char m64th_assert_sizeof_m6token_equal_SZt[(sizeof(m6token) == SZt) ? 1 : -1];
 typedef char m64th_assert_sizeof_m6cell_equal_SZ[(sizeof(m6cell) == SZ) ? 1 : -1];
+
+typedef char
+    m64th_assert_sizeof_enum_m6token_e[(sizeof(enum m6token_e) == sizeof(m6token_e)) ? 1 : -1];
+typedef char m64th_assert_sizeof_m6token_e[(sizeof(m6token_e) >= sizeof(m6token)) ? 1 : -1];
+typedef char m64th_assert_m6_missing_equal_0[((m6token_e)m6_missing_ == 0) ? 1 : -1];
 
 static inline void dpush(m64th *m, m6cell x) {
     *--m->dstack.curr = x;
