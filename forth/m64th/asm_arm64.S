@@ -35,7 +35,7 @@ WORD_START(_asm_resolve_jump_here_,  LASTWORD)
     WORD_ASM_NONE()
     WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_INLINE)
     WORD_CODE(
-        // TODO
+        /* TODO */
         two_drop, exit
     )
 WORD_END(_asm_resolve_jump_here_)
@@ -47,7 +47,7 @@ WORD_START(_asm_resolve_jump_there_,  _asm_resolve_jump_here_)
     WORD_ASM_NONE()
     WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_INLINE)
     WORD_CODE(
-        // TODO
+        /* TODO */
         two_drop, exit
     )
 WORD_END(_asm_resolve_jump_there_)

@@ -45,9 +45,9 @@ struct m6arg_s {
 typedef m6cell (*m6func_c)(ARGS);
 #define NEXT()                                                                                     \
     do {                                                                                           \
-        const m6func_c *FTBL = (m6func_c *)M64TH->ftable;                                           \
+        const m6func_c *FTBL = (m6func_c *)M64TH->ftable;                                          \
         const m6token t = *IP++;                                                                   \
-        return FTBL[t](DTOP, RTOP, DSTK, RSTK, IP, M64TH);                                          \
+        return FTBL[t](DTOP, RTOP, DSTK, RSTK, IP, M64TH);                                         \
     } while (0);
 #endif
 

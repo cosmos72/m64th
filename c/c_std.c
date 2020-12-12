@@ -20,9 +20,8 @@
 #include "c_std.h"
 #include "../include/err.h"
 
-#include <errno.h>  /* errno            */
-#include <stdio.h>  /* fread() fwrite() */
-
+#include <errno.h> /* errno            */
+#include <stdio.h> /* fread() fwrite() */
 
 m6pair m64th_c_fread(FILE *in, void *addr, size_t len) {
     m6pair ret = {};

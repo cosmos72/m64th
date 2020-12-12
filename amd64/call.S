@@ -94,8 +94,8 @@ FUNC_START(bye)
         /* if m64th->rstack.curr != 0, forth return stack is dedicated memory         */
         /* then save RSTK AT(M64TH, M64TH_OFF_RSTK)                                    */
         /* else write zero AT(M64TH, M64TH_OFF_REND)                                   */
-        ADDI(  M64TH,   M64TH_OFF_RSTK, REG2)       /* RSTK should be saved here       */
-        ADDI(  M64TH,   M64TH_OFF_REND, REG3)       /* REND should be saved here       */
+        ADDI(  M64TH,  M64TH_OFF_RSTK, REG2)       /* RSTK should be saved here       */
+        ADDI(  M64TH,  M64TH_OFF_REND, REG3)       /* REND should be saved here       */
         cmovnz RSTK,   REG1;
         cmovnz REG2,   REG3;
         STOR(  REG1,   AT(REG3))       /* save RSTK, or zero AT(M64TH, M64TH_OFF_REND) */

@@ -45,4 +45,6 @@
 #define SZt2 4 /* SZt * 2 */
 #define PSZt 1 /* (1 << PSZt) == SZt */
 
+#define SZ_SZt 10 /* SZ + SZt */
+
 #endif /* M64TH_ARM64_SZ_MH */

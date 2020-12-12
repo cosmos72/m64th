@@ -38,7 +38,7 @@ typedef struct {
 } uint128_forth_stack;
 
 void m64th_ud_div_mod(uint128_forth_stack *dividend_in_remainder_out,
-                     uint128_forth_stack *divisor_in_quotient_out) {
+                      uint128_forth_stack *divisor_in_quotient_out) {
     const uint128_t dividend =
         (uint128_t)dividend_in_remainder_out->hi << 64 | dividend_in_remainder_out->lo;
     const uint128_t divisor =

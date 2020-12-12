@@ -136,7 +136,7 @@
 
 #define DSTK r5  /* pointer to second data stack element */
 #define RSTK r7  /* pointer to second return stack element */
-#define M64TH r8  /* pointer to C struct m64th */
+#define M64TH r8 /* pointer to C struct m64th */
 #define HERE r9  /* pointer to first available code/data location */
 #define FTBL r10 /* pointer to table m6func[m6token] containing asm function addresses */
 #define IP r11   /* instruction pointer */

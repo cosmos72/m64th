@@ -134,7 +134,7 @@ static void searchorder_copy_unique(const m6searchorder *src, m6searchorder *dst
 
 /* callback invoked by linenoise() when user presses TAB to complete a word */
 linenoiseString m64th_c_complete_word(linenoiseString input, linenoiseStrings *completions,
-                                     void *userData) {
+                                      void *userData) {
     m6searchorder searchorder = {};
     m64th *m = (m64th *)userData;
     m6cell i, n;
@@ -171,7 +171,7 @@ linenoiseString m64th_c_complete_word(linenoiseString input, linenoiseStrings *c
 
 /* print all words in wordlist, using linenoiseStrings as a qsort buffer */
 static void m64th_c_wordlist_print_all_words(const m6wordlist *wid, linenoiseStrings *strings,
-                                            size_t columns, FILE *out) {
+                                             size_t columns, FILE *out) {
     const m6word *w = m6wordlist_last_word(wid);
     size_t i, n, line;
     strings->size = 0;
