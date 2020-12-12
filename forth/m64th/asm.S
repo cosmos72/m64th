@@ -51,7 +51,17 @@ WORD_START(_asm_q_if0_,    _asm_q_if_)
         asm_size, _lit_tok_, _asm_if_, exit
     )
 WORD_END(_asm_q_if0_)
-WORD(_asm_else_,           _asm_q_if0_,DSTACK(0,0), RSTACK(0,0), M6FLAG_COMPILE_ONLY | M6FLAG_INLINE_ALWAYS | M6FLAG_JUMP)
+WORD_START(_asm_else_,     _asm_q_if0_)
+    WORD_STACK_NONE()
+    WORD_STACK_NONE()
+    WORD_ASM_LEN(_asm_else_)
+    WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_IMMEDIATE | M6FLAG_INLINE_ALWAYS | M6FLAG_JUMP | M6FLAG_REEXEC_AFTER_OPTIMIZE)
+    WORD_CODE(
+        _asm_lit_comma_, CELL(FUNC(_asm_else_)), T(FUNC_SIZE(_asm_else_)),/* ( orig            ) */
+        asm_size, _lit_tok_, _asm_else_, cs_swap,                         /* ( else-orig orig  ) */
+        CALL(_asm_resolve_jump_here_), exit                               /* ( else-orig       ) */
+    )
+WORD_END(_asm_else_)
 WORD_START(_asm_if_,       _asm_else_)
     WORD_DSTACK(1,0)
     WORD_RSTACK(0,0)
