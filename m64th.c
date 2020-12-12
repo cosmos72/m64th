@@ -250,6 +250,8 @@ m6cell m6flags_consume_ip(m6flags fl) {
         return 4;
     } else if (fl == m6flag_consumes_ip_8) {
         return 8;
+    } else if (fl == m6flag_consumes_ip_10) {
+        return 10;
     } else {
         return 0;
     }
@@ -279,6 +281,10 @@ void m6flags_print(m6flags fl, m6printmode mode, FILE *out) {
     case 8:
         skip = printed++ ? 0 : 1;
         fputs((mode == m6mode_user ? "|consumes_ip_8" : "|M6FLAG_CONSUMES_IP_8") + skip, out);
+        break;
+    case 10:
+        skip = printed++ ? 0 : 1;
+        fputs((mode == m6mode_user ? "|consumes_ip_10" : "|M6FLAG_CONSUMES_IP_10") + skip, out);
         break;
     }
     if (fl & m6flag_inline_always) {
@@ -316,6 +322,10 @@ void m6flags_print(m6flags fl, m6printmode mode, FILE *out) {
         fputs((mode == m6mode_user ? "|data_tokens" : "|M6FLAG_DATA_TOKENS") + skip, out);
     }
     switch (fl & m6flag_opt_mask) {
+    case m6flag_asm:
+        skip = printed++ ? 0 : 1;
+        fputs((mode == m6mode_user ? "|asm" : "|M6FLAG_ASM") + skip, out);
+        break;
     case m6flag_noasm:
         skip = printed++ ? 0 : 1;
         fputs((mode == m6mode_user ? "|noasm" : "|M6FLAG_NOASM") + skip, out);
@@ -338,10 +348,6 @@ void m6flags_print(m6flags fl, m6printmode mode, FILE *out) {
         fputs((mode == m6mode_user ? "|reexec_after_optimize" : "|M6FLAG_REEXEC_AFTER_OPTIMIZE") +
                   skip,
               out);
-    }
-    if (fl & m6flag_asm) {
-        skip = printed++ ? 0 : 1;
-        fputs((mode == m6mode_user ? "|call_asm" : "|M6FLAG_ASM") + skip, out);
     }
 }
 
@@ -1503,7 +1509,7 @@ void m64th_asm_reserve(m64th *m, m6ucell len) {
 
 /* clear CPU instruction cache in the range beg..end */
 static void m6mem_clear_icache(void *beg, void *end) {
-#if defined(__GNUC__) // also catches __clang__
+#if defined(__GNUC__) /* also catches __clang__ */
     __builtin___clear_cache(beg, end);
 #elif defined(__ANDROID__)
     cacheflush((uintptr_t)beg, (uintptr_t)end, 0);

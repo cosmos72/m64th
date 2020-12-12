@@ -378,7 +378,7 @@
 #undef M6____gap                      /*                                         */
 #define M6token_to_name M6_(49)       /* token>name ( token -- nt|0 ) convert token to name   */
 #define M6user_var M6_(50)            /* user-var ( -- addr ) followed by index of user var   */
-#define M6user_var_m64th M6_(51)       /* user-var-m64th ( -- m ) get current m64th address      */
+#define M6user_var_m64th M6_(51)      /* user-var-m64th ( -- m ) get current m64th address    */
 #undef M6____gap                      /*                                         */
 #define M6wordlist_to_last M6_(53)    /* ( wid -- nt ) get last name in a wordlist            */
 #define M6wordlist_to_string M6_(54)  /* ( wid -- c-addr u ) convert wid to string            */

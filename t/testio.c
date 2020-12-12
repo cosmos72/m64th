@@ -539,8 +539,8 @@ static void m6testio_failed(const m64th *m, const m6testio *t, FILE *out) {
     fputc('\n', out);
 }
 
-static void m6testio_bunch(m64th *m, const m6testio bunch[], m6cell n, m6testcount *count, FILE *out,
-                           m6ucell ibuf_capacity) {
+static void m6testio_bunch(m64th *m, const m6testio bunch[], m6cell n, m6testcount *count,
+                           FILE *out, m6ucell ibuf_capacity) {
     const m6iobuf ibuf = *m->in, obuf = *m->out;
     m6countedcode countedcode = {m6test_code_n, {}};
     m6cell i, fail = 0;

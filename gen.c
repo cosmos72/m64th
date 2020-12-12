@@ -211,7 +211,8 @@ static void genopt_to_file(const char *path, void (*gen)(FILE *out)) {
 static void run_show_words(m6printmode mode, FILE *out) {
     const m6dict *dict[] = {
         /* &m6dict_forth_root, */
-        &m6dict_forth, &m6dict_m64th_user, &m6dict_m64th_c, &m6dict_m64th_core, &m6dict_m64th_impl,
+        &m6dict_forth,   &m6dict_m64th_user, &m6dict_m64th_asm,
+        &m6dict_m64th_c, &m6dict_m64th_core, &m6dict_m64th_impl,
     };
     m6cell i;
     fputs(license, stdout);

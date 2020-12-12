@@ -53,7 +53,7 @@ typedef char
 
 typedef char
     m64th_assert_sizeof_m6token_divides_sizeof_m6cell[(sizeof(m6cell) % sizeof(m6token) == 0) ? 1
-                                                                                             : -1];
+                                                                                              : -1];
 
 /** m6word flags */
 typedef enum m6flags_e {
@@ -63,6 +63,7 @@ typedef enum m6flags_e {
     m6flag_consumes_ip_2 = M6FLAG_CONSUMES_IP_2,
     m6flag_consumes_ip_4 = M6FLAG_CONSUMES_IP_4,
     m6flag_consumes_ip_8 = M6FLAG_CONSUMES_IP_8,
+    m6flag_consumes_ip_10 = M6FLAG_CONSUMES_IP_10,
     m6flag_data_tokens = M6FLAG_DATA_TOKENS,
     m6flag_immediate = M6FLAG_IMMEDIATE,
     m6flag_inline = M6FLAG_INLINE,
@@ -227,7 +228,7 @@ struct m6searchorder_s {                 /**< counted array of wordlists */
     m6wordlist *addr[m6searchorder_max]; /* array of wordlists           */
 };
 
-struct m64th_s {                /**< m64th forth interpreter and compiler          */
+struct m64th_s {               /**< m64th forth interpreter and compiler          */
     m6stack dstack;            /**< data stack                                   */
     m6stack rstack;            /**< return stack                                 */
     m6cell *lstack;            /**< pointer to forth local variables (in return stack) */

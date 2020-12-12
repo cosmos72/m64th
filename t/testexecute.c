@@ -1765,7 +1765,8 @@ static m6testexecute testexecute_g[] = {
     {"get-order",
      {CALL(get_order), m6bye},
      {{}, {}},
-     {{4, {(m6cell)&m6wordlist_m64th_user, (m6cell)&m6wordlist_forth, (m6cell)&m6wordlist_forth, 3}},
+     {{4,
+       {(m6cell)&m6wordlist_m64th_user, (m6cell)&m6wordlist_forth, (m6cell)&m6wordlist_forth, 3}},
       {}},
      {}},
     {"' (if) name-inline?",
@@ -1927,7 +1928,7 @@ static void m6testexecute_failed(m64th *m, const m6testexecute *t, const m6code_
 }
 
 static void m64th_testexecute_bunch(m64th *m, m6testexecute bunch[], m6cell n, m6testcount *count,
-                                   FILE *out) {
+                                    FILE *out) {
     m6countedcode_pair countedcode_pair = {{m6test_code_n, {}}, {m6test_code_n, {}}};
     m6cell i, fail = 0;
     for (i = 0; i < n; i++) {

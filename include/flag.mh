@@ -57,43 +57,43 @@
  */
 #define M6FLAG_PURE (3 << 4)
 
-#define M6FLAG_CONSUMES_IP_MASK ((3 << 6) | M6FLAG_INLINE_ALWAYS)
+#define M6FLAG_CONSUMES_IP_MASK ((7 << 6) | M6FLAG_INLINE_ALWAYS)
 /**
- * word must be followed by 1, 2, 4 or 8 bytes, which are used (not modified) and jumped over.
+ * word must be followed by 2, 4, 8 or 10 bytes, which are used (not modified) and jumped over.
  *
  * implies M6FLAG_INLINE_ALWAYS, incompatible with M6FLAG_PURE.
  */
 #define M6FLAG_CONSUMES_IP_2 ((1 << 6) | M6FLAG_INLINE_ALWAYS)
 #define M6FLAG_CONSUMES_IP_4 ((2 << 6) | M6FLAG_INLINE_ALWAYS)
 #define M6FLAG_CONSUMES_IP_8 ((3 << 6) | M6FLAG_INLINE_ALWAYS)
+#define M6FLAG_CONSUMES_IP_10 ((4 << 6) | M6FLAG_INLINE_ALWAYS)
 
-#define M6FLAG_MEM_FETCH (1 << 8)    /** word dereferences pointer argument(s) and reads from it */
-#define M6FLAG_MEM_STORE (1 << 9)    /** word dereferences pointer arguments(s) and writes to it */
-#define M6FLAG_DATA_TOKENS (1 << 10) /** word data contains m6tokens */
+#define M6FLAG_MEM_FETCH (1 << 9)    /** word dereferences pointer argument(s) and reads from it */
+#define M6FLAG_MEM_STORE (1 << 10)   /** word dereferences pointer arguments(s) and writes to it */
+#define M6FLAG_DATA_TOKENS (1 << 11) /** word data contains m6tokens */
 
-#define M6FLAG_OPT_MASK (7 << 11) /** word must not be optimized */
+#define M6FLAG_OPT_MASK (7 << 12) /** control how word should be optimized - see next flags */
+/*
+ * word contains exactly '(call-asm)' to invoke native ASM,
+ * followed by unexecuted tokens: they are kept to allow inlining
+ */
+#define M6FLAG_ASM (1 << 12)
 /**< instruct the compiler not convert word to native ASM */
-#define M6FLAG_NOASM (1 << 11)
+#define M6FLAG_NOASM (2 << 12)
 /**< word defined with CREATE - do not optimize away CALL(noop) */
-#define M6FLAG_CREATE (2 << 11)
+#define M6FLAG_CREATE (3 << 12)
 /**< word defined with DEFER - do not optimize/inline CALL((defer-uninitialized)) */
-#define M6FLAG_DEFER (3 << 11)
+#define M6FLAG_DEFER (4 << 12)
 /**< word defined with VALUE - do not optimize/inline */
-#define M6FLAG_VALUE (4 << 11)
+#define M6FLAG_VALUE (5 << 12)
 /**< instruct the compiler not to optimize word in any way */
-#define M6FLAG_NOOPT (5 << 11)
+#define M6FLAG_NOOPT (6 << 12)
 
 /**
  * < instruct the compiler to re-execute (immediate) word after optimization.
  * needed to recompute jump offsets
  */
-#define M6FLAG_REEXEC_AFTER_OPTIMIZE (1 << 14)
-
-/*
- * word contains exactly '(call-asm)' to invoke native ASM,
- * followed by unexecuted tokens: they are kept to allow inlining
- */
-#define M6FLAG_ASM (1 << 15)
+#define M6FLAG_REEXEC_AFTER_OPTIMIZE (1 << 15)
 
 /* does not fit m6flags, only stored in ( colon-sys ) */
 #define M6FLAG_NONAME (1 << 16)

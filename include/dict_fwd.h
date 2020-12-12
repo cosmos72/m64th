@@ -42,6 +42,10 @@ extern const m6dict m6dict_forth_root;
  */
 extern const m6dict m6dict_m64th_user;
 /**
+ * Contains words to compile native ASM.
+ */
+extern const m6dict m6dict_m64th_asm;
+/**
  * Contains API to call C functions from forth.
  */
 extern const m6dict m6dict_m64th_c;
