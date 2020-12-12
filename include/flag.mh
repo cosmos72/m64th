@@ -66,7 +66,7 @@
 #define M6FLAG_CONSUMES_IP_2 ((1 << 6) | M6FLAG_INLINE_ALWAYS)
 #define M6FLAG_CONSUMES_IP_4 ((2 << 6) | M6FLAG_INLINE_ALWAYS)
 #define M6FLAG_CONSUMES_IP_8 ((3 << 6) | M6FLAG_INLINE_ALWAYS)
-#define M6FLAG_CONSUMES_IP_10 ((4 << 6) | M6FLAG_INLINE_ALWAYS)
+#define M6FLAG_CONSUMES_IP_10 ((5 << 6) | M6FLAG_INLINE_ALWAYS)
 
 #define M6FLAG_MEM_FETCH (1 << 9)    /** word dereferences pointer argument(s) and reads from it */
 #define M6FLAG_MEM_STORE (1 << 10)   /** word dereferences pointer arguments(s) and writes to it */

@@ -128,10 +128,14 @@ static void m6mem_oom(size_t bytes) {
 
 #ifdef __unix__
 
-static size_t m6mem_getpagesize() {
-    static size_t m6mem_page = 0;
-    if (m6mem_page == 0) {
-        m6mem_page =
+/**
+ * for some reason, this *must* be static when compiling on arm64
+ * with clang and one of the options -Os -O -O1 -O2
+ */
+static size_t get_pagesize(void) {
+    static size_t ret = 0;
+    if (ret == 0) {
+        ret =
 #if defined(_SC_PAGESIZE)
             sysconf(_SC_PAGESIZE);
 #elif defined(_SC_PAGE_SIZE)
@@ -144,12 +148,16 @@ static size_t m6mem_getpagesize() {
             4096;
 #endif
     }
-    return m6mem_page;
+    return ret;
+}
+
+size_t m6mem_pagesize(void) {
+    return get_pagesize();
 }
 
 /* round up 'bytes' to a multiple of page size */
 static size_t m6mem_pagesize_ceil(size_t bytes) {
-    const size_t page = m6mem_getpagesize();
+    const size_t page = get_pagesize();
     return (bytes + page - 1) / page * page;
 }
 

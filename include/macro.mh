@@ -285,6 +285,7 @@
 #define M6FLAG_CONSUMES_IP_SZ CAT2(M6FLAG_CONSUMES_IP_, SZ)
 #define M6FLAG_CONSUMES_IP_SZt CAT2(M6FLAG_CONSUMES_IP_, SZt)
 #define M6FLAG_CONSUMES_IP_SZt2 CAT2(M6FLAG_CONSUMES_IP_, SZt2)
+#define M6FLAG_CONSUMES_IP_SZ_SZt CAT2(M6FLAG_CONSUMES_IP_, SZ_SZt)
 
 /* expand to the correct .[N]byte sequence for token i.e. one of:
  * .byte ...

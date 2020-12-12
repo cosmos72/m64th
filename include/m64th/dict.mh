@@ -259,10 +259,10 @@
     X(17, "hashmap-find/cell", hashmap_find_cell) /* ( map key -- key' &val|0 ) find key in map */ \
     X(16, "hashmap-find/int", hashmap_find_int)   /* ( map key -- key' &val|0 ) find key in map */ \
     X(9, "interpret", interpret)       /* one iteration of forth interpret/compile loop  */        \
-    X(8, "m64th-asm", m64th_asm)       /* set first wordlist in searchorder to m64th-asm  */       \
-    X(6, "m64th-c", m64th_c)           /* set first wordlist in searchorder to m64th-c    */       \
-    X(9, "m64th-core", m64th_core)     /* set first wordlist in searchorder to m64th-core */       \
-    X(9, "m64th-impl", m64th_impl)     /* set first wordlist in searchorder to m64th-impl */       \
+    X(9, "m64th-asm", m64th_asm)       /* set first wordlist in searchorder to m64th-asm  */       \
+    X(7, "m64th-c", m64th_c)           /* set first wordlist in searchorder to m64th-c    */       \
+    X(10, "m64th-core", m64th_core)    /* set first wordlist in searchorder to m64th-core */       \
+    X(10, "m64th-impl", m64th_impl)    /* set first wordlist in searchorder to m64th-impl */       \
     X(4, "repl", repl)                 /* call INTERPRET repeatedly until EOF or input error   */  \
     X(5, "r2nd@", r2nd_fetch)          /* alias of i' i.e. fetch second item from return stack */  \
     X(5, "r3rd@", r3rd_fetch)          /* alias of j i.e. fetch third item from return stack   */  \
@@ -352,6 +352,8 @@
 
 #define DICT_WORDS_M64TH_ASM(X)                                                                    \
     DICT_TOKENS_M64TH_ASM(X)                                                                       \
+    /* ( -- ) install already compiled ASM code into current XT */                                 \
+    X(15, "(xt>asm-finish)", _xt_to_asm_finish_)                                                   \
     /* ( orig -- ) resolve an ASM jump to here */                                                  \
     X(23, "[asm-resolve-jump-here]", _asm_resolve_jump_here_)                                      \
     /* ( dest -- ) resolve an ASM jump from here */                                                \
@@ -364,8 +366,6 @@
     X(11, "token>asm>n", token_to_asm_n) /* ( token -- u true | 0 false ) get token ASM len */     \
     /* ( -- ) attempt to compile to native ASM all tokens between XT and HERE */                   \
     X(6, "xt>asm", xt_to_asm)                                                                      \
-    /* ( -- ) register already-compiled ASM code for current XT */                                 \
-    X(15, "(xt>asm-finish)", _xt_to_asm_finish_)                                                   \
     /* ( -- u t|f ) return required len and true if all tokens between XT and HERE */              \
     /* can be compiled to native ASM, otherwise false */                                           \
     X(8, "xt>asm>n", xt_to_asm_n)                                                                  \

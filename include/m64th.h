@@ -364,6 +364,7 @@ enum m6protect_e {
 };
 typedef enum m6protect_e m6protect;
 
+size_t m6mem_pagesize(void);                   /** return m64th's idea of PAGESIZE */
 void *m6mem_map(size_t bytes, m6protect prot); /** mmap() wrapper, calls exit(1) on failure */
 void m6mem_unmap(void *ptr, size_t bytes);     /** munmap() wrapper */
 void m6mem_protect(void *ptr, size_t bytes, m6protect prot); /* mprotect() wrapper */
