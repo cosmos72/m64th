@@ -17,11 +17,11 @@
  * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_INCLUDE_DICT_M4TH_MH
-#define M4TH_INCLUDE_DICT_M4TH_MH
+#ifndef M6TH_INCLUDE_DICT_M6TH_MH
+#define M6TH_INCLUDE_DICT_M6TH_MH
 
 /* ------- m64th-user ---------------------------------------------------------------------------- */
-#define DICT_TOKENS_M4TH_USER(X)                                                                   \
+#define DICT_TOKENS_M6TH_USER(X)                                                                   \
     X(2, "<=", less_equal)                                                                         \
     X(2, ">=", more_equal)                                                                         \
     X(3, "0<=", zero_less_equal)                                                                   \
@@ -229,8 +229,8 @@
     X(8, "cell[7]!", cell_store_7)                                                                 \
     X(8, "cell[8]!", cell_store_8)
 
-#define DICT_WORDS_M4TH_USER(X)                                                                    \
-    DICT_TOKENS_M4TH_USER(X)                                                                       \
+#define DICT_WORDS_M6TH_USER(X)                                                                    \
+    DICT_TOKENS_M6TH_USER(X)                                                                       \
     X(3, ".rs", dot_rs)             /* show return stack                              */           \
     X(5, "break", break)            /* TODO jump after 'loop', 'repeat'...            */           \
     X(8, "continue", continue)      /* TODO jump to 'loop', 'repeat'...               */           \
@@ -327,7 +327,7 @@
  *
  */
 /* ------- m64th-asm ----------------------------------------------------------------------------- */
-#define DICT_TOKENS_M4TH_ASM(X)                                                                    \
+#define DICT_TOKENS_M6TH_ASM(X)                                                                    \
     X(9, "(asm/?if)", _asm_q_if_)    /* native ASM only: implement '(?if)  */                      \
     X(10, "(asm/?if0)", _asm_q_if0_) /* native ASM only: implement '(?if0) */                      \
     X(10, "(asm/else)", _asm_else_)  /* native ASM only: implement '(else) */                      \
@@ -348,8 +348,8 @@
     /* ( token -- asm-addr | 0 ) get token ASM address */                                          \
     X(14, "token>asm>addr", token_to_asm_addr)
 
-#define DICT_WORDS_M4TH_ASM(X)                                                                     \
-    DICT_TOKENS_M4TH_ASM(X)                                                                        \
+#define DICT_WORDS_M6TH_ASM(X)                                                                     \
+    DICT_TOKENS_M6TH_ASM(X)                                                                        \
     /* ( orig -- ) resolve an ASM jump to here */                                                  \
     X(23, "[asm-resolve-jump-here]", _asm_resolve_jump_here_)                                      \
     /* ( dest -- ) resolve an ASM jump from here */                                                \
@@ -380,7 +380,7 @@
  *
  */
 /* ------- m64th-c ------------------------------------------------------------------------------- */
-#define DICT_TOKENS_M4TH_C(X)                                                                      \
+#define DICT_TOKENS_M6TH_C(X)                                                                      \
     X(9, "(c-arg-0)", _c_arg_0_) /* prepare 0 args for C function call    */                       \
     X(9, "(c-arg-1)", _c_arg_1_) /* prepare 1 arg  for C function call    */                       \
     X(9, "(c-arg-2)", _c_arg_2_) /* prepare 2 args for C function call    */                       \
@@ -395,14 +395,14 @@
     X(15, "(c-locals-load)", _c_locals_load_) /* reload local variables after a C call */          \
     X(15, "(c-locals-save)", _c_locals_save_) /* save local variables before a C call */
 
-#define DICT_WORDS_M4TH_C(X)                                                                       \
-    DICT_TOKENS_M4TH_C(X)                                                                          \
+#define DICT_WORDS_M6TH_C(X)                                                                       \
+    DICT_TOKENS_M6TH_C(X)                                                                          \
     X(7, "c-fread", c_fread) /* ( FILE* c-addr u -- u' err ) call C function fread()  */           \
     X(15, "c-fwrite+fflush", c_fwrite_fflush) /* ( FILE* c-addr u -- u' err ) fwrite()+fflush() */ \
     X(11, "c-linenoise", c_linenoise)         /* ( prompt c-addr u -- u' err ) call C linenoise() */
 
 /* ------- m64th-core ---------------------------------------------------------------------------- */
-#define DICT_TOKENS_M4TH_CORE(X)                                                                   \
+#define DICT_TOKENS_M6TH_CORE(X)                                                                   \
     X(12, "count-tokens", count_tokens) /* ( counted-tokens -- tok-addr u ) */                     \
     X(21, "flags>consumed-tokens", flags_to_consumed_tokens) /* ( flags -- u ) # consumed tokens*/ \
     X(7, "in>ibuf", in_to_ibuf)     /* (    -- io       ) get current input as iobuf     */        \
@@ -430,8 +430,8 @@
     X(9, "name>data", name_to_data)      /* ( nt -- addr u   ) get data array of name        */    \
     X(14, "name>data>addr", name_to_data_addr)  /* ( nt -- addr u ) get data address name    */    \
     X(12, "name>data>n!", name_to_data_n_store) /* ( u nt --  ) set data size of name        */    \
-    X(10, "name>flags", name_to_flags) /*   ( nt -- m4flags  ) get m4flags of name           */    \
-    X(11, "name>flags!", name_to_flags_store) /* ( m4flags nt -- ) set m4flags of name       */    \
+    X(10, "name>flags", name_to_flags) /*   ( nt -- m6flags  ) get m6flags of name           */    \
+    X(11, "name>flags!", name_to_flags_store) /* ( m6flags nt -- ) set m6flags of name       */    \
     X(10, "name>ident", name_to_ident) /* ( nt -- addr n  ) convert name to asm/C identifier */    \
     /* name>string is already defined by forth 'tools ext' wordset */                              \
     X(9, "name>prev", name_to_prev) /* ( nt -- nt'|0   ) get previous word in wordlist       */    \
@@ -456,9 +456,9 @@
     X(14, "wordlist-reset", wordlist_reset) /* ( wid -- ) remove all user-defined names from wid*/ \
     X(7, "xt>name", xt_to_name) /*                  ( XT  -- nt ) convert XT to name            */
 
-#define DICT_WORDS_M4TH_CORE(X)                                                                    \
-    DICT_TOKENS_M4TH_CORE(X)                                                                       \
-    /* ( handle c-addr u -- 0 M4ERR_UNEXPECTED_EOF ) always return EOF. usable for iobuf>func */   \
+#define DICT_WORDS_M6TH_CORE(X)                                                                    \
+    DICT_TOKENS_M6TH_CORE(X)                                                                       \
+    /* ( handle c-addr u -- 0 M6ERR_UNEXPECTED_EOF ) always return EOF. usable for iobuf>func */   \
     X(10, "always-eof", always_eof)                                                                \
     /* compile-string, ( c-addr u -- ) runtime effect: ( -- c-addr' u ) */                         \
     X(15, "compile-string,", compile_string_comma)                                                 \
@@ -492,37 +492,37 @@
     X(12, "string>local", string_to_local)                                                         \
     /* find name in search order. 1 if name is immediate, else -1      */                          \
     X(11, "string>name", string_to_name)  /* ( c-addr u -- nt|0 wid|0 -1|0|1 )            */       \
-    X(6, "/token", div_token)             /* alias of _SZt_div,      no dedicated m4token */       \
-    X(6, ">token", to_token)              /* alias of to_SZtu,       no dedicated m4token */       \
-    X(6, "token!", token_store)           /* alias of _SZt_store,    no dedicated m4token */       \
-    X(9, "token[1]!", token_store_1)      /* alias of _SZt_store_1,  no dedicated m4token */       \
-    X(9, "token[2]!", token_store_2)      /* alias of _SZt_store_2,  no dedicated m4token */       \
-    X(9, "token[3]!", token_store_3)      /* alias of _SZt_store_3,  no dedicated m4token */       \
-    X(9, "token[4]!", token_store_4)      /* alias of _SZt_store_4,  no dedicated m4token */       \
-    X(9, "token[5]!", token_store_5)      /* alias of _SZt_store_5,  no dedicated m4token */       \
-    X(9, "token[6]!", token_store_6)      /* alias of _SZt_store_6,  no dedicated m4token */       \
-    X(9, "token[7]!", token_store_7)      /* alias of _SZt_store_7,  no dedicated m4token */       \
-    X(9, "token[8]!", token_store_8)      /* alias of _SZt_store_8,  no dedicated m4token */       \
-    X(6, "token@", token_fetch)           /* alias of _SZtu_fetch,   no dedicated m4token */       \
-    X(8, "token[1]", token_fetch_1)       /* alias of _SZtu_fetch_1, no dedicated m4token */       \
-    X(8, "token[2]", token_fetch_2)       /* alias of _SZtu_fetch_2, no dedicated m4token */       \
-    X(8, "token[3]", token_fetch_3)       /* alias of _SZtu_fetch_3, no dedicated m4token */       \
-    X(8, "token[4]", token_fetch_4)       /* alias of _SZtu_fetch_4, no dedicated m4token */       \
-    X(8, "token[5]", token_fetch_5)       /* alias of _SZtu_fetch_5, no dedicated m4token */       \
-    X(8, "token[6]", token_fetch_6)       /* alias of _SZtu_fetch_6, no dedicated m4token */       \
-    X(8, "token[7]", token_fetch_7)       /* alias of _SZtu_fetch_7, no dedicated m4token */       \
-    X(8, "token[8]", token_fetch_8)       /* alias of _SZtu_fetch_8, no dedicated m4token */       \
-    X(6, "1token", one_token)             /* alias of _SZt,          no dedicated m4token */       \
-    X(6, "token+", token_plus)            /* alias of _SZt_plus,     no dedicated m4token */       \
-    X(6, "tokens", tokens)                /* alias of _SZt_times,    no dedicated m4token */       \
+    X(6, "/token", div_token)             /* alias of _SZt_div,      no dedicated m6token */       \
+    X(6, ">token", to_token)              /* alias of to_SZtu,       no dedicated m6token */       \
+    X(6, "token!", token_store)           /* alias of _SZt_store,    no dedicated m6token */       \
+    X(9, "token[1]!", token_store_1)      /* alias of _SZt_store_1,  no dedicated m6token */       \
+    X(9, "token[2]!", token_store_2)      /* alias of _SZt_store_2,  no dedicated m6token */       \
+    X(9, "token[3]!", token_store_3)      /* alias of _SZt_store_3,  no dedicated m6token */       \
+    X(9, "token[4]!", token_store_4)      /* alias of _SZt_store_4,  no dedicated m6token */       \
+    X(9, "token[5]!", token_store_5)      /* alias of _SZt_store_5,  no dedicated m6token */       \
+    X(9, "token[6]!", token_store_6)      /* alias of _SZt_store_6,  no dedicated m6token */       \
+    X(9, "token[7]!", token_store_7)      /* alias of _SZt_store_7,  no dedicated m6token */       \
+    X(9, "token[8]!", token_store_8)      /* alias of _SZt_store_8,  no dedicated m6token */       \
+    X(6, "token@", token_fetch)           /* alias of _SZtu_fetch,   no dedicated m6token */       \
+    X(8, "token[1]", token_fetch_1)       /* alias of _SZtu_fetch_1, no dedicated m6token */       \
+    X(8, "token[2]", token_fetch_2)       /* alias of _SZtu_fetch_2, no dedicated m6token */       \
+    X(8, "token[3]", token_fetch_3)       /* alias of _SZtu_fetch_3, no dedicated m6token */       \
+    X(8, "token[4]", token_fetch_4)       /* alias of _SZtu_fetch_4, no dedicated m6token */       \
+    X(8, "token[5]", token_fetch_5)       /* alias of _SZtu_fetch_5, no dedicated m6token */       \
+    X(8, "token[6]", token_fetch_6)       /* alias of _SZtu_fetch_6, no dedicated m6token */       \
+    X(8, "token[7]", token_fetch_7)       /* alias of _SZtu_fetch_7, no dedicated m6token */       \
+    X(8, "token[8]", token_fetch_8)       /* alias of _SZtu_fetch_8, no dedicated m6token */       \
+    X(6, "1token", one_token)             /* alias of _SZt,          no dedicated m6token */       \
+    X(6, "token+", token_plus)            /* alias of _SZt_plus,     no dedicated m6token */       \
+    X(6, "tokens", tokens)                /* alias of _SZt_times,    no dedicated m6token */       \
     X(6, "token,", token_comma)           /* ( token      -- )       compile one token    */       \
     X(7, "tokens,", tokens_comma)         /* ( tok-addr u -- )       compile u tokens     */       \
-    X(11, "token-align", token_align)     /* alias of _SZt_align,    no dedicated m4token */       \
-    X(13, "token-aligned", token_aligned) /* alias of _SZt_aligned,  no dedicated m4token */       \
+    X(11, "token-align", token_align)     /* alias of _SZt_align,    no dedicated m6token */       \
+    X(13, "token-aligned", token_aligned) /* alias of _SZt_aligned,  no dedicated m6token */       \
     X(13, "wordlist-find", wordlist_find) /* ( c-addr u wid -- nt|0 -1|0|1 ) search in wordlist */
 
 /* ------- m64th-impl ---------------------------------------------------------------------------- */
-#define DICT_TOKENS_M4TH_IMPL(X)                                                                   \
+#define DICT_TOKENS_M6TH_IMPL(X)                                                                   \
     X(7, "(+loop)", _plus_loop_)                                                                   \
     X(5, "(>l0)", _to_l0_) /* store 0-th local variable */                                         \
     X(5, "(>l1)", _to_l1_) /* store 1-st local variable */                                         \
@@ -697,14 +697,14 @@
     X(3, "lp@", lp_fetch) /* ( -- addr-of-locals ) get current local variables address */          \
     X(3, "rp@", rp_fetch) /* ( R: x y -- x y ) ( -- &x ) get current return stack address */
 
-#define DICT_WORDS_M4TH_IMPL(X)                                                                    \
-    DICT_TOKENS_M4TH_IMPL(X)                                                                       \
+#define DICT_WORDS_M6TH_IMPL(X)                                                                    \
+    DICT_TOKENS_M6TH_IMPL(X)                                                                       \
     X(6, "(>lx,)", _to_lx_comma_) /* ( c-addr u N -- ) compile a store to N-th local variable */   \
     X(13, "(abort-quote)", _abort_quote_)   /* ( x c-addr u ) runtime part of abort" */            \
     X(14, "(check-stacks)", _check_stacks_) /* throw on stack underflow              */            \
-    /* ( m4flags -- sys ) read non-blanks string, create new word for it. set LATEST */            \
+    /* ( m6flags -- sys ) read non-blanks string, create new word for it. set LATEST */            \
     X(8, "(create)", _create_)                                                                     \
-    X(21, "(defer-uninitialized)", _defer_uninitialized_) /* throw M4ERR_DEFER_UNINITIALIZED */    \
+    X(21, "(defer-uninitialized)", _defer_uninitialized_) /* throw M6ERR_DEFER_UNINITIALIZED */    \
     /* ( nt -1|1 -- ) interpret or compile name. dtop == -1 if name is immediate */                \
     X(6, "(does)", _does_) /* ( -- ) replace execution semantics of latest word */                 \
     X(11, "(eval-name)", _eval_name_)                                                              \
@@ -717,7 +717,7 @@
     X(22, "(hashmap-indexof/cell)", _hashmap_indexof_cell_)                                        \
     /* ( map key -- pos ) get bucket index for key in hashmap/int */                               \
     X(21, "(hashmap-indexof/int)", _hashmap_indexof_int_)                                          \
-    X(17, "(locals-allocate)", _locals_allocate_) /* ( -- ls ) allocate a new m4locals struct   */ \
+    X(17, "(locals-allocate)", _locals_allocate_) /* ( -- ls ) allocate a new m6locals struct   */ \
     X(12, "(locals-add)", _locals_add_)         /* ( ls c-addr u -- )   create a local variable */ \
     X(14, "(locals-clear)", _locals_clear_)     /* ( ls -- )         remove all local variables */ \
     X(13, "(locals-find)", _locals_find_)       /* ( ls c-addr u -- idx|-1) find local variable */ \
@@ -800,18 +800,18 @@
     X(6, "u>char", u_to_char) /* convert unsigned number to to char in current base */
 
 /* ------- m64th-* ------------------------------------------------------------------------------- */
-#define DICT_WORDS_M4TH(X)  /* contains all DICT_WORDS_M4TH_* */                                   \
-    DICT_WORDS_M4TH_USER(X) /*                                                            */       \
-    DICT_WORDS_M4TH_ASM(X)  /*                                                            */       \
-    DICT_WORDS_M4TH_C(X)    /*                                                            */       \
-    DICT_WORDS_M4TH_CORE(X) /*                                                            */       \
-    DICT_WORDS_M4TH_IMPL(X) /*                                                            */
+#define DICT_WORDS_M6TH(X)  /* contains all DICT_WORDS_M6TH_* */                                   \
+    DICT_WORDS_M6TH_USER(X) /*                                                            */       \
+    DICT_WORDS_M6TH_ASM(X)  /*                                                            */       \
+    DICT_WORDS_M6TH_C(X)    /*                                                            */       \
+    DICT_WORDS_M6TH_CORE(X) /*                                                            */       \
+    DICT_WORDS_M6TH_IMPL(X) /*                                                            */
 
-#define DICT_TOKENS_M4TH(X)  /* contains all DICT_TOKENS_M4TH_* */                                 \
-    DICT_TOKENS_M4TH_USER(X) /*                                                            */      \
-    DICT_TOKENS_M4TH_ASM(X)  /*                                                            */      \
-    DICT_TOKENS_M4TH_C(X)    /*                                                            */      \
-    DICT_TOKENS_M4TH_CORE(X) /*                                                            */      \
-    DICT_TOKENS_M4TH_IMPL(X)
+#define DICT_TOKENS_M6TH(X)  /* contains all DICT_TOKENS_M6TH_* */                                 \
+    DICT_TOKENS_M6TH_USER(X) /*                                                            */      \
+    DICT_TOKENS_M6TH_ASM(X)  /*                                                            */      \
+    DICT_TOKENS_M6TH_C(X)    /*                                                            */      \
+    DICT_TOKENS_M6TH_CORE(X) /*                                                            */      \
+    DICT_TOKENS_M6TH_IMPL(X)
 
-#endif /* M4TH_INCLUDE_DICT_M4TH_MH */
+#endif /* M6TH_INCLUDE_DICT_M6TH_MH */

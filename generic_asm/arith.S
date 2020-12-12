@@ -21,7 +21,7 @@
 
 /* clang-format off */
 
-#ifndef M4F_LIT2S_
+#ifndef M6F_LIT2S_
 FUNC_START(_lit2s_)        /* (lit-2s) push to dstack the int16 at following IP */
         DPUSH__DTOP()
         LD_sh( DTOP,   AT(IP))
@@ -29,7 +29,7 @@ FUNC_START(_lit2s_)        /* (lit-2s) push to dstack the int16 at following IP 
 FUNC_RAWEND(_lit2s_)
 #endif
 
-#ifndef M4F_LIT4S_
+#ifndef M6F_LIT4S_
 FUNC_START(_lit4s_)        /* (lit-4s) push to dstack the int32 at following IP */
         DPUSH__DTOP()
         LD_sw( DTOP,   AT(IP))
@@ -37,7 +37,7 @@ FUNC_START(_lit4s_)        /* (lit-4s) push to dstack the int32 at following IP 
 FUNC_RAWEND(_lit4s_)
 #endif
 
-#ifndef M4F_LIT8S_
+#ifndef M6F_LIT8S_
 FUNC_START(_lit8s_)        /* (lit-8s) push to dstack the int64 at following IP */
         DPUSH__DTOP()
         LOAD(  DTOP,   AT(IP))
@@ -45,7 +45,7 @@ FUNC_START(_lit8s_)        /* (lit-8s) push to dstack the int64 at following IP 
 FUNC_RAWEND(_lit8s_)
 #endif
 
-#ifndef M4F_LIT_STRING_
+#ifndef M6F_LIT_STRING_
 FUNC_START(_lit_string_)   /* (lit-string) push to dstack the SZt and ascii at following IP */
         DPUSH__DTOP()
         LD_ut( DTOP,   AT(IP))         /* dtop = length                     */
@@ -57,14 +57,14 @@ FUNC_START(_lit_string_)   /* (lit-string) push to dstack the SZt and ascii at f
 FUNC_RAWEND(_lit_string_)
 #endif
 
-#ifndef M4F_MISSING_
-FUNC_START(_missing_)      /* (missing) called instead of invalid/unimplemented m4func */
+#ifndef M6F_MISSING_
+FUNC_START(_missing_)      /* (missing) called instead of invalid/unimplemented m6func */
         ZERO(  REG1)
         LOAD(  REG1,   AT(REG1)) /* load NULL address, should crash */
 FUNC_END(_missing_)
 #endif
 
-#ifndef M4FTIMES
+#ifndef M6FTIMES
 FUNC_START(times)          /* *    */
         DPOP(  REG1)
         MUL2(  REG1,   DTOP)
@@ -72,7 +72,7 @@ FUNC_END(times)
 #endif
 
 
-#ifndef M4FPLUS
+#ifndef M6FPLUS
 FUNC_START(plus)           /* +    */
         DPOP(  REG1)
         ADD2(  REG1,   DTOP)
@@ -80,7 +80,7 @@ FUNC_END(plus)
 #endif
 
 
-#ifndef M4FPLUS_STORE
+#ifndef M6FPLUS_STORE
 FUNC_START(plus_store)     /* +!   */
         DPOP(  REG1)
         LOAD(  REG2,   AT(DTOP))
@@ -91,7 +91,7 @@ FUNC_END(plus_store)
 #endif
 
 
-#ifndef M4FMINUS
+#ifndef M6FMINUS
 FUNC_START(minus)          /* -  ( x y -- x-y )  */
         DPOP(  REG1)           /* a = x              */
         XSUB2( REG1,   DTOP)   /* dtop = x - y       */
@@ -111,7 +111,7 @@ FUNC_START(minus_one)      /* -1   m64th-impl */
 FUNC_END(minus_one)
 
 
-#ifndef M4FZERO
+#ifndef M6FZERO
 FUNC_START(zero)           /* 0   m64th-impl */
         DPUSH__DTOP()
         ZERO(  DTOP)
@@ -271,7 +271,7 @@ FUNC_END(and)
 
 FUNC_START(base)
         DPUSH__DTOP()
-        ADDI(  M4TH,   M4TH_OFF_BASE, DTOP)
+        ADDI(  M6TH,   M6TH_OFF_BASE, DTOP)
 FUNC_END(base)
 
 
@@ -306,7 +306,7 @@ FUNC_END(drop)
 
 FUNC_START(depth)          /* ( -- n ) get stack depth */
         DPUSH__DTOP()
-        LOAD(  DTOP,   AT(M4TH, M4TH_OFF_DEND))
+        LOAD(  DTOP,   AT(M6TH, M6TH_OFF_DEND))
         SUB2(  DSTK,   DTOP)
         SAR2(IMM(PSZ), DTOP)
 FUNC_END(depth)
@@ -371,7 +371,7 @@ FUNC_START(or)
 FUNC_END(or)
 
 
-#ifndef M4FOVER
+#ifndef M6FOVER
 FUNC_START(over)
         DPUSH__DTOP()
         LOAD(  DTOP,   AT(DSTK, SZ))
@@ -394,7 +394,7 @@ FUNC_END(hop)
 
 FUNC_START(rdepth)          /* ( -- n ) m64th-user get return stack depth */
         DPUSH__DTOP()
-        LOAD(  DTOP,   AT(M4TH, M4TH_OFF_REND))
+        LOAD(  DTOP,   AT(M6TH, M6TH_OFF_REND))
         SUB2(  RSTK,   DTOP)
         SAR2(  IMM(PSZ),   DTOP)
         INC1(  DTOP)        /* also consider RTOP */
@@ -428,7 +428,7 @@ FUNC_START(squared)        /* squared  m64th-user equivalent to: dup * */
 FUNC_END(squared)
 
 
-#ifndef M4FSUB
+#ifndef M6FSUB
 FUNC_START(sub)            /* sub      m64th-user equivalent to: swap - */
         DPOP(  REG1)
         SUB2(  REG1,   DTOP)
@@ -449,7 +449,7 @@ FUNC_START(trail)          /* trail    m64th-user ( a b -- a a b ) equivalent to
 FUNC_END(trail)
 
 
-#ifndef M4FTUCK
+#ifndef M6FTUCK
 FUNC_START(tuck)          /* tuck      core ( a b -- b a b ) */
         LOAD(  REG1,   AT(DSTK))
         STOR(  DTOP,   AT(DSTK))

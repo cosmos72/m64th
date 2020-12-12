@@ -28,8 +28,8 @@
 
 int main(int argc, char *argv[]) {
     FILE *out = stdout;
-    m64th *m = m64th_new(m4opt_return_stack_is_private);
-    m4cell fail = 0;
+    m64th *m = m64th_new(m6opt_return_stack_is_private);
+    m6cell fail = 0;
 
     /* m64th_testbench_crc_c(out); */
 
@@ -43,5 +43,5 @@ int main(int argc, char *argv[]) {
     m64th_del(m);
 
     /* suppress 'unused parameter' warning */
-    return fail || (0 & argc & (m4cell)argv);
+    return fail || (0 & argc & (m6cell)argv);
 }

@@ -17,8 +17,8 @@
  * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_HASHMAP_STRING_H
-#define M4TH_HASHMAP_STRING_H
+#ifndef M6TH_HASHMAP_STRING_H
+#define M6TH_HASHMAP_STRING_H
 
 #include "m64th.h"
 
@@ -29,36 +29,36 @@ extern "C" {
 #define H(x) x##string
 
 enum {
-    H(m4hash_no_entry_) = (m4ucell)-1,
-    H(m4hash_no_next_) = (m4ucell)-2,
+    H(m6hash_no_entry_) = (m6ucell)-1,
+    H(m6hash_no_next_) = (m6ucell)-2,
 };
 
-typedef struct H(m4hashmap_entry_s_) {
-    m4ucell next;
-    m4ucell keyhash;
-    H(m4) key;
-    m4cell val;
-} H(m4hashmap_entry_);
+typedef struct H(m6hashmap_entry_s_) {
+    m6ucell next;
+    m6ucell keyhash;
+    H(m6) key;
+    m6cell val;
+} H(m6hashmap_entry_);
 
-typedef struct H(m4hashmap_s_) {
-    m4ucell size;
-    m4ucell lcap; /* capacity is 1<<lcap */
-    H(m4hashmap_entry_) * vec;
-} H(m4hashmap_);
+typedef struct H(m6hashmap_s_) {
+    m6ucell size;
+    m6ucell lcap; /* capacity is 1<<lcap */
+    H(m6hashmap_entry_) * vec;
+} H(m6hashmap_);
 
-H(m4hashmap_) * H(m4hashmap_new_)(m4ucell capacity);
-void H(m4hashmap_del_)(H(m4hashmap_) * map);
-void H(m4hashmap_clear_)(H(m4hashmap_) * map);
+H(m6hashmap_) * H(m6hashmap_new_)(m6ucell capacity);
+void H(m6hashmap_del_)(H(m6hashmap_) * map);
+void H(m6hashmap_clear_)(H(m6hashmap_) * map);
 
 /* find key in map. return NULL if not found */
-const H(m4hashmap_entry_) * H(m4hashmap_find_)(const H(m4hashmap_) * map, H(m4) key);
+const H(m6hashmap_entry_) * H(m6hashmap_find_)(const H(m6hashmap_) * map, H(m6) key);
 
 /*
  * insert key and val. does not grow/rehash.
  * keeps a reference to key.addr, does NOT copy string contents.
  * returns NULL on failure (if map is too full or key is already present)
  */
-const H(m4hashmap_entry_) * H(m4hashmap_insert_)(H(m4hashmap_) * map, H(m4) key, m4cell val);
+const H(m6hashmap_entry_) * H(m6hashmap_insert_)(H(m6hashmap_) * map, H(m6) key, m6cell val);
 
 #undef H
 
@@ -66,4 +66,4 @@ const H(m4hashmap_entry_) * H(m4hashmap_insert_)(H(m4hashmap_) * map, H(m4) key,
 }
 #endif
 
-#endif /* M4TH_HASHMAP_STRING_H */
+#endif /* M6TH_HASHMAP_STRING_H */

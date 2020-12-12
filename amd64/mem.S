@@ -22,7 +22,7 @@
 /* clang-format off */
 
 
-#define M4FDIV_STRING
+#define M6FDIV_STRING
 /* /string ( c-addr u n -- c-addr' u' )  'string' word set */
 FUNC_START(div_string)
         MOVE(  DTOP,   REG1)           /* a = n       */
@@ -54,7 +54,7 @@ FUNC_START(atomic_plus_store)
 FUNC_END(atomic_plus_store)
 
 
-#define M4FCMOVE /* defined near cmove/count to encode a shorter jump */
+#define M6FCMOVE /* defined near cmove/count to encode a shorter jump */
 /* cmove ( src_addr dst_addr u -- ) 'string' word set */
 FUNC_START(cmove)
         TOKEN_CALL_NOTHROW(FUNC(cmove_count), cmove.0)   /* ( src' dst'    ) */

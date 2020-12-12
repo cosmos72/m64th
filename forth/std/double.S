@@ -28,7 +28,7 @@ WORD_START(d_zero_less,        d_to_s)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_ASM_NONE()
-    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_FLAGS(M6FLAG_INLINE)
     WORD_CODE(
         d_to_hi, zero_less, exit
     )
@@ -39,7 +39,7 @@ WORD_START(d_zero_equal,       d_zero_less)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_ASM_NONE()
-    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_FLAGS(M6FLAG_INLINE)
     WORD_CODE(
         or, zero_equal, exit
     )

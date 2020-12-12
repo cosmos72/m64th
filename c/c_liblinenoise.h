@@ -17,8 +17,8 @@
  * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_C_LIBLINENOISE_H
-#define M4TH_C_LIBLINENOISE_H
+#ifndef M6TH_C_LIBLINENOISE_H
+#define M6TH_C_LIBLINENOISE_H
 
 #include "../include/m64th.h"
 #include "../linenoise/linenoise.h"
@@ -26,13 +26,13 @@
 #include <stdio.h>
 
 /** wrapper around liblinenoise C function linenoise() */
-m4pair m64th_c_linenoise(const char *prompt, char *addr, size_t len);
+m6pair m64th_c_linenoise(const char *prompt, char *addr, size_t len);
 
 /* callback invoked by linenoise() when user presses TAB to complete a word */
 linenoiseString m64th_c_complete_word(linenoiseString input, linenoiseStrings *completions,
                                      void *userData);
 
 /** temporary C implementation of 'words' */
-void m64th_c_searchorder_print_all_words(const m4searchorder *s, FILE *out);
+void m64th_c_searchorder_print_all_words(const m6searchorder *s, FILE *out);
 
-#endif /* M4TH_C_LIBLINENOISE_H */
+#endif /* M6TH_C_LIBLINENOISE_H */

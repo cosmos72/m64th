@@ -21,37 +21,37 @@
 
 #if defined(__i386__) && defined(__GNUC__)
 #define FASTCALL __attribute__((regparm(1)))
-#define ARGS m4arg *x
-typedef m4cell (*m4func_c)(ARGS) FASTCALL;
-struct m4arg_s {
-    m4cell dtop;
-    m4cell *dstk;
+#define ARGS m6arg *x
+typedef m6cell (*m6func_c)(ARGS) FASTCALL;
+struct m6arg_s {
+    m6cell dtop;
+    m6cell *dstk;
     m64th m64th;
 };
 #define DTOP (x->dtop)
 #define DSTK (x->dstk)
-#define M4TH (x->m64th)
-#define IP (M4TH.ip)
-#define FTBL ((m4func_c *)M4TH.ftable)
+#define M6TH (x->m64th)
+#define IP (M6TH.ip)
+#define FTBL ((m6func_c *)M6TH.ftable)
 #define NEXT()                                                                                     \
     do {                                                                                           \
-        const m4token t = *IP++;                                                                   \
+        const m6token t = *IP++;                                                                   \
         return FTBL[t](x);                                                                         \
     } while (0);
 
 #else /* not __i386__ */
 #define FASTCALL
-#define ARGS m4cell DTOP, m4cell RTOP, m4cell *DSTK, m4cell *RSTK, const m4token *IP, m64th *M4TH
-typedef m4cell (*m4func_c)(ARGS);
+#define ARGS m6cell DTOP, m6cell RTOP, m6cell *DSTK, m6cell *RSTK, const m6token *IP, m64th *M6TH
+typedef m6cell (*m6func_c)(ARGS);
 #define NEXT()                                                                                     \
     do {                                                                                           \
-        const m4func_c *FTBL = (m4func_c *)M4TH->ftable;                                           \
-        const m4token t = *IP++;                                                                   \
-        return FTBL[t](DTOP, RTOP, DSTK, RSTK, IP, M4TH);                                          \
+        const m6func_c *FTBL = (m6func_c *)M6TH->ftable;                                           \
+        const m6token t = *IP++;                                                                   \
+        return FTBL[t](DTOP, RTOP, DSTK, RSTK, IP, M6TH);                                          \
     } while (0);
 #endif
 
-#define FUNC_START(name) FASTCALL m4cell m4f##name(ARGS) {
+#define FUNC_START(name) FASTCALL m6cell m6f##name(ARGS) {
 #define FUNC_RAWEND(name) }
 #define FUNC_END(name)                                                                             \
     NEXT()                                                                                         \

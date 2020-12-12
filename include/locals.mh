@@ -17,21 +17,21 @@
  * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_INCLUDE_LOCALS_MH
-#define M4TH_INCLUDE_LOCALS_MH
+#ifndef M6TH_INCLUDE_LOCALS_MH
+#define M6TH_INCLUDE_LOCALS_MH
 
-#define LOCAL_OFF_IDX 0      /* offset of m4local->idx      */
-#define LOCAL_OFF_STR 1      /* offset of m4local->str      */
-#define LOCAL_OFF_STR_N 1    /* offset of m4local->str.n    */
-#define LOCAL_OFF_STR_ADDR 2 /* offset of m4local->str.addr */
+#define LOCAL_OFF_IDX 0      /* offset of m6local->idx      */
+#define LOCAL_OFF_STR 1      /* offset of m6local->str      */
+#define LOCAL_OFF_STR_N 1    /* offset of m6local->str.n    */
+#define LOCAL_OFF_STR_ADDR 2 /* offset of m6local->str.addr */
 
-#define LOCAL_SZ 2 /* sizeof(m4local) */
+#define LOCAL_SZ 2 /* sizeof(m6local) */
 
-#define M4LOCALS_OFF_N 0     /* offset of m4locals->n        */
-#define M4LOCALS_OFF_END SZ  /* offset of m4locals->end      */
-#define M4LOCALS_OFF_CAP SZ2 /* offset of m4locals->capacity */
-#define M4LOCALS_OFF_VEC SZ3 /* offset of m4locals->vec      */
+#define M6LOCALS_OFF_N 0     /* offset of m6locals->n        */
+#define M6LOCALS_OFF_END SZ  /* offset of m6locals->end      */
+#define M6LOCALS_OFF_CAP SZ2 /* offset of m6locals->capacity */
+#define M6LOCALS_OFF_VEC SZ3 /* offset of m6locals->vec      */
 
-#define LOCALS_SZ SZ3 /* sizeof(m4locals) */
+#define LOCALS_SZ SZ3 /* sizeof(m6locals) */
 
-#endif /* M4TH_INCLUDE_LOCALS_MH */
+#endif /* M6TH_INCLUDE_LOCALS_MH */

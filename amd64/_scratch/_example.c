@@ -25,7 +25,7 @@ int *errno_location(void) {
     return &errno;
 }
 
-void *word_to_xt(m4word *w) {
+void *word_to_xt(m6word *w) {
     return w->data + w->code_off;
 }
 

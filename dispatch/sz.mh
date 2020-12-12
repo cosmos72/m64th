@@ -17,8 +17,8 @@
  * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_DISPATCH_SZ_MH
-#define M4TH_DISPATCH_SZ_MH
+#ifndef M6TH_DISPATCH_SZ_MH
+#define M6TH_DISPATCH_SZ_MH
 
 #if defined(__x86_64__)
 #include "../amd64/sz.mh"
@@ -28,4 +28,4 @@
 #error "unsupported architecture: expecting amd64 or arm64"
 #endif
 
-#endif /* M4TH_DISPATCH_SZ_MH */
+#endif /* M6TH_DISPATCH_SZ_MH */

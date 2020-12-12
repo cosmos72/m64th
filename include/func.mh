@@ -17,13 +17,13 @@
  * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_INCLUDE_FUNC_MH
-#define M4TH_INCLUDE_FUNC_MH
+#ifndef M6TH_INCLUDE_FUNC_MH
+#define M6TH_INCLUDE_FUNC_MH
 
 #include "align.mh" /* FUNC_ALIGN() */
 #include "func_alias.mh"
 
-#define FUNC(name) m4f##name
+#define FUNC(name) m6f##name
 
 #define FUNC_RET(name) .L.FUNC(name).next
 
@@ -61,4 +61,4 @@
 
 /* clang-format on */
 
-#endif /* M4TH_INCLUDE_FUNC_MH */
+#endif /* M6TH_INCLUDE_FUNC_MH */

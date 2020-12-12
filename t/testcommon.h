@@ -17,83 +17,83 @@
  * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_T_TEST_IMPL_H
-#define M4TH_T_TEST_IMPL_H
+#ifndef M6TH_T_TEST_IMPL_H
+#define M6TH_T_TEST_IMPL_H
 
 #include "../impl.h"          /* tfalse, ttrue */
 #include "../include/word.mh" /* WORD_SYM() */
 #include "../test.h"
 
-/* store m4token numeric constant in a m4countedwcode */
+/* store m6token numeric constant in a m6countedwcode */
 #define T(n) (n)
-/** store int16_t numeric constant in a m4countedwcode */
+/** store int16_t numeric constant in a m6countedwcode */
 #define SHORT(n) (int16_t)(n)
-/** store int32_t numeric constant in a m4countedwcode */
+/** store int32_t numeric constant in a m6countedwcode */
 #define INT(n) (int32_t)(n), 0
-/** store m4cell numeric constant in a m4countedwcode */
-#define CELL(n) (m4cell)(n), 0, 0, 0
-/** store XT address in a sequence of m4cell */
-#define DXT(name) ((m4cell)(WORD_SYM(name).code))
+/** store m6cell numeric constant in a m6countedwcode */
+#define CELL(n) (m6cell)(n), 0, 0, 0
+/** store XT address in a sequence of m6cell */
+#define DXT(name) ((m6cell)(WORD_SYM(name).code))
 
-/* store m4_call_ and WORD_SYM(name).code in a m4countedwcode. */
-#define CALL(name) m4_call_, CELL(WORD_SYM(name).code)
+/* store m6_call_ and WORD_SYM(name).code in a m6countedwcode. */
+#define CALL(name) m6_call_, CELL(WORD_SYM(name).code)
 
-/* store m4_lit_string_ length and chars in a m4countedwcode. */
-#define LIT_STRING(len, chars) m4_lit_string_, T(len), (m4cell)(chars)
+/* store m6_lit_string_ length and chars in a m6countedwcode. */
+#define LIT_STRING(len, chars) m6_lit_string_, T(len), (m6cell)(chars)
 
-/* -------------- m4testcompile --------------------------------------------- */
+/* -------------- m6testcompile --------------------------------------------- */
 
-typedef struct m4testcompile_s {
+typedef struct m6testcompile_s {
     const char *input;
-    m4countedstack dbefore, dafter;
-    m4countedwcode codegen;
-} m4testcompile;
+    m6countedstack dbefore, dafter;
+    m6countedwcode codegen;
+} m6testcompile;
 
-/* -------------- m4testexecute --------------------------------------------- */
+/* -------------- m6testexecute --------------------------------------------- */
 
-typedef m4cell m4fixedwcode[m4test_code_n];
+typedef m6cell m6fixedwcode[m6test_code_n];
 
-typedef struct m4testexecute_s {
+typedef struct m6testexecute_s {
     const char *name;
-    m4fixedwcode code;
-    m4countedstacks before, after;
-    m4countedwcode codegen;
-} m4testexecute;
+    m6fixedwcode code;
+    m6countedstacks before, after;
+    m6countedwcode codegen;
+} m6testexecute;
 
-/* -------------- m4testio -------------------------------------------------- */
+/* -------------- m6testio -------------------------------------------------- */
 
-typedef struct m4cstr_pair_s {
+typedef struct m6cstr_pair_s {
     const char *in, *out;
-} m4cstr_pair;
+} m6cstr_pair;
 
-typedef struct m4testio_s {
+typedef struct m6testio_s {
     const char *name;
-    m4fixedwcode code;
-    m4countedstacks before, after;
-    m4cstr_pair iobefore, ioafter;
-} m4testio;
+    m6fixedwcode code;
+    m6countedstacks before, after;
+    m6cstr_pair iobefore, ioafter;
+} m6testio;
 
-/* -------------- m4testcount ----------------------------------------------- */
+/* -------------- m6testcount ----------------------------------------------- */
 
-typedef struct m4testcount_s {
-    m4cell failed;
-    m4cell total;
-} m4testcount;
+typedef struct m6testcount_s {
+    m6cell failed;
+    m6cell total;
+} m6testcount;
 
-/* -------------- m4cell[] -> m4token[] conversion -------------------------- */
+/* -------------- m6cell[] -> m6token[] conversion -------------------------- */
 
-#define m4array_copy_to_tarray(array, tarray)                                                      \
-    m4array_n_copy_to_tarray_n(array, N_OF(array), tarray, N_OF(tarray))
+#define m6array_copy_to_tarray(array, tarray)                                                      \
+    m6array_n_copy_to_tarray_n(array, N_OF(array), tarray, N_OF(tarray))
 
-void m4array_n_copy_to_tarray_n(const m4cell array[], const m4cell array_n /*               */,
-                                m4token tarray[], const m4cell tarray_n);
+void m6array_n_copy_to_tarray_n(const m6cell array[], const m6cell array_n /*               */,
+                                m6token tarray[], const m6cell tarray_n);
 
-/* -------------- m4cell[] -> m4token[] conversion -------------------------- */
+/* -------------- m6cell[] -> m6token[] conversion -------------------------- */
 
 /**
  * remove all user-defined words, for example defined by a test.
  * needed before executing the following test
  */
-void m4test_forget_all(m64th *m);
+void m6test_forget_all(m64th *m);
 
-#endif /* M4TH_T_TEST_IMPL_H */
+#endif /* M6TH_T_TEST_IMPL_H */

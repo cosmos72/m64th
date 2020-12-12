@@ -30,7 +30,7 @@ FUNC_START(two_pick)
 FUNC_END(two_pick)
 
 
-#define M4FTWO_TO_R
+#define M6FTWO_TO_R
 FUNC_START(two_to_r)       /* 2>r      */
         LOAD(  REG1,   AT(DSTK))
         RPUSH2(RTOP,   REG1)
@@ -40,7 +40,7 @@ FUNC_START(two_to_r)       /* 2>r      */
 FUNC_END(two_to_r)
 
 
-#define M4FTWO_DUP_TWO_TO_R
+#define M6FTWO_DUP_TWO_TO_R
 FUNC_START(two_dup_two_to_r)   /* 2dup 2>r  m64th-user */
         STOR(  RTOP,       AT(RSTK, -SZ))
         LOAD(  REG1,       AT(DSTK))
@@ -50,7 +50,7 @@ FUNC_START(two_dup_two_to_r)   /* 2dup 2>r  m64th-user */
 FUNC_END(two_dup_two_to_r)
 
 
-#define M4FTWO_R_FROM
+#define M6FTWO_R_FROM
 FUNC_START(two_r_from)     /* 2r>      */
         RPOP(  REG1)
         DPUSH2(DTOP,   REG1)

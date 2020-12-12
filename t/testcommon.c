@@ -17,8 +17,8 @@
  * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_T_TESTCOMMON_C
-#define M4TH_T_TESTCOMMON_C
+#ifndef M6TH_T_TESTCOMMON_C
+#define M6TH_T_TESTCOMMON_C
 
 #include "testcommon.h"
 
@@ -26,18 +26,18 @@
 #include <stdlib.h> /* exit()            */
 #include <string.h> /* memcpy()          */
 
-/* -------------- m4countedstack -------------- */
+/* -------------- m6countedstack -------------- */
 
-void m4countedstack_copy(const m4countedstack *src, m4buf *dst) {
-    m4cell i, len = src->len;
+void m6countedstack_copy(const m6countedstack *src, m6buf *dst) {
+    m6cell i, len = src->len;
     dst->curr = dst->end - len;
     for (i = 0; i < len; i++) {
         dst->end[-i - 1] = src->data[i];
     }
 }
 
-m4cell m4countedstack_equal(const m4countedstack *src, const m4buf *dst) {
-    m4cell i, len = src->len;
+m6cell m6countedstack_equal(const m6countedstack *src, const m6buf *dst) {
+    m6cell i, len = src->len;
     if (len != dst->end - dst->curr) {
         return 0;
     }
@@ -49,8 +49,8 @@ m4cell m4countedstack_equal(const m4countedstack *src, const m4buf *dst) {
     return 1;
 }
 
-void m4countedstack_print(const m4countedstack *src, FILE *out) {
-    m4cell i;
+void m6countedstack_print(const m6countedstack *src, FILE *out) {
+    m6cell i;
     fprintf(out, "<%ld> ", (long)src->len);
     for (i = 0; i < src->len; i++) {
         long x = (long)src->data[i];
@@ -62,17 +62,17 @@ void m4countedstack_print(const m4countedstack *src, FILE *out) {
     }
 }
 
-/* -------------- m4countedstack -------------- */
+/* -------------- m6countedstack -------------- */
 
 /**
  * remove all user-defined words, for example defined by a test.
  * needed before executing the following test
  */
-void m4test_forget_all(m64th *m) {
-    m4wordlist *wid = m->compile_wid;
+void m6test_forget_all(m64th *m) {
+    m6wordlist *wid = m->compile_wid;
     if (wid && wid->last) {
         wid->last = NULL;
     }
 }
 
-#endif /* M4TH_T_TESTCOMMON_C */
+#endif /* M6TH_T_TESTCOMMON_C */

@@ -30,7 +30,7 @@ WORD_START(forth,          LASTWORD)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_ASM_NONE()
-    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_FLAGS(M6FLAG_INLINE)
     WORD_CODE(
         /*6*/ CALL(forth_wordlist), searchorder_store_0, exit
     )
@@ -40,7 +40,7 @@ WORD_START(get_order, forth)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_ASM_NONE()
-    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_FLAGS(M6FLAG_INLINE)
     WORD_CODE_AND_DATA(get_order,
         WORD_CODE_TOKENS(
             /*13*/ searchorder_depth, zero, _q_do_, T(7), i_prime, i, minus, one_minus, searchorder_pick, _loop_, T(-7), searchorder_depth, exit
@@ -52,7 +52,7 @@ WORD_START(order, get_order)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_ASM_NONE()
-    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_FLAGS(M6FLAG_INLINE)
     WORD_CODE_AND_DATA(order,
         WORD_CODE_TOKENS(
             /*24*/ CALL(get_order), zero, _q_do_, T(6), bl, emit, wordlist_to_string, type, _loop_, T(-6), four, CALL(spaces), get_current, wordlist_to_string, type, exit

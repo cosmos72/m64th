@@ -76,7 +76,7 @@ FUNC_START(two_dup)        /* 2dup     */
         DPUSH2(DTOP,   REG1)
 FUNC_END(two_dup)
 
-#ifndef M4FTWO_NIP
+#ifndef M6FTWO_NIP
 FUNC_START(two_nip)        /* 2nip     m64th-user */
         LOAD(  REG1,   AT(DSTK))
         STOR(  REG1,   AT(DSTK, SZ2))
@@ -92,7 +92,7 @@ FUNC_START(two_over)       /* 2over    ( a b c d -- a b c d a b ) */
 FUNC_END(two_over)
 
 
-#ifndef M4FTWO_ROT
+#ifndef M6FTWO_ROT
 FUNC_START(two_rot)       /* 2rot      ( a b c d e f -- c d e f a b ) */
         LOAD(  REG1,   AT(DSTK, SZ4))  /* a        */
         LOAD(  REG2,   AT(DSTK, SZ3))  /* b        */
@@ -109,7 +109,7 @@ FUNC_END(two_rot)
 #endif
 
 
-#ifndef M4FMINUS_TWO_ROT
+#ifndef M6FMINUS_TWO_ROT
 FUNC_START(minus_two_rot)  /* -2rot    ( a b c d e f -- e f a b c d ) */
         LOAD(  REG0,   AT(DSTK))       /* e        */
         LOAD(  REG4,   AT(DSTK, SZ))   /* d        */
@@ -126,7 +126,7 @@ FUNC_END(minus_two_rot)
 #endif
 
 
-#ifndef M4FTWO_SWAP
+#ifndef M6FTWO_SWAP
 /* remember: x86 instruction 'xchg' with memory operand is SLOW */
 FUNC_START(two_swap)       /* 2swap    ( a b c d -- c d a b ) */
         LOAD(  REG1,   AT(DSTK))
@@ -141,7 +141,7 @@ FUNC_END(two_swap)
 
 
 
-#ifndef M4FTWO_TUCK
+#ifndef M6FTWO_TUCK
 /* ( a b c d -- c d a b c d ) */
 FUNC_START(two_tuck)
         LOAD(  REG3,   AT(DSTK))           /* load c                             */
@@ -155,7 +155,7 @@ FUNC_END(two_tuck)
 #endif
 
 
-#ifndef M4FTWO_DUP_TWO_TO_R
+#ifndef M6FTWO_DUP_TWO_TO_R
 FUNC_START(two_dup_two_to_r)   /* 2dup 2>r  ( a b -- a b ) ( R: -- a b ) m64th-user */
         LOAD(  REG1,       AT(DSTK))
         RPUSH2(RTOP,       REG1)
@@ -164,7 +164,7 @@ FUNC_END(two_dup_two_to_r)
 #endif
 
 
-#ifndef M4FTWO_TO_R
+#ifndef M6FTWO_TO_R
 FUNC_START(two_to_r)           /* 2>r      */
         DPOP(  REG1)
         RPUSH2(RTOP,       REG1)
@@ -174,7 +174,7 @@ FUNC_END(two_to_r)
 #endif
 
 
-#ifndef M4FTWO_R_FROM
+#ifndef M6FTWO_R_FROM
 FUNC_START(two_r_from)         /* 2r>      */
         DPUSH__DTOP()
         MOVE(  RTOP,       DTOP)
@@ -190,7 +190,7 @@ FUNC_START(two_r_from_two_drop)/* 2r>2drop  m64th-user */
 FUNC_END(two_r_from_two_drop)
 
 
-#ifndef M4FTWO_R_FETCH
+#ifndef M6FTWO_R_FETCH
 FUNC_START(two_r_fetch)        /* 2r@      */
         STOR(  DTOP,       AT(DSTK, -SZ))
         LOAD(  REG1,       AT(RSTK))

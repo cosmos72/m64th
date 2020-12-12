@@ -29,7 +29,7 @@ WORD_START(clearstack, LASTWORD)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_ASM_NONE()
-    WORD_FLAGS(M4FLAG_INLINE|M4FLAG_PURE)
+    WORD_FLAGS(M6FLAG_INLINE|M6FLAG_PURE)
     WORD_CODE(
         /*3*/ depth, n_to_drop, exit
     )
@@ -40,7 +40,7 @@ WORD_START(string2_equal, clearstack)
     WORD_RSTACK(0,0)
     WORD_STACK_ANY()
     WORD_ASM_NONE()
-    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
+    WORD_FLAGS(M6FLAG_INLINE | M6FLAG_MEM_FETCH)
     WORD_CODE(
         /*14*/ rot, tuck, equal,
         _if_, T(5),
@@ -56,7 +56,7 @@ WORD_START(string2_ne, string2_equal)
     WORD_RSTACK(0,0)
     WORD_STACK_ANY()
     WORD_ASM_NONE()
-    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
+    WORD_FLAGS(M6FLAG_INLINE | M6FLAG_MEM_FETCH)
     WORD_CODE(
         /* optimizes better than "string2= invert" */
         CALL(string2_equal), zero_equal, exit
@@ -67,7 +67,7 @@ WORD_START(wordlist_upto_name, string2_ne)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_ASM_NONE()
-    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_FLAGS(M6FLAG_INLINE)
     WORD_CODE_AND_DATA(wordlist_upto_name,
         WORD_CODE_TOKENS(
             /*24*/ to_r, wordlist_to_last, zero, swap, begin, dup, _while_, T(12), swap, one_plus, over, dup, r_fetch, ne, _while_, T(3), name_to_prev, _repeat_, T(-14), then, drop, r_from, drop, exit
@@ -79,7 +79,7 @@ WORD_START(disassemble_names, wordlist_upto_name)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_ASM_NONE()
-    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_FLAGS(M6FLAG_INLINE)
     WORD_CODE_AND_DATA(disassemble_names,
         WORD_CODE_TOKENS(
             /*11*/ zero, _q_do_, T(7), CALL(disassemble_name), _loop_, T(-7), exit
@@ -90,7 +90,7 @@ WORD_START(disassemble_upto, disassemble_names)
     WORD_STACK_NONE()
     WORD_STACK_NONE()
     WORD_ASM_NONE()
-    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_FLAGS(M6FLAG_INLINE)
     WORD_CODE_AND_DATA(disassemble_upto,
         WORD_CODE_TOKENS(
             /*18*/ CALL(parse_nt), drop, swap, CALL(wordlist_upto_name), CALL(disassemble_names), exit

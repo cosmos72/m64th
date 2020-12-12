@@ -23,21 +23,21 @@
 
 /* clang-format off */
 
-#define M4FEX_STRING_STORE
+#define M6FEX_STRING_STORE
 FUNC_START(ex_message_store)
         LOAD(  REG1,   AT(DSTK))
-        STOR(  DTOP,   AT(M4TH, M4TH_OFF_EX_STRING_N))
-        STOR(  REG1,   AT(M4TH, M4TH_OFF_EX_STRING_ADDR))
+        STOR(  DTOP,   AT(M6TH, M6TH_OFF_EX_STRING_N))
+        STOR(  REG1,   AT(M6TH, M6TH_OFF_EX_STRING_ADDR))
         LOAD(  DTOP,   AT(DSTK, SZ))
         ADD2(IMM(SZ2), DSTK)
 FUNC_END(ex_message_store)
 
 
-#define M4FEX_STRING_FETCH
+#define M6FEX_STRING_FETCH
 FUNC_START(ex_message_fetch)
         STOR(  DTOP,   AT(DSTK, -SZ))
-        LOAD(  REG1,   AT(M4TH, M4TH_OFF_EX_STRING_ADDR))
-        LOAD(  DTOP,   AT(M4TH, M4TH_OFF_EX_STRING_N))
+        LOAD(  REG1,   AT(M6TH, M6TH_OFF_EX_STRING_ADDR))
+        LOAD(  DTOP,   AT(M6TH, M6TH_OFF_EX_STRING_N))
         STOR(  REG1,   AT(DSTK, -SZ2))
         SUB2(IMM(SZ2), DSTK)
 FUNC_END(ex_message_fetch)
@@ -73,11 +73,11 @@ FUNC_END(name_to_prev)
 
 
 FUNC_START(wordlist_to_last) /* ( wid -- nt ) */
-        LOAD(  REG1,   AT(DTOP, M4WORDLIST_OFF_LAST))    /* b = nt = wid.last      */
+        LOAD(  REG1,   AT(DTOP, M6WORDLIST_OFF_LAST))    /* b = nt = wid.last      */
         test   REG1,   REG1;
         cmovnz REG1,   DTOP;                           /* dtop = nt|wid          */
         jnz            FUNC_RET(wordlist_to_last);
-        LOAD(  DTOP,   AT(DTOP, M4WORDLIST_OFF_DICT))    /* dtop = wid.dict        */
+        LOAD(  DTOP,   AT(DTOP, M6WORDLIST_OFF_DICT))    /* dtop = wid.dict        */
         LD_uw( REG1,   AT(DTOP, DICT_OFF_LASTWORD_OFF))/* a = dict.last_word_off */
         SUB2(  REG1,   DTOP)                           /* dtop = nt              */
         test   REG1,   REG1;

@@ -17,15 +17,15 @@
  * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_C_STD_H
-#define M4TH_C_STD_H
+#ifndef M6TH_C_STD_H
+#define M6TH_C_STD_H
 
 #include "../include/m64th.h"
 
 /** wrapper around C function fread(), easier to call from forth than plain fread() */
-m4pair m64th_c_fread(FILE *in, void *addr, size_t len);
+m6pair m64th_c_fread(FILE *in, void *addr, size_t len);
 
 /** wrapper around C functions fwrite() + fflush(), easier to call from forth */
-m4pair m64th_c_fwrite_fflush(FILE *out, const void *addr, size_t len);
+m6pair m64th_c_fwrite_fflush(FILE *out, const void *addr, size_t len);
 
-#endif /* M4TH_C_STD_H */
+#endif /* M6TH_C_STD_H */

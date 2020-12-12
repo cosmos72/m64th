@@ -22,28 +22,28 @@
 /* clang-format off */
 
 
-#define M4F_LIT2S_
+#define M6F_LIT2S_
 FUNC_START(_lit2s_)        /* (lit-2s) push to dstack the int16 at following IP */
         DPUSH__DTOP()
         LD_sh( DTOP,   AT(IP), 2)
 FUNC_END(_lit2s_)
 
 
-#define M4F_LIT4S_
+#define M6F_LIT4S_
 FUNC_START(_lit4s_)        /* (lit-4s) push to dstack the int32 at following IP */
         DPUSH__DTOP()
         LD_sw( DTOP,   AT(IP), 4)
 FUNC_END(_lit4s_)
 
 
-#define M4F_LIT8S_
+#define M6F_LIT8S_
 FUNC_START(_lit8s_)        /* (lit-8s) push to dstack the int64 at following IP */
         DPUSH__DTOP()
         LOAD(  DTOP,   AT(IP), 8)
 FUNC_END(_lit8s_)
 
 
-#define M4F_LIT_STRING_
+#define M6F_LIT_STRING_
 FUNC_START(_lit_string_)   /* (lit-string) push to dstack the SZt and ascii at following IP */
         LD_st( REG1,   AT(IP), SZt)    /* a  = length; IP = c-addr          */
         DPUSH2(DTOP,   IP)             /* push dtop, c-addr to DSTK         */
@@ -54,7 +54,7 @@ FUNC_START(_lit_string_)   /* (lit-string) push to dstack the SZt and ascii at f
 FUNC_RAWEND(_lit_string_)
 
 
-#define M4F_MISSING_
+#define M6F_MISSING_
 FUNC_START(_missing_)      /* (missing) called instead of invalid/unimplemented function */
         .4byte   0; /* udf */          /* crash with SIGILL */
 FUNC_END(_missing_)
@@ -283,7 +283,7 @@ FUNC_START(u_more_equal)   /* u>=      m64th-user */
 FUNC_END(u_more_equal)
 
 
-#define M4FTUCK
+#define M6FTUCK
 FUNC_START(tuck)           /* tuck      core ( a b -- b a b ) */
         LOAD(  REG1,          AT(DSTK))
         stp    REG1,   DTOP,  [DSTK, -SZ]!;

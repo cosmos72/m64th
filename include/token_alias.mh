@@ -17,337 +17,337 @@
  * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_INCLUDE_TOKEN_ALIAS_MH
-#define M4TH_INCLUDE_TOKEN_ALIAS_MH
+#ifndef M6TH_INCLUDE_TOKEN_ALIAS_MH
+#define M6TH_INCLUDE_TOKEN_ALIAS_MH
 
 #include "../dispatch/sz.mh" /* SZ SZt */
 #include "macro.mh"          /* CAT3() */
 
 /* -------------------------------------------------------------------------- */
-/* m4token identifiers have lowercase prefix 'm4'                             */
+/* m6token identifiers have lowercase prefix 'm6'                             */
 /* -------------------------------------------------------------------------- */
 
-#define m4_1s_comma m4c_comma
-#define m4_2s_comma m4short_comma
-#define m4_4s_comma m4int_comma
-#define m4_8s_comma m4comma
-#define m4token_comma CAT3(m4_, SZt, s_comma)
-#define m4xt_comma CAT3(m4_, SZ, s_comma)
+#define m6_1s_comma m6c_comma
+#define m6_2s_comma m6short_comma
+#define m6_4s_comma m6int_comma
+#define m6_8s_comma m6comma
+#define m6token_comma CAT3(m6_, SZt, s_comma)
+#define m6xt_comma CAT3(m6_, SZ, s_comma)
 
-#define m4_lit_ /*      */ CAT3(m4_lit, SZt, s_)
-#define m4_lit_short_ /**/ m4_lit2s_
-#define m4_lit_int_ /*  */ m4_lit4s_
-#define m4_lit_cell_ /* */ CAT3(m4_lit, SZ, s_)
+#define m6_lit_ /*      */ CAT3(m6_lit, SZt, s_)
+#define m6_lit_short_ /**/ m6_lit2s_
+#define m6_lit_int_ /*  */ m6_lit4s_
+#define m6_lit_cell_ /* */ CAT3(m6_lit, SZ, s_)
 
-#define m4char_fetch m4c_fetch /* char@   is an alias for c@     - no dedicated m4token */
-#define m4cell_fetch m4fetch   /* cell@   is an alias for @      - no dedicated m4token */
+#define m6char_fetch m6c_fetch /* char@   is an alias for c@     - no dedicated m6token */
+#define m6cell_fetch m6fetch   /* cell@   is an alias for @      - no dedicated m6token */
 
-#define m4div_byte m4noop        /* /byte     divide dtop by sizeof(byte)   */
-#define m4div_char m4noop        /* /char     divide dtop by sizeof(char)   */
-#define m4div_short m4two_div    /* /short    divide dtop by sizeof(short)  */
-#define m4div_ushort m4two_div   /* /ushort   divide dtop by sizeof(ushort) */
-#define m4div_int m4four_div     /* /int      divide dtop by sizeof(short)  */
-#define m4div_uint m4four_div    /* /uint     divide dtop by sizeof(ushort) */
-#undef m4____gap                 /*                       */
-#define m4one_byte m4one         /* 1byte     => 1        */
-#define m4one_char m4one         /* 1char     => 1        */
-#define m4one_short m4two        /* 1short    => 2        */
-#define m4one_ushort m4two       /* 1ushort   => 2        */
-#define m4one_int m4four         /* 1int      => 4        */
-#define m4one_uint m4four        /* 1uint     => 4        */
-#define m4one_cell CAT2(m4_, SZ) /* 1cell     => SZ       */
-#undef m4____gap                 /*                       */
-#define m4byte_plus m4one_plus   /* byte+     => 1+       */
-#define m4short_plus m4two_plus  /* short+    => 2+       */
-#define m4ushort_plus m4two_plus /* ushort+   => 2+       */
-#define m4int_plus m4four_plus   /* int+      => 4+       */
-#define m4uint_plus m4four_plus  /* uint+     => 4+       */
-#undef m4____gap                 /*                       */
-#define m4bytes m4noop           /* bytes     =>          */
-#define m4shorts m4two_times     /* shorts    => 2*       */
-#define m4ushorts m4two_times    /* ushorts   => 2*       */
-#define m4ints m4four_times      /* ints      => 4*       */
-#define m4uints m4four_times     /* uints     => 4*       */
+#define m6div_byte m6noop        /* /byte     divide dtop by sizeof(byte)   */
+#define m6div_char m6noop        /* /char     divide dtop by sizeof(char)   */
+#define m6div_short m6two_div    /* /short    divide dtop by sizeof(short)  */
+#define m6div_ushort m6two_div   /* /ushort   divide dtop by sizeof(ushort) */
+#define m6div_int m6four_div     /* /int      divide dtop by sizeof(short)  */
+#define m6div_uint m6four_div    /* /uint     divide dtop by sizeof(ushort) */
+#undef m6____gap                 /*                       */
+#define m6one_byte m6one         /* 1byte     => 1        */
+#define m6one_char m6one         /* 1char     => 1        */
+#define m6one_short m6two        /* 1short    => 2        */
+#define m6one_ushort m6two       /* 1ushort   => 2        */
+#define m6one_int m6four         /* 1int      => 4        */
+#define m6one_uint m6four        /* 1uint     => 4        */
+#define m6one_cell CAT2(m6_, SZ) /* 1cell     => SZ       */
+#undef m6____gap                 /*                       */
+#define m6byte_plus m6one_plus   /* byte+     => 1+       */
+#define m6short_plus m6two_plus  /* short+    => 2+       */
+#define m6ushort_plus m6two_plus /* ushort+   => 2+       */
+#define m6int_plus m6four_plus   /* int+      => 4+       */
+#define m6uint_plus m6four_plus  /* uint+     => 4+       */
+#undef m6____gap                 /*                       */
+#define m6bytes m6noop           /* bytes     =>          */
+#define m6shorts m6two_times     /* shorts    => 2*       */
+#define m6ushorts m6two_times    /* ushorts   => 2*       */
+#define m6ints m6four_times      /* ints      => 4*       */
+#define m6uints m6four_times     /* uints     => 4*       */
 
-#define m4_SZ_times CAT3(m4_, SZ, _times) /* _SZ*      needed by cells   */
-#define m4_SZ_plus CAT3(m4_, SZ, _plus)   /* _SZ+      needed by cell+   */
-#define m4_SZ_div CAT3(m4_, SZ, _div)     /* _SZ/      needed by /cell   */
+#define m6_SZ_times CAT3(m6_, SZ, _times) /* _SZ*      needed by cells   */
+#define m6_SZ_plus CAT3(m6_, SZ, _plus)   /* _SZ+      needed by cell+   */
+#define m6_SZ_div CAT3(m6_, SZ, _div)     /* _SZ/      needed by /cell   */
 
-#define m4div_cell CAT3(m4_, SZ, _div)           /* /cell         => _SZ/         */
-#define m4div_token CAT3(m4_, SZt, _div)         /* /token        => _SZt/        */
-#define m4to_token CAT3(m4_to_, SZt, u)          /* >token        => >SZt         */
-#define m4one_token CAT(m4_, SZt)                /* 1token        => _SZt         */
-#define m4token_plus CAT3(m4_, SZt, _plus)       /* token+        => _SZt_plus    */
-#define m4tokens CAT3(m4_, SZt, _times)          /* tokens        => _SZt_times   */
-#define m4token_align CAT3(m4_, SZt, _align)     /* token-align   => _SZt_align   */
-#define m4token_aligned CAT3(m4_, SZt, _aligned) /* token-aligned => _SZt_aligned */
+#define m6div_cell CAT3(m6_, SZ, _div)           /* /cell         => _SZ/         */
+#define m6div_token CAT3(m6_, SZt, _div)         /* /token        => _SZt/        */
+#define m6to_token CAT3(m6_to_, SZt, u)          /* >token        => >SZt         */
+#define m6one_token CAT(m6_, SZt)                /* 1token        => _SZt         */
+#define m6token_plus CAT3(m6_, SZt, _plus)       /* token+        => _SZt_plus    */
+#define m6tokens CAT3(m6_, SZt, _times)          /* tokens        => _SZt_times   */
+#define m6token_align CAT3(m6_, SZt, _align)     /* token-align   => _SZt_align   */
+#define m6token_aligned CAT3(m6_, SZt, _aligned) /* token-aligned => _SZt_aligned */
 
-#define m4token_fetch CAT3(m4_, SZt, u_fetch)     /* token@        => _SZtu_fetch  */
-#define m4token_fetch_1 CAT3(m4_, SZt, u_fetch_1) /* token[1]      */
-#define m4token_fetch_2 CAT3(m4_, SZt, u_fetch_2) /* token[2]      */
-#define m4token_fetch_3 CAT3(m4_, SZt, u_fetch_3) /* token[3]      */
-#define m4token_fetch_4 CAT3(m4_, SZt, u_fetch_4) /* token[4]      */
-#define m4token_fetch_5 CAT3(m4_, SZt, u_fetch_5) /* token[5]      */
-#define m4token_fetch_6 CAT3(m4_, SZt, u_fetch_6) /* token[6]      */
-#define m4token_fetch_7 CAT3(m4_, SZt, u_fetch_7) /* token[7]      */
-#define m4token_fetch_8 CAT3(m4_, SZt, u_fetch_8) /* token[8]      */
+#define m6token_fetch CAT3(m6_, SZt, u_fetch)     /* token@        => _SZtu_fetch  */
+#define m6token_fetch_1 CAT3(m6_, SZt, u_fetch_1) /* token[1]      */
+#define m6token_fetch_2 CAT3(m6_, SZt, u_fetch_2) /* token[2]      */
+#define m6token_fetch_3 CAT3(m6_, SZt, u_fetch_3) /* token[3]      */
+#define m6token_fetch_4 CAT3(m6_, SZt, u_fetch_4) /* token[4]      */
+#define m6token_fetch_5 CAT3(m6_, SZt, u_fetch_5) /* token[5]      */
+#define m6token_fetch_6 CAT3(m6_, SZt, u_fetch_6) /* token[6]      */
+#define m6token_fetch_7 CAT3(m6_, SZt, u_fetch_7) /* token[7]      */
+#define m6token_fetch_8 CAT3(m6_, SZt, u_fetch_8) /* token[8]      */
 
-#define m4token_store CAT3(m4_, SZt, _store)     /* token!        => _SZt_store  */
-#define m4token_store_1 CAT3(m4_, SZt, _store_1) /* token[1]!      */
-#define m4token_store_2 CAT3(m4_, SZt, _store_2) /* token[2]!      */
-#define m4token_store_3 CAT3(m4_, SZt, _store_3) /* token[3]!      */
-#define m4token_store_4 CAT3(m4_, SZt, _store_4) /* token[4]!      */
-#define m4token_store_5 CAT3(m4_, SZt, _store_5) /* token[5]!      */
-#define m4token_store_6 CAT3(m4_, SZt, _store_6) /* token[6]!      */
-#define m4token_store_7 CAT3(m4_, SZt, _store_7) /* token[7]!      */
-#define m4token_store_8 CAT3(m4_, SZt, _store_8) /* token[8]!      */
+#define m6token_store CAT3(m6_, SZt, _store)     /* token!        => _SZt_store  */
+#define m6token_store_1 CAT3(m6_, SZt, _store_1) /* token[1]!      */
+#define m6token_store_2 CAT3(m6_, SZt, _store_2) /* token[2]!      */
+#define m6token_store_3 CAT3(m6_, SZt, _store_3) /* token[3]!      */
+#define m6token_store_4 CAT3(m6_, SZt, _store_4) /* token[4]!      */
+#define m6token_store_5 CAT3(m6_, SZt, _store_5) /* token[5]!      */
+#define m6token_store_6 CAT3(m6_, SZt, _store_6) /* token[6]!      */
+#define m6token_store_7 CAT3(m6_, SZt, _store_7) /* token[7]!      */
+#define m6token_store_8 CAT3(m6_, SZt, _store_8) /* token[8]!      */
 
 /*
- * needed by m4one_cell, m4cells, m4cell_plus, m4div_cell
- * and by m4one_token, m4tokens, m4token_plus, m4div_token above
+ * needed by m6one_cell, m6cells, m6cell_plus, m6div_cell
+ * and by m6one_token, m6tokens, m6token_plus, m6div_token above
  */
-#define m4_0 m4zero              /* 0        */
-#define m4_1 m4one               /* 1        */
-#define m4_1_times m4noop        /* 1*       */
-#define m4_1_div m4noop          /* 1/       */
-#define m4_2 m4two               /* 2        */
-#define m4_2_times m4two_times   /* 2*       */
-#define m4_2_plus m4two_plus     /* 2+       */
-#define m4_2_minus m4two_minus   /* 2-       */
-#define m4_2_div m4two_div       /* 2/       */
-#define m4_3 m4three             /* 3        */
-#define m4_4 m4four              /* 4        */
-#define m4_4_times m4four_times  /* 4*       */
-#define m4_4_plus m4four_plus    /* 4+       */
-#define m4_4_div m4four_div      /* 4/       */
-#define m4_8 m4eight             /* 8        */
-#define m4_8_times m4eight_times /* 8*       */
-#define m4_8_plus m4eight_plus   /* 8+       */
-#define m4_8_div m4eight_div     /* 8/       */
+#define m6_0 m6zero              /* 0        */
+#define m6_1 m6one               /* 1        */
+#define m6_1_times m6noop        /* 1*       */
+#define m6_1_div m6noop          /* 1/       */
+#define m6_2 m6two               /* 2        */
+#define m6_2_times m6two_times   /* 2*       */
+#define m6_2_plus m6two_plus     /* 2+       */
+#define m6_2_minus m6two_minus   /* 2-       */
+#define m6_2_div m6two_div       /* 2/       */
+#define m6_3 m6three             /* 3        */
+#define m6_4 m6four              /* 4        */
+#define m6_4_times m6four_times  /* 4*       */
+#define m6_4_plus m6four_plus    /* 4+       */
+#define m6_4_div m6four_div      /* 4/       */
+#define m6_8 m6eight             /* 8        */
+#define m6_8_times m6eight_times /* 8*       */
+#define m6_8_plus m6eight_plus   /* 8+       */
+#define m6_8_div m6eight_div     /* 8/       */
 
-/* needed by m4to_token */
-#define m4_to_1u m4to_char
-#define m4_to_2u m4to_ushort
-#define m4_to_4u m4to_uint
-#define m4_to_8u m4noop
+/* needed by m6to_token */
+#define m6_to_1u m6to_char
+#define m6_to_2u m6to_ushort
+#define m6_to_4u m6to_uint
+#define m6_to_8u m6noop
 
-/* needed by m4token_store */
-#define m4_1_store m4c_store
-#define m4_2_store m4short_store
-#define m4_4_store m4int_store
-#define m4_8_store m4store
+/* needed by m6token_store */
+#define m6_1_store m6c_store
+#define m6_2_store m6short_store
+#define m6_4_store m6int_store
+#define m6_8_store m6store
 
-#define m4_2_store_1 m4short_store_1
-#define m4_2_store_2 m4short_store_2
-#define m4_2_store_3 m4short_store_3
-#define m4_2_store_4 m4short_store_4
-#define m4_2_store_5 m4short_store_5
-#define m4_2_store_6 m4short_store_6
-#define m4_2_store_7 m4short_store_7
-#define m4_2_store_8 m4short_store_8
+#define m6_2_store_1 m6short_store_1
+#define m6_2_store_2 m6short_store_2
+#define m6_2_store_3 m6short_store_3
+#define m6_2_store_4 m6short_store_4
+#define m6_2_store_5 m6short_store_5
+#define m6_2_store_6 m6short_store_6
+#define m6_2_store_7 m6short_store_7
+#define m6_2_store_8 m6short_store_8
 
-/* needed by m4token_fetch */
-#define m4_1u_fetch m4char_fetch
-#define m4_2u_fetch m4ushort_fetch
-#define m4_4u_fetch m4uint_fetch
-#define m4_8u_fetch m4fetch
+/* needed by m6token_fetch */
+#define m6_1u_fetch m6char_fetch
+#define m6_2u_fetch m6ushort_fetch
+#define m6_4u_fetch m6uint_fetch
+#define m6_8u_fetch m6fetch
 
-#define m4_2u_fetch_1 m4ushort_fetch_1
-#define m4_2u_fetch_2 m4ushort_fetch_2
-#define m4_2u_fetch_3 m4ushort_fetch_3
-#define m4_2u_fetch_4 m4ushort_fetch_4
-#define m4_2u_fetch_5 m4ushort_fetch_5
-#define m4_2u_fetch_6 m4ushort_fetch_6
-#define m4_2u_fetch_7 m4ushort_fetch_7
-#define m4_2u_fetch_8 m4ushort_fetch_8
+#define m6_2u_fetch_1 m6ushort_fetch_1
+#define m6_2u_fetch_2 m6ushort_fetch_2
+#define m6_2u_fetch_3 m6ushort_fetch_3
+#define m6_2u_fetch_4 m6ushort_fetch_4
+#define m6_2u_fetch_5 m6ushort_fetch_5
+#define m6_2u_fetch_6 m6ushort_fetch_6
+#define m6_2u_fetch_7 m6ushort_fetch_7
+#define m6_2u_fetch_8 m6ushort_fetch_8
 
-/* needed by m4token_align */
-#define m4_1_align m4noop
-#define m4_2_align m4short_align
-#define m4_4_align m4int_align
-#define m4_8_align m4align
+/* needed by m6token_align */
+#define m6_1_align m6noop
+#define m6_2_align m6short_align
+#define m6_4_align m6int_align
+#define m6_8_align m6align
 
-/* needed by m4token_aligned */
-#define m4_1_aligned m4noop
-#define m4_2_aligned m4short_aligned
-#define m4_4_aligned m4int_aligned
-#define m4_8_aligned m4aligned
+/* needed by m6token_aligned */
+#define m6_1_aligned m6noop
+#define m6_2_aligned m6short_aligned
+#define m6_4_aligned m6int_aligned
+#define m6_8_aligned m6aligned
 
-#define m4cs_drop m4two_drop
-#define m4cs_dup m4two_dup
-#define m4cs_pick m4two_pick
-#define m4cs_roll m4two_roll
-#define m4minus_cs_roll m4minus_two_roll
-#define m4cs_swap m4two_swap
-#define m4minus_cs_rot m4minus_two_rot
-#define m4cs_rot m4two_rot
-#define m4r2nd_fetch m4i_prime
-#define m4r3rd_fetch m4j
+#define m6cs_drop m6two_drop
+#define m6cs_dup m6two_dup
+#define m6cs_pick m6two_pick
+#define m6cs_roll m6two_roll
+#define m6minus_cs_roll m6minus_two_roll
+#define m6cs_swap m6two_swap
+#define m6minus_cs_rot m6minus_two_rot
+#define m6cs_rot m6two_rot
+#define m6r2nd_fetch m6i_prime
+#define m6r3rd_fetch m6j
 
-#define m4d_to_s m4drop
-#define m4u_to_d m4zero
-#define m4d_to_hi m4nip
+#define m6d_to_s m6drop
+#define m6u_to_d m6zero
+#define m6d_to_hi m6nip
 
 /* -------------------------------------------------------------------------- */
-/* M4* numeric values have uppercase prefix 'M4'                              */
+/* M6* numeric values have uppercase prefix 'M6'                              */
 /* -------------------------------------------------------------------------- */
 
-#define M4_1s_comma M4c_comma
-#define M4_2s_comma M4short_comma
-#define M4_4s_comma M4int_comma
-#define M4_8s_comma M4comma
-#define M4token_comma CAT3(M4_, SZt, s_comma)
-#define M4xt_comma CAT3(M4_, SZ, s_comma)
+#define M6_1s_comma M6c_comma
+#define M6_2s_comma M6short_comma
+#define M6_4s_comma M6int_comma
+#define M6_8s_comma M6comma
+#define M6token_comma CAT3(M6_, SZt, s_comma)
+#define M6xt_comma CAT3(M6_, SZ, s_comma)
 
-#define M4_lit_ /*      */ CAT3(M4_lit, SZt, s_)
-#define M4_lit_short_ /**/ M4_lit2s_
-#define M4_lit_int_ /*  */ M4_lit4s_
-#define M4_lit_cell_ /* */ CAT3(M4_lit, SZ, s_)
+#define M6_lit_ /*      */ CAT3(M6_lit, SZt, s_)
+#define M6_lit_short_ /**/ M6_lit2s_
+#define M6_lit_int_ /*  */ M6_lit4s_
+#define M6_lit_cell_ /* */ CAT3(M6_lit, SZ, s_)
 
-#define M4div_byte M4noop        /* /byte     divide dtop by sizeof(byte)   */
-#define M4div_char M4noop        /* /char     divide dtop by sizeof(char)   */
-#define M4div_short M4two_div    /* /short    divide dtop by sizeof(short)  */
-#define M4div_ushort M4two_div   /* /ushort   divide dtop by sizeof(ushort) */
-#define M4div_int M4four_div     /* /int      divide dtop by sizeof(short)  */
-#define M4div_uint M4four_div    /* /uint     divide dtop by sizeof(ushort) */
-#undef M4____gap                 /*                       */
-#define M4one_byte M4one         /* 1byte     => 1        */
-#define M4one_char M4one         /* 1char     => 1        */
-#define M4one_short M4two        /* 1short    => 2        */
-#define M4one_ushort M4two       /* 1ushort   => 2        */
-#define M4one_int M4four         /* 1int      => 4        */
-#define M4one_uint M4four        /* 1uint     => 4        */
-#define M4one_cell CAT2(M4_, SZ) /* 1cell     => SZ       */
-#undef M4____gap                 /*                       */
-#define M4byte_plus M4one_plus   /* byte+     => 1+       */
-#define M4short_plus M4two_plus  /* short+    => 2+       */
-#define M4ushort_plus M4two_plus /* ushort+   => 2+       */
-#define M4int_plus M4four_plus   /* int+      => 4+       */
-#define M4uint_plus M4four_plus  /* uint+     => 4+       */
-#undef M4____gap                 /*                       */
-#define M4bytes M4noop           /* bytes     =>          */
-#define M4shorts M4two_times     /* shorts    => 2*       */
-#define M4ushorts M4two_times    /* ushorts   => 2*       */
-#define M4ints M4four_times      /* ints      => 4*       */
-#define M4uints M4four_times     /* uints     => 4*       */
+#define M6div_byte M6noop        /* /byte     divide dtop by sizeof(byte)   */
+#define M6div_char M6noop        /* /char     divide dtop by sizeof(char)   */
+#define M6div_short M6two_div    /* /short    divide dtop by sizeof(short)  */
+#define M6div_ushort M6two_div   /* /ushort   divide dtop by sizeof(ushort) */
+#define M6div_int M6four_div     /* /int      divide dtop by sizeof(short)  */
+#define M6div_uint M6four_div    /* /uint     divide dtop by sizeof(ushort) */
+#undef M6____gap                 /*                       */
+#define M6one_byte M6one         /* 1byte     => 1        */
+#define M6one_char M6one         /* 1char     => 1        */
+#define M6one_short M6two        /* 1short    => 2        */
+#define M6one_ushort M6two       /* 1ushort   => 2        */
+#define M6one_int M6four         /* 1int      => 4        */
+#define M6one_uint M6four        /* 1uint     => 4        */
+#define M6one_cell CAT2(M6_, SZ) /* 1cell     => SZ       */
+#undef M6____gap                 /*                       */
+#define M6byte_plus M6one_plus   /* byte+     => 1+       */
+#define M6short_plus M6two_plus  /* short+    => 2+       */
+#define M6ushort_plus M6two_plus /* ushort+   => 2+       */
+#define M6int_plus M6four_plus   /* int+      => 4+       */
+#define M6uint_plus M6four_plus  /* uint+     => 4+       */
+#undef M6____gap                 /*                       */
+#define M6bytes M6noop           /* bytes     =>          */
+#define M6shorts M6two_times     /* shorts    => 2*       */
+#define M6ushorts M6two_times    /* ushorts   => 2*       */
+#define M6ints M6four_times      /* ints      => 4*       */
+#define M6uints M6four_times     /* uints     => 4*       */
 
-#define M4_SZ_times CAT3(M4_, SZ, _times) /* _SZ*      needed by cells   */
-#define M4_SZ_plus CAT3(M4_, SZ, _plus)   /* _SZ+      needed by cell+   */
-#define M4_SZ_div CAT3(M4_, SZ, _div)     /* _SZ/      needed by /cell   */
+#define M6_SZ_times CAT3(M6_, SZ, _times) /* _SZ*      needed by cells   */
+#define M6_SZ_plus CAT3(M6_, SZ, _plus)   /* _SZ+      needed by cell+   */
+#define M6_SZ_div CAT3(M6_, SZ, _div)     /* _SZ/      needed by /cell   */
 
-#define M4div_cell CAT3(M4_, SZ, _div)           /* /cell         => _SZ/         */
-#define M4div_token CAT3(M4_, SZt, _div)         /* /token        => _SZt/        */
-#define M4to_token CAT3(M4_to_, SZt, u)          /* >token        => >SZt         */
-#define M4one_token CAT2(M4_, SZt)               /* 1token        => _SZt         */
-#define M4token_plus CAT3(M4_, SZt, _plus)       /* token+        => _SZt_plus    */
-#define M4tokens CAT3(M4_, SZt, _times)          /* tokens        => _SZt_times   */
-#define M4token_align CAT3(M4_, SZt, _align)     /* token-align   => _SZt_align   */
-#define M4token_aligned CAT3(M4_, SZt, _aligned) /* token-aligned => _SZt_aligned */
+#define M6div_cell CAT3(M6_, SZ, _div)           /* /cell         => _SZ/         */
+#define M6div_token CAT3(M6_, SZt, _div)         /* /token        => _SZt/        */
+#define M6to_token CAT3(M6_to_, SZt, u)          /* >token        => >SZt         */
+#define M6one_token CAT2(M6_, SZt)               /* 1token        => _SZt         */
+#define M6token_plus CAT3(M6_, SZt, _plus)       /* token+        => _SZt_plus    */
+#define M6tokens CAT3(M6_, SZt, _times)          /* tokens        => _SZt_times   */
+#define M6token_align CAT3(M6_, SZt, _align)     /* token-align   => _SZt_align   */
+#define M6token_aligned CAT3(M6_, SZt, _aligned) /* token-aligned => _SZt_aligned */
 
-#define M4token_fetch CAT3(M4_, SZt, u_fetch)     /* token@        => _SZtu_fetch  */
-#define M4token_fetch_1 CAT3(M4_, SZt, u_fetch_1) /* token[1]      */
-#define M4token_fetch_2 CAT3(M4_, SZt, u_fetch_2) /* token[2]      */
-#define M4token_fetch_3 CAT3(M4_, SZt, u_fetch_3) /* token[3]      */
-#define M4token_fetch_4 CAT3(M4_, SZt, u_fetch_4) /* token[4]      */
-#define M4token_fetch_5 CAT3(M4_, SZt, u_fetch_5) /* token[5]      */
-#define M4token_fetch_6 CAT3(M4_, SZt, u_fetch_6) /* token[6]      */
-#define M4token_fetch_7 CAT3(M4_, SZt, u_fetch_7) /* token[7]      */
-#define M4token_fetch_8 CAT3(M4_, SZt, u_fetch_8) /* token[8]      */
+#define M6token_fetch CAT3(M6_, SZt, u_fetch)     /* token@        => _SZtu_fetch  */
+#define M6token_fetch_1 CAT3(M6_, SZt, u_fetch_1) /* token[1]      */
+#define M6token_fetch_2 CAT3(M6_, SZt, u_fetch_2) /* token[2]      */
+#define M6token_fetch_3 CAT3(M6_, SZt, u_fetch_3) /* token[3]      */
+#define M6token_fetch_4 CAT3(M6_, SZt, u_fetch_4) /* token[4]      */
+#define M6token_fetch_5 CAT3(M6_, SZt, u_fetch_5) /* token[5]      */
+#define M6token_fetch_6 CAT3(M6_, SZt, u_fetch_6) /* token[6]      */
+#define M6token_fetch_7 CAT3(M6_, SZt, u_fetch_7) /* token[7]      */
+#define M6token_fetch_8 CAT3(M6_, SZt, u_fetch_8) /* token[8]      */
 
-#define M4token_store CAT3(M4_, SZt, _store)     /* token!        => _SZt_store  */
-#define M4token_store_1 CAT3(M4_, SZt, _store_1) /* token[1]!      */
-#define M4token_store_2 CAT3(M4_, SZt, _store_2) /* token[2]!      */
-#define M4token_store_3 CAT3(M4_, SZt, _store_3) /* token[3]!      */
-#define M4token_store_4 CAT3(M4_, SZt, _store_4) /* token[4]!      */
-#define M4token_store_5 CAT3(M4_, SZt, _store_5) /* token[5]!      */
-#define M4token_store_6 CAT3(M4_, SZt, _store_6) /* token[6]!      */
-#define M4token_store_7 CAT3(M4_, SZt, _store_7) /* token[7]!      */
-#define M4token_store_8 CAT3(M4_, SZt, _store_8) /* token[8]!      */
+#define M6token_store CAT3(M6_, SZt, _store)     /* token!        => _SZt_store  */
+#define M6token_store_1 CAT3(M6_, SZt, _store_1) /* token[1]!      */
+#define M6token_store_2 CAT3(M6_, SZt, _store_2) /* token[2]!      */
+#define M6token_store_3 CAT3(M6_, SZt, _store_3) /* token[3]!      */
+#define M6token_store_4 CAT3(M6_, SZt, _store_4) /* token[4]!      */
+#define M6token_store_5 CAT3(M6_, SZt, _store_5) /* token[5]!      */
+#define M6token_store_6 CAT3(M6_, SZt, _store_6) /* token[6]!      */
+#define M6token_store_7 CAT3(M6_, SZt, _store_7) /* token[7]!      */
+#define M6token_store_8 CAT3(M6_, SZt, _store_8) /* token[8]!      */
 
 /*
- * needed by M4one_cell, M4cells, M4cell_plus, M4div_cell
- * and by M4one_token, M4tokens, M4token_plus, M4div_token above
+ * needed by M6one_cell, M6cells, M6cell_plus, M6div_cell
+ * and by M6one_token, M6tokens, M6token_plus, M6div_token above
  */
-#define M4_0 M4zero              /* 0        */
-#define M4_1 M4one               /* 1        */
-#define M4_1_times M4noop        /* 1*       */
-#define M4_1_div M4noop          /* 1/       */
-#define M4_2 M4two               /* 2        */
-#define M4_2_times M4two_times   /* 2*       */
-#define M4_2_plus M4two_plus     /* 2+       */
-#define M4_2_minus M4two_minus   /* 2-       */
-#define M4_2_div M4two_div       /* 2/       */
-#define M4_3 M4three             /* 3        */
-#define M4_4 M4four              /* 4        */
-#define M4_4_times M4four_times  /* 4*       */
-#define M4_4_plus M4four_plus    /* 4+       */
-#define M4_4_div M4four_div      /* 4/       */
-#define M4_8 M4eight             /* 8        */
-#define M4_8_times M4eight_times /* 8*       */
-#define M4_8_plus M4eight_plus   /* 8+       */
-#define M4_8_div M4eight_div     /* 8/       */
+#define M6_0 M6zero              /* 0        */
+#define M6_1 M6one               /* 1        */
+#define M6_1_times M6noop        /* 1*       */
+#define M6_1_div M6noop          /* 1/       */
+#define M6_2 M6two               /* 2        */
+#define M6_2_times M6two_times   /* 2*       */
+#define M6_2_plus M6two_plus     /* 2+       */
+#define M6_2_minus M6two_minus   /* 2-       */
+#define M6_2_div M6two_div       /* 2/       */
+#define M6_3 M6three             /* 3        */
+#define M6_4 M6four              /* 4        */
+#define M6_4_times M6four_times  /* 4*       */
+#define M6_4_plus M6four_plus    /* 4+       */
+#define M6_4_div M6four_div      /* 4/       */
+#define M6_8 M6eight             /* 8        */
+#define M6_8_times M6eight_times /* 8*       */
+#define M6_8_plus M6eight_plus   /* 8+       */
+#define M6_8_div M6eight_div     /* 8/       */
 
-/* needed by M4to_token */
-#define M4_to_1u M4to_char
-#define M4_to_2u M4to_ushort
-#define M4_to_4u M4to_uint
-#define M4_to_8u M4noop
+/* needed by M6to_token */
+#define M6_to_1u M6to_char
+#define M6_to_2u M6to_ushort
+#define M6_to_4u M6to_uint
+#define M6_to_8u M6noop
 
-/* needed by M4token_store */
-#define M4_1_store M4c_store
-#define M4_2_store M4short_store
-#define M4_4_store M4int_store
-#define M4_8_store M4store
+/* needed by M6token_store */
+#define M6_1_store M6c_store
+#define M6_2_store M6short_store
+#define M6_4_store M6int_store
+#define M6_8_store M6store
 
-#define M4_2_store_1 M4short_store_1
-#define M4_2_store_2 M4short_store_2
-#define M4_2_store_3 M4short_store_3
-#define M4_2_store_4 M4short_store_4
-#define M4_2_store_5 M4short_store_5
-#define M4_2_store_6 M4short_store_6
-#define M4_2_store_7 M4short_store_7
-#define M4_2_store_8 M4short_store_8
+#define M6_2_store_1 M6short_store_1
+#define M6_2_store_2 M6short_store_2
+#define M6_2_store_3 M6short_store_3
+#define M6_2_store_4 M6short_store_4
+#define M6_2_store_5 M6short_store_5
+#define M6_2_store_6 M6short_store_6
+#define M6_2_store_7 M6short_store_7
+#define M6_2_store_8 M6short_store_8
 
-/* needed by M4token_fetch */
-#define M4_1u_fetch M4char_fetch
-#define M4_2u_fetch M4ushort_fetch
-#define M4_4u_fetch M4uint_fetch
-#define M4_8u_fetch M4fetch
+/* needed by M6token_fetch */
+#define M6_1u_fetch M6char_fetch
+#define M6_2u_fetch M6ushort_fetch
+#define M6_4u_fetch M6uint_fetch
+#define M6_8u_fetch M6fetch
 
-#define M4_2u_fetch_1 M4ushort_fetch_1
-#define M4_2u_fetch_2 M4ushort_fetch_2
-#define M4_2u_fetch_3 M4ushort_fetch_3
-#define M4_2u_fetch_4 M4ushort_fetch_4
-#define M4_2u_fetch_5 M4ushort_fetch_5
-#define M4_2u_fetch_6 M4ushort_fetch_6
-#define M4_2u_fetch_7 M4ushort_fetch_7
-#define M4_2u_fetch_8 M4ushort_fetch_8
+#define M6_2u_fetch_1 M6ushort_fetch_1
+#define M6_2u_fetch_2 M6ushort_fetch_2
+#define M6_2u_fetch_3 M6ushort_fetch_3
+#define M6_2u_fetch_4 M6ushort_fetch_4
+#define M6_2u_fetch_5 M6ushort_fetch_5
+#define M6_2u_fetch_6 M6ushort_fetch_6
+#define M6_2u_fetch_7 M6ushort_fetch_7
+#define M6_2u_fetch_8 M6ushort_fetch_8
 
-/* needed by M4token_align */
-#define M4_1_align M4noop
-#define M4_2_align M4short_align
-#define M4_4_align M4int_align
-#define M4_8_align M4align
+/* needed by M6token_align */
+#define M6_1_align M6noop
+#define M6_2_align M6short_align
+#define M6_4_align M6int_align
+#define M6_8_align M6align
 
-/* needed by M4token_aligned */
-#define M4_1_aligned M4noop
-#define M4_2_aligned M4short_aligned
-#define M4_4_aligned M4int_aligned
-#define M4_8_aligned M4aligned
+/* needed by M6token_aligned */
+#define M6_1_aligned M6noop
+#define M6_2_aligned M6short_aligned
+#define M6_4_aligned M6int_aligned
+#define M6_8_aligned M6aligned
 
-#define M4cs_drop M4two_drop
-#define M4cs_dup M4two_dup
-#define M4cs_pick M4two_pick
-#define M4cs_roll M4two_roll
-#define M4minus_cs_roll M4minus_two_roll
-#define M4cs_swap M4two_swap
-#define M4minus_cs_rot M4minus_two_rot
-#define M4cs_rot M4two_rot
-#define M4r2nd_fetch M4i_prime
-#define M4r3rd_fetch M4j
+#define M6cs_drop M6two_drop
+#define M6cs_dup M6two_dup
+#define M6cs_pick M6two_pick
+#define M6cs_roll M6two_roll
+#define M6minus_cs_roll M6minus_two_roll
+#define M6cs_swap M6two_swap
+#define M6minus_cs_rot M6minus_two_rot
+#define M6cs_rot M6two_rot
+#define M6r2nd_fetch M6i_prime
+#define M6r3rd_fetch M6j
 
-#define M4d_to_s M4drop
-#define M4u_to_d M4zero
-#define M4d_to_hi M4nip
+#define M6d_to_s M6drop
+#define M6u_to_d M6zero
+#define M6d_to_hi M6nip
 
-#endif /* M4TH_INCLUDE_TOKEN_ALIAS_MH */
+#endif /* M6TH_INCLUDE_TOKEN_ALIAS_MH */

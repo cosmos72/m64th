@@ -22,7 +22,7 @@
 /* clang-format off */
 
 
-#define M4FTWO_NIP
+#define M6FTWO_NIP
 FUNC_START(two_nip)        /* 2nip     m64th-user */
         LOAD(  REG1,   AT(DSTK))
         str    REG1,   [DSTK, SZ2]!;
@@ -38,7 +38,7 @@ FUNC_END(two_pick)
 
 
 /* 2rot  ( a b c d e f -- c d e f a b ) */
-#define M4FTWO_ROT
+#define M6FTWO_ROT
 FUNC_START(two_rot)
         ldp    REG2,   REG1,   AT(DSTK, SZ3);  /* b, a            */
         ldp    REG4,   REG3,   AT(DSTK, SZ);   /* d, c            */
@@ -51,7 +51,7 @@ FUNC_END(two_rot)
 
 
 /* -2rot  ( a b c d e f -- e f a b c d ) m64th-user */
-#define M4FMINUS_TWO_ROT
+#define M6FMINUS_TWO_ROT
 FUNC_START(minus_two_rot)
         ldp    REG0,   REG4,   AT(DSTK);       /* e, d            */
         ldp    REG3,   REG2,   AT(DSTK, SZ2);  /* c, b            */
@@ -64,7 +64,7 @@ FUNC_END(minus_two_rot)
 
 
 /* 2swap ( a b c d -- c d a b ) */
-#define M4FTWO_SWAP
+#define M6FTWO_SWAP
 FUNC_START(two_swap)
         ldp    REG1,   REG2, AT(DSTK);
         ldr    REG3,         AT(DSTK, SZ2);

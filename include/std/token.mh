@@ -16,8 +16,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef M4TH_INCLUDE_TOKEN_FORTH_MH
-#define M4TH_INCLUDE_TOKEN_FORTH_MH
+#ifndef M6TH_INCLUDE_TOKEN_FORTH_MH
+#define M6TH_INCLUDE_TOKEN_FORTH_MH
 
 /*
  *
@@ -28,512 +28,512 @@
  */
 
 /* 'forth' wordlist: 'core' word set */
-#define M4store 1                 /* !        */
-#undef M4num /*2*/                /* #        no dedicated m4token */
-#define M4num_end 3               /* #>       */
-#undef M4num_s /*4*/              /* #s       no dedicated m4token */
-#undef M4tick /*5*/               /* '        no dedicated m4token */
-#undef M4paren /*6*/              /* (        */
-#define M4times 7                 /* *        */
-#define M4times_div 8             /* * /      */
-#define M4times_div_mod 9         /* * /mod   */
-#define M4plus 10                 /* +        */
-#define M4plus_store 11           /* +!       */
-#define M4plus_loop 12            /* +loop    */
-#define M4comma 13                /* ,        */
-#define M4minus 14                /* -        */
-#undef M4dot /*15*/               /* .        no dedicated m4token */
-#undef M4dot_quote /*16*/         /* ."       */
-#define M4div 17                  /* /        */
-#define M4div_mod 18              /* /mod     */
-#define M4zero_less 19            /* 0<       */
-#define M4zero_equal 20           /* 0=       */
-#define M4one_plus 21             /* 1+       */
-#define M4one_minus 22            /* 1-       */
-#define M4two_store 23            /* 2!       */
-#define M4two_times 24            /* 2*       */
-#define M4two_div 25              /* 2/       */
-#define M4two_fetch 26            /* 2@       */
-#define M4two_drop 27             /* 2drop    */
-#define M4two_dup 28              /* 2dup     */
-#define M4two_over 29             /* 2over    */
-#define M4two_swap 30             /* 2swap    */
-#define M4colon 31                /* :        implemented in forth, this is just a marker */
-#undef M4semi /*32*/              /* ;        no dedicated m4token */
-#define M4less 33                 /* <        */
-#define M4num_start 34            /* <#       */
-#define M4equal 35                /* =        */
-#define M4more 36                 /* >        */
-#undef M4to_body /*37*/           /* >body    */
-#undef M4to_in /*38*/             /* >in      no dedicated m4token */
-#undef M4to_number /*39*/         /* >number  no dedicated m4token */
-#define M4to_r 40                 /* >r       */
-#define M4question_dup 41         /* ?dup     */
-#define M4fetch 42                /* @        */
-#undef M4abort /*43*/             /* abort    no dedicated m4token */
-#undef M4abort_quote /*44*/       /* abort"   no dedicated m4token */
-#define M4abs 45                  /* abs      */
-#undef M4accept /*46*/            /* accept   */
-#define M4align 47                /* align    */
-#define M4aligned 48              /* aligned  */
-#define M4allot 49                /* allot    */
-#define M4and 50                  /* and      */
-#define M4base 51                 /* base     */
-#define M4begin 52                /* begin    */
-#define M4bl 53                   /* bl       */
-#define M4c_store 54              /* c!       */
-#define M4c_comma 55              /* c,       */
-#define M4c_fetch 56              /* c@       */
-#define M4cell_plus 57            /* cell+    */
-#define M4cells 58                /* cells    */
-#define M4char 59                 /* char     */
-#define M4char_plus 60            /* char+    */
-#define M4chars 61                /* chars    */
-#undef M4constant /*62*/          /* constant no dedicated m4token */
-#define M4count 63                /* count    */
-#undef M4cr /*64*/                /* cr       no dedicated m4token */
-#undef M4create /*65*/            /* create   */
-#undef M4decimal /*66*/           /* decimal  */
-#define M4depth 67                /* depth    */
-#define M4do 68                   /* do       */
-#undef M4does /*69*/              /* does     */
-#define M4drop 70                 /* drop     */
-#define M4dup 71                  /* dup      */
-#undef M4else /*72*/              /* else     no dedicated m4token */
-#define M4emit 73                 /* emit     */
-#undef M4environment_query /*74*/ /* environment? */
-#undef M4evaluate /*75*/          /* evaluate */
-#define M4execute 76              /* execute  */
-#define M4exit 77                 /* exit     */
-#define M4fill 78                 /* fill     */
-#undef M4find /*79*/              /* find     no dedicated m4token */
-#define M4f_m_div_mod 80          /* fm/mod   */
-#define M4here 81                 /* here     */
-#define M4hold 82                 /* hold     */
-#define M4i 83                    /* i        */
-#undef M4if /*84*/                /* if       no dedicated m4token */
-#define M4immediate 85            /* immediate*/
-#define M4invert 86               /* invert   */
-#define M4j 87                    /* j        */
-#undef M4key /*88*/               /* key      */
-#undef M4leave /*89*/             /* leave    no dedicated m4token */
-#undef M4literal /*90*/           /* literal  defineimplemented in forth, no dedicated m4token */
-#undef M4loop /*91*/              /* loop     defineimplemented in forth, no dedicated m4token */
-#define M4lshift 92               /* lshift   */
-#undef M4m_times /*93*/           /* m*       */
-#define M4max 94                  /* max      */
-#define M4min 95                  /* min      */
-#define M4mod 96                  /* mod      */
-#define M4move 97                 /* move     */
-#define M4negate 98               /* negate   */
-#define M4or 99                   /* or       */
-#define M4over 100                /* over     */
-#undef M4postpone /*101*/         /* postpone no dedicated m4token */
-#undef M4quit /*102*/             /* quit     */
-#define M4r_from 103              /* r>       */
-#define M4r_fetch 104             /* r@       */
-#undef M4recurse /*105*/          /* recurse  */
-#undef M4repeat /*106*/           /* repeat   no dedicated m4token */
-#define M4rot 107                 /* rot      ( a b c -- b c a ) */
-#define M4rshift 108              /* rshift   */
-#undef M4s_quote /*109*/          /* s"       no dedicated m4token */
-#undef M4s_to_d /*110*/           /* s>d      no dedicated m4token */
-#undef M4sign /*111*/             /* sign     */
-#undef M4s_m_div_rem /*112*/      /* sm/rem   */
-#undef M4source /*113*/           /* source   no dedicated m4token */
-#undef M4space /*114*/            /* space    */
-#undef M4spaces /*115*/           /* spaces   no dedicated m4token */
-#define M4state 116               /* state    */
-#define M4swap 117                /* swap     */
-#define M4then 118                /* then     */
-#define M4type 119                /* type     */
-#undef M4u_dot /*120*/            /* u.       */
-#define M4u_less 121              /* u<       */
-#undef M4um_times /*122*/         /* um*      */
-#undef M4um_div_mod /*123*/       /* um/mod   no dedicated m4token */
-#define M4unloop 124              /* unloop   */
-#undef M4until /*125*/            /* until    no dedicated m4token */
-#undef M4variable /*126*/         /* variable */
-#undef M4while /*127*/            /* while    no dedicated m4token */
-#undef M4word /*128*/             /* word     */
-#define M4xor 129                 /* xor      */
-#define M4left_bracket 130        /* [        */
-#undef M4bracket_tick /*131*/     /* [']      no dedicated m4token */
-#undef M4bracket_char /*132*/     /* [char]   */
-#define M4right_bracket 133       /* ]        */
+#define M6store 1                 /* !        */
+#undef M6num /*2*/                /* #        no dedicated m6token */
+#define M6num_end 3               /* #>       */
+#undef M6num_s /*4*/              /* #s       no dedicated m6token */
+#undef M6tick /*5*/               /* '        no dedicated m6token */
+#undef M6paren /*6*/              /* (        */
+#define M6times 7                 /* *        */
+#define M6times_div 8             /* * /      */
+#define M6times_div_mod 9         /* * /mod   */
+#define M6plus 10                 /* +        */
+#define M6plus_store 11           /* +!       */
+#define M6plus_loop 12            /* +loop    */
+#define M6comma 13                /* ,        */
+#define M6minus 14                /* -        */
+#undef M6dot /*15*/               /* .        no dedicated m6token */
+#undef M6dot_quote /*16*/         /* ."       */
+#define M6div 17                  /* /        */
+#define M6div_mod 18              /* /mod     */
+#define M6zero_less 19            /* 0<       */
+#define M6zero_equal 20           /* 0=       */
+#define M6one_plus 21             /* 1+       */
+#define M6one_minus 22            /* 1-       */
+#define M6two_store 23            /* 2!       */
+#define M6two_times 24            /* 2*       */
+#define M6two_div 25              /* 2/       */
+#define M6two_fetch 26            /* 2@       */
+#define M6two_drop 27             /* 2drop    */
+#define M6two_dup 28              /* 2dup     */
+#define M6two_over 29             /* 2over    */
+#define M6two_swap 30             /* 2swap    */
+#define M6colon 31                /* :        implemented in forth, this is just a marker */
+#undef M6semi /*32*/              /* ;        no dedicated m6token */
+#define M6less 33                 /* <        */
+#define M6num_start 34            /* <#       */
+#define M6equal 35                /* =        */
+#define M6more 36                 /* >        */
+#undef M6to_body /*37*/           /* >body    */
+#undef M6to_in /*38*/             /* >in      no dedicated m6token */
+#undef M6to_number /*39*/         /* >number  no dedicated m6token */
+#define M6to_r 40                 /* >r       */
+#define M6question_dup 41         /* ?dup     */
+#define M6fetch 42                /* @        */
+#undef M6abort /*43*/             /* abort    no dedicated m6token */
+#undef M6abort_quote /*44*/       /* abort"   no dedicated m6token */
+#define M6abs 45                  /* abs      */
+#undef M6accept /*46*/            /* accept   */
+#define M6align 47                /* align    */
+#define M6aligned 48              /* aligned  */
+#define M6allot 49                /* allot    */
+#define M6and 50                  /* and      */
+#define M6base 51                 /* base     */
+#define M6begin 52                /* begin    */
+#define M6bl 53                   /* bl       */
+#define M6c_store 54              /* c!       */
+#define M6c_comma 55              /* c,       */
+#define M6c_fetch 56              /* c@       */
+#define M6cell_plus 57            /* cell+    */
+#define M6cells 58                /* cells    */
+#define M6char 59                 /* char     */
+#define M6char_plus 60            /* char+    */
+#define M6chars 61                /* chars    */
+#undef M6constant /*62*/          /* constant no dedicated m6token */
+#define M6count 63                /* count    */
+#undef M6cr /*64*/                /* cr       no dedicated m6token */
+#undef M6create /*65*/            /* create   */
+#undef M6decimal /*66*/           /* decimal  */
+#define M6depth 67                /* depth    */
+#define M6do 68                   /* do       */
+#undef M6does /*69*/              /* does     */
+#define M6drop 70                 /* drop     */
+#define M6dup 71                  /* dup      */
+#undef M6else /*72*/              /* else     no dedicated m6token */
+#define M6emit 73                 /* emit     */
+#undef M6environment_query /*74*/ /* environment? */
+#undef M6evaluate /*75*/          /* evaluate */
+#define M6execute 76              /* execute  */
+#define M6exit 77                 /* exit     */
+#define M6fill 78                 /* fill     */
+#undef M6find /*79*/              /* find     no dedicated m6token */
+#define M6f_m_div_mod 80          /* fm/mod   */
+#define M6here 81                 /* here     */
+#define M6hold 82                 /* hold     */
+#define M6i 83                    /* i        */
+#undef M6if /*84*/                /* if       no dedicated m6token */
+#define M6immediate 85            /* immediate*/
+#define M6invert 86               /* invert   */
+#define M6j 87                    /* j        */
+#undef M6key /*88*/               /* key      */
+#undef M6leave /*89*/             /* leave    no dedicated m6token */
+#undef M6literal /*90*/           /* literal  defineimplemented in forth, no dedicated m6token */
+#undef M6loop /*91*/              /* loop     defineimplemented in forth, no dedicated m6token */
+#define M6lshift 92               /* lshift   */
+#undef M6m_times /*93*/           /* m*       */
+#define M6max 94                  /* max      */
+#define M6min 95                  /* min      */
+#define M6mod 96                  /* mod      */
+#define M6move 97                 /* move     */
+#define M6negate 98               /* negate   */
+#define M6or 99                   /* or       */
+#define M6over 100                /* over     */
+#undef M6postpone /*101*/         /* postpone no dedicated m6token */
+#undef M6quit /*102*/             /* quit     */
+#define M6r_from 103              /* r>       */
+#define M6r_fetch 104             /* r@       */
+#undef M6recurse /*105*/          /* recurse  */
+#undef M6repeat /*106*/           /* repeat   no dedicated m6token */
+#define M6rot 107                 /* rot      ( a b c -- b c a ) */
+#define M6rshift 108              /* rshift   */
+#undef M6s_quote /*109*/          /* s"       no dedicated m6token */
+#undef M6s_to_d /*110*/           /* s>d      no dedicated m6token */
+#undef M6sign /*111*/             /* sign     */
+#undef M6s_m_div_rem /*112*/      /* sm/rem   */
+#undef M6source /*113*/           /* source   no dedicated m6token */
+#undef M6space /*114*/            /* space    */
+#undef M6spaces /*115*/           /* spaces   no dedicated m6token */
+#define M6state 116               /* state    */
+#define M6swap 117                /* swap     */
+#define M6then 118                /* then     */
+#define M6type 119                /* type     */
+#undef M6u_dot /*120*/            /* u.       */
+#define M6u_less 121              /* u<       */
+#undef M6um_times /*122*/         /* um*      */
+#undef M6um_div_mod /*123*/       /* um/mod   no dedicated m6token */
+#define M6unloop 124              /* unloop   */
+#undef M6until /*125*/            /* until    no dedicated m6token */
+#undef M6variable /*126*/         /* variable */
+#undef M6while /*127*/            /* while    no dedicated m6token */
+#undef M6word /*128*/             /* word     */
+#define M6xor 129                 /* xor      */
+#define M6left_bracket 130        /* [        */
+#undef M6bracket_tick /*131*/     /* [']      no dedicated m6token */
+#undef M6bracket_char /*132*/     /* [char]   */
+#define M6right_bracket 133       /* ]        */
 
 /* 'forth' wordlist: 'core ext' word set */
-#undef M4dot_paren /*136*/       /* .(           */
-#undef M4dot_r /*137*/           /* .r           */
-#define M4zero_ne 138            /* 0<>          */
-#define M4zero_more 139          /* 0>           */
-#define M4two_to_r 140           /* 2>r          */
-#define M4two_r_from 141         /* 2r>          */
-#define M4two_r_fetch 142        /* 2r@          */
-#undef M4colon_noname /*143*/    /* :noname      */
-#define M4ne 144                 /* <>           */
-#undef M4question_do /*145*/     /* ?do          no dedicated m4token */
-#undef M4action_of /*146*/       /* action_of    */
-#undef M4again /*147*/           /* again        no dedicated m4token */
-#undef M4buffer_colon /*148*/    /* buffer:      no dedicated m4token */
-#undef M4c_quote /*149*/         /* c"           */
-#define M4case 150               /* case         */
-#undef M4compile_comma /*151*/   /* compile,     no dedicated m4token */
-#undef M4defer /*152*/           /* defer        no dedicated m4token */
-#undef M4defer_store /*153*/     /* defer!       no dedicated m4token */
-#undef M4defer_fetch /*154*/     /* defer@       no dedicated m4token */
-#define M4endcase 155            /* endcase      */
-#undef M4endof /*156*/           /* endof        no dedicated m4token */
-#undef M4erase /*157*/           /* erase        */
-#define M4false 158              /* false        */
-#undef M4hex /*159*/             /* hex          no dedicated m4token */
-#define M4holds 160              /* holds        */
-#undef M4is /*161*/              /* is           */
-#undef M4marker /*162*/          /* marker       */
-#define M4nip 163                /* nip          */
-#undef M4of /*164*/              /* of           no dedicated m4token */
-#undef M4pad /*165*/             /* pad          */
-#undef M4parse /*166*/           /* parse        */
-#undef M4parse_name /*167*/      /* parse-name   no dedicated m4token */
-#define M4pick 168               /* pick         */
-#undef M4refill /*169*/          /* refill       */
-#undef M4restore_input /*170*/   /* restore-input*/
-#define M4roll 171               /* roll         */
-#undef M4s_equote /*172*/        /* s\"          */
-#undef M4save_input /*173*/      /* save-input   */
-#undef M4source_id /*174*/       /* source-id    */
-#undef M4to /*175*/              /* to           no dedicated m4token */
-#define M4true 176               /* true         */
-#define M4tuck 177               /* tuck         */
-#undef M4u_dot_r /*178*/         /* u.r          */
-#define M4u_more 179             /* u>           */
-#undef M4unused /*180*/          /* unused       */
-#undef M4value /*181*/           /* value        no dedicated m4token */
-#define M4within 182             /* within       */
-#undef M4bracket_compile /*183*/ /* [compile]    (obsolescent in Forth 2012) */
-#undef M4backslash /*184*/       /* \            no dedicated m4token */
-#undef M4num_t_i_b               /* #tib         (removed in Forth 2012) */
-#undef M4convert                 /* convert      (removed in Forth 2012) */
-#undef M4expect                  /* expect       (removed in Forth 2012) */
-#undef M4query                   /* query        (removed in Forth 2012) */
-#undef M4span                    /* span         (removed in Forth 2012) */
-#undef M4t_i_b                   /* tib          (removed in Forth 2012) */
+#undef M6dot_paren /*136*/       /* .(           */
+#undef M6dot_r /*137*/           /* .r           */
+#define M6zero_ne 138            /* 0<>          */
+#define M6zero_more 139          /* 0>           */
+#define M6two_to_r 140           /* 2>r          */
+#define M6two_r_from 141         /* 2r>          */
+#define M6two_r_fetch 142        /* 2r@          */
+#undef M6colon_noname /*143*/    /* :noname      */
+#define M6ne 144                 /* <>           */
+#undef M6question_do /*145*/     /* ?do          no dedicated m6token */
+#undef M6action_of /*146*/       /* action_of    */
+#undef M6again /*147*/           /* again        no dedicated m6token */
+#undef M6buffer_colon /*148*/    /* buffer:      no dedicated m6token */
+#undef M6c_quote /*149*/         /* c"           */
+#define M6case 150               /* case         */
+#undef M6compile_comma /*151*/   /* compile,     no dedicated m6token */
+#undef M6defer /*152*/           /* defer        no dedicated m6token */
+#undef M6defer_store /*153*/     /* defer!       no dedicated m6token */
+#undef M6defer_fetch /*154*/     /* defer@       no dedicated m6token */
+#define M6endcase 155            /* endcase      */
+#undef M6endof /*156*/           /* endof        no dedicated m6token */
+#undef M6erase /*157*/           /* erase        */
+#define M6false 158              /* false        */
+#undef M6hex /*159*/             /* hex          no dedicated m6token */
+#define M6holds 160              /* holds        */
+#undef M6is /*161*/              /* is           */
+#undef M6marker /*162*/          /* marker       */
+#define M6nip 163                /* nip          */
+#undef M6of /*164*/              /* of           no dedicated m6token */
+#undef M6pad /*165*/             /* pad          */
+#undef M6parse /*166*/           /* parse        */
+#undef M6parse_name /*167*/      /* parse-name   no dedicated m6token */
+#define M6pick 168               /* pick         */
+#undef M6refill /*169*/          /* refill       */
+#undef M6restore_input /*170*/   /* restore-input*/
+#define M6roll 171               /* roll         */
+#undef M6s_equote /*172*/        /* s\"          */
+#undef M6save_input /*173*/      /* save-input   */
+#undef M6source_id /*174*/       /* source-id    */
+#undef M6to /*175*/              /* to           no dedicated m6token */
+#define M6true 176               /* true         */
+#define M6tuck 177               /* tuck         */
+#undef M6u_dot_r /*178*/         /* u.r          */
+#define M6u_more 179             /* u>           */
+#undef M6unused /*180*/          /* unused       */
+#undef M6value /*181*/           /* value        no dedicated m6token */
+#define M6within 182             /* within       */
+#undef M6bracket_compile /*183*/ /* [compile]    (obsolescent in Forth 2012) */
+#undef M6backslash /*184*/       /* \            no dedicated m6token */
+#undef M6num_t_i_b               /* #tib         (removed in Forth 2012) */
+#undef M6convert                 /* convert      (removed in Forth 2012) */
+#undef M6expect                  /* expect       (removed in Forth 2012) */
+#undef M6query                   /* query        (removed in Forth 2012) */
+#undef M6span                    /* span         (removed in Forth 2012) */
+#undef M6t_i_b                   /* tib          (removed in Forth 2012) */
 
 /* 'forth' wordlist: 'block' word set */
-#undef M4blk /*193*/          /* blk      */
-#undef M4block /*194*/        /* block    */
-#undef M4buffer /*195*/       /* buffer   */
-/*undef M4evaluate*/ /*196*/  /* evaluate extended definition */
-#undef M4flush /*197*/        /* flush    */
-#undef M4load /*198*/         /* load     */
-#undef M4save_buffers /*199*/ /* save-buffers  */
-#undef M4update /*200*/       /* update   */
+#undef M6blk /*193*/          /* blk      */
+#undef M6block /*194*/        /* block    */
+#undef M6buffer /*195*/       /* buffer   */
+/*undef M6evaluate*/ /*196*/  /* evaluate extended definition */
+#undef M6flush /*197*/        /* flush    */
+#undef M6load /*198*/         /* load     */
+#undef M6save_buffers /*199*/ /* save-buffers  */
+#undef M6update /*200*/       /* update   */
 
 /* 'forth' wordlist: 'block ext' word set */
-#undef M4empty_buffers /*203*/ /* empty-buffers */
-#undef M4list /*204*/          /* list     */
-#undef M4refill /*205*/        /* refill   */
-#undef M4s_c_r /*206*/         /* scr      */
-#undef M4thru /*207*/          /* thru     */
-/*#undef M4backslash*/ /*208*/ /* \        extended definition */
+#undef M6empty_buffers /*203*/ /* empty-buffers */
+#undef M6list /*204*/          /* list     */
+#undef M6refill /*205*/        /* refill   */
+#undef M6s_c_r /*206*/         /* scr      */
+#undef M6thru /*207*/          /* thru     */
+/*#undef M6backslash*/ /*208*/ /* \        extended definition */
 
 /* 'forth' wordlist: 'double' word set */
-#undef M4two_constant /*211*/ /* 2constant    */
-#undef M4two_literal /*212*/  /* 2literal     */
-#undef M4two_variable /*213*/ /* 2variable    */
-#undef M4d_plus /*214*/       /* d+       */
-#undef M4d_minus /*215*/      /* d-       */
-#undef M4d_dot /*216*/        /* d.       */
-#undef M4d_dot_r /*217*/      /* d.r      */
-#undef M4d_zero_less /*218*/  /* d0<      no dedicated m4token */
-#undef M4d_zero_equal /*219*/ /* d0=      no dedicated m4token */
-#undef M4d_two_times /*220*/  /* d2*      */
-#undef M4d_two_div /*221*/    /* d2/      */
-#undef M4d_less /*222*/       /* d<       */
-#undef M4d_equal /*223*/      /* d=       */
-/*#undef M4d_to_s*/ /*224*/   /* d>s      aliased to M4drop */
-#undef M4d_abs /*225*/        /* dabs     */
-#undef M4d_max /*226*/        /* dmax     */
-#undef M4d_min /*227*/        /* dmin     */
-#undef M4d_negate /*228*/     /* dnegate  */
-#undef M4m_times_div /*229*/  /* m* /     */
-#undef M4m_plus /*230*/       /* m+       */
+#undef M6two_constant /*211*/ /* 2constant    */
+#undef M6two_literal /*212*/  /* 2literal     */
+#undef M6two_variable /*213*/ /* 2variable    */
+#undef M6d_plus /*214*/       /* d+       */
+#undef M6d_minus /*215*/      /* d-       */
+#undef M6d_dot /*216*/        /* d.       */
+#undef M6d_dot_r /*217*/      /* d.r      */
+#undef M6d_zero_less /*218*/  /* d0<      no dedicated m6token */
+#undef M6d_zero_equal /*219*/ /* d0=      no dedicated m6token */
+#undef M6d_two_times /*220*/  /* d2*      */
+#undef M6d_two_div /*221*/    /* d2/      */
+#undef M6d_less /*222*/       /* d<       */
+#undef M6d_equal /*223*/      /* d=       */
+/*#undef M6d_to_s*/ /*224*/   /* d>s      aliased to M6drop */
+#undef M6d_abs /*225*/        /* dabs     */
+#undef M6d_max /*226*/        /* dmax     */
+#undef M6d_min /*227*/        /* dmin     */
+#undef M6d_negate /*228*/     /* dnegate  */
+#undef M6m_times_div /*229*/  /* m* /     */
+#undef M6m_plus /*230*/       /* m+       */
 
 /* 'forth' wordlist: 'double ext' word set */
-#define M4two_rot 233      /* 2rot     */
-#undef M4two_value /*234*/ /* 2value   */
-#undef M4d_u_less /*235*/  /* du<      */
+#define M6two_rot 233      /* 2rot     */
+#undef M6two_value /*234*/ /* 2value   */
+#undef M6d_u_less /*235*/  /* du<      */
 
 /* 'forth' wordlist: 'exception' word set */
-#undef M4catch /*238*/ /* catch    no dedicated m4token */
-#define M4throw 239    /* throw    */
+#undef M6catch /*238*/ /* catch    no dedicated m6token */
+#define M6throw 239    /* throw    */
 
 /* 'forth' wordlist: 'exception ext' word set */
-/*extends M4abort*/ /*242*/       /* abort    extended definition */
-/*extends M4abort_quote*/ /*243*/ /* abort"   extended definition */
+/*extends M6abort*/ /*242*/       /* abort    extended definition */
+/*extends M6abort_quote*/ /*243*/ /* abort"   extended definition */
 
 /* 'forth' wordlist: 'facility' word set */
-#undef M4at_x_y /*246*/       /* at-x-y   */
-#undef M4key_question /*247*/ /* key?     */
-#undef M4page /*248*/         /* page     */
+#undef M6at_x_y /*246*/       /* at-x-y   */
+#undef M6key_question /*247*/ /* key?     */
+#undef M6page /*248*/         /* page     */
 
 /* 'forth' wordlist: 'facility ext' word set */
-#undef M4plus_field /*251*/      /* +field*/
-#undef M4begin_structure /*252*/ /* begin-structure */
-#undef M4cfield_colon /*253*/    /* cfield: */
-#undef M4ekey /*254*/            /* ekey */
-#undef M4ekey_to_char /*255*/    /* ekey>char */
-#undef M4ekey_to_fkey /*256*/    /* ekey>fkey */
-#undef M4ekey_question /*257*/   /* ekey? */
-#undef M4emit_question /*258*/   /* emit? */
-#undef M4end_structure /*259*/   /* end-structure */
-#undef M4field_colon /*260*/     /* field: */
-#undef M4k_alt_mask /*261*/      /* k-alt-mask */
-#undef M4k_ctrl_mask /*262*/     /* k-ctrl-mask */
-#undef M4k_delete /*263*/        /* k-delete */
-#undef M4k_down /*264*/          /* k-down */
-#undef M4k_end /*265*/           /* k-end */
-#undef M4k_f1 /*266*/            /* k-f1 */
-#undef M4k_f2 /*267*/            /* k-f2 */
-#undef M4k_f3 /*268*/            /* k-f3 */
-#undef M4k_f4 /*269*/            /* k-f4 */
-#undef M4k_f5 /*270*/            /* k-f5 */
-#undef M4k_f6 /*271*/            /* k-f6     */
-#undef M4k_f7 /*272*/            /* k-f7     */
-#undef M4k_f8 /*273*/            /* k-f8     */
-#undef M4k_f9 /*274*/            /* k-f9     */
-#undef M4k_f10 /*275*/           /* k-f10    */
-#undef M4k_f11 /*276*/           /* k-f11    */
-#undef M4k_f12 /*277*/           /* k-f12    */
-#undef M4k_home /*278*/          /* k-home   */
-#undef M4k_insert /*279*/        /* k-insert */
-#undef M4k_left /*280*/          /* k-left   */
-#undef M4k_next /*281*/          /* k-next   */
-#undef M4k_prior /*282*/         /* k-prior  */
-#undef M4k_right /*283*/         /* k-right  */
-#undef M4k_shift_mask /*284*/    /* k-shift-mask */
-#undef M4k_up /*285*/            /* k-up     */
-#undef M4ms /*286*/              /* ms       */
-#undef M4time_and_date /*287*/   /* time&date    */
+#undef M6plus_field /*251*/      /* +field*/
+#undef M6begin_structure /*252*/ /* begin-structure */
+#undef M6cfield_colon /*253*/    /* cfield: */
+#undef M6ekey /*254*/            /* ekey */
+#undef M6ekey_to_char /*255*/    /* ekey>char */
+#undef M6ekey_to_fkey /*256*/    /* ekey>fkey */
+#undef M6ekey_question /*257*/   /* ekey? */
+#undef M6emit_question /*258*/   /* emit? */
+#undef M6end_structure /*259*/   /* end-structure */
+#undef M6field_colon /*260*/     /* field: */
+#undef M6k_alt_mask /*261*/      /* k-alt-mask */
+#undef M6k_ctrl_mask /*262*/     /* k-ctrl-mask */
+#undef M6k_delete /*263*/        /* k-delete */
+#undef M6k_down /*264*/          /* k-down */
+#undef M6k_end /*265*/           /* k-end */
+#undef M6k_f1 /*266*/            /* k-f1 */
+#undef M6k_f2 /*267*/            /* k-f2 */
+#undef M6k_f3 /*268*/            /* k-f3 */
+#undef M6k_f4 /*269*/            /* k-f4 */
+#undef M6k_f5 /*270*/            /* k-f5 */
+#undef M6k_f6 /*271*/            /* k-f6     */
+#undef M6k_f7 /*272*/            /* k-f7     */
+#undef M6k_f8 /*273*/            /* k-f8     */
+#undef M6k_f9 /*274*/            /* k-f9     */
+#undef M6k_f10 /*275*/           /* k-f10    */
+#undef M6k_f11 /*276*/           /* k-f11    */
+#undef M6k_f12 /*277*/           /* k-f12    */
+#undef M6k_home /*278*/          /* k-home   */
+#undef M6k_insert /*279*/        /* k-insert */
+#undef M6k_left /*280*/          /* k-left   */
+#undef M6k_next /*281*/          /* k-next   */
+#undef M6k_prior /*282*/         /* k-prior  */
+#undef M6k_right /*283*/         /* k-right  */
+#undef M6k_shift_mask /*284*/    /* k-shift-mask */
+#undef M6k_up /*285*/            /* k-up     */
+#undef M6ms /*286*/              /* ms       */
+#undef M6time_and_date /*287*/   /* time&date    */
 
 /* 'forth' wordlist: 'file' word set */
-/*#undef M4paren*/ /*290*/       /* (            extended definition */
-#undef M4bin /*291*/             /* bin          */
-#undef M4close_file /*292*/      /* close-file   */
-#undef M4create_file /*293*/     /* create-file  */
-#undef M4delete_file /*294*/     /* delete-file  */
-#undef M4file_position /*295*/   /* file-position*/
-#undef M4file_size /*296*/       /* file-size    */
-#undef M4include_file /*297*/    /* include-file */
-#undef M4included /*298*/        /* included     */
-#undef M4open_file /*299*/       /* open-file    */
-#undef M4r_div_o /*300*/         /* r/o          */
-#undef M4r_div_w /*301*/         /* r/w          */
-#undef M4read_file /*302*/       /* read-file    */
-#undef M4read_line /*303*/       /* read-line    */
-#undef M4reposition_file /*304*/ /* reposition-file */
-#undef M4resize_file /*305*/     /* resize-file  */
-/*#undef M4s_quote*/ /*306*/     /* s"           extended definition */
-/*#undef M4source_id*/ /*307*/   /* source-id    extended definition */
-#undef M4w_div_o /*308*/         /* w/o          */
-#undef M4write_file /*309*/      /* write-file   */
-#undef M4write_line /*310*/      /* write-line   */
+/*#undef M6paren*/ /*290*/       /* (            extended definition */
+#undef M6bin /*291*/             /* bin          */
+#undef M6close_file /*292*/      /* close-file   */
+#undef M6create_file /*293*/     /* create-file  */
+#undef M6delete_file /*294*/     /* delete-file  */
+#undef M6file_position /*295*/   /* file-position*/
+#undef M6file_size /*296*/       /* file-size    */
+#undef M6include_file /*297*/    /* include-file */
+#undef M6included /*298*/        /* included     */
+#undef M6open_file /*299*/       /* open-file    */
+#undef M6r_div_o /*300*/         /* r/o          */
+#undef M6r_div_w /*301*/         /* r/w          */
+#undef M6read_file /*302*/       /* read-file    */
+#undef M6read_line /*303*/       /* read-line    */
+#undef M6reposition_file /*304*/ /* reposition-file */
+#undef M6resize_file /*305*/     /* resize-file  */
+/*#undef M6s_quote*/ /*306*/     /* s"           extended definition */
+/*#undef M6source_id*/ /*307*/   /* source-id    extended definition */
+#undef M6w_div_o /*308*/         /* w/o          */
+#undef M6write_file /*309*/      /* write-file   */
+#undef M6write_line /*310*/      /* write-line   */
 
 /* 'forth' wordlist: 'file ext' word set */
-#undef M4file_status /*313*/  /* file-status  */
-/*#undef M4s_equote*/ /*314*/ /* s\"          extended definition */
-#undef M4flush_file /*315*/   /* flush-file   */
-#undef M4include /*316*/      /* include      */
-#undef M4refill /*317*/       /* refill       */
-#undef M4rename_file /*318*/  /* rename-file  */
-#undef M4require /*319*/      /* require      */
-#undef M4required /*320*/     /* required     */
+#undef M6file_status /*313*/  /* file-status  */
+/*#undef M6s_equote*/ /*314*/ /* s\"          extended definition */
+#undef M6flush_file /*315*/   /* flush-file   */
+#undef M6include /*316*/      /* include      */
+#undef M6refill /*317*/       /* refill       */
+#undef M6rename_file /*318*/  /* rename-file  */
+#undef M6require /*319*/      /* require      */
+#undef M6required /*320*/     /* required     */
 
 /* 'forth' wordlist: 'float' word set */
-#undef M4to_float /*323*/     /* >float */
-#undef M4d_to_f /*324*/       /* d>f    */
-#undef M4f_store /*325*/      /* f!     */
-#undef M4f_times /*326*/      /* f*     */
-#undef M4f_plus /*327*/       /* f+     */
-#undef M4f_minus /*328*/      /* f-     */
-#undef M4f_div /*329*/        /* f/     */
-#undef M4f_zero_less /*330*/  /* f0<    */
-#undef M4f_zero_equal /*331*/ /* f0=    */
-#undef M4f_less /*332*/       /* f<     */
-#undef M4f_to_d /*333*/       /* f>d    */
-#undef M4f_fetch /*334*/      /* f@     */
-#undef M4falign /*335*/       /* falign */
-#undef M4faligned /*336*/     /* faligned   */
-#undef M4fconstant /*337*/    /* fconstant  */
-#undef M4fdepth /*338*/       /* fdepth */
-#undef M4fdrop /*339*/        /* fdrop  */
-#undef M4fdup /*340*/         /* fdup   */
-#undef M4fliteral /*341*/     /* fliteral   */
-#undef M4float_plus /*342*/   /* float+ */
-#undef M4floats /*343*/       /* floats */
-#undef M4floor /*344*/        /* floor  */
-#undef M4fmax /*345*/         /* fmax   */
-#undef M4fmin /*346*/         /* fmin   */
-#undef M4fnegate /*347*/      /* fnegate*/
-#undef M4fover /*348*/        /* fover  */
-#undef M4frot /*349*/         /* frot   */
-#undef M4fround /*350*/       /* fround */
-#undef M4fswap /*351*/        /* fswap  */
-#undef M4fvariable /*352*/    /* fvariable  */
-#undef M4represent /*353*/    /* represent  */
+#undef M6to_float /*323*/     /* >float */
+#undef M6d_to_f /*324*/       /* d>f    */
+#undef M6f_store /*325*/      /* f!     */
+#undef M6f_times /*326*/      /* f*     */
+#undef M6f_plus /*327*/       /* f+     */
+#undef M6f_minus /*328*/      /* f-     */
+#undef M6f_div /*329*/        /* f/     */
+#undef M6f_zero_less /*330*/  /* f0<    */
+#undef M6f_zero_equal /*331*/ /* f0=    */
+#undef M6f_less /*332*/       /* f<     */
+#undef M6f_to_d /*333*/       /* f>d    */
+#undef M6f_fetch /*334*/      /* f@     */
+#undef M6falign /*335*/       /* falign */
+#undef M6faligned /*336*/     /* faligned   */
+#undef M6fconstant /*337*/    /* fconstant  */
+#undef M6fdepth /*338*/       /* fdepth */
+#undef M6fdrop /*339*/        /* fdrop  */
+#undef M6fdup /*340*/         /* fdup   */
+#undef M6fliteral /*341*/     /* fliteral   */
+#undef M6float_plus /*342*/   /* float+ */
+#undef M6floats /*343*/       /* floats */
+#undef M6floor /*344*/        /* floor  */
+#undef M6fmax /*345*/         /* fmax   */
+#undef M6fmin /*346*/         /* fmin   */
+#undef M6fnegate /*347*/      /* fnegate*/
+#undef M6fover /*348*/        /* fover  */
+#undef M6frot /*349*/         /* frot   */
+#undef M6fround /*350*/       /* fround */
+#undef M6fswap /*351*/        /* fswap  */
+#undef M6fvariable /*352*/    /* fvariable  */
+#undef M6represent /*353*/    /* represent  */
 
 /* 'forth' wordlist: 'float ext' word set */
-#undef M4df_store /*356*/      /* df!        */
-#undef M4df_fetch /*357*/      /* df@        */
-#undef M4dfalign /*358*/       /* dfalign    */
-#undef M4dfaligned /*359*/     /* dfaligned  */
-#undef M4dffield_colon /*360*/ /* dffield:   */
-#undef M4dfloat_plus /*361*/   /* dfloat+    */
-#undef M4dfloats /*362*/       /* dfloats    */
-#undef M4f_times_tims /*363*/  /* f**        */
-#undef M4f_dot /*364*/         /* f.         */
-#undef M4f_to_s /*365*/        /* f>s        */
-#undef M4fabs /*366*/          /* fabs       */
-#undef M4facos /*367*/         /* facos      */
-#undef M4facosh /*368*/        /* facosh     */
-#undef M4falog /*369*/         /* falog      */
-#undef M4fasin /*370*/         /* fasin      */
-#undef M4fasinh /*371*/        /* fasinh     */
-#undef M4fatan /*372*/         /* fatan      */
-#undef M4fatan2 /*373*/        /* fatan2     */
-#undef M4fatanh /*374*/        /* fatanh     */
-#undef M4fcos /*375*/          /* fcos       */
-#undef M4fcosh /*376*/         /* fcosh      */
-#undef M4fe_dot /*377*/        /* fe.        */
-#undef M4fexp /*378*/          /* fexp       */
-#undef M4fexpm1 /*379*/        /* fexpm1     */
-#undef M4ffield_colon /*380*/  /* ffield:    */
-#undef M4fln /*381*/           /* fln        */
-#undef M4flnp1 /*382*/         /* flnp1      */
-#undef M4flog /*383*/          /* flog       */
-#undef M4fs_dot /*384*/        /* fs.        */
-#undef M4fsin /*385*/          /* fsin       */
-#undef M4fsincos /*386*/       /* fsincos    */
-#undef M4fsinh /*387*/         /* fsinh      */
-#undef M4fsqrt /*387*/         /* fsqrt      */
-#undef M4ftan /*389*/          /* ftan       */
-#undef M4ftanh /*390*/         /* ftanh      */
-#undef M4ftrunc /*391*/        /* ftrunc     */
-#undef M4fvalue /*392*/        /* fvalue     */
-#undef M4f_tilde /*393*/       /* f~         */
-#undef M4precision /*394*/     /* precision  */
-#undef M4s_to_f /*395*/        /* s>f        */
-#undef M4set_precision /*396*/ /* set-precision */
-#undef M4sf_store /*397*/      /* sf!        */
-#undef M4sf_fetch /*398*/      /* sf@        */
-#undef M4sfalign /*399*/       /* sfalign    */
-#undef M4sfaligned /*400*/     /* sfaligned  */
-#undef M4sffield_colon /*401*/ /* sffield:   */
-#undef M4sfloat_plus /*402*/   /* sfloat+    */
-#undef M4sfloats /*403*/       /* sfloats    */
+#undef M6df_store /*356*/      /* df!        */
+#undef M6df_fetch /*357*/      /* df@        */
+#undef M6dfalign /*358*/       /* dfalign    */
+#undef M6dfaligned /*359*/     /* dfaligned  */
+#undef M6dffield_colon /*360*/ /* dffield:   */
+#undef M6dfloat_plus /*361*/   /* dfloat+    */
+#undef M6dfloats /*362*/       /* dfloats    */
+#undef M6f_times_tims /*363*/  /* f**        */
+#undef M6f_dot /*364*/         /* f.         */
+#undef M6f_to_s /*365*/        /* f>s        */
+#undef M6fabs /*366*/          /* fabs       */
+#undef M6facos /*367*/         /* facos      */
+#undef M6facosh /*368*/        /* facosh     */
+#undef M6falog /*369*/         /* falog      */
+#undef M6fasin /*370*/         /* fasin      */
+#undef M6fasinh /*371*/        /* fasinh     */
+#undef M6fatan /*372*/         /* fatan      */
+#undef M6fatan2 /*373*/        /* fatan2     */
+#undef M6fatanh /*374*/        /* fatanh     */
+#undef M6fcos /*375*/          /* fcos       */
+#undef M6fcosh /*376*/         /* fcosh      */
+#undef M6fe_dot /*377*/        /* fe.        */
+#undef M6fexp /*378*/          /* fexp       */
+#undef M6fexpm1 /*379*/        /* fexpm1     */
+#undef M6ffield_colon /*380*/  /* ffield:    */
+#undef M6fln /*381*/           /* fln        */
+#undef M6flnp1 /*382*/         /* flnp1      */
+#undef M6flog /*383*/          /* flog       */
+#undef M6fs_dot /*384*/        /* fs.        */
+#undef M6fsin /*385*/          /* fsin       */
+#undef M6fsincos /*386*/       /* fsincos    */
+#undef M6fsinh /*387*/         /* fsinh      */
+#undef M6fsqrt /*387*/         /* fsqrt      */
+#undef M6ftan /*389*/          /* ftan       */
+#undef M6ftanh /*390*/         /* ftanh      */
+#undef M6ftrunc /*391*/        /* ftrunc     */
+#undef M6fvalue /*392*/        /* fvalue     */
+#undef M6f_tilde /*393*/       /* f~         */
+#undef M6precision /*394*/     /* precision  */
+#undef M6s_to_f /*395*/        /* s>f        */
+#undef M6set_precision /*396*/ /* set-precision */
+#undef M6sf_store /*397*/      /* sf!        */
+#undef M6sf_fetch /*398*/      /* sf@        */
+#undef M6sfalign /*399*/       /* sfalign    */
+#undef M6sfaligned /*400*/     /* sfaligned  */
+#undef M6sffield_colon /*401*/ /* sffield:   */
+#undef M6sfloat_plus /*402*/   /* sfloat+    */
+#undef M6sfloats /*403*/       /* sfloats    */
 
 /* 'forth' wordlist: 'locals' word set */
-#undef M4_local_ /*406*/ /* (local)    no dedicated m4token */
+#undef M6_local_ /*406*/ /* (local)    no dedicated m6token */
 
 /* 'forth' wordlist: 'locals ext' word set */
-#undef M4locals /*409*/      /* locals        obsolescent in forth 2012 */
-#undef M4brace_colon /*410*/ /* {: */
+#undef M6locals /*409*/      /* locals        obsolescent in forth 2012 */
+#undef M6brace_colon /*410*/ /* {: */
 
 /* 'forth' wordlist: 'memory' word set */
-#undef M4allocate /*413*/ /* allocate no dedicated m4token */
-#undef M4free /*414*/     /* free     no dedicated m4token */
-#undef M4resize /*415*/   /* resize   no dedicated m4token */
+#undef M6allocate /*413*/ /* allocate no dedicated m6token */
+#undef M6free /*414*/     /* free     no dedicated m6token */
+#undef M6resize /*415*/   /* resize   no dedicated m6token */
 
 /* 'forth' wordlist: 'tools' word set */
-#undef M4dot_s /*418*/    /* .s       */
-#undef M4question /*419*/ /* ?        */
-#undef M4dump /*420*/     /* dump     */
-#undef M4see /*421*/      /* see      */
-#undef M4words /*422*/    /* words    */
+#undef M6dot_s /*418*/    /* .s       */
+#undef M6question /*419*/ /* ?        */
+#undef M6dump /*420*/     /* dump     */
+#undef M6see /*421*/      /* see      */
+#undef M6words /*422*/    /* words    */
 
 /* 'forth' wordlist: 'tools ext' word set */
-#undef M4semi_code /*425*/         /* ;code        */
-#undef M4ahead /*426*/             /* ahead        no dedicated m4token */
-#undef M4assembler /*427*/         /* assembler    */
-#define M4bye 428                  /* bye          */
-#undef M4code /*429*/              /* code         */
-/*#define M4cs_pick M4two_pick */  /* cs-pick      alias of 2pick */
-/*#define M4cs_roll M4two_roll */  /* cs-roll      alias of 2roll */
-#undef M4editor /*432*/            /* editor       */
-#undef M4forget /*433*/            /* forget       (obsolescent) */
-#undef M4n_to_r /*434*/            /* n>r          */
-#undef M4name_to_compile /*435*/   /* name>compile */
-#undef M4name_to_interpret /*436*/ /* name>interpret   */
-#define M4name_to_string 437       /* name>string  ( nt -- c-addr u  ) convert name to string */
-#undef M4nr_from /*438*/           /* nr>          */
-/*extends M4state*/ /*439*/        /* state        */
-#undef M4synonym /*440*/           /* synonym      */
-#undef M4traverse_wordlist /*441*/ /* traverse-wordlist    */
-#undef M4bracket_defined /*442*/   /* [defined]    */
-#undef M4bracket_else /*443*/      /* [else]       */
-#undef M4bracket_if /*444*/        /* [if]         */
-#undef M4bracket_then /*445*/      /* [then]       */
-#undef M4bracket_undefined /*446*/ /* [undefined]  */
+#undef M6semi_code /*425*/         /* ;code        */
+#undef M6ahead /*426*/             /* ahead        no dedicated m6token */
+#undef M6assembler /*427*/         /* assembler    */
+#define M6bye 428                  /* bye          */
+#undef M6code /*429*/              /* code         */
+/*#define M6cs_pick M6two_pick */  /* cs-pick      alias of 2pick */
+/*#define M6cs_roll M6two_roll */  /* cs-roll      alias of 2roll */
+#undef M6editor /*432*/            /* editor       */
+#undef M6forget /*433*/            /* forget       (obsolescent) */
+#undef M6n_to_r /*434*/            /* n>r          */
+#undef M6name_to_compile /*435*/   /* name>compile */
+#undef M6name_to_interpret /*436*/ /* name>interpret   */
+#define M6name_to_string 437       /* name>string  ( nt -- c-addr u  ) convert name to string */
+#undef M6nr_from /*438*/           /* nr>          */
+/*extends M6state*/ /*439*/        /* state        */
+#undef M6synonym /*440*/           /* synonym      */
+#undef M6traverse_wordlist /*441*/ /* traverse-wordlist    */
+#undef M6bracket_defined /*442*/   /* [defined]    */
+#undef M6bracket_else /*443*/      /* [else]       */
+#undef M6bracket_if /*444*/        /* [if]         */
+#undef M6bracket_then /*445*/      /* [then]       */
+#undef M6bracket_undefined /*446*/ /* [undefined]  */
 
 /* 'forth' wordlist: 'search order' word set */
-#undef M4definitions /*449*/     /* definitions     no dedicated m4token */
-#undef M4find /*450*/            /* find            */
-#undef M4forth_wordlist /*451*/  /* forth-wordlist  no dedicated m4token */
-#define M4get_current 452        /* get-current     */
-#undef M4get_order /*453*/       /* get-order       no dedicated m4token */
-#undef M4search_wordlist /*454*/ /* search-wordlist no dedicated m4token */
-#define M4set_current 455        /* set-current     */
-#undef M4set_order /*456*/       /* set-order       no dedicated m4token */
-#undef M4wordlist /*457*/        /* wordlist        */
+#undef M6definitions /*449*/     /* definitions     no dedicated m6token */
+#undef M6find /*450*/            /* find            */
+#undef M6forth_wordlist /*451*/  /* forth-wordlist  no dedicated m6token */
+#define M6get_current 452        /* get-current     */
+#undef M6get_order /*453*/       /* get-order       no dedicated m6token */
+#undef M6search_wordlist /*454*/ /* search-wordlist no dedicated m6token */
+#define M6set_current 455        /* set-current     */
+#undef M6set_order /*456*/       /* set-order       no dedicated m6token */
+#undef M6wordlist /*457*/        /* wordlist        */
 
 /* 'forth' wordlist: 'search order ext' word set */
-#undef M4also /*460*/     /* also       no dedicated m4token */
-#undef M4forth /*461*/    /* forth      no dedicated m4token */
-#undef M4only /*462*/     /* only       no dedicated m4token */
-#undef M4order /*463*/    /* order      no dedicated m4token */
-#undef M4previous /*464*/ /* previous   no dedicated m4token */
+#undef M6also /*460*/     /* also       no dedicated m6token */
+#undef M6forth /*461*/    /* forth      no dedicated m6token */
+#undef M6only /*462*/     /* only       no dedicated m6token */
+#undef M6order /*463*/    /* order      no dedicated m6token */
+#undef M6previous /*464*/ /* previous   no dedicated m6token */
 
 /* 'forth' wordlist: 'string' word set */
-#undef M4minus_trailing /*467*/ /* -trailing  */
-#define M4div_string 468        /* /string    */
-#undef M4blank /*469*/          /* blank      */
-#define M4cmove 470             /* cmove      */
-#undef M4cmove_top /*471*/      /* cmove>     */
-#undef M4compare /*472*/        /* compare    */
-#undef M4replaces /*473*/       /* replaces   */
-#undef M4search /*474*/         /* search     */
-#undef M4sliteral /*475*/       /* sliteral   */
-#undef M4substitute /*476*/     /* substitute */
-#undef M4unescape /*477*/       /* unescape   */
+#undef M6minus_trailing /*467*/ /* -trailing  */
+#define M6div_string 468        /* /string    */
+#undef M6blank /*469*/          /* blank      */
+#define M6cmove 470             /* cmove      */
+#undef M6cmove_top /*471*/      /* cmove>     */
+#undef M6compare /*472*/        /* compare    */
+#undef M6replaces /*473*/       /* replaces   */
+#undef M6search /*474*/         /* search     */
+#undef M6sliteral /*475*/       /* sliteral   */
+#undef M6substitute /*476*/     /* substitute */
+#undef M6unescape /*477*/       /* unescape   */
 
 /* 'forth' wordlist: 'string ext' word set */
-#undef M4replaces /*480*/   /* replaces   */
-#undef M4substitute /*481*/ /* substitute */
-#undef M4unescape /*482*/   /* unescape   */
+#undef M6replaces /*480*/   /* replaces   */
+#undef M6substitute /*481*/ /* substitute */
+#undef M6unescape /*482*/   /* unescape   */
 
 /* 'forth' wordlist: 'extended char' word set */
-#undef M4x_size /*485*/                 /* x-size */
-#undef M4xc_store_plus /*486*/          /* xc!+   */
-#undef M4xc_store_plus_question /*487*/ /* xc!+?  */
-#undef M4xc_comma /*488*/               /* xc,    */
-#undef M4xc_size /*489*/                /* xc-size    */
-#undef M4xc_fetch_plus /*490*/          /* xc@+   */
-#undef M4xchar_plus /*491*/             /* xchar+ */
-#undef M4xemit /*492*/                  /* xemit  */
-#undef M4xkey /*493*/                   /* xkey   */
-#undef M4xkey_question /*494*/          /* xkey?  */
+#undef M6x_size /*485*/                 /* x-size */
+#undef M6xc_store_plus /*486*/          /* xc!+   */
+#undef M6xc_store_plus_question /*487*/ /* xc!+?  */
+#undef M6xc_comma /*488*/               /* xc,    */
+#undef M6xc_size /*489*/                /* xc-size    */
+#undef M6xc_fetch_plus /*490*/          /* xc@+   */
+#undef M6xchar_plus /*491*/             /* xchar+ */
+#undef M6xemit /*492*/                  /* xemit  */
+#undef M6xkey /*493*/                   /* xkey   */
+#undef M6xkey_question /*494*/          /* xkey?  */
 
 /* 'forth' wordlist: 'extended char ext' word set */
-#undef M4plus_x_div_string /*497*/      /* +x/string  */
-#undef M4minus_trailing_garbage /*498*/ /* -trailing-garbage  */
-#undef M4char /*499*/                   /* char       */
-#undef M4ekey_to_xchar /*500*/          /* ekey>xchar */
-#undef M4parse /*501*/                  /* parse      */
-#undef M4x_width /*502*/                /* x-width    */
-#undef M4xc_width /*503*/               /* xc-width   */
-#undef M4xchar_minus /*504*/            /* xchar-     */
-#undef M4xhold /*505*/                  /* xhold      */
-#undef M4x_string_minus /*506*/         /* x\string-  */
-#undef M4bracket_char /*507*/           /* [char]     */
+#undef M6plus_x_div_string /*497*/      /* +x/string  */
+#undef M6minus_trailing_garbage /*498*/ /* -trailing-garbage  */
+#undef M6char /*499*/                   /* char       */
+#undef M6ekey_to_xchar /*500*/          /* ekey>xchar */
+#undef M6parse /*501*/                  /* parse      */
+#undef M6x_width /*502*/                /* x-width    */
+#undef M6xc_width /*503*/               /* xc-width   */
+#undef M6xchar_minus /*504*/            /* xchar-     */
+#undef M6xhold /*505*/                  /* xhold      */
+#undef M6x_string_minus /*506*/         /* x\string-  */
+#undef M6bracket_char /*507*/           /* [char]     */
 
-#endif /* M4TH_INCLUDE_TOKEN_FORTH_MH */
+#endif /* M6TH_INCLUDE_TOKEN_FORTH_MH */

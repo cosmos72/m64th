@@ -17,10 +17,10 @@
  * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_AMD64_SZ_MH
-#define M4TH_AMD64_SZ_MH
+#ifndef M6TH_AMD64_SZ_MH
+#define M6TH_AMD64_SZ_MH
 
-#define SZ 8     /* sizeof(m4cell), sizeof(void*) and width of registers in bytes */
+#define SZ 8     /* sizeof(m6cell), sizeof(void*) and width of registers in bytes */
 #define SZ0 0    /* SZ * 0 */
 #define SZ1 8    /* SZ * 1 */
 #define SZ2 16   /* SZ * 2 */
@@ -41,8 +41,8 @@
 #define SZ17 136 /* SZ * 17 */
 #define PSZ 3    /* (1 << PSZ) == SZ */
 
-#define SZt 2  /* sizeof(m4token) in bytes */
+#define SZt 2  /* sizeof(m6token) in bytes */
 #define SZt2 4 /* SZt * 2 */
 #define PSZt 1 /* (1 << PSZt) == SZt */
 
-#endif /* M4TH_AMD64_SZ_MH */
+#endif /* M6TH_AMD64_SZ_MH */

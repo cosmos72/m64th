@@ -23,16 +23,16 @@ typedef struct pair_s {
     long first, second;
 } pair;
 
-const size_t *m4word_prev(const size_t *w) {
+const size_t *m6word_prev(const size_t *w) {
     size_t delta = w[0];
     return delta ? (const size_t *)((size_t)w - delta) : NULL;
 }
 
-long m4max(long a, long b) {
+long m6max(long a, long b) {
     return a > b ? a : b;
 }
 
-long m4min(long a, long b) {
+long m6min(long a, long b) {
     return a < b ? a : b;
 }
 

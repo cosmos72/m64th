@@ -17,23 +17,23 @@
  * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_IMPL_H
-#define M4TH_IMPL_H
+#ifndef M6TH_IMPL_H
+#define M6TH_IMPL_H
 
 #include "include/m64th.h"
 
 enum {
     tfalse = 0,
-    ttrue = (m4cell)-1,
+    ttrue = (m6cell)-1,
 };
 
 /** used for testing and benchmark */
-extern m4cell m64th_crctable[256];
-void m64th_crcinit(m4cell table[256]);
+extern m6cell m64th_crctable[256];
+void m64th_crcinit(m6cell table[256]);
 uint32_t m64th_crc1byte(uint32_t crc, unsigned char byte);
-uint32_t m64th_crc_cell(m4cell key);
-uint32_t m64th_crc_string(m4string str);
-uint32_t m64th_crc_array(const void *addr, const m4ucell nbytes);
+uint32_t m64th_crc_cell(m6cell key);
+uint32_t m64th_crc_string(m6string str);
+uint32_t m64th_crc_array(const void *addr, const m6ucell nbytes);
 
 /**
  * detect and enable/disable optional CPU features:
@@ -44,10 +44,10 @@ enum {
     m64th_cpu_feature_crc32c = 2,
     m64th_cpu_feature_atomic_add = 4,
 };
-m4cell m64th_cpu_features_detect(void);
+m6cell m64th_cpu_features_detect(void);
 void m64th_cpu_features_autoenable();
-m4cell m64th_cpu_features_enabled(void);
-void m64th_cpu_features_enable(m4cell mask);
-void m64th_cpu_features_disable(m4cell mask);
+m6cell m64th_cpu_features_enabled(void);
+void m64th_cpu_features_enable(m6cell mask);
+void m64th_cpu_features_disable(m6cell mask);
 
-#endif /* M4TH_IMPL_H */
+#endif /* M6TH_IMPL_H */

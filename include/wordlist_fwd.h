@@ -17,49 +17,49 @@
  * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_INCLUDE_WORDLIST_FWD_H
-#define M4TH_INCLUDE_WORDLIST_FWD_H
+#ifndef M6TH_INCLUDE_WORDLIST_FWD_H
+#define M6TH_INCLUDE_WORDLIST_FWD_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-typedef struct m4wordlist_s m4wordlist;
+typedef struct m6wordlist_s m6wordlist;
 
 /**
  * Contains all standard words from the forth 2012 standard word sets
  * (core, core ext, tools ext ...) that are actually implemented in m64th.
  */
-extern m4wordlist m4wordlist_forth;
+extern m6wordlist m6wordlist_forth;
 /**
  * Contains a minimal subset of words from the forth 2012 standard word sets:
  * the ones available after executing standard word 'only'
  */
-extern m4wordlist m4wordlist_forth_root;
+extern m6wordlist m6wordlist_forth_root;
 /**
  * Contains commonly found words that are not part of the standard.
  * Examples: 0<= 0>= <= >= i* i+ i-
  */
-extern m4wordlist m4wordlist_m64th_user;
+extern m6wordlist m6wordlist_m64th_user;
 /**
  * Contains words to generate native assembly.
  */
-extern m4wordlist m4wordlist_m64th_asm;
+extern m6wordlist m6wordlist_m64th_asm;
 /**
  * Contains words to call C functions from forth.
  */
-extern m4wordlist m4wordlist_m64th_c;
+extern m6wordlist m6wordlist_m64th_c;
 /**
  * Contains words that directly interact with m64th implementation.
  */
-extern m4wordlist m4wordlist_m64th_core;
+extern m6wordlist m6wordlist_m64th_core;
 /**
  * Contains words used internally by m64th implementation.
  */
-extern m4wordlist m4wordlist_m64th_impl;
+extern m6wordlist m6wordlist_m64th_impl;
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* M4TH_INCLUDE_WORDLIST_FWD_H */
+#endif /* M6TH_INCLUDE_WORDLIST_FWD_H */

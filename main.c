@@ -26,13 +26,13 @@
 #include <string.h>
 
 int main(int argc, char *argv[]) {
-    m64th *m = m64th_new(m4opt_return_stack_is_c_stack);
-    m4cell ret;
+    m64th *m = m64th_new(m6opt_return_stack_is_c_stack);
+    m6cell ret;
 
     m->in->func = WORD_SYM(c_linenoise).code;
-    m->in->handle = (m4cell) "m64th> "; /* prompt */
+    m->in->handle = (m6cell) "m64th> "; /* prompt */
     m->out->func = WORD_SYM(c_fwrite_fflush).code;
-    m->out->handle = (m4cell)stdout;
+    m->out->handle = (m6cell)stdout;
     linenoiseSetCompletionCallback(m64th_c_complete_word, m);
 
     ret = m64th_repl(m);
@@ -41,5 +41,5 @@ int main(int argc, char *argv[]) {
     putchar('\n');
 
     /* suppress 'unused parameter' warning */
-    return ret | (0 & argc & (m4cell)argv);
+    return ret | (0 & argc & (m6cell)argv);
 }

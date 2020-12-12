@@ -31,9 +31,9 @@ WORD_START(forth_wordlist, forth_wordlist)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_ASM_NONE()
-    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_FLAGS(M6FLAG_INLINE)
     WORD_CODE(
-        _lit_cell_, CELL(m4wordlist_forth),            /* extern C symbol      */
+        _lit_cell_, CELL(m6wordlist_forth),            /* extern C symbol      */
         exit
     )
 WORD_END(forth_wordlist)
@@ -47,9 +47,9 @@ WORD_START(m64th_user,  forth_wordlist)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_ASM_NONE()
-    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_FLAGS(M6FLAG_INLINE)
     WORD_CODE(
-        _lit_cell_, CELL(m4wordlist_m64th_user),        /* ( wid                ) */
+        _lit_cell_, CELL(m6wordlist_m64th_user),        /* ( wid                ) */
         searchorder_store_0, exit                      /* (                    ) */
     )
 WORD_END(m64th_user)

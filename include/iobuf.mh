@@ -17,8 +17,8 @@
  * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_INCLUDE_IOBUF_MH
-#define M4TH_INCLUDE_IOBUF_MH
+#ifndef M6TH_INCLUDE_IOBUF_MH
+#define M6TH_INCLUDE_IOBUF_MH
 
 #define IOBUF_OFF_FUNC 0    /* offset of iobuf->func   */
 #define IOBUF_OFF_HANDLE SZ /* offset of iobuf->handle */
@@ -28,4 +28,4 @@
 #define IOBUF_OFF_MAX SZ5   /* offset of iobuf->max    */
 #define IOBUF_OFF_ADDR SZ6  /* offset of iobuf->addr   */
 
-#endif /* M4TH_INCLUDE_IOBUF_MH */
+#endif /* M6TH_INCLUDE_IOBUF_MH */

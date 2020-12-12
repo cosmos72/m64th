@@ -24,23 +24,23 @@
 #include <stdio.h>  /* fread() fwrite() */
 
 
-m4pair m64th_c_fread(FILE *in, void *addr, size_t len) {
-    m4pair ret = {};
+m6pair m64th_c_fread(FILE *in, void *addr, size_t len) {
+    m6pair ret = {};
     if (len != 0 && (ret.num = fread(addr, 1, len, in)) == 0) {
         if (feof(in)) {
-            ret.err = m4err_unexpected_eof;
+            ret.err = m6err_unexpected_eof;
         } else {
-            ret.err = m4err_c_errno - errno;
+            ret.err = m6err_c_errno - errno;
         }
     }
     return ret;
 }
 
-m4pair m64th_c_fwrite_fflush(FILE *out, const void *addr, size_t len) {
-    m4pair ret = {};
+m6pair m64th_c_fwrite_fflush(FILE *out, const void *addr, size_t len) {
+    m6pair ret = {};
     if (len != 0) {
         if ((ret.num = fwrite(addr, 1, len, out)) == 0 || fflush(out) != 0) {
-            ret.err = m4err_c_errno - errno;
+            ret.err = m6err_c_errno - errno;
         }
     }
     return ret;

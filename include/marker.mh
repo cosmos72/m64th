@@ -17,8 +17,8 @@
  * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_INCLUDE_MARKER_MH
-#define M4TH_INCLUDE_MARKER_MH
+#ifndef M6TH_INCLUDE_MARKER_MH
+#define M6TH_INCLUDE_MARKER_MH
 
 #include "align.mh"
 
@@ -28,7 +28,7 @@
     ASM_ALIGN(0 /*P_MARKER_ALIGN*/)
 
 #define MARKER_SYM(name)                                                                           \
-    m4marker_##name
+    m6marker_##name
 
 #define MARKER_DEF_SYM(name)                                                                       \
     MARKER_ALIGN()                                                                                 \
@@ -41,4 +41,4 @@
 
 /* clang-format on */
 
-#endif /* M4TH_INCLUDE_MARKER_MH */
+#endif /* M6TH_INCLUDE_MARKER_MH */

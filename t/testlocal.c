@@ -17,8 +17,8 @@
  * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_T_TESTLOCAL_C
-#define M4TH_T_TESTLOCAL_C
+#ifndef M6TH_T_TESTLOCAL_C
+#define M6TH_T_TESTLOCAL_C
 
 #include "../include/m64th.h"
 #include "testcommon.h"
@@ -26,9 +26,9 @@
 #include <assert.h> /* assert() */
 #include <stdio.h>  /* fprintf() fputs() */
 
-static void testlocal_fillstr(m4char seed, m4cell i, m4char out[255]) {
-    m4cell j;
-    m4char ch;
+static void testlocal_fillstr(m6char seed, m6cell i, m6char out[255]) {
+    m6cell j;
+    m6char ch;
     seed = seed + i - 'A';
     for (j = 0; j < 255; j++) {
         ch = 'A' + (seed + j) % 52;
@@ -41,35 +41,35 @@ static void testlocal_fillstr(m4char seed, m4cell i, m4char out[255]) {
 
 /* -------------- m64th_testlocal -------------- */
 
-m4cell m64th_testlocal(m64th *m, FILE *out) {
-    m4testcount count = {};
-    m4cell i, n = 16;
-    m4char buf[255];
+m6cell m64th_testlocal(m64th *m, FILE *out) {
+    m6testcount count = {};
+    m6cell i, n = 16;
+    m6char buf[255];
     for (i = 0; i < n; i++) {
-        m4string str = {buf, sizeof(buf)};
+        m6string str = {buf, sizeof(buf)};
         testlocal_fillstr('A', i, buf);
         if (!m64th_local(m, str)) {
             count.failed++;
             if (out != NULL) {
                 fprintf(out, "local   test failed: %d", (int)count.total);
                 fputs("\n    failed to add  local variable ", out);
-                m4string_print(str, m4mode_c_disasm, out);
+                m6string_print(str, m6mode_c_disasm, out);
                 fputc('\n', out);
             }
         }
         count.total++;
     }
     /* end of locals */
-    m64th_local(m, m4string_make(NULL, 0));
+    m64th_local(m, m6string_make(NULL, 0));
     for (i = 0; i < n; i++) {
-        m4string str = {buf, sizeof(buf)};
+        m6string str = {buf, sizeof(buf)};
         testlocal_fillstr('A' + 26, i, buf);
-        if (m4locals_find(m->locals, str) != n - i - 1) {
+        if (m6locals_find(m->locals, str) != n - i - 1) {
             count.failed++;
             if (out != NULL) {
                 fprintf(out, "local   test failed: %d", (int)count.total);
                 fputs("\n    failed to find local variable ", out);
-                m4string_print(str, m4mode_c_disasm, out);
+                m6string_print(str, m6mode_c_disasm, out);
                 fputc('\n', out);
             }
         }
@@ -87,4 +87,4 @@ m4cell m64th_testlocal(m64th *m, FILE *out) {
     return count.failed;
 }
 
-#endif /* M4TH_T_TESTLOCAL_C */
+#endif /* M6TH_T_TESTLOCAL_C */

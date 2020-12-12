@@ -21,27 +21,27 @@
 
 /* clang-format off */
 
-#define M4F_MISSING_
+#define M6F_MISSING_
 FUNC_START(_missing_)      /* (missing) called instead of invalid/unimplemented function */
         ud2;                   /* crash with SIGILL */
 FUNC_END(_missing_)
 
 
-#define M4FTIMES
+#define M6FTIMES
 FUNC_START(times)          /* *    */
         MUL2(  AT(DSTK),   DTOP)
         ADD2(  IMM(SZ),    DSTK)
 FUNC_END(times)
 
 
-#define M4FPLUS
+#define M6FPLUS
 FUNC_START(plus)           /* +    */
         ADD2(  AT(DSTK),   DTOP)
         ADD2(  IMM(SZ),    DSTK)
 FUNC_END(plus)
 
 
-#define M4FPLUS_STORE
+#define M6FPLUS_STORE
 FUNC_START(plus_store)     /* +!   */
         LOAD(  REG1,   AT(DSTK))
         ADD2(  REG1,   AT(DTOP))
@@ -50,7 +50,7 @@ FUNC_START(plus_store)     /* +!   */
 FUNC_END(plus_store)
 
 
-#define M4FMINUS
+#define M6FMINUS
 FUNC_START(minus)          /* -  ( x y -- x-y )  */
         MOVE(  DTOP,   REG1)       /* a = y              */
         DPOP___DTOP()              /* dtop = x           */
@@ -90,7 +90,7 @@ FUNC_START(u_div_mod)
 FUNC_END(u_div_mod)
 
 
-#define M4FZERO
+#define M6FZERO
 FUNC_START(zero)           /* 0    m64th-impl */
         DPUSH__DTOP()
         ZERO(  DTOP)
@@ -257,7 +257,7 @@ FUNC_START(mod)            /* mod  i.e. signed remainder */
 FUNC_END(mod)
 
 
-#define M4FOVER
+#define M6FOVER
 FUNC_START(over)
         STOR(  DTOP,   AT(DSTK, -SZ))
         LOAD(  DTOP,   AT(DSTK))
@@ -272,7 +272,7 @@ FUNC_START(rshift)         /* rshift */
 FUNC_END(rshift)
 
 
-#define M4FSUB
+#define M6FSUB
 FUNC_START(sub)            /* sub      m64th-user equivalent to: swap - */
         SUB2(  AT(DSTK),   DTOP)
         ADD2(  IMM(SZ),    DSTK)

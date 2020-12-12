@@ -17,8 +17,8 @@
  * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_DISPATCH_ASM_MH
-#define M4TH_DISPATCH_ASM_MH
+#ifndef M6TH_DISPATCH_ASM_MH
+#define M6TH_DISPATCH_ASM_MH
 
 #if defined(__x86_64__)
 #include "../amd64/asm.mh"
@@ -64,4 +64,4 @@
 #define RFFF_REG2t REG2t
 #endif
 
-#endif /* M4TH_DISPATCH_ASM_MH */
+#endif /* M6TH_DISPATCH_ASM_MH */

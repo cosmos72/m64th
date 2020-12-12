@@ -28,7 +28,7 @@ WORD_START(definitions, LASTWORD)
     WORD_STACK_NONE()
     WORD_STACK_NONE()
     WORD_ASM_NONE()
-    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_FLAGS(M6FLAG_INLINE)
     WORD_CODE_AND_DATA(definitions,
         WORD_CODE_TOKENS(
             /*4*/ zero, searchorder_pick, set_current, exit
@@ -39,10 +39,10 @@ WORD_START(only, definitions)
     WORD_STACK_NONE()
     WORD_STACK_NONE()
     WORD_ASM_NONE()
-    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_FLAGS(M6FLAG_INLINE)
     WORD_CODE_AND_DATA(only,
         WORD_CODE_TOKENS(
-            /*9*/ searchorder_clear, searchorder_dup, _lit_cell_, CELL(m4wordlist_forth_root), searchorder_store_0, exit
+            /*9*/ searchorder_clear, searchorder_dup, _lit_cell_, CELL(m6wordlist_forth_root), searchorder_store_0, exit
         ),
     )
 WORD_END(only)
@@ -50,7 +50,7 @@ WORD_START(previous, only)
     WORD_STACK_NONE()
     WORD_STACK_NONE()
     WORD_ASM_NONE()
-    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_FLAGS(M6FLAG_INLINE)
     WORD_CODE_AND_DATA(previous,
         WORD_CODE_TOKENS(
             /*2*/ searchorder_drop, exit
@@ -62,7 +62,7 @@ WORD_START(search_wordlist,    previous)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_ASM_NONE()
-    WORD_FLAGS(M4FLAG_INLINE|M4FLAG_MEM_FETCH)
+    WORD_FLAGS(M6FLAG_INLINE|M6FLAG_MEM_FETCH)
     WORD_CODE_AND_DATA(search_wordlist,
         WORD_CODE_TOKENS(
             /*16*/ CALL(wordlist_find), dup, _if_, T(5), swap, name_to_xt, swap, _else_, T(2), nip, then, exit

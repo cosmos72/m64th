@@ -79,4 +79,4 @@ disassemble-upto definitions
    n>drop                                    (                     )
 ;
 
-\ set-order is included in m4wordlist_forth_root : do not disassemble it here
+\ set-order is included in m6wordlist_forth_root : do not disassemble it here

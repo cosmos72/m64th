@@ -33,7 +33,7 @@ WORD_START(_asm_resolve_jump_here_,  LASTWORD)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_ASM_NONE()
-    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE)
+    WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_INLINE)
     WORD_CODE(
         /**
          * ASM relative jumps are quite simple on amd64:
@@ -53,7 +53,7 @@ WORD_START(_asm_resolve_jump_there_,  _asm_resolve_jump_here_)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_ASM_NONE()
-    WORD_FLAGS(M4FLAG_COMPILE_ONLY | M4FLAG_INLINE)
+    WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_INLINE)
     WORD_CODE(
         /* see comment above for amd64 relative ASM jumps */
         drop,                                  /* ( jump_location                  ) */

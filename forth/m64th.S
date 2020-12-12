@@ -23,7 +23,7 @@
 /* helper macros to define words {byte,char,short,ushort,int,uint,cell,token}_fetch* */
 
 #define DEF_WORD_FETCH_TYP_OFF(typ, offset, prev_word)                                             \
-    WORD(typ##_fetch##offset, prev_word, DSTACK(1, 1), RSTACK(0, 0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+    WORD(typ##_fetch##offset, prev_word, DSTACK(1, 1), RSTACK(0, 0), WORD_IMPURE | M6FLAG_MEM_FETCH)
 #define DEF_WORD_FETCH_TYP(typ, prev_word)                                                         \
     DEF_WORD_FETCH_TYP_OFF(typ, /**/, prev_word)                                                   \
     DEF_WORD_FETCH_TYP_OFF(typ, _1, typ##_fetch)                                                   \
@@ -44,7 +44,7 @@
     DEF_WORD_FETCH_TYP(cell, uint_fetch_8)
 
 #define DEF_WORD_STORE_TYP_OFF(typ, offset, prev_word)                                             \
-    WORD(typ##_store##offset, prev_word, DSTACK(2, 0), RSTACK(0, 0), WORD_IMPURE | M4FLAG_MEM_STORE)
+    WORD(typ##_store##offset, prev_word, DSTACK(2, 0), RSTACK(0, 0), WORD_IMPURE | M6FLAG_MEM_STORE)
 #define DEF_WORD_STORE_TYP(typ, prev_word)                                                         \
     DEF_WORD_STORE_TYP_OFF(typ, /**/, prev_word)                                                   \
     DEF_WORD_STORE_TYP_OFF(typ, _1, typ##_store)                                                   \
@@ -64,7 +64,7 @@
 /**/
 
 DICT_START(m64th_asm)
-DICT_WORDS_M4TH_ASM(WORDNAME)
+DICT_WORDS_M6TH_ASM(WORDNAME)
 #include "m64th/asm.S"
 
 #if defined(__x86_64__)
@@ -79,7 +79,7 @@ DICT_END(m64th_asm)
 /**/
 
 DICT_START(m64th_c)
-DICT_WORDS_M4TH_C(WORDNAME)
+DICT_WORDS_M6TH_C(WORDNAME)
 #include "m64th/c.S"
 DICT_BODY(m64th_c, LASTWORD)
 DICT_END(m64th_c)
@@ -87,7 +87,7 @@ DICT_END(m64th_c)
 /**/
 
 DICT_START(m64th_core)
-DICT_WORDS_M4TH_CORE(WORDNAME)
+DICT_WORDS_M6TH_CORE(WORDNAME)
 #include "m64th/core.S"
 DICT_BODY(m64th_core, LASTWORD)
 DICT_END(m64th_core)
@@ -95,7 +95,7 @@ DICT_END(m64th_core)
 /**/
 
 DICT_START(m64th_impl)
-DICT_WORDS_M4TH_IMPL(WORDNAME)
+DICT_WORDS_M6TH_IMPL(WORDNAME)
 #include "m64th/impl.S"
 DICT_BODY(m64th_impl, LASTWORD)
 DICT_END(m64th_impl)
@@ -103,7 +103,7 @@ DICT_END(m64th_impl)
 /**/
 
 DICT_START(m64th_user)
-DICT_WORDS_M4TH_USER(WORDNAME)
+DICT_WORDS_M6TH_USER(WORDNAME)
 #include "m64th/user.S"
 #include "m64th/user_gen.S"
 DICT_BODY(m64th_user, LASTWORD)

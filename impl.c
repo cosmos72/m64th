@@ -54,9 +54,9 @@ void m64th_ud_div_mod(uint128_forth_stack *dividend_in_remainder_out,
 /******************************************************************************/
 /* C implementation of CRC32c                                                 */
 /******************************************************************************/
-m4cell m64th_crctable[256];
+m6cell m64th_crctable[256];
 
-void m64th_crcinit(m4cell table[256]) {
+void m64th_crcinit(m6cell table[256]) {
     uint32_t i, j;
 
     if (table[255] != 0) {
@@ -81,9 +81,9 @@ uint32_t m64th_crc1byte(uint32_t crc, unsigned char byte) {
     return (crc >> 8) ^ m64th_crctable[(crc & 0xff) ^ byte];
 }
 
-uint32_t m64th_crc_array(const void *addr, const m4ucell nbytes) {
+uint32_t m64th_crc_array(const void *addr, const m6ucell nbytes) {
     assert(m64th_crctable[0xff]);
-    const m4char *p = (const m4char *)addr;
+    const m6char *p = (const m6char *)addr;
     uint32_t crc = ~(uint32_t)0;
     for (size_t i = 0; i < nbytes; i++) {
         crc = m64th_crc1byte(crc, p[i]);
@@ -91,11 +91,11 @@ uint32_t m64th_crc_array(const void *addr, const m4ucell nbytes) {
     return ~crc;
 }
 
-uint32_t m64th_crc_cell(m4cell key) {
+uint32_t m64th_crc_cell(m6cell key) {
     return m64th_crc_array(&key, sizeof(key));
 }
 
-uint32_t m64th_crc_string(m4string str) {
+uint32_t m64th_crc_string(m6string str) {
     return m64th_crc_array(str.addr, str.n);
 }
 
@@ -113,7 +113,7 @@ static void m64th_cpuid(unsigned level, unsigned count, unsigned ret[4]) {
 }
 
 /* amd64: use cpuid to detect CRC32c CPU instructions - they are part of SSE4.2 */
-m4cell m64th_cpu_features_detect(void) {
+m6cell m64th_cpu_features_detect(void) {
     unsigned ret[4];
     m64th_cpuid(1, 0, ret);
     return (ret[2] & bit_SSE4_2) ? m64th_cpu_feature_crc32c | m64th_cpu_feature_atomic_add
@@ -128,9 +128,9 @@ m4cell m64th_cpu_features_detect(void) {
  * arm64+Linux: use Linux specific getauxval(AT_HWCAP)
  * to detect CRC32c and atomic CPU instructions
  */
-m4cell m64th_cpu_features_detect(void) {
+m6cell m64th_cpu_features_detect(void) {
     unsigned long hwcap = getauxval(AT_HWCAP);
-    m4cell ret = 0;
+    m6cell ret = 0;
     if (hwcap & HWCAP_CRC32) {
         ret |= m64th_cpu_feature_crc32c;
     }
@@ -145,7 +145,7 @@ m4cell m64th_cpu_features_detect(void) {
 #include <cpu-features.h>
 /* arm64+Android: use Android specific android_getCpuFeatures() to detect CRC32c CPU
    instructions */
-m4cell m64th_cpu_features_detect(void) {
+m6cell m64th_cpu_features_detect(void) {
     uint64_t features = android_getCpuFeatures();
     return (features & ANDROID_CPU_ARM64_FEATURE_CRC32) ? m64th_cpu_feature_crc32c : 0;
 }
@@ -153,7 +153,7 @@ m4cell m64th_cpu_features_detect(void) {
 #else
 
 /* no support to detect CRC32c CPU instructions on this arch/OS pair */
-m4cell m64th_cpu_features_detect(void) {
+m6cell m64th_cpu_features_detect(void) {
     return m64th_cpu_feature_cannot_detect;
 }
 

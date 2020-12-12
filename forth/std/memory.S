@@ -26,13 +26,13 @@ WORD_START(allocate, LASTWORD)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_ASM_NONE()
-    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_FLAGS(M6FLAG_INLINE)
     WORD_CODE(
         _c_locals_save_,
             _c_arg_1_, _c_call_, CELL(malloc), _c_ret_1_,       /* ( a-addr|0          ) */
         _c_locals_load_,
         dup, zero_equal,                                        /* ( a-addr|0 t|f      ) */
-        _lit_, T(M4ERR_FAILED_TO_ALLOCATE), and,                /* ( a-addr 0 | 0 err  ) */
+        _lit_, T(M6ERR_FAILED_TO_ALLOCATE), and,                /* ( a-addr 0 | 0 err  ) */
         exit
     )
 WORD_END(allocate)
@@ -41,7 +41,7 @@ WORD_START(free, allocate)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_ASM_NONE()
-    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_FLAGS(M6FLAG_INLINE)
     WORD_CODE(
         _c_locals_save_,
             _c_arg_1_, _c_call_, CELL(free), _c_ret_0_,         /* (                   ) */
@@ -54,7 +54,7 @@ WORD_START(resize, free)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_ASM_NONE()
-    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_FLAGS(M6FLAG_INLINE)
     WORD_CODE(
         trail,                                                  /* ( a-addr1 a-addr1 u ) */
         _c_locals_save_,
@@ -63,7 +63,7 @@ WORD_START(resize, free)
         _q_if_, T(3),                                           /* ( a-addr1 a-addr2   ) */
             nip, zero,                                          /* ( a-addr2 0         ) */
         _else_, T(4),                                           /* ( a-addr1 0         ) */
-            drop, _lit_, T(M4ERR_FAILED_TO_ALLOCATE),           /* ( a-addr1 err       ) */
+            drop, _lit_, T(M6ERR_FAILED_TO_ALLOCATE),           /* ( a-addr1 err       ) */
         then, exit
     )
 WORD_END(resize)

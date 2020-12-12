@@ -22,9 +22,9 @@
 
 /* clang-format off */
 
-#define M4FIMMEDIATE
+#define M6FIMMEDIATE
 /* immediate ( -- ) mark last defined word as 'immediate' */
 FUNC_START(immediate)
-        LOAD(  REG1,   AT(M4TH, M4TH_OFF_LASTW))                 /* a = w = m64th.lastw    */
-        orw    IMM(M4FLAG_IMMEDIATE),  AT(REG1, WORD_OFF_FLAGS); /* w.flags |= m4flag_immediate */
+        LOAD(  REG1,   AT(M6TH, M6TH_OFF_LASTW))                 /* a = w = m64th.lastw    */
+        orw    IMM(M6FLAG_IMMEDIATE),  AT(REG1, WORD_OFF_FLAGS); /* w.flags |= m6flag_immediate */
 FUNC_END(immediate)

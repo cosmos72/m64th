@@ -19,7 +19,7 @@
 
 #include "c_liblinenoise.h"
 #include "../include/err.h"
-#include "../include/m64th.mh" /* M4TH_OFF_ */
+#include "../include/m64th.mh" /* M6TH_OFF_ */
 #include "../linenoise/linenoise.h"
 
 #include <errno.h>   /* errno    */
@@ -31,8 +31,8 @@
 
 #include "../linenoise/linenoise.c"
 
-m4pair m64th_c_linenoise(const char *prompt, char *addr, size_t len) {
-    m4pair ret = {};
+m6pair m64th_c_linenoise(const char *prompt, char *addr, size_t len) {
+    m6pair ret = {};
     linenoiseSetMultiLine(1);
     int n = linenoise(addr, len, prompt);
     if (n >= 0) {
@@ -43,9 +43,9 @@ m4pair m64th_c_linenoise(const char *prompt, char *addr, size_t len) {
 #endif
         linenoiseHistoryAdd(addr);
     } else if (errno) {
-        ret.err = m4err_c_errno - errno;
+        ret.err = m6err_c_errno - errno;
     } else {
-        ret.err = m4err_unexpected_eof;
+        ret.err = m6err_unexpected_eof;
     }
     return ret;
 }
@@ -54,7 +54,7 @@ static int m64th_c_string_is_prefix_of(linenoiseString prefix, linenoiseString s
     return str.len > prefix.len && !strncasecmp(str.addr, prefix.addr, prefix.len);
 }
 
-static m4cell m64th_c_string_equals(const linenoiseString a, const linenoiseString b) {
+static m6cell m64th_c_string_equals(const linenoiseString a, const linenoiseString b) {
     if (a.len != b.len) {
         return tfalse;
     } else if (a.addr == b.addr || a.len == 0) {
@@ -97,8 +97,8 @@ static void m64th_c_strings_unique(linenoiseStrings *strings) {
 }
 
 /* return != 0 if wid is present in searchorder */
-static m4cell m64th_c_searchorder_find(const m4searchorder *searchorder, const m4wordlist *wid) {
-    for (m4cell i = 0, n = searchorder->n; i < n; i++) {
+static m6cell m64th_c_searchorder_find(const m6searchorder *searchorder, const m6wordlist *wid) {
+    for (m6cell i = 0, n = searchorder->n; i < n; i++) {
         if (searchorder->addr[i] == wid) {
             return ttrue;
         }
@@ -107,12 +107,12 @@ static m4cell m64th_c_searchorder_find(const m4searchorder *searchorder, const m
 }
 
 /* reverse searchorder */
-static void searchorder_reverse(m4searchorder *s) {
-    m4cell i, n;
+static void searchorder_reverse(m6searchorder *s) {
+    m6cell i, n;
     for (i = 0, n = s->n; i < n / 2; i++) {
-        m4wordlist **wid1 = &s->addr[i];
-        m4wordlist **wid2 = &s->addr[n - i - 1];
-        m4wordlist *tmp = wid1[0];
+        m6wordlist **wid1 = &s->addr[i];
+        m6wordlist **wid2 = &s->addr[n - i - 1];
+        m6wordlist *tmp = wid1[0];
         wid1[0] = wid2[0];
         wid2[0] = tmp;
     }
@@ -120,11 +120,11 @@ static void searchorder_reverse(m4searchorder *s) {
 
 /* copy searchorder src to dst, ignoring repeated wordlists.
  * preserves wordlists priority i.e. relative ordering */
-static void searchorder_copy_unique(const m4searchorder *src, m4searchorder *dst) {
-    m4cell i, n;
+static void searchorder_copy_unique(const m6searchorder *src, m6searchorder *dst) {
+    m6cell i, n;
     /* start from higher priority wordlists i.e. higher indexes */
     for (n = src->n, i = n - 1; i >= 0; i--) {
-        m4wordlist *wid = src->addr[i];
+        m6wordlist *wid = src->addr[i];
         if (!m64th_c_searchorder_find(dst, wid)) {
             dst->addr[dst->n++] = wid;
         }
@@ -135,12 +135,12 @@ static void searchorder_copy_unique(const m4searchorder *src, m4searchorder *dst
 /* callback invoked by linenoise() when user presses TAB to complete a word */
 linenoiseString m64th_c_complete_word(linenoiseString input, linenoiseStrings *completions,
                                      void *userData) {
-    m4searchorder searchorder = {};
+    m6searchorder searchorder = {};
     m64th *m = (m64th *)userData;
-    m4cell i, n;
+    m6cell i, n;
     for (n = input.len, i = n; i > 0; i--) {
         /* find last non-blank word in current input */
-        if ((m4char)input.addr[i - 1] <= (m4char)' ') {
+        if ((m6char)input.addr[i - 1] <= (m6char)' ') {
             break;
         }
     }
@@ -153,15 +153,15 @@ linenoiseString m64th_c_complete_word(linenoiseString input, linenoiseStrings *c
     /* we simply collect all words, and any duplicate due to shadowing */
     /* will be merged by m64th_c_strings_unique() below                 */
     for (i = 0, n = searchorder.n; i < n; i++) {
-        const m4wordlist *wid = searchorder.addr[i];
-        const m4word *w = m4wordlist_last_word(wid);
+        const m6wordlist *wid = searchorder.addr[i];
+        const m6word *w = m6wordlist_last_word(wid);
         while (w != NULL) {
-            const m4string str = m4word_name(w);
+            const m6string str = m6word_name(w);
             const linenoiseString completion = {str.n, (const char *)str.addr};
             if (m64th_c_string_is_prefix_of(input, completion)) {
                 linenoiseAddCompletion(completions, completion);
             }
-            w = m4word_prev(w);
+            w = m6word_prev(w);
         }
     }
     m64th_c_strings_sort(completions);
@@ -170,22 +170,22 @@ linenoiseString m64th_c_complete_word(linenoiseString input, linenoiseStrings *c
 }
 
 /* print all words in wordlist, using linenoiseStrings as a qsort buffer */
-static void m64th_c_wordlist_print_all_words(const m4wordlist *wid, linenoiseStrings *strings,
+static void m64th_c_wordlist_print_all_words(const m6wordlist *wid, linenoiseStrings *strings,
                                             size_t columns, FILE *out) {
-    const m4word *w = m4wordlist_last_word(wid);
+    const m6word *w = m6wordlist_last_word(wid);
     size_t i, n, line;
     strings->size = 0;
     while (w != NULL) {
-        const m4string str = m4word_name(w);
+        const m6string str = m6word_name(w);
         const linenoiseString lstr = {str.n, (const char *)str.addr};
         linenoiseAddCompletion(strings, lstr);
-        w = m4word_prev(w);
+        w = m6word_prev(w);
     }
     m64th_c_strings_sort(strings);
     m64th_c_strings_unique(strings);
 
     fputs("\\ ------------- ", out);
-    m4string_print(m4wordlist_name(wid), m4mode_user, out);
+    m6string_print(m6wordlist_name(wid), m6mode_user, out);
     fputs(" -------------\n", out);
     line = 0;
     for (i = 0, n = strings->size; i < n; i++) {
@@ -202,10 +202,10 @@ static void m64th_c_wordlist_print_all_words(const m4wordlist *wid, linenoiseStr
 }
 
 /** temporary C implementation of 'words' */
-void m64th_c_searchorder_print_all_words(const m4searchorder *searchorder, FILE *out) {
-    m4searchorder s = {};
+void m64th_c_searchorder_print_all_words(const m6searchorder *searchorder, FILE *out) {
+    m6searchorder s = {};
     linenoiseStrings strings = {};
-    m4cell i, n;
+    m6cell i, n;
     size_t columns = linenoiseGetTerminalColumns();
 
     searchorder_copy_unique(searchorder, &s);

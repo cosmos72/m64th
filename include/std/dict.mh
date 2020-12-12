@@ -17,8 +17,8 @@
  * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_INCLUDE_DICT_FORTH_MH
-#define M4TH_INCLUDE_DICT_FORTH_MH
+#ifndef M6TH_INCLUDE_DICT_FORTH_MH
+#define M6TH_INCLUDE_DICT_FORTH_MH
 
 /* ------- forth 2012 minimal search order ------------------------------------------------------ */
 #define DICT_TOKENS_FORTH_ROOT(X)
@@ -122,7 +122,7 @@
 
 #define DICT_WORDS_FORTH_CORE(X)                                                                   \
     DICT_TOKENS_FORTH_CORE(X)                                                                      \
-    /* the following words are implemented in forth, thus no dedicated m4token value */            \
+    /* the following words are implemented in forth, thus no dedicated m6token value */            \
     X(1, "#", num)                                                                                 \
     X(2, "#s", num_s)                                                                              \
     X(1, "'", tick)                                                                                \
@@ -174,11 +174,11 @@
     X(4, "true", true)                                                                             \
     X(4, "tuck", tuck)                                                                             \
     X(2, "u>", u_more)                                                                             \
-    X(6, "within", within) /* used often => implement as m4func instead of forth word */
+    X(6, "within", within) /* used often => implement as m6func instead of forth word */
 
 #define DICT_WORDS_FORTH_CORE_EXT(X)                                                               \
     DICT_TOKENS_FORTH_CORE_EXT(X)                                                                  \
-    /* the following words are implemented in forth - no dedicated m4token value */                \
+    /* the following words are implemented in forth - no dedicated m6token value */                \
     X(2, ".(", dot_paren)                                                                          \
     X(7, ":noname", colon_noname)                                                                  \
     X(3, "?do", question_do)                                                                       \
@@ -317,4 +317,4 @@
     DICT_WORDS_FORTH_SEARCHORDER(X)                                                                \
     DICT_WORDS_FORTH_STRING(X)
 
-#endif /* M4TH_INCLUDE_DICT_FORTH_MH */
+#endif /* M6TH_INCLUDE_DICT_FORTH_MH */

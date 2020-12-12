@@ -66,7 +66,7 @@ FUNC_DEF(_do_)
 /* FUNC_RAWEND(_do_)   */
 
 
-#define M4FDO
+#define M6FDO
 FUNC_DEF(do)
 /* FUNC_START(do) */
         RPUSH( RTOP)                 /* save rtop             */

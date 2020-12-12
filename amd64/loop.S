@@ -68,7 +68,7 @@ FUNC_DEF(_do_)
 /* FUNC_RAWEND(_do_)   */
 
 
-#define M4FDO
+#define M6FDO
 FUNC_DEF(do)
 /* FUNC_START(do) */
         RPUSH( RTOP)                 /* save rtop             */
@@ -118,7 +118,7 @@ FUNC_END(_if0_)
  * must be followed by IP offset to jump.
  * IP offset = 0 means first instruction after (?if) itself
  */
-#define M4F_Q_IF_
+#define M6F_Q_IF_
 FUNC_START(_q_if_)
         LD_st( REG3,   AT(IP))         /* c = jump offset         */
         ADD2(IMM(SZt), IP)             /* skip IP offset          */
@@ -134,7 +134,7 @@ FUNC_END(_q_if_)
  * must be followed by IP offset to jump.
  * IP offset = 0 means first instruction after (?if0) itself
  */
-#define M4F_Q_IF0_
+#define M6F_Q_IF0_
 FUNC_START(_q_if0_)
         LD_st( REG3,   AT(IP))         /* c = jump offset         */
         ADD2(IMM(SZt), IP)             /* skip IP offset          */

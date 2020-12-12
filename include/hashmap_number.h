@@ -16,10 +16,10 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef M4TH_INCLUDE_HASHMAP_NUMBER_H
-#define M4TH_INCLUDE_HASHMAP_NUMBER_H
+#ifndef M6TH_INCLUDE_HASHMAP_NUMBER_H
+#define M6TH_INCLUDE_HASHMAP_NUMBER_H
 
-#include "m64th.h" /* m4* */
+#include "m64th.h" /* m6* */
 
 #ifdef __cplusplus
 extern "C" {
@@ -42,4 +42,4 @@ extern "C" {
 }
 #endif
 
-#endif /* M4TH_INCLUDE_HASHMAP_NUMBER_H */
+#endif /* M6TH_INCLUDE_HASHMAP_NUMBER_H */

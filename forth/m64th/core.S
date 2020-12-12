@@ -29,14 +29,14 @@
 /* ---------------------------------------------------------------------------------------------- */
 
 WORD(div_token,        div_token,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-/* always-eof ( handle c-addr u -- 0 M4ERR_UNEXPECTED_EOF ) always return EOF. usable for iobuf>func */
+/* always-eof ( handle c-addr u -- 0 M6ERR_UNEXPECTED_EOF ) always return EOF. usable for iobuf>func */
 WORD_START(always_eof, div_token)
     WORD_DSTACK(3,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_ASM_NONE()
-    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_PURE)
-    WORD_CODE(two_drop, drop, zero, _lit_, T(M4ERR_UNEXPECTED_EOF), exit)
+    WORD_FLAGS(M6FLAG_INLINE | M6FLAG_PURE)
+    WORD_CODE(two_drop, drop, zero, _lit_, T(M6ERR_UNEXPECTED_EOF), exit)
 WORD_END(always_eof)
 /* compile-string, ( c-addr u -- ) runtime effect: ( -- c-addr' u ) */
 WORD_START(compile_string_comma, always_eof)
@@ -44,10 +44,10 @@ WORD_START(compile_string_comma, always_eof)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_ASM_NONE()
-    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_COMPILE_ONLY)
+    WORD_FLAGS(M6FLAG_INLINE | M6FLAG_COMPILE_ONLY)
     WORD_CODE(
         /* dup dup >token <>                           ( c-addr u t|f       )
-         * M4ERR_DEFINITION_NAME_TOO_LONG and throw    ( c-addr u           )
+         * M6ERR_DEFINITION_NAME_TOO_LONG and throw    ( c-addr u           )
          * ' (lit-string) token,                       ( c-addr u           )
          * dup token,                                  ( c-addr u           )
          * here swap                                   ( c-addr here u      )
@@ -55,7 +55,7 @@ WORD_START(compile_string_comma, always_eof)
          * cmove                                       (                    )
          */
         dup, dup, to_token, ne,
-        _lit_, T(M4ERR_DEFINITION_NAME_TOO_LONG), and, throw,
+        _lit_, T(M6ERR_DEFINITION_NAME_TOO_LONG), and, throw,
         _lit_comma_, _lit_string_,
         dup, token_comma,
         here, swap,
@@ -70,7 +70,7 @@ WORD_START(compiler_abort, compile_string_comma)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_ASM_NONE()
-    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_FLAGS(M6FLAG_INLINE)
     WORD_CODE(
         state_fetch, zero_ne,                              /* ( t|f                    ) */
         zero, state, store,  /* set interpretation state      ( t|f                    ) */
@@ -100,7 +100,7 @@ WORD_START(compiler_abort, compile_string_comma)
     )
 WORD_END(compiler_abort)
 /* count-tokens ( counted-tokens -- tok-addr u ) */
-WORD(count_tokens,     compiler_abort, DSTACK(1,2), RSTACK(0,0), WORD_IMPURE|M4FLAG_MEM_FETCH)
+WORD(count_tokens,     compiler_abort, DSTACK(1,2), RSTACK(0,0), WORD_IMPURE|M6FLAG_MEM_FETCH)
 /**
  * compile u tokens. the address counted-tokens contains
  * the number u - which occupies 1 token - followed by u tokens
@@ -111,7 +111,7 @@ WORD_START(countedtokens_comma,   count_tokens)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_ASM_NONE()
-    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_FLAGS(M6FLAG_INLINE)
     WORD_CODE(
         question_dup, _if_, T(2+nCALLt), count_tokens, CALL(tokens_comma), then, exit
     )
@@ -122,7 +122,7 @@ WORD_START(countedtokens_to_last, countedtokens_comma)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_ASM_NONE()
-    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_FLAGS(M6FLAG_INLINE)
     WORD_CODE(
         CALL(count_tokens),                            /* ( addr n                       ) */
         _q_if0_, T(5),                                 /* ( addr n                       ) */
@@ -177,7 +177,7 @@ WORD_START(ibuf_find_nonblanks, ibuf_find_char)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_ASM_NONE()
-    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_FLAGS(M6FLAG_INLINE)
     WORD_CODE(
         /*
          * dup >r ibuf-skip-blanks                   (               ) ( R: io     )
@@ -201,7 +201,7 @@ WORD_START(ibuf_refill, ibuf_find_nonblanks)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_ASM_NONE()
-    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_FLAGS(M6FLAG_INLINE)
     WORD_CODE(
         /* dup >r iobuf>pos @                       ( pos                ) ( R: io )
          * dup if                                   ( pos                ) ( R: io )
@@ -246,7 +246,7 @@ WORD_START(ibuf_refill_if_empty, ibuf_refill)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_ASM_NONE()
-    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_FLAGS(M6FLAG_INLINE)
     WORD_CODE(
         /* dup iobuf-empty?                         ( io t|f             )
          * if                                       ( io                 )
@@ -300,7 +300,7 @@ WORD_START(ibuf_skip_blanks, ibuf_skip_1blank)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_ASM_NONE()
-    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_FLAGS(M6FLAG_INLINE)
     WORD_CODE(
         /* dup iobuf>data                              ( io c-addr u     )
          * string-find-nonblank                        ( io u'           )
@@ -349,8 +349,8 @@ WORD_START(name_comma,  to_latest)
     WORD_DSTACK(2,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_ASM_NONE() /* uses IP-relative jump to m4func, cannot inline in native code */
-    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_ASM_NONE() /* uses IP-relative jump to m6func, cannot inline in native code */
+    WORD_FLAGS(M6FLAG_INLINE)
     WORD_CODE(name_comma, exit)
 WORD_END(name_comma)
 WORD_START(name_inline_query,  name_comma)
@@ -358,34 +358,34 @@ WORD_START(name_inline_query,  name_comma)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_ASM_NONE()
-    WORD_FLAGS(M4FLAG_MEM_FETCH) /* multiple exits => cannot inline */
+    WORD_FLAGS(M6FLAG_MEM_FETCH) /* multiple exits => cannot inline */
     WORD_CODE(
         dup, name_to_flags,
-        dup, _lit2s_, SHORT(M4FLAG_INLINE_ALWAYS), and, _if_, T(4),
+        dup, _lit2s_, SHORT(M6FLAG_INLINE_ALWAYS), and, _if_, T(4),
             two_drop, true, exit,
         then,
-        _lit2s_, SHORT(M4FLAG_INLINE), and, _if0_, T(4),
+        _lit2s_, SHORT(M6FLAG_INLINE), and, _if0_, T(4),
             drop, false, exit,
         then,
         name_to_code_n, eight, less, exit
     )
 WORD_END(name_inline_query)
-WORD(name_to_code,         name_inline_query,  DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD(name_to_code_n,       name_to_code,       DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD(name_to_data,         name_to_code_n,     DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD(name_to_data_addr,    name_to_data,       DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD(name_to_data_n_store, name_to_data_addr,  DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE)
-WORD(name_to_flags,       name_to_data_n_store,DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD(name_to_flags_store,  name_to_flags,      DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE)
+WORD(name_to_code,         name_inline_query,  DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M6FLAG_MEM_FETCH)
+WORD(name_to_code_n,       name_to_code,       DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M6FLAG_MEM_FETCH)
+WORD(name_to_data,         name_to_code_n,     DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M6FLAG_MEM_FETCH)
+WORD(name_to_data_addr,    name_to_data,       DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M6FLAG_MEM_FETCH)
+WORD(name_to_data_n_store, name_to_data_addr,  DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M6FLAG_MEM_STORE)
+WORD(name_to_flags,       name_to_data_n_store,DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M6FLAG_MEM_FETCH)
+WORD(name_to_flags_store,  name_to_flags,      DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M6FLAG_MEM_STORE)
 WORD_START(name_to_ident,  name_to_flags_store)
     WORD_DSTACK(1,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_ASM_NONE() /* uses %rip-relative TOKEN_CALL_NOTHROW */
-    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH)
+    WORD_FLAGS(M6FLAG_INLINE | M6FLAG_MEM_FETCH)
     WORD_CODE(name_to_ident, exit)
 WORD_END(name_to_ident)
-WORD(name_to_prev,     name_to_ident,  DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(name_to_prev,     name_to_ident,  DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M6FLAG_MEM_FETCH)
 WORD(name_to_xt,       name_to_prev,   DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 /* obuf-flush ( io -- err ) flush iobuf data */
 WORD_START(obuf_flush, name_to_xt)
@@ -550,7 +550,7 @@ WORD_START(obuf_write_char, _obuf_overflow_)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_ASM_NONE() /* cannot inline in native code: has multiple returns + uses ip-relative JUMP */
-    WORD_FLAGS(M4FLAG_INLINE | M4FLAG_MEM_FETCH | M4FLAG_MEM_STORE)
+    WORD_FLAGS(M6FLAG_INLINE | M6FLAG_MEM_FETCH | M6FLAG_MEM_STORE)
     WORD_CODE(obuf_write_char, exit)
 WORD_END(obuf_write_char)
 /* obuf-write-string ( io c-addr u -- err  ) write a string to iobuf */
@@ -571,29 +571,29 @@ WORD_START(parse_nt,  out_to_obuf)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_ASM_NONE()
-    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_FLAGS(M6FLAG_INLINE)
     WORD_CODE(
         /* parse-name                                  ( c-addr u          )
          * ?if0                                        ( c-addr u          )
-         *    M4ERR_ZERO_LENGTH_NAME throw             (                   )
+         *    M6ERR_ZERO_LENGTH_NAME throw             (                   )
          * then                                        ( c-addr u          )
          * 2dup 2>r                                    ( c-addr u          ) ( R: c-addr u )
          * string>name                                 ( nt|0 wid|0 -1|0|1 ) ( R: c-addr u )
          * ?if0                     ( word not found ) ( 0 0 0             ) ( R: c-addr u )
          *    2r> ex-message!                          ( 0 0 0             )
-         *    M4ERR_UNDEFINED_WORD throw               (                   )
+         *    M6ERR_UNDEFINED_WORD throw               (                   )
          * then                                        ( nt wid -1|1       ) ( R: c-addr u )
          * 2r> 2drop                                   ( nt wid -1|1       )
          */
         CALL(parse_name),
         _q_if0_, T(4),
-            _lit_, T(M4ERR_ZERO_LENGTH_NAME), throw,
+            _lit_, T(M6ERR_ZERO_LENGTH_NAME), throw,
         then,
         two_dup_two_to_r,
         CALL(string_to_name),
         _q_if0_, T(6),
             two_r_from, ex_message_store,
-            _lit_, T(M4ERR_UNDEFINED_WORD), throw,
+            _lit_, T(M6ERR_UNDEFINED_WORD), throw,
         then,
         two_r_from_two_drop, exit
     )
@@ -604,7 +604,7 @@ WORD_START(parse_xt,  parse_nt)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_ASM_NONE()
-    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_FLAGS(M6FLAG_INLINE)
     WORD_CODE(
         /* parse-nt nip                                ( nt -1|1                   )
          * swap name>xt swap                           ( xt -1|1                   )
@@ -631,9 +631,9 @@ WORD_START(string_to_local,      searchorder_store_0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_ASM_NONE()
-    WORD_FLAGS(M4FLAG_COMPILE_ONLY)
+    WORD_FLAGS(M6FLAG_COMPILE_ONLY)
     WORD_CODE(
-        user_var, T(M4TH_USER_VAR_LOCALS), fetch,
+        user_var, T(M6TH_USER_VAR_LOCALS), fetch,
         _q_if0_, T(6),                          /* ( c-addr u 0                ) */
             nip, nip, minus_one, swap, exit,    /* ( -1 false                  ) */
         then,                                   /* ( c-addr u ls               ) */
@@ -697,7 +697,7 @@ WORD_START(tokens_comma,   token_comma)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_ASM_NONE()
-    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_FLAGS(M6FLAG_INLINE)
     WORD_CODE(/* generated from file m64th_core.forth - see source and comments there */
         /*11*/ tokens, bounds, _q_do_, T(6), i, token_fetch, token_comma, one_token, _plus_loop_, T(-6), exit
     )
@@ -707,7 +707,7 @@ WORD_START(user_var,   tokens_comma)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_ASM_NONE()
-    WORD_FLAGS(M4FLAG_INLINE_ALWAYS | M4FLAG_CONSUMES_IP_2)
+    WORD_FLAGS(M6FLAG_INLINE_ALWAYS | M6FLAG_CONSUMES_IP_2)
     WORD_CODE(user_var, T(-1), exit)
 WORD_END(user_var)
 WORD(user_var_m64th,    user_var,       DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
@@ -720,7 +720,7 @@ WORD_START(wordlist_find, user_var_m64th)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_ASM_NONE()
-    WORD_FLAGS(M4FLAG_MEM_FETCH) /* multiple exits => cannot inline */
+    WORD_FLAGS(M6FLAG_MEM_FETCH) /* multiple exits => cannot inline */
     WORD_CODE(
         /* wordlist-last                                       ( addr u nt         )
          * begin
@@ -735,7 +735,7 @@ WORD_START(wordlist_find, user_var_m64th)
          *    nip r> name>prev                                 ( addr u     nt'    )
          * repeat
          * 2drop drop r> dup                                   ( nt nt             )
-         * name>flags M4FLAG_IMMEDIATE and 0=                  ( nt t|f            )
+         * name>flags M6FLAG_IMMEDIATE and 0=                  ( nt t|f            )
          * 2* 1+ exit                                          ( nt -1|1           )
          */
         wordlist_to_last,
@@ -751,14 +751,14 @@ WORD_START(wordlist_find, user_var_m64th)
             nip, r_from, name_to_prev,
         _repeat_, T(-24),
         two_drop, drop, r_from, dup,
-        name_to_flags, _lit_, T(M4FLAG_IMMEDIATE), and, zero_equal,
+        name_to_flags, _lit_, T(M6FLAG_IMMEDIATE), and, zero_equal,
         two_times, one_plus, exit
     )
 WORD_END(wordlist_find)
-WORD(wordlist_add,    wordlist_find,      DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH | M4FLAG_MEM_STORE)
-WORD(wordlist_to_last,   wordlist_add,  DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
-WORD(wordlist_reset,       wordlist_to_last, DSTACK(1,0), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_STORE)
-WORD(wordlist_to_string,   wordlist_to_last, DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M4FLAG_MEM_FETCH)
+WORD(wordlist_add,    wordlist_find,      DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M6FLAG_MEM_FETCH | M6FLAG_MEM_STORE)
+WORD(wordlist_to_last,   wordlist_add,  DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M6FLAG_MEM_FETCH)
+WORD(wordlist_reset,       wordlist_to_last, DSTACK(1,0), RSTACK(0,0), WORD_IMPURE | M6FLAG_MEM_STORE)
+WORD(wordlist_to_string,   wordlist_to_last, DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M6FLAG_MEM_FETCH)
 WORD(xt_to_name,           wordlist_to_string, DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 
 #undef LASTWORD

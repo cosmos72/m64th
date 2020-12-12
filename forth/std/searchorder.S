@@ -27,7 +27,7 @@ WORD_START(also,       LASTWORD)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_ASM_NONE()
-    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_FLAGS(M6FLAG_INLINE)
     WORD_CODE(
         searchorder_dup, exit
     )
@@ -42,13 +42,13 @@ WORD_START(wordlist,   set_current)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_ASM_NONE()
-    WORD_FLAGS(M4FLAG_INLINE)
+    WORD_FLAGS(M6FLAG_INLINE)
     WORD_CODE(
         _c_locals_save_,
-            _c_arg_0_, _c_call_, CELL(m4wordlist_new), _c_ret_1_,/*( wid|0      ) */
+            _c_arg_0_, _c_call_, CELL(m6wordlist_new), _c_ret_1_,/*( wid|0      ) */
         _c_locals_load_,
         dup, zero_equal,                                        /* ( wid|0 t|f  ) */
-        _lit_, T(M4ERR_FAILED_TO_ALLOCATE), and, throw,         /* ( wid        ) */
+        _lit_, T(M6ERR_FAILED_TO_ALLOCATE), and, throw,         /* ( wid        ) */
         exit
     )
 WORD_END(wordlist)

@@ -19,7 +19,7 @@
 
 #include "asm.mh"
 
-#define m4fmain main
+#define m6fmain main
 
 /* clang-format off */
 

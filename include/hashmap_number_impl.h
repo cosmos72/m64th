@@ -22,34 +22,34 @@ extern "C" {
 #endif
 
 enum {
-    H(m4hash_no_entry_) = (H(m4u)) - 1,
-    H(m4hash_no_next_) = (H(m4u)) - 2,
+    H(m6hash_no_entry_) = (H(m6u)) - 1,
+    H(m6hash_no_next_) = (H(m6u)) - 2,
 };
 
-typedef struct H(m4hashmap_entry_s_) {
-    m4cell val;
-    H(m4) key;
-    H(m4u) next;
-} H(m4hashmap_entry_);
+typedef struct H(m6hashmap_entry_s_) {
+    m6cell val;
+    H(m6) key;
+    H(m6u) next;
+} H(m6hashmap_entry_);
 
-typedef struct H(m4hashmap_s_) {
-    H(m4u) size;
-    H(m4u) lcap; /* capacity is 1<<lcap */
-    H(m4hashmap_entry_) * vec;
-} H(m4hashmap_);
+typedef struct H(m6hashmap_s_) {
+    H(m6u) size;
+    H(m6u) lcap; /* capacity is 1<<lcap */
+    H(m6hashmap_entry_) * vec;
+} H(m6hashmap_);
 
-H(m4hashmap_) * H(m4hashmap_new_)(H(m4u) capacity);
-void H(m4hashmap_clear_)(H(m4hashmap_) * map);
-void H(m4hashmap_del_)(H(m4hashmap_) * map);
+H(m6hashmap_) * H(m6hashmap_new_)(H(m6u) capacity);
+void H(m6hashmap_clear_)(H(m6hashmap_) * map);
+void H(m6hashmap_del_)(H(m6hashmap_) * map);
 
 /* find key in map. return NULL if not found */
-const H(m4hashmap_entry_) * H(m4hashmap_find_)(const H(m4hashmap_) * map, H(m4) key);
+const H(m6hashmap_entry_) * H(m6hashmap_find_)(const H(m6hashmap_) * map, H(m6) key);
 
 /*
  * insert key and val. does not grow/rehash.
  * returns NULL on failure (if map is too full or key is already present)
  */
-const H(m4hashmap_entry_) * H(m4hashmap_insert_)(H(m4hashmap_) * map, H(m4) key, m4cell val);
+const H(m6hashmap_entry_) * H(m6hashmap_insert_)(H(m6hashmap_) * map, H(m6) key, m6cell val);
 
 #ifdef __cplusplus
 }

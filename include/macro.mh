@@ -17,8 +17,8 @@
  * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M4TH_INCLUDE_MACRO_MH
-#define M4TH_INCLUDE_MACRO_MH
+#ifndef M6TH_INCLUDE_MACRO_MH
+#define M6TH_INCLUDE_MACRO_MH
 
 /** lots of magic macros */
 
@@ -258,33 +258,33 @@
 /* internal m64th macros used (mostly) by assembly */
 
 /* helps catching errors. how to include __FILE__ in error message/ */
-#define M4 CAT2(error_extra_comma_after_end_of_list_at_line_, __LINE__)
+#define M6 CAT2(error_extra_comma_after_end_of_list_at_line_, __LINE__)
 
-#define M4SIZEOF_SHORT(x) _, 2
-#define M4SIZEOF_INT(x) _, 4
-#define M4SIZEOF_CELL(x) _, SZ
-#define M4SIZEOF_CALL(x) _, (SZt + SZ)
-#define M4SIZEOF_WADDR(x) _, SZ
-#define M4SIZEOF_XT(x) _, SZ
-#define M4SIZEOF_LIT_STRING(len, str) _, ((3 * SZt + len - 1) & ~(SZt - 1))
+#define M6SIZEOF_SHORT(x) _, 2
+#define M6SIZEOF_INT(x) _, 4
+#define M6SIZEOF_CELL(x) _, SZ
+#define M6SIZEOF_CALL(x) _, (SZt + SZ)
+#define M6SIZEOF_WADDR(x) _, SZ
+#define M6SIZEOF_XT(x) _, SZ
+#define M6SIZEOF_LIT_STRING(len, str) _, ((3 * SZt + len - 1) & ~(SZt - 1))
 
-#define M4UNITOF_SHORT(x) _, 2
-#define M4UNITOF_INT(x) _, 4
-#define M4UNITOF_CELL(x) _, SZ
-#define M4UNITOF_CALL(x) _, CALL
-#define M4UNITOF_WADDR(x) _, SZ
-#define M4UNITOF_XT(x) _, SZ
-#define M4UNITOF_LIT_STRING(len, str) _, LIT_STRING
+#define M6UNITOF_SHORT(x) _, 2
+#define M6UNITOF_INT(x) _, 4
+#define M6UNITOF_CELL(x) _, SZ
+#define M6UNITOF_CALL(x) _, CALL
+#define M6UNITOF_WADDR(x) _, SZ
+#define M6UNITOF_XT(x) _, SZ
+#define M6UNITOF_LIT_STRING(len, str) _, LIT_STRING
 
-#define M4SIZEOF(token) SECOND_ARG(M4SIZEOF_##token, SZt)
-#define M4UNITOF(token) SECOND_ARG(M4UNITOF_##token, SZt)
+#define M6SIZEOF(token) SECOND_ARG(M6SIZEOF_##token, SZt)
+#define M6UNITOF(token) SECOND_ARG(M6UNITOF_##token, SZt)
 
-#define M4SUM_SIZEOF_(arg) M4SIZEOF(arg) +
-#define M4SUM_SIZEOF(...) (WRAP_ARGS(M4SUM_SIZEOF_, __VA_ARGS__) 0)
+#define M6SUM_SIZEOF_(arg) M6SIZEOF(arg) +
+#define M6SUM_SIZEOF(...) (WRAP_ARGS(M6SUM_SIZEOF_, __VA_ARGS__) 0)
 
-#define M4FLAG_CONSUMES_IP_SZ CAT2(M4FLAG_CONSUMES_IP_, SZ)
-#define M4FLAG_CONSUMES_IP_SZt CAT2(M4FLAG_CONSUMES_IP_, SZt)
-#define M4FLAG_CONSUMES_IP_SZt2 CAT2(M4FLAG_CONSUMES_IP_, SZt2)
+#define M6FLAG_CONSUMES_IP_SZ CAT2(M6FLAG_CONSUMES_IP_, SZ)
+#define M6FLAG_CONSUMES_IP_SZt CAT2(M6FLAG_CONSUMES_IP_, SZt)
+#define M6FLAG_CONSUMES_IP_SZt2 CAT2(M6FLAG_CONSUMES_IP_, SZt2)
 
 /* expand to the correct .[N]byte sequence for token i.e. one of:
  * .byte ...
@@ -292,35 +292,35 @@
  * .4byte ...
  * .8byte ...
  */
-#define M4ASM_BYTES(token) CAT2(M4ASM_BYTES_, M4UNITOF(token))(token)
-#define M4ASM_BYTES_1(token) .byte M4TOKEN_VAL(token);
-#define M4ASM_BYTES_2(token) .2byte M4TOKEN_VAL(token);
-#define M4ASM_BYTES_4(token) .4byte M4TOKEN_VAL(token);
-#define M4ASM_BYTES_8(token) .8byte M4TOKEN_VAL(token);
-#define M4ASM_BYTES_CALL(token) M4TOKEN_VAL(token)       /* expands to M4CALL(word)           */
-#define M4ASM_BYTES_LIT_STRING(token) M4TOKEN_VAL(token) /* expands to M4LIT_STRING(len, str) */
+#define M6ASM_BYTES(token) CAT2(M6ASM_BYTES_, M6UNITOF(token))(token)
+#define M6ASM_BYTES_1(token) .byte M6TOKEN_VAL(token);
+#define M6ASM_BYTES_2(token) .2byte M6TOKEN_VAL(token);
+#define M6ASM_BYTES_4(token) .4byte M6TOKEN_VAL(token);
+#define M6ASM_BYTES_8(token) .8byte M6TOKEN_VAL(token);
+#define M6ASM_BYTES_CALL(token) M6TOKEN_VAL(token)       /* expands to M6CALL(word)           */
+#define M6ASM_BYTES_LIT_STRING(token) M6TOKEN_VAL(token) /* expands to M6LIT_STRING(len, str) */
 
 /*
- * assembler macro: insert M4_call_, WORD_SYM(word).code in a sequence of m4token.
+ * assembler macro: insert M6_call_, WORD_SYM(word).code in a sequence of m6token.
  */
-#define M4CALL(word)                                                                               \
-    CAT3(., SZt, byte) M4_call_;                                                                   \
+#define M6CALL(word)                                                                               \
+    CAT3(., SZt, byte) M6_call_;                                                                   \
     CAT3(., SZ, byte) WORD_SYM(word) + WORD_OFF_XT;
 
-/* assembler macro: number of extra m4tokens needed by M4CALL(...)
- * and number of m4tokens needed by M4XT(...) */
+/* assembler macro: number of extra m6tokens needed by M6CALL(...)
+ * and number of m6tokens needed by M6XT(...) */
 #define nCALLt (SZ / SZt)
 
 /*
- * assembler macro: insert M4_lit_string_, length and padded ascii string
- * in a sequence of m4token.
+ * assembler macro: insert M6_lit_string_, length and padded ascii string
+ * in a sequence of m6token.
  */
-#define M4LIT_STRING(len, str)                                                                     \
-    CAT3(., SZt, byte) M4_lit_string_, M4T(len);                                                   \
+#define M6LIT_STRING(len, str)                                                                     \
+    CAT3(., SZt, byte) M6_lit_string_, M6T(len);                                                   \
     .ascii str;                                                                                    \
     ASM_ALIGN(PSZt, 0) /* needs #include "align.mh" */
 
-/* assembler macro: number of extra m4tokens needed by M4LIT_STRING(len, ...) */
+/* assembler macro: number of extra m6tokens needed by M6LIT_STRING(len, ...) */
 #define nSTRt(len) (1 + ((len) + SZt - 1) / SZt)
 
-#endif /* M4TH_INCLUDE_MACRO_MH */
+#endif /* M6TH_INCLUDE_MACRO_MH */

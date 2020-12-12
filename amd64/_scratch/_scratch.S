@@ -19,7 +19,7 @@ FUNC_START(loop_set_zero)
 FUNC_END(loop_set_zero)
 
 
-#define m4fmain main
+#define m6fmain main
 FUNC_START(main)
         MOVE(IMM(1000000000),  %rdi)
         MOVE(IMM(-1),          %r11)
