@@ -90,10 +90,10 @@ WORD_START(compiler_abort, compile_string_comma)
         allot,                                             /* (                        ) */
         /* discard compilation stack */                    /* (                        ) */
         begin,                                             /* ( sys*                   ) */
-            depth,                                         /* ( sys* u                 ) */
+            depth, zero_more,                              /* ( sys* t|f               ) */
         _while_, T(6),                                     /* ( sys* sys               ) */
             _lit_tok_, colon, equal, nip,                  /* ( sys* t|f               ) */
-        _until_, T(-9),                                    /* (                        ) */
+        _until_, T(-10),                                   /* (                        ) */
         then,                                              /* (                        ) */
         /* skip until end of input line */
         CALL(backslash), exit

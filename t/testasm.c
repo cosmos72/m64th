@@ -26,6 +26,7 @@
 
 #include <assert.h> /* assert() */
 #include <stdio.h>  /* fprintf() fputs() */
+#include <string.h> /* memset() */
 
 static m6testasm testasm_a[] = {
 #if defined(__aarch64__)
@@ -47,6 +48,18 @@ static m6testasm testasm_a[] = {
      {},
      {},
      {(const m6char *)"H\x85\xc0H\xad\x0f\x84\x00\x00\x00\x00", 11}},
+    {"(asm/if) (asm/else) (asm/then)",
+     {CALL(_asm_if_), CALL(_asm_else_), CALL(_asm_then_), m6bye},
+     {},
+     {},
+     {(const m6char *)"H\x85\xc0H\xad\x0f\x84\x05\x00\x00\x00\xe9\x00\x00\x00\x00", 16}},
+    {"{(if) _ (else) _ (then)} (xt>asm-body)",
+     {m6token_comma, m6token_comma, m6token_comma, m6token_comma, m6token_comma,
+      CALL(_xt_to_asm_body_), m6bye},
+     {5, {m6then, T(0), m6_else_, T(0), m6_if_}},
+     {},
+     {(const m6char *)"H\x85\xc0H\xad\x0f\x84\x05\x00\x00\x00\xe9\x00\x00\x00\x00", 16}},
+
 #endif
 };
 
@@ -62,14 +75,20 @@ static m6code m6testasm_init(const m6testasm *t, m6countedcode *code_buf) {
 
 static m6cell m6testasm_run(m64th *m, const m6testasm *t, const m6code t_code,
                             m6string *ret_asm_codegen) {
+    m6word *w;
 
 #undef M64TH_TEST_VERBOSE
 #ifdef M64TH_TEST_VERBOSE
-    printf("%s\n", t->input);
+    printf("%s\n", t->name);
 #endif
 
     m64th_clear(m);
     m64th_asm_reserve(m, m6mem_pagesize());
+
+    w = m->lastw = (m6word *)m->mem.start;
+    memset(w, '\0', sizeof(m6word));
+    m->xt = m6word_xt(w);
+    m->mem.curr = (m6char *)(w + 1);
 
     m6countedstack_copy(&t->dbefore, &m->dstack);
 
@@ -102,9 +121,9 @@ static void m6testasm_failed(m64th *m, const m6testasm *t, const m6string actual
     fputs("\n      actual return stack ", out);
     m6stack_print(&m->rstack, m6mode_user, out);
 
-    fputs("\n... expected asm codegen  ", out);
+    fprintf(out, "\n... expected asm codegen  <%lu> ", (unsigned long)t->asm_codegen.n);
     m6string_print(t->asm_codegen, m6mode_c_disasm, out);
-    fputs("\n      actual asm codegen  ", out);
+    fprintf(out, "\n      actual asm codegen  <%lu> ", (unsigned long)actual_asm_codegen.n);
     m6string_print(actual_asm_codegen, m6mode_c_disasm, out);
     fputc('\n', out);
 }

@@ -361,6 +361,11 @@
 
 #define DICT_WORDS_M64TH_ASM(X)                                                                    \
     DICT_TOKENS_M64TH_ASM(X)                                                                       \
+    /* ( -- t|f ) if all tokens between XT and HERE can be compiled to ASM */                      \
+    /* then initialize ASM buffer and return true */                                               \
+    X(13, "(xt>asm-init)", _xt_to_asm_init_)                                                       \
+    /* ( -- ) main part of 'xt>asm,' can be called only after (xt>asm-init) */                     \
+    X(13, "(xt>asm-body)", _xt_to_asm_body_)                                                       \
     /* ( -- ) install already compiled ASM code into current XT */                                 \
     X(15, "(xt>asm-finish)", _xt_to_asm_finish_)                                                   \
     /* ( orig -- ) resolve an ASM jump to here */                                                  \
