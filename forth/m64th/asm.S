@@ -96,7 +96,7 @@ WORD_START(_asm_then_,     _asm_ret_)
     WORD_CODE(
         CALL(_asm_resolve_jump_here_), exit
     )
-WORD_END(then)
+WORD_END(_asm_then_)
 WORD_START(_asm_vm_catch_, _asm_ret_)
     WORD_DSTACK(-1,-1) /* stack effect when not jumping */
     WORD_RSTACK(0,0)
