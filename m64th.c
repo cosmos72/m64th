@@ -315,7 +315,7 @@ void m6flags_print(m6flags fl, m6printmode mode, FILE *out) {
         skip = printed++ ? 0 : 1;
         fputs((mode == m6mode_user ? "|data_tokens" : "|M6FLAG_DATA_TOKENS") + skip, out);
     }
-    switch (fl & m6flag_noopt_mask) {
+    switch (fl & m6flag_opt_mask) {
     case m6flag_noasm:
         skip = printed++ ? 0 : 1;
         fputs((mode == m6mode_user ? "|noasm" : "|M6FLAG_NOASM") + skip, out);

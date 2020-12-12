@@ -158,7 +158,7 @@ WORD_START(defer_to_validate, d_to_hi)
     WORD_CODE(
         xt_to_validate,                                          /* ( xt                  ) */
         dup, xt_to_name, dup, name_to_flags,                     /* ( xt nt m6flags       ) */
-        _lit_, T(M6FLAG_NOOPT_MASK), and,                        /* ( xt nt m6flags'      ) */
+        _lit_, T(M6FLAG_OPT_MASK), and,                        /* ( xt nt m6flags'      ) */
         _lit_, T(M6FLAG_DEFER), ne,                              /* ( xt nt t|f           ) */
         _if_, T(6),                                              /* ( xt nt               ) */
             name_to_string, ex_message_store,                    /* ( xt                  ) */

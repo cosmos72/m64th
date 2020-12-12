@@ -71,7 +71,7 @@
 #define M6FLAG_MEM_STORE (1 << 9)    /** word dereferences pointer arguments(s) and writes to it */
 #define M6FLAG_DATA_TOKENS (1 << 10) /** word data contains m6tokens */
 
-#define M6FLAG_NOOPT_MASK (7 << 11) /** word must not be optimized */
+#define M6FLAG_OPT_MASK (7 << 11) /** word must not be optimized */
 /**< instruct the compiler not convert word to native ASM */
 #define M6FLAG_NOASM (1 << 11)
 /**< word defined with CREATE - do not optimize away CALL(noop) */

@@ -1664,14 +1664,14 @@ WORD_START(_finish_, _endof_)
     WORD_CODE(
         _check_lit_tok_, colon,                        /* ( colon-sys          ) */
         CALL(exit), /* compile 'exit' */               /* ( colon-sys          ) */
-        drop, dup, _lit_, T(M6FLAG_NOOPT_MASK), and,   /* ( m6flags flag       ) */
+        drop, dup, _lit_, T(M6FLAG_OPT_MASK), and,   /* ( m6flags flag       ) */
         _lit_, T(M6FLAG_NOASM), two_dup, less,         /* ( m6flags flag noasm t|f ) */
         minus_rot, less_equal,                         /* ( m6flags <noasm <=noasm ) */
         _if_, T(7+2*nCALLt),                           /* ( m6flags <noasm     ) */
-        /* optimize only if (nt.flags & M6FLAG_NOOPT_MASK) <= M6FLAG_NOASM       */
+        /* optimize only if (nt.flags & M6FLAG_OPT_MASK) <= M6FLAG_NOASM       */
             CALL(_optimize_),                          /* ( m6flags <noasm     ) */
             _if_, T(2+nCALLt),                         /* ( m6flags            ) */
-        /* compile to ASM only if (nt.flags & M6FLAG_NOOPT_MASK) < M6FLAG_NOASM  */
+        /* compile to ASM only if (nt.flags & M6FLAG_OPT_MASK) < M6FLAG_NOASM  */
                 CALL(xt_to_asm),                       /* ( m6flags            ) */
             then,                                      /* ( m6flags            ) */
         _else_, T(2),                                  /* ( m6flags <noasm     ) */

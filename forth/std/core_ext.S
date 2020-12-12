@@ -324,7 +324,7 @@ WORD_START(to,         roll)
         two_dup, CALL(string_to_name), nip,                      /* ( c-addr u nt|0 -1|0|1) */
         _q_if_, T(10),                                           /* ( c-addr u nt -1|1    ) */
             drop, dup, name_to_flags,                            /* ( c-addr u nt m6flags ) */
-            _lit_, T(M6FLAG_NOOPT_MASK), and,                    /* ( c-addr u nt mask    ) */
+            _lit_, T(M6FLAG_OPT_MASK), and,                    /* ( c-addr u nt mask    ) */
             _lit_, T(M6FLAG_VALUE), equal,                       /* ( c-addr u nt t|f     ) */
         then,                                                    /* ( c-addr u nt|0 t|f   ) */
         _if_, T(5+nCALLt),                                       /* ( c-addr u nt         ) */

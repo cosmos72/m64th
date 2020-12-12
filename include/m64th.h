@@ -74,7 +74,7 @@ typedef enum m6flags_e {
     m6flag_mem_store = M6FLAG_MEM_STORE,
     m6flag_noasm = M6FLAG_NOASM,
     m6flag_noname = M6FLAG_NONAME, /* does not fit m6word.flags, only used in ( colon-sys ) */
-    m6flag_noopt_mask = M6FLAG_NOOPT_MASK,
+    m6flag_opt_mask = M6FLAG_OPT_MASK,
     m6flag_create = M6FLAG_CREATE,
     m6flag_defer = M6FLAG_DEFER,
     m6flag_noopt = M6FLAG_NOOPT,

@@ -62,8 +62,36 @@ WORD_START(_asm_vm_execute_,   _asm_vm_catch_)
 WORD_END(_asm_vm_execute_)
 /* ( -- ) return from VM to native ASM code */
 WORD_NOASM(_vm_return_to_asm_, _asm_vm_execute_,   DSTACK(0,0), RSTACK(0,0), M6FLAG_COMPILE_ONLY | M6FLAG_INLINE_ALWAYS | M6FLAG_JUMP)
+/* ( -- ) register already-compiled ASM code for current XT */
+WORD_START(_xt_to_asm_finish_, _vm_return_to_asm_)
+    WORD_STACK_NONE()
+    WORD_STACK_NONE()
+    WORD_ASM_NONE()
+    WORD_FLAGS(0)
+    WORD_CODE(
+        CALL(asm_make_func),                        /* ( asm-addr asm-len)                 */
+        latest, name_to_asm_n_store, to_r,          /* (                 ) ( asm-addr    ) */
+
+        one_cell, div_token, two_plus,              /* ( token-offset    ) ( R: asm-addr ) */
+        CALL(xt_shift_tokens),                      /* (                 ) ( R: asm-addr ) */
+
+        here, dup, state_fetch, sub,                /* ( here xt-here    ) ( R: asm-addr ) */
+        allot,                   /* reset HERE = XT    ( here            ) ( R: asm-addr ) */
+
+        _lit_comma_, _call_asm_, /* compile '(call-asm)' ( here          ) ( R: asm-addr ) */
+        r_from, comma,           /* compile asm-addr     ( here          )                 */
+        _lit_comma_, exit,       /* compile 'exit'       ( here          )                 */
+
+        here, minus, allot,      /* restore HERE         (               )                 */
+
+        latest, name_to_flags,                      /* ( m6flags         )                 */
+        _lit2s_, SHORT(M6FLAG_INLINE_ALWAYS|M6FLAG_ASM),
+        or,                                         /* ( m6flags'        )                 */
+        latest, name_to_flags_store, exit           /* (                 )                 */
+    )
+WORD_END(_xt_to_asm_finish_)
 /* ( addr u -- ) store assembly code at ASM_HERE and update ASM_HERE */
-WORD_NOASM(asm_comma, _vm_return_to_asm_,  DSTACK(2,0), RSTACK(0,0), WORD_IMPURE)
+WORD_NOASM(asm_comma, _xt_to_asm_finish_,  DSTACK(2,0), RSTACK(0,0), WORD_IMPURE)
 /* ( -- addr ) get ASM_HERE = current ASM address */
 WORD(asm_here,             asm_comma,  DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 /* ( -- addr u ) mark code in ASM buffer as READ+EXEC, and return its range.
@@ -169,8 +197,6 @@ WORD_START(xt_to_asm,      token_to_asm_addr)
     WORD_ASM_NONE()
     WORD_FLAGS(0)
     WORD_CODE(
-        // exit,  /* TO BE TESTED */
-
         /* attempt to compile to ASM only functions containing > 3 tokens                  */
         _num_compiled_,                             /* ( #compiled_tokens                ) */
         three, less_equal,                          /* ( t|f                             ) */
@@ -196,37 +222,9 @@ WORD_START(xt_to_asm,      token_to_asm_addr)
         CALL(_xt_to_asm_finish_), exit              /* (                 )                 */
     )
 WORD_END(xt_to_asm)
-/* ( -- ) register already-compiled ASM code for current XT */
-WORD_START(_xt_to_asm_finish_, xt_to_asm)
-    WORD_STACK_NONE()
-    WORD_STACK_NONE()
-    WORD_ASM_NONE()
-    WORD_FLAGS(0)
-    WORD_CODE(
-        CALL(asm_make_func),                        /* ( asm-addr asm-len)                 */
-        latest, name_to_asm_n_store, to_r,          /* (                 ) ( asm-addr    ) */
-
-        one_cell, div_token, two_plus,              /* ( token-offset    ) ( R: asm-addr ) */
-        CALL(xt_shift_tokens),                      /* (                 ) ( R: asm-addr ) */
-
-        here, dup, state_fetch, sub,                /* ( here xt-here    ) ( R: asm-addr ) */
-        allot,                   /* reset HERE = XT    ( here            ) ( R: asm-addr ) */
-
-        _lit_comma_, _call_asm_, /* compile '(call-asm)' ( here          ) ( R: asm-addr ) */
-        r_from, comma,           /* compile asm-addr     ( here          )                 */
-        _lit_comma_, exit,       /* compile 'exit'       ( here          )                 */
-
-        here, minus, allot,      /* restore HERE         (               )                 */
-
-        latest, name_to_flags,                      /* ( m6flags         )                 */
-        _lit2s_, SHORT(M6FLAG_INLINE_ALWAYS|M6FLAG_ASM),
-        or,                                         /* ( m6flags'        )                 */
-        latest, name_to_flags_store, exit           /* (                 )                 */
-    )
-WORD_END(_xt_to_asm_finish_)
 /* ( -- u t|f ) return required len and true if all tokens between XT and HERE
  * can be compiled to native ASM, otherwise 0 and false */
-WORD_START(xt_to_asm_n,    _xt_to_asm_finish_)
+WORD_START(xt_to_asm_n,    xt_to_asm)
     WORD_DSTACK(0,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
