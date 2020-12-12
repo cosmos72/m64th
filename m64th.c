@@ -974,16 +974,20 @@ static m6char hexdigit(m6ucell u) {
 
 void m6string_print_hex(m6string str, m6printmode mode, FILE *out) {
     const m6char *data = str.addr;
-    const char *separator = (mode == m6mode_user ? "" : "0x");
+    const char *separator = (mode == m6mode_user ? "$" : "0x");
     m6cell i, n = str.n;
     if (out == NULL || data == NULL) {
         return;
     }
     for (i = 0; i < n; i++) {
-        fputs(separator, out);
-        fputc(hexdigit(data[i] >> 4), out);
-        fputc(hexdigit(data[i] >> 0), out);
-        separator = (mode == m6mode_user ? " " : ", 0x");
+        if (mode == m6mode_user && data[i] == 0) {
+            fputs(separator[0] == ' ' ? " 0" : separator[0] == ',' ? ", 0" : "0", out);
+        } else {
+            fputs(separator, out);
+            fputc(hexdigit(data[i] >> 4), out);
+            fputc(hexdigit(data[i] >> 0), out);
+        }
+        separator = (mode == m6mode_user ? " $" : ", 0x");
     }
 }
 

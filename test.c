@@ -37,8 +37,8 @@ int main(int argc, char *argv[]) {
     fail += m64th_testexecute(m, out);
     fail += m64th_testio(m, out);
     fail += m64th_testlocal(m, out);
-    fail += m64th_testcompile(m, out);
     fail += m64th_testasm(m, out);
+    fail += m64th_testcompile(m, out);
     fail += m64th_testhashmap_int(out);
     fail += m64th_testhashmap_string(out);
 

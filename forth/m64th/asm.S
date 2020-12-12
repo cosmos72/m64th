@@ -346,8 +346,8 @@ WORD_START(xt_to_asm_n,        xt_to_asm_comma)
     WORD_FLAGS(0)
     WORD_CODE(/* generated from asm.forth - see source and comments there */
         zero, here, state_fetch,
-        _q_do_, T(20+nCALLt),
-            i, token_fetch, dup,
+        _q_do_, T(19+nCALLt),
+            i_token_fetch, dup,
             CALL(token_to_asm_n),
             _if0_, T(4),
                 unloop, nip, exit,
@@ -355,7 +355,7 @@ WORD_START(xt_to_asm_n,        xt_to_asm_comma)
             rot, plus, swap,
             token_to_name, name_to_flags, flags_to_consumed_tokens,
             one_plus, tokens,
-        _plus_loop_, T(-20-nCALLt),
+        _plus_loop_, T(-19-nCALLt),
         true, exit
     )
 WORD_END(xt_to_asm_n)

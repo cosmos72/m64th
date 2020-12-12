@@ -699,7 +699,7 @@ WORD_START(tokens_comma,   token_comma)
     WORD_ASM_NONE()
     WORD_FLAGS(M6FLAG_INLINE)
     WORD_CODE(/* generated from file m64th_core.forth - see source and comments there */
-        /*11*/ tokens, bounds, _q_do_, T(6), i, token_fetch, token_comma, one_token, _plus_loop_, T(-6), exit
+        /*10*/ tokens, bounds, _q_do_, T(5), i_token_fetch, token_comma, one_token, _plus_loop_, T(-5), exit
     )
 WORD_END(tokens_comma)
 WORD_START(user_var,   tokens_comma)

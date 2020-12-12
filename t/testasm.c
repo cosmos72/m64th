@@ -59,7 +59,6 @@ static m6testasm testasm_a[] = {
      {5, {m6then, T(0), m6_else_, T(0), m6_if_}},
      {},
      {(const m6char *)"H\x85\xc0H\xad\x0f\x84\x05\x00\x00\x00\xe9\x00\x00\x00\x00", 16}},
-
 #endif
 };
 
@@ -122,9 +121,9 @@ static void m6testasm_failed(m64th *m, const m6testasm *t, const m6string actual
     m6stack_print(&m->rstack, m6mode_user, out);
 
     fprintf(out, "\n... expected asm codegen  <%lu> ", (unsigned long)t->asm_codegen.n);
-    m6string_print(t->asm_codegen, m6mode_c_disasm, out);
+    m6string_print_hex(t->asm_codegen, m6mode_user, out);
     fprintf(out, "\n      actual asm codegen  <%lu> ", (unsigned long)actual_asm_codegen.n);
-    m6string_print(actual_asm_codegen, m6mode_c_disasm, out);
+    m6string_print_hex(actual_asm_codegen, m6mode_user, out);
     fputc('\n', out);
 }
 

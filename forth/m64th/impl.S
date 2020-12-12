@@ -1052,8 +1052,8 @@ WORD_START(_optimize_1token_, _while0_)
     WORD_CODE_START(_optimize_1token_)
       WORD_CODE_TOKENS(/* generated from file impl.forth - see source and comments there */
         /*28*/ _ip_to_data_, one_token, minus, bounds, rot, token_fetch, minus_rot,
-        _do_, T(16), dup, i, token_fetch, equal, _if_, T(6), drop, i, token_plus, unloop, exit,
-        then, four, tokens, _plus_loop_, T(-16), drop, zero, exit
+        _do_, T(15), dup, i_token_fetch, equal, _if_, T(6), drop, i, token_plus, unloop, exit,
+        then, four, tokens, _plus_loop_, T(-15), drop, zero, exit
       )
     WORD_CODE_END(_optimize_1token_)
     WORD_DATA_START(_optimize_1token_)
@@ -1265,7 +1265,7 @@ WORD_START(_optimize_4token_, _optimize_3local_)
         _ip_to_data_, bounds,                          /* ( addr end beg        )                */
         do,                                            /* ( addr                ) ( R: end pos ) */
             dup, token_fetch,                          /* ( addr tok0           ) ( R: end pos ) */
-            i, token_fetch, equal,                     /* ( addr t|f            ) ( R: end pos ) */
+            i_token_fetch, equal,                      /* ( addr t|f            ) ( R: end pos ) */
         _continue_if0_, T(21),                         /* ( addr                ) ( R: end pos ) */
             dup, token_fetch_2,                        /* ( addr tok2           ) ( R: end pos ) */
             i, token_fetch_2, equal,                   /* ( addr t|f            ) ( R: end pos ) */
@@ -1277,7 +1277,7 @@ WORD_START(_optimize_4token_, _optimize_3local_)
             unloop, exit,                              /* ( counted-tokens      )                */
 
             six, tokens,                               /* ( addr +loop-offset   ) ( R: end pos ) */
-        _plus_loop_, T(-32),                           /* ( addr                )                */
+        _plus_loop_, T(-31),                           /* ( addr                )                */
         drop, zero, exit                               /* ( 0                   )                */
       ),
       WORD_DATA_TOKENS(
@@ -1301,7 +1301,7 @@ WORD_START(_optimize_5token_, _optimize_4token_)
         _ip_to_data_, bounds,                          /* ( addr end beg        )                */
         do,                                            /* ( addr                ) ( R: end pos ) */
             dup, token_fetch,                          /* ( addr tok0           ) ( R: end pos ) */
-            i, token_fetch, equal,                     /* ( addr t|f            ) ( R: end pos ) */
+            i_token_fetch, equal,                      /* ( addr t|f            ) ( R: end pos ) */
         _continue_if0_, T(21),                         /* ( addr                ) ( R: end pos ) */
             dup, token_fetch_2,                        /* ( addr tok2           ) ( R: end pos ) */
             i, token_fetch_2, equal,                   /* ( addr t|f            ) ( R: end pos ) */
@@ -1313,7 +1313,7 @@ WORD_START(_optimize_5token_, _optimize_4token_)
             unloop, exit,                              /* ( counted-tokens      )                */
 
             eight, tokens,                             /* ( addr +loop-offset   ) ( R: end pos ) */
-        _plus_loop_, T(-32),                           /* ( addr                )                */
+        _plus_loop_, T(-31),                           /* ( addr                )                */
         drop, zero, exit                               /* ( 0                   )                */
       ),
       WORD_DATA_TOKENS(
@@ -1342,7 +1342,7 @@ WORD_START(_optimize_7token_, _optimize_5token_)
         _ip_to_data_, bounds,                          /* ( addr end beg        )                */
         do,                                            /* ( addr                ) ( R: end pos ) */
             dup, token_fetch,                          /* ( addr tok0           ) ( R: end pos ) */
-            i, token_fetch, equal,                     /* ( addr t|f            ) ( R: end pos ) */
+            i_token_fetch, equal,                      /* ( addr t|f            ) ( R: end pos ) */
         _continue_if0_, T(35),                         /* ( addr                ) ( R: end pos ) */
             dup, token_fetch_2,                        /* ( addr tok2           ) ( R: end pos ) */
             i, token_fetch_2, equal,                   /* ( addr t|f            ) ( R: end pos ) */
@@ -1360,7 +1360,7 @@ WORD_START(_optimize_7token_, _optimize_5token_)
             unloop, exit,                              /* ( counted-tokens      )                */
 
             _lit_, T(12), tokens,                      /* ( addr +loop-offset   ) ( R: end pos ) */
-        _plus_loop_, T(-47),                           /* ( addr                )                */
+        _plus_loop_, T(-46),                           /* ( addr                )                */
         drop, zero, exit                               /* ( 0                   )                */
       ),
       WORD_DATA_TOKENS(
@@ -1470,15 +1470,15 @@ WORD_START(_optimize_literal_, _optimize_tokens_comma_)
     WORD_CODE_AND_DATA(
       _optimize_literal_,
       WORD_CODE_TOKENS(
-        _ip_to_data_, bounds, _do_, T(17),             /* loop on this word's data   */
-            dup, i, short_fetch, equal,                /* ( x t|f   ) ( R: end addr ) */
+        _ip_to_data_, bounds, _do_, T(16),             /* loop on this word's data    */
+            dup, i_short_fetch, equal,                 /* ( x t|f   ) ( R: end addr ) */
             _if_, T(8),                                /* ( x       ) ( R: end addr ) */
                 drop, i, token_plus, token_fetch,      /* ( token   ) ( R: end addr ) */
-                true, unloop, exit,                    /* ( token true )             */
+                true, unloop, exit,                    /* ( token true )              */
             then,                                      /* ( x       ) ( R: end addr ) */
             one_token,                                 /* ( x SZt   ) ( R: end addr ) */
-        _plus_loop_, T(-17),                           /* ( x       )                */
-        false, exit                                    /* ( x false )                */
+        _plus_loop_, T(-16),                           /* ( x       )                 */
+        false, exit                                    /* ( x false )                 */
       ),
       WORD_DATA_TOKENS(
         T(-2), minus_two, T(-1), minus_one,
