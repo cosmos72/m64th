@@ -361,8 +361,9 @@
     /* ( dest -- ) resolve an ASM jump from here */                                                \
     X(24, "[asm-resolve-jump-there]", _asm_resolve_jump_there_)                                    \
     X(13, "asm-make-func", asm_make_func) /* ( -- addr ) make ASM code executable and return it */ \
-    X(11, "asm-reserve", asm_reserve) /* ( len -- ) reserve at least len bytes in ASM buffer */    \
-    X(9, "token>asm", token_to_asm) /* ( token -- addr u | 0 0 ) get token ASM address and len */  \
+    X(11, "asm-reserve", asm_reserve) /* ( len -- ) reserve at least len bytes in ASM buffer    */ \
+    X(9, "token>asm", token_to_asm) /* ( token -- addr u | 0 0 ) get token ASM address and len  */ \
+    X(10, "token>asm,", token_to_asm_comma) /* ( sys* token -- sys'* ) compile token to ASM     */ \
     /* ( tok -- tok' ) get replacement token for compiling token to ASM */                         \
     X(17, "token>asm-replace", token_to_asm_replace)                                               \
     X(11, "token>asm>n", token_to_asm_n) /* ( token -- u true | 0 false ) get token ASM len */     \

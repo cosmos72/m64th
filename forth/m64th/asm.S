@@ -172,8 +172,20 @@ WORD_START(token_to_asm,   name_to_asm_n_store)
         then, exit                                  /* ( m6func u       ) */
     )
 WORD_END(token_to_asm)
+/* ( sys* tok -- sys'* ) compile token to ASM */
+WORD_START(token_to_asm_comma,   token_to_asm)
+    WORD_DSTACK(-1,-1)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_ASM_NONE()
+    WORD_FLAGS(0)
+    WORD_CODE(
+        CALL(token_to_asm),                         /* ( token'         ) */
+        asm_comma, exit                             /* (                ) */
+    )
+WORD_END(token_to_asm_comma)
 /* ( token -- u true | 0 false ) get token ASM len */
-WORD_START(token_to_asm_n,     token_to_asm)
+WORD_START(token_to_asm_n,     token_to_asm_comma)
     WORD_DSTACK(1,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -235,13 +247,12 @@ WORD_START(xt_to_asm_comma,      token_to_asm_addr)
         CALL(asm_reserve),                          /* (                                 ) */
 
         here, state_fetch,                          /* ( here xt                         ) */
-        do,                                         /* (                 ) ( R: end pos  ) */
-            i, token_fetch,                         /* ( tok             ) ( R: end pos  ) */
-            CALL(token_to_asm),                     /* ( addr u          ) ( R: end pos  ) */
-            asm_comma,                              /* (                 ) ( R: end pos  ) */
-            i, token_fetch,                         /* ( tok             ) ( R: end pos  ) */
+        do,                                         /* ( sys*            ) ( R: end pos  ) */
+            i, token_fetch,                         /* ( sys* tok        ) ( R: end pos  ) */
+            CALL(token_to_asm_comma),               /* ( sys'*           ) ( R: end pos  ) */
+            i, token_fetch,                         /* ( sys* tok        ) ( R: end pos  ) */
             token_to_name, name_to_flags, flags_to_consumed_tokens,
-            one_plus, tokens,                       /* ( consumed_bytes  ) ( R: end pos  ) */
+            one_plus, tokens,                       /* ( sys* consumed_bytes ) ( R: end pos  ) */
         _plus_loop_, T(-13-nCALLt),                 /* (                 )                 */
 
         CALL(_xt_to_asm_finish_), exit              /* (                 )                 */
