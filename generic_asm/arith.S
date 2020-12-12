@@ -271,7 +271,7 @@ FUNC_END(and)
 
 FUNC_START(base)
         DPUSH__DTOP()
-        ADDI(  M6TH,   M6TH_OFF_BASE, DTOP)
+        ADDI(  M64TH,   M64TH_OFF_BASE, DTOP)
 FUNC_END(base)
 
 
@@ -306,7 +306,7 @@ FUNC_END(drop)
 
 FUNC_START(depth)          /* ( -- n ) get stack depth */
         DPUSH__DTOP()
-        LOAD(  DTOP,   AT(M6TH, M6TH_OFF_DEND))
+        LOAD(  DTOP,   AT(M64TH, M64TH_OFF_DEND))
         SUB2(  DSTK,   DTOP)
         SAR2(IMM(PSZ), DTOP)
 FUNC_END(depth)
@@ -394,7 +394,7 @@ FUNC_END(hop)
 
 FUNC_START(rdepth)          /* ( -- n ) m64th-user get return stack depth */
         DPUSH__DTOP()
-        LOAD(  DTOP,   AT(M6TH, M6TH_OFF_REND))
+        LOAD(  DTOP,   AT(M64TH, M64TH_OFF_REND))
         SUB2(  RSTK,   DTOP)
         SAR2(  IMM(PSZ),   DTOP)
         INC1(  DTOP)        /* also consider RTOP */

@@ -17,8 +17,8 @@
  * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M6TH_IMPL_H
-#define M6TH_IMPL_H
+#ifndef M64TH_IMPL_H
+#define M64TH_IMPL_H
 
 #include "include/m64th.h"
 
@@ -50,4 +50,4 @@ m6cell m64th_cpu_features_enabled(void);
 void m64th_cpu_features_enable(m6cell mask);
 void m64th_cpu_features_disable(m6cell mask);
 
-#endif /* M6TH_IMPL_H */
+#endif /* M64TH_IMPL_H */

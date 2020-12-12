@@ -30,9 +30,9 @@ struct m6arg_s {
 };
 #define DTOP (x->dtop)
 #define DSTK (x->dstk)
-#define M6TH (x->m64th)
-#define IP (M6TH.ip)
-#define FTBL ((m6func_c *)M6TH.ftable)
+#define M64TH (x->m64th)
+#define IP (M64TH.ip)
+#define FTBL ((m6func_c *)M64TH.ftable)
 #define NEXT()                                                                                     \
     do {                                                                                           \
         const m6token t = *IP++;                                                                   \
@@ -41,13 +41,13 @@ struct m6arg_s {
 
 #else /* not __i386__ */
 #define FASTCALL
-#define ARGS m6cell DTOP, m6cell RTOP, m6cell *DSTK, m6cell *RSTK, const m6token *IP, m64th *M6TH
+#define ARGS m6cell DTOP, m6cell RTOP, m6cell *DSTK, m6cell *RSTK, const m6token *IP, m64th *M64TH
 typedef m6cell (*m6func_c)(ARGS);
 #define NEXT()                                                                                     \
     do {                                                                                           \
-        const m6func_c *FTBL = (m6func_c *)M6TH->ftable;                                           \
+        const m6func_c *FTBL = (m6func_c *)M64TH->ftable;                                           \
         const m6token t = *IP++;                                                                   \
-        return FTBL[t](DTOP, RTOP, DSTK, RSTK, IP, M6TH);                                          \
+        return FTBL[t](DTOP, RTOP, DSTK, RSTK, IP, M64TH);                                          \
     } while (0);
 #endif
 

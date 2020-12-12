@@ -17,8 +17,8 @@
  * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M6TH_M6TH_H
-#define M6TH_M6TH_H
+#ifndef M64TH_M64TH_H
+#define M64TH_M64TH_H
 
 #include "flag.mh"
 #include "token.h" /* FIXME not a public header */
@@ -220,7 +220,7 @@ struct m6wordlist_s {     /**< wordlist                                         
     m6hashmap_string map; /**< hash table of contained words. TODO: fill it             */
 };
 
-enum { m6searchorder_max = M6TH_SEARCHORDER_MAX };
+enum { m6searchorder_max = M64TH_SEARCHORDER_MAX };
 
 struct m6searchorder_s {                 /**< counted array of wordlists */
     m6cell n;                            /**< # of wordlists             */
@@ -440,4 +440,4 @@ void m6wordlist_print(const m6wordlist *wid, m6printmode mode, FILE *out);
 }
 #endif
 
-#endif /* M6TH_M6TH_H */
+#endif /* M64TH_M64TH_H */

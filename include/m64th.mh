@@ -17,53 +17,53 @@
  * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M6TH_INCLUDE_M6TH_MH
-#define M6TH_INCLUDE_M6TH_MH
+#ifndef M64TH_INCLUDE_M64TH_MH
+#define M64TH_INCLUDE_M64TH_MH
 
-#define M6TH_OFF_ SZ16               /* distance between C m64th* and Forth m64th* */
-#define M6TH_OFF_DBEG -SZ16          /* offset of m64th->dstack.start    */
-#define M6TH_OFF_DSTK -SZ15          /* offset of m64th->dstack.curr     */
-#define M6TH_OFF_DEND -SZ14          /* offset of m64th->dstack.end      */
-#define M6TH_OFF_RBEG -SZ13          /* offset of m64th->rstack.start    */
-#define M6TH_OFF_RSTK -SZ12          /* offset of m64th->rstack.curr     */
-#define M6TH_OFF_REND -SZ11          /* offset of m64th->rstack.end      */
-#define M6TH_OFF_LSTK -SZ10          /* offset of m64th->lstack          */
-#define M6TH_OFF_IP -SZ9             /* offset of m64th->ip              */
-#define M6TH_OFF_FTABLE -SZ8         /* offset of m64th->ftable          */
-#define M6TH_OFF_WTABLE -SZ7         /* offset of m64th->wtable          */
-#define M6TH_OFF_IN -SZ6             /* offset of m64th->in              */
-#define M6TH_OFF_OUT -SZ5            /* offset of m64th->out             */
-#define M6TH_OFF_LASTW -SZ4          /* offset of m64th->lastw           */
-#define M6TH_OFF_XT -SZ3             /* offset of m64th->xt              */
-#define M6TH_OFF_VM -SZ2             /* offset of m64th->vm              */
-#define M6TH_OFF_C_REG0 -SZ          /* offset of m64th->c_regs[0]       */
-#define M6TH_OFF_USER 0              /* offset of m64th->user*           */
-#define M6TH_OFF_PICT_START 4        /* offset of m64th->pict_start      */
-#define M6TH_OFF_LOCALS SZ           /* offset of m64th->locals          */
-#define M6TH_OFF_BASE SZ2            /* offset of m64th->base            */
-#define M6TH_OFF_MEM_BEG SZ3         /* offset of m64th->mem.start       */
-#define M6TH_OFF_HERE SZ4            /* offset of m64th->mem.curr = HERE */
-#define M6TH_OFF_MEM_END SZ5         /* offset of m64th->mem.end         */
-#define M6TH_OFF_ASM_BEG SZ6         /* offset of m64th->asm.start       */
-#define M6TH_OFF_ASM_FUNC SZ7        /* offset of m64th->asm.curr        */
-#define M6TH_OFF_ASM_END SZ8         /* offset of m64th->asm.end         */
-#define M6TH_OFF_ASM_HERE SZ9        /* offset of m64th->asm_here = ASM_HERE */
-#define M6TH_OFF_HANDLER SZ10        /* offset of m64th->handler         */
-#define M6TH_OFF_EX SZ11             /* offset of m64th->ex              */
-#define M6TH_OFF_EX_STRING_ADDR SZ12 /* offset of m64th->ex_message.addr */
-#define M6TH_OFF_EX_STRING_N SZ13    /* offset of m64th->ex_message.n    */
-#define M6TH_OFF_COMPILE_WID SZ14    /* offset of m64th->compile_wid     */
-#define M6TH_OFF_SEARCHORDER SZ15    /* offset of m64th->searchorder     */
+#define M64TH_OFF_ SZ16               /* distance between C m64th* and Forth m64th* */
+#define M64TH_OFF_DBEG -SZ16          /* offset of m64th->dstack.start    */
+#define M64TH_OFF_DSTK -SZ15          /* offset of m64th->dstack.curr     */
+#define M64TH_OFF_DEND -SZ14          /* offset of m64th->dstack.end      */
+#define M64TH_OFF_RBEG -SZ13          /* offset of m64th->rstack.start    */
+#define M64TH_OFF_RSTK -SZ12          /* offset of m64th->rstack.curr     */
+#define M64TH_OFF_REND -SZ11          /* offset of m64th->rstack.end      */
+#define M64TH_OFF_LSTK -SZ10          /* offset of m64th->lstack          */
+#define M64TH_OFF_IP -SZ9             /* offset of m64th->ip              */
+#define M64TH_OFF_FTABLE -SZ8         /* offset of m64th->ftable          */
+#define M64TH_OFF_WTABLE -SZ7         /* offset of m64th->wtable          */
+#define M64TH_OFF_IN -SZ6             /* offset of m64th->in              */
+#define M64TH_OFF_OUT -SZ5            /* offset of m64th->out             */
+#define M64TH_OFF_LASTW -SZ4          /* offset of m64th->lastw           */
+#define M64TH_OFF_XT -SZ3             /* offset of m64th->xt              */
+#define M64TH_OFF_VM -SZ2             /* offset of m64th->vm              */
+#define M64TH_OFF_C_REG0 -SZ          /* offset of m64th->c_regs[0]       */
+#define M64TH_OFF_USER 0              /* offset of m64th->user*           */
+#define M64TH_OFF_PICT_START 4        /* offset of m64th->pict_start      */
+#define M64TH_OFF_LOCALS SZ           /* offset of m64th->locals          */
+#define M64TH_OFF_BASE SZ2            /* offset of m64th->base            */
+#define M64TH_OFF_MEM_BEG SZ3         /* offset of m64th->mem.start       */
+#define M64TH_OFF_HERE SZ4            /* offset of m64th->mem.curr = HERE */
+#define M64TH_OFF_MEM_END SZ5         /* offset of m64th->mem.end         */
+#define M64TH_OFF_ASM_BEG SZ6         /* offset of m64th->asm.start       */
+#define M64TH_OFF_ASM_FUNC SZ7        /* offset of m64th->asm.curr        */
+#define M64TH_OFF_ASM_END SZ8         /* offset of m64th->asm.end         */
+#define M64TH_OFF_ASM_HERE SZ9        /* offset of m64th->asm_here = ASM_HERE */
+#define M64TH_OFF_HANDLER SZ10        /* offset of m64th->handler         */
+#define M64TH_OFF_EX SZ11             /* offset of m64th->ex              */
+#define M64TH_OFF_EX_STRING_ADDR SZ12 /* offset of m64th->ex_message.addr */
+#define M64TH_OFF_EX_STRING_N SZ13    /* offset of m64th->ex_message.n    */
+#define M64TH_OFF_COMPILE_WID SZ14    /* offset of m64th->compile_wid     */
+#define M64TH_OFF_SEARCHORDER SZ15    /* offset of m64th->searchorder     */
 
 /* pictured output buffer must be at least (2 x n) + 2 chars */
 /* where n = number of bits in a cell */
-#define M6TH_PICT_MAXSIZE (16 * SZ + 2)
+#define M64TH_PICT_MAXSIZE (16 * SZ + 2)
 
-#define M6TH_USER_VAR_LOCALS (M6TH_OFF_LOCALS / SZ) /* user_var index of m64th->locals */
+#define M64TH_USER_VAR_LOCALS (M64TH_OFF_LOCALS / SZ) /* user_var index of m64th->locals */
 
 /* (optimize*) arguments */
 #define M6OPTS_PRIO_HIGH 0x100
 #define M6OPTS_PRIO_MID 0x200
 #define M6OPTS_PRIO_LOW 0x400
 
-#endif /* M6TH_INCLUDE_M6TH_MH */
+#endif /* M64TH_INCLUDE_M64TH_MH */

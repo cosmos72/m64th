@@ -19,7 +19,7 @@
 
 #include "c_liblinenoise.h"
 #include "../include/err.h"
-#include "../include/m64th.mh" /* M6TH_OFF_ */
+#include "../include/m64th.mh" /* M64TH_OFF_ */
 #include "../linenoise/linenoise.h"
 
 #include <errno.h>   /* errno    */

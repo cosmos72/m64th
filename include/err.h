@@ -17,8 +17,8 @@
  * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M6TH_INCLUDE_ERR_H
-#define M6TH_INCLUDE_ERR_H
+#ifndef M64TH_INCLUDE_ERR_H
+#define M64TH_INCLUDE_ERR_H
 
 #include "err.mh"
 
@@ -74,4 +74,4 @@ typedef enum m6err_id_e {
     m6err_c_errno = M6ERR_C_ERRNO, /* error is M6ERR_C_ERRNO - errno               -3500 */
 } m6err_id;
 
-#endif /* M6TH_INCLUDE_ERR_MH */
+#endif /* M64TH_INCLUDE_ERR_MH */

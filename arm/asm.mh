@@ -17,8 +17,8 @@
  * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M6TH_ARM_ASM_MH
-#define M6TH_ARM_ASM_MH
+#ifndef M64TH_ARM_ASM_MH
+#define M64TH_ARM_ASM_MH
 
 #include "../include/asm.mh"
 #include "../include/macro.mh"
@@ -136,7 +136,7 @@
 
 #define DSTK r5  /* pointer to second data stack element */
 #define RSTK r7  /* pointer to second return stack element */
-#define M6TH r8  /* pointer to C struct m64th */
+#define M64TH r8  /* pointer to C struct m64th */
 #define HERE r9  /* pointer to first available code/data location */
 #define FTBL r10 /* pointer to table m6func[m6token] containing asm function addresses */
 #define IP r11   /* instruction pointer */
@@ -294,4 +294,4 @@
     ADD2(IMM(SZt), IP);         /* IP = TARGET_IP              */                                  \
     NEXT0()                     /* jump to TARGET_IP           */
 
-#endif /* M6TH_ARM_ASM_MH */
+#endif /* M64TH_ARM_ASM_MH */

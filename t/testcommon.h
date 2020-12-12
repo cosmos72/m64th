@@ -17,8 +17,8 @@
  * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M6TH_T_TEST_IMPL_H
-#define M6TH_T_TEST_IMPL_H
+#ifndef M64TH_T_TEST_IMPL_H
+#define M64TH_T_TEST_IMPL_H
 
 #include "../impl.h"          /* tfalse, ttrue */
 #include "../include/word.mh" /* WORD_SYM() */
@@ -96,4 +96,4 @@ void m6array_n_copy_to_tarray_n(const m6cell array[], const m6cell array_n /*   
  */
 void m6test_forget_all(m64th *m);
 
-#endif /* M6TH_T_TEST_IMPL_H */
+#endif /* M64TH_T_TEST_IMPL_H */

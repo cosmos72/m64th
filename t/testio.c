@@ -17,15 +17,15 @@
  * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M6TH_T_TESTIO_C
-#define M6TH_T_TESTIO_C
+#ifndef M64TH_T_TESTIO_C
+#define M64TH_T_TESTIO_C
 
 #include "../impl.h"
 #include "../include/err.h"
 #include "../include/func_fwd.h"
 #include "../include/iobuf.mh"
 #include "../include/m64th.h"
-#include "../include/m64th.mh" /* M6TH_PICT_MAXSIZE */
+#include "../include/m64th.mh" /* M64TH_PICT_MAXSIZE */
 #include "../include/token.h"
 #include "../include/word_fwd.h"
 #include "testcommon.h"
@@ -565,7 +565,7 @@ m6cell m64th_testio(m64th *m, FILE *out) {
     m6testcount count = {};
     m6testio_global_init();
     m6testio_bunch(m, testio_a, N_OF(testio_a), &count, out, SZ2);
-    m6testio_bunch(m, testio_b, N_OF(testio_b), &count, out, M6TH_PICT_MAXSIZE);
+    m6testio_bunch(m, testio_b, N_OF(testio_b), &count, out, M64TH_PICT_MAXSIZE);
     m6testio_bunch(m, testio_c, N_OF(testio_c), &count, out, SZ2);
     m6testio_bunch(m, testio_d, N_OF(testio_d), &count, out, 80);
     m6testio_bunch(m, testio_e, N_OF(testio_e), &count, out, SZ2);
@@ -581,4 +581,4 @@ m6cell m64th_testio(m64th *m, FILE *out) {
     return count.failed;
 }
 
-#endif /* M6TH_T_TESTIO_C */
+#endif /* M64TH_T_TESTIO_C */

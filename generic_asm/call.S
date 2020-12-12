@@ -61,21 +61,21 @@ FUNC_START(_catch_beg_)
         RPUSH( LOCL)                               /* save LOCL          */
 
         /* save m64th.handler to rstk */
-        LOAD(  REG1,   AT(M6TH, M6TH_OFF_HANDLER))
+        LOAD(  REG1,   AT(M64TH, M64TH_OFF_HANDLER))
         RPUSH( REG1)                               /* save m64th.handler  */
 
         /* save IP to RTOP, as 'execute' does */
         MOVE(  IP,     RTOP)
 
         /* save rstk depth to m64th.handler */
-        LOAD(  REG1,   AT(M6TH, M6TH_OFF_REND))
+        LOAD(  REG1,   AT(M64TH, M64TH_OFF_REND))
         SUB2(  RSTK,   REG1)                       /* a  = rend - rstk   */
-        STOR(  REG1,   AT(M6TH, M6TH_OFF_HANDLER)) /* save rend - rstk   */
+        STOR(  REG1,   AT(M64TH, M64TH_OFF_HANDLER)) /* save rend - rstk   */
 
         /* clear m64th.ex and m64th.ex_message */
         init_R000_REG1()
-        STOR(  R000_REG1,  AT(M6TH, M6TH_OFF_EX))
-        STOR(  R000_REG1,  AT(M6TH, M6TH_OFF_EX_STRING_N))
+        STOR(  R000_REG1,  AT(M64TH, M64TH_OFF_EX))
+        STOR(  R000_REG1,  AT(M64TH, M64TH_OFF_EX_STRING_N))
 
         /* execute IP */
         MOVE(  REG2,   IP)
@@ -87,12 +87,12 @@ FUNC_RAWEND(_catch_beg_)
 
 /* second part of 'catch'. invoked both if nothing was thrown, and if an exception was thrown */
 FUNC_START(_catch_end_)
-        LOAD(  REG2,   AT(M6TH, M6TH_OFF_EX))        /* a = exception | 0        */
+        LOAD(  REG2,   AT(M64TH, M64TH_OFF_EX))        /* a = exception | 0        */
         JNZ(   REG2,   TO(_catch_end_.thrown))
 
         /* no exception was thrown. just restore m64th.handler and rstk,          */
         /* without restoring dstk                                                */
-        STOR(  RTOP,   AT(M6TH, M6TH_OFF_HANDLER))   /* m64th.handler = rtop = previous m64th.handler */
+        STOR(  RTOP,   AT(M64TH, M64TH_OFF_HANDLER))   /* m64th.handler = rtop = previous m64th.handler */
         LOAD(  RTOP,   AT(RSTK, SZ2))                /* reload rtop              */
         ADD2(  IMM(SZ3), RSTK)                       /* adjust rstk              */
         JUMP(  TO(_catch_end_.push))
@@ -103,7 +103,7 @@ LABEL(_catch_end_.thrown)
          * we only need to push exception to dstk then clear m64th.ex
          */
         init_R000_REG1()
-        STOR(  R000_REG1,  AT(M6TH, M6TH_OFF_EX))    /* clear m64th.ex              */
+        STOR(  R000_REG1,  AT(M64TH, M64TH_OFF_EX))    /* clear m64th.ex              */
         /* do NOT clear m64th.ex_message, caller may need it                        */
 
 LABEL(_catch_end_.push)
@@ -126,7 +126,7 @@ FUNC_RAWEND(_check_lit_tok_)
 /* thus set REG0 to validation error instead, and let caller throw it */
 FUNC_START(_validate_xt_to_reg0_)
         /* check for stack underflow */
-        LOAD(  REG1,   AT(M6TH, M6TH_OFF_DEND))
+        LOAD(  REG1,   AT(M64TH, M64TH_OFF_DEND))
         MOVI(  M6ERR_STACK_UNDERFLOW,  REG0)
         JA(    DSTK,   REG1,   FUNC_RET(_validate_xt_to_reg0_))
         SUB2(  DSTK,   REG1)                       /* a  = dend - dstk   */
@@ -154,7 +154,7 @@ FUNC_START(_validate_xt_to_reg0_)
 
         /* 4. XT must be < saved C stack, which is usually         */
         /* the highest writeable virtual address                   */
-        LOAD( REG2,    AT(M6TH, M6TH_OFF_C_REG0))
+        LOAD( REG2,    AT(M64TH, M64TH_OFF_C_REG0))
         JAE(  DTOP,    REG2, FUNC_RET(_validate_xt_to_reg0_))
 
         ZERO( REG0)
@@ -211,12 +211,12 @@ FUNC_START(throw)
         DPOP___DTOP()
         JZ(    REG0,   FUNC_RET(throw))              /* 0 means 'do not throw'             */
 FUNC_DEF(_throw_reg0_)
-        STOR(  REG0,   AT(M6TH, M6TH_OFF_EX))        /* save exception to m64th.ex          */
-        LOAD(  REG2,   AT(M6TH, M6TH_OFF_HANDLER))   /* b = m64th.handler = rend - rstk     */
+        STOR(  REG0,   AT(M64TH, M64TH_OFF_EX))        /* save exception to m64th.ex          */
+        LOAD(  REG2,   AT(M64TH, M64TH_OFF_HANDLER))   /* b = m64th.handler = rend - rstk     */
         JZ(    REG2,   FUNC(bye))                    /* no handler => jump to 'bye'        */
 
         /* recompute rstk from m64th.rend and m64th.handler                                  */
-        LOAD(  REG1,   AT(M6TH, M6TH_OFF_REND))      /* a = rend'                          */
+        LOAD(  REG1,   AT(M64TH, M64TH_OFF_REND))      /* a = rend'                          */
         SUB2(  REG2,   REG1)                         /* a = rend' - (rend - rstk) = rstk'  */
 
         /* speculatively copy RTOP to IP: it may contain the IP saved to RTOP by (catch-beg) */
@@ -229,7 +229,7 @@ FUNC_DEF(_throw_reg0_)
 LABEL(throw.rstk_ok)
         /* load previous m64th.handler from rstk */
         RPOP(  REG1)                                 /* a = previous m64th.handler */
-        STOR(  REG1,   AT(M6TH, M6TH_OFF_HANDLER))   /* m64th.handler = a          */
+        STOR(  REG1,   AT(M64TH, M64TH_OFF_HANDLER))   /* m64th.handler = a          */
 
         /* load previous LOCL register from rstk */
         RPOP(  LOCL)
@@ -239,7 +239,7 @@ LABEL(throw.rstk_ok)
          * this is tricky because we must also preserve/restore DTOP
          */
         RPOP(  REG1)                                 /* a = dend - dstk = saved depth      */
-        LOAD(  REG3,   AT(M6TH, M6TH_OFF_DEND))      /* c = dend'                          */
+        LOAD(  REG3,   AT(M64TH, M64TH_OFF_DEND))      /* c = dend'                          */
         MOVE(  REG3,   REG2)                         /* b = dend'                          */
         SUB2(  DSTK,   REG3)                         /* c = dend' - dstk' = current depth' */
         JEQ(   REG1,   REG3,   TO(throw.dstk_ok))    /* jump if depth = depth'             */

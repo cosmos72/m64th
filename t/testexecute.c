@@ -17,8 +17,8 @@
  * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M6TH_T_TESTEXECUTE_C
-#define M6TH_T_TESTEXECUTE_C
+#ifndef M64TH_T_TESTEXECUTE_C
+#define M64TH_T_TESTEXECUTE_C
 
 #include "../impl.h"
 #include "../include/err.h"
@@ -774,7 +774,7 @@ static m6testexecute testexecute_d[] = {
      {{1, {sizeof(m6locals) + 16 * (sizeof(m6local) + 255)}}, {}},
      {}},
     {"_ (local)",
-     {CALL(_local_), m6user_var, T(M6TH_USER_VAR_LOCALS), m6fetch, m6dup, m6fetch, m6swap,
+     {CALL(_local_), m6user_var, T(M64TH_USER_VAR_LOCALS), m6fetch, m6dup, m6fetch, m6swap,
       m6cell_fetch_1, m6bye},
      {{2, {(m6cell) "ab3", 3}}, {}},
      {{2, {1 /*ls.n*/, 5 /*ls.end*/}}, {}},
@@ -1932,8 +1932,8 @@ static void m64th_testexecute_bunch(m64th *m, m6testexecute bunch[], m6cell n, m
     m6cell i, fail = 0;
     for (i = 0; i < n; i++) {
         m6code_pair code_pair = m6testexecute_init(&bunch[i], &countedcode_pair);
-#undef M6TH_TEST_VERBOSE
-#ifdef M6TH_TEST_VERBOSE
+#undef M64TH_TEST_VERBOSE
+#ifdef M64TH_TEST_VERBOSE
         fprintf(out, "%s\n", bunch[i].name);
 #endif
         if (!m6testexecute_run(m, &bunch[i], &code_pair)) {
@@ -1990,4 +1990,4 @@ m6cell m64th_testexecute(m64th *m, FILE *out) {
     return count.failed;
 }
 
-#endif /* M6TH_T_TESTEXECUTE_C */
+#endif /* M64TH_T_TESTEXECUTE_C */

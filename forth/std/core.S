@@ -390,7 +390,7 @@ WORD_START(exit, execute)
     WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_IMMEDIATE | M6FLAG_JUMP)
     WORD_CODE(
         CALL(_throw_if_not_compiling_),
-        user_var, T(M6TH_USER_VAR_LOCALS), fetch,      /* ( ls|0                 ) */
+        user_var, T(M64TH_USER_VAR_LOCALS), fetch,      /* ( ls|0                 ) */
         question_dup,                                  /* ( ls ls |0             ) */
         _if_, T(9),                                    /* ( ls                   ) */
             fetch, question_dup,                       /* ( ls.n ls.n | 0        ) */

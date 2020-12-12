@@ -17,8 +17,8 @@
  * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M6TH_T_TESTCOMPILE_C
-#define M6TH_T_TESTCOMPILE_C
+#ifndef M64TH_T_TESTCOMPILE_C
+#define M64TH_T_TESTCOMPILE_C
 
 #include "../impl.h"
 #include "../include/m64th.h"
@@ -457,8 +457,8 @@ static m6cell m6testcompile_run(m64th *m, const m6testcompile *t, m6code t_codeg
     m6ucell input_n = strlen(t->input);
     const m6countedstack empty = {};
 
-#undef M6TH_TEST_VERBOSE
-#ifdef M6TH_TEST_VERBOSE
+#undef M64TH_TEST_VERBOSE
+#ifdef M64TH_TEST_VERBOSE
     printf("%s\n", t->input);
 #endif
 
@@ -560,4 +560,4 @@ m6cell m64th_testcompile(m64th *m, FILE *out) {
     return fail;
 }
 
-#endif /* M6TH_T_TESTCOMPILE_C */
+#endif /* M64TH_T_TESTCOMPILE_C */

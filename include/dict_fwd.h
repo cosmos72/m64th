@@ -17,8 +17,8 @@
  * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M6TH_DICT_FWD_H
-#define M6TH_DICT_FWD_H
+#ifndef M64TH_DICT_FWD_H
+#define M64TH_DICT_FWD_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -58,4 +58,4 @@ extern const m6dict m6dict_m64th_impl;
 }
 #endif
 
-#endif /* M6TH_DICT_FWD_H */
+#endif /* M64TH_DICT_FWD_H */

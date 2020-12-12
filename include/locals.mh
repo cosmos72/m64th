@@ -17,8 +17,8 @@
  * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M6TH_INCLUDE_LOCALS_MH
-#define M6TH_INCLUDE_LOCALS_MH
+#ifndef M64TH_INCLUDE_LOCALS_MH
+#define M64TH_INCLUDE_LOCALS_MH
 
 #define LOCAL_OFF_IDX 0      /* offset of m6local->idx      */
 #define LOCAL_OFF_STR 1      /* offset of m6local->str      */
@@ -34,4 +34,4 @@
 
 #define LOCALS_SZ SZ3 /* sizeof(m6locals) */
 
-#endif /* M6TH_INCLUDE_LOCALS_MH */
+#endif /* M64TH_INCLUDE_LOCALS_MH */

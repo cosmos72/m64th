@@ -17,8 +17,8 @@
  * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M6TH_INCLUDE_FUNC_ALIAS_MH
-#define M6TH_INCLUDE_FUNC_ALIAS_MH
+#ifndef M64TH_INCLUDE_FUNC_ALIAS_MH
+#define M64TH_INCLUDE_FUNC_ALIAS_MH
 
 #include "../dispatch/sz.mh" /* SZ */
 #include "macro.mh"          /* CAT3() */
@@ -235,4 +235,4 @@
 #define m6fu_to_d m6fzero
 #define m6fd_to_hi m6fnip
 
-#endif /* M6TH_INCLUDE_FUNC_ALIAS_MH */
+#endif /* M64TH_INCLUDE_FUNC_ALIAS_MH */

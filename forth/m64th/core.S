@@ -633,7 +633,7 @@ WORD_START(string_to_local,      searchorder_store_0)
     WORD_ASM_NONE()
     WORD_FLAGS(M6FLAG_COMPILE_ONLY)
     WORD_CODE(
-        user_var, T(M6TH_USER_VAR_LOCALS), fetch,
+        user_var, T(M64TH_USER_VAR_LOCALS), fetch,
         _q_if0_, T(6),                          /* ( c-addr u 0                ) */
             nip, nip, minus_one, swap, exit,    /* ( -1 false                  ) */
         then,                                   /* ( c-addr u ls               ) */

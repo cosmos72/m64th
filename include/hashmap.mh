@@ -17,8 +17,8 @@
  * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M6TH_INCLUDE_HASHMAP_NUMBER_MH
-#define M6TH_INCLUDE_HASHMAP_NUMBER_MH
+#ifndef M64TH_INCLUDE_HASHMAP_NUMBER_MH
+#define M64TH_INCLUDE_HASHMAP_NUMBER_MH
 
 #define M6hash_no_entry -1
 #define M6hash_no_next -2
@@ -56,4 +56,4 @@
 #define M6HASHMAP_ENTRY_OFF_NEXT_STRING SZ2
 #define M6HASHMAP_ENTRY_SZ_STRING SZ3
 
-#endif /* M6TH_INCLUDE_HASHMAP_NUMBER_MH */
+#endif /* M64TH_INCLUDE_HASHMAP_NUMBER_MH */

@@ -17,8 +17,8 @@
  * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M6TH_INCLUDE_TOKEN_H
-#define M6TH_INCLUDE_TOKEN_H
+#ifndef M64TH_INCLUDE_TOKEN_H
+#define M64TH_INCLUDE_TOKEN_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -53,4 +53,4 @@ typedef uint16_t m6token;
 }
 #endif
 
-#endif /* M6TH_INCLUDE_TOKEN_H */
+#endif /* M64TH_INCLUDE_TOKEN_H */

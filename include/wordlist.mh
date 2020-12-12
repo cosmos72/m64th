@@ -17,8 +17,8 @@
  * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M6TH_INCLUDE_WORDLIST_MH
-#define M6TH_INCLUDE_WORDLIST_MH
+#ifndef M64TH_INCLUDE_WORDLIST_MH
+#define M64TH_INCLUDE_WORDLIST_MH
 
 #include "hashmap.mh"
 
@@ -48,4 +48,4 @@
     CAT3(., SZ, byte) DICT_SYM(name);                                                              \
     .fill M6WORDLIST_SZ - M6WORDLIST_OFF_LAST, 1, 0;
 
-#endif /* M6TH_INCLUDE_WORDLIST_MH */
+#endif /* M64TH_INCLUDE_WORDLIST_MH */

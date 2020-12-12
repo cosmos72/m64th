@@ -17,8 +17,8 @@
  * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M6TH_INCLUDE_WORD_FWD_H
-#define M6TH_INCLUDE_WORD_FWD_H
+#ifndef M64TH_INCLUDE_WORD_FWD_H
+#define M64TH_INCLUDE_WORD_FWD_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -39,4 +39,4 @@ DICT_WORDS_ALL(M6WORD_ENTRY)
 }
 #endif
 
-#endif /* M6TH_INCLUDE_WORD_FWD_H */
+#endif /* M64TH_INCLUDE_WORD_FWD_H */

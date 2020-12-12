@@ -17,8 +17,8 @@
  * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M6TH_INCLUDE_DICT_FORTH_MH
-#define M6TH_INCLUDE_DICT_FORTH_MH
+#ifndef M64TH_INCLUDE_DICT_FORTH_MH
+#define M64TH_INCLUDE_DICT_FORTH_MH
 
 /* ------- forth 2012 minimal search order ------------------------------------------------------ */
 #define DICT_TOKENS_FORTH_ROOT(X)
@@ -317,4 +317,4 @@
     DICT_WORDS_FORTH_SEARCHORDER(X)                                                                \
     DICT_WORDS_FORTH_STRING(X)
 
-#endif /* M6TH_INCLUDE_DICT_FORTH_MH */
+#endif /* M64TH_INCLUDE_DICT_FORTH_MH */

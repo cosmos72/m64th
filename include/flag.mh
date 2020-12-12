@@ -17,13 +17,13 @@
  * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M6TH_INCLUDE_FLAG_MH
-#define M6TH_INCLUDE_FLAG_MH
+#ifndef M64TH_INCLUDE_FLAG_MH
+#define M64TH_INCLUDE_FLAG_MH
 
 /* macros that are part of m64th public API */
 
 /* m64th searchorder */
-#define M6TH_SEARCHORDER_MAX 15 /**< maximum # of wordlists in search order */
+#define M64TH_SEARCHORDER_MAX 15 /**< maximum # of wordlists in search order */
 
 /* m64th state */
 #define M6STATE_INTERPRET 0 /**< m64th is interpreting. By forth 2012, must be = 0  */
@@ -98,4 +98,4 @@
 /* does not fit m6flags, only stored in ( colon-sys ) */
 #define M6FLAG_NONAME (1 << 16)
 
-#endif /* M6TH_INCLUDE_FLAG_MH */
+#endif /* M64TH_INCLUDE_FLAG_MH */

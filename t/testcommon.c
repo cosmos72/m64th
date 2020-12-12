@@ -17,8 +17,8 @@
  * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M6TH_T_TESTCOMMON_C
-#define M6TH_T_TESTCOMMON_C
+#ifndef M64TH_T_TESTCOMMON_C
+#define M64TH_T_TESTCOMMON_C
 
 #include "testcommon.h"
 
@@ -75,4 +75,4 @@ void m6test_forget_all(m64th *m) {
     }
 }
 
-#endif /* M6TH_T_TESTCOMMON_C */
+#endif /* M64TH_T_TESTCOMMON_C */

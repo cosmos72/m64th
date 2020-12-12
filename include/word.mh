@@ -17,8 +17,8 @@
  * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M6TH_INCLUDE_WORD_MH
-#define M6TH_INCLUDE_WORD_MH
+#ifndef M64TH_INCLUDE_WORD_MH
+#define M64TH_INCLUDE_WORD_MH
 
 #define WORD_OFF_PREV_OFF 0 /* offset of m6word.prev_off   */
 #define WORD_OFF_NAME_OFF 8 /* offset of m6word.name_off   */
@@ -140,4 +140,4 @@
     WORD_BODY_NOASM(name, flags, dstack, rstack)                                                   \
     WORD_END(name)
 
-#endif /* M6TH_INCLUDE_WORD_MH */
+#endif /* M64TH_INCLUDE_WORD_MH */

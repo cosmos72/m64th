@@ -17,8 +17,8 @@
  * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M6TH_TEST_H
-#define M6TH_TEST_H
+#ifndef M64TH_TEST_H
+#define M64TH_TEST_H
 
 #include "include/m64th.h"
 
@@ -74,4 +74,4 @@ typedef struct m6countedwcode_s {
     m6cell data[m6test_code_n];
 } m6countedwcode;
 
-#endif /* M6TH_TEST_H */
+#endif /* M64TH_TEST_H */

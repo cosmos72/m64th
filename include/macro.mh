@@ -17,8 +17,8 @@
  * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M6TH_INCLUDE_MACRO_MH
-#define M6TH_INCLUDE_MACRO_MH
+#ifndef M64TH_INCLUDE_MACRO_MH
+#define M64TH_INCLUDE_MACRO_MH
 
 /** lots of magic macros */
 
@@ -323,4 +323,4 @@
 /* assembler macro: number of extra m6tokens needed by M6LIT_STRING(len, ...) */
 #define nSTRt(len) (1 + ((len) + SZt - 1) / SZt)
 
-#endif /* M6TH_INCLUDE_MACRO_MH */
+#endif /* M64TH_INCLUDE_MACRO_MH */

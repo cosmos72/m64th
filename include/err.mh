@@ -17,8 +17,8 @@
  * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M6TH_INCLUDE_ERR_MH
-#define M6TH_INCLUDE_ERR_MH
+#ifndef M64TH_INCLUDE_ERR_MH
+#define M64TH_INCLUDE_ERR_MH
 
 #define M6ERR_OK 0 /* SUCCESS */
 #define M6ERR_ABORT -1
@@ -70,4 +70,4 @@
 /* ... */
 #define M6ERR_C_ERRNO -3500 /* error is M6ERR_C_ERRNO - errno */
 
-#endif /* M6TH_INCLUDE_ERR_MH */
+#endif /* M64TH_INCLUDE_ERR_MH */

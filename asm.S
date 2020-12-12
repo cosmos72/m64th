@@ -17,8 +17,8 @@
  * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M6TH_ASM_S
-#define M6TH_ASM_S
+#ifndef M64TH_ASM_S
+#define M64TH_ASM_S
 
 /* clang-format off */
 
@@ -85,4 +85,4 @@ MARKER(asm_data_end)
         .ident "m64th 0.0.0"
         .section .note.GNU-stack,"",@progbits
 
-#endif /* M6TH_ASM_S */
+#endif /* M64TH_ASM_S */

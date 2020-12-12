@@ -17,8 +17,8 @@
  * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M6TH_INCLUDE_OPT_MH
-#define M6TH_INCLUDE_OPT_MH
+#ifndef M64TH_INCLUDE_OPT_MH
+#define M64TH_INCLUDE_OPT_MH
 
 #include "macro.mh"
 
@@ -687,4 +687,4 @@
 /* not defined here. see (optimize-2token-lowprio) in forth/m64th/impl.S  */
 #undef OPT2_RULES_LOWPRIO
 
-#endif /* M6TH_INCLUDE_OPT_MH */
+#endif /* M64TH_INCLUDE_OPT_MH */

@@ -28,9 +28,9 @@ FUNC_START(_num_compiled_)
         DPUSH__DTOP()
 #ifdef ARITH_ARG1_AT
         MOVE(  HERE,       DTOP)                       /* dtop = here           */
-        SUB2(  AT(M6TH, M6TH_OFF_XT),  DTOP)           /* dtop = here - m64th.xt */
+        SUB2(  AT(M64TH, M64TH_OFF_XT),  DTOP)           /* dtop = here - m64th.xt */
 #else
-        LOAD(  DTOP,       AT(M6TH, M6TH_OFF_XT))      /* dtop = m64th.xt        */
+        LOAD(  DTOP,       AT(M64TH, M64TH_OFF_XT))      /* dtop = m64th.xt        */
         XSUB2( HERE,       DTOP)                       /* dtop = here - m64th.xt */
 #endif
         SHR2(  IMM(PSZt),  DTOP)
@@ -41,9 +41,9 @@ FUNC_END(_num_compiled_)
 FUNC_START(_num_compiled_reg0_)
 #ifdef ARITH_ARG1_AT
         MOVE(  HERE,       REG0)                       /* @ = here           */
-        SUB2(  AT(M6TH, M6TH_OFF_XT),  REG0)           /* @ = here - m64th.xt */
+        SUB2(  AT(M64TH, M64TH_OFF_XT),  REG0)           /* @ = here - m64th.xt */
 #else
-        LOAD(  REG0,       AT(M6TH, M6TH_OFF_XT))      /* @ = m64th.xt        */
+        LOAD(  REG0,       AT(M64TH, M64TH_OFF_XT))      /* @ = m64th.xt        */
         XSUB2( HERE,       REG0)                       /* @ = here - m64th.xt */
 #endif
         SHR2(  IMM(PSZt),  REG0)
@@ -119,7 +119,7 @@ FUNC_END(_compile_sys_lit_)
  */
 FUNC_START(_cs_find_lit_)    /* [cs-find] */
         DPUSH__DTOP()              /* push dtop now: avoid special case cs-depth == 0 */
-        LOAD(  REG2,       AT(M6TH, M6TH_OFF_DEND))    /* b = dstack_end              */
+        LOAD(  REG2,       AT(M64TH, M64TH_OFF_DEND))    /* b = dstack_end              */
         LD_ut( REG1,       AT(IP))                     /* a = category                */
         SUB2(  DSTK,       REG2)                       /* b = dstack depth in bytes   */
         ZERO(  DTOP)                                   /* dtop = 0                    */
@@ -199,15 +199,15 @@ FUNC_END(comma)
 
 /* asm, ( addr u -- ) m64th-asm */
 FUNC_START(asm_comma)
-        LOAD(  REG1,   AT(M6TH, M6TH_OFF_ASM_HERE))    /* a = asm-here          */
-        LOAD(  REG2,   AT(M6TH, M6TH_OFF_ASM_END))     /* b = asm-end           */
+        LOAD(  REG1,   AT(M64TH, M64TH_OFF_ASM_HERE))    /* a = asm-here          */
+        LOAD(  REG2,   AT(M64TH, M64TH_OFF_ASM_END))     /* b = asm-end           */
         SUB2(  REG1,   REG2)                           /* b = free_bytes        */
         MOVI(  M6ERR_ASM_OVERFLOW, REG0)
         JA(    DTOP,   REG2,    FUNC(_throw_reg0_))
 
         DPUSH( REG1)                                   /* ( addr asm-here u )   */
         ADD2(  DTOP,   REG1)
-        STOR(  REG1,   AT(M6TH, M6TH_OFF_ASM_HERE))    /* asm-here += u         */
+        STOR(  REG1,   AT(M64TH, M64TH_OFF_ASM_HERE))    /* asm-here += u         */
         JUMP(  FUNC(cmove))
 FUNC_RAWEND(asm_comma)
 
@@ -239,7 +239,7 @@ FUNC_SIZE(countedstring_comma)
 #ifndef M6FIMMEDIATE
 /* immediate ( -- ) mark last defined word as 'immediate' */
 FUNC_START(immediate)
-        LOAD(  REG1,   AT(M6TH, M6TH_OFF_LASTW))   /* a = w = m64th.lastw    */
+        LOAD(  REG1,   AT(M64TH, M64TH_OFF_LASTW))   /* a = w = m64th.lastw    */
         LD_uh( REG2,   AT(REG1, WORD_OFF_FLAGS))   /* b = w.flags           */
         ORR2(  IMM(M6FLAG_IMMEDIATE), REG2)        /* b |= m6flag_immediate */
         STORh( REG2,   AT(REG1, WORD_OFF_FLAGS))   /* w.flags = b           */
@@ -250,18 +250,18 @@ FUNC_END(immediate)
 /* latest ( -- nt ) get last defined word */
 FUNC_START(latest)
         DPUSH__DTOP()
-        LOAD(  DTOP,   AT(M6TH, M6TH_OFF_LASTW))   /* nt = m64th.lastw       */
+        LOAD(  DTOP,   AT(M64TH, M64TH_OFF_LASTW))   /* nt = m64th.lastw       */
 FUNC_END(latest)
 
 
 /* set-latest ( nt -- ) set last defined word */
 FUNC_START(to_latest)
-        STOR(  DTOP,   AT(M6TH, M6TH_OFF_LASTW))   /* m64th.lastw = nt       */
+        STOR(  DTOP,   AT(M64TH, M64TH_OFF_LASTW))   /* m64th.lastw = nt       */
         /* we really should NOT be compiling now, but in some tests we are  */
-        LOAD(  REG1,   AT(M6TH, M6TH_OFF_XT))      /* a = m64th.xt           */
+        LOAD(  REG1,   AT(M64TH, M64TH_OFF_XT))      /* a = m64th.xt           */
         JZ(    REG1,   TO(to_latest.done))
         ADD2(  IMM(WORD_OFF_XT),   DTOP)           /* dtop = nt.code        */
-        STOR(  DTOP,   AT(M6TH, M6TH_OFF_XT))      /* m64th.xt = dtop        */
+        STOR(  DTOP,   AT(M64TH, M64TH_OFF_XT))      /* m64th.xt = dtop        */
 LABEL(to_latest.done)
         DPOP___DTOP()
 FUNC_END(to_latest)
@@ -269,13 +269,13 @@ FUNC_END(to_latest)
 
 FUNC_START(state)
         DPUSH__DTOP()
-        ADDI(  M6TH, M6TH_OFF_XT, DTOP)                /* &m64th.xt is also used as STATE */
+        ADDI(  M64TH, M64TH_OFF_XT, DTOP)                /* &m64th.xt is also used as STATE */
 FUNC_END(state)
 
 
 FUNC_START(state_fetch)
         DPUSH__DTOP()
-        LOAD(  DTOP, AT(M6TH, M6TH_OFF_XT))            /* m64th.xt is also used as STATE @ */
+        LOAD(  DTOP, AT(M64TH, M64TH_OFF_XT))            /* m64th.xt is also used as STATE @ */
 FUNC_END(state_fetch)
 
 /**
@@ -283,16 +283,16 @@ FUNC_END(state_fetch)
  * Update m64th.lastw.code_n (needed by ';') then set m64th.xt = state to 0
  */
 FUNC_START(left_bracket)
-        LOAD(  REG2,       AT(M6TH, M6TH_OFF_XT))
+        LOAD(  REG2,       AT(M64TH, M64TH_OFF_XT))
         JZ(    REG2,       FUNC_RET(left_bracket))    /* noop if interpreting  */
 
         XSUB2( HERE,       REG2)                       /* b = here - m64th.xt    */
-        LOAD(  REG1,       AT(M6TH, M6TH_OFF_LASTW))   /* a = m64th.lastw        */
+        LOAD(  REG1,       AT(M64TH, M64TH_OFF_LASTW))   /* a = m64th.lastw        */
         SHR2(  IMM(PSZt),  REG2)                       /* b = #compiled         */
         STORh( REG2,       AT(REG1, WORD_OFF_CODE_N))  /* lastw.code_n = b      */
 
         init_R000_REG1()
-        STOR( R000_REG1,   AT(M6TH, M6TH_OFF_XT))      /* exit compile mode     */
+        STOR( R000_REG1,   AT(M64TH, M64TH_OFF_XT))      /* exit compile mode     */
 FUNC_END(left_bracket)
 
 
@@ -303,11 +303,11 @@ FUNC_END(left_bracket)
 FUNC_START(right_bracket)
         /* TODO check if enough space */
         MOVI(  M6ERR_ZERO_LENGTH_NAME, REG0)           /* @ = err               */
-        LOAD(  REG1,       AT(M6TH, M6TH_OFF_LASTW))   /* a = w = m64th.lastw    */
+        LOAD(  REG1,       AT(M64TH, M64TH_OFF_LASTW))   /* a = w = m64th.lastw    */
         JZ(    REG1,       FUNC(_throw_reg0_))         /* no latest word: throw */
         MOVI(  M6ERR_COMPILER_NESTING, REG0)           /* @ = err               */
-        LOAD(  REG3,       AT(M6TH, M6TH_OFF_XT))      /* c = m64th.xt           */
+        LOAD(  REG3,       AT(M64TH, M64TH_OFF_XT))      /* c = m64th.xt           */
         ADD2(  IMM(WORD_OFF_XT),   REG1)               /* a = xt = w.code       */
         JNZ(   REG3,       FUNC(_throw_reg0_))         /* compiling: throw      */
-        STOR(  REG1,       AT(M6TH, M6TH_OFF_XT))      /* m64th.xt = w.code      */
+        STOR(  REG1,       AT(M64TH, M64TH_OFF_XT))      /* m64th.xt = w.code      */
 FUNC_END(right_bracket)

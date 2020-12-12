@@ -23,7 +23,7 @@
 #include "include/dict_fwd.h"
 #include "include/func.mh"
 #include "include/func_fwd.h"
-#include "include/m64th.mh" /* M6TH_PICT_MAXSIZE */
+#include "include/m64th.mh" /* M64TH_PICT_MAXSIZE */
 #include "include/macro.mh"
 #include "include/word_fwd.h"
 #include "include/wordlist_fwd.h"
@@ -1325,7 +1325,7 @@ m64th *m64th_new(m64th_opt options) {
     memset(m->c_regs, '\0', sizeof(m->c_regs));
     m->user_size = ((m6cell)&m->user_var[0] - (m6cell)&m->user_size) / SZ;
     m->user_next = m->user_size;
-    m->pict_start = M6TH_PICT_MAXSIZE;
+    m->pict_start = M64TH_PICT_MAXSIZE;
     memset(m->unused0, 0, sizeof(m->unused0));
     m->lastw = NULL;
     m->xt = NULL;

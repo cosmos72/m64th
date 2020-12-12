@@ -17,8 +17,8 @@
  * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M6TH_INCLUDE_ALIGN_MH
-#define M6TH_INCLUDE_ALIGN_MH
+#ifndef M64TH_INCLUDE_ALIGN_MH
+#define M64TH_INCLUDE_ALIGN_MH
 
 #define ASM_ALIGN(... /* psz, padding */) .p2align __VA_ARGS__;
 
@@ -32,4 +32,4 @@
  */
 #define FUNC_ALIGN() ASM_ALIGN(3)
 
-#endif /* M6TH_INCLUDE_ASM_MH */
+#endif /* M64TH_INCLUDE_ASM_MH */

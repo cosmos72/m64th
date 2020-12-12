@@ -2055,7 +2055,7 @@ WORD_START(_user_locals_allocate_,     _token_consumed_ip_comma_)
     WORD_ASM_NONE()
     WORD_FLAGS(M6FLAG_COMPILE_ONLY)
     WORD_CODE(
-        user_var, T(M6TH_USER_VAR_LOCALS), dup, fetch, /* ( &ls ls|0                        ) */
+        user_var, T(M64TH_USER_VAR_LOCALS), dup, fetch, /* ( &ls ls|0                        ) */
         _q_if_, T(3),                                  /* ( &ls ls                          ) */
             nip, exit,                                 /* ( ls                              ) */
         then,                                          /* ( &ls 0                           ) */
@@ -2073,7 +2073,7 @@ WORD_START(_user_locals_clear_,_user_locals_allocate_)
     WORD_ASM_NONE()
     WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_INLINE)
     WORD_CODE(
-        user_var, T(M6TH_USER_VAR_LOCALS), fetch,
+        user_var, T(M64TH_USER_VAR_LOCALS), fetch,
         CALL(_locals_clear_), exit
     )
 WORD_END(_user_locals_clear_)
@@ -2084,7 +2084,7 @@ WORD_START(_user_locals_set_idx_,      _user_locals_clear_)
     WORD_ASM_NONE()
     WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_INLINE)
     WORD_CODE(
-        user_var, T(M6TH_USER_VAR_LOCALS), fetch,
+        user_var, T(M64TH_USER_VAR_LOCALS), fetch,
         CALL(_locals_set_idx_), exit
     )
 WORD_END(_user_locals_set_idx_)

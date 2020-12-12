@@ -17,8 +17,8 @@
  * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M6TH_T_TESTLOCAL_C
-#define M6TH_T_TESTLOCAL_C
+#ifndef M64TH_T_TESTLOCAL_C
+#define M64TH_T_TESTLOCAL_C
 
 #include "../include/m64th.h"
 #include "testcommon.h"
@@ -87,4 +87,4 @@ m6cell m64th_testlocal(m64th *m, FILE *out) {
     return count.failed;
 }
 
-#endif /* M6TH_T_TESTLOCAL_C */
+#endif /* M64TH_T_TESTLOCAL_C */

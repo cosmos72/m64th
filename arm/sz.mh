@@ -17,8 +17,8 @@
  * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M6TH_ARM64_SZ_MH
-#define M6TH_ARM64_SZ_MH
+#ifndef M64TH_ARM64_SZ_MH
+#define M64TH_ARM64_SZ_MH
 
 #define SZ 4    /* sizeof(m6cell), sizeof(void*) and width of registers in bytes */
 #define SZ0 0   /* SZ * 0 */
@@ -45,4 +45,4 @@
 #define SZt2 4 /* SZt * 2 */
 #define PSZt 1 /* (1 << PSZt) == SZt */
 
-#endif /* M6TH_ARM64_SZ_MH */
+#endif /* M64TH_ARM64_SZ_MH */

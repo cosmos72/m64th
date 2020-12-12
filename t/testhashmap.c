@@ -17,8 +17,8 @@
  * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M6TH_T_TESTHASHMAP_C
-#define M6TH_T_TESTHASHMAP_C
+#ifndef M64TH_T_TESTHASHMAP_C
+#define M64TH_T_TESTHASHMAP_C
 
 #include "../include/hashmap_number.h"
 #include "../include/hashmap_string.h"
@@ -147,4 +147,4 @@ m6cell m64th_testhashmap_string(FILE *out) {
     return fail;
 }
 
-#endif /* M6TH_T_TESTHASHMAP_C */
+#endif /* M64TH_T_TESTHASHMAP_C */

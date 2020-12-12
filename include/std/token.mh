@@ -16,8 +16,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef M6TH_INCLUDE_TOKEN_FORTH_MH
-#define M6TH_INCLUDE_TOKEN_FORTH_MH
+#ifndef M64TH_INCLUDE_TOKEN_FORTH_MH
+#define M64TH_INCLUDE_TOKEN_FORTH_MH
 
 /*
  *
@@ -536,4 +536,4 @@
 #undef M6x_string_minus /*506*/         /* x\string-  */
 #undef M6bracket_char /*507*/           /* [char]     */
 
-#endif /* M6TH_INCLUDE_TOKEN_FORTH_MH */
+#endif /* M64TH_INCLUDE_TOKEN_FORTH_MH */

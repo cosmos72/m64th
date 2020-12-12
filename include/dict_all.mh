@@ -17,13 +17,13 @@
  * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M6TH_INCLUDE_DICT_ALL_MH
-#define M6TH_INCLUDE_DICT_ALL_MH
+#ifndef M64TH_INCLUDE_DICT_ALL_MH
+#define M64TH_INCLUDE_DICT_ALL_MH
 
 #include "std/dict.mh"
 #include "m64th/dict.mh"
 
-#define DICT_TOKENS_ALL(X) DICT_TOKENS_FORTH(X) DICT_TOKENS_M6TH(X)
-#define DICT_WORDS_ALL(X) DICT_WORDS_FORTH(X) DICT_WORDS_M6TH(X)
+#define DICT_TOKENS_ALL(X) DICT_TOKENS_FORTH(X) DICT_TOKENS_M64TH(X)
+#define DICT_WORDS_ALL(X) DICT_WORDS_FORTH(X) DICT_WORDS_M64TH(X)
 
-#endif /* M6TH_INCLUDE_DICT_ALL_MH */
+#endif /* M64TH_INCLUDE_DICT_ALL_MH */

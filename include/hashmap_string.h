@@ -17,8 +17,8 @@
  * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M6TH_HASHMAP_STRING_H
-#define M6TH_HASHMAP_STRING_H
+#ifndef M64TH_HASHMAP_STRING_H
+#define M64TH_HASHMAP_STRING_H
 
 #include "m64th.h"
 
@@ -66,4 +66,4 @@ const H(m6hashmap_entry_) * H(m6hashmap_insert_)(H(m6hashmap_) * map, H(m6) key,
 }
 #endif
 
-#endif /* M6TH_HASHMAP_STRING_H */
+#endif /* M64TH_HASHMAP_STRING_H */
