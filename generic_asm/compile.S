@@ -91,7 +91,7 @@ FUNC_DEF(_compile_jump_)
         ADD2(  IMM(SZt2),  HERE)                       /* here += 2 * SZt            */
         STOR(  REG0,       AT(DSTK))                   /* ( jump_location category )  */
 FUNC_END(_compile_jump_)
-FUNC_SIZE(_compile_jump_lit_)
+FUNC_DEFSIZE(_compile_jump_lit_)
 
 
 /**
@@ -242,7 +242,7 @@ FUNC_DEF(string_comma)
         ADD2(  DTOP,   HERE)                           /* here += u         */
         JUMP(  FUNC(cmove))
 FUNC_RAWEND(string_comma)
-FUNC_SIZE(countedstring_comma)
+FUNC_DEFSIZE(countedstring_comma)
 
 
 

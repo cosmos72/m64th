@@ -184,6 +184,12 @@
 #define m6r2nd_fetch m6i_prime
 #define m6r3rd_fetch m6j
 
+#define m6i_token_fetch CAT3(m6i_, SZt, u_fetch)
+#define m6i_1u_fetch m6i_char_fetch
+#define m6i_2u_fetch m6i_ushort_fetch
+#define m6i_3u_fetch m6i_uint_fetch
+#define m6i_8u_fetch m6i_fetch
+
 #define m6d_to_s m6drop
 #define m6u_to_d m6zero
 #define m6d_to_hi m6nip
@@ -345,6 +351,12 @@
 #define M6cs_rot M6two_rot
 #define M6r2nd_fetch M6i_prime
 #define M6r3rd_fetch M6j
+
+#define M6i_token_fetch CAT3(M6i_, SZt, u_fetch)
+#define M6i_1u_fetch M6i_char_fetch
+#define M6i_2u_fetch M6i_ushort_fetch
+#define M6i_3u_fetch M6i_uint_fetch
+#define M6i_8u_fetch M6i_fetch
 
 #define M6d_to_s M6drop
 #define M6u_to_d M6zero

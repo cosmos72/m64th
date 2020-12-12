@@ -42,11 +42,13 @@
 
 #define FUNC_START(name) FUNC_DEF(name) /**/.cfi_startproc;
 
-#define FUNC_SIZE(name) .size FUNC(name), .- FUNC(name);
+#define FUNC_DEFSIZE(name) .size FUNC(name), .- FUNC(name);
+
+#define FUNC_SIZE(name) FUNC_RET(name) - FUNC(name)
 
 #define FUNC_RAWEND(name)                                                                          \
     .cfi_endproc;                                                                                  \
-    FUNC_SIZE(name)
+    FUNC_DEFSIZE(name)
 
 /* clang-format off */
 

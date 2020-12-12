@@ -76,8 +76,8 @@ FUNC_DEF(do)
         DPOP2( REG1,   DTOP)         /* a = i', reload dtop   */
         RPUSH( REG1)                 /* rpush i'              */
 FUNC_END(do)
-FUNC_SIZE(_q_do_)
-FUNC_SIZE(_do_)
+FUNC_DEFSIZE(_q_do_)
+FUNC_DEFSIZE(_do_)
 
 
 /**

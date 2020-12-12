@@ -27,8 +27,30 @@
 /* --- m64th-asm --------------------------------------------------------------------------------- */
 /* ---------------------------------------------------------------------------------------------- */
 
-WORD(_asm_q_if_,           _asm_q_if_, DSTACK(1,1), RSTACK(0,0), M6FLAG_COMPILE_ONLY | M6FLAG_INLINE_ALWAYS | M6FLAG_MAY_JUMP)
-WORD(_asm_q_if0_,          _asm_q_if_, DSTACK(1,1), RSTACK(0,0), M6FLAG_COMPILE_ONLY | M6FLAG_INLINE_ALWAYS | M6FLAG_MAY_JUMP)
+WORD_START(_asm_q_if_,     _asm_q_if_)
+    WORD_DSTACK(1,1)
+    WORD_RSTACK(0,0)
+    WORD_DSTACK(1,1)
+    WORD_RSTACK(0,0)
+    WORD_ASM_LEN(_asm_q_if_)
+    WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_IMMEDIATE | M6FLAG_INLINE_ALWAYS | M6FLAG_MAY_JUMP | M6FLAG_REEXEC_AFTER_OPTIMIZE)
+    WORD_CODE(
+        _asm_lit_comma_, CELL(FUNC(_asm_q_if_)), T(FUNC_SIZE(_asm_q_if_)),
+        asm_size, _lit_tok_, _asm_if_, exit
+    )
+WORD_END(_asm_q_if_)
+WORD_START(_asm_q_if0_,    _asm_q_if_)
+    WORD_DSTACK(1,1)
+    WORD_RSTACK(0,0)
+    WORD_DSTACK(1,1)
+    WORD_RSTACK(0,0)
+    WORD_ASM_LEN(_asm_q_if0_)
+    WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_IMMEDIATE | M6FLAG_INLINE_ALWAYS | M6FLAG_MAY_JUMP | M6FLAG_REEXEC_AFTER_OPTIMIZE)
+    WORD_CODE(
+        _asm_lit_comma_, CELL(FUNC(_asm_q_if0_)), T(FUNC_SIZE(_asm_q_if0_)),
+        asm_size, _lit_tok_, _asm_if_, exit
+    )
+WORD_END(_asm_q_if0_)
 WORD(_asm_else_,           _asm_q_if0_,DSTACK(0,0), RSTACK(0,0), M6FLAG_COMPILE_ONLY | M6FLAG_INLINE_ALWAYS | M6FLAG_JUMP)
 WORD_START(_asm_if_,       _asm_else_)
     WORD_DSTACK(1,0)
@@ -38,11 +60,22 @@ WORD_START(_asm_if_,       _asm_else_)
     WORD_ASM_LEN(_asm_if_)
     WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_IMMEDIATE | M6FLAG_INLINE_ALWAYS | M6FLAG_MAY_JUMP | M6FLAG_REEXEC_AFTER_OPTIMIZE)
     WORD_CODE(
-        _asm_lit_comma_, CELL(FUNC(_asm_if_)), T(FUNC_RET(_asm_if_) - FUNC(_asm_if_)),
+        _asm_lit_comma_, CELL(FUNC(_asm_if_)), T(FUNC_SIZE(_asm_if_)),
         asm_size, _lit_tok_, _asm_if_, exit
     )
 WORD_END(_asm_if_)
-WORD(_asm_if0_,            _asm_if_,   DSTACK(1,0), RSTACK(0,0), M6FLAG_COMPILE_ONLY | M6FLAG_INLINE_ALWAYS | M6FLAG_MAY_JUMP)
+WORD_START(_asm_if0_,       _asm_if_)
+    WORD_DSTACK(1,0)
+    WORD_RSTACK(0,0)
+    WORD_DSTACK(1,0)
+    WORD_RSTACK(0,0)
+    WORD_ASM_LEN(_asm_if0_)
+    WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_IMMEDIATE | M6FLAG_INLINE_ALWAYS | M6FLAG_MAY_JUMP | M6FLAG_REEXEC_AFTER_OPTIMIZE)
+    WORD_CODE(
+        _asm_lit_comma_, CELL(FUNC(_asm_if0_)), T(FUNC_SIZE(_asm_if0_)),
+        asm_size, _lit_tok_, _asm_if_, exit
+    )
+WORD_END(_asm_if0_)
 /* ( -- ) return from ASM to ASM */
 WORD(_asm_ret_,            _asm_if0_,  DSTACK(0,0), RSTACK(0,0), M6FLAG_COMPILE_ONLY | M6FLAG_INLINE_ALWAYS | M6FLAG_JUMP)
 WORD_START(_asm_then_,     _asm_ret_)
@@ -208,14 +241,14 @@ WORD_START(token_to_asm_replace, token_to_asm_n)
         _ip_to_data_,                               /* ( token &data n  )               */
         bounds,                                     /* ( token end beg  )               */
         do,                                         /* ( token          ) ( R: end pos) */
-            dup, i, token_fetch, equal,             /* ( token t|f      ) ( R: end pos) */
+            dup, i_token_fetch, equal,              /* ( token t|f      ) ( R: end pos) */
             _if_, T(6),                             /* ( token          ) ( R: end pos) */
                 /* found a replacement token, return it */
                 drop, i, token_fetch_1,             /* ( token'         ) ( R: end pos) */
                 _leave_, T(5),                      /* ( token          )               */
             then,                                   /* ( token          ) ( R: end pos) */
             two, tokens,                            /* ( token          ) ( R: end pos) */
-        _plus_loop_, T(-16),                        /* ( token          )               */
+        _plus_loop_, T(-15),                        /* ( token          )               */
         exit                                        /* ( token          )               */
       ),
       WORD_DATA_TOKENS(
