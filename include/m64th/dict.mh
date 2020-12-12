@@ -72,7 +72,14 @@
     X(2, "i*", i_times)                    /* equivalent to: i *         */                        \
     X(2, "i+", i_plus)                     /* equivalent to: i +         */                        \
     X(2, "i-", i_minus)                    /* equivalent to: i -         */                        \
-    X(2, "i'", i_prime)                                                                            \
+    X(2, "i'", i_prime)                    /* fetch second item from return stack */               \
+    X(7, "i-byte@", i_byte_fetch)          /* equivalent to: i byte@     */                        \
+    X(7, "i-char@", i_char_fetch)          /* equivalent to: i char@     */                        \
+    X(8, "i-short@", i_short_fetch)        /* equivalent to: i short@    */                        \
+    X(9, "i-ushort@", i_ushort_fetch)      /* equivalent to: i ushort@   */                        \
+    X(6, "i-int@", i_int_fetch)            /* equivalent to: i int@      */                        \
+    X(7, "i-uint@", i_uint_fetch)          /* equivalent to: i uint@     */                        \
+    X(2, "i@", i_fetch)                    /* equivalent to: i @         */                        \
     /* ( c-addr u ch -- u' ) get position of given char or CR/LF in string  */                     \
     X(14, "line-find-char", line_find_char)                                                        \
     X(4, "noop", noop)            /* ( -- ) do nothing                               */            \

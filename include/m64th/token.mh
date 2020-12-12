@@ -82,13 +82,13 @@
 #define M6i_plus M6_u(52)            /* i+                                      */
 #define M6i_minus M6_u(53)           /* i-                                      */
 #define M6i_prime M6_u(54)           /* i'                                      */
-#define M6i_fetch M6_u(55)           /* i@        equivalent to: i @            */
-#define M6i_byte_fetch M6_u(56)      /* i-byte@   equivalent to: i byte@        */
-#define M6i_char_fetch M6_u(57)      /* i-char@   equivalent to: i char@        */
-#define M6i_short_fetch M6_u(58)     /* i-short@  equivalent to: i short@       */
-#define M6i_ushort_fetch M6_u(59)    /* i-ushort@ equivalent to: i ushort@      */
-#define M6i_int_fetch M6_u(60)       /* i-int@    equivalent to: i int@         */
-#define M6i_uint_fetch M6_u(61)      /* i-uint@   equivalent to: i uint@        */
+#define M6i_byte_fetch M6_u(55)      /* i-byte@   equivalent to: i byte@        */
+#define M6i_char_fetch M6_u(56)      /* i-char@   equivalent to: i char@        */
+#define M6i_short_fetch M6_u(57)     /* i-short@  equivalent to: i short@       */
+#define M6i_ushort_fetch M6_u(58)    /* i-ushort@ equivalent to: i ushort@      */
+#define M6i_int_fetch M6_u(59)       /* i-int@    equivalent to: i int@         */
+#define M6i_uint_fetch M6_u(60)      /* i-uint@   equivalent to: i uint@        */
+#define M6i_fetch M6_u(61)           /* i@        equivalent to: i @            */
 #undef M6____gap                     /*                                         */
 #define M6line_find_char M6_u(63)    /* ( c-addr u ch -- u' ) get index of char or CR */
 #define M6noop M6_u(64)              /* noop                                    */

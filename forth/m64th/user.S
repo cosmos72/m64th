@@ -361,6 +361,13 @@ WORD(i_times,          hop,            DSTACK(1,1), RSTACK(1,1), WORD_R_PURE)
 WORD(i_plus,           i_times,        DSTACK(1,1), RSTACK(1,1), WORD_R_PURE)
 WORD(i_minus,          i_plus,         DSTACK(1,1), RSTACK(1,1), WORD_R_PURE)
 WORD(i_prime,          i_minus,        DSTACK(0,1), RSTACK(2,2), WORD_R_PURE)
+WORD(i_byte_fetch,     i_prime,        DSTACK(0,1), RSTACK(1,1), M6FLAG_INLINE|M6FLAG_COMPILE_ONLY)
+WORD(i_char_fetch,     i_byte_fetch,   DSTACK(0,1), RSTACK(1,1), M6FLAG_INLINE|M6FLAG_COMPILE_ONLY)
+WORD(i_short_fetch,    i_char_fetch,   DSTACK(0,1), RSTACK(1,1), M6FLAG_INLINE|M6FLAG_COMPILE_ONLY)
+WORD(i_ushort_fetch,   i_short_fetch,  DSTACK(0,1), RSTACK(1,1), M6FLAG_INLINE|M6FLAG_COMPILE_ONLY)
+WORD(i_int_fetch,      i_ushort_fetch, DSTACK(0,1), RSTACK(1,1), M6FLAG_INLINE|M6FLAG_COMPILE_ONLY)
+WORD(i_uint_fetch,     i_int_fetch,    DSTACK(0,1), RSTACK(1,1), M6FLAG_INLINE|M6FLAG_COMPILE_ONLY)
+WORD(i_fetch,          i_uint_fetch,   DSTACK(0,1), RSTACK(1,1), M6FLAG_INLINE|M6FLAG_COMPILE_ONLY)
 /*
  * classic forth interpreter/compiler iteration:
  *    read a name i.e. a non-blank string from IN,
@@ -375,7 +382,7 @@ WORD(i_prime,          i_minus,        DSTACK(0,1), RSTACK(2,2), WORD_R_PURE)
  *         that when executed will place the number on the data stack
  *    otherwise, throw
  */
-WORD_START(interpret,  i_prime)
+WORD_START(interpret,  i_fetch)
     WORD_DSTACK(-1,-1)
     WORD_RSTACK(-1,-1)
     WORD_STACK_NONE()
