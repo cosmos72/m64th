@@ -480,6 +480,7 @@
     X(14, "compiler-abort", compiler_abort)            /* also unconditionally stops compiling */  \
     X(14, "countedtokens,", countedtokens_comma)       /* ( counted-tokens -- ) */                 \
     X(18, "countedtokens>last", countedtokens_to_last) /* ( countedtokens -- tok|_missing_ ) */    \
+    X(8, "i-token@", i_token_fetch) /* alias of i token@       no dedicated m6token */             \
     /*   ( io ch -- c-addr u ) get string before ch in iobuf (no refilling) */                     \
     X(14, "ibuf-find-char", ibuf_find_char)                                                        \
     /*   ( io -- c-addr u ) find non-blank string in iobuf (no refilling) */                       \
@@ -506,33 +507,33 @@
     X(12, "string>local", string_to_local)                                                         \
     /* find name in search order. 1 if name is immediate, else -1      */                          \
     X(11, "string>name", string_to_name)  /* ( c-addr u -- nt|0 wid|0 -1|0|1 )            */       \
-    X(6, "/token", div_token)             /* alias of _SZt_div,      no dedicated m6token */       \
-    X(6, ">token", to_token)              /* alias of to_SZtu,       no dedicated m6token */       \
-    X(6, "token!", token_store)           /* alias of _SZt_store,    no dedicated m6token */       \
-    X(9, "token[1]!", token_store_1)      /* alias of _SZt_store_1,  no dedicated m6token */       \
-    X(9, "token[2]!", token_store_2)      /* alias of _SZt_store_2,  no dedicated m6token */       \
-    X(9, "token[3]!", token_store_3)      /* alias of _SZt_store_3,  no dedicated m6token */       \
-    X(9, "token[4]!", token_store_4)      /* alias of _SZt_store_4,  no dedicated m6token */       \
-    X(9, "token[5]!", token_store_5)      /* alias of _SZt_store_5,  no dedicated m6token */       \
-    X(9, "token[6]!", token_store_6)      /* alias of _SZt_store_6,  no dedicated m6token */       \
-    X(9, "token[7]!", token_store_7)      /* alias of _SZt_store_7,  no dedicated m6token */       \
-    X(9, "token[8]!", token_store_8)      /* alias of _SZt_store_8,  no dedicated m6token */       \
-    X(6, "token@", token_fetch)           /* alias of _SZtu_fetch,   no dedicated m6token */       \
-    X(8, "token[1]", token_fetch_1)       /* alias of _SZtu_fetch_1, no dedicated m6token */       \
-    X(8, "token[2]", token_fetch_2)       /* alias of _SZtu_fetch_2, no dedicated m6token */       \
-    X(8, "token[3]", token_fetch_3)       /* alias of _SZtu_fetch_3, no dedicated m6token */       \
-    X(8, "token[4]", token_fetch_4)       /* alias of _SZtu_fetch_4, no dedicated m6token */       \
-    X(8, "token[5]", token_fetch_5)       /* alias of _SZtu_fetch_5, no dedicated m6token */       \
-    X(8, "token[6]", token_fetch_6)       /* alias of _SZtu_fetch_6, no dedicated m6token */       \
-    X(8, "token[7]", token_fetch_7)       /* alias of _SZtu_fetch_7, no dedicated m6token */       \
-    X(8, "token[8]", token_fetch_8)       /* alias of _SZtu_fetch_8, no dedicated m6token */       \
-    X(6, "1token", one_token)             /* alias of _SZt,          no dedicated m6token */       \
-    X(6, "token+", token_plus)            /* alias of _SZt_plus,     no dedicated m6token */       \
-    X(6, "tokens", tokens)                /* alias of _SZt_times,    no dedicated m6token */       \
+    X(6, "/token", div_token)             /* alias of _SZt_div       no dedicated m6token */       \
+    X(6, ">token", to_token)              /* alias of to_SZtu        no dedicated m6token */       \
+    X(6, "token!", token_store)           /* alias of _SZt_store     no dedicated m6token */       \
+    X(9, "token[1]!", token_store_1)      /* alias of _SZt_store_1   no dedicated m6token */       \
+    X(9, "token[2]!", token_store_2)      /* alias of _SZt_store_2   no dedicated m6token */       \
+    X(9, "token[3]!", token_store_3)      /* alias of _SZt_store_3   no dedicated m6token */       \
+    X(9, "token[4]!", token_store_4)      /* alias of _SZt_store_4   no dedicated m6token */       \
+    X(9, "token[5]!", token_store_5)      /* alias of _SZt_store_5   no dedicated m6token */       \
+    X(9, "token[6]!", token_store_6)      /* alias of _SZt_store_6   no dedicated m6token */       \
+    X(9, "token[7]!", token_store_7)      /* alias of _SZt_store_7   no dedicated m6token */       \
+    X(9, "token[8]!", token_store_8)      /* alias of _SZt_store_8   no dedicated m6token */       \
+    X(6, "token@", token_fetch)           /* alias of _SZtu_fetch    no dedicated m6token */       \
+    X(8, "token[1]", token_fetch_1)       /* alias of _SZtu_fetch_1  no dedicated m6token */       \
+    X(8, "token[2]", token_fetch_2)       /* alias of _SZtu_fetch_2  no dedicated m6token */       \
+    X(8, "token[3]", token_fetch_3)       /* alias of _SZtu_fetch_3  no dedicated m6token */       \
+    X(8, "token[4]", token_fetch_4)       /* alias of _SZtu_fetch_4  no dedicated m6token */       \
+    X(8, "token[5]", token_fetch_5)       /* alias of _SZtu_fetch_5  no dedicated m6token */       \
+    X(8, "token[6]", token_fetch_6)       /* alias of _SZtu_fetch_6  no dedicated m6token */       \
+    X(8, "token[7]", token_fetch_7)       /* alias of _SZtu_fetch_7  no dedicated m6token */       \
+    X(8, "token[8]", token_fetch_8)       /* alias of _SZtu_fetch_8  no dedicated m6token */       \
+    X(6, "1token", one_token)             /* alias of _SZt           no dedicated m6token */       \
+    X(6, "token+", token_plus)            /* alias of _SZt_plus      no dedicated m6token */       \
+    X(6, "tokens", tokens)                /* alias of _SZt_times     no dedicated m6token */       \
     X(6, "token,", token_comma)           /* ( token      -- )       compile one token    */       \
     X(7, "tokens,", tokens_comma)         /* ( tok-addr u -- )       compile u tokens     */       \
-    X(11, "token-align", token_align)     /* alias of _SZt_align,    no dedicated m6token */       \
-    X(13, "token-aligned", token_aligned) /* alias of _SZt_aligned,  no dedicated m6token */       \
+    X(11, "token-align", token_align)     /* alias of _SZt_align     no dedicated m6token */       \
+    X(13, "token-aligned", token_aligned) /* alias of _SZt_aligned   no dedicated m6token */       \
     X(13, "wordlist-find", wordlist_find) /* ( c-addr u wid -- nt|0 -1|0|1 ) search in wordlist */
 
 /* ------- m64th-impl ----------------------------------------------------------------------------
