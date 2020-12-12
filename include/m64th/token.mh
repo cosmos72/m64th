@@ -76,58 +76,57 @@
 #define M6ex_message_store M6_u(46)  /* ( c-addr u -- ) save string as exception message  */
 #define M6ex_message_fetch M6_u(47)  /* ( -- c-addr u ) fetch exception message string    */
 #define M6flip M6_u(48)              /* flip ( a b c -- c b a ) equivalent to: swap rot   */
+#define M6hop M6_u(49)               /* hop       equivalent to: 2   pick       */
 #undef M6____gap                     /*                                         */
+#define M6i_times M6_u(51)           /* i*                                      */
+#define M6i_plus M6_u(52)            /* i+                                      */
+#define M6i_minus M6_u(53)           /* i-                                      */
+#define M6i_prime M6_u(54)           /* i'                                      */
+#define M6i_fetch M6_u(55)           /* i@        equivalent to: i @            */
+#define M6i_byte_fetch M6_u(56)      /* i-byte@   equivalent to: i byte@        */
+#define M6i_char_fetch M6_u(57)      /* i-char@   equivalent to: i char@        */
+#define M6i_short_fetch M6_u(58)     /* i-short@  equivalent to: i short@       */
+#define M6i_ushort_fetch M6_u(59)    /* i-ushort@ equivalent to: i ushort@      */
+#define M6i_int_fetch M6_u(60)       /* i-int@    equivalent to: i int@         */
+#define M6i_uint_fetch M6_u(61)      /* i-uint@   equivalent to: i uint@        */
 #undef M6____gap                     /*                                         */
-#define M6hop M6_u(51)               /* hop       equivalent to: 2   pick       */
-#define M6i_times M6_u(52)           /* i*                                      */
-#define M6i_plus M6_u(53)            /* i+                                      */
-#define M6i_minus M6_u(54)           /* i-                                      */
-#define M6i_prime M6_u(55)           /* i'                                      */
+#define M6line_find_char M6_u(63)    /* ( c-addr u ch -- u' ) get index of char or CR */
+#define M6noop M6_u(64)              /* noop                                    */
+#define M6n_to_drop M6_u(65)         /* n>drop ( xn .. x1 n -- ) drop n cells   */
 #undef M6____gap                     /*                                         */
-#define M6line_find_char M6_u(57)    /* ( c-addr u ch -- u' ) get index of char or CR */
-#define M6noop M6_u(58)              /* noop                                    */
-#define M6n_to_drop M6_u(59)         /* n>drop ( xn .. x1 n -- ) drop n cells   */
+#define M6r_one_plus M6_u(67)        /* r1+       equivalent to: r>  1+   >r    */
+#define M6r_one_minus M6_u(68)       /* r1-       equivalent to: r>  1-   >r    */
+#define M6r_store M6_u(69)           /* r!        equivalent to: r>  drop >r    */
+#define M6r_plus_store M6_u(70)      /* r+!       equivalent to: r>  +    >r    */
+#define M6r_from_drop M6_u(71)       /* r>drop    equivalent to: r>  drop       */
+#define M6rdepth M6_u(72)            /* rdepth    get return stack depth        */
 #undef M6____gap                     /*                                         */
-#define M6r_one_plus M6_u(61)        /* r1+       equivalent to: r>  1+   >r    */
-#define M6r_one_minus M6_u(62)       /* r1-       equivalent to: r>  1-   >r    */
-#define M6r_store M6_u(63)           /* r!        equivalent to: r>  drop >r    */
-#define M6r_plus_store M6_u(64)      /* r+!       equivalent to: r>  +    >r    */
-#define M6r_from_drop M6_u(65)       /* r>drop    equivalent to: r>  drop       */
-#define M6rdepth M6_u(66)            /* rdepth    get return stack depth        */
+#define M6minus_roll M6_u(74)        /* -roll     rotate in opposite direction than "roll" */
+#define M6minus_rot M6_u(75)         /* -rot      equivalent to: rot rot        */
+#define M6sp_fetch M6_u(76)          /* sp@ ( x -- x addr-of-x ) get current data stack address */
+#define M6squared M6_u(77)           /* squared   equivalent to: dup *          */
+#define M6state_fetch M6_u(78)       /* state@    equivalent to: state @        */
 #undef M6____gap                     /*                                         */
-#define M6minus_roll M6_u(68)        /* -roll     rotate in opposite direction than "roll" */
-#define M6minus_rot M6_u(69)         /* -rot      equivalent to: rot rot        */
-#undef M6____gap                     /*                                         */
-#define M6sp_fetch M6_u(71)          /* sp@ ( x -- x addr-of-x ) get current data stack address */
-#define M6squared M6_u(72)           /* squared   equivalent to: dup *          */
-#define M6state_fetch M6_u(73)       /* state@    equivalent to: state @        */
-#undef M6____gap                     /*                                         */
-#undef M6____gap                     /*                                         */
-#define M6string_equal M6_u(75)      /* string=    ( c-addr1 c-addr2 u -- t|f ) */
-#define M6string_ci_equal M6_u(76)   /* string-ci= ( c-addr1 c-addr2 u -- t|f ) */
-#define M6string_find_blank M6_u(77) /* ( c-addr u -- u' ) get index of first char <= ' ' */
-#define M6string_find_char M6_u(78)  /* ( c-addr u ch -- u' ) get index of first ch       */
-#define M6string_find_nonblank M6_u(79) /* ( c-addr u -- u' ) get index of first char > ' '  */
-#define M6string_to_lower M6_u(80)      /* ( src dst u -- dst u ) copy and convert to lowercase */
+#define M6string_equal M6_u(80)      /* string=    ( c-addr1 c-addr2 u -- t|f ) */
+#define M6string_ci_equal M6_u(81)   /* string-ci= ( c-addr1 c-addr2 u -- t|f ) */
+#define M6string_find_blank M6_u(82) /* ( c-addr u -- u' ) get index of first char <= ' ' */
+#define M6string_find_char M6_u(83)  /* ( c-addr u ch -- u' ) get index of first ch       */
+#define M6string_find_nonblank M6_u(84) /* ( c-addr u -- u' ) get index of first char > ' '  */
+#define M6string_to_lower M6_u(85)      /* ( src dst u -- dst u ) copy and convert to lowercase */
 #undef M6____gap                        /*                                         */
-#define M6sub M6_u(82)                  /* sub       equivalent to: swap -         */
-#define M6trail M6_u(83)                /* trail     equivalent to: over swap      */
+#define M6sub M6_u(87)                  /* sub       equivalent to: swap -         */
+#define M6trail M6_u(88)                /* trail     equivalent to: over swap      */
+#define M6u_less_equal M6_u(89)         /* u<=                                     */
+#define M6u_more_equal M6_u(90)         /* u>=                                     */
+#define M6u_div_mod M6_u(91)            /* ( u1 u2 -- u1%u2 u1/u2 ) unsigned remainder & divide */
+#define M6xt_to_validate M6_u(92)       /* ( xt -- xt ) throw if XT is invalid     */
 #undef M6____gap                        /*                                         */
-#undef M6____gap                        /*                                         */
-#define M6u_less_equal M6_u(86)         /* u<=                                     */
-#define M6u_more_equal M6_u(87)         /* u>=                                     */
-#define M6u_div_mod M6_u(88)            /* ( u1 u2 -- u1%u2 u1/u2 ) unsigned remainder & divide */
-#define M6xt_to_validate M6_u(89)       /* ( xt -- xt ) throw if XT is invalid     */
-#undef M6____gap                        /*                                         */
-#define M6to_byte M6_u(91)              /* >byte   truncate dtop to   int8_t, then sign-extend */
-#define M6to_char M6_u(92)              /* >char   truncate dtop to  uint8_t, then zero-extend */
-#define M6to_short M6_u(93)             /* >short  truncate dtop to  int16_t, then sign-extend */
-#define M6to_ushort M6_u(94)            /* >ushort truncate dtop to uint16_t, then zero-extend */
-#define M6to_int M6_u(95)               /* >int    truncate dtop to  int32_t, then sign-extend */
-#define M6to_uint M6_u(96)              /* >uint   truncate dtop to uint32_t, then zero-extend */
-#undef M6____gap                        /*                                         */
-#undef M6____gap                        /*                                         */
-#undef M6____gap                        /* ----------- fetch[n] --------------------------- */
+#define M6to_byte M6_u(94)              /* >byte   truncate dtop to   int8_t, then sign-extend */
+#define M6to_char M6_u(95)              /* >char   truncate dtop to  uint8_t, then zero-extend */
+#define M6to_short M6_u(96)             /* >short  truncate dtop to  int16_t, then sign-extend */
+#define M6to_ushort M6_u(97)            /* >ushort truncate dtop to uint16_t, then zero-extend */
+#define M6to_int M6_u(98)               /* >int    truncate dtop to  int32_t, then sign-extend */
+#define M6to_uint M6_u(99)              /* >uint   truncate dtop to uint32_t, then zero-extend */
 #define M6byte_fetch M6_u(100)          /* byte@     read   ((*int8_t)dtop)[0], sign-extend */
 #define M6byte_fetch_1 M6_u(101)        /* byte[1]   read   ((*int8_t)dtop)[1], sign-extend */
 #define M6byte_fetch_2 M6_u(102)        /* byte[2]   read   ((*int8_t)dtop)[2], sign-extend */

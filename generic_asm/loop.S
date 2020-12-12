@@ -141,6 +141,48 @@ FUNC_START(i_prime)            /* i' and r2nd@ m64th-user */
 FUNC_END(i_prime)
 
 
+FUNC_START(i_fetch)            /* i@ alias of 'i @' m64th-user */
+        DPUSH__DTOP()
+        LOAD(  DTOP, AT(RTOP))
+FUNC_END(i_fetch)
+
+
+FUNC_START(i_char_fetch)       /* i-char@ alias of 'i c@' m64th-user */
+        DPUSH__DTOP()
+        LD_ub( DTOP, AT(RTOP))
+FUNC_END(i_char_fetch)
+
+
+FUNC_START(i_byte_fetch)       /* i-byte@ alias of 'i byte@' m64th-user */
+        DPUSH__DTOP()
+        LD_sb( DTOP, AT(RTOP))
+FUNC_END(i_byte_fetch)
+
+
+FUNC_START(i_short_fetch)      /* i-short@ alias of 'i short@' m64th-user */
+        DPUSH__DTOP()
+        LD_sh( DTOP, AT(RTOP))
+FUNC_END(i_short_fetch)
+
+
+FUNC_START(i_ushort_fetch)     /* i-ushort@ alias of 'i short@' m64th-user */
+        DPUSH__DTOP()
+        LD_sh( DTOP, AT(RTOP))
+FUNC_END(i_ushort_fetch)
+
+
+FUNC_START(i_int_fetch)        /* i-int@ alias of 'i int@' m64th-user */
+        DPUSH__DTOP()
+        LD_sw( DTOP, AT(RTOP))
+FUNC_END(i_int_fetch)
+
+
+FUNC_START(i_uint_fetch)       /* i-uint@ alias of 'i uint@' m64th-user */
+        DPUSH__DTOP()
+        LD_uw( DTOP, AT(RTOP))
+FUNC_END(i_uint_fetch)
+
+
 FUNC_START(r_one_plus)         /* r1+ ( R: n -- n+1 ) m64th-user */
         INC1(  RTOP)
 FUNC_END(r_one_plus)
