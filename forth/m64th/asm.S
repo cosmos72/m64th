@@ -138,16 +138,14 @@ WORD_START(_xt_to_asm_init_,   _vm_return_to_asm_)
         /* attempt to compile to ASM only functions containing > 3 tokens                  */
         _num_compiled_,                             /* ( #compiled_tokens                ) */
         three, more,                                /* ( t|f                             ) */
-        _if0_, T(2),                                /* ( false                           ) */
+        _q_if0_, T(2),                              /* ( false                           ) */
             exit,                                   /* ( false                           ) */
         then,                                       /* ( true                            ) */
-        drop,                                       /* (                                 ) */
-        CALL(xt_to_asm_n),                          /* ( asm_len t|f                     ) */
-        _if0_, T(4),                                /* ( asm_len                         ) */
-            nip, false, exit,                       /* ( false                           ) */
-        then,                                       /* ( asm_len                         ) */
-        CALL(asm_reserve),                          /* (                                 ) */
-        true, exit                                  /* ( true                            ) */
+        drop, CALL(xt_to_asm_n),                    /* ( asm_len t|f                     ) */
+        _q_if0_, T(3),                              /* ( asm_len false                   ) */
+            nip, exit,                              /* ( false                           ) */
+        then,                                       /* ( asm_len true                    ) */
+        swap, CALL(asm_reserve), exit               /* ( true                            ) */
     )
 WORD_END(_xt_to_asm_init_)
 /* ( -- ) main part of 'xt>asm,' can be called only after (xt>asm-init) */
@@ -329,10 +327,8 @@ WORD_START(xt_to_asm_comma,    token_to_asm_addr)
     WORD_STACK_NONE()
     WORD_STACK_NONE()
     WORD_ASM_NONE()
-    WORD_FLAGS(0)
+    WORD_FLAGS(M6FLAG_INLINE)
     WORD_CODE(
-        exit,
-
         CALL(_xt_to_asm_init_),                     /* ( t|f                             ) */
         _if_, T(3+2*nCALLt),                        /* (                                 ) */
             CALL(_xt_to_asm_body_),                 /* (                                 ) */
