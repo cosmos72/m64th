@@ -674,11 +674,12 @@
 #undef OPT2_RULES_LOWPRIO
 
 #define OPT3_RULES(x)                              /*                                   */         \
-        x(_lit_, T(0xff), and, /*=>*/ to_char)     /* 0xff   and         => to-char     */         \
+    x(_lit_, T(0xff), and, /*=>*/ to_char)         /* 0xff   and         => to-char     */         \
         x(_lit_, T(0xffff), and, /*=>*/ to_ushort) /* 0xffff and         => to-ushort   */         \
         x(two_swap, drop, drop, /*=>*/ two_nip)    /* 2swap  drop drop   => 2nip        */         \
         x(to_r, dup, r_from, /*=>*/ trail)         /* >r     dup  r>     => trail       */         \
         x(to_r, over, r_from, /*=>*/ hop, swap)    /* >r     over r>     => hop  swap   */         \
+        x(r_from, plus, to_r, /*=>*/ r_plus_store) /* r>     +   >r      => r+!         */         \
         x(minus_two_rot, drop, drop, /*=>*/ two_nip, two_swap) /* -2rot 2drop   => 2nip 2swap  */  \
         /* ______________  */                             /*                                   */  \
         x(three, plus, byte_fetch, /*=>*/ byte_fetch_3)   /* 3   +  byte@        => byte[3]    */  \
@@ -698,15 +699,14 @@
         x(over, over, two_to_r, /*=>*/ two_dup_two_to_r)  /* over   over  2>r   => 2dup_2>r    */  \
         x(over, over, two_nip /*=>*/)                     /* over   over  2nip  =>             */  \
         x(over, over, two_over, /*=>*/ two_dup, two_dup)  /* over   over  2over => 2dup 2dup   */  \
-        x(over, over, two_swap, /*=>*/ over, over)        /* over over  2swap => over over   */ \
-        x(r_from, plus, to_r, /*=>*/ r_plus_store)     /* r>     +   >r      => r+!         */         \
+        x(over, over, two_swap, /*=>*/ over, over)        /* over   over  2swap => over over   */
 
-#define OPT3_RULES_TODO(x)                              /*                                   */         \
-        x(over, over, less, /*=>*/ two_dup_less)    /*        */         \
-        x(over, over, less_equal, /*=>*/ two_dup_less_equal)    /*        */         \
-        x(over, over, ne, /*=>*/ two_dup_ne)    /*        */         \
-        x(over, over, equal, /*=>*/ two_dup_equal)    /*        */         \
-        x(over, over, more, /*=>*/ two_dup_more)    /*        */         \
-        x(over, over, more_equal, /*=>*/ two_dup_more_equal)    /*        */         \
+#define OPT3_RULES_TODO(x)                   /*                                                */  \
+    x(over, over, less, /*=>*/ two_dup_less) /*                                                */  \
+        x(over, over, less_equal, /*=>*/ two_dup_less_equal) /*                                */  \
+        x(over, over, ne, /*=>*/ two_dup_ne)                 /*                                */  \
+        x(over, over, equal, /*=>*/ two_dup_equal)           /*                                */  \
+        x(over, over, more, /*=>*/ two_dup_more)             /*                                */  \
+        x(over, over, more_equal, /*=>*/ two_dup_more_equal) /*                                */
 
 #endif /* M64TH_INCLUDE_OPT_MH */
