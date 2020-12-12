@@ -535,34 +535,6 @@
         x(eight_plus, uint_fetch, /*=>*/ uint_fetch_2)     /* 8+    uint@   => uint[2]        */   \
         x(_SZ_plus, fetch, /*=>*/ cell_fetch_1)            /* SZ+   @       => cell[1]        */
 
-#define OPT3_RULES(x)                              /*                                   */         \
-    x(r_from, plus, to_r, /*=>*/ r_plus_store)     /* r>     +   >r      => r+!         */         \
-        x(_lit_, T(0xff), and, /*=>*/ to_char)     /* 0xff   and         => to-char     */         \
-        x(_lit_, T(0xffff), and, /*=>*/ to_ushort) /* 0xffff and         => to-ushort   */         \
-        x(two_swap, drop, drop, /*=>*/ two_nip)    /* 2swap  drop drop   => 2nip        */         \
-        x(to_r, dup, r_from, /*=>*/ trail)         /* >r     dup  r>     => trail       */         \
-        x(to_r, over, r_from, /*=>*/ hop, swap)    /* >r     over r>     => hop  swap   */         \
-        x(minus_two_rot, drop, drop, /*=>*/ two_nip, two_swap) /* -2rot 2drop   => 2nip 2swap  */  \
-        /* ______________  */                             /*                                   */  \
-        x(three, plus, byte_fetch, /*=>*/ byte_fetch_3)   /* 3   +  byte@        => byte[3]    */  \
-        x(five, plus, byte_fetch, /*=>*/ byte_fetch_5)    /* 5   +  byte@        => byte[5]    */  \
-        x(six, plus, byte_fetch, /*=>*/ byte_fetch_6)     /* 6   +  byte@        => byte[6]    */  \
-        x(seven, plus, byte_fetch, /*=>*/ byte_fetch_7)   /* 7   +  byte@        => byte[7]    */  \
-        x(three, plus, c_fetch, /*=>*/ char_fetch_3)      /* 3   +  c@           => char[3]    */  \
-        x(five, plus, c_fetch, /*=>*/ char_fetch_5)       /* 5   +  c@           => char[5]    */  \
-        x(six, plus, c_fetch, /*=>*/ char_fetch_6)        /* 6   +  c@           => char[6]    */  \
-        x(seven, plus, c_fetch, /*=>*/ char_fetch_7)      /* 7   +  c@           => char[7]    */  \
-        x(six, plus, short_fetch, /*=>*/ short_fetch_3)   /* 6   +  short@       => short[3]   */  \
-        x(six, plus, ushort_fetch, /*=>*/ ushort_fetch_3) /* 6   +  ushort@      => ushort[3]  */  \
-        /* ______________  */                             /*                                   */  \
-        x(over, trail, two_nip, /*=>*/ swap)              /* over   trail 2nip  => swap        */  \
-        x(over, trail, two_swap, /*=>*/ tuck, trail)      /* over   trail 2swap => tuck trail  */  \
-        x(over, trail, swap, /*=>*/ two_dup)              /* over   trail swap  => 2dup        */  \
-        x(over, over, two_to_r, /*=>*/ two_dup_two_to_r)  /* over   over  2>r   => 2dup_2>r    */  \
-        x(over, over, two_nip /*=>*/)                     /* over   over  2nip  =>             */  \
-        x(over, over, two_over, /*=>*/ two_dup, two_dup)  /* over   over  2over => 2dup 2dup   */  \
-        x(over, over, two_swap, /*=>*/ over, over)        /* over   over  2swap => over over   */
-
 /* medium-priority optimizations: they may prevent some of the optimizations above */
 #define OPT2_RULES_MIDPRIO(x)                      /*                                 */           \
     /*        local variables       */             /*                                 */           \
@@ -700,5 +672,41 @@
 /* low-priority optimizations: they may prevent some of the optimizations above */
 /* not defined here. see (optimize-2token-lowprio) in forth/m64th/impl.S  */
 #undef OPT2_RULES_LOWPRIO
+
+#define OPT3_RULES(x)                              /*                                   */         \
+        x(_lit_, T(0xff), and, /*=>*/ to_char)     /* 0xff   and         => to-char     */         \
+        x(_lit_, T(0xffff), and, /*=>*/ to_ushort) /* 0xffff and         => to-ushort   */         \
+        x(two_swap, drop, drop, /*=>*/ two_nip)    /* 2swap  drop drop   => 2nip        */         \
+        x(to_r, dup, r_from, /*=>*/ trail)         /* >r     dup  r>     => trail       */         \
+        x(to_r, over, r_from, /*=>*/ hop, swap)    /* >r     over r>     => hop  swap   */         \
+        x(minus_two_rot, drop, drop, /*=>*/ two_nip, two_swap) /* -2rot 2drop   => 2nip 2swap  */  \
+        /* ______________  */                             /*                                   */  \
+        x(three, plus, byte_fetch, /*=>*/ byte_fetch_3)   /* 3   +  byte@        => byte[3]    */  \
+        x(five, plus, byte_fetch, /*=>*/ byte_fetch_5)    /* 5   +  byte@        => byte[5]    */  \
+        x(six, plus, byte_fetch, /*=>*/ byte_fetch_6)     /* 6   +  byte@        => byte[6]    */  \
+        x(seven, plus, byte_fetch, /*=>*/ byte_fetch_7)   /* 7   +  byte@        => byte[7]    */  \
+        x(three, plus, c_fetch, /*=>*/ char_fetch_3)      /* 3   +  c@           => char[3]    */  \
+        x(five, plus, c_fetch, /*=>*/ char_fetch_5)       /* 5   +  c@           => char[5]    */  \
+        x(six, plus, c_fetch, /*=>*/ char_fetch_6)        /* 6   +  c@           => char[6]    */  \
+        x(seven, plus, c_fetch, /*=>*/ char_fetch_7)      /* 7   +  c@           => char[7]    */  \
+        x(six, plus, short_fetch, /*=>*/ short_fetch_3)   /* 6   +  short@       => short[3]   */  \
+        x(six, plus, ushort_fetch, /*=>*/ ushort_fetch_3) /* 6   +  ushort@      => ushort[3]  */  \
+        /* ______________  */                             /*                                   */  \
+        x(over, trail, two_nip, /*=>*/ swap)              /* over   trail 2nip  => swap        */  \
+        x(over, trail, two_swap, /*=>*/ tuck, trail)      /* over   trail 2swap => tuck trail  */  \
+        x(over, trail, swap, /*=>*/ two_dup)              /* over   trail swap  => 2dup        */  \
+        x(over, over, two_to_r, /*=>*/ two_dup_two_to_r)  /* over   over  2>r   => 2dup_2>r    */  \
+        x(over, over, two_nip /*=>*/)                     /* over   over  2nip  =>             */  \
+        x(over, over, two_over, /*=>*/ two_dup, two_dup)  /* over   over  2over => 2dup 2dup   */  \
+        x(over, over, two_swap, /*=>*/ over, over)        /* over over  2swap => over over   */ \
+        x(r_from, plus, to_r, /*=>*/ r_plus_store)     /* r>     +   >r      => r+!         */         \
+
+#define OPT3_RULES_TODO(x)                              /*                                   */         \
+        x(over, over, less, /*=>*/ two_dup_less)    /*        */         \
+        x(over, over, less_equal, /*=>*/ two_dup_less_equal)    /*        */         \
+        x(over, over, ne, /*=>*/ two_dup_ne)    /*        */         \
+        x(over, over, equal, /*=>*/ two_dup_equal)    /*        */         \
+        x(over, over, more, /*=>*/ two_dup_more)    /*        */         \
+        x(over, over, more_equal, /*=>*/ two_dup_more_equal)    /*        */         \
 
 #endif /* M64TH_INCLUDE_OPT_MH */
