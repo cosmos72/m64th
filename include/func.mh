@@ -25,7 +25,7 @@
 
 #define FUNC(name) m6f##name
 #define FUNC_RET(name) .L.FUNC(name).ret
-#define FUNC_ASMRET(name) m6f##name##_ret
+#define FUNCASM_RET(name) m6f##name##_ret
 
 #define FUNC_DECL(name)                                                                            \
     .globl FUNC(name);                                                                             \
@@ -55,9 +55,11 @@
     NEXT()                                                                                         \
     FUNC_RAWEND(name)
 
-#define FUNC_ASMEND(name)                                                                          \
+#define FUNCASM_START(name) FUNC_DEF_NOALIGN(name) /**/.cfi_startproc;
+
+#define FUNCASM_END(name)                                                                          \
     FUNC_RET(name) :                                                                               \
-    FUNC_ASMRET(name) :                                                                            \
+    FUNCASM_RET(name) :                                                                            \
     FUNC_RAWEND(name)
 
 /* clang-format on */

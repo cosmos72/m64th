@@ -34,14 +34,14 @@ static m6testasm testasm_a[] = {
      {},
      {2, {12 /*ASM len*/, m6_asm_if_}},
      /* ASM bytes */
-     {(const m6char *)"\x9f\x02\x00\xf1\xb4\x86@\xf8\x80\xa8\xffT", 12}},
+     {(const m6char *)"\x9f\x02\x00\xf1\xb4\x86@\xf8\xa0\xa8\xffTF", 12}},
 #elif defined(__x86_64__)
     {"(asm/if)",
      {CALL(_asm_if_), m6bye},
      {},
      {2, {11 /*ASM len*/, m6_asm_if_}},
      /* ASM bytes */
-     {(const m6char *)"H\x85\xc0H\xad\x0f\x84M\xf6\xff\xff", 11}},
+     {(const m6char *)"H\x85\xc0H\xad\x0f\x84Q\xf6\xff\xff", 11}},
     {"(asm/if) (asm/then)",
      {CALL(_asm_if_), CALL(_asm_then_), m6bye},
      {},

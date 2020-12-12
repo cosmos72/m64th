@@ -22,15 +22,15 @@
 #include "../dispatch/asm.mh"
 
 
-FUNC_START(_asm_if_)
+FUNCASM_START(_asm_if_)
         test   DTOP,  DTOP;
         DPOP___DTOP()                  /* preserves EFLAGS        */
         jz     FUNC(_missing_);
-FUNC_ASMEND(_asm_if_)
+FUNCASM_END(_asm_if_)
 
 
-FUNC_START(_asm_if0_)
+FUNCASM_START(_asm_if0_)
         test   DTOP,  DTOP;
         DPOP___DTOP()                  /* preserves EFLAGS        */
         jnz    FUNC(_missing_);
-FUNC_ASMEND(_asm_if0_)
+FUNCASM_END(_asm_if0_)
