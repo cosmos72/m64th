@@ -23,7 +23,11 @@
 
 DICT_WORDS_FORTH_CORE(WORDNAME)
 
-WORD(store,            LASTWORD,   DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M6FLAG_MEM_STORE)
+/*
+ * FORTH_ROOT_LASTWORD is the last word in 'forth-root' wordlist:
+ * link to it to include the whole wordlist also into this 'forth' wordlist
+ */
+WORD(store,  FORTH_ROOT_LASTWORD,  DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M6FLAG_MEM_STORE)
 /* # ( du -- du' ) divide du by current BASE. du' is the quotient.
  * convert the remainder u to a character and prepend it to pictured numeric output */
 WORD_START(num,        store)

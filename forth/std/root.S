@@ -21,7 +21,7 @@
 
 #include "../../include/err.mh"
 
-/* words shared between forth wordlist and forth-root wordlist */
+/* words shared between several wordlists: forth-root forth m64th-user */
 
 DICT_WORDS_FORTH_ROOT(WORDNAME)
 
@@ -53,6 +53,20 @@ WORD_START(m64th_user,  forth_wordlist)
         searchorder_store_0, exit                      /* (                    ) */
     )
 WORD_END(m64th_user)
+/* show all words in searchorder wordlists */
+WORD_START(words, m64th_user)
+    WORD_DSTACK(0,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_ASM_NONE()
+    WORD_FLAGS(M6FLAG_INLINE)
+    WORD_CODE(
+        user_var_m64th,
+        _c_locals_save_,
+            _c_arg_1_, _c_call_, CELL(m64th_c_print_all_words), _c_ret_0_,
+        _c_locals_load_, exit
+    )
+WORD_END(words)
 
 #undef LASTWORD
-#define LASTWORD m64th_user
+#define LASTWORD words

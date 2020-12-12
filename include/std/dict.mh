@@ -27,10 +27,11 @@
     DICT_TOKENS_FORTH_ROOT(X)                                                                      \
     X(5, "forth", forth) /*              set first wordlist in searchorder to 'forth'     */       \
     X(14, "forth-wordlist", forth_wordlist) /* ( -- wid ) get 'forth' wordlist            */       \
-    X(9, "m64th-user", m64th_user) /*      set first wordlist in searchorder to 'm64th-user' */       \
+    X(9, "m64th-user", m64th_user) /*      set first wordlist in searchorder to 'm64th-user' */    \
     X(9, "get-order", get_order)                                                                   \
     X(5, "order", order)                                                                           \
-    X(9, "set-order", set_order)
+    X(9, "set-order", set_order)                                                                   \
+    X(5, "words", words) /* show all words in search order */
 
 /* ------- forth 2012: core --------------------------------------------------------------------- */
 #define DICT_TOKENS_FORTH_CORE(X)                                                                  \
@@ -248,8 +249,8 @@
 #define DICT_WORDS_FORTH_TOOLS(X)                                                                  \
     DICT_TOKENS_FORTH_TOOLS(X)                                                                     \
     X(2, ".s", dot_s)                                                                              \
-    X(3, "see", see)     /* read name then show its definition */                                  \
-    X(5, "words", words) /* show all words in search order     */
+    X(3, "see", see)         /* read name then show its definition */                              \
+    /*X(5, "words", words)*/ /* already included in forth-root: show all words in search order */
 
 /* ------- forth 2012: tools ext ---------------------------------------------------------------- */
 #define DICT_TOKENS_FORTH_TOOLS_EXT(X)                                                             \

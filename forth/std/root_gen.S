@@ -74,3 +74,4 @@ WORD_END(set_order)
 
 #undef LASTWORD
 #define LASTWORD set_order
+#define FORTH_ROOT_LASTWORD set_order

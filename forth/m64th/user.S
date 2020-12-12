@@ -28,8 +28,13 @@
 /* --- m64th-user -------------------------------------------------------------------------------- */
 /* ---------------------------------------------------------------------------------------------- */
 
+/*
+ * FORTH_ROOT_LASTWORD is the last word in 'forth-root' wordlist:
+ * link to it to include the whole wordlist also into this 'm64th-user' wordlist
+ */
+
 /* show return stack */
-WORD_START(dot_rs, dot_rs)
+WORD_START(dot_rs, FORTH_ROOT_LASTWORD)
     WORD_STACK_NONE()
     WORD_STACK_NONE()
     WORD_ASM_NONE()
