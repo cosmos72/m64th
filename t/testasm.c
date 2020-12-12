@@ -69,7 +69,7 @@ static m6cell m6testasm_run(m64th *m, const m6testasm *t, const m6code t_code,
 #endif
 
     m64th_clear(m);
-    m64th_asm_reserve(m, m6mem_getpagesize());
+    m64th_asm_reserve(m, m6mem_pagesize());
 
     m6countedstack_copy(&t->dbefore, &m->dstack);
 
