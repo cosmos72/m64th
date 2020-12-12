@@ -135,6 +135,10 @@ WORD_START(_xt_to_asm_init_,   _vm_return_to_asm_)
     WORD_ASM_NONE()
     WORD_FLAGS(0)
     WORD_CODE(
+#ifndef __x86_64__
+        /* TODO implement [asm-resolve-jump-*] on arm64 */
+        false, exit,
+#endif
         /* attempt to compile to ASM only functions containing > 3 tokens                  */
         _num_compiled_,                             /* ( #compiled_tokens                ) */
         three, more,                                /* ( t|f                             ) */

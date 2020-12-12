@@ -48,7 +48,7 @@ WORD_START(_asm_resolve_jump_here_,  LASTWORD)
         swap, int_store, exit                  /* (                                ) */
 #else
         /* TODO */
-        two_drop, exit
+        _lit_, T(M6ERR_UNSUPPORTED_OPERATION), throw, exit
 #endif
     )
 WORD_END(_asm_resolve_jump_here_)
@@ -67,7 +67,7 @@ WORD_START(_asm_resolve_jump_there_,  _asm_resolve_jump_here_)
         asm_here, four_minus, int_store, exit  /* (                                ) */
 #else
         /* TODO */
-        two_drop, exit
+        _lit_, T(M6ERR_UNSUPPORTED_OPERATION), throw, exit
 #endif
     )
 WORD_END(_asm_resolve_jump_there_)
