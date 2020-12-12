@@ -66,12 +66,7 @@
 DICT_START(m64th_asm)
 DICT_WORDS_M64TH_ASM(WORDNAME)
 #include "m64th/asm.S"
-
-#if defined(__x86_64__)
-#include "m64th/asm_amd64.S"
-#elif defined(__aarch64__)
-#include "m64th/asm_arm64.S"
-#endif
+#include "m64th/asm_arch.S"
 DICT_BODY(m64th_asm, LASTWORD)
 DICT_END(m64th_asm)
 
