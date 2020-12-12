@@ -24,8 +24,8 @@
 #include "func_alias.mh"
 
 #define FUNC(name) m6f##name
-
-#define FUNC_RET(name) .L.FUNC(name).next
+#define FUNC_RET(name) .L.FUNC(name).ret
+#define FUNC_ASMRET(name) m6f##name##_ret
 
 #define FUNC_DECL(name)                                                                            \
     .globl FUNC(name);                                                                             \
@@ -48,15 +48,16 @@
     .cfi_endproc;                                                                                  \
     FUNC_SIZE(name)
 
-#define FUNC_START_ASM(name) FUNC_START(name)
-
-#define FUNC_END_ASM(name) FUNC_RET(name) : FUNC_RAWEND(name)
-
 /* clang-format off */
 
 #define FUNC_END(name)                                                                             \
     FUNC_RET(name) :                                                                               \
     NEXT()                                                                                         \
+    FUNC_RAWEND(name)
+
+#define FUNC_ASMEND(name)                                                                          \
+    FUNC_RET(name) :                                                                               \
+    FUNC_ASMRET(name) :                                                                            \
     FUNC_RAWEND(name)
 
 /* clang-format on */
