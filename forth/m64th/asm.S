@@ -204,7 +204,6 @@ WORD_START(token_to_asm,   name_to_asm_n_store)
     WORD_ASM_NONE()
     WORD_FLAGS(0)
     WORD_CODE(
-        CALL(token_to_asm_replace),                   /* ( token'         ) */
         dup, token_to_asm_addr,                     /* ( token m6func|0 ) */
         _q_if0_, T(4),                              /* ( token 0        ) */
             nip, dup, exit,                         /* ( 0 0            ) */
@@ -223,8 +222,16 @@ WORD_START(token_to_asm_comma,   token_to_asm)
     WORD_ASM_NONE()
     WORD_FLAGS(0)
     WORD_CODE(
-        CALL(token_to_asm),                         /* ( token'         ) */
-        asm_comma, exit                             /* (                ) */
+        CALL(token_to_asm_replace),                 /* ( sys* token'           ) */
+        dup, token_to_name,                         /* ( sys* token nt         ) */
+        dup, name_to_flags,                         /* ( sys* token nt m6flags ) */
+        _lit_, T(M6FLAG_REEXEC_AFTER_OPTIMIZE), and,/* ( sys* token nt flag    ) */
+        _if_, T(5),                                 /* ( sys* token nt         ) */
+            nip, name_to_xt, execute, exit,         /* ( sys'*                 ) */
+        then,                                       /* ( sys* token nt         ) */
+        drop,                                       /* ( sys* token            ) */
+        CALL(token_to_asm),                         /* ( sys* addr|0 u|0       ) */
+        asm_comma, exit                             /* ( sys*                  ) */
     )
 WORD_END(token_to_asm_comma)
 /* ( token -- u true | 0 false ) get token ASM len */
@@ -235,8 +242,9 @@ WORD_START(token_to_asm_n,     token_to_asm_comma)
     WORD_ASM_NONE()
     WORD_FLAGS(M6FLAG_INLINE)
     WORD_CODE(
-        CALL(token_to_asm),                         /* ( addr u | 0 0            ) */
-        swap, zero_ne, exit                         /* ( u true | 0 false        ) */
+        CALL(token_to_asm_replace),                 /* ( token'              ) */
+        CALL(token_to_asm),                         /* ( addr u | 0 0        ) */
+        swap, zero_ne, exit                         /* ( u true | 0 false    ) */
     )
 WORD_END(token_to_asm_n)
 /* ( tok -- tok' ) get replacement token for compiling token to ASM */

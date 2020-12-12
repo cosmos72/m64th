@@ -2,7 +2,7 @@
 m64th is a 64-bit embeddable forth compiler, interpreter and REPL
 
 ## Current status
-**BETA** i.e. REPL and many simple words are implemented, including `:` to define new words.
+**BETA** i.e. REPL and most simple words are implemented, including `:` to define new words.
 
 It has line editing and autocompletion.
 

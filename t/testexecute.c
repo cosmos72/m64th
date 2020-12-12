@@ -1661,8 +1661,8 @@ static m6testexecute testexecute_g[] = {
      {{1, {m6nip}}, {}},
      {{2, {(m6cell)m6fnip, 4}}, {}}, /* correct for both amd64 and arm64 */
      {}},
-    {"'(if) token>asm",
-     {CALL(token_to_asm), m6drop, m6bye}, /* ASM len varies, drop it */
+    {"'(if) token>asm-replace token>asm",
+     {CALL(token_to_asm_replace), CALL(token_to_asm), m6drop, m6bye}, /* ASM len varies, drop it */
      {{1, {m6_if_}}, {}},
      {{1, {(m6cell)m6f_asm_if_}}, {}},
      {}},
