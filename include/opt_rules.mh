@@ -405,13 +405,20 @@
         x(i, plus, /*=>*/ i_plus)                            /* i    +        => i+             */ \
         x(i, minus, /*=>*/ i_minus)                          /* i    -        => i-             */ \
         x(i_plus, r_store, /*=>*/ r_plus_store)              /* i+   r!       => r+!            */ \
-        x(i, c_fetch, /*=>*/ i_char_fetch)                   /* i    c@       => i-char@        */ \
         x(i, byte_fetch, /*=>*/ i_byte_fetch)                /* i    byte@    => i-byte@        */ \
+        x(i, char_fetch, /*=>*/ i_char_fetch)                /* i    char@    => i-char@        */ \
         x(i, short_fetch, /*=>*/ i_short_fetch)              /* i    short@   => i-short@       */ \
         x(i, ushort_fetch, /*=>*/ i_ushort_fetch)            /* i    ushort@  => i-ushort@      */ \
         x(i, int_fetch, /*=>*/ i_int_fetch)                  /* i    int@     => i-int@         */ \
         x(i, uint_fetch, /*=>*/ i_uint_fetch)                /* i    uint@    => i-uint@        */ \
         x(i, fetch, /*=>*/ i_fetch)                          /* i    @        => i@             */ \
+        x(i_byte_fetch, drop /*=>*/)                         /* i-byte@   drop =>               */ \
+        x(i_char_fetch, drop /*=>*/)                         /* i-char@   drop =>               */ \
+        x(i_short_fetch, drop /*=>*/)                        /* i-short@  drop =>               */ \
+        x(i_ushort_fetch, drop /*=>*/)                       /* i-ushort@ drop =>               */ \
+        x(i_int_fetch, drop /*=>*/)                          /* i-int@    drop =>               */ \
+        x(i_uint_fetch, drop /*=>*/)                         /* i-uint@   drop =>               */ \
+        x(i_fetch, drop /*=>*/)                              /* i-@       drop =>               */ \
         x(invert, zero_less, /*=>*/ zero_more_equal)         /* invert 0<     => 0>=            */ \
         x(invert, zero_more_equal, /*=>*/ zero_less)         /* invert 0>=    => 0<             */ \
         x(invert, one_plus, /*=>*/ negate)                   /* invert 1+     => negate         */ \
