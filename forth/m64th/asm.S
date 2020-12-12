@@ -215,7 +215,7 @@ WORD_START(token_to_asm_replace, token_to_asm_n)
 WORD_END(token_to_asm_replace)
 WORD(token_to_asm_addr,  token_to_asm_replace, DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
 /* ( -- ) attempt to compile to native ASM all tokens between XT and HERE */
-WORD_START(xt_to_asm,      token_to_asm_addr)
+WORD_START(xt_to_asm_comma,      token_to_asm_addr)
     WORD_STACK_NONE()
     WORD_STACK_NONE()
     WORD_ASM_NONE()
@@ -236,19 +236,20 @@ WORD_START(xt_to_asm,      token_to_asm_addr)
 
         here, state_fetch,                          /* ( here xt                         ) */
         do,                                         /* (                 ) ( R: end pos  ) */
-            i, token_fetch, dup,                    /* ( tok tok         ) ( R: end pos  ) */
-            CALL(token_to_asm),                     /* ( tok addr u      ) ( R: end pos  ) */
-            asm_comma,                              /* ( tok             ) ( R: end pos  ) */
+            i, token_fetch,                         /* ( tok             ) ( R: end pos  ) */
+            CALL(token_to_asm),                     /* ( addr u          ) ( R: end pos  ) */
+            asm_comma,                              /* (                 ) ( R: end pos  ) */
+            i, token_fetch,                         /* ( tok             ) ( R: end pos  ) */
             token_to_name, name_to_flags, flags_to_consumed_tokens,
             one_plus, tokens,                       /* ( consumed_bytes  ) ( R: end pos  ) */
-        _plus_loop_, T(-12-nCALLt),                 /* (                 )                 */
+        _plus_loop_, T(-13-nCALLt),                 /* (                 )                 */
 
         CALL(_xt_to_asm_finish_), exit              /* (                 )                 */
     )
-WORD_END(xt_to_asm)
+WORD_END(xt_to_asm_comma)
 /* ( -- u t|f ) return required len and true if all tokens between XT and HERE
  * can be compiled to native ASM, otherwise 0 and false */
-WORD_START(xt_to_asm_n,    xt_to_asm)
+WORD_START(xt_to_asm_n,    xt_to_asm_comma)
     WORD_DSTACK(0,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()

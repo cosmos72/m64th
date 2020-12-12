@@ -367,7 +367,7 @@
     X(17, "token>asm-replace", token_to_asm_replace)                                               \
     X(11, "token>asm>n", token_to_asm_n) /* ( token -- u true | 0 false ) get token ASM len */     \
     /* ( -- ) attempt to compile to native ASM all tokens between XT and HERE */                   \
-    X(6, "xt>asm", xt_to_asm)                                                                      \
+    X(7, "xt>asm,", xt_to_asm_comma)                                                               \
     /* ( -- u t|f ) return required len and true if all tokens between XT and HERE */              \
     /* can be compiled to native ASM, otherwise false */                                           \
     X(8, "xt>asm>n", xt_to_asm_n)                                                                  \
