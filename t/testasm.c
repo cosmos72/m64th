@@ -36,6 +36,17 @@ static m6testasm testasm_a[] = {
      {2, {12 /*ASM len*/, m6_asm_if_}},
      /* ASM bytes */
      {(const m6char *)"\x9f\x02\x00\xf1\xb4\x86@\xf8\xa0\xa8\xffTF", 12}},
+    {"(asm/if) (asm/then)",
+     {CALL(_asm_if_), CALL(_asm_then_), m6bye},
+     {},
+     {},
+     {(const m6char *)"\x9f\x02\x00\xf1\xb4\x86@\xf8 \x00\x00T", 12}},
+    {"{(if) _ (else) _ (then)} (xt>asm-body)",
+     {m6token_comma, m6token_comma, m6token_comma, m6token_comma, m6token_comma,
+      CALL(_xt_to_asm_body_), m6bye},
+     {5, {m6then, T(0), m6_else_, T(0), m6_if_}},
+     {},
+     {(const m6char *)"\x9f\x02\x00\xf1\xb4\x86@\xf8@\x00\x00T\x01\x00\x00\x14", 16}},
 #elif defined(__x86_64__)
     {"(asm/if)",
      {CALL(_asm_if_), m6bye},
@@ -121,9 +132,9 @@ static void m6testasm_failed(m64th *m, const m6testasm *t, const m6string actual
     m6stack_print(&m->rstack, m6mode_user, out);
 
     fprintf(out, "\n... expected asm codegen  <%lu> ", (unsigned long)t->asm_codegen.n);
-    m6string_print_hex(t->asm_codegen, m6mode_user, out);
+    m6string_print(t->asm_codegen, m6mode_c_disasm, out);
     fprintf(out, "\n      actual asm codegen  <%lu> ", (unsigned long)actual_asm_codegen.n);
-    m6string_print_hex(actual_asm_codegen, m6mode_user, out);
+    m6string_print(actual_asm_codegen, m6mode_c_disasm, out);
     fputc('\n', out);
 }
 

@@ -32,6 +32,7 @@ FUNCASM_START(_asm_q_if0_)
 FUNCASM_END(_asm_q_if0_)
 
 
+/* ASM code for all unconditional jumps */
 FUNCASM_START(_asm_else_)
         JUMP(  FUNC(_missing_))
 FUNCASM_END(_asm_else_)
