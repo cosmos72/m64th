@@ -86,7 +86,7 @@ WORD_START(_asm_resolve_jump_here_,  LASTWORD)
 #endif
     )
 WORD_END(_asm_resolve_jump_here_)
-/* ( jump_location jump_category -- ) resolve an ASM jump from here */
+/* ( dest orig -- ) resolve an ASM jump from orig to dest */
 WORD_START(_asm_resolve_jump_there_,  _asm_resolve_jump_here_)
     WORD_DSTACK(2,0)
     WORD_RSTACK(0,0)
@@ -96,10 +96,10 @@ WORD_START(_asm_resolve_jump_there_,  _asm_resolve_jump_here_)
     WORD_CODE(
 #if defined(__x86_64__)
         /* see comment above about amd64 relative ASM jumps */
-        drop,                                  /* ( jump_location                  ) */
-        asm_size, minus,                       /* ( distance                       ) */
-        asm_here, four_minus, int_store, exit  /* (                                ) */
-
+        drop, nip,                             /* ( dest_location orig_location    ) */
+        tuck, minus, swap                      /* ( distance orig_location         ) */
+        asm_func, plus, four_minus,            /* ( distance addr                  ) */
+        int_store, exit                        /* (                                ) */
 #elif defined(__aarch64__)
         _lit_, T(M6ERR_UNSUPPORTED_OPERATION), throw, exit
 #else
