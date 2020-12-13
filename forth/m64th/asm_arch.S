@@ -97,7 +97,7 @@ WORD_START(_asm_resolve_jump_there_,  _asm_resolve_jump_here_)
 #if defined(__x86_64__)
         /* see comment above about amd64 relative ASM jumps */
         drop, nip,                             /* ( dest_location orig_location    ) */
-        tuck, minus, swap                      /* ( distance orig_location         ) */
+        tuck, minus, swap,                     /* ( distance orig_location         ) */
         asm_func, plus, four_minus,            /* ( distance addr                  ) */
         int_store, exit                        /* (                                ) */
 #elif defined(__aarch64__)
