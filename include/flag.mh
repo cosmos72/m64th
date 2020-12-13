@@ -86,8 +86,10 @@
 #define M6FLAG_DEFER (4 << 12)
 /**< word defined with VALUE - do not optimize/inline */
 #define M6FLAG_VALUE (5 << 12)
+/**< word defined with VARIABLE or BUFFER: - do not optimize/inline */
+#define M6FLAG_VAR (6 << 12)
 /**< instruct the compiler not to optimize word in any way */
-#define M6FLAG_NOOPT (6 << 12)
+#define M6FLAG_NOOPT (7 << 12)
 
 /**
  * < instruct the compiler to re-execute (immediate) word after optimization.

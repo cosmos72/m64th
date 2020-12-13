@@ -12,8 +12,8 @@ entry(M6two_swap|(M6drop<<16)|(M6drop<<32),	1|(M6two_nip<<16),	-2)	\
 entry(M6to_r|(M6over<<16)|(M6r_from<<32),	2|(M6hop<<16)|(M6swap<<32),	41)	\
 entry(M6six|(M6plus<<16)|(M6short_fetch<<32),	1|(M6short_fetch_3<<16),	-2)	\
 entry(0,	0,	-1)	\
-entry(M6_lit2s_|(255<<16)|(M6and<<32),	1|(M6to_char<<16),	39)	\
-entry(0,	0,	-1)	\
+entry(M6five|(M6plus<<16)|(M6c_fetch<<32),	1|(M6char_fetch_5<<16),	-2)	\
+entry(M6_lit2s_|(255<<16)|(M6and<<32),	1|(M6to_char<<16),	-2)	\
 entry(0,	0,	-1)	\
 entry(0,	0,	-1)	\
 entry(M6over|(M6trail<<16)|(M6swap<<32),	1|(M6two_dup<<16),	43)	\
@@ -22,7 +22,7 @@ entry(M6six|(M6plus<<16)|(M6byte_fetch<<32),	1|(M6byte_fetch_6<<16),	-2)	\
 entry(0,	0,	-1)	\
 entry(0,	0,	-1)	\
 entry(0,	0,	-1)	\
-entry(M6_lit2s_|(65535<<16)|(M6and<<32),	1|(M6to_ushort<<16),	49)	\
+entry(M6six|(M6plus<<16)|(M6ushort_fetch<<32),	1|(M6ushort_fetch_3<<16),	-2)	\
 entry(M6five|(M6plus<<16)|(M6byte_fetch<<32),	1|(M6byte_fetch_5<<16),	-2)	\
 entry(0,	0,	-1)	\
 entry(M6over|(M6over<<16)|(M6two_swap<<32),	2|(M6over<<16)|(M6over<<32),	-2)	\
@@ -35,7 +35,7 @@ entry(M6minus_two_rot|(M6drop<<16)|(M6drop<<32),	2|(M6two_nip<<16)|(M6two_swap<<
 entry(0,	0,	-1)	\
 entry(0,	0,	-1)	\
 entry(0,	0,	-1)	\
-entry(0,	0,	-1)	\
+entry(M6_lit2s_|(65535<<16)|(M6and<<32),	1|(M6to_ushort<<16),	-2)	\
 entry(0,	0,	-1)	\
 entry(0,	0,	-1)	\
 entry(0,	0,	-1)	\
@@ -44,7 +44,7 @@ entry(0,	0,	-1)	\
 entry(M6r_from|(M6plus<<16)|(M6to_r<<32),	1|(M6r_plus_store<<16),	-2)	\
 entry(0,	0,	-1)	\
 entry(0,	0,	-1)	\
-entry(M6five|(M6plus<<16)|(M6c_fetch<<32),	1|(M6char_fetch_5<<16),	-2)	\
+entry(0,	0,	-1)	\
 entry(0,	0,	-1)	\
 entry(M6over|(M6over<<16)|(M6two_over<<32),	2|(M6two_dup<<16)|(M6two_dup<<32),	36)	\
 entry(0,	0,	-1)	\
@@ -54,7 +54,7 @@ entry(0,	0,	-1)	\
 entry(0,	0,	-1)	\
 entry(0,	0,	-1)	\
 entry(0,	0,	-1)	\
-entry(M6six|(M6plus<<16)|(M6ushort_fetch<<32),	1|(M6ushort_fetch_3<<16),	-2)	\
+entry(0,	0,	-1)	\
 entry(0,	0,	-1)	\
 entry(0,	0,	-1)	\
 entry(0,	0,	-1)	\

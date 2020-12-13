@@ -355,6 +355,14 @@ void m6flags_print(m6flags fl, m6printmode mode, FILE *out) {
         skip = printed++ ? 0 : 1;
         fputs((mode == m6mode_user ? "|defer" : "|M6FLAG_DEFER") + skip, out);
         break;
+    case m6flag_value:
+        skip = printed++ ? 0 : 1;
+        fputs((mode == m6mode_user ? "|value" : "|M6FLAG_VALUE") + skip, out);
+        break;
+    case m6flag_var:
+        skip = printed++ ? 0 : 1;
+        fputs((mode == m6mode_user ? "|var" : "|M6FLAG_VAR") + skip, out);
+        break;
     case m6flag_noopt:
         skip = printed++ ? 0 : 1;
         fputs((mode == m6mode_user ? "|noopt" : "|M6FLAG_NOOPT") + skip, out);
@@ -460,23 +468,44 @@ static m6cell m6token_print_int64(const m6token *code, m6printmode mode, FILE *o
     return sizeof(val) / SZt;
 }
 
-static m6cell m6token_print_xt(const m6token *code, m6printmode mode, FILE *out) {
-    m6xt val;
+typedef enum { m6kind_nt, m6kind_xt } m6namekind;
+
+static m6cell m6token_print_word(const m6token *code, m6printmode mode, m6namekind kind,
+                                 FILE *out) {
+    const void *val;
     const m6word *w;
     memcpy(&val, code, sizeof(val));
-    if (val != NULL) {
-        w = m6xt_word(val);
-    } else {
+    if (val == NULL) {
         w = &WORD_SYM(_missing_);
+    } else if (kind == m6kind_nt) {
+        w = (const m6word *)val;
+    } else {
+        w = m6xt_word((m6xt)val);
     }
     if (mode == m6mode_user) {
         m6string_print(m6word_name(w), m6mode_user, out);
     } else {
-        fputs("XT(", out);
+        fputs((kind == m6kind_nt ? "NT(" : "XT("), out);
         m6string_print(m6word_ident(w), m6mode_user, out);
         fputc(')', out);
     }
     return sizeof(val) / SZt;
+}
+
+static m6cell m6token_print_nt(const m6token *code, m6printmode mode, FILE *out) {
+    return m6token_print_word(code, mode, m6kind_nt, out);
+}
+
+static m6cell m6token_print_xt(const m6token *code, m6printmode mode, FILE *out) {
+    return m6token_print_word(code, mode, m6kind_xt, out);
+}
+
+static m6cell m6token_print_lit_nt(const m6token *code, m6printmode mode, FILE *out) {
+    m6cell ret;
+    fputs((mode == m6mode_user ? "[ parse-name " : "_lit_nt_, "), out);
+    ret = m6token_print_nt(code, mode, out);
+    fputs((mode == m6mode_user ? " ]" : ""), out);
+    return ret;
 }
 
 static m6cell m6token_print_lit_xt(const m6token *code, m6printmode mode, FILE *out) {
@@ -594,6 +623,9 @@ static m6cell m6token_print_consumed_ip(m6token tok, const m6token *code, m6cell
         }
         m6token_print(code[1], mode, out);
         return 2;
+    } else if (nbytes == SZ && tok == m6_lit_nt_) {
+        fputs(separator, out);
+        return m6token_print_nt(code, mode, out);
     } else if (nbytes == SZ && tok == m6_lit_xt_) {
         fputs(separator, out);
         return m6token_print_xt(code, mode, out);
@@ -713,6 +745,8 @@ void m6code_print(m6code src, m6printmode mode, FILE *out) {
             i += m6token_print_call(code + i, mode, out);
         } else if (tok == m6_catch_beg_ && i < n) {
             i += m6token_print_catch(code[i], mode, out);
+        } else if (tok == m6_lit_nt_ && n - i >= SZ / SZt) {
+            i += m6token_print_lit_nt(code + i, mode, out);
         } else if (tok == m6_lit_xt_ && n - i >= SZ / SZt) {
             i += m6token_print_lit_xt(code + i, mode, out);
         } else if (tok == m6_lit_string_ && n - i >= 2 + (m6ucell)(code[i] + SZt - 1) / SZt) {

@@ -443,26 +443,26 @@
 #define M6_continue_ M6_i(33)       /* (continue)      followed by IP offset to jump              */
 #define M6_continue_if_ M6_i(34)    /* (continue-if)   followed by IP offset to jump if dtop <> 0 */
 #define M6_continue_if0_ M6_i(35)   /* (continue-if0)  followed by IP offset to jump if dtop == 0 */
-#undef M6____gap                    /*                                                            */
-#define M6_do_ M6_i(37)             /* (do)            followed by IP offset (ignored)            */
-#define M6_does_exit_ M6_i(38)      /* (does-exit)   alias of exit. used immediately after (does) */
-#define M6_else_ M6_i(39)           /* (else)          followed by IP offset to jump              */
-#define M6_endof_ M6_i(40)          /* (endof)         followed by IP offset to jump              */
-#define M6_exec_token_ M6_i(41)     /* pop token, exec it. It must be 'inline' and not consume IP */
+#define M6_do_ M6_i(36)             /* (do)            followed by IP offset (ignored)            */
+#define M6_does_exit_ M6_i(37)      /* (does-exit)   alias of exit. used immediately after (does) */
+#define M6_else_ M6_i(38)           /* (else)          followed by IP offset to jump              */
+#define M6_endof_ M6_i(39)          /* (endof)         followed by IP offset to jump              */
+#define M6_exec_token_ M6_i(40)     /* pop token, exec it. It must be 'inline' and not consume IP */
 #undef M6____gap                    /*                                         */
-#define M6_fallthrough_ M6_i(43)    /* (fallthrough) followed by IP offset to jump*/
-#define M6_if_ M6_i(44)             /* (if)     followed by IP offset to jump     */
-#define M6_if0_ M6_i(45)            /* (if0)    followed by IP offset to jump     */
-#define M6_ignore_ M6_i(46)         /* (ignore) followed by IP offset, ignores it */
-#define M6_ip_ M6_i(47)             /* (ip)      get vm's current instruction pointer */
-#define M6_ip_to_data_ M6_i(48)     /* (ip>data) must be 1st instr in word. return word's data */
-#define M6_ip_to_data_addr_ M6_i(49) /* must be 1st instr in word. return word's data>addr      */
+#define M6_fallthrough_ M6_i(42)    /* (fallthrough) followed by IP offset to jump*/
+#define M6_if_ M6_i(43)             /* (if)     followed by IP offset to jump     */
+#define M6_if0_ M6_i(44)            /* (if0)    followed by IP offset to jump     */
+#define M6_ignore_ M6_i(45)         /* (ignore) followed by IP offset, ignores it */
+#define M6_ip_ M6_i(46)             /* (ip)      get vm's current instruction pointer */
+#define M6_ip_to_data_ M6_i(47)     /* (ip>data) must be 1st instr in word. return word's data */
+#define M6_ip_to_data_addr_ M6_i(48) /* must be 1st instr in word. return word's data>addr      */
 #undef M6____gap                     /*                                         */
-#define M6_leave_ M6_i(51)           /* (leave)  followed by IP offset to jump          */
-#define M6_lit_comma_ M6_i(52)     /* followed by m6token, append it to current word's code/data */
-#define M6_lit2s_ M6_i(53)         /* (lit2s) followed by int16, push it to dstack     */
-#define M6_lit4s_ M6_i(54)         /* (lit4s) followed by int32, push it to dstack     */
-#define M6_lit8s_ M6_i(55)         /* (lit8s) followed by int64, push it to dstack     */
+#define M6_leave_ M6_i(50)           /* (leave)  followed by IP offset to jump          */
+#define M6_lit_comma_ M6_i(51)     /* followed by m6token, append it to current word's code/data */
+#define M6_lit2s_ M6_i(52)         /* (lit2s) followed by int16, push it to dstack     */
+#define M6_lit4s_ M6_i(53)         /* (lit4s) followed by int32, push it to dstack     */
+#define M6_lit8s_ M6_i(54)         /* (lit8s) followed by int64, push it to dstack     */
+#define M6_lit_nt_ M6_i(55)        /* followed by NT, push it to dstack                 */
 #define M6_lit_string_ M6_i(56)    /* followed by T(len) and ascii, push them to dstack */
 #define M6_lit_tok_ M6_i(57)       /* followed by m6token, push it to dstack            */
 #define M6_lit_xt_ M6_i(58)        /* followed by XT, push it to dstack                 */

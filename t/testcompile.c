@@ -198,7 +198,7 @@ static const m6testcompile testcompile_b[] = {
     {"to test_value",
      {},
      {},
-     {4 + nCALLt, {m6_lit_xt_, CELL(test_value.code), m6xt_to_name, m6name_to_data_addr, m6store}}},
+     {3 + nCALLt, {m6_lit_nt_, CELL(&test_value.word), m6name_to_data_addr, m6store}}},
 };
 
 static const m6testcompile testcompile_c[] = {

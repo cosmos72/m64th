@@ -574,7 +574,15 @@ WORD_START(_lit8s_, _lit4s_)
     WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_CONSUMES_IP_8 | M6FLAG_INLINE_ALWAYS)
     WORD_CODE(_lit8s_, CELL(-1), exit)
 WORD_END(_lit8s_)
-WORD_START(_lit_string_, _lit8s_)
+WORD_START(_lit_nt_, _lit8s_)
+    WORD_DSTACK(0,1)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_ASM_NONE()
+    WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_CONSUMES_IP_SZ | M6FLAG_INLINE_ALWAYS)
+    WORD_CODE(_lit_nt_, XT(noop), exit)
+WORD_END(_lit_nt_)
+WORD_START(_lit_string_, _lit_nt_)
     WORD_DSTACK(0,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -958,12 +966,8 @@ WORD_START(_to_value_, _to_lx_comma_)
             store, exit,                                     /* (                     ) */
         then,                                                /* ( nt                  ) */
         /* compiling. compile a store to nt body */          /* ( nt                  ) */
-        /* note: a numeric cell address would be difficult to decompile                 */
-        /* => use '_lit_xt_' or create and use a token '_lit_nt_'                       */
-        name_to_xt,                                          /* ( xt                  ) */
-        _lit_comma_, _lit_xt_,      /* compile '(lit-xt)'       ( xt                  ) */
-        comma,                      /* compile xt               (                     ) */
-        _lit_comma_, xt_to_name,    /* compile 'xt>name'        (                     ) */
+        _lit_comma_, _lit_nt_,      /* compile '(lit-nt)'       ( nt                  ) */
+        comma,                      /* compile nt               (                     ) */
         _lit_comma_, name_to_data_addr, /* compile 'name>data>addr'                     */
         _lit_comma_, store,         /* compile '!'              (                     ) */
         exit

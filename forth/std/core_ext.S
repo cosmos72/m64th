@@ -101,7 +101,7 @@ WORD_START(buffer_colon,       action_of)
     WORD_ASM_NONE()
     WORD_FLAGS(M6FLAG_INLINE)
     WORD_CODE(
-        zero, CALL(_create_),                  /* create word                          */
+        _lit_, T(M6FLAG_VAR), CALL(_create_),  /* create word                          */
         right_bracket,                         /* start compiling                      */
         _lit_comma_, _ip_to_data_addr_,        /* compile (ip>data>addr)               */
         CALL(_finish_),                        /* finish compiling, make word findable */
