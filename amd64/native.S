@@ -34,3 +34,35 @@ ASMFUNC_START(_asm_if0_)
         DPOP___DTOP()                  /* preserves EFLAGS        */
         jnz    FUNC(_missing_);
 ASMFUNC_END(_asm_if0_)
+
+
+/* load literal value into DTOP. ordered from shortest to longest encoding. */
+
+ASMFUNC_START(_asm_drop_zero_)
+        ZERO(  DTOP)                   /* clobbers EFLAGS         */
+ASMFUNC_END(_asm_drop_zero_)
+
+
+ASMFUNC_START(_asm_drop_minus_one_)
+        MOVE(  RFFF,   DTOP)
+ASMFUNC_END(_asm_drop_minus_one_)
+
+
+ASMFUNC_START(_asm_drop_lit1s_)
+        MOVI(  -2,     DTOP)
+ASMFUNC_END(_asm_drop_lit1s_)
+
+
+ASMFUNC_START(_asm_drop_lit4u_)
+        movl   IMM(0xffffffff), DTOPw;
+ASMFUNC_END(_asm_drop_lit4u_)
+
+
+ASMFUNC_START(_asm_drop_lit4s_)
+        movq   IMM(-1), DTOP;
+ASMFUNC_END(_asm_drop_lit4s_)
+
+
+ASMFUNC_START(_asm_drop_lit8s_)
+        movabs IMM(0xffffffffffffffff), DTOP;
+ASMFUNC_END(_asm_drop_lit8s_)
