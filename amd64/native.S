@@ -48,7 +48,7 @@ ASMFUNC_START(_asm_drop_minus_one_)
 ASMFUNC_END(_asm_drop_minus_one_)
 
 
-ASMFUNC_START(_asm_drop_lit1s_)
+ASMFUNC_START(_asm_drop_lit1s_)  /* actually only values in -129..126 */
         MOVI(  -2,     DTOP)
 ASMFUNC_END(_asm_drop_lit1s_)
 
