@@ -22,7 +22,7 @@
 /* clang-format off */
 
 #ifndef M6F_LIT2S_
-FUNC_START(_lit2s_)        /* (lit-2s) push to dstack the int16 at following IP */
+FUNC_START(_lit2s_)        /* (lit2s) push to dstack the int16 at following IP */
         DPUSH__DTOP()
         LD_sh( DTOP,   AT(IP))
         NEXT2() /* skip 2 bytes */
@@ -30,7 +30,7 @@ FUNC_RAWEND(_lit2s_)
 #endif
 
 #ifndef M6F_LIT4S_
-FUNC_START(_lit4s_)        /* (lit-4s) push to dstack the int32 at following IP */
+FUNC_START(_lit4s_)        /* (lit4s) push to dstack the int32 at following IP */
         DPUSH__DTOP()
         LD_sw( DTOP,   AT(IP))
         NEXT4() /* skip 4 bytes */
@@ -38,7 +38,7 @@ FUNC_RAWEND(_lit4s_)
 #endif
 
 #ifndef M6F_LIT8S_
-FUNC_START(_lit8s_)        /* (lit-8s) push to dstack the int64 at following IP */
+FUNC_START(_lit8s_)        /* (lit8s) push to dstack the int64 at following IP */
         DPUSH__DTOP()
         LOAD(  DTOP,   AT(IP))
         NEXT8() /* skip 8 bytes */
