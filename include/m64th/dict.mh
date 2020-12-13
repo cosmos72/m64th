@@ -802,8 +802,9 @@
     X(11, "[recompile]", _recompile_)             /* rebuild XT jump offsets after optimization */ \
     X(17, "[recompile-token]", _recompile_token_) /* recompile one token after optimization */     \
     X(22, "[resolve-begin-repeat]", _resolve_begin_repeat_) /* common back-end of 'begin..' */     \
-    X(19, "[resolve-jump-here]", _resolve_jump_here_)   /* ( orig -- ) resolve a jump to here */   \
-    X(20, "[resolve-jump-there]", _resolve_jump_there_) /* ( dest -- ) resolve a jump from here */ \
+    X(19, "[resolve-jump-here]", _resolve_jump_here_) /* ( orig -- ) resolve a jump to here */     \
+    /* ( dest orig -- ) resolve a jump from orig to dest */                                        \
+    X(20, "[resolve-jump-there]", _resolve_jump_there_)                                            \
     X(17, "[resolve-jump-to]", _resolve_jump_to_) /* resolve a jump to specified offset     */     \
     X(14, "[resolve-loop]", _resolve_loop_) /* common back-end of 'loop' and '+loop'        */     \
     X(20, "(token-consumed-ip,)", _token_consumed_ip_comma_) /* ( tok -- ) */                      \

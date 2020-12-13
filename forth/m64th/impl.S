@@ -1001,13 +1001,12 @@ WORD_START(_until_comma_, _until0_)
     WORD_ASM_NONE()
     WORD_FLAGS(M6FLAG_INLINE)
     WORD_CODE(
-        to_r,                                    /* ( sys              ) ( R: tok  )      */
+        to_r,                                    /* ( sys              ) ( R: tok  )     */
         _check_lit_tok_, begin,                  /* ( sys              ) must be 'begin' */
         r_from, _lit_tok_, _until_,              /* ( sys tok category )                 */
         _compile_jump_,                          /* ( sys sys-until    )                 */
-        cs_drop,                    /* we only need the compiled 'until' not the cs data */
         CALL(_resolve_jump_there_), /* resolve jump offset from 'until' to 'begin'       */
-        exit
+        exit                                     /* ( sys              )                 */
     )
 WORD_END(_until_comma_)
 WORD_START(_while_, _until_comma_)
@@ -1908,18 +1907,17 @@ WORD_START(_resolve_jump_here_, _resolve_begin_repeat_)
     )
 WORD_END(_resolve_jump_here_)
 /**
- * Resolve a jump from here[-1] to topmost jump-sys on control stack.
- * Called by 'again' and '[resolve-loop]'
- * ( jump_location jump_category -- )
+ * Resolve a jump from orig to dest. Called by 'again' and '[resolve-loop]'
+ * ( dest orig -- )
  */
 WORD_START(_resolve_jump_there_, _resolve_jump_here_)
-    WORD_DSTACK(2,0)
+    WORD_DSTACK(4,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_ASM_NONE()
     WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_INLINE)
     WORD_CODE(
-                                          /* ( #tokens jump_category ) */
+        cs_drop,                          /* ( #tokens jump_category ) */
         drop, _num_compiled_, minus,      /* ( IP-offset )             */
         here, minus_one, tokens, plus,    /* ( IP-offset taddr ) taddr of here-1 */
         token_store, exit
@@ -1948,26 +1946,26 @@ WORD_END(_resolve_jump_to_)
  * zero or more 'leave' and one 'loop' or '+loop'
  * ( do-sys leave-sys* loop-sys -- )
  */
-WORD_START(_resolve_loop_, _resolve_jump_there_)
+WORD_START(_resolve_loop_, _resolve_jump_to_)
     WORD_DSTACK(-1,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_ASM_NONE()
     WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_INLINE)
     WORD_CODE(
-        /* ' (loop) check                              ( do-sys leave-sys* loop-sys )
-         * cs-drop                                     ( do-sys leave-sys*          )
-         * begin                                       ( do-sys leave-sys*          )
-         *    dup ' (leave) =                          ( do-sys leave-sys* t|f      )
-         * while                                       ( do-sys leave-sys+          )
-         *    [resolve-jump-here]                      ( do-sys leave-sys*          )
-         * repeat                                      ( do-sys                     )
-         * ' (do) check                                ( do-sys                     )
-         * cs-dup [resolve-jump-here]                  ( do-sys                     )
-         * [resolve-jump-there]                        (                            )
+        /* ' (loop) check cs>r                         ( do-sys leave-sys*     ) ( R: loop-sys )
+         * begin                                       ( do-sys leave-sys*     ) ( R: loop-sys )
+         *    dup ' (leave) =                          ( do-sys leave-sys* t|f ) ( R: loop-sys )
+         * while                                       ( do-sys leave-sys+     ) ( R: loop-sys )
+         *    [resolve-jump-here]                      ( do-sys leave-sys*     ) ( R: loop-sys )
+         * repeat                                      ( do-sys                ) ( R: loop-sys )
+         * ' (do) check                                ( do-sys                ) ( R: loop-sys )
+         * cs-dup [resolve-jump-here]                  ( do-sys                ) ( R: loop-sys )
+         * csr>                                        ( do-sys loop-sys       )
+         * [resolve-jump-there]                        (                       )
          */
         _check_lit_tok_, _loop_,
-        cs_drop,
+        cs_to_r,
         begin,
             dup, _lit_, _leave_, equal,
         _while_, T(3+nCALLt),
@@ -1975,7 +1973,7 @@ WORD_START(_resolve_loop_, _resolve_jump_there_)
         _repeat_, T(-9-nCALLt),
         _check_lit_tok_, _do_,
         cs_dup, CALL(_resolve_jump_here_),
-        CALL(_resolve_jump_there_), exit
+        cs_r_from, CALL(_resolve_jump_there_), exit
     )
 WORD_END(_resolve_loop_)
 /* (skip-until:}) ( -- ) parse words and skip them until :} is found */

@@ -173,6 +173,8 @@
 #define m6_4_aligned m6int_aligned
 #define m6_8_aligned m6aligned
 
+#define m6cs_to_r m6two_to_r
+#define m6cs_r_from m6two_r_from
 #define m6cs_drop m6two_drop
 #define m6cs_dup m6two_dup
 #define m6cs_pick m6two_pick
@@ -341,6 +343,8 @@
 #define M6_4_aligned M6int_aligned
 #define M6_8_aligned M6aligned
 
+#define M6cs_to_r M6two_to_r
+#define M6cs_r_from M6two_r_from
 #define M6cs_drop M6two_drop
 #define M6cs_dup M6two_dup
 #define M6cs_pick M6two_pick

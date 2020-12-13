@@ -72,8 +72,7 @@ WORD_START(again,      question_do)
     WORD_CODE(
         _check_lit_tok_, begin,         /* ( sys ) must be 'begin' */
         _compile_jump_lit_, _again_, _again_,
-        cs_drop,                    /* we only need the compiled '(again)', not the cs data */
-        CALL(_resolve_jump_there_), /* resolve jump offset from '(again)' to 'begin'        */
+        CALL(_resolve_jump_there_), /* resolve jump offset from '(again)' to 'begin' and drop both */
         exit
     )
 WORD_END(again)

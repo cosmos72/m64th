@@ -530,8 +530,7 @@ WORD_START(repeat,     recurse)
     WORD_CODE(
         _check_lit_tok_, begin,     /* ( while-sys begin-sys ) topmost must be 'begin'      */
         _compile_jump_lit_, _repeat_, _repeat_,
-        cs_drop,                    /* we only need the compiled '(repeat)' not the cs data */
-        CALL(_resolve_jump_there_), /* resolve jump from '(repeat)' to 'begin'              */
+        CALL(_resolve_jump_there_), /* resolve jump from '(repeat)' to 'begin' and drop both*/
         _check_lit_tok_, _while_,   /* ( while-sys ) must be '(while)'                      */
         CALL(_resolve_jump_here_),  /* resolve jump from '(while)' to here                  */
         exit

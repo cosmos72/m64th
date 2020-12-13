@@ -94,13 +94,15 @@ WORD_START(_asm_resolve_jump_there_,  _asm_resolve_jump_here_)
     WORD_ASM_NONE()
     WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_INLINE)
     WORD_CODE(
-#ifdef __x86_64__
-        /* see comment above for amd64 relative ASM jumps */
+#if defined(__x86_64__)
+        /* see comment above about amd64 relative ASM jumps */
         drop,                                  /* ( jump_location                  ) */
         asm_size, minus,                       /* ( distance                       ) */
         asm_here, four_minus, int_store, exit  /* (                                ) */
+
+#elif defined(__aarch64__)
+        _lit_, T(M6ERR_UNSUPPORTED_OPERATION), throw, exit
 #else
-        /* TODO */
         _lit_, T(M6ERR_UNSUPPORTED_OPERATION), throw, exit
 #endif
     )
