@@ -25,7 +25,8 @@
 
 #define FUNC(name) m6f##name
 #define FUNC_RET(name) .L.FUNC(name).ret
-#define FUNCASM_RET(name) m6f##name##_ret
+#define ASMFUNC(name) m6f##name /* same as FUNC(name) */
+#define ASMFUNC_RET(name) m6f##name##_ret
 
 #define FUNC_DECL(name)                                                                            \
     .globl FUNC(name);                                                                             \
@@ -45,6 +46,7 @@
 #define FUNC_DEFSIZE(name) .size FUNC(name), .- FUNC(name);
 
 #define FUNC_SIZE(name) FUNC_RET(name) - FUNC(name)
+#define ASMFUNC_SIZE(name) ASMFUNC_RET(name) - ASMFUNC(name)
 
 #define FUNC_RAWEND(name)                                                                          \
     .cfi_endproc;                                                                                  \
@@ -57,11 +59,13 @@
     NEXT()                                                                                         \
     FUNC_RAWEND(name)
 
-#define FUNCASM_START(name) FUNC_DEF_NOALIGN(name) /**/.cfi_startproc;
+#define ASMFUNC_START(name)                                                                        \
+    FUNC_DEF_NOALIGN(name)                                                                         \
+    .cfi_startproc;
 
-#define FUNCASM_END(name)                                                                          \
+#define ASMFUNC_END(name)                                                                          \
     FUNC_RET(name) :                                                                               \
-    FUNCASM_RET(name) :                                                                            \
+    ASMFUNC_RET(name) :                                                                            \
     FUNC_RAWEND(name)
 
 /* clang-format on */

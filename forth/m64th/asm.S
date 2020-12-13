@@ -35,7 +35,7 @@ WORD_START(_asm_q_if_,     _asm_q_if_)
     WORD_ASM_LEN(_asm_q_if_)
     WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_IMMEDIATE | M6FLAG_INLINE_ALWAYS | M6FLAG_MAY_JUMP | M6FLAG_REEXEC_AFTER_OPTIMIZE)
     WORD_CODE(
-        _asm_lit_comma_, CELL(FUNC(_asm_q_if_)), T(FUNC_SIZE(_asm_q_if_)),
+        _asm_lit_comma_, CELL(ASMFUNC(_asm_q_if_)), T(ASMFUNC_SIZE(_asm_q_if_)),
         asm_size, _lit_tok_, _asm_if_, exit
     )
 WORD_END(_asm_q_if_)
@@ -47,7 +47,7 @@ WORD_START(_asm_q_if0_,    _asm_q_if_)
     WORD_ASM_LEN(_asm_q_if0_)
     WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_IMMEDIATE | M6FLAG_INLINE_ALWAYS | M6FLAG_MAY_JUMP | M6FLAG_REEXEC_AFTER_OPTIMIZE)
     WORD_CODE(
-        _asm_lit_comma_, CELL(FUNC(_asm_q_if0_)), T(FUNC_SIZE(_asm_q_if0_)),
+        _asm_lit_comma_, CELL(ASMFUNC(_asm_q_if0_)), T(ASMFUNC_SIZE(_asm_q_if0_)),
         asm_size, _lit_tok_, _asm_if_, exit
     )
 WORD_END(_asm_q_if0_)
@@ -57,7 +57,7 @@ WORD_START(_asm_else_,     _asm_q_if0_)
     WORD_ASM_LEN(_asm_else_)
     WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_IMMEDIATE | M6FLAG_INLINE_ALWAYS | M6FLAG_JUMP | M6FLAG_REEXEC_AFTER_OPTIMIZE)
     WORD_CODE(
-        _asm_lit_comma_, CELL(FUNC(_asm_else_)), T(FUNC_SIZE(_asm_else_)),/* ( orig            ) */
+        _asm_lit_comma_, CELL(ASMFUNC(_asm_else_)), T(ASMFUNC_SIZE(_asm_else_)),/* ( orig            ) */
         asm_size, _lit_tok_, _asm_else_, cs_swap,                         /* ( else-orig orig  ) */
         CALL(_asm_resolve_jump_here_), exit                               /* ( else-orig       ) */
     )
@@ -70,7 +70,7 @@ WORD_START(_asm_if_,       _asm_else_)
     WORD_ASM_LEN(_asm_if_)
     WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_IMMEDIATE | M6FLAG_INLINE_ALWAYS | M6FLAG_MAY_JUMP | M6FLAG_REEXEC_AFTER_OPTIMIZE)
     WORD_CODE(
-        _asm_lit_comma_, CELL(FUNC(_asm_if_)), T(FUNC_SIZE(_asm_if_)),
+        _asm_lit_comma_, CELL(ASMFUNC(_asm_if_)), T(ASMFUNC_SIZE(_asm_if_)),
         asm_size, _lit_tok_, _asm_if_, exit
     )
 WORD_END(_asm_if_)
@@ -82,7 +82,7 @@ WORD_START(_asm_if0_,       _asm_if_)
     WORD_ASM_LEN(_asm_if0_)
     WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_IMMEDIATE | M6FLAG_INLINE_ALWAYS | M6FLAG_MAY_JUMP | M6FLAG_REEXEC_AFTER_OPTIMIZE)
     WORD_CODE(
-        _asm_lit_comma_, CELL(FUNC(_asm_if0_)), T(FUNC_SIZE(_asm_if0_)),
+        _asm_lit_comma_, CELL(ASMFUNC(_asm_if0_)), T(ASMFUNC_SIZE(_asm_if0_)),
         asm_size, _lit_tok_, _asm_if_, exit
     )
 WORD_END(_asm_if0_)
@@ -220,7 +220,7 @@ WORD_END(asm_make_func)
 /* ( -- u    ) get ASM_HERE - ASM_FUNC in bytes  */
 WORD(asm_size,         asm_make_func,  DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 /* ( -- addr ) get ASM_FUNC = start of ASM code  */
-WORD(asm_func,            asm_size,   DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
+WORD(asm_func,            asm_size,    DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 /* ( len -- ) reserve at least len bytes in ASM buffer, and mark it as READ+WRITE+EXEC */
 WORD_START(asm_reserve,    asm_func)
     WORD_DSTACK(1,0)

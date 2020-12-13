@@ -21,15 +21,15 @@
 
 #include "../dispatch/asm.mh"
 
-FUNCASM_START(_asm_if_)
+ASMFUNC_START(_asm_if_)
         cmp    DTOP,   IMM(0);
         DPOP___DTOP()
         b.eq   FUNC(_missing_);
-FUNCASM_END(_asm_if_)
+ASMFUNC_END(_asm_if_)
 
 
-FUNCASM_START(_asm_if0_)
+ASMFUNC_START(_asm_if0_)
         cmp    DTOP,   IMM(0);
         DPOP___DTOP()
         b.ne   FUNC(_missing_);
-FUNCASM_END(_asm_if0_)
+ASMFUNC_END(_asm_if0_)

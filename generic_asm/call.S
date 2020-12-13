@@ -23,9 +23,9 @@
 
 
 /* return from ASM to ASM */
-FUNCASM_START(_asm_ret_)
+ASMFUNC_START(_asm_ret_)
         ASM_RET()
-FUNCASM_END(_asm_ret_)
+ASMFUNC_END(_asm_ret_)
 
 
 /** must be followed by an XT. calls it. */

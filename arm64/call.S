@@ -245,11 +245,11 @@ FUNC_RAWEND(_exec_token_)
  * This function is called *only* from native ASM code with ASM_CALL()
  * => it must use ASM_RET() to return when finished.
  */
-FUNCASM_START(_asm_vm_catch_)
+ASMFUNC_START(_asm_vm_catch_)
         ADDROF_1M(TO(_asm_vm_catch_.tokens), REG0) /* @ = tokens to execute */
 
         JUMP(  TO(_asm_vm_execute_.reg0))
-FUNCASM_END(_asm_vm_catch_)
+ASMFUNC_END(_asm_vm_catch_)
 
 
 /**
@@ -257,7 +257,7 @@ FUNCASM_END(_asm_vm_catch_)
  * This function is called *only* from native ASM code with ASM_CALL()
  * => it must use ASM_RET() to return when finished.
  */
-FUNCASM_START(_asm_vm_execute_)
+ASMFUNC_START(_asm_vm_execute_)
         ADDROF_1M(TO(_asm_vm_execute_.tokens), REG0) /* @ = tokens to execute */
 
 LABEL(_asm_vm_execute_.reg0)
@@ -273,11 +273,11 @@ LABEL(_asm_vm_execute_.reg0)
         JUMP_REG(VM)
         /* '(vm)' interpreter will execute '_vm_return_to_asm_' when done  */
         /* which reloads the registers saved above then returns to ASM  */
-FUNCASM_END(_asm_vm_execute_)
+ASMFUNC_END(_asm_vm_execute_)
 
 
 /* return from VM to native ASM code. it's the bottom half of _asm_vm_execute_ */
-FUNCASM_START(_vm_return_to_asm_)
+ASMFUNC_START(_vm_return_to_asm_)
         /**
          * no need to restore lr here: every place that clobbers lr
          * is in charge of saving & restoring it, not to break google-gprof
@@ -285,7 +285,7 @@ FUNCASM_START(_vm_return_to_asm_)
         MOVE(  RTOP, VM)           /* load VM                           */
         RPOP2( IP,   RTOP)         /* load IP, RTOP                     */
         ASM_RET()                  /* return to ASM                     */
-FUNCASM_END(_vm_return_to_asm_)
+ASMFUNC_END(_vm_return_to_asm_)
 
 
 WORD_CODE_ALIGN()
