@@ -1917,9 +1917,10 @@ WORD_START(_resolve_jump_there_, _resolve_jump_here_)
     WORD_ASM_NONE()
     WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_INLINE)
     WORD_CODE(
-        cs_drop,                          /* ( #tokens jump_category ) */
-        drop, _num_compiled_, minus,      /* ( IP-offset )             */
-        here, minus_one, tokens, plus,    /* ( IP-offset taddr ) taddr of here-1 */
+        drop, nip,                        /* ( dest_location orig_location ) */
+        tuck, minus, swap,                /* ( distance orig_location      ) */
+        one_minus, tokens, state_fetch,   /* ( distance orig_location-1 xt ) */
+        plus,                             /* ( distance addr ) addr of orig-1 */
         token_store, exit
     )
 WORD_END(_resolve_jump_there_)
