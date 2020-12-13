@@ -499,7 +499,7 @@ WORD_START(postpone,   over)
         CALL(parse_xt),
         invert,
         _if0_, T(5+nCALLt),
-        /* avoid CALL(literal) because it compiles (lit-[1248]s) instead of (lit-xt) */
+        /* avoid CALL(literal) because it compiles (lit[1248]s) instead of (lit-xt) */
             _lit_comma_, _lit_xt_,                     /* compiles (lit-xt)   */
             xt_comma,                                  /* xt,                 */
             _lit_xt_, XT(compile_comma),               /* ' compile,          */
@@ -714,7 +714,7 @@ WORD_START(bracket_tick,  left_bracket)
     WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_INLINE | M6FLAG_IMMEDIATE)
     WORD_CODE(
         CALL(tick),                    /* '                                          */
-        /* avoid CALL(literal) because it compiles (lit-[1248]s) instead of (lit-xt) */
+        /* avoid CALL(literal) because it compiles (lit[1248]s) instead of (lit-xt)  */
         _lit_comma_, _lit_xt_,         /* compiles (lit-xt)                          */
         xt_comma, exit                 /* xt,                                        */
     )

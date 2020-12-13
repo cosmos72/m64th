@@ -631,9 +631,9 @@
     X(14, "(ip>data>addr)", _ip_to_data_addr_)                                                     \
     X(7, "(leave)", _leave_)                                                                       \
     X(6, "(lit,)", _lit_comma_)                                                                    \
-    X(8, "(lit-2s)", _lit2s_)                                                                      \
-    X(8, "(lit-4s)", _lit4s_)                                                                      \
-    X(8, "(lit-8s)", _lit8s_)                                                                      \
+    X(7, "(lit2s)", _lit2s_)                                                                       \
+    X(7, "(lit4s)", _lit4s_)                                                                       \
+    X(7, "(lit8s)", _lit8s_)                                                                       \
     X(12, "(lit-string)", _lit_string_)                                                            \
     X(9, "(lit-tok)", _lit_tok_)                                                                   \
     X(8, "(lit-xt)", _lit_xt_)                                                                     \

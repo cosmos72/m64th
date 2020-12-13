@@ -460,9 +460,9 @@
 #undef M6____gap                     /*                                         */
 #define M6_leave_ M6_i(51)           /* (leave)  followed by IP offset to jump          */
 #define M6_lit_comma_ M6_i(52)     /* followed by m6token, append it to current word's code/data */
-#define M6_lit2s_ M6_i(53)         /* (lit-2s) followed by int16, push it to dstack     */
-#define M6_lit4s_ M6_i(54)         /* (lit-4s) followed by int32, push it to dstack     */
-#define M6_lit8s_ M6_i(55)         /* (lit-8s) followed by int64, push it to dstack     */
+#define M6_lit2s_ M6_i(53)         /* (lit2s) followed by int16, push it to dstack     */
+#define M6_lit4s_ M6_i(54)         /* (lit4s) followed by int32, push it to dstack     */
+#define M6_lit8s_ M6_i(55)         /* (lit8s) followed by int64, push it to dstack     */
 #define M6_lit_string_ M6_i(56)    /* followed by T(len) and ascii, push them to dstack */
 #define M6_lit_tok_ M6_i(57)       /* followed by m6token, push it to dstack            */
 #define M6_lit_xt_ M6_i(58)        /* followed by XT, push it to dstack                 */

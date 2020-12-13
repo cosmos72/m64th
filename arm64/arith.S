@@ -23,21 +23,21 @@
 
 
 #define M6F_LIT2S_
-FUNC_START(_lit2s_)        /* (lit-2s) push to dstack the int16 at following IP */
+FUNC_START(_lit2s_)        /* (lit2s) push to dstack the int16 at following IP */
         DPUSH__DTOP()
         LD_sh( DTOP,   AT(IP), 2)
 FUNC_END(_lit2s_)
 
 
 #define M6F_LIT4S_
-FUNC_START(_lit4s_)        /* (lit-4s) push to dstack the int32 at following IP */
+FUNC_START(_lit4s_)        /* (lit4s) push to dstack the int32 at following IP */
         DPUSH__DTOP()
         LD_sw( DTOP,   AT(IP), 4)
 FUNC_END(_lit4s_)
 
 
 #define M6F_LIT8S_
-FUNC_START(_lit8s_)        /* (lit-8s) push to dstack the int64 at following IP */
+FUNC_START(_lit8s_)        /* (lit8s) push to dstack the int64 at following IP */
         DPUSH__DTOP()
         LOAD(  DTOP,   AT(IP), 8)
 FUNC_END(_lit8s_)
