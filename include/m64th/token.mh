@@ -280,12 +280,13 @@
 #define M6_vm_return_to_asm_ M6_a(11)  /* return from VM to native ASM code                  */
 #undef M6____gap                       /*                                                    */
 #define M6asm_comma M6_a(13)           /* ( addr u --       ) append ASM code to ASM-HERE    */
-#define M6asm_here M6_a(14)            /* (     -- addr ) get ASM_HERE = current ASM address */
-#define M6asm_size M6_a(15)            /* (     -- u    ) get ASM_HERE - ASM_START           */
-#define M6asm_start M6_a(16)           /* (     -- addr ) get ASM_START = start of ASM code  */
-#define M6name_to_asm_n M6_a(17)       /* ( nt -- u true | 0 false ) get name.asm_len        */
-#define M6name_to_asm_n_store M6_a(18) /* ( u nt --         ) set name.asm_len               */
-#define M6token_to_asm_addr M6_a(19)   /* ( token -- addr|0 ) get ASM code address for token */
+#define M6asm_clear M6_a(14)           /* ( addr u --       ) append ASM code to ASM-HERE    */
+#define M6asm_func M6_a(15)            /* (     -- addr ) get ASM_FUNC = start of ASM code   */
+#define M6asm_here M6_a(16)            /* (     -- addr ) get ASM_HERE = current ASM address */
+#define M6asm_size M6_a(17)            /* (     -- u    ) get ASM_HERE - ASM_FUNC            */
+#define M6name_to_asm_n M6_a(18)       /* ( nt -- u true | 0 false ) get name.asm_len        */
+#define M6name_to_asm_n_store M6_a(19) /* ( u nt --         ) set name.asm_len               */
+#define M6token_to_asm_addr M6_a(20)   /* ( token -- addr|0 ) get ASM code address for token */
 
 /**
  *
@@ -295,7 +296,7 @@
  *
  */
 /* 'm64th-c' wordlist */
-#define M6_c(x) ((x) + 750)
+#define M6_c(x) ((x) + 760)
 #define M6_c_arg_0_ M6_c(0)  /* prepare 0 args for C function call    */
 #define M6_c_arg_1_ M6_c(1)  /* prepare 1 arg  for C function call    */
 #define M6_c_arg_2_ M6_c(2)  /* prepare 2 args for C function call    */
@@ -334,7 +335,7 @@
  *
  */
 /* 'm64th-core' wordlist */
-#define M6_(x) ((x) + 780)
+#define M6_(x) ((x) + 790)
 /* ( counted-tokens -- tok-addr u ) get address and count of countedtokens */
 #define M6count_tokens M6_(0)
 #define M6flags_to_consumed_tokens M6_(1) /* ( flags -- u ) get # consumed tokens from flags */
@@ -403,7 +404,7 @@
  *
  */
 /* 'm64th-impl' wordlist */
-#define M6_i(x) ((x) + 840)
+#define M6_i(x) ((x) + 850)
 #define M6minus_two M6_i(-2)       /* -2                    */
 #define M6minus_one M6_i(-1)       /* -1                    */
 #define M6zero M6_i(0)             /* 0                     */

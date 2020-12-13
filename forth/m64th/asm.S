@@ -135,10 +135,6 @@ WORD_START(_xt_to_asm_init_,   _vm_return_to_asm_)
     WORD_ASM_NONE()
     WORD_FLAGS(0)
     WORD_CODE(
-#ifndef __x86_64__
-        /* TODO implement [asm-resolve-jump-*] on arm64 */
-        false, exit,
-#endif
         /* attempt to compile to ASM only functions containing > 3 tokens                  */
         _num_compiled_,                             /* ( #compiled_tokens                ) */
         three, more,                                /* ( t|f                             ) */
@@ -175,7 +171,7 @@ WORD_START(_xt_to_asm_finish_, _xt_to_asm_body_)
     WORD_STACK_NONE()
     WORD_STACK_NONE()
     WORD_ASM_NONE()
-    WORD_FLAGS(0)
+    WORD_FLAGS(M6FLAG_INLINE)
     WORD_CODE(
         CALL(asm_make_func),                        /* ( asm-addr asm-len)                 */
         latest, name_to_asm_n_store, to_r,          /* (                 ) ( asm-addr    ) */
@@ -202,8 +198,10 @@ WORD_END(_xt_to_asm_finish_)
 WORD_NOASM(_asm_lit_comma_,    _xt_to_asm_finish_, DSTACK(0,0), RSTACK(0,0), M6FLAG_COMPILE_ONLY | M6FLAG_INLINE_ALWAYS | M6FLAG_CONSUMES_IP_SZ_SZt)
 /* ( addr u -- ) store assembly code at ASM_HERE and update ASM_HERE */
 WORD_NOASM(asm_comma, _asm_lit_comma_, DSTACK(2,0), RSTACK(0,0), WORD_IMPURE)
+/* ( -- ) forget current code in ASM buffer i.e. set ASM_HERE = ASM_FUNC */
+WORD(asm_clear,            asm_comma,  DSTACK(0,0), RSTACK(0,0), WORD_IMPURE)
 /* ( -- addr ) get ASM_HERE = current ASM address */
-WORD(asm_here,             asm_comma,  DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
+WORD(asm_here,             asm_clear,  DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 /* ( -- addr u ) mark code in ASM buffer as READ+EXEC, and return its range.
  * also updates ASM-HERE */
 WORD_START(asm_make_func,  asm_here)
@@ -219,12 +217,12 @@ WORD_START(asm_make_func,  asm_here)
         _c_locals_load_, exit
     )
 WORD_END(asm_make_func)
-/* ( -- u    ) get ASM_HERE - ASM_START in bytes  */
+/* ( -- u    ) get ASM_HERE - ASM_FUNC in bytes  */
 WORD(asm_size,         asm_make_func,  DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
-/* ( -- addr ) get ASM_START = start of ASM code  */
-WORD(asm_start,            asm_size,   DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
+/* ( -- addr ) get ASM_FUNC = start of ASM code  */
+WORD(asm_func,            asm_size,   DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 /* ( len -- ) reserve at least len bytes in ASM buffer, and mark it as READ+WRITE+EXEC */
-WORD_START(asm_reserve,    asm_start)
+WORD_START(asm_reserve,    asm_func)
     WORD_DSTACK(1,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -331,11 +329,17 @@ WORD_START(xt_to_asm_comma,    token_to_asm_addr)
     WORD_STACK_NONE()
     WORD_STACK_NONE()
     WORD_ASM_NONE()
-    WORD_FLAGS(M6FLAG_INLINE)
+    WORD_FLAGS(0)
     WORD_CODE(
         CALL(_xt_to_asm_init_),                     /* ( t|f                             ) */
-        _if_, T(3+2*nCALLt),                        /* (                                 ) */
-            CALL(_xt_to_asm_body_),                 /* (                                 ) */
+        _if0_, T(2),                                /* (                                 ) */
+            exit,                                   /* (                                 ) */
+        then,                                       /* (                                 ) */
+        _lit_xt_, XT(_xt_to_asm_body_),             /* ( xt                              ) */
+        _catch_beg_, _catch_end_,                   /* ( err|0                           ) */
+        _if_, T(3),                                 /* (                                 ) */
+            asm_clear,                              /* (                                 ) */
+        _else_, T(2+nCALLt),                        /* (                                 ) */
             CALL(_xt_to_asm_finish_),               /* (                                 ) */
         then, exit                                  /* (                                 ) */
     )

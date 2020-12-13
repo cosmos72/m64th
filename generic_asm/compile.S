@@ -197,31 +197,6 @@ FUNC_END(comma)
 #endif
 
 
-/* [asm-lit,] followed by CELL(addr) T(u) just calls asm_comma */
-FUNC_START(_asm_lit_comma_)
-        DPUSH__DTOP()
-        LOAD(  REG1,   AT(IP))
-        LD_ut( DTOP,   AT(IP, SZ))
-        ADD2(IMM(SZ+SZt),  IP)
-        DPUSH( REG1)
-        /* fallthrough */
-
-/* asm, ( addr u -- ) m64th-asm */
-FUNC_DEF(asm_comma)
-        LOAD(  REG1,   AT(M64TH, M64TH_OFF_ASM_HERE))    /* a = asm-here          */
-        LOAD(  REG2,   AT(M64TH, M64TH_OFF_ASM_END))     /* b = asm-end           */
-        SUB2(  REG1,   REG2)                           /* b = free_bytes        */
-        MOVI(  M6ERR_ASM_OVERFLOW, REG0)
-        JA(    DTOP,   REG2,    FUNC(_throw_reg0_))
-
-        DPUSH( REG1)                                   /* ( addr asm-here u )   */
-        ADD2(  DTOP,   REG1)
-        STOR(  REG1,   AT(M64TH, M64TH_OFF_ASM_HERE))    /* asm-here += u         */
-        JUMP(  FUNC(cmove))
-/* FUNC_RAWEND(_asm_lit_comma_) */
-FUNC_RAWEND(asm_comma)
-
-
 /**
  * countedstring, ( c-addr u -- ) m64th-user
 

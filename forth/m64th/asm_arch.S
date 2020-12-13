@@ -42,7 +42,7 @@ WORD_START(_asm_resolve_jump_here_,  LASTWORD)
          * and it's exactly the distance in bytes from the end of the jump instruction.
          */
         drop,                                  /* ( jump_location                  ) */
-        asm_start, plus,                       /* ( addr_of_jump_offset+4          ) */
+        asm_func, plus,                       /* ( addr_of_jump_offset+4          ) */
         dup, four_minus, swap,                 /* ( addr addr+4                    ) */
         asm_here, sub,                         /* ( addr distance                  ) */
         swap, int_store, exit                  /* (                                ) */

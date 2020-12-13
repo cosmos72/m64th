@@ -349,11 +349,12 @@
     /* native ASM only: pop XT and use '(vm)' to execute it. */                                    \
     X(16, "(asm/vm-execute)", _asm_vm_execute_)     /* ( ... xt -- ... ) */                        \
     X(18, "(vm-return-to/asm)", _vm_return_to_asm_) /* return from VM to ASM                    */ \
-    X(10, "[asm-lit,]", _asm_lit_comma_)      /* followed by CELL(addr) T(u) just calls asm, */    \
+    X(10, "[asm-lit,]", _asm_lit_comma_)      /* followed by CELL(addr) T(u) just calls asm,    */ \
     X(4, "asm,", asm_comma)                   /* ( addr u  -- ) append ASM code to ASM-HERE     */ \
+    X(10, "asm-clear", asm_clear)             /* ( -- ) forget current ASM code                 */ \
+    X(9, "asm-func", asm_func)                /* ( -- addr ) get ASM_FUNC = start of ASM code   */ \
     X(8, "asm-here", asm_here)                /* ( -- addr ) get ASM_HERE = current ASM address */ \
-    X(8, "asm-size", asm_size)                /* ( -- u    ) get ASM_HERE - ASM_START in bytes  */ \
-    X(9, "asm-start", asm_start)              /* ( -- addr ) get ASM_START = start of ASM code  */ \
+    X(8, "asm-size", asm_size)                /* ( -- u    ) get ASM_HERE - ASM_FUNC in bytes   */ \
     X(10, "name>asm>n", name_to_asm_n)        /* ( nt -- u true | 0 false ) get nt.asm_len      */ \
     X(11, "name>asm>n!", name_to_asm_n_store) /* ( u nt -- ) set nt.asm_len                     */ \
     /* ( token -- asm-addr | 0 ) get token ASM address */                                          \
