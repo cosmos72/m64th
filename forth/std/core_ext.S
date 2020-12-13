@@ -192,7 +192,8 @@ WORD_START(endcase,    defer_fetch)
         _lit_comma_, endcase,                          /* compile 'endcase'           */
         dup, _lit_tok_, _fallthrough_, equal,          /* ( case-sys sys* t|f       ) */
         _if_, T(3+nCALLt),                             /* ( case-sys endof-sys* fallthrough-sys ) */
-            zero, CALL(_resolve_jump_to_),             /* ( case-sys endof-sys*     ) */
+            /* last 'of' ends with 'fallthrough' : resolve it as a non-jump */
+            cs_dup, CALL(_resolve_jump_there_),        /* ( case-sys endof-sys*     ) */
         then,                                          /* ( case-sys endof-sys*     ) */
         begin,                                         /* ( case-sys endof-sys*     ) */
             dup, _lit_tok_, _endof_, equal,            /* ( case-sys endof-sys* t|f ) */

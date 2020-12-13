@@ -689,12 +689,6 @@ static m6testexecute testexecute_d[] = {
      {{3, {19, 1, DXT(throw)}}, {1, {0xfed4}}},
      {{3, {19, -1 /*clobbered*/, 1}}, {1, {0xfed4}}},
      {}},
-    /* ----------------------------- [resolve-jump-to] ---------------------- */
-    {"[resolve-jump-to]",
-     {m6token_comma, m6token_comma, m6zero, CALL(_resolve_jump_to_), m6bye},
-     {{4, {T(2), m6_fallthrough_, T(-1), m6_fallthrough_}}, {}},
-     {{}, {}},
-     {2, {m6_fallthrough_, T(0)}}},
     /* ----------------------------- (optimize-literal) --------------------- */
     /* these also test (ip>data) and (ip>data>addr) */
     {"-3 (optimize-literal)",

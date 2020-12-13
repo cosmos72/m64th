@@ -1925,29 +1925,11 @@ WORD_START(_resolve_jump_there_, _resolve_jump_here_)
     )
 WORD_END(_resolve_jump_there_)
 /**
- * Resolve the most recent unresolved jump, setting its relative displacement to n.
- * ( jump_location jump_category n -- )
- */
-WORD_START(_resolve_jump_to_, _resolve_jump_there_)
-    WORD_DSTACK(3,0)
-    WORD_RSTACK(0,0)
-    WORD_STACK_NONE()
-    WORD_ASM_NONE()
-    WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_INLINE)
-    WORD_CODE(
-                                          /* ( #tokens jump_category n ) */
-        nip, swap,                        /* ( n #tokens               ) */
-        _num_compiled_, minus, one_minus, /* ( n token-offset          ) */
-        tokens, here, plus,               /* ( n taddr ) taddr of jump offset */
-        token_store, exit
-    )
-WORD_END(_resolve_jump_to_)
-/**
  * called by 'loop': resolve the jump offsets of a single 'do' or '?do',
  * zero or more 'leave' and one 'loop' or '+loop'
  * ( do-sys leave-sys* loop-sys -- )
  */
-WORD_START(_resolve_loop_, _resolve_jump_to_)
+WORD_START(_resolve_loop_, _resolve_jump_there_)
     WORD_DSTACK(-1,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
