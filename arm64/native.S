@@ -33,3 +33,54 @@ ASMFUNC_START(_asm_if0_)
         DPOP___DTOP()
         b.ne   FUNC(_missing_);
 ASMFUNC_END(_asm_if0_)
+
+
+/* load literal value into DTOP. ordered from shortest to longest encoding. */
+
+ASMFUNC_START(_asm_drop_zero_)
+        ZERO(  DTOP)
+ASMFUNC_END(_asm_drop_zero_)
+
+
+ASMFUNC_START(_asm_drop_lit2u_)
+        mov    DTOP,   IMM(0);
+ASMFUNC_END(_asm_drop_lit2u_)
+
+
+ASMFUNC_START(_asm_drop_lit2s_) /* actually only negative values in -(2^16)..-1 */
+        movn   DTOP,   IMM(0);
+ASMFUNC_END(_asm_drop_lit2s_)
+
+
+ASMFUNC_START(_asm_drop_lit4u_)
+        mov    DTOP,   IMM(0);
+        movk   DTOP,   IMM(0), lsl IMM(16);
+ASMFUNC_END(_asm_drop_lit4u_)
+
+
+ASMFUNC_START(_asm_drop_lit4s_) /* actually only negative values in -(2^32)..-1 */
+        movn   DTOP,   IMM(0);
+        movk   DTOP,   IMM(0), lsl IMM(16);
+ASMFUNC_END(_asm_drop_lit4s_)
+
+
+ASMFUNC_START(_asm_drop_lit6u_)
+        mov    DTOP,   IMM(0);
+        movk   DTOP,   IMM(0), lsl IMM(16);
+        movk   DTOP,   IMM(0), lsl IMM(32);
+ASMFUNC_END(_asm_drop_lit6u_)
+
+
+ASMFUNC_START(_asm_drop_lit6s_) /* actually only negative values in -(2^48)..-1 */
+        movn   DTOP,   IMM(0);
+        movk   DTOP,   IMM(0), lsl IMM(16);
+        movk   DTOP,   IMM(0), lsl IMM(32);
+ASMFUNC_END(_asm_drop_lit6s_)
+
+
+ASMFUNC_START(_asm_drop_lit8s_)
+        mov    DTOP,   IMM(0);
+        movk   DTOP,   IMM(0), lsl IMM(16);
+        movk   DTOP,   IMM(0), lsl IMM(32);
+        movk   DTOP,   IMM(0), lsl IMM(48);
+ASMFUNC_END(_asm_drop_lit8s_)
