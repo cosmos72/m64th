@@ -1639,9 +1639,9 @@ static m6testexecute testexecute_g[] = {
      {{1, {(m6cell)m6fdup}}, {}},
      {}},
     {"'then token>asm-replace",
-     {CALL(token_to_asm_replace), m6bye},
+     {m6sp_fetch, CALL(token_to_asm_replace), m6bye},
      {{1, {m6then}}, {}},
-     {{1, {m6_asm_then_}}, {}},
+     {{2, {m6then, m6_asm_then_}}, {}},
      {}},
     {"'then token>asm>n",
      {m6sp_fetch, CALL(token_to_asm_n), m6bye},
@@ -1670,9 +1670,10 @@ static m6testexecute testexecute_g[] = {
      {{2, {(m6cell)m6fnip, 4}}, {}}, /* correct for both amd64 and arm64 */
      {}},
     {"'(if) token>asm-replace token>asm",
-     {CALL(token_to_asm_replace), CALL(token_to_asm), m6drop, m6bye}, /* ASM len varies, drop it */
+     {m6sp_fetch, CALL(token_to_asm_replace), CALL(token_to_asm), m6drop,
+      m6bye}, /* ASM len varies, drop it */
      {{1, {m6_if_}}, {}},
-     {{1, {(m6cell)m6f_asm_if_}}, {}},
+     {{2, {m6_if_, (m6cell)m6f_asm_if_}}, {}},
      {}},
 #endif
     /* ----------------------------- name ----------------------------------- */

@@ -265,7 +265,6 @@ WORD_START(token_to_asm_comma,   token_to_asm)
     WORD_ASM_NONE()
     WORD_FLAGS(0)
     WORD_CODE(
-        token_fetch,
         CALL(token_to_asm_replace),                 /* ( sys* token'           ) */
         dup, token_to_name,                         /* ( sys* token nt         ) */
         dup, name_to_flags,                         /* ( sys* token nt m6flags ) */
@@ -286,13 +285,12 @@ WORD_START(token_to_asm_n,     token_to_asm_comma)
     WORD_ASM_NONE()
     WORD_FLAGS(M6FLAG_INLINE)
     WORD_CODE(
-        token_fetch,                                /* ( token               ) */
         CALL(token_to_asm_replace),                 /* ( token'              ) */
         CALL(token_to_asm),                         /* ( addr u | 0 0        ) */
         swap, zero_ne, exit                         /* ( u true | 0 false    ) */
     )
 WORD_END(token_to_asm_n)
-/* ( tok -- tok' ) get replacement token for compiling token to ASM */
+/* ( tok-addr -- tok' ) get replacement token for compiling token to ASM */
 WORD_START(token_to_asm_replace, token_to_asm_n)
     WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)
@@ -301,8 +299,9 @@ WORD_START(token_to_asm_replace, token_to_asm_n)
     WORD_FLAGS(M6FLAG_DATA_TOKENS)
     WORD_CODE_AND_DATA(token_to_asm_replace,
       WORD_CODE_TOKENS(
-        _ip_to_data_,                               /* ( token &data n  )               */
-        bounds,                                     /* ( token end beg  )               */
+        _ip_to_data_,                               /* ( tok-addr &data n  )            */
+        bounds,                                     /* ( tok-addr end beg  )            */
+        rot, token_fetch, minus_rot,                /* ( token end beg     )            */
         do,                                         /* ( token          ) ( R: end pos) */
             dup, i_token_fetch, equal,              /* ( token t|f      ) ( R: end pos) */
             _if_, T(6),                             /* ( token          ) ( R: end pos) */

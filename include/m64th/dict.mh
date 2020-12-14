@@ -377,7 +377,7 @@
     X(11, "asm-reserve", asm_reserve) /* ( len -- ) reserve at least len bytes in ASM buffer    */ \
     X(9, "token>asm", token_to_asm) /* ( token -- addr u | 0 0 ) get token ASM address and len  */ \
     X(10, "token>asm,", token_to_asm_comma) /* ( sys* tok-addr -- sys'* ) compile token to ASM  */ \
-    /* ( tok -- tok' ) get replacement token for compiling token to ASM */                         \
+    /* ( tok-addr -- tok' ) get replacement token for compiling token to ASM */                    \
     X(17, "token>asm-replace", token_to_asm_replace)                                               \
     X(11, "token>asm>n", token_to_asm_n) /* ( token -- u true | 0 false ) get token ASM len */     \
     /* ( -- ) attempt to compile to native ASM all tokens between XT and HERE */                   \
