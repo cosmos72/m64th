@@ -55,8 +55,8 @@ WORD_START(_asm_resolve_jump_here_,  LASTWORD)
          * in all cases, distance is computed from the *start* of jump instruction.
          */
         swap, asm_func, plus, four_minus, swap,/* ( addr_of_jump_instr jump_categ  ) */
-        token_to_asm_addr,                     /* ( addr m4func                    ) */
-        _lit_cell_, CELL(FUNC(_asm_else_)),    /* ( addr m4func1 m4func2           ) */
+        token_to_asm_addr,                     /* ( addr m6func                    ) */
+        _lit_cell_, CELL(FUNC(_asm_else_)),    /* ( addr m6func1 m6func2           ) */
         /** TODO: compare with _asm_call_ */
         equal,                                 /* ( addr t|f                       ) */
 

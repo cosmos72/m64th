@@ -304,12 +304,19 @@ void m6flags_print(m6flags fl, m6printmode mode, FILE *out) {
         fputs((mode == m6mode_user ? "|consumes_ip_10" : "|M6FLAG_CONSUMES_IP_10") + skip, out);
         break;
     }
-    if (fl & m6flag_inline_always) {
-        skip = printed++ ? 0 : 1;
-        fputs((mode == m6mode_user ? "|inline_always" : "|M6FLAG_INLINE_ALWAYS") + skip, out);
-    } else if (fl & m6flag_inline) {
+    switch (fl & m6flag_inline_mask) {
+    case m6flag_inline:
         skip = printed++ ? 0 : 1;
         fputs((mode == m6mode_user ? "|inline" : "|M6FLAG_INLINE") + skip, out);
+        break;
+    case m6flag_inline_always:
+        skip = printed++ ? 0 : 1;
+        fputs((mode == m6mode_user ? "|inline_always" : "|M6FLAG_INLINE_ALWAYS") + skip, out);
+        break;
+    case m6flag_inline_asm:
+        skip = printed++ ? 0 : 1;
+        fputs((mode == m6mode_user ? "|inline_asm" : "|M6FLAG_INLINE_ASM") + skip, out);
+        break;
     }
     if ((fl & m6flag_jump_mask) == m6flag_jump) {
         skip = printed++ ? 0 : 1;
@@ -318,6 +325,10 @@ void m6flags_print(m6flags fl, m6printmode mode, FILE *out) {
         skip = printed++ ? 0 : 1;
         fputs((mode == m6mode_user ? "|may_jump" : "|M6FLAG_MAY_JUMP") + skip, out);
     }
+    if ((fl & m6flag_pure_mask) == m6flag_pure) {
+        skip = printed++ ? 0 : 1;
+        fputs((mode == m6mode_user ? "|pure" : "|M6FLAG_PURE") + skip, out);
+    }
     if (fl & m6flag_mem_fetch) {
         skip = printed++ ? 0 : 1;
         fputs((mode == m6mode_user ? "|mem_fetch" : "|M6FLAG_MEM_FETCH") + skip, out);
@@ -325,10 +336,6 @@ void m6flags_print(m6flags fl, m6printmode mode, FILE *out) {
     if (fl & m6flag_mem_store) {
         skip = printed++ ? 0 : 1;
         fputs((mode == m6mode_user ? "|mem_store" : "|M6FLAG_MEM_STORE") + skip, out);
-    }
-    if ((fl & m6flag_pure_mask) == m6flag_pure) {
-        skip = printed++ ? 0 : 1;
-        fputs((mode == m6mode_user ? "|pure" : "|M6FLAG_PURE") + skip, out);
     }
     if (fl & m6flag_immediate) {
         skip = printed++ ? 0 : 1;
@@ -579,24 +586,6 @@ void m6token_print(m6token tok, m6printmode mode, FILE *out) {
 #error unsupported sizeof(m6token): expecting 2, 4 or 8
 #endif
 }
-
-#if 0 /* unused */
-static m6cell m6token_print_word(const m6token *code, m6printmode mode, FILE *out) {
-    m6cell val;
-    memcpy(&val, code, sizeof(val));
-    if (val > 4096) {
-        const m6word *w = (const m6word *)val;
-        const m6string name = m6word_name(w);
-        if (name.addr && name.n > 0) {
-            fputs("WADDR(", out);
-            m6string_print(name, mode, out);
-            fputs(") ", out);
-            return sizeof(val) / SZt;
-        }
-    }
-    return m6token_print_int64(code, out);
-}
-#endif
 
 static m6cell m6token_print_consumed_ip(m6token tok, const m6token *code, m6cell maxn,
                                         const char *separator, m6printmode mode, FILE *out) {

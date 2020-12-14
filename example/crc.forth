@@ -21,6 +21,6 @@ create crc-table crc-fill
 
 : 100M 't' $ffffffff 100000000 0 do over crc+ loop nip ;
 
-100M
+100M .
 
 bye

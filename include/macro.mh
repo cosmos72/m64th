@@ -264,7 +264,7 @@
 #define M6SIZEOF_INT(x) _, 4
 #define M6SIZEOF_CELL(x) _, SZ
 #define M6SIZEOF_CALL(x) _, (SZt + SZ)
-#define M6SIZEOF_WADDR(x) _, SZ
+#define M6SIZEOF_NT(x) _, SZ
 #define M6SIZEOF_XT(x) _, SZ
 #define M6SIZEOF_LIT_STRING(len, str) _, ((3 * SZt + len - 1) & ~(SZt - 1))
 
@@ -272,7 +272,7 @@
 #define M6UNITOF_INT(x) _, 4
 #define M6UNITOF_CELL(x) _, SZ
 #define M6UNITOF_CALL(x) _, CALL
-#define M6UNITOF_WADDR(x) _, SZ
+#define M6UNITOF_NT(x) _, SZ
 #define M6UNITOF_XT(x) _, SZ
 #define M6UNITOF_LIT_STRING(len, str) _, LIT_STRING
 

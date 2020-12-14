@@ -189,7 +189,7 @@ WORD_START(_xt_to_asm_finish_, _xt_to_asm_body_)
         here, minus, allot,     /* restore HERE        (                 )                 */
 
         latest, name_to_flags,                      /* ( m6flags         )                 */
-        _lit2s_, SHORT(M6FLAG_INLINE_ALWAYS|M6FLAG_ASM),
+        _lit_, T(M6FLAG_INLINE_ASM|M6FLAG_ASM),
         or,                                         /* ( m6flags'        )                 */
         latest, name_to_flags_store, exit           /* (                 )                 */
     )

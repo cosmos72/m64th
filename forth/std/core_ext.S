@@ -84,13 +84,13 @@ WORD_START(action_of, again)
     WORD_FLAGS(M6FLAG_INLINE | M6FLAG_IMMEDIATE)
     WORD_CODE(
         state_fetch,
-        _if_, T(7+2*nCALLt),                     /* compiling          */
-            CALL(bracket_tick),                  /* execute [']        */
+        _if_, T(7+2*nCALLt),                   /* compiling          */
+            CALL(bracket_tick),                /* execute [']        */
             _lit_comma_, _call_,
-            _lit_xt_, XT(defer_fetch), xt_comma, /* compile 'defer@'   */
+            _lit_xt_, XT(defer_fetch), comma,  /* compile 'defer@'   */
         _else_, T(3+2*nCALLt),
-            CALL(tick),                          /* ( xt             ) */
-            CALL(defer_fetch),                   /* ( xt'            ) */
+            CALL(tick),                        /* ( xt             ) */
+            CALL(defer_fetch),                 /* ( xt'            ) */
         then, exit
    )
 WORD_END(action_of)
@@ -101,7 +101,8 @@ WORD_START(buffer_colon,       action_of)
     WORD_ASM_NONE()
     WORD_FLAGS(M6FLAG_INLINE)
     WORD_CODE(
-        _lit_, T(M6FLAG_VAR), CALL(_create_),  /* create word                          */
+        _lit_, T(M6FLAG_INLINE_ALWAYS|M6FLAG_VAR), /* [inline] knows how to inline VARIABLEs */
+        CALL(_create_),                        /* create word                          */
         right_bracket,                         /* start compiling                      */
         _lit_comma_, _ip_to_data_addr_,        /* compile (ip>data>addr)               */
         CALL(_finish_),                        /* finish compiling, make word findable */
@@ -135,7 +136,7 @@ WORD_START(compile_comma, case)
         dup, xt_to_name, CALL(name_inline_query),
         _if0_, T(5),
             _lit_comma_, _call_,               /* compile (call) */
-            xt_comma, exit,                    /* compile XT        */
+            comma, exit,                    /* compile XT        */
         then,
         xt_to_name, CALL(_inline_), exit
    )
@@ -151,7 +152,7 @@ WORD_START(defer, compile_comma)
         right_bracket,         /* start compiling                   ( sys                 ) */
         _lit_comma_, _call_,   /* compile '(call)                   ( sys                 ) */
         _lit_xt_, XT(_defer_uninitialized_),                     /* ( sys xt              ) */
-        xt_comma,             /* compile '(defer-uninitialized)'    ( sys                 ) */
+        comma,             /* compile '(defer-uninitialized)'    ( sys                 ) */
         CALL(_finish_), exit                                     /* (                     ) */
    )
 WORD_END(defer)
@@ -254,13 +255,13 @@ WORD_START(is,         holds)
     WORD_FLAGS(M6FLAG_INLINE | M6FLAG_IMMEDIATE)
     WORD_CODE(
         state_fetch,
-        _if_, T(7+2*nCALLt),                     /* compiling          */
-            CALL(bracket_tick),                  /* execute [']        */
+        _if_, T(7+2*nCALLt),                   /* compiling          */
+            CALL(bracket_tick),                /* execute [']        */
             _lit_comma_, _call_,
-            _lit_xt_, XT(defer_store), xt_comma, /* compile 'defer!'   */
+            _lit_xt_, XT(defer_store), comma,  /* compile 'defer!'   */
         _else_, T(3+2*nCALLt),
-            CALL(tick),                          /* ( xt2 xt1        ) */
-            CALL(defer_store),                   /* (                ) */
+            CALL(tick),                        /* ( xt2 xt1        ) */
+            CALL(defer_store),                 /* (                ) */
         then, exit
    )
 WORD_END(is)
@@ -345,7 +346,7 @@ WORD_START(value,      u_more)
     WORD_ASM_NONE()
     WORD_FLAGS(M6FLAG_INLINE)
     WORD_CODE(
-        _lit_, T(M6FLAG_VALUE),
+        _lit_, T(M6FLAG_INLINE_ALWAYS|M6FLAG_VALUE), /* [inline] knows how to inline VALUEs */
         CALL(_create_),                 /* create word, mark it M6FLAG_VALUE                */
         right_bracket,                  /* start compiling          ( x sys               ) */
         _lit_comma_, _ip_to_data_addr_, /* compile '(ip>data>addr)  ( x sys               ) */

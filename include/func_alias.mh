@@ -28,7 +28,6 @@
 #define m6f_4s_comma m6fint_comma
 #define m6f_8s_comma m6fcomma
 #define m6ftoken_comma CAT3(m6f_, SZt, s_comma)
-#define m6fxt_comma CAT3(m6f_, SZ, s_comma)
 
 #define m6f_q_continue_if_ m6f_q_if0_ /* (?continue-if)  conditional jump if dtop <> 0 */
 #define m6f_q_continue_if0_ m6f_q_if_ /* (?continue-if0) conditional jump if dtop == 0 */
@@ -40,7 +39,6 @@
 #define m6f_ahead_ m6f_jump_          /* (ahead)     unconditional jump             */
 #define m6f_asm_then_ m6fnoop         /* (asm/then)  noop, used as compile marker   */
 #define m6f_break_ m6f_jump_          /* (break)     unconditional jump             */
-#define m6fcase m6fnoop               /* (case)      noop, used as compile marker   */
 #define m6f_continue_ m6f_jump_       /* (continue)  unconditional jump             */
 #define m6f_continue_if_ m6f_if0_     /* (continue-if)  conditional jump if dtop <> 0 */
 #define m6f_continue_if0_ m6f_if_     /* (continue-if0) conditional jump if dtop == 0 */
@@ -54,6 +52,7 @@
 #define m6f_while_ m6f_if_            /* (while)     conditional jump if dtop == 0  */
 #define m6f_while0_ m6f_if0_          /* (while0)    conditional jump if dtop <> 0  */
 #define m6fbegin m6fnoop              /* begin       noop, used as compile marker   */
+#define m6fcase m6fnoop               /* case        noop, used as compile marker   */
 #define m6fendcase m6fdrop            /* endcase                                    */
 #define m6fthen m6fnoop               /* then        noop, used as compile marker   */
 

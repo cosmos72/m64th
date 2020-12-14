@@ -360,19 +360,23 @@ WORD_START(name_inline_query,  name_comma)
     WORD_ASM_NONE()
     WORD_FLAGS(M6FLAG_MEM_FETCH) /* multiple exits => cannot inline */
     WORD_CODE(
-        dup, name_to_flags,
-        dup, _lit2s_, SHORT(M6FLAG_INLINE_ALWAYS), and, _if_, T(4),
-            two_drop, true, exit,
-        then,
-        _lit2s_, SHORT(M6FLAG_INLINE), and, _if0_, T(4),
-            drop, false, exit,
-        then,
-        name_to_code_n, eight, less, exit
+        dup, name_to_flags,                                  /* ( nt m6flags           ) */
+        dup, _lit_, T(M6FLAG_INLINE_ALWAYS), and,            /* ( nt m6flags flag      ) */
+        _if_, T(4),                                          /* ( nt m6flags           ) */
+            two_drop, true, exit,                            /* ( true                 ) */
+        then,                                                /* ( nt m6flags           ) */
+
+        _lit_, T(M6FLAG_INLINE), and,                        /* ( nt flag              ) */
+        _if0_, T(4),                                         /* ( nt                   ) */
+            drop, false, exit,                               /* ( false                ) */
+        then,                                                /* ( nt                   ) */
+        name_to_code_n, eight, less, exit                    /* ( t|f                  ) */
     )
 WORD_END(name_inline_query)
 WORD(name_to_code,         name_inline_query,  DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M6FLAG_MEM_FETCH)
 WORD(name_to_code_n,       name_to_code,       DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M6FLAG_MEM_FETCH)
-WORD(name_to_data,         name_to_code_n,     DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M6FLAG_MEM_FETCH)
+WORD(name_to_code_n_store, name_to_code_n,     DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M6FLAG_MEM_STORE)
+WORD(name_to_data,        name_to_code_n_store,DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M6FLAG_MEM_FETCH)
 WORD(name_to_data_addr,    name_to_data,       DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M6FLAG_MEM_FETCH)
 WORD(name_to_data_n_store, name_to_data_addr,  DSTACK(2,0), RSTACK(0,0), WORD_IMPURE | M6FLAG_MEM_STORE)
 WORD(name_to_flags,       name_to_data_n_store,DSTACK(1,1), RSTACK(0,0), WORD_IMPURE | M6FLAG_MEM_FETCH)

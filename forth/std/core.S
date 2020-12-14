@@ -281,7 +281,7 @@ WORD_START(constant,   count)
     WORD_FLAGS(M6FLAG_INLINE)
     WORD_CODE(
         _lit_, T(M6FLAG_INLINE|M6FLAG_PURE),
-        CALL(_create_), right_bracket,   /* create word, start compiling         */
+        CALL(_create_), right_bracket,         /* create word, start compiling         */
         rot, CALL(literal),                    /* compile number                       */
         CALL(_finish_), exit                   /* finish compiling, make word findable */
     )
@@ -292,12 +292,12 @@ WORD_START(create,     constant)
     WORD_ASM_NONE()
     WORD_FLAGS(M6FLAG_INLINE)
     WORD_CODE(
-        _lit2s_, SHORT(M6FLAG_CREATE),
+        _lit_, T(M6FLAG_CREATE),
         CALL(_create_),                        /* create word, mark it M6FLAG_CREATE   */
         right_bracket,                         /* start compiling                      */
         _lit_comma_, _ip_to_data_addr_,        /* compile (ip>data>addr)               */
         _lit_comma_, _call_,                   /* compile (call)                       */
-        _lit_xt_, XT(noop), xt_comma,          /* compile XT(noop). placeholder set by DOES> */
+        _lit_xt_, XT(noop), comma,             /* compile XT(noop). placeholder set by DOES> */
         CALL(_finish_), exit                   /* finish compiling, make word findable */
     )
 WORD_END(create)
@@ -338,7 +338,7 @@ WORD_START(does,       do)
         CALL(_throw_if_not_compiling_),
         _check_lit_tok_, colon,
         _lit_comma_, _call_,                   /* compile '(call)'       */
-        _lit_xt_, XT(_does_), xt_comma,        /* compile XT of '(does)' */
+        _lit_xt_, XT(_does_), comma,           /* compile XT of '(does)' */
         _lit_comma_, _does_exit_,              /* compile '(does-exit)'  */
         exit
     )
@@ -353,7 +353,12 @@ WORD_START(find, dup)
     WORD_FLAGS(M6FLAG_INLINE)
     WORD_CODE(
         /* disassembly of forth_core.forth */
-        /*22*/ dup, count, _lit_xt_, XT(parse_nt), _catch_beg_, _catch_end_, nip, _if_, T(3), two_drop, _else_, T(6), rot, drop, swap, name_to_xt, swap, then, exit
+        /*22*/ dup, count, _lit_xt_, XT(parse_nt), _catch_beg_, _catch_end_, nip,
+        _if_, T(3),
+            two_drop,
+        _else_, T(6),
+            rot, drop, swap, name_to_xt, swap,
+        then, exit
     )
 WORD_END(find)
 WORD_START(else,       find)
@@ -394,7 +399,7 @@ WORD_START(exit, execute)
     WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_IMMEDIATE | M6FLAG_JUMP)
     WORD_CODE(
         CALL(_throw_if_not_compiling_),
-        user_var, T(M64TH_USER_VAR_LOCALS), fetch,      /* ( ls|0                 ) */
+        user_var, T(M64TH_USER_VAR_LOCALS), fetch,     /* ( ls|0                 ) */
         question_dup,                                  /* ( ls ls |0             ) */
         _if_, T(9),                                    /* ( ls                   ) */
             fetch, question_dup,                       /* ( ls.n ls.n | 0        ) */
@@ -501,7 +506,7 @@ WORD_START(postpone,   over)
         _if0_, T(5+nCALLt),
         /* avoid CALL(literal) because it compiles (lit[1248]s) instead of (lit-xt) */
             _lit_comma_, _lit_xt_,                     /* compiles (lit-xt)   */
-            xt_comma,                                  /* xt,                 */
+            comma,                                  /* xt,                 */
             _lit_xt_, XT(compile_comma),               /* ' compile,          */
         then,
         CALL(compile_comma), exit
@@ -716,7 +721,7 @@ WORD_START(bracket_tick,  left_bracket)
         CALL(tick),                    /* '                                          */
         /* avoid CALL(literal) because it compiles (lit[1248]s) instead of (lit-xt)  */
         _lit_comma_, _lit_xt_,         /* compiles (lit-xt)                          */
-        xt_comma, exit                 /* xt,                                        */
+        comma, exit                 /* xt,                                        */
     )
 WORD_END(bracket_tick)
 WORD_START(right_bracket,  bracket_tick)

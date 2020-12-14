@@ -167,9 +167,16 @@ FUNC_START(name_to_code)   /* ( nt -- xt u ) */
 FUNC_END(name_to_code)
 
 
-FUNC_START(name_to_code_n) /* ( nt -- n ) */
+FUNC_START(name_to_code_n) /* ( nt -- u ) */
         LD_uh( DTOP,       AT(DTOP, WORD_OFF_CODE_N))  /* DTOP = w.code_n    */
 FUNC_END(name_to_code_n)
+
+
+FUNC_START(name_to_code_n_store) /* ( u nt -- ) */
+        DPOP(  REG1)                                   /* a = code_n         */
+        STORh( REG1,       AT(DTOP, WORD_OFF_CODE_N))  /* w.code_n = a       */
+        DPOP___DTOP()
+FUNC_END(name_to_code_n_store)
 
 
 FUNC_START(name_to_data)   /* ( nt -- addr u ) */

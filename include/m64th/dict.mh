@@ -351,8 +351,8 @@
     X(18, "(vm-return-to/asm)", _vm_return_to_asm_) /* return from VM to ASM                    */ \
     X(10, "[asm-lit,]", _asm_lit_comma_)      /* followed by CELL(addr) T(u) just calls asm,    */ \
     X(4, "asm,", asm_comma)                   /* ( addr u  -- ) append ASM code to ASM-HERE     */ \
-    X(10, "asm-clear", asm_clear)             /* ( -- ) forget current ASM code                 */ \
-    X(9, "asm-func", asm_func)                /* ( -- addr ) get ASM_FUNC = start of ASM code   */ \
+    X(9, "asm-clear", asm_clear)              /* ( -- ) forget current ASM code                 */ \
+    X(8, "asm-func", asm_func)                /* ( -- addr ) get ASM_FUNC = start of ASM code   */ \
     X(8, "asm-here", asm_here)                /* ( -- addr ) get ASM_HERE = current ASM address */ \
     X(8, "asm-size", asm_size)                /* ( -- u    ) get ASM_HERE - ASM_FUNC in bytes   */ \
     X(10, "name>asm>n", name_to_asm_n)        /* ( nt -- u true | 0 false ) get nt.asm_len      */ \
@@ -447,7 +447,8 @@
     X(5, "name,", name_comma)            /* ( c-addr u -- nt ) create a new name             */    \
     X(9, "name>code", name_to_code)      /* ( nt  -- taddr n ) get code array from name      */    \
     X(11, "name>code>n", name_to_code_n) /* ( nt -- u        ) get code size from name       */    \
-    X(9, "name>data", name_to_data)      /* ( nt -- addr u   ) get data array of name        */    \
+    X(12, "name>code>n!", name_to_code_n_store) /* ( u nt -- ) set code size of name         */    \
+    X(9, "name>data", name_to_data) /*      ( nt -- addr u   ) get data array of name        */    \
     X(14, "name>data>addr", name_to_data_addr)  /* ( nt -- addr u ) get data address name    */    \
     X(12, "name>data>n!", name_to_data_n_store) /* ( u nt --  ) set data size of name        */    \
     X(10, "name>flags", name_to_flags) /*   ( nt -- m6flags  ) get m6flags of name           */    \
@@ -469,7 +470,7 @@
     X(15, "searchorder[0]!", searchorder_store_0) /* ( wid -- ) overwrite searchorder 0-th elem */ \
     X(10, "token>name", token_to_name)            /* ( token -- nt|0 ) convert token to name */    \
     X(8, "user-var", user_var) /*        ( -- addr ) must be followed by index of user variable */ \
-    X(13, "user-var-m64th", user_var_m64th)      /* ( -- m ) get current m64th address */          \
+    X(14, "user-var-m64th", user_var_m64th)      /* ( -- m ) get current m64th address */          \
     X(13, "wordlist>last", wordlist_to_last)     /* ( wid -- nt ) get last name in wordlist  */    \
     X(15, "wordlist>string", wordlist_to_string) /* ( wid -- c-addr u ) convert wid to string   */ \
     X(12, "wordlist-add", wordlist_add)          /*   ( nt wid -- ) add name to wordlist       */  \
@@ -625,7 +626,7 @@
     X(13, "(fallthrough)", _fallthrough_) /* jump to next 'of' inside a 'case' */                  \
     X(4, "(if)", _if_)                                                                             \
     X(5, "(if0)", _if0_)                                                                           \
-    X(8, "(ignore)", _ignore_) /* followed by IP offset, ignores it. aliased by '(case)'  */       \
+    X(8, "(ignore)", _ignore_) /* followed by IP offset, ignores it.  */                           \
     X(4, "(ip)", _ip_)                                                                             \
     X(9, "(ip>data)", _ip_to_data_)                                                                \
     X(14, "(ip>data>addr)", _ip_to_data_addr_)                                                     \
@@ -790,9 +791,12 @@
     X(15, "[compile-local]", _compile_local_) /* ( idx -- ) compile a local variable fetch */      \
     /* ( n1_before_pipe n2_after_pipe -- ) compile code to initialize local variables */           \
     X(22, "[compile-lenter]", _compile_lenter_)                                                    \
-    X(7, "[finish", _finish_)       /* ( sys -- ) finish compiling a word, make it findable   */   \
-    X(8, "[inline]", _inline_)      /* ( nt -- ) inline a call to word into XT being compiled */   \
-    X(10, "[optimize]", _optimize_) /* optimize current XT being compiled */                       \
+    X(7, "[finish", _finish_)  /* ( sys -- ) finish compiling a word, make it findable   */        \
+    X(8, "[inline]", _inline_) /* ( nt -- ) inline a call to word into XT being compiled */        \
+    X(14, "[inline-value]", _inline_value_) /* ( nt -- ) inline a VALUE into XT being compiled */  \
+    X(12, "[inline-var]", _inline_var_) /* ( nt -- ) inline a VARIABLE into XT being compiled */   \
+    X(17, "[latest-optimize]", _latest_optimize_) /* try to optimize last created XT    */         \
+    X(10, "[optimize]", _optimize_)               /* optimize current XT being compiled */         \
     X(15, "[optimize-opts]", _optimize_opts_) /* ( opts -- ) optimize current XT being compiled */ \
     /* optimize exactly HERE-XT tokens starting from XT. optimized tokens are initially written */ \
     /* to HERE and up, then copied back to XT and up. updates HERE. */                             \

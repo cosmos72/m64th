@@ -32,7 +32,6 @@
 #define m6_4s_comma m6int_comma
 #define m6_8s_comma m6comma
 #define m6token_comma CAT3(m6_, SZt, s_comma)
-#define m6xt_comma CAT3(m6_, SZ, s_comma)
 
 #define m6_lit_ /*      */ CAT3(m6_lit, SZt, s_)
 #define m6_lit_short_ /**/ m6_lit2s_
@@ -205,7 +204,6 @@
 #define M6_4s_comma M6int_comma
 #define M6_8s_comma M6comma
 #define M6token_comma CAT3(M6_, SZt, s_comma)
-#define M6xt_comma CAT3(M6_, SZ, s_comma)
 
 #define M6_lit_ /*      */ CAT3(M6_lit, SZt, s_)
 #define M6_lit_short_ /**/ M6_lit2s_

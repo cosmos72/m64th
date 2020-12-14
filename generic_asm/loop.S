@@ -76,7 +76,6 @@ FUNC_END(do)
 
 /**
  * followed followed by IP offset, ignores it.
- * token '(case)' is actually an alias of this function
  */
 FUNC_START(_ignore_)
         ADD2(  IMM(SZt),   IP)         /* skip IP offset       */

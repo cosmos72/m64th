@@ -46,8 +46,8 @@
 /* assembler macro: insert string in a sequence of m6token */
 #define M6STRING_LIT(len, str)
 
-/* assembler macro: insert word address in a sequence of m6token */
-#define M6WADDR(wordname) WORD_SYM(wordname)
+/* assembler macro: insert NT address in a sequence of m6token */
+#define M6NT(wordname) WORD_SYM(wordname)
 
 /*
  * assembler macro: insert XT address in a sequence of m6token.

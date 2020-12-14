@@ -272,7 +272,9 @@ WORD_START(_create_,   _continue_if0_)
         CALL(parse_name),                              /* ( m6flags c-addr u             ) */
         dup, zero_equal,                               /* ( m6flags c-addr u t|f         ) */
             _lit_, T(M6ERR_ZERO_LENGTH_NAME), and, throw,
-        name_comma, dup, to_latest,                    /* ( m6flags nt                   ) */
+        name_comma,                                    /* ( m6flags nt                   ) */
+        CALL(_latest_optimize_),                       /* ( m6flags nt                   ) */
+        dup, to_latest,                                /* ( m6flags nt                   ) */
         trail, name_to_flags_store,                    /* ( m6flags                      ) */
         _lit_tok_, colon,                              /* ( colon-sys                    ) */
         CALL(_user_locals_clear_), exit                /* ( colon-sys                    ) */
@@ -323,7 +325,7 @@ WORD_START(_eval_name_,_else_)
         state_fetch,
         _if0_, T(12+nCALLt),
             drop, name_to_flags,
-            _lit2s_, SHORT(M6FLAG_COMPILE_ONLY), and,
+            _lit_, T(M6FLAG_COMPILE_ONLY), and,
             _if_, T(2+nCALLt),
                 CALL(_throw_compile_only_xt_),
             then,
@@ -580,7 +582,7 @@ WORD_START(_lit_nt_, _lit8s_)
     WORD_STACK_NONE()
     WORD_ASM_NONE()
     WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_CONSUMES_IP_SZ | M6FLAG_INLINE_ALWAYS)
-    WORD_CODE(_lit_nt_, XT(noop), exit)
+    WORD_CODE(_lit_nt_, NT(noop), exit)
 WORD_END(_lit_nt_)
 WORD_START(_lit_string_, _lit_nt_)
     WORD_DSTACK(0,2)
@@ -1690,6 +1692,7 @@ WORD_START(_finish_, _endof_)
         then, exit
     )
 WORD_END(_finish_)
+/* ( nt -- ) inline a call to word into XT being compiled */
 WORD_START(_inline_, _finish_)
     WORD_DSTACK(1,0)
     WORD_RSTACK(0,0)
@@ -1697,13 +1700,24 @@ WORD_START(_inline_, _finish_)
     WORD_ASM_NONE()
     WORD_FLAGS(M6FLAG_COMPILE_ONLY) /* multiple exits => cannot inline */
     WORD_CODE(
+        dup, name_to_flags,                            /* ( nt m6flags         ) */
+        _lit_, T(M6FLAG_OPT_MASK), and,                /* ( nt flag            ) */
+        dup, _lit_, T(M6FLAG_VALUE), equal,            /* ( nt flag t|f        ) */
+        _if_, T(4+nCALLt),                             /* ( nt flag            ) */
+            drop, CALL(_inline_value_), exit,          /* (                    ) */
+        then,                                          /* ( nt flag            ) */
+        _lit_, T(M6FLAG_VAR), equal,                   /* ( nt t|f             ) */
+        _if_, T(3+nCALLt),                             /* ( nt                 ) */
+            CALL(_inline_var_), exit,                  /* (                    ) */
+        then,                                          /* ( nt                 ) */
+
         /* also skip 'exit' at the end of XT */
         dup,  name_to_code, one_minus,                 /* ( nt code n-1        ) */
         dup, zero, less_equal, _if_, T(4),             /* ( nt code n-1        ) */
             nip, two_drop, exit,/* inline length is <= 0  (                    ) */
         then,                                          /* ( nt code u          ) */
         rot, name_to_flags,                            /* ( code u m6flags     ) */
-        _lit2s_, SHORT(M6FLAG_ASM), and,          /* ( code u flag        ) */
+        _lit_, T(M6FLAG_ASM), and,                     /* ( code u flag        ) */
         _if_, T(18),                                   /* ( code u             ) */
             /* word contains '(call-asm) CELL(address) exit ...tokens... exit'   */
             /* if tokens len > 5 then inline '(call-asm) CELL(address)'          */
@@ -1725,7 +1739,87 @@ WORD_START(_inline_, _finish_)
         _loop_, T(-6), drop, exit                      /* (            )         */
     )
 WORD_END(_inline_)
-WORD_START(_of_, _inline_)
+/* ( nt -- ) inline a VALUE into XT being compiled */
+WORD_START(_inline_value_,     _inline_)
+    WORD_DSTACK(1,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_ASM_NONE()
+    WORD_FLAGS(M6FLAG_COMPILE_ONLY|M6FLAG_INLINE)
+    WORD_CODE(
+        _lit_comma_, _lit_nt_, comma,          /* compile '(lit-nt)' nt          */
+        _lit_comma_, name_to_data_addr,        /* compile 'name>data>addr'       */
+        _lit_comma_, fetch,                    /* compile '@'                    */
+        exit
+    )
+WORD_END(_inline_value_)
+/* ( nt -- ) inline a VARIABLE into XT being compiled */
+WORD_START(_inline_var_,     _inline_value_)
+    WORD_DSTACK(1,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_ASM_NONE()
+    WORD_FLAGS(M6FLAG_COMPILE_ONLY|M6FLAG_INLINE)
+    WORD_CODE(
+        _lit_comma_, _lit_nt_, comma,          /* compile '(lit-nt)' nt          */
+        _lit_comma_, name_to_data_addr,        /* compile 'name>data>addr'       */
+        exit
+    )
+WORD_END(_inline_var_)
+/**
+ * [latest-optimize] ( -- ) try to optimize latest word.
+ * called when defining the following word: latest can no longer be modified with 'does>'
+ */
+WORD_START(_latest_optimize_,  _inline_var_)
+    WORD_STACK_NONE()
+    WORD_STACK_NONE()
+    WORD_ASM_NONE()
+    WORD_FLAGS(M6FLAG_COMPILE_ONLY)
+    WORD_CODE(
+        latest, question_dup,                  /* ( nt nt | 0                  ) */
+        _if0_, T(2),                           /* (                            ) */
+            exit,                              /* (                            ) */
+        then,                                  /* ( nt                         ) */
+        dup, name_to_flags,                    /* ( nt m6flags                 ) */
+        _lit_, T(M6FLAG_OPT_MASK), and,        /* ( nt flags                   ) */
+        _lit_, T(M6FLAG_CREATE), equal,        /* ( nt t|f                     ) */
+        _if0_, T(3),                           /* ( nt                         ) */
+            /* not defined with CREATE */
+            drop, exit,                        /* (                            ) */
+        then,                                  /* ( nt                         ) */
+        dup, name_to_xt,                       /* ( nt xt                      ) */
+        dup, token_fetch_1,                    /* ( nt xt tok                  ) */
+        _lit_tok_, _call_, equal,              /* ( nt xt t|f                  ) */
+        _if0_, T(3),                           /* ( nt xt                      ) */
+            /* _call_ not found    */
+            two_drop, exit,                    /* (                            ) */
+        then,                                  /* ( nt xt                      ) */
+        token_plus, token_plus, fetch,         /* ( nt call_arg                ) */
+        _lit_xt_, XT(noop), equal,             /* ( nt t|f                     ) */
+        _if0_, T(3),                           /* ( nt                         ) */
+            /* XT(noop) not found  */
+            drop, exit,                        /* (                            ) */
+        then,                                  /* ( nt                         ) */
+        dup, name_to_xt, token_plus,           /* ( nt &_call_                 ) */
+        /* remove CALL(noop)       */
+        _lit_tok_, exit, over, token_store,    /* ( nt &_call_                 ) */
+        token_plus, _lit_tok_, _missing_, swap,/* ( nt tok &XT(noop)           ) */
+        one_cell, bounds,                      /* ( nt tok end beg             ) */
+        do,                                    /* ( nt tok          ) ( R: end pos ) */
+            dup, i, token_store,               /* ( nt tok          ) ( R: end pos ) */
+            one_token,                         /* ( nt tok +loop    ) ( R: end pos ) */
+        _plus_loop_, T(-6),                    /* ( nt tok                     ) */
+        drop,                                  /* ( nt                         ) */
+        /* we cannot update nt.code_n : it skews name>data>addr computation      */
+
+        /* update m6flags          */
+        dup, name_to_flags,                    /* ( nt m6flags                 ) */
+        _lit_, T(M6FLAG_OPT_MASK), invert, and,/* ( nt m6flags'                ) */
+        _lit_, T(M6FLAG_INLINE_ALWAYS|M6FLAG_VAR), or, /* ( nt m6flags''       ) */
+        swap, name_to_flags_store, exit        /* (                            ) */
+    )
+WORD_END(_latest_optimize_)
+WORD_START(_of_,               _latest_optimize_)
     WORD_DSTACK(2,-1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -1756,7 +1850,7 @@ WORD_START(_optimize_, _of_)
 WORD_END(_optimize_)
 /* ( opts -- ) call [optimize-once] repeatedly until there is nothing left optimize. */
 /* updates HERE. */
-WORD_START(_optimize_opts_, _of_)
+WORD_START(_optimize_opts_, _optimize_)
     WORD_DSTACK(1,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
