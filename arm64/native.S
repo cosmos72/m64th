@@ -37,33 +37,39 @@ ASMFUNC_END(_asm_if0_)
 
 /* load literal value into DTOP. ordered from shortest to longest encoding. */
 
+#define M6F_ASM_DROP_ZERO_
 ASMFUNC_START(_asm_drop_zero_)
         ZERO(  DTOP)
 ASMFUNC_END(_asm_drop_zero_)
 
 
+#define M6F_ASM_DROP_LIT2U_
 ASMFUNC_START(_asm_drop_lit2u_)
         mov    DTOP,   IMM(0);
 ASMFUNC_END(_asm_drop_lit2u_)
 
 
+#define M6F_ASM_DROP_LIT2S_
 ASMFUNC_START(_asm_drop_lit2s_) /* actually only negative values in -(2^16)..-1 */
         movn   DTOP,   IMM(0);
 ASMFUNC_END(_asm_drop_lit2s_)
 
 
+#define M6F_ASM_DROP_LIT4U_
 ASMFUNC_START(_asm_drop_lit4u_)
         mov    DTOP,   IMM(0);
         movk   DTOP,   IMM(0), lsl IMM(16);
 ASMFUNC_END(_asm_drop_lit4u_)
 
 
+#define M6F_ASM_DROP_LIT4S_
 ASMFUNC_START(_asm_drop_lit4s_) /* actually only negative values in -(2^32)..-1 */
         movn   DTOP,   IMM(0);
         movk   DTOP,   IMM(0), lsl IMM(16);
 ASMFUNC_END(_asm_drop_lit4s_)
 
 
+#define M6F_ASM_DROP_LIT6U_
 ASMFUNC_START(_asm_drop_lit6u_)
         mov    DTOP,   IMM(0);
         movk   DTOP,   IMM(0), lsl IMM(16);
@@ -71,6 +77,7 @@ ASMFUNC_START(_asm_drop_lit6u_)
 ASMFUNC_END(_asm_drop_lit6u_)
 
 
+#define M6F_ASM_DROP_LIT6S_
 ASMFUNC_START(_asm_drop_lit6s_) /* actually only negative values in -(2^48)..-1 */
         movn   DTOP,   IMM(0);
         movk   DTOP,   IMM(0), lsl IMM(16);
@@ -78,6 +85,7 @@ ASMFUNC_START(_asm_drop_lit6s_) /* actually only negative values in -(2^48)..-1 
 ASMFUNC_END(_asm_drop_lit6s_)
 
 
+#define M6F_ASM_DROP_LIT8S_
 ASMFUNC_START(_asm_drop_lit8s_)
         mov    DTOP,   IMM(0);
         movk   DTOP,   IMM(0), lsl IMM(16);

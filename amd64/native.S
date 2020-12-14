@@ -38,31 +38,37 @@ ASMFUNC_END(_asm_if0_)
 
 /* load literal value into DTOP. ordered from shortest to longest encoding. */
 
+#define M6F_ASM_DROP_ZERO_
 ASMFUNC_START(_asm_drop_zero_)
         ZERO(  DTOP)                   /* clobbers EFLAGS         */
 ASMFUNC_END(_asm_drop_zero_)
 
 
+#define M6F_ASM_DROP_MINUS_ONE_
 ASMFUNC_START(_asm_drop_minus_one_)
         MOVE(  RFFF,   DTOP)
 ASMFUNC_END(_asm_drop_minus_one_)
 
 
+#define M6F_ASM_DROP_LIT1S_
 ASMFUNC_START(_asm_drop_lit1s_)  /* actually only values in -129..126 */
         MOVI(  -2,     DTOP)
 ASMFUNC_END(_asm_drop_lit1s_)
 
 
+#define M6F_ASM_DROP_LIT4U_
 ASMFUNC_START(_asm_drop_lit4u_)
         movl   IMM(0xffffffff), DTOPw;
 ASMFUNC_END(_asm_drop_lit4u_)
 
 
+#define M6F_ASM_DROP_LIT4S_
 ASMFUNC_START(_asm_drop_lit4s_)
         movq   IMM(-1), DTOP;
 ASMFUNC_END(_asm_drop_lit4s_)
 
 
+#define M6F_ASM_DROP_LIT8S_
 ASMFUNC_START(_asm_drop_lit8s_)
         movabs IMM(0xffffffffffffffff), DTOP;
 ASMFUNC_END(_asm_drop_lit8s_)

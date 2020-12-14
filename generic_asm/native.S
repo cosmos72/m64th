@@ -121,3 +121,35 @@ FUNC_START(asm_size)
         SUB2( REG1,    DTOP)
 #endif
 FUNC_END(asm_size)
+
+
+#ifndef M6F_ASM_DROP_ZERO_
+#define m6f_asm_drop_zero_ m6f_missing_
+#endif
+#ifndef M6F_ASM_DROP_MINUS_ONE_
+#define m6f_asm_drop_minus_one_ m6f_missing_
+#endif
+#ifndef M6F_ASM_DROP_LIT1S_
+#define m6f_asm_drop_lit1s_ m6f_missing_
+#endif
+#ifndef M6F_ASM_DROP_LIT2S_
+#define m6f_asm_drop_lit2s_ m6f_missing_
+#endif
+#ifndef M6F_ASM_DROP_LIT2U_
+#define m6f_asm_drop_lit2u_ m6f_missing_
+#endif
+#ifndef M6F_ASM_DROP_LIT4S_
+#define m6f_asm_drop_lit4s_ m6f_missing_
+#endif
+#ifndef M6F_ASM_DROP_LIT4U_
+#define m6f_asm_drop_lit4u_ m6f_missing_
+#endif
+#ifndef M6F_ASM_DROP_LIT6S_
+#define m6f_asm_drop_lit6s_ m6f_missing_
+#endif
+#ifndef M6F_ASM_DROP_LIT6U_
+#define m6f_asm_drop_lit6u_ m6f_missing_
+#endif
+#ifndef M6F_ASM_DROP_LIT8S_
+#define m6f_asm_drop_lit8s_ m6f_missing_
+#endif

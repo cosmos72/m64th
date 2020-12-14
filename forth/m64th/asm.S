@@ -157,7 +157,7 @@ WORD_START(_xt_to_asm_body_,   _xt_to_asm_init_)
     WORD_CODE(
         here, state_fetch,                          /* ( here xt                         ) */
         do,                                         /* ( sys*            ) ( R: end pos  ) */
-            i_token_fetch,                          /* ( sys* tok        ) ( R: end pos  ) */
+            i,                                      /* ( sys* tok-addr   ) ( R: end pos  ) */
             CALL(token_to_asm_comma),               /* ( sys'*           ) ( R: end pos  ) */
             i_token_fetch,                          /* ( sys* tok        ) ( R: end pos  ) */
             token_to_name, name_to_flags, flags_to_consumed_tokens,
@@ -257,7 +257,7 @@ WORD_START(token_to_asm,   name_to_asm_n_store)
         then, exit                                  /* ( m6func u       ) */
     )
 WORD_END(token_to_asm)
-/* ( sys* tok -- sys'* ) compile token to ASM */
+/* ( sys* tok-addr -- sys'* ) compile token to ASM */
 WORD_START(token_to_asm_comma,   token_to_asm)
     WORD_DSTACK(-1,-1)
     WORD_RSTACK(0,0)
@@ -265,6 +265,7 @@ WORD_START(token_to_asm_comma,   token_to_asm)
     WORD_ASM_NONE()
     WORD_FLAGS(0)
     WORD_CODE(
+        token_fetch,
         CALL(token_to_asm_replace),                 /* ( sys* token'           ) */
         dup, token_to_name,                         /* ( sys* token nt         ) */
         dup, name_to_flags,                         /* ( sys* token nt m6flags ) */
@@ -277,7 +278,7 @@ WORD_START(token_to_asm_comma,   token_to_asm)
         asm_comma, exit                             /* ( sys*                  ) */
     )
 WORD_END(token_to_asm_comma)
-/* ( token -- u true | 0 false ) get token ASM len */
+/* ( tok-addr -- u true | 0 false ) get token ASM len */
 WORD_START(token_to_asm_n,     token_to_asm_comma)
     WORD_DSTACK(1,2)
     WORD_RSTACK(0,0)
@@ -285,6 +286,7 @@ WORD_START(token_to_asm_n,     token_to_asm_comma)
     WORD_ASM_NONE()
     WORD_FLAGS(M6FLAG_INLINE)
     WORD_CODE(
+        token_fetch,                                /* ( token               ) */
         CALL(token_to_asm_replace),                 /* ( token'              ) */
         CALL(token_to_asm),                         /* ( addr u | 0 0        ) */
         swap, zero_ne, exit                         /* ( u true | 0 false    ) */
@@ -354,16 +356,15 @@ WORD_START(xt_to_asm_n,        xt_to_asm_comma)
     WORD_FLAGS(0)
     WORD_CODE(/* generated from asm.forth - see source and comments there */
         zero, here, state_fetch,
-        _q_do_, T(19+nCALLt),
-            i_token_fetch, dup,
-            CALL(token_to_asm_n),
-            _if0_, T(4),
-                unloop, nip, exit,
+        _q_do_, T(16+nCALLt),
+            i, CALL(token_to_asm_n),
+            _if0_, T(3),
+                unloop, exit,
             then,
-            rot, plus, swap,
-            token_to_name, name_to_flags, flags_to_consumed_tokens,
+            plus, i_token_fetch, token_to_name,
+            name_to_flags, flags_to_consumed_tokens,
             one_plus, tokens,
-        _plus_loop_, T(-19-nCALLt),
+        _plus_loop_, T(-16-nCALLt),
         true, exit
     )
 WORD_END(xt_to_asm_n)
