@@ -275,7 +275,7 @@ WORD_START(token_to_asm_comma,   token_to_asm)
         dup, token_to_name,                         /* ( sys* token nt         ) */
         dup, name_to_flags,                         /* ( sys* token nt m6flags ) */
         _lit_, T(M6FLAG_REEXEC_AFTER_OPTIMIZE), and,/* ( sys* token nt flag    ) */
-        _if_, T(7),                                 /* ( sys* token nt         ) */
+        _if_, T(5),                                 /* ( sys* token nt         ) */
             nip, name_to_xt, execute, exit,         /* ( sys'*                 ) */
         then,                                       /* ( sys* token nt         ) */
         drop,                                       /* ( sys* token            ) */
