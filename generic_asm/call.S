@@ -41,7 +41,7 @@ FUNC_RAWEND(_call_)
  * (catch-beg) is the first part of 'catch'. it must be followed by '(catch-end)'
  * it pushes the following cells to rstk:
  *
- * ...  old-RTOP  RSTK-depth  old-m64th.handler  RTOP=IP
+ * ...  old-RTOP  LOCL  DSTK-depth  old-m64th.handler  RTOP=IP
  */
 FUNC_START(_catch_beg_)
         TOKEN_CALL_NOTHROW(FUNC(_validate_xt_to_reg0_), _catch_beg_.0)
@@ -54,11 +54,11 @@ FUNC_START(_catch_beg_)
         MOVE(  DTOP,   REG2)                       /* b = XT to execute  */
         DPOP___DTOP()
 
-        /* save dstk depth to rstk */
-        RPUSH( REG1)                               /* save dend - dstk   */
-
         /* save locals address register to rstk */
         RPUSH( LOCL)                               /* save LOCL          */
+
+        /* save dstk depth to rstk */
+        RPUSH( REG1)                               /* save dend - dstk   */
 
         /* save m64th.handler to rstk */
         LOAD(  REG1,   AT(M64TH, M64TH_OFF_HANDLER))
@@ -231,6 +231,9 @@ LABEL(throw.rstk_ok)
         RPOP(  REG1)                                 /* a = previous m64th.handler */
         STOR(  REG1,   AT(M64TH, M64TH_OFF_HANDLER))   /* m64th.handler = a          */
 
+        /* load previous stack depth */
+        RPOP(  REG1)                                 /* a = dend - dstk = saved depth      */
+
         /* load previous LOCL register from rstk */
         RPOP(  LOCL)
 
@@ -238,7 +241,6 @@ LABEL(throw.rstk_ok)
          * recompute dstk from m64th.dend and depth saved to rstk.
          * this is tricky because we must also preserve/restore DTOP
          */
-        RPOP(  REG1)                                 /* a = dend - dstk = saved depth      */
         LOAD(  REG3,   AT(M64TH, M64TH_OFF_DEND))      /* c = dend'                          */
         MOVE(  REG3,   REG2)                         /* b = dend'                          */
         SUB2(  DSTK,   REG3)                         /* c = dend' - dstk' = current depth' */
