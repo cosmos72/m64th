@@ -68,7 +68,10 @@ ASMFUNC_START(_asm_drop_lit4s_)
 ASMFUNC_END(_asm_drop_lit4s_)
 
 
+ASMFUNC_START(_asm_lit8s_)
+        DPUSH__DTOP()
 #define M6F_ASM_DROP_LIT8S_
-ASMFUNC_START(_asm_drop_lit8s_)
+ASMFUNC_START_NESTED(_asm_drop_lit8s_)
         movabs IMM(0xffffffffffffffff), DTOP;
-ASMFUNC_END(_asm_drop_lit8s_)
+ASMFUNC_END(_asm_lit8s_)
+ASMFUNC_END_NESTED(_asm_drop_lit8s_)

@@ -27,6 +27,7 @@
 /* --- m64th-asm --------------------------------------------------------------------------------- */
 /* ---------------------------------------------------------------------------------------------- */
 
+/* ( C: -- orig ) */
 WORD_START(_asm_q_if_,     _asm_q_if_)
     WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)
@@ -39,6 +40,7 @@ WORD_START(_asm_q_if_,     _asm_q_if_)
         asm_size, _lit_tok_, _asm_if_, exit
     )
 WORD_END(_asm_q_if_)
+/* ( C: -- orig ) */
 WORD_START(_asm_q_if0_,    _asm_q_if_)
     WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)
@@ -51,6 +53,7 @@ WORD_START(_asm_q_if0_,    _asm_q_if_)
         asm_size, _lit_tok_, _asm_if_, exit
     )
 WORD_END(_asm_q_if0_)
+/* ( C: orig1 -- orig2 ) */
 WORD_START(_asm_else_,     _asm_q_if0_)
     WORD_STACK_NONE()
     WORD_STACK_NONE()
@@ -62,6 +65,7 @@ WORD_START(_asm_else_,     _asm_q_if0_)
         CALL(_asm_resolve_jump_here_), exit                               /* ( else-orig       ) */
     )
 WORD_END(_asm_else_)
+/* ( C: -- orig ) */
 WORD_START(_asm_if_,       _asm_else_)
     WORD_DSTACK(1,0)
     WORD_RSTACK(0,0)
@@ -74,6 +78,7 @@ WORD_START(_asm_if_,       _asm_else_)
         asm_size, _lit_tok_, _asm_if_, exit
     )
 WORD_END(_asm_if_)
+/* ( C: -- orig ) */
 WORD_START(_asm_if0_,       _asm_if_)
     WORD_DSTACK(1,0)
     WORD_RSTACK(0,0)
@@ -88,6 +93,7 @@ WORD_START(_asm_if0_,       _asm_if_)
 WORD_END(_asm_if0_)
 /* ( -- ) return from ASM to ASM */
 WORD(_asm_ret_,            _asm_if0_,  DSTACK(0,0), RSTACK(0,0), M6FLAG_COMPILE_ONLY | M6FLAG_INLINE_ALWAYS | M6FLAG_JUMP)
+/* ( C: orig -- ) */
 WORD_START(_asm_then_,     _asm_ret_)
     WORD_STACK_NONE()
     WORD_STACK_NONE()
@@ -269,7 +275,7 @@ WORD_START(token_to_asm_comma,   token_to_asm)
         dup, token_to_name,                         /* ( sys* token nt         ) */
         dup, name_to_flags,                         /* ( sys* token nt m6flags ) */
         _lit_, T(M6FLAG_REEXEC_AFTER_OPTIMIZE), and,/* ( sys* token nt flag    ) */
-        _if_, T(5),                                 /* ( sys* token nt         ) */
+        _if_, T(7),                                 /* ( sys* token nt         ) */
             nip, name_to_xt, execute, exit,         /* ( sys'*                 ) */
         then,                                       /* ( sys* token nt         ) */
         drop,                                       /* ( sys* token            ) */
@@ -314,13 +320,16 @@ WORD_START(token_to_asm_replace, token_to_asm_n)
         exit                                        /* ( token          )               */
       ),
       WORD_DATA_TOKENS(
-        _q_if_, _asm_q_if_,    /* '(?if)'  becomes '(asm/?if)'  in native ASM */
-        _q_if0_,_asm_q_if0_,   /* '(?if0)' becomes '(asm/?if0)' in native ASM */
-        _if_, _asm_if_,        /* '(if)'   becomes '(asm/if)'   in native ASM */
-        _if0_,_asm_if0_,       /* '(if0)'  becomes '(asm/if0)'  in native ASM */
-        _else_,_asm_else_,     /* '(else)' becomes '(asm/else)' in native ASM */
-        then, _asm_then_,      /* 'then'   becomes '(asm/then)  in native ASM */
-        exit, _asm_ret_        /* 'exit'   becomes '(asm/ret)   in native ASM */
+        _q_if_, _asm_q_if_,    /* '(?if)'   becomes '(asm/?if)'   in native ASM */
+        _q_if0_,_asm_q_if0_,   /* '(?if0)'  becomes '(asm/?if0)'  in native ASM */
+        _else_,_asm_else_,     /* '(else)'  becomes '(asm/else)'  in native ASM */
+        _if_, _asm_if_,        /* '(if)'    becomes '(asm/if)'    in native ASM */
+        _if0_,_asm_if0_,       /* '(if0)'   becomes '(asm/if0)'   in native ASM */
+        _lit2s_,_asm_lit8s_,   /* '(lit2s)' becomes '(asm/lit8s)' in native ASM - refined later */
+        _lit4s_,_asm_lit8s_,   /* '(lit4s)' becomes '(asm/lit8s)' in native ASM - refined later */
+        _lit8s_,_asm_lit8s_,   /* '(lit8s)' becomes '(asm/lit8s)' in native ASM */
+        then, _asm_then_,      /* 'then'    becomes '(asm/then)   in native ASM */
+        exit, _asm_ret_        /* 'exit'    becomes '(asm/ret)    in native ASM */
       )
     )
 WORD_END(token_to_asm_replace)

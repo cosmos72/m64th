@@ -85,10 +85,13 @@ ASMFUNC_START(_asm_drop_lit6s_) /* actually only negative values in -(2^48)..-1 
 ASMFUNC_END(_asm_drop_lit6s_)
 
 
+ASMFUNC_START(_asm_lit8s_)
+        DPUSH__DTOP()
 #define M6F_ASM_DROP_LIT8S_
-ASMFUNC_START(_asm_drop_lit8s_)
+ASMFUNC_START_NESTED(_asm_drop_lit8s_)
         mov    DTOP,   IMM(0);
         movk   DTOP,   IMM(0), lsl IMM(16);
         movk   DTOP,   IMM(0), lsl IMM(32);
         movk   DTOP,   IMM(0), lsl IMM(48);
-ASMFUNC_END(_asm_drop_lit8s_)
+ASMFUNC_END(_asm_lit8s_)
+ASMFUNC_END_NESTED(_asm_drop_lit8s_)

@@ -52,6 +52,8 @@
     .cfi_endproc;                                                                                  \
     FUNC_DEFSIZE(name)
 
+#define FUNC_RAWEND_NESTED(name) FUNC_DEFSIZE(name)
+
 /* clang-format off */
 
 #define FUNC_END(name)                                                                             \
@@ -63,10 +65,18 @@
     FUNC_DEF_NOALIGN(name)                                                                         \
     .cfi_startproc;
 
+#define ASMFUNC_START_NESTED(name)                                                                 \
+    FUNC_DEF_NOALIGN(name)
+
 #define ASMFUNC_END(name)                                                                          \
     FUNC_RET(name) :                                                                               \
     ASMFUNC_RET(name) :                                                                            \
     FUNC_RAWEND(name)
+
+#define ASMFUNC_END_NESTED(name)                                                                   \
+    FUNC_RET(name) :                                                                               \
+    ASMFUNC_RET(name) :                                                                            \
+    FUNC_RAWEND_NESTED(name)
 
 /* clang-format on */
 

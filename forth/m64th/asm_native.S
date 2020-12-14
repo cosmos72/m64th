@@ -27,8 +27,20 @@
 /* --- m64th-asm   arch-specific words ---------------------------------------------------------- */
 /* ---------------------------------------------------------------------------------------------- */
 
+/* ( tok-addr -- ) compile ASM code for pushing literal to DSTACK */
+WORD_START(_asm_lit8s_,                LASTWORD)
+    WORD_DSTACK(1,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_ASM_LEN(_asm_lit8s_)
+    WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_REEXEC_AFTER_OPTIMIZE)
+    WORD_CODE(
+        _lit2s_, SHORT(M6ERR_UNSUPPORTED_OPERATION), throw,
+        exit
+    )
+WORD_END(_asm_lit8s_)
 /* ( jump_location jump_category -- ) resolve an ASM jump to here */
-WORD_START(_asm_resolve_jump_here_,  LASTWORD)
+WORD_START(_asm_resolve_jump_here_,    _asm_lit8s_)
     WORD_DSTACK(2,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -87,7 +99,7 @@ WORD_START(_asm_resolve_jump_here_,  LASTWORD)
     )
 WORD_END(_asm_resolve_jump_here_)
 /* ( dest orig -- ) resolve an ASM jump from orig to dest */
-WORD_START(_asm_resolve_jump_there_,  _asm_resolve_jump_here_)
+WORD_START(_asm_resolve_jump_there_,   _asm_resolve_jump_here_)
     WORD_DSTACK(2,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
