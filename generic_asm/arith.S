@@ -242,6 +242,13 @@ FUNC_START(eight_div)      /* 8/   m64th-user floored divide by 8 */
 FUNC_END(eight_div)
 
 
+FUNC_START(sixteen)        /* 16   m64th-impl */
+        DPUSH__DTOP()
+        MOVI(  16,     DTOP)
+FUNC_END(sixteen)
+
+
+
 FUNC_START(question_dup)   /* ?dup */
         JZ(    DTOP,   FUNC_RET(question_dup))
         DPUSH__DTOP()

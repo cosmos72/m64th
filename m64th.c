@@ -457,9 +457,11 @@ static m6cell m6token_print_int32(const m6token *code, m6printmode mode, FILE *o
     int32_t val;
     memcpy(&val, code, sizeof(val));
     if (val >= -1024 && val <= 1024) {
-        fprintf(out, (mode == m6mode_user ? "%ld" : "INT(%ld)"), (long)val);
+        fprintf(out, (mode == m6mode_user ? "%d" : "INT(%d)"), (int)val);
+    } else if (val > 0) {
+        fprintf(out, (mode == m6mode_user ? "$%x" : "INT(0x%x)"), (unsigned)val);
     } else {
-        fprintf(out, (mode == m6mode_user ? "$%lx" : "INT(0x%lx)"), (unsigned long)val);
+        fprintf(out, (mode == m6mode_user ? "$-%x" : "INT(-0x%x)"), (unsigned)-val);
     }
     return sizeof(val) / SZt;
 }
@@ -469,8 +471,10 @@ static m6cell m6token_print_int64(const m6token *code, m6printmode mode, FILE *o
     memcpy(&val, code, sizeof(val));
     if (val >= -1024 && val <= 1024) {
         fprintf(out, (mode == m6mode_user ? "%ld" : "CELL(%ld)"), (long)val);
-    } else {
+    } else if (val > 0) {
         fprintf(out, (mode == m6mode_user ? "$%lx" : "CELL(0x%lx)"), (unsigned long)val);
+    } else {
+        fprintf(out, (mode == m6mode_user ? "$-%lx" : "CELL(-0x%lx)"), (unsigned long)-val);
     }
     return sizeof(val) / SZt;
 }
@@ -886,8 +890,10 @@ void m6slice_print(m6slice slice, m6cell direction, m6printmode mode, FILE *out)
         const long x = (long)*addr;
         if (x > -1024 && x < 1024) {
             fprintf(out, "%ld ", x);
-        } else {
+        } else if (x > 0) {
             fprintf(out, "$%lx ", x);
+        } else {
+            fprintf(out, "$-%lx ", -x);
         }
     }
     fputs(dots, out);

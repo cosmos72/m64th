@@ -370,8 +370,8 @@
     X(13, "(xt>asm-body)", _xt_to_asm_body_)                                                       \
     /* ( -- ) install already compiled ASM code into current XT */                                 \
     X(15, "(xt>asm-finish)", _xt_to_asm_finish_)                                                   \
-    /* ( n n' -- n>>16 ) inject 16-bit immediate into arm64 ASM instruction at asm_here[-4] */     \
-    X(14, "[asm-arm64-inject-imm16]", _asm_arm64_inject_imm16_)                                    \
+    /* inject 16-bit immediate 'u' into arm64 ASM instruction at asm_here[-4] */                   \
+    X(24, "[asm-arm64-inject-imm16]", _asm_arm64_inject_imm16_) /* ( x y u -- x>>16 y>>16 t|f ) */ \
     /* ( orig -- ) resolve an ASM jump to here */                                                  \
     X(23, "[asm-resolve-jump-here]", _asm_resolve_jump_here_)                                      \
     /* ( dest -- ) resolve an ASM jump from here */                                                \
@@ -722,6 +722,7 @@
     X(1, "6", six)                                                                                 \
     X(1, "7", seven)                                                                               \
     X(1, "8", eight)                                                                               \
+    X(2, "16", sixteen)                                                                            \
     X(3, "lp@", lp_fetch) /* ( -- addr-of-locals ) get current local variables address */          \
     X(3, "rp@", rp_fetch) /* ( R: x y -- x y ) ( -- &x ) get current return stack address */
 

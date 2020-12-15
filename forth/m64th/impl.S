@@ -1489,7 +1489,7 @@ WORD_START(_optimize_literal_, _optimize_tokens_comma_)
         T(-2), minus_two, T(-1), minus_one,
         T(0), zero, T(1), one, T(2), two, T(3), three,
         T(4), four, T(5), five, T(6), six, T(7), seven,
-        T(8), eight, T(32), bl
+        T(8), eight, T(16), sixteen, T(32), bl
       )
     )
 WORD_END(_optimize_literal_)
@@ -2192,8 +2192,9 @@ WORD(five,             four,           DSTACK(0,1), RSTACK(0,0), WORD_PURE)
 WORD(six,              five,           DSTACK(0,1), RSTACK(0,0), WORD_PURE)
 WORD(seven,            six,            DSTACK(0,1), RSTACK(0,0), WORD_PURE)
 WORD(eight,            seven,          DSTACK(0,1), RSTACK(0,0), WORD_PURE)
+WORD(sixteen,          eight,          DSTACK(0,1), RSTACK(0,0), WORD_PURE)
 /* ( ch -- n )  convert '#' to 10, '$' to 16, '%' to 2, else 0 */
-WORD_START(char_to_base, eight)
+WORD_START(char_to_base, sixteen)
     WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()

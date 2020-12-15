@@ -419,7 +419,7 @@
 #define M6six M6_i(6)              /* 6                     */
 #define M6seven M6_i(7)            /* 7                     */
 #define M6eight M6_i(8)            /* 8                     */
-#undef M6____gap                   /*                                                            */
+#define M6sixteen M6_i(9)          /* 16                    */
 #define M6_plus_loop_ M6_i(10)     /* (+loop)          followed by IP offset to jump              */
 #define M6_q_break_if_ M6_i(11)    /* (?break-if)      followed by IP offset to jump if dtop <> 0 */
 #define M6_q_break_if0_ M6_i(12)   /* (?break-if0)     followed by IP offset to jump if dtop == 0 */
