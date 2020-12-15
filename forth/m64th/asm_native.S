@@ -27,6 +27,26 @@
 /* --- m64th-asm   arch-specific words ---------------------------------------------------------- */
 /* ---------------------------------------------------------------------------------------------- */
 
+#ifdef __aarch64__
+/* ( n n' -- n>>16 ) inject 16-bit immediate into arm64 ASM instruction at asm_here[-4] */
+WORD_START(_asm_arm64_inject_imm16_,  LASTWORD)
+    WORD_DSTACK(2,1)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_ASM_NONE()
+    WORD_FLAGS(M6FLAG_INLINE)
+    WORD_CODE(
+        /* inject ushort(n') at here[-4]                  ( n n'                 ) */
+        to_ushort, five, lshift,                       /* ( n ushort(n')<<5      ) */
+        asm_here, four_minus, uint_fetch, or,          /* ( n asm_instr          ) */
+        asm_here, four_minus, int_store,               /* ( n                    ) */
+        _lit_, T(16), rshift, exit                     /* ( n>>16                ) */
+    )
+WORD_END(_asm_arm64_inject_imm16_)
+#undef LASTWORD
+#define LASTWORD _asm_arm64_inject_imm16_
+#endif /* __aarch64__ */
+
 /* ( tok-addr -- ) compile ASM code for pushing literal to DSTACK */
 WORD_START(_asm_lit8s_,                LASTWORD)
     WORD_DSTACK(1,0)
@@ -35,8 +55,82 @@ WORD_START(_asm_lit8s_,                LASTWORD)
     WORD_ASM_LEN(_asm_lit8s_)
     WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_REEXEC_AFTER_OPTIMIZE)
     WORD_CODE(
-        _lit2s_, SHORT(M6ERR_UNSUPPORTED_OPERATION), throw,
-        exit
+#if defined(__x86_64__)
+        /* compile ASM code for 'dup' */
+        _asm_lit_comma_, CELL(FUNC(dup)), T(FUNC_SIZE(dup)), /* ( tok-addr ) */
+
+        CALL(lit_to_n),                                /* ( n                    ) */
+        /* n+1 fits a signed byte? */
+        dup, one_plus, dup, to_byte, equal,            /* ( n t|f                ) */
+        _if_, T(8+nCALLt),                             /* ( n                    ) */
+            /* compile ASM code for '(asm/drop_lit1s)' */
+            _asm_lit_comma_, CELL(ASMFUNC(_asm_drop_lit1s_)), T(ASMFUNC_SIZE(_asm_drop_lit1s_)),
+            /* inject n+1 at asm_here[-1]              */
+            one_plus, asm_here, one_minus, c_store,    /* (                      ) */
+            exit,                                      /* (                      ) */
+        then,                                          /* ( n                    ) */
+        /* n fits unsigned 4 bytes?  */
+        dup, dup, to_uint, equal,                      /* ( n t|f                ) */
+        _if_, T(7+nCALLt),                             /* ( n                    ) */
+            /* compile ASM code for '(asm/drop_lit4u)' */
+            _asm_lit_comma_, CELL(ASMFUNC(_asm_drop_lit4u_)), T(ASMFUNC_SIZE(_asm_drop_lit4u_)),
+            /* inject n at asm_here[-4]                */
+            asm_here, four_minus, int_store,           /* (                      ) */
+            exit,                                      /* (                      ) */
+        then,                                          /* ( n                    ) */
+        /* n fits signed 4 bytes?  */
+        dup, dup, to_int, equal,                       /* ( n t|f                ) */
+        _if_, T(7+nCALLt),                             /* ( n                    ) */
+            /* compile ASM code for '(asm/drop_lit4s)' */
+            _asm_lit_comma_, CELL(ASMFUNC(_asm_drop_lit4s_)), T(ASMFUNC_SIZE(_asm_drop_lit4s_)),
+            /* inject n at asm_here[-4]                */
+            asm_here, four_minus, int_store,           /* (                      ) */
+            exit,                                      /* (                      ) */
+        then,                                          /* ( n                    ) */
+        /* compile ASM code for '(asm/drop_lit8s)' */
+        _asm_lit_comma_, CELL(ASMFUNC(_asm_drop_lit8s_)), T(ASMFUNC_SIZE(_asm_drop_lit8s_)),
+        /* inject n at asm_here[-8]                */
+        asm_here, eight_minus, store, exit             /* (                      ) */
+
+#elif defined(__aarch64__)
+        /* compile ASM code for 'dup' */
+        _asm_lit_comma_, CELL(FUNC(dup)), T(FUNC_SIZE(dup)), /* ( tok-addr ) */
+
+        CALL(lit_to_n),                                /* ( n                    ) */
+        dup, zero_less,                                /* ( n t|f                ) */
+        _if_, T(6),                                    /* ( n                    ) */
+#if 1
+            _lit_, T(M6ERR_UNSUPPORTED_OPERATION), throw, exit,
+#else
+            /* compile ASM code for '(asm/drop_lit2n)' */
+            _asm_lit_comma_, CELL(ASMFUNC(_asm_drop_lit2n_)), T(ASMFUNC_SIZE(_asm_drop_lit2n_)),
+            dup, invert,                               /* ( n ~n                 ) */
+#endif /* 0 */
+        _else_, T(4+nCALLt),                           /* ( n                    ) */
+            /* compile ASM code for '(asm/drop_lit2u)' */
+            _asm_lit_comma_, CELL(ASMFUNC(_asm_drop_lit2u_)), T(ASMFUNC_SIZE(_asm_drop_lit2u_)),
+            dup,                                       /* ( n n                  ) */
+        then,                                          /* ( n n                  ) */
+        CALL(_asm_arm64_inject_imm16_),                /* ( n'                   ) */
+        begin,                                         /* ( n n                  ) */
+        _q_while_, T(21+6*nCALLt),                     /* ( n                    ) */
+            /* compile ASM code of 'movk ... lsl 16' */
+            _asm_lit_comma_, CELL(ASMFUNC(_asm_arm64_movk16_)), T(ASMFUNC_SIZE(_asm_arm64_movk16_)),
+            dup, CALL(_asm_arm64_inject_imm16_),       /* ( n'                   ) */
+        _q_while_, T(14+4*nCALLt),                     /* ( n                    ) */
+            /* compile ASM code of 'movk ... lsl 32' */
+            _asm_lit_comma_, CELL(ASMFUNC(_asm_arm64_movk32_)), T(ASMFUNC_SIZE(_asm_arm64_movk32_)),
+            dup, CALL(_asm_arm64_inject_imm16_),       /* ( n'                   ) */
+        _q_while_, T(7+2*nCALLt),                      /* ( n                    ) */
+            /* compile ASM code of 'movk ... lsl 48' */
+            _asm_lit_comma_, CELL(ASMFUNC(_asm_arm64_movk48_)), T(ASMFUNC_SIZE(_asm_arm64_movk48_)),
+            dup, CALL(_asm_arm64_inject_imm16_),       /* ( 0                    ) */
+        _q_until0_, T(-20-6*nCALLt),                   /* ( 0                    ) */
+        then, then, then,                              /* ( 0                    ) */
+        drop, exit                                     /* (                      ) */
+#else
+        _lit_, T(M6ERR_UNSUPPORTED_OPERATION), throw, exit
+#endif
     )
 WORD_END(_asm_lit8s_)
 /* ( jump_location jump_category -- ) resolve an ASM jump to here */

@@ -52,8 +52,6 @@
     .cfi_endproc;                                                                                  \
     FUNC_DEFSIZE(name)
 
-#define FUNC_RAWEND_NESTED(name) FUNC_DEFSIZE(name)
-
 /* clang-format off */
 
 #define FUNC_END(name)                                                                             \
@@ -76,7 +74,7 @@
 #define ASMFUNC_END_NESTED(name)                                                                   \
     FUNC_RET(name) :                                                                               \
     ASMFUNC_RET(name) :                                                                            \
-    FUNC_RAWEND_NESTED(name)
+    FUNC_DEFSIZE(name)
 
 /* clang-format on */
 

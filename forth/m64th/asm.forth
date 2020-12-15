@@ -20,6 +20,22 @@ also m64th-core
 also m64th-asm definitions
 
 
+\ read literal value following (lit[248]s)
+: lit>n ( tok-addr -- lit )
+   dup token+ swap                                     ( lit-addr tok-addr      )
+   token@ token>name                                   ( lit-addr nt|0          )
+   dup if                                              ( lit-addr nt            )
+      name>flags flags>consumed-tokens tokens          ( lit-addr num_bytes     )
+   then                                                ( lit-addr num_bytes|0   )
+   case                                                ( lit-addr num_bytes|0   )
+      2     of short@ endof                            ( lit                    )
+      4     of int@   endof                            ( lit                    )
+      1cell of @      endof                            ( lit                    )
+      -12 throw   \ default: argument type mismatch
+   endcase
+;
+
+
 \ return required len and true if all tokens between XT and HERE
 \ can be compiled to native ASM, otherwise false
 : xt>asm>n  ( -- u t|f )
@@ -38,4 +54,4 @@ also m64th-asm definitions
     true                                               ( u true            )
 ;
 
-disassemble-upto xt>asm>n
+disassemble-upto lit>n

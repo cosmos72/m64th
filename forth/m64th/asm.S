@@ -241,8 +241,30 @@ WORD_START(asm_reserve,    asm_func)
         _c_locals_load_, exit
     )
 WORD_END(asm_reserve)
+/* ( tok-addr -- n ) read literal value following a token (lit[248]s) */
+WORD_START(lit_to_n,       asm_reserve)
+    WORD_DSTACK(1,0)
+    WORD_RSTACK(0,0)
+    WORD_DSTACK(1,0)
+    WORD_RSTACK(0,0)
+    WORD_ASM_NONE()
+    WORD_FLAGS(M6FLAG_INLINE)
+    WORD_CODE(/* generated from file asm.forth - see source and comments there */
+        /*35*/
+        dup, token_plus, swap, token_fetch, token_to_name,
+        _q_if_, T(4),
+            name_to_flags, flags_to_consumed_tokens, tokens,
+        then,
+        case,
+            two, _of_, T(3), short_fetch, _endof_, T(16),
+            four, _of_, T(3), int_fetch, _endof_, T(10),
+            one_cell, _of_, T(3), fetch, _endof_, T(4),
+            _lit_, T(M6ERR_ARGUMENT_TYPE_MISMATCH), throw,
+        endcase, exit
+    )
+WORD_END(lit_to_n)
 /* ( nt -- u true | 0 false ) get nt.asm_len */
-WORD(name_to_asm_n,        asm_reserve,    DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M6FLAG_MEM_FETCH)
+WORD(name_to_asm_n,        lit_to_n,       DSTACK(1,2), RSTACK(0,0), WORD_IMPURE | M6FLAG_MEM_FETCH)
 /* ( u nt -- ) set name ASM asm_len */
 WORD(name_to_asm_n_store,  name_to_asm_n,  DSTACK(2,2), RSTACK(0,0), WORD_IMPURE | M6FLAG_MEM_STORE)
 /* ( tok -- addr u | 0 0 ) get token ASM address and len */
@@ -271,16 +293,35 @@ WORD_START(token_to_asm_comma,   token_to_asm)
     WORD_ASM_NONE()
     WORD_FLAGS(0)
     WORD_CODE(
-        CALL(token_to_asm_replace),                 /* ( sys* token'           ) */
-        dup, token_to_name,                         /* ( sys* token nt         ) */
-        dup, name_to_flags,                         /* ( sys* token nt m6flags ) */
-        _lit_, T(M6FLAG_REEXEC_AFTER_OPTIMIZE), and,/* ( sys* token nt flag    ) */
-        _if_, T(5),                                 /* ( sys* token nt         ) */
-            nip, name_to_xt, execute, exit,         /* ( sys'*                 ) */
-        then,                                       /* ( sys* token nt         ) */
-        drop,                                       /* ( sys* token            ) */
-        CALL(token_to_asm),                         /* ( sys* addr|0 u|0       ) */
-        asm_comma, exit                             /* ( sys*                  ) */
+        /* token nt and m6flags are the original ones, while */
+        /* token' nt' and m6flags' are the replacements found by token>asm-replace */
+        dup, CALL(token_to_asm_replace),            /* ( sys* tok-addr token'             ) */
+        dup, token_to_name,                         /* ( sys* tok-addr token' nt'         ) */
+        dup, name_to_flags,                         /* ( sys* tok-addr token' nt' m6flags') */
+        _lit_, T(M6FLAG_REEXEC_AFTER_OPTIMIZE), and,/* ( sys* tok-addr token' nt' flag    ) */
+        _if0_, T(6+nCALLt),                         /* ( sys* tok-addr token' nt'         ) */
+            /* simply append ASM code of token */
+            drop, nip,                              /* ( sys* token'                      ) */
+            CALL(token_to_asm),                     /* ( sys* addr|0 u|0                  ) */
+            asm_comma, exit,                        /* ( sys*                             ) */
+        then,                                       /* ( sys* tok-addr token' nt'         ) */
+        /* replacement token is marked 'reexec-after-optimize'                              */
+        nip, over, token_fetch,                     /* ( sys* tok-addr nt' token          ) */
+        token_to_name, name_to_flags,               /* ( sys* tok-addr nt' m6flags        ) */
+        _lit_, T(M6FLAG_REEXEC_AFTER_OPTIMIZE), and,/* ( sys* tok-addr nt' flag           ) */
+        /**
+         * if both original and replacement tokens are marked 'reexec-after-optimize',
+         * then it must be a jump, as for example '(if)' '(else)' '(while)' ...
+         * the replacement word expects only sys* to be on the stack, so drop tok-addr.
+         *
+         * otherwise, only the replacement token is marked 'reexec-after-optimize'
+         * it must be a '(lit*)' '(call)' or similar, where the replacement word
+         * needs the data stored after the original token, so leave tok-addr on the stack.
+         */
+        _if_, T(2),                                 /* ( sys* tok-addr nt'                ) */
+            nip,                                    /* ( sys* nt'                         ) */
+        then,                                       /* ( sys* tol-addr* nt'               ) */
+        name_to_xt, execute, exit                   /* ( sys'*                            ) */
     )
 WORD_END(token_to_asm_comma)
 /* ( tok-addr -- u true | 0 false ) get token ASM len */

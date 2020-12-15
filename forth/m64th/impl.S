@@ -1602,7 +1602,7 @@ WORD_START(_defer_uninitialized_, _cs_find_lit_)
     WORD_STACK_NONE()
     WORD_ASM_NONE()
     WORD_FLAGS(0)
-    WORD_CODE(_lit2s_, SHORT(M6ERR_DEFER_UNINITIALIZED), throw, exit)
+    WORD_CODE(_lit_, T(M6ERR_DEFER_UNINITIALIZED), throw, exit)
 WORD_END(_defer_uninitialized_)
 /* ( -- ) replace execution semantics of latest word, setting it to code after caller's IP */
 WORD_START(_does_,     _defer_uninitialized_)
