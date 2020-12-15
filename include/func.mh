@@ -42,11 +42,12 @@
     FUNC(name) :
 
 #define FUNC_START(name) FUNC_DEF(name) /**/.cfi_startproc;
-
-#define FUNC_DEFSIZE(name) .size FUNC(name), .- FUNC(name);
+#define FUNC_START_NESTED(name) FUNC_DEF(name)
 
 #define FUNC_SIZE(name) FUNC_RET(name) - FUNC(name)
 #define ASMFUNC_SIZE(name) ASMFUNC_RET(name) - ASMFUNC(name)
+
+#define FUNC_DEFSIZE(name) .size FUNC(name), .- FUNC(name);
 
 #define FUNC_RAWEND(name)                                                                          \
     .cfi_endproc;                                                                                  \
@@ -58,6 +59,11 @@
     FUNC_RET(name) :                                                                               \
     NEXT()                                                                                         \
     FUNC_RAWEND(name)
+
+#define FUNC_END_NESTED(name)                                                                      \
+    FUNC_RET(name) :                                                                               \
+    FUNC_DEFSIZE(name)
+
 
 #define ASMFUNC_START(name)                                                                        \
     FUNC_DEF_NOALIGN(name)                                                                         \

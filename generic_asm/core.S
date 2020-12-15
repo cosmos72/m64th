@@ -189,12 +189,19 @@ FUNC_START(name_to_data)   /* ( nt -- addr u ) */
 FUNC_END(name_to_data)
 
 
-FUNC_START(name_to_data_addr)  /* ( nt -- addr ) */
+/* followed by NT. return its data>addr */
+FUNC_START(_lit_nt_to_body_)
+        DPUSH__DTOP()
+        LOAD(  DTOP,       AT(IP))
+        ADD2(IMM(SZ),      IP)
+
+FUNC_START_NESTED(name_to_data_addr)  /* ( nt -- addr ) */
         ADDI(  DTOP,       WORD_OFF_XT,   REG1)        /* a    = w.code         */
         LD_uh( DTOP,       AT(DTOP, WORD_OFF_CODE_N))  /* dtop = w.code_n       */
         ADD4(  REG1,       DTOP, PSZt,    DTOP)        /* dtop = w.code + w.code_n */
         ALIGN( SZ,         DTOP)                       /* dtop = w.data         */
-FUNC_END(name_to_data_addr)
+FUNC_END_NESTED(name_to_data_addr)
+FUNC_END(_lit_nt_to_body_)
 
 
 /* set m6word.data_n of specified word */

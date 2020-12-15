@@ -616,7 +616,7 @@ static m6cell m6token_print_consumed_ip(m6token tok, const m6token *code, m6cell
         }
         m6token_print(code[1], mode, out);
         return 2;
-    } else if (nbytes == SZ && tok == m6_lit_nt_) {
+    } else if (nbytes == SZ && (tok == m6_lit_nt_ || tok == m6_lit_nt_to_body_)) {
         fputs(separator, out);
         return m6token_print_nt(code, mode, out);
     } else if (nbytes == SZ && tok == m6_lit_xt_) {

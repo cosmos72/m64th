@@ -584,7 +584,15 @@ WORD_START(_lit_nt_, _lit8s_)
     WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_CONSUMES_IP_SZ | M6FLAG_INLINE_ALWAYS)
     WORD_CODE(_lit_nt_, NT(noop), exit)
 WORD_END(_lit_nt_)
-WORD_START(_lit_string_, _lit_nt_)
+WORD_START(_lit_nt_to_body_, _lit_nt_)
+    WORD_DSTACK(0,1)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_ASM_NONE()
+    WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_CONSUMES_IP_SZ | M6FLAG_INLINE_ALWAYS)
+    WORD_CODE(_lit_nt_to_body_, NT(noop), exit)
+WORD_END(_lit_nt_to_body_)
+WORD_START(_lit_string_, _lit_nt_to_body_)
     WORD_DSTACK(0,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -961,17 +969,16 @@ WORD_START(_to_value_, _to_lx_comma_)
     WORD_ASM_NONE()
     WORD_FLAGS(0)
     WORD_CODE(
-        state_fetch,                                         /* ( nt flag             ) */
-        _if0_, T(3),                                         /* ( nt                  ) */
-            /* interpreting. store immediately to nt body       ( x nt                ) */
-            name_to_data_addr,                               /* ( x addr              ) */
-            store, exit,                                     /* (                     ) */
-        then,                                                /* ( nt                  ) */
-        /* compiling. compile a store to nt body */          /* ( nt                  ) */
-        _lit_comma_, _lit_nt_,      /* compile '(lit-nt)'       ( nt                  ) */
-        comma,                      /* compile nt               (                     ) */
-        _lit_comma_, name_to_data_addr, /* compile 'name>data>addr'                     */
-        _lit_comma_, store,         /* compile '!'              (                     ) */
+        state_fetch,                                          /* ( nt flag            ) */
+        _if0_, T(3),                                          /* ( nt                 ) */
+            /* interpreting. store immediately to nt body        ( x nt               ) */
+            name_to_data_addr,                                /* ( x addr             ) */
+            store, exit,                                      /* (                    ) */
+        then,                                                 /* ( nt                 ) */
+        /* compiling. compile a store to nt body                 ( nt                 ) */
+        _lit_comma_, _lit_nt_to_body_,/* compile '(lit-nt>body)' ( nt                 ) */
+        comma,                        /* compile nt              (                    ) */
+        _lit_comma_, store,           /* compile '!'             (                    ) */
         exit
     )
 WORD_END(_to_value_)
@@ -1747,8 +1754,7 @@ WORD_START(_inline_value_,     _inline_)
     WORD_ASM_NONE()
     WORD_FLAGS(M6FLAG_COMPILE_ONLY|M6FLAG_INLINE)
     WORD_CODE(
-        _lit_comma_, _lit_nt_, comma,          /* compile '(lit-nt)' nt          */
-        _lit_comma_, name_to_data_addr,        /* compile 'name>data>addr'       */
+        _lit_comma_, _lit_nt_to_body_, comma,  /* compile '(lit-nt>body)' nt     */
         _lit_comma_, fetch,                    /* compile '@'                    */
         exit
     )
@@ -1761,8 +1767,7 @@ WORD_START(_inline_var_,     _inline_value_)
     WORD_ASM_NONE()
     WORD_FLAGS(M6FLAG_COMPILE_ONLY|M6FLAG_INLINE)
     WORD_CODE(
-        _lit_comma_, _lit_nt_, comma,          /* compile '(lit-nt)' nt          */
-        _lit_comma_, name_to_data_addr,        /* compile 'name>data>addr'       */
+        _lit_comma_, _lit_nt_to_body_, comma,  /* compile '(lit-nt>body)' nt     */
         exit
     )
 WORD_END(_inline_var_)
