@@ -108,9 +108,7 @@ WORD_START(_asm_lit_n_comma_,          _asm_lit8s_)
 
 #elif defined(__aarch64__)
         /* compile ASM code for 'dup' */
-        _asm_lit_comma_, CELL(FUNC(dup)), T(FUNC_SIZE(dup)), /* ( tok-addr ) */
-
-        CALL(lit_to_n),                                /* ( n                    ) */
+        _asm_lit_comma_, CELL(FUNC(dup)), T(FUNC_SIZE(dup)), /* ( n              ) */
         dup, zero_less,                                /* ( n t|f                ) */
         _if_, T(7+nCALLt),                             /* ( n                    ) */
             /* compile ASM code for '(asm/drop_lit2n)' */
