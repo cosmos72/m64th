@@ -57,11 +57,23 @@ WORD_START(_asm_lit8s_,                LASTWORD)
     WORD_ASM_LEN(_asm_lit8s_)
     WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_REEXEC_AFTER_OPTIMIZE)
     WORD_CODE(
+        CALL(lit_to_n),                                /* ( n                    ) */
+        CALL(_asm_lit_n_comma_), exit                  /* (                      ) */
+    )
+WORD_END(_asm_lit8s_)
+
+/* ( n -- ) compile ASM code for pushing literal 'n' to DSTACK */
+WORD_START(_asm_lit_n_comma_,          _asm_lit8s_)
+    WORD_DSTACK(1,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_ASM_NONE()
+    WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_REEXEC_AFTER_OPTIMIZE)
+    WORD_CODE(
 #if defined(__x86_64__)
         /* compile ASM code for 'dup' */
         _asm_lit_comma_, CELL(FUNC(dup)), T(FUNC_SIZE(dup)), /* ( tok-addr ) */
 
-        CALL(lit_to_n),                                /* ( n                    ) */
         /* n+1 fits a signed byte? */
         dup, one_plus, dup, to_byte, equal,            /* ( n t|f                ) */
         _if_, T(8+nCALLt),                             /* ( n                    ) */
@@ -133,9 +145,22 @@ WORD_START(_asm_lit8s_,                LASTWORD)
         _lit_, T(M6ERR_UNSUPPORTED_OPERATION), throw, exit
 #endif
     )
-WORD_END(_asm_lit8s_)
+WORD_END(_asm_lit_n_comma_)
+/* ( tok-addr -- ) compile ASM code for pushing name>data>addr to DSTACK */
+WORD_START(_asm_lit_nt_to_body_,       _asm_lit_n_comma_)
+    WORD_DSTACK(1,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_ASM_LEN(_asm_lit_nt_to_body_)
+    WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_REEXEC_AFTER_OPTIMIZE)
+    WORD_CODE(
+        token_plus, fetch,                             /* ( nt                   ) */
+        name_to_data_addr,                             /* ( addr                 ) */
+        CALL(_asm_lit_n_comma_), exit                  /* (                      ) */
+    )
+WORD_END(_asm_lit_nt_to_body_)
 /* ( jump_location jump_category -- ) resolve an ASM jump to here */
-WORD_START(_asm_resolve_jump_here_,    _asm_lit8s_)
+WORD_START(_asm_resolve_jump_here_,    _asm_lit_nt_to_body_)
     WORD_DSTACK(2,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()

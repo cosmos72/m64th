@@ -369,6 +369,7 @@ WORD_START(token_to_asm_replace, token_to_asm_n)
         _lit2s_,_asm_lit8s_,   /* '(lit2s)' becomes '(asm/lit8s)' in native ASM - refined later */
         _lit4s_,_asm_lit8s_,   /* '(lit4s)' becomes '(asm/lit8s)' in native ASM - refined later */
         _lit8s_,_asm_lit8s_,   /* '(lit8s)' becomes '(asm/lit8s)' in native ASM */
+        _lit_nt_to_body_, _asm_lit_nt_to_body_, /* '(lit-nt>body)' becomes '(asm/lit-nt>body)'  */
         then, _asm_then_,      /* 'then'    becomes '(asm/then)   in native ASM */
         exit, _asm_ret_        /* 'exit'    becomes '(asm/ret)    in native ASM */
       )

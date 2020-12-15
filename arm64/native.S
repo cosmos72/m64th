@@ -48,6 +48,7 @@ ASMFUNC_END(_asm_drop_lit2n_)
 
 
 ASMFUNC_START(_asm_lit8s_)
+ASMFUNC_START_NESTED(_asm_lit_nt_to_body_)
         DPUSH__DTOP()
 ASMFUNC_START_NESTED(_asm_drop_lit2u_)
         mov    DTOP,   IMM(0);
@@ -61,4 +62,5 @@ ASMFUNC_END_NESTED(_asm_arm64_movk32_)
 ASMFUNC_START_NESTED(_asm_arm64_movk48_)
         movk   DTOP,   IMM(0), lsl IMM(48);
 ASMFUNC_END_NESTED(_asm_arm64_movk48_)
+ASMFUNC_END_NESTED(_asm_lit_nt_to_body_)
 ASMFUNC_END(_asm_lit8s_)

@@ -337,14 +337,15 @@
 /* ------- m64th-asm -----------------------------------------------------------------------------
  */
 #define DICT_TOKENS_M64TH_ASM(X)                                                                   \
-    X(9, "(asm/?if)", _asm_q_if_)     /* native ASM only: implement '(?if)'      */                \
-    X(10, "(asm/?if0)", _asm_q_if0_)  /* native ASM only: implement '(?if0)'     */                \
-    X(10, "(asm/else)", _asm_else_)   /* native ASM only: implement '(else)'     */                \
-    X(8, "(asm/if)", _asm_if_)        /* native ASM only: implement '(if)'       */                \
-    X(9, "(asm/if0)", _asm_if0_)      /* native ASM only: implement '(if0)'      */                \
-    X(11, "(asm/lit8s)", _asm_lit8s_) /* native ASM only: implement '(lit8s)'    */                \
-    X(9, "(asm/ret)", _asm_ret_)      /* native ASM only: return from ASM to ASM */                \
-    X(10, "(asm/then)", _asm_then_)   /* native ASM only: implement 'then'       */                \
+    X(9, "(asm/?if)", _asm_q_if_)                    /* native ASM only: implement '(?if)'      */ \
+    X(10, "(asm/?if0)", _asm_q_if0_)                 /* native ASM only: implement '(?if0)'     */ \
+    X(10, "(asm/else)", _asm_else_)                  /* native ASM only: implement '(else)'     */ \
+    X(8, "(asm/if)", _asm_if_)                       /* native ASM only: implement '(if)'       */ \
+    X(9, "(asm/if0)", _asm_if0_)                     /* native ASM only: implement '(if0)'      */ \
+    X(11, "(asm/lit8s)", _asm_lit8s_)                /* compile ASM to push literal on stack    */ \
+    X(17, "(asm/lit-nt>body)", _asm_lit_nt_to_body_) /* compile ASM to push nt>body on stack    */ \
+    X(9, "(asm/ret)", _asm_ret_)                     /* native ASM only: return from ASM to ASM */ \
+    X(10, "(asm/then)", _asm_then_)                  /* native ASM only: implement 'then'       */ \
     /* native ASM only: pop XT and use '(vm)' to 'catch' it.  */                                   \
     X(14, "(asm/vm-catch)", _asm_vm_catch_) /* ( ... xt -- err ... ) */                            \
     /* native ASM only: pop XT and use '(vm)' to execute it. */                                    \
@@ -372,6 +373,8 @@
     X(15, "(xt>asm-finish)", _xt_to_asm_finish_)                                                   \
     /* inject 16-bit immediate 'u' into arm64 ASM instruction at asm_here[-4] */                   \
     X(24, "[asm-arm64-inject-imm16]", _asm_arm64_inject_imm16_) /* ( x y u -- x>>16 y>>16 t|f ) */ \
+    /* common part of '(asm-lit8s)' and '(asm-lit-nt>body)' */                                     \
+    X(12, "[asm-lit-n,]", _asm_lit_n_comma_) /* ( n -- ) compile ASM to push 'n' on stack */       \
     /* ( orig -- ) resolve an ASM jump to here */                                                  \
     X(23, "[asm-resolve-jump-here]", _asm_resolve_jump_here_)                                      \
     /* ( dest -- ) resolve an ASM jump from here */                                                \
