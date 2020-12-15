@@ -210,7 +210,7 @@ FUNC_START(throw)
         MOVE(  DTOP,   REG0)
         DPOP___DTOP()
         JZ(    REG0,   FUNC_RET(throw))              /* 0 means 'do not throw'             */
-FUNC_DEF(_throw_reg0_)
+FUNC_START_NESTED(_throw_reg0_)
         STOR(  REG0,   AT(M64TH, M64TH_OFF_EX))        /* save exception to m64th.ex          */
         LOAD(  REG2,   AT(M64TH, M64TH_OFF_HANDLER))   /* b = m64th.handler = rend - rstk     */
         JZ(    REG2,   FUNC(bye))                    /* no handler => jump to 'bye'        */
@@ -265,6 +265,7 @@ LABEL(throw.dstk)
 
 LABEL(throw.dstk_ok)
         RPOP(  RTOP)                                 /* restore RTOP pushed by (catch-beg) */
+FUNC_END_NESTED(_throw_reg0_)
 FUNC_END(throw)
 
 

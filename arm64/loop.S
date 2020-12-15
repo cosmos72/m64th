@@ -59,23 +59,19 @@ FUNC_START(_q_do_)
         LOAD(  DTOP,   AT(DSTK, SZ))   /* reload dstack top     */
         ADD2(  IMM(SZ2), DSTK)         /* drop i' i from dstack */
         RELJUMP()                      /* jump to TARGET_IP     */
-FUNC_DEF(_do_)
+FUNC_START_NESTED(_do_)
         ADD2(  IMM(SZt), IP)           /* skip jump offset      */
         /* FALLTHROUGH */
-/* FUNC_RAWEND(_q_do_) */
-/* FUNC_RAWEND(_do_)   */
-
 
 #define M6FDO
-FUNC_DEF(do)
-/* FUNC_START(do) */
+FUNC_START_NESTED(do)
         RPUSH( RTOP)                 /* save rtop             */
         MOVE(  DTOP,   RTOP)         /* rtop = i              */
         DPOP2( REG1,   DTOP)         /* a = i', reload dtop   */
         RPUSH( REG1)                 /* rpush i'              */
-FUNC_END(do)
-FUNC_DEFSIZE(_q_do_)
-FUNC_DEFSIZE(_do_)
+FUNC_END_NESTED(do)
+FUNC_END_NESTED(_do_)
+FUNC_END(_q_do_)
 
 
 /**

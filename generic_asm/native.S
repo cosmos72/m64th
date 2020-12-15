@@ -72,9 +72,8 @@ FUNC_START(_asm_lit_comma_)
         ADD2(IMM(SZ+SZt),  IP)
         DPUSH( REG1)
         /* fallthrough */
-
 /* asm, ( addr u -- ) m64th-asm */
-FUNC_DEF(asm_comma)
+FUNC_START_NESTED(asm_comma)
         LOAD(  REG1,   AT(M64TH, M64TH_OFF_ASM_HERE))  /* a = asm-here         */
         LOAD(  REG2,   AT(M64TH, M64TH_OFF_ASM_END))   /* b = asm-end          */
         SUB2(  REG1,   REG2)                           /* b = free_bytes       */
@@ -85,8 +84,8 @@ FUNC_DEF(asm_comma)
         ADD2(  DTOP,   REG1)
         STOR(  REG1,   AT(M64TH, M64TH_OFF_ASM_HERE))  /* asm-here += u        */
         JUMP(  FUNC(cmove))
-/* FUNC_RAWEND(_asm_lit_comma_) */
-FUNC_RAWEND(asm_comma)
+FUNC_END_NESTED(asm_comma)
+FUNC_RAWEND(_asm_lit_comma_)
 
 
 /* asm-clear ( -- ) m64th-asm forget all code in ASM buffer */

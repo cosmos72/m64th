@@ -71,17 +71,13 @@ FUNC_START(_compile_jump_lit_)
         LD_ut( DTOP,       AT(IP, SZt))                /* dtop = category            */
         ADD2( IMM(SZt2),   IP)                         /* skip two m6token           */
         /* FALLTHROUGH */
-/* FUNC_RAWEND(_compile_jump_lit_) */
-
 
 /**
  * [compile-jump] ( token category -- sys )
  * compile an unresolved jump, i.e. append token and T(-1) to XT being compiled,
  * then push sys to dstack i.e. jump_location (= # of tokens of XT being compiled) and category.
  */
-FUNC_DEF(_compile_jump_)
-/* FUNC_START(_compile_jump_) */
-                                                       /* ( token category         ) */
+FUNC_START_NESTED(_compile_jump_)                      /* ( token category         ) */
         TOKEN_CALL_NOTHROW(FUNC(_num_compiled_reg0_), _compile_jump_.0) /* @ = #code_n */
         LOAD(  REG1,       AT(DSTK))                   /* a = token                  */
         ADD2(  IMM(2),     REG0)                       /* @ = jump_location           */
@@ -90,8 +86,8 @@ FUNC_DEF(_compile_jump_)
         STORt( RFFF_REG2,  AT(HERE, SZt))              /* here[1] = -1               */
         ADD2(  IMM(SZt2),  HERE)                       /* here += 2 * SZt            */
         STOR(  REG0,       AT(DSTK))                   /* ( jump_location category )  */
-FUNC_END(_compile_jump_)
-FUNC_DEFSIZE(_compile_jump_lit_)
+FUNC_END_NESTED(_compile_jump_)
+FUNC_END(_compile_jump_lit_)
 
 
 /**
@@ -212,12 +208,12 @@ FUNC_START(countedstring_comma)
         /* fallthrough */
 
 /* string, ( c-addr u -- ) m64th-user */
-FUNC_DEF(string_comma)
+FUNC_START_NESTED(string_comma)
         DPUSH( HERE)                                   /* ( c-addr here u ) */
         ADD2(  DTOP,   HERE)                           /* here += u         */
         JUMP(  FUNC(cmove))
-FUNC_RAWEND(string_comma)
-FUNC_DEFSIZE(countedstring_comma)
+FUNC_END_NESTED(string_comma)
+FUNC_RAWEND(countedstring_comma)
 
 
 
