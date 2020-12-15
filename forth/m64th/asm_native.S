@@ -72,7 +72,7 @@ WORD_START(_asm_lit_n_comma_,          _asm_lit8s_)
     WORD_CODE(
 #if defined(__x86_64__)
         /* compile ASM code for 'dup' */
-        _asm_lit_comma_, CELL(FUNC(dup)), T(FUNC_SIZE(dup)), /* ( tok-addr ) */
+        _asm_lit_comma_, CELL(FUNC(dup)), T(FUNC_SIZE(dup)), /* ( n              ) */
 
         /* n+1 fits a signed byte? */
         dup, one_plus, dup, to_byte, equal,            /* ( n t|f                ) */
