@@ -276,7 +276,7 @@
 #define M6_asm_else_ M6_a(6)            /* native ASM only: implement '(else)'                */
 #define M6_asm_if_ M6_a(7)              /* native ASM only: implement '(if)'                  */
 #define M6_asm_if0_ M6_a(8)             /* native ASM only: implement '(if0)'                 */
-#undef M6____gap                        /*                                                    */
+#define M6_asm_leave_ M6_a(9)           /* native ASM only: implement '(leave)'               */
 #define M6_asm_lit8s_ M6_a(10)          /* native ASM only: implement '(lit8s)'               */
 #define M6_asm_lit_nt_to_body_ M6_a(11) /* native ASM only: implement '(lit-nt>body)'         */
 #define M6_asm_loop_ M6_a(12)           /* native ASM only: implement '(loop)'                */

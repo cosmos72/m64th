@@ -241,8 +241,10 @@ WORD_END(_xt_to_asm_finish_)
 /* followed by CELL(asm-addr) T(len) just calls asm_comma with specified args */
 WORD_NOASM(_asm_lit_comma_,    _xt_to_asm_finish_, DSTACK(0,0), RSTACK(0,0), M6FLAG_COMPILE_ONLY | M6FLAG_INLINE_ALWAYS | M6FLAG_CONSUMES_IP_SZ_SZt)
 /**
- * called by '(asm/loop)': resolve the jump offsets of a single 'do' or '(asm/?do)',
- * zero or more '(asm/leave)' and one '(asm/loop)' or '(asm/+loop)'
+ * called by '(asm/loop)' and '(asm/+loop)': resolve the jump offsets of
+ *  * a single 'do' or '(asm/?do)',
+ *  * zero or more '(asm/leave)'
+ *  * one '(asm/loop)' or '(asm/+loop)'
  * ( do-sys leave-sys* loop-sys -- )
  */
 WORD_START(_asm_resolve_loop_, _asm_lit_comma_)
@@ -252,7 +254,30 @@ WORD_START(_asm_resolve_loop_, _asm_lit_comma_)
     WORD_ASM_NONE()
     WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_INLINE)
     WORD_CODE(
-        _lit_, T(M6ERR_UNSUPPORTED_OPERATION), throw, exit
+        _check_lit_tok_, _asm_loop_, /* TODO: also support _asm_plus_loop_ */
+        cs_to_r,                                    /* ( do-sys leave-sys*     ) ( R: loop-sys ) */
+        begin,                                      /* ( do-sys leave-sys*     ) ( R: loop-sys ) */
+            dup, _lit_, _asm_leave_, equal,         /* ( do-sys leave-sys* t|f ) ( R: loop-sys ) */
+        _while_, T(5),                              /* ( do-sys leave-sys*     ) ( R: loop-sys ) */
+            _lit_, T(M6ERR_UNSUPPORTED_OPERATION), throw, /** TODO: support _asm_leave_ */
+        _repeat_, T(-11),                           /* ( do-sys leave-sys*     ) ( R: loop-sys ) */
+
+        dup, _lit_tok_, _asm_q_do_, equal,          /* ( do-sys t|f            ) ( R: loop-sys ) */
+        _if_, T(8+nCALLt),                          /* ( do-sys                ) ( R: loop-sys ) */
+            /* adjust do-sys to point immediately after jump offset inside _asm_q_do_ */
+            over, _lit_, T(TO(_asm_q_do_.jump) - ASMFUNC_RET(_asm_q_do_)), plus, over,
+                                       /* ( do-sys jump_location jump_category ) ( R: loop-sys ) */
+            CALL(_asm_resolve_jump_here_),          /* ( do-sys                ) ( R: loop-sys ) */
+        _else_, T(3),                               /* ( do-sys                ) ( R: loop-sys ) */
+            _check_lit_tok_, _asm_do_,              /* ( do-sys                ) ( R: loop-sys ) */
+        then,                                       /* ( do-sys                ) ( R: loop-sys ) */
+        cs_r_from,                                  /* ( do-sys loop-sys       )                 */
+        _check_lit_tok_, _asm_loop_,                /** TODO: support _asm_plus_loop_            */
+        /* adjust loop-sys to point immediately after jump offset inside _asm_loop_              */
+        swap, _lit_, T(TO(_asm_loop_.jump) - ASMFUNC_RET(_asm_loop_)), plus, swap,
+        cs_r_from,                                  /* ( do-sys loop-sys       )                 */
+        CALL(_asm_resolve_jump_there_),             /* (                       )                 */
+        exit
     )
 WORD_END(_asm_resolve_loop_)
 /* ( addr u -- ) store assembly code at ASM_HERE and update ASM_HERE */

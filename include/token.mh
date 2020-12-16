@@ -31,14 +31,14 @@
 #define M6TOKEN_VAL_COMMA(name) M6TOKEN_VAL(name),
 
 /* assembler macro: insert an int as wide as m6token in a sequence of m6token */
-#define m6T(x) ((x)&0xFFFF)
-#define M6T(x) ((x)&0xFFFF)
+#define m6T(x) (x)
+#define M6T(x) (x)
 
 /* assembler macro: insert an int16 in a sequence of m6token */
-#define M6SHORT(x) ((x)&0xFFFF)
+#define M6SHORT(x) (x)
 
 /* assembler macro: insert an int32 in a sequence of m6token */
-#define M6INT(x) ((x)&0xFFFFFFFF)
+#define M6INT(x) (x)
 
 /* assembler macro: insert an m6cell in a sequence of m6token */
 #define M6CELL(x) (x)

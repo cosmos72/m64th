@@ -35,7 +35,7 @@ static m6testasm testasm_a[] = {
      {1, {0x12345}},
      {},
      /* ASM bytes */
-     {(const m6char *)"\264\216\037\370\264h\004\3204\000\000\360", 12}},
+     {(const m6char *)"\264\216\037\370\264h\004\3224\000\000\362", 12}},
     {"(asm/?do)",
      {CALL(_asm_q_do_), m6bye},
      {},
@@ -71,8 +71,12 @@ static m6testasm testasm_a[] = {
      {},
      {2, {28 /*ASM len*/, m6_asm_q_do_}},
      /* ASM bytes */
-     {(const m6char
-           *)"H\211\307H\213\016H\213F\bH\203\306\020H9\317\017\204\354\326\377\377SQH\211\373",
+     {(const m6char *)
+#ifdef __clang__
+          "H\211\307H\213\016H\213F\bH\203\306\020H9\317\017\204\314\326\377\377SQH\211\373",
+#else
+          "H\211\307H\213\016H\213F\bH\203\306\020H9\317\017\204\354\326\377\377SQH\211\373",
+#endif
       28}},
     {"(asm/do)",
      {CALL(_asm_do_), m6bye},
@@ -83,7 +87,13 @@ static m6testasm testasm_a[] = {
      {CALL(_asm_if_), m6bye},
      {},
      {2, {11 /*ASM len*/, m6_asm_if_}},
-     {(const m6char *)"H\205\300H\255\017\204Q\366\377\377", 11}},
+     {(const m6char *)
+#ifdef __clang__
+          "H\205\300H\255\017\204I\366\377\377",
+#else
+          "H\205\300H\255\017\204Q\366\377\377",
+#endif
+      11}},
     {"(asm/if) (asm/then)",
      {CALL(_asm_if_), CALL(_asm_then_), m6bye},
      {},
