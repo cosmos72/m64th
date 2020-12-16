@@ -199,7 +199,15 @@ WORD(less,             semi,       DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(num_start,        less,       DSTACK(0,0), RSTACK(0,0), WORD_IMPURE)
 WORD(equal,            num_start,  DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(more,             equal,      DSTACK(2,1), RSTACK(0,0), WORD_PURE)
-WORD_START(to_in,      more)
+WORD_START(to_body,    more)
+    WORD_DSTACK(1,1)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_ASM_NONE()
+    WORD_FLAGS(M6FLAG_INLINE)
+    WORD_CODE(xt_to_name, name_to_data_addr, exit)
+WORD_END(to_body)
+WORD_START(to_in,      to_body)
     WORD_DSTACK(0,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -208,7 +216,7 @@ WORD_START(to_in,      more)
     WORD_CODE(in_to_ibuf, iobuf_pos, exit)
 WORD_END(to_in)
 /*
- * >number ( du caddr n -- du caddr n )  \ convert string from base to number
+ * >number ( du c-addr u -- du c-addr' u' )  \ convert string from base to number
  */
 WORD_START(to_number, to_in)
     WORD_DSTACK(4,4)
@@ -505,9 +513,9 @@ WORD_START(postpone,   over)
         invert,
         _if0_, T(5+nCALLt),
         /* avoid CALL(literal) because it compiles (lit[1248]s) instead of (lit-xt) */
-            _lit_comma_, _lit_xt_,                     /* compiles (lit-xt)   */
-            comma,                                  /* xt,                 */
-            _lit_xt_, XT(compile_comma),               /* ' compile,          */
+            _lit_comma_, _lit_xt_,                     /* compiles '(lit-xt)'  */
+            comma,                                     /* compiles xt          */
+            _lit_xt_, XT(compile_comma),               /* ' compile,           */
         then,
         CALL(compile_comma), exit
     )
@@ -578,9 +586,8 @@ WORD_START(sign, s_to_d)
         then, exit
     )
 WORD_END(sign)
-WORD(state,            sign,       DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 /* source ( -- c-addr u ) get entire content of input buffer (including already parsed data) */
-WORD_START(source,     state)
+WORD_START(source,     sign)
     WORD_DSTACK(0,2)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -619,7 +626,8 @@ WORD_START(spaces, space)
       )
     )
 WORD_END(spaces)
-WORD(swap,             spaces,     DSTACK(2,2), RSTACK(0,0), WORD_PURE)
+WORD(state,            spaces,     DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
+WORD(swap,             state,      DSTACK(2,2), RSTACK(0,0), WORD_PURE)
 WORD_START(then, swap)
     WORD_STACK_NONE()
     WORD_STACK_NONE()
@@ -674,8 +682,8 @@ WORD_START(um_div_mod, u_less)
         d_to_s, minus_rot, d_to_s, swap,       /* ( u-rem  u-quo                     ) */
         exit
     )
-WORD_END(until)
-WORD(unloop,           u_less,     DSTACK(0,0), RSTACK(2,0), WORD_R_PURE)
+WORD_END(um_div_mod)
+WORD(unloop,           um_div_mod, DSTACK(0,0), RSTACK(2,0), WORD_R_PURE)
 WORD_START(until,      unloop)
     WORD_DSTACK(1,0)   /* execution stack effect when not jumping */
     WORD_RSTACK(0,0)

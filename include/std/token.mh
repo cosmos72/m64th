@@ -64,7 +64,7 @@
 #define M6num_start 34            /* <#       */
 #define M6equal 35                /* =        */
 #define M6more 36                 /* >        */
-#undef M6to_body /*37*/           /* >body    */
+#undef M6to_body /*37*/           /* >body    no dedicated m6token */
 #undef M6to_in /*38*/             /* >in      no dedicated m6token */
 #undef M6to_number /*39*/         /* >number  no dedicated m6token */
 #define M6to_r 40                 /* >r       */

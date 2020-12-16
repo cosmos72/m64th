@@ -117,7 +117,7 @@ static void m6char_print_escape(const m6char ch, FILE *out) {
     if (seq) {
         fputs(seq, out);
     } else {
-        fprintf(out, "\\x%02x", (unsigned)ch);
+        fprintf(out, "\\%03o", (unsigned)ch);
     }
 }
 

@@ -38,7 +38,9 @@ WORD_START(_asm_arm64_inject_imm16_,  LASTWORD)
     WORD_CODE(
         /* inject ushort(u) at here[-4]                   ( x y u                ) */
         to_ushort, five, lshift,                       /* ( x y ushort(u)<<5     ) */
-        asm_here, four_minus, uint_fetch, or,          /* ( x y asm_instr        ) */
+        asm_here, four_minus, uint_fetch,              /* ( x y u asm_instr      ) */
+        _lit4s_, INT(0xff000001f), and,                /* ( x y u asm_instr'     ) */
+        or,                                            /* ( x y asm_instr''      ) */
         asm_here, four_minus, int_store,               /* ( x y                  ) */
         sixteen, rshift, swap,                         /* ( y>>16 x              ) */
         sixteen, rshift, swap,                         /* ( x>>16 y>>16          ) */
