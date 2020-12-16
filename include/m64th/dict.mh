@@ -337,13 +337,16 @@
 /* ------- m64th-asm -----------------------------------------------------------------------------
  */
 #define DICT_TOKENS_M64TH_ASM(X)                                                                   \
+    X(9, "(asm/?do)", _asm_q_do_)                    /* native ASM only: implement '(?do)'      */ \
     X(9, "(asm/?if)", _asm_q_if_)                    /* native ASM only: implement '(?if)'      */ \
     X(10, "(asm/?if0)", _asm_q_if0_)                 /* native ASM only: implement '(?if0)'     */ \
+    X(8, "(asm/do)", _asm_do_)                       /* native ASM only: implement 'do'         */ \
     X(10, "(asm/else)", _asm_else_)                  /* native ASM only: implement '(else)'     */ \
     X(8, "(asm/if)", _asm_if_)                       /* native ASM only: implement '(if)'       */ \
     X(9, "(asm/if0)", _asm_if0_)                     /* native ASM only: implement '(if0)'      */ \
     X(11, "(asm/lit8s)", _asm_lit8s_)                /* compile ASM to push literal on stack    */ \
     X(17, "(asm/lit-nt>body)", _asm_lit_nt_to_body_) /* compile ASM to push nt>body on stack    */ \
+    X(10, "(asm/loop)", _asm_loop_)                  /* native ASM only: implement '(loop)'     */ \
     X(9, "(asm/ret)", _asm_ret_)                     /* native ASM only: return from ASM to ASM */ \
     X(10, "(asm/then)", _asm_then_)                  /* native ASM only: implement 'then'       */ \
     /* native ASM only: pop XT and use '(vm)' to 'catch' it.  */                                   \
@@ -379,6 +382,8 @@
     X(23, "[asm-resolve-jump-here]", _asm_resolve_jump_here_)                                      \
     /* ( dest -- ) resolve an ASM jump from here */                                                \
     X(24, "[asm-resolve-jump-there]", _asm_resolve_jump_there_)                                    \
+    /* common back-end of '(asm/loop)' and '(asm/+loop)' */                                        \
+    X(18, "[asm-resolve-loop]", _asm_resolve_loop_)                                                \
     X(13, "asm-make-func", asm_make_func) /* ( -- addr ) make ASM code executable and return it */ \
     X(11, "asm-reserve", asm_reserve) /* ( len -- ) reserve at least len bytes in ASM buffer    */ \
     X(5, "lit>n", lit_to_n) /* ( tok-addr -- n ) get literal value following a token (lit[248]s)*/ \

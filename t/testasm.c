@@ -36,6 +36,18 @@ static m6testasm testasm_a[] = {
      {},
      /* ASM bytes */
      {(const m6char *)"\264\216\037\370\264h\004\3204\000\000\360", 12}},
+    {"(asm/?do)",
+     {CALL(_asm_q_do_), m6bye},
+     {},
+     {2, {24 /*ASM len*/, m6_asm_q_do_}},
+     {(const m6char
+           *)"\341\003\024\252\242R\301\250?\000\002\353`\257\376T\342Z\277\251\366\003\001\252",
+      24}},
+    {"(asm/do)",
+     {CALL(_asm_do_), m6bye},
+     {},
+     {2, {16 /*ASM len*/, m6_asm_do_}},
+     {(const m6char *)"\366\216\037\370\366\003\024\252\241R\301\250\341\216\037\370", 16}},
     {"(asm/if)",
      {CALL(_asm_if_), m6bye},
      {},
@@ -54,11 +66,23 @@ static m6testasm testasm_a[] = {
      {},
      {(const m6char *)"\237\002\000\361\264\206@\370@\000\000T\001\000\000\024", 16}},
 #elif defined(__x86_64__)
+    {"(asm/?do)",
+     {CALL(_asm_q_do_), m6bye},
+     {},
+     {2, {28 /*ASM len*/, m6_asm_q_do_}},
+     /* ASM bytes */
+     {(const m6char
+           *)"H\211\307H\213\016H\213F\bH\203\306\020H9\317\017\204\354\326\377\377SQH\211\373",
+      28}},
+    {"(asm/do)",
+     {CALL(_asm_do_), m6bye},
+     {},
+     {2, {16 /*ASM len*/, m6_asm_do_}},
+     {(const m6char *)"SH\211\303H\213>H\213F\bH\203\306\020W", 16}},
     {"(asm/if)",
      {CALL(_asm_if_), m6bye},
      {},
      {2, {11 /*ASM len*/, m6_asm_if_}},
-     /* ASM bytes */
      {(const m6char *)"H\205\300H\255\017\204Q\366\377\377", 11}},
     {"(asm/if) (asm/then)",
      {CALL(_asm_if_), CALL(_asm_then_), m6bye},

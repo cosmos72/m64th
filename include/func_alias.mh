@@ -37,6 +37,7 @@
 #define m6f_q_while0_ m6f_q_if0_      /* (?while0)   conditional jump if dtop <> 0  */
 #define m6f_again_ m6f_jump_          /* (again)     unconditional jump             */
 #define m6f_ahead_ m6f_jump_          /* (ahead)     unconditional jump             */
+#define m6f_asm_do_ m6fdo             /* (asm/do)    same as 'do'                   */
 #define m6f_asm_then_ m6fnoop         /* (asm/then)  noop, used as compile marker   */
 #define m6f_break_ m6f_jump_          /* (break)     unconditional jump             */
 #define m6f_continue_ m6f_jump_       /* (continue)  unconditional jump             */

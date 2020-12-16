@@ -267,34 +267,34 @@
  */
 /* 'm64th-asm' wordlist */
 #define M6_a(x) ((x) + 730)
-#define M6_asm_lit_comma_ M6_a(0)      /* followed by CELL(addr) T(u) just calls asm,        */
-#undef M6____gap                       /*                                                    */
-#define M6_asm_q_if_ M6_a(2)           /* native ASM only: implement '(?if)'                 */
-#define M6_asm_q_if0_ M6_a(3)          /* native ASM only: implement '(?if0)'                */
-#define M6_asm_else_ M6_a(4)           /* native ASM only: implement '(else)'                */
-#define M6_asm_if_ M6_a(5)             /* native ASM only: implement '(if)'                  */
-#define M6_asm_if0_ M6_a(6)            /* native ASM only: implement '(if0)'                 */
-#undef M6____gap                       /*                                                    */
-#define M6_asm_lit8s_ M6_a(8)          /* native ASM only: implement '(lit8s)'               */
-#define M6_asm_lit_nt_to_body_ M6_a(9) /* native ASM only: implement '(lit-nt>body)'         */
-#undef M6____gap                       /*                                                    */
-#define M6_asm_ret_ M6_a(11)           /* native ASM only: return from ASM to ASM            */
-#define M6_asm_then_ M6_a(12)          /* native ASM only: implement 'then'                  */
-#define M6_asm_vm_catch_ M6_a(13)      /* native ASM only: pop XT and 'catch' it using VM    */
-#define M6_asm_vm_execute_ M6_a(14)    /* native ASM only: pop XT and execute it using VM    */
-#define M6_vm_return_to_asm_ M6_a(15)  /* return from VM to native ASM code                  */
-#undef M6____gap                       /*                                                    */
-#define M6asm_comma M6_a(16)           /* ( addr u --       ) append ASM code to ASM-HERE    */
-#define M6asm_clear M6_a(17)           /* ( addr u --       ) append ASM code to ASM-HERE    */
-#define M6asm_func M6_a(19)            /* (     -- addr ) get ASM_FUNC = start of ASM code   */
-#define M6asm_here M6_a(20)            /* (     -- addr ) get ASM_HERE = current ASM address */
-#define M6asm_size M6_a(21)            /* (     -- u    ) get ASM_HERE - ASM_FUNC            */
-#define M6name_to_asm_n M6_a(22)       /* ( nt -- u true | 0 false ) get name.asm_len        */
-#define M6name_to_asm_n_store M6_a(23) /* ( u nt --         ) set name.asm_len               */
-#define M6token_to_asm_addr M6_a(24)   /* ( token -- addr|0 ) get ASM code address for token */
+#define M6_asm_lit_comma_ M6_a(0)       /* followed by CELL(addr) T(u) just calls asm,        */
+#undef M6____gap                        /*                                                    */
+#define M6_asm_q_do_ M6_a(2)            /* native ASM only: implement '(?do)'                 */
+#define M6_asm_q_if_ M6_a(3)            /* native ASM only: implement '(?if)'                 */
+#define M6_asm_q_if0_ M6_a(4)           /* native ASM only: implement '(?if0)'                */
+#define M6_asm_do_ M6_a(5)              /* native ASM only: implement 'do'                    */
+#define M6_asm_else_ M6_a(6)            /* native ASM only: implement '(else)'                */
+#define M6_asm_if_ M6_a(7)              /* native ASM only: implement '(if)'                  */
+#define M6_asm_if0_ M6_a(8)             /* native ASM only: implement '(if0)'                 */
+#undef M6____gap                        /*                                                    */
+#define M6_asm_lit8s_ M6_a(10)          /* native ASM only: implement '(lit8s)'               */
+#define M6_asm_lit_nt_to_body_ M6_a(11) /* native ASM only: implement '(lit-nt>body)'         */
+#define M6_asm_loop_ M6_a(12)           /* native ASM only: implement '(loop)'                */
+#define M6_asm_ret_ M6_a(13)            /* native ASM only: return from ASM to ASM            */
+#define M6_asm_then_ M6_a(14)           /* native ASM only: implement 'then'                  */
+#define M6_asm_vm_catch_ M6_a(15)       /* native ASM only: pop XT and 'catch' it using VM    */
+#define M6_asm_vm_execute_ M6_a(16)     /* native ASM only: pop XT and execute it using VM    */
+#define M6_vm_return_to_asm_ M6_a(17)   /* return from VM to native ASM code                  */
+#undef M6____gap                        /*                                                    */
+#define M6asm_comma M6_a(19)            /* ( addr u --       ) append ASM code to ASM-HERE    */
+#define M6asm_clear M6_a(20)            /* ( addr u --       ) append ASM code to ASM-HERE    */
+#define M6asm_func M6_a(21)             /* (     -- addr ) get ASM_FUNC = start of ASM code   */
+#define M6asm_here M6_a(22)             /* (     -- addr ) get ASM_HERE = current ASM address */
+#define M6asm_size M6_a(23)             /* (     -- u    ) get ASM_HERE - ASM_FUNC            */
+#define M6name_to_asm_n M6_a(24)        /* ( nt -- u true | 0 false ) get name.asm_len        */
+#define M6name_to_asm_n_store M6_a(25)  /* ( u nt --         ) set name.asm_len               */
+#define M6token_to_asm_addr M6_a(26)    /* ( token -- addr|0 ) get ASM code address for token */
 
-/**
- */
 /* 'm64th-c' wordlist */
 #define M6_c(x) ((x) + 760)
 #define M6_c_arg_0_ M6_c(0)  /* prepare 0 args for C function call    */

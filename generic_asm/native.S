@@ -38,14 +38,13 @@ ASMFUNC_START(_asm_else_)
 ASMFUNC_END(_asm_else_)
 
 
-ASMFUNC_START(_asm_q_do_)               /* ( end beg           ) */
+ASMFUNC_START(_asm_q_do_)            /* ( end beg           ) */
         MOVE(  DTOP,   REG1)         /* a = beg               */
         DPOP2( REG2,   DTOP)         /* b = end, reload dtop  */
         JEQ(   REG1,   REG2,   FUNC(_missing_))
 LABEL(_asm_q_do_.jump)
-        RPUSH( RTOP)                 /* save rtop             */
-        MOVE(  REG1,   RTOP)         /* ( R: beg            ) */
-        RPUSH( REG2)                 /* ( R: end beg        ) */
+        RPUSH2(RTOP,   REG2)         /* save rtop             */
+        MOVE(  REG1,   RTOP)         /* ( R: end beg        ) */
 ASMFUNC_END(_asm_q_do_)
 
 
@@ -59,7 +58,7 @@ ASMFUNC_START(_asm_loop_)
         JNE(   RTOP,   REG0,     FUNC(_missing_))/* loop if i != i' */
 #endif
 LABEL(_asm_loop_.jump)
-        RPOP(  RTOP)                 /* drop i' from return stack   */
+        ADD2(IMM(SZ),  RSTK)         /* drop i' from return stack   */
         RPOP(  RTOP)                 /* reload RTOP                 */
 ASMFUNC_END(_asm_loop_)
 

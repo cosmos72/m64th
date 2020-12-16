@@ -27,8 +27,21 @@
 /* --- m64th-asm --------------------------------------------------------------------------------- */
 /* ---------------------------------------------------------------------------------------------- */
 
+/* ( C: -- do-sys ) */
+WORD_START(_asm_q_do_,     _asm_q_do_)
+    WORD_DSTACK(1,1)
+    WORD_RSTACK(0,0)
+    WORD_DSTACK(1,1)
+    WORD_RSTACK(0,0)
+    WORD_ASM_LEN(_asm_q_do_)
+    WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_IMMEDIATE | M6FLAG_INLINE_ALWAYS | M6FLAG_MAY_JUMP | M6FLAG_REEXEC_AFTER_OPTIMIZE)
+    WORD_CODE(
+        _asm_lit_comma_, CELL(ASMFUNC(_asm_q_do_)), T(ASMFUNC_SIZE(_asm_q_do_)),
+        asm_size, _lit_tok_, _asm_q_do_, exit
+    )
+WORD_END(_asm_q_do_)
 /* ( C: -- orig ) */
-WORD_START(_asm_q_if_,     _asm_q_if_)
+WORD_START(_asm_q_if_,     _asm_q_do_)
     WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)
     WORD_DSTACK(1,1)
@@ -53,8 +66,19 @@ WORD_START(_asm_q_if0_,    _asm_q_if_)
         asm_size, _lit_tok_, _asm_if_, exit
     )
 WORD_END(_asm_q_if0_)
+/* ( C: -- do-sys ) */
+WORD_START(_asm_do_,       _asm_q_if0_)
+    WORD_STACK_NONE()
+    WORD_STACK_NONE()
+    WORD_ASM_LEN(_asm_do_)
+    WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_IMMEDIATE | M6FLAG_INLINE_ALWAYS | M6FLAG_MAY_JUMP | M6FLAG_REEXEC_AFTER_OPTIMIZE)
+    WORD_CODE(
+        _asm_lit_comma_, CELL(FUNC(do)), T(FUNC_SIZE(do)),
+        asm_size, _lit_tok_, _asm_do_, exit
+    )
+WORD_END(_asm_do_)
 /* ( C: orig1 -- orig2 ) */
-WORD_START(_asm_else_,     _asm_q_if0_)
+WORD_START(_asm_else_,     _asm_do_)
     WORD_STACK_NONE()
     WORD_STACK_NONE()
     WORD_ASM_LEN(_asm_else_)
@@ -89,6 +113,20 @@ WORD_START(_asm_if0_,       _asm_if_)
     WORD_CODE(
         _asm_lit_comma_, CELL(ASMFUNC(_asm_if0_)), T(ASMFUNC_SIZE(_asm_if0_)),
         asm_size, _lit_tok_, _asm_if_, exit
+    )
+WORD_END(_asm_if0_)
+/* ( C: -- orig ) */
+WORD_START(_asm_loop_,       _asm_if0_)
+    WORD_DSTACK(1,0)
+    WORD_RSTACK(0,0)
+    WORD_DSTACK(1,0)
+    WORD_RSTACK(0,0)
+    WORD_ASM_LEN(_asm_if0_)
+    WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_IMMEDIATE | M6FLAG_INLINE_ALWAYS | M6FLAG_MAY_JUMP | M6FLAG_REEXEC_AFTER_OPTIMIZE)
+    WORD_CODE(
+        _asm_lit_comma_, CELL(ASMFUNC(_asm_loop_)), T(ASMFUNC_SIZE(_asm_loop_)),
+        asm_size, _lit_tok_, _asm_loop_,
+        CALL(_asm_resolve_loop_), exit
     )
 WORD_END(_asm_if0_)
 /* ( -- ) return from ASM to ASM */
@@ -202,8 +240,23 @@ WORD_START(_xt_to_asm_finish_, _xt_to_asm_body_)
 WORD_END(_xt_to_asm_finish_)
 /* followed by CELL(asm-addr) T(len) just calls asm_comma with specified args */
 WORD_NOASM(_asm_lit_comma_,    _xt_to_asm_finish_, DSTACK(0,0), RSTACK(0,0), M6FLAG_COMPILE_ONLY | M6FLAG_INLINE_ALWAYS | M6FLAG_CONSUMES_IP_SZ_SZt)
+/**
+ * called by '(asm/loop)': resolve the jump offsets of a single 'do' or '(asm/?do)',
+ * zero or more '(asm/leave)' and one '(asm/loop)' or '(asm/+loop)'
+ * ( do-sys leave-sys* loop-sys -- )
+ */
+WORD_START(_asm_resolve_loop_, _asm_lit_comma_)
+    WORD_DSTACK(-1,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_ASM_NONE()
+    WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_INLINE)
+    WORD_CODE(
+        _lit_, T(M6ERR_UNSUPPORTED_OPERATION), throw, exit
+    )
+WORD_END(_asm_resolve_loop_)
 /* ( addr u -- ) store assembly code at ASM_HERE and update ASM_HERE */
-WORD_NOASM(asm_comma, _asm_lit_comma_, DSTACK(2,0), RSTACK(0,0), WORD_IMPURE)
+WORD_NOASM(asm_comma, _asm_resolve_loop_,  DSTACK(2,0), RSTACK(0,0), WORD_IMPURE)
 /* ( -- ) forget current code in ASM buffer i.e. set ASM_HERE = ASM_FUNC */
 WORD(asm_clear,            asm_comma,  DSTACK(0,0), RSTACK(0,0), WORD_IMPURE)
 /* ( -- addr ) get ASM_HERE = current ASM address */
@@ -370,6 +423,7 @@ WORD_START(token_to_asm_replace, token_to_asm_n)
         _lit4s_,_asm_lit8s_,   /* '(lit4s)' becomes '(asm/lit8s)' in native ASM - refined later */
         _lit8s_,_asm_lit8s_,   /* '(lit8s)' becomes '(asm/lit8s)' in native ASM */
         _lit_nt_to_body_, _asm_lit_nt_to_body_, /* '(lit-nt>body)' becomes '(asm/lit-nt>body)'  */
+        _loop_, _asm_loop_,    /* '(loop)'  becomes '(asm/loop)   in native ASM */
         then, _asm_then_,      /* 'then'    becomes '(asm/then)   in native ASM */
         exit, _asm_ret_        /* 'exit'    becomes '(asm/ret)    in native ASM */
       )
