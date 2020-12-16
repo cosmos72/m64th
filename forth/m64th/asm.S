@@ -254,6 +254,8 @@ WORD_START(_asm_resolve_loop_, _asm_lit_comma_)
     WORD_ASM_NONE()
     WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_INLINE)
     WORD_CODE(
+        _lit_, T(M6ERR_UNSUPPORTED_OPERATION), throw, /** TODO: test */
+
         _check_lit_tok_, _asm_loop_, /* TODO: also support _asm_plus_loop_ */
         cs_to_r,                                    /* ( do-sys leave-sys*     ) ( R: loop-sys ) */
         begin,                                      /* ( do-sys leave-sys*     ) ( R: loop-sys ) */
