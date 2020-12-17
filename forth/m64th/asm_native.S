@@ -27,9 +27,51 @@
 /* --- m64th-asm   arch-specific words ---------------------------------------------------------- */
 /* ---------------------------------------------------------------------------------------------- */
 
+
+WORD_START(asm_align_comma,         LASTWORD)
+    WORD_STACK_NONE()
+    WORD_STACK_NONE()
+    WORD_ASM_NONE()
+    WORD_FLAGS(M6FLAG_INLINE)
+#if defined(__x86_64__)
+    WORD_CODE_AND_DATA(asm_align_comma,
+      WORD_CODE_TOKENS(
+        _ip_to_data_addr_,                             /* ( &data                 ) */
+        asm_size, aligned, asm_size, minus,            /* ( &data #padding_bytes  ) */
+        tuck, cells, plus,                             /* ( #padding_bytes data+i ) */
+        fetch, swap,                                   /* ( asmfunc asmlen        ) */
+        asm_comma, exit
+      ),
+      WORD_DATA_TOKENS(
+          CELL(FUNC(noop)),
+          CELL(ASMFUNC(_noop1_)),
+          CELL(ASMFUNC(_noop2_)),
+          CELL(ASMFUNC(_noop3_)),
+          CELL(ASMFUNC(_noop4_)),
+          CELL(ASMFUNC(_noop5_)),
+          CELL(ASMFUNC(_noop6_)),
+          CELL(ASMFUNC(_noop7_))
+      )
+    )
+#elif defined(__aarch64__)
+    WORD_CODE(
+        asm_here, four, and,                           /* ( 4|0                   ) */
+        _if_, T(3+nCALLt),                             /* (                       ) */
+            _asm_lit_comma_, CELL(ASMFUNC(_noop4_)), T(4), /* (                   ) */
+        then, exit                                     /* (                       ) */
+    )
+#else
+    WORD_CODE(
+        exit
+    )
+#endif
+WORD_END(asm_align_comma)
+
+#undef LASTWORD
+
 #ifdef __aarch64__
 /* ( x y u -- x>>16 y>>16 x>>16==y>>16 ) inject 16-bit immediate 'u' into arm64 ASM instruction at asm_here[-4] */
-WORD_START(_asm_arm64_inject_imm16_,  LASTWORD)
+WORD_START(_asm_arm64_inject_imm16_,  asm_align_comma)
     WORD_DSTACK(3,3)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -47,8 +89,9 @@ WORD_START(_asm_arm64_inject_imm16_,  LASTWORD)
         two_dup, ne, exit                              /* ( x>>16 y>>16 x>>16==y>>16 ) */
     )
 WORD_END(_asm_arm64_inject_imm16_)
-#undef LASTWORD
 #define LASTWORD _asm_arm64_inject_imm16_
+#else /* !__aarch64__ */
+#define LASTWORD asm_align_comma
 #endif /* __aarch64__ */
 
 /* ( C: tok-addr -- ) compile ASM code for calling an ASM function */
@@ -214,29 +257,48 @@ WORD_START(_asm_resolve_jump_there_,   _asm_resolve_jump_here_)
     WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_INLINE)
     WORD_CODE(
 #if defined(__x86_64__)
-        /* see comment above about amd64 relative ASM jumps */
-        drop, nip,                             /* ( dest_location orig_location    ) */
-        tuck, minus, swap,                     /* ( distance orig_location         ) */
-        asm_func, plus, four_minus,            /* ( distance addr                  ) */
-        int_store, exit                        /* (                                ) */
+        /**
+         * see comment above about amd64 relative ASM jumps
+         *
+         * also: all backward jumps, except function calls, belong to loops.
+         * since we align loop starts at 8 bytes, also align jumps to them.
+         */
+        _lit_tok_, _asm_call_, ne, to_r, nip,  /* ( dest_location orig_location     ) (R: t|f ) */
+        two_dup, less, r_from, and,            /* ( dest_location orig_location t|f ) */
+        /* if true, we shoud align dest_location */
+        _if_, T(4),                            /* ( dest_location orig_location     ) */
+            swap, aligned, swap,               /* ( dest_location' orig_location    ) */
+        then,
+        tuck, minus, swap,                     /* ( distance orig_location          ) */
+        asm_func, plus, four_minus,            /* ( distance addr                   ) */
+        int_store, exit                        /* (                                 ) */
 #elif defined(__aarch64__)
         /**
          * ASM relative jumps on arm64 have several possible encodings:
          * 1. unconditional jump 'b' or call 'bl': bits 0..25 contain distance/4
          * 2. conditional jumps 'b.cond':          bits 5..23 contain distance/4
-         *
          * in all cases, distance is computed from the *start* of jump instruction.
+         *
+         * also: all backward jumps, except function calls, belong to loops.
+         * since we align loop starts at 8 bytes, also align jumps to them.
          */
-        cs_swap, drop, asm_func, plus,         /* ( orig dest_addr                      ) */
-        flip,                                  /* ( dest_addr orig_categ orig_location  ) */
+        dup, _lit_tok_, _asm_call_, ne, to_r,  /* ( orig dest                           ) (R: t|f ) */
+        cs_swap, drop,                         /* ( orig dest_location                  ) (R: t|f ) */
+        hop, over, more, r_from, and,          /* ( orig dest_location t|f              ) */
+        /* if true, we shoud align dest_location */
+        _if_, T(2),                            /* ( orig dest_location                  ) */
+            aligned,                           /* ( orig dest_location'                 ) */
+        then,                                  /* ( orig dest_location                  ) */
+        asm_func, plus,                        /* ( orig dest_addr                      ) */
+        flip,                                  /* ( daddr orig_categ orig_location      ) */
         asm_func, plus, four_minus, swap,      /* ( daddr &orig_jump orig_categ         ) */
-        token_to_asm_addr, dup,                /* ( daddr addr m6func m6func            ) */
-        _lit_cell_, CELL(ASMFUNC(_asm_call_)), /* ( daddr addr m6func m6func m6func2    ) */
-        equal,                                 /* ( daddr addr m6func t|f               ) */
-        _if_, T(5),                            /* ( daddr addr m6func                   ) */
+
+        dup, _lit_tok_, _asm_call_, equal,     /* ( daddr addr orig_categ t|f           ) */
+        _if_, T(5),                            /* ( daddr addr orig_categ               ) */
             /* on arm64, we must skip the 'RPUSH(lr)' after each 'ASM_CALL_BODY()'        */
             drop, four_minus, true,            /* ( daddr addr' true                    ) */
-        _else_, T(3+nCALLt),                   /* ( daddr addr m6func                   ) */
+        _else_, T(3+nCALLt),                   /* ( daddr addr orig_categ               ) */
+            token_to_asm_addr,                 /* ( daddr addr m6func                   ) */
             _lit_cell_, CELL(ASMFUNC(_asm_else_)), /* ( daddr addr m6func m6func2       ) */
             equal,                             /* ( daddr addr t|f                      ) */
         then,

@@ -385,6 +385,7 @@
     X(24, "[asm-resolve-jump-there]", _asm_resolve_jump_there_)                                    \
     /* common back-end of '(asm/loop)' and '(asm/+loop)' */                                        \
     X(18, "[asm-resolve-loop]", _asm_resolve_loop_)                                                \
+    X(10, "asm-align,", asm_align_comma)  /* compile ASM noops to align ASM_SIZE */                \
     X(13, "asm-make-func", asm_make_func) /* ( -- addr ) make ASM code executable and return it */ \
     X(11, "asm-reserve", asm_reserve) /* ( len -- ) reserve at least len bytes in ASM buffer    */ \
     X(5, "lit>n", lit_to_n) /* ( tok-addr -- n ) get literal value following a token (lit[248]s)*/ \

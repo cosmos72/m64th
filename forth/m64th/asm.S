@@ -37,7 +37,8 @@ WORD_START(_asm_q_do_,     _asm_q_do_)
     WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_IMMEDIATE | M6FLAG_INLINE_ALWAYS | M6FLAG_MAY_JUMP | M6FLAG_REEXEC_AFTER_OPTIMIZE)
     WORD_CODE(
         _asm_lit_comma_, CELL(ASMFUNC(_asm_q_do_)), T(ASMFUNC_SIZE(_asm_q_do_)),
-        asm_size, _lit_tok_, _asm_q_do_, exit
+        asm_size, _lit_tok_, _asm_q_do_,
+        CALL(asm_align_comma), exit
     )
 WORD_END(_asm_q_do_)
 /* ( C: -- orig ) */
@@ -74,7 +75,8 @@ WORD_START(_asm_do_,       _asm_q_if0_)
     WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_IMMEDIATE | M6FLAG_INLINE_ALWAYS | M6FLAG_MAY_JUMP | M6FLAG_REEXEC_AFTER_OPTIMIZE)
     WORD_CODE(
         _asm_lit_comma_, CELL(FUNC(do)), T(FUNC_SIZE(do)),
-        asm_size, _lit_tok_, _asm_do_, exit
+        asm_size, _lit_tok_, _asm_do_,
+        CALL(asm_align_comma), exit
     )
 WORD_END(_asm_do_)
 /* ( C: orig1 -- orig2 ) */
