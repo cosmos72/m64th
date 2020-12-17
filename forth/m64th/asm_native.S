@@ -225,27 +225,7 @@ WORD_START(_asm_resolve_jump_here_,    _asm_lit_nt_to_body_)
     WORD_ASM_NONE()
     WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_INLINE)
     WORD_CODE(
-#if defined(__x86_64__)
-        /**
-         * ASM relative jumps are quite simple on amd64:
-         * their jump offset occupies either 1 byte (not used by m64th) or 4 bytes,
-         * and it's exactly the distance in bytes from the end of the jump instruction.
-         */
-        drop,                                  /* ( jump_location                  ) */
-        asm_func, plus,                        /* ( addr_of_jump_offset+4          ) */
-        dup, four_minus, swap,                 /* ( addr addr+4                    ) */
-        asm_here, sub,                         /* ( addr distance                  ) */
-        swap, int_store, exit                  /* (                                ) */
-#elif defined(__aarch64__)
-        /**
-         * ASM relative jumps are more complicated on arm64:
-         * implement them only once in the most general case
-         * in '[asm-resolve-jump-there]'
-         */
         asm_size, zero, cs_swap, CALL(_asm_resolve_jump_there_), exit
-#else
-        _lit_, T(M6ERR_UNSUPPORTED_OPERATION), throw, exit
-#endif
     )
 WORD_END(_asm_resolve_jump_here_)
 /* ( C: dest orig -- ) resolve an ASM jump from orig to dest */
@@ -258,14 +238,16 @@ WORD_START(_asm_resolve_jump_there_,   _asm_resolve_jump_here_)
     WORD_CODE(
 #if defined(__x86_64__)
         /**
-         * see comment above about amd64 relative ASM jumps
+         * ASM relative jumps are quite simple on amd64:
+         * their jump offset occupies either 1 byte (not used by m64th) or 4 bytes,
+         * and it's exactly the distance in bytes from the end of the jump instruction.
          *
-         * also: all backward jumps, except function calls, belong to loops.
-         * since we align loop starts at 8 bytes, also align jumps to them.
+         * also: the destinations of all backward jumps is either a function or a loop start,
+         * and we align both at 8 bytes, so also align jumps to them
          */
-        _lit_tok_, _asm_call_, ne, to_r, nip,  /* ( dest_location orig_location     ) (R: t|f ) */
-        two_dup, less, r_from, and,            /* ( dest_location orig_location t|f ) */
-        /* if true, we shoud align dest_location */
+        drop, nip,                             /* ( dest_location orig_location     ) (R: t|f ) */
+        two_dup, less,                         /* ( dest_location orig_location t|f ) */
+        /* if true, align dest_location */
         _if_, T(4),                            /* ( dest_location orig_location     ) */
             swap, aligned, swap,               /* ( dest_location' orig_location    ) */
         then,
@@ -279,13 +261,12 @@ WORD_START(_asm_resolve_jump_there_,   _asm_resolve_jump_here_)
          * 2. conditional jumps 'b.cond':          bits 5..23 contain distance/4
          * in all cases, distance is computed from the *start* of jump instruction.
          *
-         * also: all backward jumps, except function calls, belong to loops.
-         * since we align loop starts at 8 bytes, also align jumps to them.
+         * also: the destinations of all backward jumps is either a function or a loop start,
+         * and we align both at 8 bytes, so also align jumps to them
          */
-        dup, _lit_tok_, _asm_call_, ne, to_r,  /* ( orig dest                           ) (R: t|f ) */
-        cs_swap, drop,                         /* ( orig dest_location                  ) (R: t|f ) */
-        hop, over, more, r_from, and,          /* ( orig dest_location t|f              ) */
-        /* if true, we shoud align dest_location */
+        cs_swap, drop,                         /* ( orig dest_location                  ) */
+        hop, over, more,                       /* ( orig dest_location t|f              ) */
+        /* if true, align dest_location */
         _if_, T(2),                            /* ( orig dest_location                  ) */
             aligned,                           /* ( orig dest_location'                 ) */
         then,                                  /* ( orig dest_location                  ) */
