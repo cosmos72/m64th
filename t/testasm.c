@@ -34,7 +34,7 @@ static m6token test_tokens_call_asm[] = {m6_call_asm_, CELL(0)};
 static m6testasm testasm_a[] = {
 #if defined(__aarch64__)
     {"[asm-lit-n,]",
-     {CALL(_asm_lit_n_comma_), m6bye},
+     {CALL(asm_literal), m6bye},
      {1, {0x12345}},
      {},
      /* ASM bytes */

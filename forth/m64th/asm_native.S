@@ -40,7 +40,7 @@ WORD_START(asm_align_comma,         LASTWORD)
         asm_size, aligned, asm_size, minus,            /* ( &data #padding_bytes  ) */
         tuck, cells, plus,                             /* ( #padding_bytes data+i ) */
         fetch, swap,                                   /* ( asmfunc asmlen        ) */
-        asm_comma, exit
+        asm_bytes_comma, exit
       ),
       WORD_DATA_TOKENS(
           CELL(FUNC(noop)),
@@ -119,11 +119,11 @@ WORD_START(_asm_lit8s_,                _asm_call_)
     WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_REEXEC_AFTER_OPTIMIZE)
     WORD_CODE(
         CALL(lit_to_n),                                /* ( n                    ) */
-        CALL(_asm_lit_n_comma_), exit                  /* (                      ) */
+        CALL(asm_literal), exit                  /* (                      ) */
     )
 WORD_END(_asm_lit8s_)
 /* ( n -- ) compile ASM code for pushing literal 'n' to DSTACK */
-WORD_START(_asm_lit_n_comma_,          _asm_lit8s_)
+WORD_START(asm_literal,          _asm_lit8s_)
     WORD_DSTACK(1,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -203,9 +203,9 @@ WORD_START(_asm_lit_n_comma_,          _asm_lit8s_)
         _lit_, T(M6ERR_UNSUPPORTED_OPERATION), throw, exit
 #endif
     )
-WORD_END(_asm_lit_n_comma_)
+WORD_END(asm_literal)
 /* ( tok-addr -- ) compile ASM code for pushing name>data>addr to DSTACK */
-WORD_START(_asm_lit_nt_to_body_,       _asm_lit_n_comma_)
+WORD_START(_asm_lit_nt_to_body_,       asm_literal)
     WORD_DSTACK(1,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -214,7 +214,7 @@ WORD_START(_asm_lit_nt_to_body_,       _asm_lit_n_comma_)
     WORD_CODE(
         token_plus, fetch,                             /* ( nt                   ) */
         name_to_data_addr,                             /* ( addr                 ) */
-        CALL(_asm_lit_n_comma_), exit                  /* (                      ) */
+        CALL(asm_literal), exit                  /* (                      ) */
     )
 WORD_END(_asm_lit_nt_to_body_)
 /* ( C: orig -- ) resolve an ASM jump to here */

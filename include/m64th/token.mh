@@ -286,7 +286,7 @@
 #define M6_asm_vm_execute_ M6_a(16)     /* native ASM only: pop XT and execute it using VM    */
 #define M6_vm_return_to_asm_ M6_a(17)   /* return from VM to native ASM code                  */
 #undef M6____gap                        /*                                                    */
-#define M6asm_comma M6_a(19)            /* ( addr u --       ) append ASM code to ASM-HERE    */
+#define M6asm_bytes_comma M6_a(19)      /* ( addr u --       ) append ASM code to ASM-HERE    */
 #define M6asm_clear M6_a(20)            /* ( addr u --       ) append ASM code to ASM-HERE    */
 #define M6asm_func M6_a(21)             /* (     -- addr ) get ASM_FUNC = start of ASM code   */
 #define M6asm_here M6_a(22)             /* (     -- addr ) get ASM_HERE = current ASM address */

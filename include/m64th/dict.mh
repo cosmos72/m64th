@@ -356,7 +356,7 @@
     X(16, "(asm/vm-execute)", _asm_vm_execute_)     /* ( ... xt -- ... ) */                        \
     X(18, "(vm-return-to/asm)", _vm_return_to_asm_) /* return from VM to ASM                    */ \
     X(10, "[asm-lit,]", _asm_lit_comma_)      /* followed by CELL(addr) T(u) just calls asm,    */ \
-    X(4, "asm,", asm_comma)                   /* ( addr u  -- ) append ASM code to ASM-HERE     */ \
+    X(9, "asm-bytes,", asm_bytes_comma)       /* ( addr u  -- ) append ASM code to ASM-HERE     */ \
     X(9, "asm-clear", asm_clear)              /* ( -- ) forget current ASM code                 */ \
     X(8, "asm-func", asm_func)                /* ( -- addr ) get ASM_FUNC = start of ASM code   */ \
     X(8, "asm-here", asm_here)                /* ( -- addr ) get ASM_HERE = current ASM address */ \
@@ -378,14 +378,14 @@
     /* inject 16-bit immediate 'u' into arm64 ASM instruction at asm_here[-4] */                   \
     X(24, "[asm-arm64-inject-imm16]", _asm_arm64_inject_imm16_) /* ( x y u -- x>>16 y>>16 t|f ) */ \
     /* common part of '(asm-lit8s)' and '(asm-lit-nt>body)' */                                     \
-    X(12, "[asm-lit-n,]", _asm_lit_n_comma_) /* ( n -- ) compile ASM to push 'n' on stack */       \
+    X(11, "asm-literal", asm_literal) /* ( n -- ) compile ASM to push 'n' on stack */              \
     /* ( orig -- ) resolve an ASM jump to here */                                                  \
     X(23, "[asm-resolve-jump-here]", _asm_resolve_jump_here_)                                      \
     /* ( dest -- ) resolve an ASM jump from here */                                                \
     X(24, "[asm-resolve-jump-there]", _asm_resolve_jump_there_)                                    \
     /* common back-end of '(asm/loop)' and '(asm/+loop)' */                                        \
     X(18, "[asm-resolve-loop]", _asm_resolve_loop_)                                                \
-    X(10, "asm-align,", asm_align_comma)  /* compile ASM noops to align ASM_SIZE */                \
+    X(10, "asm-align,", asm_align_comma)  /* compile noops to align ASM_SIZE */                    \
     X(13, "asm-make-func", asm_make_func) /* ( -- addr ) make ASM code executable and return it */ \
     X(11, "asm-reserve", asm_reserve) /* ( len -- ) reserve at least len bytes in ASM buffer    */ \
     X(5, "lit>n", lit_to_n) /* ( tok-addr -- n ) get literal value following a token (lit[248]s)*/ \

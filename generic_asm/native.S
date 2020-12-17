@@ -69,7 +69,7 @@ LABEL(_asm_loop_.jump)
 ASMFUNC_END(_asm_loop_)
 
 
-/* [asm-lit,] followed by CELL(addr) T(u) just calls asm_comma */
+/* [asm-lit,] followed by CELL(addr) T(u) just calls asm_bytes_comma */
 FUNC_START(_asm_lit_comma_)
         DPUSH__DTOP()
         LOAD(  REG1,   AT(IP))
@@ -77,8 +77,8 @@ FUNC_START(_asm_lit_comma_)
         ADD2(IMM(SZ+SZt),  IP)
         DPUSH( REG1)
         /* fallthrough */
-/* asm, ( addr u -- ) m64th-asm */
-FUNC_START_NESTED(asm_comma)
+/* asm-bytes, ( addr u -- ) m64th-asm compile specified ASM bytes */
+FUNC_START_NESTED(asm_bytes_comma)
         LOAD(  REG1,   AT(M64TH, M64TH_OFF_ASM_HERE))  /* a = asm-here         */
         LOAD(  REG2,   AT(M64TH, M64TH_OFF_ASM_END))   /* b = asm-end          */
         SUB2(  REG1,   REG2)                           /* b = free_bytes       */
@@ -89,7 +89,7 @@ FUNC_START_NESTED(asm_comma)
         ADD2(  DTOP,   REG1)
         STOR(  REG1,   AT(M64TH, M64TH_OFF_ASM_HERE))  /* asm-here += u        */
         JUMP(  FUNC(cmove))
-FUNC_END_NESTED(asm_comma)
+FUNC_END_NESTED(asm_bytes_comma)
 FUNC_RAWEND(_asm_lit_comma_)
 
 

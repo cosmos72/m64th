@@ -240,7 +240,7 @@ WORD_START(_xt_to_asm_finish_, _xt_to_asm_body_)
         latest, name_to_flags_store, exit           /* (                 )                 */
     )
 WORD_END(_xt_to_asm_finish_)
-/* followed by CELL(asm-addr) T(len) just calls asm_comma with specified args */
+/* followed by CELL(asm-addr) T(len) just calls asm_bytes_comma with specified args */
 WORD_NOASM(_asm_lit_comma_,    _xt_to_asm_finish_, DSTACK(0,0), RSTACK(0,0), M6FLAG_COMPILE_ONLY | M6FLAG_INLINE_ALWAYS | M6FLAG_CONSUMES_IP_SZ_SZt)
 /**
  * called by '(asm/loop)' and '(asm/+loop)': resolve the jump offsets of
@@ -283,9 +283,9 @@ WORD_START(_asm_resolve_loop_, _asm_lit_comma_)
     )
 WORD_END(_asm_resolve_loop_)
 /* ( addr u -- ) store assembly code at ASM_HERE and update ASM_HERE */
-WORD_NOASM(asm_comma, _asm_resolve_loop_,  DSTACK(2,0), RSTACK(0,0), WORD_IMPURE)
+WORD_NOASM(asm_bytes_comma, _asm_resolve_loop_,  DSTACK(2,0), RSTACK(0,0), WORD_IMPURE)
 /* ( -- ) forget current code in ASM buffer i.e. set ASM_HERE = ASM_FUNC */
-WORD(asm_clear,            asm_comma,  DSTACK(0,0), RSTACK(0,0), WORD_IMPURE)
+WORD(asm_clear,      asm_bytes_comma,  DSTACK(0,0), RSTACK(0,0), WORD_IMPURE)
 /* ( -- addr ) get ASM_HERE = current ASM address */
 WORD(asm_here,             asm_clear,  DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 /* ( -- addr u ) mark code in ASM buffer as READ+EXEC, and return its range.
@@ -383,7 +383,7 @@ WORD_START(token_to_asm_comma,   token_to_asm)
             /* simply append ASM code of token */
             drop, nip,                              /* ( sys* token'                      ) */
             CALL(token_to_asm),                     /* ( sys* addr|0 u|0                  ) */
-            asm_comma, exit,                        /* ( sys*                             ) */
+            asm_bytes_comma, exit,                        /* ( sys*                             ) */
         then,                                       /* ( sys* tok-addr token' nt'         ) */
         /* replacement token is marked 'reexec-after-optimize'                              */
         nip, over, token_fetch,                     /* ( sys* tok-addr nt' token          ) */
