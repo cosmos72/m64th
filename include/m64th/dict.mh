@@ -340,6 +340,7 @@
     X(9, "(asm/?do)", _asm_q_do_)                    /* native ASM only: implement '(?do)'      */ \
     X(9, "(asm/?if)", _asm_q_if_)                    /* native ASM only: implement '(?if)'      */ \
     X(10, "(asm/?if0)", _asm_q_if0_)                 /* native ASM only: implement '(?if0)'     */ \
+    X(10, "(asm/call)", _asm_call_)                  /* native ASM only: call ASM -> ASM        */ \
     X(8, "(asm/do)", _asm_do_)                       /* native ASM only: implement 'do'         */ \
     X(10, "(asm/else)", _asm_else_)                  /* native ASM only: implement '(else)'     */ \
     X(8, "(asm/if)", _asm_if_)                       /* native ASM only: implement '(if)'       */ \

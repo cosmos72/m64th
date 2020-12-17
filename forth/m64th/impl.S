@@ -182,7 +182,9 @@ WORD_START(_call_asm_, _break_)
     WORD_STACK_NONE()  /* stack effect when calling */
     WORD_ASM_NONE() /* (call-asm) uses tail-call optimization: cannot inline into native code */
     WORD_FLAGS(M6FLAG_CONSUMES_IP_SZ | M6FLAG_INLINE_ALWAYS)
-    WORD_CODE(_call_asm_, exit)
+    WORD_CODE(
+        _call_asm_, CELL(FUNC(noop)), exit
+    )
 WORD_END(_call_asm_)
 WORD_START(_call_,  _call_asm_)
     WORD_DSTACK(-1,-1) /* stack effect of called XT */
@@ -191,8 +193,9 @@ WORD_START(_call_,  _call_asm_)
     WORD_RSTACK(0,1)
     WORD_ASM_NONE()
     WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_CONSUMES_IP_SZ | M6FLAG_INLINE_ALWAYS | M6FLAG_MAY_JUMP)
-    /* make inliner happy: it skips the final 'exit' of a word's code when inlining */
-    WORD_CODE(_call_, exit)
+    WORD_CODE(
+        _call_, XT(noop), exit
+    )
 WORD_END(_call_)
 WORD_START(_catch_beg_,  _call_)
     WORD_DSTACK(-1,-1) /* stack effect of called word */

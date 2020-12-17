@@ -268,10 +268,10 @@
 /* 'm64th-asm' wordlist */
 #define M6_a(x) ((x) + 730)
 #define M6_asm_lit_comma_ M6_a(0)       /* followed by CELL(addr) T(u) just calls asm,        */
-#undef M6____gap                        /*                                                    */
-#define M6_asm_q_do_ M6_a(2)            /* native ASM only: implement '(?do)'                 */
-#define M6_asm_q_if_ M6_a(3)            /* native ASM only: implement '(?if)'                 */
-#define M6_asm_q_if0_ M6_a(4)           /* native ASM only: implement '(?if0)'                */
+#define M6_asm_q_do_ M6_a(1)            /* native ASM only: implement '(?do)'                 */
+#define M6_asm_q_if_ M6_a(2)            /* native ASM only: implement '(?if)'                 */
+#define M6_asm_q_if0_ M6_a(3)           /* native ASM only: implement '(?if0)'                */
+#define M6_asm_call_ M6_a(4)            /* native ASM only: call ASM -> ASM                   */
 #define M6_asm_do_ M6_a(5)              /* native ASM only: implement 'do'                    */
 #define M6_asm_else_ M6_a(6)            /* native ASM only: implement '(else)'                */
 #define M6_asm_if_ M6_a(7)              /* native ASM only: implement '(if)'                  */

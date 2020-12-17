@@ -2,7 +2,8 @@
 
 : crc/   ( n -- n )
    8 0 do dup 1 rshift swap 1 and
-   if $edb88320 xor then loop ;
+   if $edb88320 xor then loop
+;
 
 : crc-fill
    256 0 do i crc/ , loop

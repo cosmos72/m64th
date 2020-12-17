@@ -482,7 +482,7 @@ WORD_START(m64th_impl,  m64th_core)
         searchorder_store_0, exit                      /* (                    ) */
     )
 WORD_END(m64th_impl)
-WORD(noop,             m64th_impl,      DSTACK(0,0), RSTACK(0,0), WORD_PURE)
+WORD(noop,             m64th_impl,     DSTACK(0,0), RSTACK(0,0), WORD_PURE)
 WORD(n_to_drop,        noop,           DSTACK(-1,0),RSTACK(0,0), WORD_PURE)
 WORD(r_one_plus,       n_to_drop,      DSTACK(0,0), RSTACK(1,1), WORD_R_PURE)
 WORD(r_one_minus,      r_one_plus,     DSTACK(0,0), RSTACK(1,1), WORD_R_PURE)

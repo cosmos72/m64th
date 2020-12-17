@@ -32,6 +32,12 @@ ASMFUNC_START(_asm_q_if0_)
 ASMFUNC_END(_asm_q_if0_)
 
 
+/* ASM code to call another ASM function */
+ASMFUNC_START(_asm_call_)
+        ASM_CALL(      FUNC(_missing_))
+ASMFUNC_END(_asm_call_)
+
+
 /* ASM code for all unconditional jumps */
 ASMFUNC_START(_asm_else_)
         JUMP(  FUNC(_missing_))
@@ -113,7 +119,7 @@ FUNC_START(asm_size)
         DPUSH__DTOP()
         LOAD( DTOP,    AT(M64TH, M64TH_OFF_ASM_HERE))
 #ifdef ARITH_ARG1_AT
-        SUB2( AT(M64TH, M64TH_OFF_ASM_BEG),  DTOP)
+        SUB2( AT(M64TH, M64TH_OFF_ASM_FUNC),   DTOP)
 #else
         LOAD( REG1,    AT(M64TH, M64TH_OFF_ASM_FUNC))
         SUB2( REG1,    DTOP)

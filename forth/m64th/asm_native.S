@@ -39,7 +39,7 @@ WORD_START(_asm_arm64_inject_imm16_,  LASTWORD)
         /* inject ushort(u) at here[-4]                   ( x y u                ) */
         to_ushort, five, lshift,                       /* ( x y ushort(u)<<5     ) */
         asm_here, four_minus, uint_fetch,              /* ( x y u asm_instr      ) */
-//        _lit4s_, INT(0xffe0001f), and,                 /* ( x y u asm_instr'     ) */
+        _lit4s_, INT(0xffe0001f), and,                 /* ( x y u asm_instr'     ) */
         or,                                            /* ( x y asm_instr''      ) */
         asm_here, four_minus, int_store,               /* ( x y                  ) */
         sixteen, rshift, swap,                         /* ( y>>16 x              ) */
@@ -51,8 +51,24 @@ WORD_END(_asm_arm64_inject_imm16_)
 #define LASTWORD _asm_arm64_inject_imm16_
 #endif /* __aarch64__ */
 
+/* ( C: tok-addr -- ) compile ASM code for calling an ASM function */
+WORD_START(_asm_call_,                 LASTWORD)
+    WORD_DSTACK(1,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_ASM_LEN(_asm_call_)
+    WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_REEXEC_AFTER_OPTIMIZE)
+    WORD_CODE(
+        _asm_lit_comma_, CELL(ASMFUNC(_asm_call_)), T(ASMFUNC_SIZE(_asm_call_)),/* ( tok-addr        ) */
+        token_plus, fetch,                                                      /* ( asm_func_addr   ) */
+        asm_func, minus,                                                        /* ( jump_location   ) */
+        zero,                                                                   /* ( orig            ) */
+        asm_size, _lit_tok_, _asm_call_,                                        /* ( orig dest       ) */
+        CALL(_asm_resolve_jump_there_), exit                                    /* (                 ) */
+    )
+WORD_END(_asm_call_)
 /* ( tok-addr -- ) compile ASM code for pushing literal to DSTACK */
-WORD_START(_asm_lit8s_,                LASTWORD)
+WORD_START(_asm_lit8s_,                _asm_call_)
     WORD_DSTACK(1,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -63,7 +79,6 @@ WORD_START(_asm_lit8s_,                LASTWORD)
         CALL(_asm_lit_n_comma_), exit                  /* (                      ) */
     )
 WORD_END(_asm_lit8s_)
-
 /* ( n -- ) compile ASM code for pushing literal 'n' to DSTACK */
 WORD_START(_asm_lit_n_comma_,          _asm_lit8s_)
     WORD_DSTACK(1,0)
@@ -159,7 +174,7 @@ WORD_START(_asm_lit_nt_to_body_,       _asm_lit_n_comma_)
         CALL(_asm_lit_n_comma_), exit                  /* (                      ) */
     )
 WORD_END(_asm_lit_nt_to_body_)
-/* ( jump_location jump_category -- ) resolve an ASM jump to here */
+/* ( C: orig -- ) resolve an ASM jump to here */
 WORD_START(_asm_resolve_jump_here_,    _asm_lit_nt_to_body_)
     WORD_DSTACK(2,0)
     WORD_RSTACK(0,0)
@@ -180,47 +195,19 @@ WORD_START(_asm_resolve_jump_here_,    _asm_lit_nt_to_body_)
         swap, int_store, exit                  /* (                                ) */
 #elif defined(__aarch64__)
         /**
-         * ASM relative jumps on arm64 have several possible encodings:
-         * 1. unconditional jump 'b' or call 'bl': bits 0..25 contain distance/4
-         * 2. conditional jumps 'b.cond':          bits 5..23 contain distance/4
-         *
-         * in all cases, distance is computed from the *start* of jump instruction.
+         * ASM relative jumps are more complicated on arm64:
+         * implement them only once in the most general case
+         * in '[asm-resolve-jump-there]'
          */
-        swap, asm_func, plus, four_minus, swap,/* ( addr_of_jump_instr jump_categ  ) */
-        token_to_asm_addr,                     /* ( addr m6func                    ) */
-        _lit_cell_, CELL(FUNC(_asm_else_)),    /* ( addr m6func1 m6func2           ) */
-        /** TODO: compare with _asm_call_ */
-        equal,                                 /* ( addr t|f                       ) */
-
-        _if_, T(12+8/SZt),  /* unconditional jump ( addr_of_jump_instr             ) */
-            dup, uint_fetch,                   /* ( addr jump_instr                ) */
-                        /* clear any pre-set distance bits                           */
-            _lit4s_, INT(0xfc000000), and,     /* ( addr jump_instr'               ) */
-                        /* compute distance bits                                     */
-            over, asm_here, sub, four_div,     /* ( addr jump_instr distance/4     ) */
-            _lit4s_, INT(0x03ffffff), and,     /* ( addr jump_instr distance_bits  ) */
-
-        _else_, T(13+8/SZt),/* conditional jump   ( addr_of_jump_instr             ) */
-            dup, uint_fetch,                   /* ( addr jump_instr                ) */
-                        /* clear any pre-set distance bits                           */
-            _lit4s_, INT(0xff00001f), and,     /* ( addr jump_instr'               ) */
-                        /* compute distance bits                                     */
-            over, asm_here, sub, four_div,     /* ( addr jump_instr distance/4     ) */
-            _lit4s_, INT(0x0007ffff), and,     /* ( addr jump_instr distance/4'    ) */
-            five, lshift,                      /* ( addr jump_instr distance_bits  ) */
-
-        then,                                  /* ( addr jump_instr distance_bits  ) */
-                        /* set distance bits                                         */
-        or, swap,                              /* ( jump_instr' addr               ) */
-        int_store, exit                        /* (                                ) */
+        asm_size, zero, cs_swap, CALL(_asm_resolve_jump_there_), exit
 #else
         _lit_, T(M6ERR_UNSUPPORTED_OPERATION), throw, exit
 #endif
     )
 WORD_END(_asm_resolve_jump_here_)
-/* ( dest orig -- ) resolve an ASM jump from orig to dest */
+/* ( C: dest orig -- ) resolve an ASM jump from orig to dest */
 WORD_START(_asm_resolve_jump_there_,   _asm_resolve_jump_here_)
-    WORD_DSTACK(2,0)
+    WORD_DSTACK(4,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_ASM_NONE()
@@ -233,7 +220,46 @@ WORD_START(_asm_resolve_jump_there_,   _asm_resolve_jump_here_)
         asm_func, plus, four_minus,            /* ( distance addr                  ) */
         int_store, exit                        /* (                                ) */
 #elif defined(__aarch64__)
-        _lit_, T(M6ERR_UNSUPPORTED_OPERATION), throw, exit
+        /**
+         * ASM relative jumps on arm64 have several possible encodings:
+         * 1. unconditional jump 'b' or call 'bl': bits 0..25 contain distance/4
+         * 2. conditional jumps 'b.cond':          bits 5..23 contain distance/4
+         *
+         * in all cases, distance is computed from the *start* of jump instruction.
+         */
+        cs_swap, drop, asm_func, plus,         /* ( orig dest_addr                      ) */
+        flip,                                  /* ( dest_addr orig_categ orig_location  ) */
+        asm_func, plus, four_minus, swap,      /* ( daddr &orig_jump orig_categ         ) */
+        token_to_asm_addr, dup,                /* ( daddr addr m6func m6func            ) */
+        _lit_cell_, CELL(ASMFUNC(_asm_call_)), /* ( daddr addr m6func m6func m6func2    ) */
+        equal,                                 /* ( daddr addr m6func t|f               ) */
+        _if_, T(5),                            /* ( daddr addr m6func                   ) */
+            /* on arm64, we must skip the 'RPUSH(lr)' after each 'ASM_CALL_BODY()'        */
+            drop, four_minus, true,            /* ( daddr addr' true                    ) */
+        _else_, T(3+nCALLt),                   /* ( daddr addr m6func                   ) */
+            _lit_cell_, CELL(ASMFUNC(_asm_else_)), /* ( daddr addr m6func m6func2       ) */
+            equal,                             /* ( daddr addr t|f                      ) */
+        then,
+
+        _if_, T(12+8/SZt),  /* unconditional jump ( daddr addr                          ) */
+            dup, uint_fetch,                   /* ( daddr addr jump_instr               ) */
+                        /* clear any pre-set distance bits                                */
+            _lit4s_, INT(0xfc000000), and,     /* ( daddr addr jump_instr'              ) */
+                        /* compute distance bits                                          */
+            flip, over, minus, four_div,       /* ( jump_instr addr distance/4          ) */
+            _lit4s_, INT(0x03ffffff), and,     /* ( jump_instr addr distance_bits       ) */
+
+        _else_, T(13+8/SZt),/* conditional jump   ( daddr addr                          ) */
+            dup, uint_fetch,                   /* ( daddr addr jump_instr               ) */
+                        /* clear any pre-set distance bits                                */
+            _lit4s_, INT(0xff00001f), and,     /* ( daddr addr jump_instr'              ) */
+                        /* compute distance bits                                          */
+            flip, over, minus, four_div,       /* ( jump_instr addr distance/4          ) */
+            _lit4s_, INT(0x0007ffff), and,     /* ( jump_instr addr distance/4'         ) */
+            five, lshift,                      /* ( jump_instr addr distance_bits       ) */
+        then,                                  /* ( jump_instr addr distance_bits       ) */
+        rot, or,                               /* ( addr jump_instr'                    ) */
+        swap, int_store, exit                  /* (                                     ) */
 #else
         _lit_, T(M6ERR_UNSUPPORTED_OPERATION), throw, exit
 #endif

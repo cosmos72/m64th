@@ -85,8 +85,8 @@ WORD_START(_asm_else_,     _asm_do_)
     WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_IMMEDIATE | M6FLAG_INLINE_ALWAYS | M6FLAG_JUMP | M6FLAG_REEXEC_AFTER_OPTIMIZE)
     WORD_CODE(
         _asm_lit_comma_, CELL(ASMFUNC(_asm_else_)), T(ASMFUNC_SIZE(_asm_else_)),/* ( orig            ) */
-        asm_size, _lit_tok_, _asm_else_, cs_swap,                         /* ( else-orig orig  ) */
-        CALL(_asm_resolve_jump_here_), exit                               /* ( else-orig       ) */
+        asm_size, _lit_tok_, _asm_else_, cs_swap,                               /* ( else-orig orig  ) */
+        CALL(_asm_resolve_jump_here_), exit                                     /* ( else-orig       ) */
     )
 WORD_END(_asm_else_)
 /* ( C: -- orig ) */
@@ -254,9 +254,7 @@ WORD_START(_asm_resolve_loop_, _asm_lit_comma_)
     WORD_ASM_NONE()
     WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_INLINE)
     WORD_CODE(
-        _lit_, T(M6ERR_UNSUPPORTED_OPERATION), throw, /** TODO: test */
-
-        _check_lit_tok_, _asm_loop_, /* TODO: also support _asm_plus_loop_ */
+        _check_lit_tok_, _asm_loop_,                /** TODO: also support _asm_plus_loop_       */
         cs_to_r,                                    /* ( do-sys leave-sys*     ) ( R: loop-sys ) */
         begin,                                      /* ( do-sys leave-sys*     ) ( R: loop-sys ) */
             dup, _lit_, _asm_leave_, equal,         /* ( do-sys leave-sys* t|f ) ( R: loop-sys ) */
@@ -277,7 +275,7 @@ WORD_START(_asm_resolve_loop_, _asm_lit_comma_)
         _check_lit_tok_, _asm_loop_,                /** TODO: support _asm_plus_loop_            */
         /* adjust loop-sys to point immediately after jump offset inside _asm_loop_              */
         swap, _lit_, T(TO(_asm_loop_.jump) - ASMFUNC_RET(_asm_loop_)), plus, swap,
-        cs_r_from,                                  /* ( do-sys loop-sys       )                 */
+                                                    /* ( do-sys loop-sys       )                 */
         CALL(_asm_resolve_jump_there_),             /* (                       )                 */
         exit
     )
@@ -441,18 +439,21 @@ WORD_START(token_to_asm_replace, token_to_asm_n)
         exit                                        /* ( token          )               */
       ),
       WORD_DATA_TOKENS(
-        _q_if_, _asm_q_if_,    /* '(?if)'   becomes '(asm/?if)'   in native ASM */
-        _q_if0_,_asm_q_if0_,   /* '(?if0)'  becomes '(asm/?if0)'  in native ASM */
-        _else_,_asm_else_,     /* '(else)'  becomes '(asm/else)'  in native ASM */
-        _if_, _asm_if_,        /* '(if)'    becomes '(asm/if)'    in native ASM */
-        _if0_,_asm_if0_,       /* '(if0)'   becomes '(asm/if0)'   in native ASM */
-        _lit2s_,_asm_lit8s_,   /* '(lit2s)' becomes '(asm/lit8s)' in native ASM - refined later */
-        _lit4s_,_asm_lit8s_,   /* '(lit4s)' becomes '(asm/lit8s)' in native ASM - refined later */
-        _lit8s_,_asm_lit8s_,   /* '(lit8s)' becomes '(asm/lit8s)' in native ASM */
+        _q_if_, _asm_q_if_,    /* '(?if)'      becomes '(asm/?if)'   in native ASM */
+        _q_if0_,_asm_q_if0_,   /* '(?if0)'     becomes '(asm/?if0)'  in native ASM */
+        _call_asm_, _asm_call_,/* '(call-asm)' becomes '(asm/call)'  in native ASM */
+        _do_,  _asm_do_,       /* '(do)'       becomes '(asm/do)     in native ASM */
+        _else_,_asm_else_,     /* '(else)'     becomes '(asm/else)'  in native ASM */
+        _if_, _asm_if_,        /* '(if)'       becomes '(asm/if)'    in native ASM */
+        _if0_,_asm_if0_,       /* '(if0)'      becomes '(asm/if0)'   in native ASM */
+        _lit2s_,_asm_lit8s_,   /* '(lit2s)'    becomes '(asm/lit8s)' in native ASM - refined later */
+        _lit4s_,_asm_lit8s_,   /* '(lit4s)'    becomes '(asm/lit8s)' in native ASM - refined later */
+        _lit8s_,_asm_lit8s_,   /* '(lit8s)'    becomes '(asm/lit8s)' in native ASM */
         _lit_nt_to_body_, _asm_lit_nt_to_body_, /* '(lit-nt>body)' becomes '(asm/lit-nt>body)'  */
-        _loop_, _asm_loop_,    /* '(loop)'  becomes '(asm/loop)   in native ASM */
-        then, _asm_then_,      /* 'then'    becomes '(asm/then)   in native ASM */
-        exit, _asm_ret_        /* 'exit'    becomes '(asm/ret)    in native ASM */
+        _loop_, _asm_loop_,    /* '(loop)'     becomes '(asm/loop)   in native ASM */
+        do,   _asm_do_,        /* 'do'         becomes '(asm/do)     in native ASM */
+        then, _asm_then_,      /* 'then'       becomes '(asm/then)   in native ASM */
+        exit, _asm_ret_        /* 'exit'       becomes '(asm/ret)    in native ASM */
       )
     )
 WORD_END(token_to_asm_replace)

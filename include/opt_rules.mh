@@ -474,6 +474,7 @@
         x(minus_rot, rot /*=>*/)                           /* -rot   rot    =>                */   \
         x(minus_rot, minus_rot, /*=>*/ rot)                /* -rot   -rot   => rot            */   \
         x(minus_rot, flip, /*=>*/ swap, minus_rot)         /* -rot   flip   => swap -rot      */   \
+        x(minus_rot, tuck, /*=>*/ flip, over)              /* -rot   tuck   => flip over      */   \
         x(sub, negate, /*=>*/ minus)                       /* sub  negate   => -              */   \
         x(state, fetch, /*=>*/ state_fetch)                /* state  @      => state@         */   \
         x(swap, times, /*=>*/ times)                       /* swap   *      => *              */   \

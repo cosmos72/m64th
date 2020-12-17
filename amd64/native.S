@@ -71,3 +71,26 @@ ASMFUNC_START_NESTED(_asm_drop_lit8s_)
 ASMFUNC_END(_asm_lit8s_)
 ASMFUNC_END_NESTED(_asm_lit_nt_to_body_)
 ASMFUNC_END_NESTED(_asm_drop_lit8s_)
+
+
+ASMFUNC_START(_noop1_) /* 1-byte noop */
+        nop;
+ASMFUNC_END(_noop1_)
+ASMFUNC_START(_noop2_) /* 2-byte noop */
+        .byte 0x66, 0x90;
+ASMFUNC_END(_noop2_)
+ASMFUNC_START(_noop3_) /* 3-byte noop */
+        .byte 0x0f, 0x1f, 0x00;
+ASMFUNC_END(_noop3_)
+ASMFUNC_START(_noop4_) /* 4-byte noop */
+        .byte 0x0f, 0x1f, 0x40, 0x00;
+ASMFUNC_END(_noop4_)
+ASMFUNC_START(_noop5_) /* 5-byte noop */
+        .byte 0x0f, 0x1f, 0x44, 0x00, 0x00;
+ASMFUNC_END(_noop5_)
+ASMFUNC_START(_noop6_) /* 6-byte noop */
+        .byte 0x66, 0x0f, 0x1f, 0x44, 0x00, 0x00;
+ASMFUNC_END(_noop6_)
+ASMFUNC_START(_noop7_) /* 7-byte noop */
+        .byte 0x0f, 0x1f, 0x80, 0x00, 0x00, 0x00, 0x00;
+ASMFUNC_END(_noop7_)

@@ -64,3 +64,8 @@ ASMFUNC_START_NESTED(_asm_arm64_movk48_)
 ASMFUNC_END_NESTED(_asm_arm64_movk48_)
 ASMFUNC_END_NESTED(_asm_lit_nt_to_body_)
 ASMFUNC_END(_asm_lit8s_)
+
+
+ASMFUNC_START(_noop4_) /* 4-byte noop */
+        nop;
+ASMFUNC_END(_noop4_)
