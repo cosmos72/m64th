@@ -522,9 +522,8 @@ static void m6testcompile_failed(m64th *m, const m6testcompile *t, m6code t_code
 m6cell m64th_testcompile(m64th *m, FILE *out) {
     const m6testcompile *t[] = {testcompile_a, testcompile_b, testcompile_c, testcompile_d,
                                 testcompile_e};
-    const m6cell n[] = {0, // N_OF(testcompile_a),
-                        N_OF(testcompile_b), N_OF(testcompile_c), N_OF(testcompile_d),
-                        N_OF(testcompile_e)};
+    const m6cell n[] = {N_OF(testcompile_a), N_OF(testcompile_b), N_OF(testcompile_c),
+                        N_OF(testcompile_d), N_OF(testcompile_e)};
 
     m6countedcode codegen_buf;
     m6cell i, j, run = 0, fail = 0;

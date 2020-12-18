@@ -217,8 +217,22 @@ WORD_START(_asm_lit_nt_to_body_,       asm_literal)
         CALL(asm_literal), exit                  /* (                      ) */
     )
 WORD_END(_asm_lit_nt_to_body_)
+/* ( C: -- ) compile ASM code for recursively calling the current ASM function */
+WORD_START(_asm_recurse_,              _asm_lit_nt_to_body_)
+    WORD_DSTACK(1,0)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_ASM_LEN(_asm_recurse_)
+    WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_REEXEC_AFTER_OPTIMIZE)
+    WORD_CODE(
+        _asm_lit_comma_, CELL(ASMFUNC(_asm_recurse_)), T(ASMFUNC_SIZE(_asm_recurse_)),/* (                 ) */
+        zero, zero,                                                                   /* ( orig            ) */
+        asm_size, _lit_tok_, _asm_recurse_,                                           /* ( orig dest       ) */
+        CALL(_asm_resolve_jump_there_), exit                                          /* (                 ) */
+    )
+WORD_END(_asm_recurse_)
 /* ( C: orig -- ) resolve an ASM jump to here */
-WORD_START(_asm_resolve_jump_here_,    _asm_lit_nt_to_body_)
+WORD_START(_asm_resolve_jump_here_,    _asm_recurse_)
     WORD_DSTACK(2,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
@@ -242,7 +256,7 @@ WORD_START(_asm_resolve_jump_there_,   _asm_resolve_jump_here_)
          * their jump offset occupies either 1 byte (not used by m64th) or 4 bytes,
          * and it's exactly the distance in bytes from the end of the jump instruction.
          *
-         * also: the destinations of all backward jumps is either a function or a loop start,
+         * note: the destinations of all backward jumps is either a function or a loop start,
          * and we align both at 8 bytes, so also align jumps to them
          */
         drop, nip,                             /* ( dest_location orig_location     ) (R: t|f ) */
@@ -261,8 +275,11 @@ WORD_START(_asm_resolve_jump_there_,   _asm_resolve_jump_here_)
          * 2. conditional jumps 'b.cond':          bits 5..23 contain distance/4
          * in all cases, distance is computed from the *start* of jump instruction.
          *
-         * also: the destinations of all backward jumps is either a function or a loop start,
+         * note: the destinations of all backward jumps is either a function or a loop start,
          * and we align both at 8 bytes, so also align jumps to them
+         *
+         * note: on arm64, we currently use the ASM sequence 'RPUSH(lr); bl target; RPOP(lr)'
+         * for function calls. We must carefully skip 'RPOP(lr)' when setting target.
          */
         cs_swap, drop,                         /* ( orig dest_location                  ) */
         hop, over, more,                       /* ( orig dest_location t|f              ) */
@@ -274,12 +291,14 @@ WORD_START(_asm_resolve_jump_there_,   _asm_resolve_jump_here_)
         flip,                                  /* ( daddr orig_categ orig_location      ) */
         asm_func, plus, four_minus, swap,      /* ( daddr &orig_jump orig_categ         ) */
 
-        dup, _lit_tok_, _asm_call_, equal,     /* ( daddr addr orig_categ t|f           ) */
-        _if_, T(5),                            /* ( daddr addr orig_categ               ) */
+        token_to_asm_addr,                     /* ( daddr addr m6func                   ) */
+        /* tokens _asm_call_ and _asm_recurse_ are both mapped to m6func _asm_call_       */
+        dup, _lit_cell_, CELL(ASMFUNC(_asm_call_)), /* ( daddr addr m6func m6func2      ) */
+        equal,                                 /* ( daddr addr m6func t|f               ) */
+        _if_, T(5),                            /* ( daddr addr m6func                   ) */
             /* on arm64, we must skip the 'RPUSH(lr)' after each 'ASM_CALL_BODY()'        */
             drop, four_minus, true,            /* ( daddr addr' true                    ) */
-        _else_, T(3+nCALLt),                   /* ( daddr addr orig_categ               ) */
-            token_to_asm_addr,                 /* ( daddr addr m6func                   ) */
+        _else_, T(3+nCALLt),                   /* ( daddr addr m6func                   ) */
             _lit_cell_, CELL(ASMFUNC(_asm_else_)), /* ( daddr addr m6func m6func2       ) */
             equal,                             /* ( daddr addr t|f                      ) */
         then,

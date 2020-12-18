@@ -22,11 +22,11 @@ static void crc_make_table(void) {
     }
 }
 
-static uint32_t crc_add_byte(uint32_t crc, uint8_t byte) {
+uint32_t crc_add_byte(uint32_t crc, uint8_t byte) {
     return (crc >> 8) ^ crc_table[(crc & 0xff) ^ byte];
 }
 
-static uint32_t crc_n_bytes(uint8_t byte, size_t n) {
+uint32_t crc_n_bytes(uint8_t byte, size_t n) {
     uint32_t crc = 0xffffffff;
     size_t i;
     for (i = 0; i < n; i++) {

@@ -8,3 +8,6 @@ test
 *.s
 *~
 .vscode
+/example/crc32/crc32
+/example/fibonacci/fibonacci
+/example/loop/loop

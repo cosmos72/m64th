@@ -4,7 +4,7 @@
  */
 /* clang-format off */
 #define OPT2_HASHMAP(start, entry)	\
-start(/*size*/ 451, /*lcap*/ 8)	\
+start(/*size*/ 452, /*lcap*/ 8)	\
 entry(0,	0,	-1)	\
 entry(M6zero_more_equal|(M6zero_less<<16),	1|(M6zero_less<<16),	257)	\
 entry(M6zero_equal|(M6_until_<<16),	1|(M6_until0_<<16),	-2)	\
@@ -70,7 +70,7 @@ entry(M6minus_one|(M6plus<<16),	1|(M6one_minus<<16),	324)	\
 entry(M6zero|(M6equal<<16),	1|(M6zero_equal<<16),	318)	\
 entry(M6zero_more|(M6zero_equal<<16),	1|(M6zero_less_equal<<16),	-2)	\
 entry(M6zero_less_equal|(M6zero_ne<<16),	1|(M6zero_less<<16),	325)	\
-entry(M6more|(M6zero_equal<<16),	1|(M6less_equal<<16),	321)	\
+entry(M6more|(M6zero_equal<<16),	1|(M6less_equal<<16),	377)	\
 entry(M6zero|(M6and<<16),	2|(M6drop<<16)|(M6zero<<32),	322)	\
 entry(M6i|(M6int_fetch<<16),	1|(M6i_int_fetch<<16),	-2)	\
 entry(0,	0,	-1)	\
@@ -98,7 +98,7 @@ entry(0,	0,	-1)	\
 entry(M6zero_less_equal|(M6zero_less<<16),	1|(M6zero_less<<16),	346)	\
 entry(M6less|(M6zero_less_equal<<16),	3|(M6drop<<16)|(M6drop<<32)|(M6minus_one<<48),	347)	\
 entry(M6dup|(M6more<<16),	2|(M6drop<<16)|(M6zero<<32),	-2)	\
-entry(M6zero|(M6less<<16),	1|(M6zero_less<<16),	377)	\
+entry(M6zero|(M6less<<16),	1|(M6zero_less<<16),	426)	\
 entry(M6align|(M6int_align<<16),	1|(M6align<<16),	368)	\
 entry(M6zero_equal|(M6_continue_if_<<16),	1|(M6_continue_if0_<<16),	-2)	\
 entry(M6two_over|(M6drop<<16),	2|(M6three<<16)|(M6pick<<32),	-2)	\
@@ -145,7 +145,7 @@ entry(M6minus_two|(M6equal<<16),	2|(M6two_plus<<16)|(M6zero_equal<<32),	392)	\
 entry(M6two_div|(M6four_div<<16),	1|(M6eight_div<<16),	-2)	\
 entry(M6zero|(M6u_more_equal<<16),	2|(M6drop<<16)|(M6minus_one<<32),	448)	\
 entry(M6one|(M6plus<<16),	1|(M6one_plus<<16),	406)	\
-entry(M6four_plus|(M6four_plus<<16),	1|(M6eight_plus<<16),	426)	\
+entry(M6four_plus|(M6four_plus<<16),	1|(M6eight_plus<<16),	471)	\
 entry(M6two|(M6plus<<16),	1|(M6two_plus<<16),	418)	\
 entry(M6zero|(M6or<<16),	0,	398)	\
 entry(M6negate|(M6plus<<16),	1|(M6minus<<16),	-2)	\
@@ -220,7 +220,7 @@ entry(M6minus_one|(M6equal<<16),	2|(M6invert<<16)|(M6zero_equal<<32),	299)	\
 entry(M6dup|(M6_continue_if0_<<16),	1|(M6_q_continue_if0_<<16),	-2)	\
 entry(M6four|(M6equal<<16),	2|(M6four_minus<<16)|(M6zero_equal<<32),	-2)	\
 entry(M6dup|(M6times<<16),	1|(M6squared<<16),	354)	\
-entry(M6dup|(M6u_less<<16),	2|(M6drop<<16)|(M6zero<<32),	471)	\
+entry(M6dup|(M6u_less<<16),	2|(M6drop<<16)|(M6zero<<32),	482)	\
 entry(M6zero|(M6rshift<<16),	0,	472)	\
 entry(M6two|(M6minus_roll<<16),	1|(M6minus_rot<<16),	-2)	\
 entry(M6swap|(M6max<<16),	1|(M6max<<16),	-2)	\
@@ -382,7 +382,7 @@ entry(0,	0,	-1)	\
 entry(M6zero_equal|(M6_while_<<16),	1|(M6_while0_<<16),	360)	\
 entry(M6zero_more|(M6zero_less<<16),	1|(M6zero_less<<16),	-2)	\
 entry(M6more|(M6zero_more<<16),	3|(M6drop<<16)|(M6drop<<32)|(M6zero<<48),	-2)	\
-entry(M6tuck|(M6rot<<16),	1|(M6dup<<16),	370)	\
+entry(M6minus_rot|(M6tuck<<16),	2|(M6flip<<16)|(M6over<<32),	321)	\
 entry(M6less_equal|(M6zero_more_equal<<16),	1|(M6more<<16),	-2)	\
 entry(M6zero_equal|(M6zero_ne<<16),	1|(M6zero_equal<<16),	-2)	\
 entry(0,	0,	-1)	\
@@ -431,7 +431,7 @@ entry(M6i_int_fetch|(M6drop<<16),	0,	412)	\
 entry(M6two_plus|(M6short_fetch<<16),	1|(M6short_fetch_1<<16),	409)	\
 entry(M6over|(M6swap<<16),	1|(M6trail<<16),	417)	\
 entry(M6ne|(M6zero_equal<<16),	1|(M6equal<<16),	-2)	\
-entry(M6xor|(M6invert<<16),	2|(M6invert<<16)|(M6xor<<32),	396)	\
+entry(M6tuck|(M6rot<<16),	1|(M6dup<<16),	370)	\
 entry(M6swap|(M6u_more_equal<<16),	1|(M6u_less_equal<<16),	382)	\
 entry(M6dup|(M6mod<<16),	2|(M6drop<<16)|(M6zero<<32),	-2)	\
 entry(M6invert|(M6zero_less<<16),	1|(M6zero_more_equal<<16),	402)	\
@@ -476,7 +476,7 @@ entry(M6zero_less_equal|(M6zero_more_equal<<16),	1|(M6zero_more<<16),	-2)	\
 entry(M6trail|(M6rot<<16),	1|(M6over<<16),	-2)	\
 entry(0,	0,	-1)	\
 entry(M6swap|(M6u_more<<16),	1|(M6u_less<<16),	463)	\
-entry(M6two_plus|(M6byte_fetch<<16),	1|(M6byte_fetch_2<<16),	-2)	\
+entry(M6xor|(M6invert<<16),	2|(M6invert<<16)|(M6xor<<32),	396)	\
 entry(M6zero_less_equal|(M6invert<<16),	1|(M6zero_more<<16),	-2)	\
 entry(0,	0,	-1)	\
 entry(0,	0,	-1)	\
@@ -487,7 +487,7 @@ entry(M6dup|(M6_if_<<16),	1|(M6_q_if_<<16),	467)	\
 entry(M6two_plus|(M6two_plus<<16),	1|(M6four_plus<<16),	-2)	\
 entry(0,	0,	-1)	\
 entry(0,	0,	-1)	\
-entry(0,	0,	-1)	\
+entry(M6two_plus|(M6byte_fetch<<16),	1|(M6byte_fetch_2<<16),	-2)	\
 entry(M6dup|(M6plus<<16),	1|(M6two_times<<16),	-2)	\
 entry(M6state|(M6fetch<<16),	1|(M6state_fetch<<16),	-2)	\
 entry(M6one_minus|(M6one_minus<<16),	1|(M6two_minus<<16),	-2)	\

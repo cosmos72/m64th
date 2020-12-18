@@ -169,7 +169,7 @@ WORD_START(_asm_vm_execute_,   _asm_vm_catch_)
     WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_INLINE | M6FLAG_MAY_JUMP)
     WORD_CODE(_asm_vm_execute_, exit)
 WORD_END(_asm_vm_execute_)
-/* ( -- ) return from VM to native ASM code */
+/* ( -- ) return from VM to ASM code */
 WORD_NOASM(_vm_return_to_asm_, _asm_vm_execute_,   DSTACK(0,0), RSTACK(0,0), M6FLAG_COMPILE_ONLY | M6FLAG_INLINE_ALWAYS | M6FLAG_JUMP)
 /**
  * ( -- t|f ) if all tokens between XT and HERE can be compiled to ASM
@@ -289,7 +289,7 @@ WORD(asm_clear,      asm_bytes_comma,  DSTACK(0,0), RSTACK(0,0), WORD_IMPURE)
 /* ( -- addr ) get ASM_HERE = current ASM address */
 WORD(asm_here,             asm_clear,  DSTACK(0,1), RSTACK(0,0), WORD_IMPURE)
 /* ( -- addr u ) mark code in ASM buffer as READ+EXEC, and return its range.
- * also updates ASM-HERE */
+ * also updates ASM_HERE */
 WORD_START(asm_make_func,  asm_here)
     WORD_DSTACK(0,2)
     WORD_RSTACK(0,0)
@@ -383,7 +383,7 @@ WORD_START(token_to_asm_comma,   token_to_asm)
             /* simply append ASM code of token */
             drop, nip,                              /* ( sys* token'                      ) */
             CALL(token_to_asm),                     /* ( sys* addr|0 u|0                  ) */
-            asm_bytes_comma, exit,                        /* ( sys*                             ) */
+            asm_bytes_comma, exit,                  /* ( sys*                             ) */
         then,                                       /* ( sys* tok-addr token' nt'         ) */
         /* replacement token is marked 'reexec-after-optimize'                              */
         nip, over, token_fetch,                     /* ( sys* tok-addr nt' token          ) */
@@ -441,26 +441,27 @@ WORD_START(token_to_asm_replace, token_to_asm_n)
         exit                                        /* ( token          )               */
       ),
       WORD_DATA_TOKENS(
-        _q_if_, _asm_q_if_,    /* '(?if)'      becomes '(asm/?if)'   in native ASM */
-        _q_if0_,_asm_q_if0_,   /* '(?if0)'     becomes '(asm/?if0)'  in native ASM */
-        _call_asm_, _asm_call_,/* '(call-asm)' becomes '(asm/call)'  in native ASM */
-        _do_,  _asm_do_,       /* '(do)'       becomes '(asm/do)     in native ASM */
-        _else_,_asm_else_,     /* '(else)'     becomes '(asm/else)'  in native ASM */
-        _if_, _asm_if_,        /* '(if)'       becomes '(asm/if)'    in native ASM */
-        _if0_,_asm_if0_,       /* '(if0)'      becomes '(asm/if0)'   in native ASM */
-        _lit2s_,_asm_lit8s_,   /* '(lit2s)'    becomes '(asm/lit8s)' in native ASM - refined later */
-        _lit4s_,_asm_lit8s_,   /* '(lit4s)'    becomes '(asm/lit8s)' in native ASM - refined later */
-        _lit8s_,_asm_lit8s_,   /* '(lit8s)'    becomes '(asm/lit8s)' in native ASM */
-        _lit_nt_to_body_, _asm_lit_nt_to_body_, /* '(lit-nt>body)' becomes '(asm/lit-nt>body)'  */
-        _loop_, _asm_loop_,    /* '(loop)'     becomes '(asm/loop)   in native ASM */
-        do,   _asm_do_,        /* 'do'         becomes '(asm/do)     in native ASM */
-        then, _asm_then_,      /* 'then'       becomes '(asm/then)   in native ASM */
-        exit, _asm_ret_        /* 'exit'       becomes '(asm/ret)    in native ASM */
+        _q_if_, _asm_q_if_,      /* '(?if)'      becomes '(asm/?if)'    in ASM */
+        _q_if0_,_asm_q_if0_,     /* '(?if0)'     becomes '(asm/?if0)'   in ASM */
+        _call_asm_, _asm_call_,  /* '(call-asm)' becomes '(asm/call)'   in ASM */
+        _do_,  _asm_do_,         /* '(do)'       becomes '(asm/do)      in ASM */
+        _else_,_asm_else_,       /* '(else)'     becomes '(asm/else)'   in ASM */
+        _if_, _asm_if_,          /* '(if)'       becomes '(asm/if)'     in ASM */
+        _if0_,_asm_if0_,         /* '(if0)'      becomes '(asm/if0)'    in ASM */
+        _lit2s_,_asm_lit8s_,     /* '(lit2s)'    becomes '(asm/lit8s)'  in ASM - refined later */
+        _lit4s_,_asm_lit8s_,     /* '(lit4s)'    becomes '(asm/lit8s)'  in ASM - refined later */
+        _lit8s_,_asm_lit8s_,     /* '(lit8s)'    becomes '(asm/lit8s)'  in ASM */
+        _lit_nt_to_body_, _asm_lit_nt_to_body_, /* '(lit-nt>body)' becomes '(asm/lit-nt>body)' */
+        _loop_, _asm_loop_,      /* '(loop)'     becomes '(asm/loop)    in ASM */
+        _recurse_, _asm_recurse_,/* '(recurse)'  becomes '(asm/recurse) in ASM */
+        do,   _asm_do_,          /* 'do'         becomes '(asm/do)      in ASM */
+        then, _asm_then_,        /* 'then'       becomes '(asm/then)    in ASM */
+        exit, _asm_ret_          /* 'exit'       becomes '(asm/ret)     in ASM */
       )
     )
 WORD_END(token_to_asm_replace)
 WORD(token_to_asm_addr,  token_to_asm_replace, DSTACK(1,1), RSTACK(0,0), WORD_IMPURE)
-/* ( -- ) attempt to compile to native ASM all tokens between XT and HERE */
+/* ( -- ) attempt to compile to ASM all tokens between XT and HERE */
 WORD_START(xt_to_asm_comma,    token_to_asm_addr)
     WORD_STACK_NONE()
     WORD_STACK_NONE()
@@ -481,7 +482,7 @@ WORD_START(xt_to_asm_comma,    token_to_asm_addr)
     )
 WORD_END(xt_to_asm_comma)
 /* ( -- u t|f ) return required len and true if all tokens between XT and HERE
- * can be compiled to native ASM, otherwise 0 and false */
+ * can be compiled to ASM, otherwise 0 and false */
 WORD_START(xt_to_asm_n,        xt_to_asm_comma)
     WORD_DSTACK(0,2)
     WORD_RSTACK(0,0)

@@ -255,7 +255,7 @@ struct m64th_s {               /**< m64th forth interpreter and compiler        
     m6cell base;               /**< current BASE                                 */
     m6cbuf mem;                /**< start, HERE and end of data space            */
     m6cbuf asm_;               /**< start, curr and end of assembly space        */
-    m6char *asm_here;          /**< end of current ASM function = ASM-HERE       */
+    m6char *asm_here;          /**< end of current ASM function = ASM_HERE       */
     m6cell handler;            /**< exception handler installed by CATCH         */
     m6cell ex;                 /**< exception set by THROW                       */
     m6string ex_message;       /**< exception message, set manually before THROW */

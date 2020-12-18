@@ -32,9 +32,11 @@ ASMFUNC_START(_asm_q_if0_)
 ASMFUNC_END(_asm_q_if0_)
 
 
-/* ASM code to call another ASM function */
+/* ASM code to call another ASM function. */
 ASMFUNC_START(_asm_call_)
+ASMFUNC_START_NESTED(_asm_recurse_)
         ASM_CALL(      FUNC(_missing_))
+ASMFUNC_END_NESTED(_asm_recurse_)
 ASMFUNC_END(_asm_call_)
 
 

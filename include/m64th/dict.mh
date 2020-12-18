@@ -337,26 +337,27 @@
 /* ------- m64th-asm -----------------------------------------------------------------------------
  */
 #define DICT_TOKENS_M64TH_ASM(X)                                                                   \
-    X(9, "(asm/?do)", _asm_q_do_)                    /* native ASM only: implement '(?do)'      */ \
-    X(9, "(asm/?if)", _asm_q_if_)                    /* native ASM only: implement '(?if)'      */ \
-    X(10, "(asm/?if0)", _asm_q_if0_)                 /* native ASM only: implement '(?if0)'     */ \
-    X(10, "(asm/call)", _asm_call_)                  /* native ASM only: call ASM -> ASM        */ \
-    X(8, "(asm/do)", _asm_do_)                       /* native ASM only: implement 'do'         */ \
-    X(10, "(asm/else)", _asm_else_)                  /* native ASM only: implement '(else)'     */ \
-    X(8, "(asm/if)", _asm_if_)                       /* native ASM only: implement '(if)'       */ \
-    X(9, "(asm/if0)", _asm_if0_)                     /* native ASM only: implement '(if0)'      */ \
-    X(11, "(asm/lit8s)", _asm_lit8s_)                /* compile ASM to push literal on stack    */ \
-    X(17, "(asm/lit-nt>body)", _asm_lit_nt_to_body_) /* compile ASM to push nt>body on stack    */ \
-    X(10, "(asm/loop)", _asm_loop_)                  /* native ASM only: implement '(loop)'     */ \
-    X(9, "(asm/ret)", _asm_ret_)                     /* native ASM only: return from ASM to ASM */ \
-    X(10, "(asm/then)", _asm_then_)                  /* native ASM only: implement 'then'       */ \
-    /* native ASM only: pop XT and use '(vm)' to 'catch' it.  */                                   \
+    X(9, "(asm/?do)", _asm_q_do_)                    /* ASM only: implement '(?do)'      */        \
+    X(9, "(asm/?if)", _asm_q_if_)                    /* ASM only: implement '(?if)'      */        \
+    X(10, "(asm/?if0)", _asm_q_if0_)                 /* ASM only: implement '(?if0)'     */        \
+    X(10, "(asm/call)", _asm_call_)                  /* ASM only: call ASM -> ASM        */        \
+    X(8, "(asm/do)", _asm_do_)                       /* ASM only: implement '(do)' 'do'  */        \
+    X(10, "(asm/else)", _asm_else_)                  /* ASM only: implement '(else)'     */        \
+    X(8, "(asm/if)", _asm_if_)                       /* ASM only: implement '(if)'       */        \
+    X(9, "(asm/if0)", _asm_if0_)                     /* ASM only: implement '(if0)'      */        \
+    X(11, "(asm/lit8s)", _asm_lit8s_)                /* compile ASM to push literal on stack */    \
+    X(17, "(asm/lit-nt>body)", _asm_lit_nt_to_body_) /* compile ASM to push nt>body on stack */    \
+    X(10, "(asm/loop)", _asm_loop_)                  /* ASM only: implement '(loop)'     */        \
+    X(13, "(asm/recurse)", _asm_recurse_)            /* ASM only: implement '(recurse)'  */        \
+    X(9, "(asm/ret)", _asm_ret_)                     /* ASM only: return from ASM to ASM */        \
+    X(10, "(asm/then)", _asm_then_)                  /* ASM only: implement 'then'       */        \
+    /* ASM only: pop XT and use '(vm)' to 'catch' it.  */                                          \
     X(14, "(asm/vm-catch)", _asm_vm_catch_) /* ( ... xt -- err ... ) */                            \
-    /* native ASM only: pop XT and use '(vm)' to execute it. */                                    \
+    /* ASM only: pop XT and use '(vm)' to execute it. */                                           \
     X(16, "(asm/vm-execute)", _asm_vm_execute_)     /* ( ... xt -- ... ) */                        \
     X(18, "(vm-return-to/asm)", _vm_return_to_asm_) /* return from VM to ASM                    */ \
     X(10, "[asm-lit,]", _asm_lit_comma_)      /* followed by CELL(addr) T(u) just calls asm,    */ \
-    X(9, "asm-bytes,", asm_bytes_comma)       /* ( addr u  -- ) append ASM code to ASM-HERE     */ \
+    X(9, "asm-bytes,", asm_bytes_comma)       /* ( addr u  -- ) append ASM code to ASM_HERE     */ \
     X(9, "asm-clear", asm_clear)              /* ( -- ) forget current ASM code                 */ \
     X(8, "asm-func", asm_func)                /* ( -- addr ) get ASM_FUNC = start of ASM code   */ \
     X(8, "asm-here", asm_here)                /* ( -- addr ) get ASM_HERE = current ASM address */ \
