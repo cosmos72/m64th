@@ -508,7 +508,61 @@ WORD_START(_if0_, _if_)
     WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_CONSUMES_IP_SZt | M6FLAG_INLINE_ALWAYS | M6FLAG_IMMEDIATE | M6FLAG_MAY_JUMP | M6FLAG_REEXEC_AFTER_OPTIMIZE)
     WORD_CODE(_compile_jump_lit_, _if0_, _if_, exit)
 WORD_END(_if0_)
-WORD_START(_ignore_, _if0_)
+WORD_START(_if_less_,  _if0_)
+    WORD_DSTACK(2,0) /* token stack effect when not jumping */
+    WORD_RSTACK(0,0)
+    WORD_DSTACK(2,0) /* token stack effect when jumping */
+    WORD_RSTACK(0,0)
+    WORD_ASM_NONE()
+    WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_CONSUMES_IP_SZt | M6FLAG_INLINE_ALWAYS | M6FLAG_IMMEDIATE | M6FLAG_MAY_JUMP | M6FLAG_REEXEC_AFTER_OPTIMIZE)
+    WORD_CODE(_compile_jump_lit_, _if_less_, _if_, exit)
+WORD_END(_if_less_)
+WORD_START(_if_less_equal_,  _if_less_)
+    WORD_DSTACK(2,0) /* token stack effect when not jumping */
+    WORD_RSTACK(0,0)
+    WORD_DSTACK(2,0) /* token stack effect when jumping */
+    WORD_RSTACK(0,0)
+    WORD_ASM_NONE()
+    WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_CONSUMES_IP_SZt | M6FLAG_INLINE_ALWAYS | M6FLAG_IMMEDIATE | M6FLAG_MAY_JUMP | M6FLAG_REEXEC_AFTER_OPTIMIZE)
+    WORD_CODE(_compile_jump_lit_, _if_less_equal_, _if_, exit)
+WORD_END(_if_less_equal_)
+WORD_START(_if_ne_,    _if_less_equal_)
+    WORD_DSTACK(2,0) /* token stack effect when not jumping */
+    WORD_RSTACK(0,0)
+    WORD_DSTACK(2,0) /* token stack effect when jumping */
+    WORD_RSTACK(0,0)
+    WORD_ASM_NONE()
+    WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_CONSUMES_IP_SZt | M6FLAG_INLINE_ALWAYS | M6FLAG_IMMEDIATE | M6FLAG_MAY_JUMP | M6FLAG_REEXEC_AFTER_OPTIMIZE)
+    WORD_CODE(_compile_jump_lit_, _if_ne_, _if_, exit)
+WORD_END(_if_ne_)
+WORD_START(_if_equal_, _if_ne_)
+    WORD_DSTACK(2,0) /* token stack effect when not jumping */
+    WORD_RSTACK(0,0)
+    WORD_DSTACK(2,0) /* token stack effect when jumping */
+    WORD_RSTACK(0,0)
+    WORD_ASM_NONE()
+    WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_CONSUMES_IP_SZt | M6FLAG_INLINE_ALWAYS | M6FLAG_IMMEDIATE | M6FLAG_MAY_JUMP | M6FLAG_REEXEC_AFTER_OPTIMIZE)
+    WORD_CODE(_compile_jump_lit_, _if_equal_, _if_, exit)
+WORD_END(_if_equal_)
+WORD_START(_if_more_,  _if_equal_)
+    WORD_DSTACK(2,0) /* token stack effect when not jumping */
+    WORD_RSTACK(0,0)
+    WORD_DSTACK(2,0) /* token stack effect when jumping */
+    WORD_RSTACK(0,0)
+    WORD_ASM_NONE()
+    WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_CONSUMES_IP_SZt | M6FLAG_INLINE_ALWAYS | M6FLAG_IMMEDIATE | M6FLAG_MAY_JUMP | M6FLAG_REEXEC_AFTER_OPTIMIZE)
+    WORD_CODE(_compile_jump_lit_, _if_more_, _if_, exit)
+WORD_END(_if_more_)
+WORD_START(_if_more_equal_,  _if_more_)
+    WORD_DSTACK(2,0) /* token stack effect when not jumping */
+    WORD_RSTACK(0,0)
+    WORD_DSTACK(2,0) /* token stack effect when jumping */
+    WORD_RSTACK(0,0)
+    WORD_ASM_NONE()
+    WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_CONSUMES_IP_SZt | M6FLAG_INLINE_ALWAYS | M6FLAG_IMMEDIATE | M6FLAG_MAY_JUMP | M6FLAG_REEXEC_AFTER_OPTIMIZE)
+    WORD_CODE(_compile_jump_lit_, _if_more_equal_, _if_, exit)
+WORD_END(_if_more_equal_)
+WORD_START(_ignore_, _if_more_equal_)
     WORD_STACK_NONE()
     WORD_STACK_NONE()
     WORD_ASM_NONE()
@@ -1162,8 +1216,16 @@ WORD_START(_optimize_2token_lowprio_, _optimize_2token_midprio_)
         nip, r_from_drop, exit
       ),
       WORD_DATA_TOKENS(
-        drop, drop, /*=>*/ T(1), two_drop,
-        over, over, /*=>*/ T(1), two_dup,
+        drop,       drop, /*=>*/ T(1), two_drop,
+        over,       over, /*=>*/ T(1), two_dup,
+#if 1
+        less,       _if_, /*=>*/ T(1), _if_less_,
+        less_equal, _if_, /*=>*/ T(1), _if_less_equal_,
+        ne,         _if_, /*=>*/ T(1), _if_ne_,
+        equal,      _if_, /*=>*/ T(1), _if_equal_,
+        more,       _if_, /*=>*/ T(1), _if_more_,
+        more_equal, _if_, /*=>*/ T(1), _if_more_equal_,
+#endif
         T(0), T(0)
       )
     )

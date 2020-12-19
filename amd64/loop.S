@@ -141,6 +141,103 @@ FUNC_END(_q_if0_)
 
 
 /**
+ * ( a b -- )
+ * if a < b continue to next instruction, otherwise jump.
+ * must be followed by IP offset to jump.
+ * IP offset = 0 means first instruction after (if<) itself
+ */
+FUNC_START(_if_less_)
+        MOVE(  DTOP,   REG2)
+        DPOP2( REG1,   DTOP)
+        LD_st( REG3,   AT(IP))         /* c = jump offset         */
+        ADD2(IMM(SZt), IP)             /* skip IP offset          */
+        cmp    REG2,   REG1;
+        ADD4(  IP,     REG3,PSZt, REG3)/* c = TARGET_IP - preserves EFLAGS */
+        cmovge REG3,   IP;             /* set IP if a >= b        */
+FUNC_END(_if_less_)
+
+/**
+ * ( a b -- )
+ * if a <= b continue to next instruction, otherwise jump.
+ * must be followed by IP offset to jump.
+ * IP offset = 0 means first instruction after (if<=) itself
+ */
+FUNC_START(_if_less_equal_)
+        MOVE(  DTOP,   REG2)
+        DPOP2( REG1,   DTOP)
+        LD_st( REG3,   AT(IP))         /* c = jump offset         */
+        ADD2(IMM(SZt), IP)             /* skip IP offset          */
+        cmp    REG2,   REG1;
+        ADD4(  IP,     REG3,PSZt, REG3)/* c = TARGET_IP - preserves EFLAGS */
+        cmovg  REG3,   IP;             /* set IP if a > b         */
+FUNC_END(_if_less_equal_)
+
+/**
+ * ( a b -- )
+ * if a <> b continue to next instruction, otherwise jump.
+ * must be followed by IP offset to jump.
+ * IP offset = 0 means first instruction after (if<>) itself
+ */
+FUNC_START(_if_ne_)
+        MOVE(  DTOP,   REG2)
+        DPOP2( REG1,   DTOP)
+        LD_st( REG3,   AT(IP))         /* c = jump offset         */
+        ADD2(IMM(SZt), IP)             /* skip IP offset          */
+        cmp    REG2,   REG1;
+        ADD4(  IP,     REG3,PSZt, REG3)/* c = TARGET_IP - preserves EFLAGS */
+        cmove  REG3,   IP;             /* set IP if a = b         */
+FUNC_END(_if_ne_)
+
+/**
+ * ( a b -- )
+ * if a = b continue to next instruction, otherwise jump.
+ * must be followed by IP offset to jump.
+ * IP offset = 0 means first instruction after (if<>) itself
+ */
+FUNC_START(_if_equal_)
+        MOVE(  DTOP,   REG2)
+        DPOP2( REG1,   DTOP)
+        LD_st( REG3,   AT(IP))         /* c = jump offset         */
+        ADD2(IMM(SZt), IP)             /* skip IP offset          */
+        cmp    REG2,   REG1;
+        ADD4(  IP,     REG3,PSZt, REG3)/* c = TARGET_IP - preserves EFLAGS */
+        cmovne REG3,   IP;             /* set IP if a <> b        */
+FUNC_END(_if_equal_)
+
+/**
+ * ( a b -- )
+ * if a > b continue to next instruction, otherwise jump.
+ * must be followed by IP offset to jump.
+ * IP offset = 0 means first instruction after (if>) itself
+ */
+FUNC_START(_if_more_)
+        MOVE(  DTOP,   REG2)
+        DPOP2( REG1,   DTOP)
+        LD_st( REG3,   AT(IP))         /* c = jump offset         */
+        ADD2(IMM(SZt), IP)             /* skip IP offset          */
+        cmp    REG2,   REG1;
+        ADD4(  IP,     REG3,PSZt, REG3)/* c = TARGET_IP - preserves EFLAGS */
+        cmovl  REG3,   IP;             /* set IP if a < b         */
+FUNC_END(_if_more_)
+
+/**
+ * ( a b -- )
+ * if a >= b continue to next instruction, otherwise jump.
+ * must be followed by IP offset to jump.
+ * IP offset = 0 means first instruction after (if>) itself
+ */
+FUNC_START(_if_more_equal_)
+        MOVE(  DTOP,   REG2)
+        DPOP2( REG1,   DTOP)
+        LD_st( REG3,   AT(IP))         /* c = jump offset         */
+        ADD2(IMM(SZt), IP)             /* skip IP offset          */
+        cmp    REG2,   REG1;
+        ADD4(  IP,     REG3,PSZt, REG3)/* c = TARGET_IP - preserves EFLAGS */
+        cmovle REG3,   IP;             /* set IP if a <= b        */
+FUNC_END(_if_more_equal_)
+
+
+/**
  * must be followed by IP offset of first instruction after (loop)
  * IP offset = 0 means first instruction after (leave) itself
  */

@@ -35,6 +35,54 @@ ASMFUNC_START(_asm_if0_)
 ASMFUNC_END(_asm_if0_)
 
 
+ASMFUNC_START(_asm_if_less_)
+        MOVE(  DTOP,   REG2)
+        DPOP2( REG1,   DTOP)
+        cmp    REG1,   REG2;
+        b.ge   FUNC(_missing_);
+ASMFUNC_END(_asm_if_less_)
+
+
+ASMFUNC_START(_asm_if_less_equal_)
+        MOVE(  DTOP,   REG2)
+        DPOP2( REG1,   DTOP)
+        cmp    REG1,   REG2;
+        b.gt   FUNC(_missing_);
+ASMFUNC_END(_asm_if_less_equal_)
+
+
+ASMFUNC_START(_asm_if_ne_)
+        MOVE(  DTOP,   REG2)
+        DPOP2( REG1,   DTOP)
+        cmp    REG1,   REG2;
+        b.eq   FUNC(_missing_);
+ASMFUNC_END(_asm_if_ne_)
+
+
+ASMFUNC_START(_asm_if_equal_)
+        MOVE(  DTOP,   REG2)
+        DPOP2( REG1,   DTOP)
+        cmp    REG1,   REG2;
+        b.ne   FUNC(_missing_);
+ASMFUNC_END(_asm_if_equal_)
+
+
+ASMFUNC_START(_asm_if_more_)
+        MOVE(  DTOP,   REG2)
+        DPOP2( REG1,   DTOP)
+        cmp    REG1,   REG2;
+        b.le   FUNC(_missing_);
+ASMFUNC_END(_asm_if_more_)
+
+
+ASMFUNC_START(_asm_if_more_equal_)
+        MOVE(  DTOP,   REG2)
+        DPOP2( REG1,   DTOP)
+        cmp    REG1,   REG2;
+        b.lt   FUNC(_missing_);
+ASMFUNC_END(_asm_if_more_equal_)
+
+
 /* load literal value into DTOP */
 
 ASMFUNC_START(_asm_drop_zero_)

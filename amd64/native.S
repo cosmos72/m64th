@@ -36,6 +36,54 @@ ASMFUNC_START(_asm_if0_)
 ASMFUNC_END(_asm_if0_)
 
 
+ASMFUNC_START(_asm_if_less_)
+        cmp    DTOP,   AT(DSTK);
+        ADDI(  DSTK,   SZ, DSTK)
+        DPOP___DTOP()                  /* preserves EFLAGS        */
+        jge    FUNC(_missing_);
+ASMFUNC_END(_asm_if_less_)
+
+
+ASMFUNC_START(_asm_if_less_equal_)
+        cmp    DTOP,   AT(DSTK);
+        ADDI(  DSTK,   SZ, DSTK)
+        DPOP___DTOP()                  /* preserves EFLAGS        */
+        jg     FUNC(_missing_);
+ASMFUNC_END(_asm_if_less_equal_)
+
+
+ASMFUNC_START(_asm_if_ne_)
+        cmp    DTOP,   AT(DSTK);
+        ADDI(  DSTK,   SZ, DSTK)
+        DPOP___DTOP()                  /* preserves EFLAGS        */
+        je     FUNC(_missing_);
+ASMFUNC_END(_asm_if_ne_)
+
+
+ASMFUNC_START(_asm_if_equal_)
+        cmp    DTOP,   AT(DSTK);
+        ADDI(  DSTK,   SZ, DSTK)
+        DPOP___DTOP()                  /* preserves EFLAGS        */
+        jne    FUNC(_missing_);
+ASMFUNC_END(_asm_if_equal_)
+
+
+ASMFUNC_START(_asm_if_more_)
+        cmp    DTOP,   AT(DSTK);
+        ADDI(  DSTK,   SZ, DSTK)
+        DPOP___DTOP()                  /* preserves EFLAGS        */
+        jle    FUNC(_missing_);
+ASMFUNC_END(_asm_if_more_)
+
+
+ASMFUNC_START(_asm_if_more_equal_)
+        cmp    DTOP,   AT(DSTK);
+        ADDI(  DSTK,   SZ, DSTK)
+        DPOP___DTOP()                  /* preserves EFLAGS        */
+        jl     FUNC(_missing_);
+ASMFUNC_END(_asm_if_more_equal_)
+
+
 /* load literal value into DTOP. ordered from shortest to longest encoding. */
 
 ASMFUNC_START(_asm_drop_zero_)

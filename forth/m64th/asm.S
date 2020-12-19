@@ -118,21 +118,99 @@ WORD_START(_asm_if0_,       _asm_if_)
     )
 WORD_END(_asm_if0_)
 /* ( C: -- orig ) */
-WORD_START(_asm_loop_,       _asm_if0_)
+WORD_START(_asm_if_less_,  _asm_if0_)
+    WORD_DSTACK(2,0)
+    WORD_RSTACK(0,0)
+    WORD_DSTACK(2,0)
+    WORD_RSTACK(0,0)
+    WORD_ASM_LEN(_asm_if_less_)
+    WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_IMMEDIATE | M6FLAG_INLINE_ALWAYS | M6FLAG_MAY_JUMP | M6FLAG_REEXEC_AFTER_OPTIMIZE)
+    WORD_CODE(
+        _asm_lit_comma_, CELL(ASMFUNC(_asm_if_less_)), T(ASMFUNC_SIZE(_asm_if_less_)),
+        asm_size, _lit_tok_, _asm_if_, exit
+    )
+WORD_END(_asm_if_less_)
+/* ( C: -- orig ) */
+WORD_START(_asm_if_less_equal_,  _asm_if_less_)
+    WORD_DSTACK(2,0)
+    WORD_RSTACK(0,0)
+    WORD_DSTACK(2,0)
+    WORD_RSTACK(0,0)
+    WORD_ASM_LEN(_asm_if_less_equal_)
+    WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_IMMEDIATE | M6FLAG_INLINE_ALWAYS | M6FLAG_MAY_JUMP | M6FLAG_REEXEC_AFTER_OPTIMIZE)
+    WORD_CODE(
+        _asm_lit_comma_, CELL(ASMFUNC(_asm_if_less_equal_)), T(ASMFUNC_SIZE(_asm_if_less_equal_)),
+        asm_size, _lit_tok_, _asm_if_, exit
+    )
+WORD_END(_asm_if_less_equal_)
+/* ( C: -- orig ) */
+WORD_START(_asm_if_ne_,  _asm_if0_)
+    WORD_DSTACK(2,0)
+    WORD_RSTACK(0,0)
+    WORD_DSTACK(2,0)
+    WORD_RSTACK(0,0)
+    WORD_ASM_LEN(_asm_if_ne_)
+    WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_IMMEDIATE | M6FLAG_INLINE_ALWAYS | M6FLAG_MAY_JUMP | M6FLAG_REEXEC_AFTER_OPTIMIZE)
+    WORD_CODE(
+        _asm_lit_comma_, CELL(ASMFUNC(_asm_if_ne_)), T(ASMFUNC_SIZE(_asm_if_ne_)),
+        asm_size, _lit_tok_, _asm_if_, exit
+    )
+WORD_END(_asm_if_ne_)
+/* ( C: -- orig ) */
+WORD_START(_asm_if_equal_,  _asm_if_ne_)
+    WORD_DSTACK(2,0)
+    WORD_RSTACK(0,0)
+    WORD_DSTACK(2,0)
+    WORD_RSTACK(0,0)
+    WORD_ASM_LEN(_asm_if_equal_)
+    WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_IMMEDIATE | M6FLAG_INLINE_ALWAYS | M6FLAG_MAY_JUMP | M6FLAG_REEXEC_AFTER_OPTIMIZE)
+    WORD_CODE(
+        _asm_lit_comma_, CELL(ASMFUNC(_asm_if_equal_)), T(ASMFUNC_SIZE(_asm_if_equal_)),
+        asm_size, _lit_tok_, _asm_if_, exit
+    )
+WORD_END(_asm_if_equal_)
+/* ( C: -- orig ) */
+WORD_START(_asm_if_more_,  _asm_if_equal_)
+    WORD_DSTACK(2,0)
+    WORD_RSTACK(0,0)
+    WORD_DSTACK(2,0)
+    WORD_RSTACK(0,0)
+    WORD_ASM_LEN(_asm_if_more_)
+    WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_IMMEDIATE | M6FLAG_INLINE_ALWAYS | M6FLAG_MAY_JUMP | M6FLAG_REEXEC_AFTER_OPTIMIZE)
+    WORD_CODE(
+        _asm_lit_comma_, CELL(ASMFUNC(_asm_if_more_)), T(ASMFUNC_SIZE(_asm_if_more_)),
+        asm_size, _lit_tok_, _asm_if_, exit
+    )
+WORD_END(_asm_if_more_)
+/* ( C: -- orig ) */
+WORD_START(_asm_if_more_equal_,  _asm_if_more_)
+    WORD_DSTACK(2,0)
+    WORD_RSTACK(0,0)
+    WORD_DSTACK(2,0)
+    WORD_RSTACK(0,0)
+    WORD_ASM_LEN(_asm_if_more_equal_)
+    WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_IMMEDIATE | M6FLAG_INLINE_ALWAYS | M6FLAG_MAY_JUMP | M6FLAG_REEXEC_AFTER_OPTIMIZE)
+    WORD_CODE(
+        _asm_lit_comma_, CELL(ASMFUNC(_asm_if_more_equal_)), T(ASMFUNC_SIZE(_asm_if_more_equal_)),
+        asm_size, _lit_tok_, _asm_if_, exit
+    )
+WORD_END(_asm_if_more_equal_)
+/* ( C: -- orig ) */
+WORD_START(_asm_loop_,       _asm_if_more_equal_)
     WORD_DSTACK(1,0)
     WORD_RSTACK(0,0)
     WORD_DSTACK(1,0)
     WORD_RSTACK(0,0)
-    WORD_ASM_LEN(_asm_if0_)
+    WORD_ASM_LEN(_asm_loop_)
     WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_IMMEDIATE | M6FLAG_INLINE_ALWAYS | M6FLAG_MAY_JUMP | M6FLAG_REEXEC_AFTER_OPTIMIZE)
     WORD_CODE(
         _asm_lit_comma_, CELL(ASMFUNC(_asm_loop_)), T(ASMFUNC_SIZE(_asm_loop_)),
         asm_size, _lit_tok_, _asm_loop_,
         CALL(_asm_resolve_loop_), exit
     )
-WORD_END(_asm_if0_)
+WORD_END(_asm_loop_)
 /* ( -- ) return from ASM to ASM */
-WORD(_asm_ret_,            _asm_if0_,  DSTACK(0,0), RSTACK(0,0), M6FLAG_COMPILE_ONLY | M6FLAG_INLINE_ALWAYS | M6FLAG_JUMP)
+WORD(_asm_ret_,            _asm_loop_, DSTACK(0,0), RSTACK(0,0), M6FLAG_COMPILE_ONLY | M6FLAG_INLINE_ALWAYS | M6FLAG_JUMP)
 /* ( C: orig -- ) */
 WORD_START(_asm_then_,     _asm_ret_)
     WORD_STACK_NONE()
@@ -441,13 +519,21 @@ WORD_START(token_to_asm_replace, token_to_asm_n)
         exit                                        /* ( token          )               */
       ),
       WORD_DATA_TOKENS(
-        _q_if_, _asm_q_if_,      /* '(?if)'      becomes '(asm/?if)'    in ASM */
-        _q_if0_,_asm_q_if0_,     /* '(?if0)'     becomes '(asm/?if0)'   in ASM */
+        _q_if_,     _asm_q_if_,  /* '(?if)'      becomes '(asm/?if)'    in ASM */
+        _q_if0_,    _asm_q_if0_, /* '(?if0)'     becomes '(asm/?if0)'   in ASM */
         _call_asm_, _asm_call_,  /* '(call-asm)' becomes '(asm/call)'   in ASM */
-        _do_,  _asm_do_,         /* '(do)'       becomes '(asm/do)      in ASM */
-        _else_,_asm_else_,       /* '(else)'     becomes '(asm/else)'   in ASM */
-        _if_, _asm_if_,          /* '(if)'       becomes '(asm/if)'     in ASM */
-        _if0_,_asm_if0_,         /* '(if0)'      becomes '(asm/if0)'    in ASM */
+        _do_,       _asm_do_,    /* '(do)'       becomes '(asm/do)      in ASM */
+        _else_,     _asm_else_,  /* '(else)'     becomes '(asm/else)'   in ASM */
+        _if_,       _asm_if_,    /* '(if)'       becomes '(asm/if)'     in ASM */
+        _if0_,      _asm_if0_,   /* '(if0)'      becomes '(asm/if0)'    in ASM */
+#if 1
+        _if_less_,  _asm_if_less_,
+        _if_less_equal_, _asm_if_less_equal_,
+        _if_ne_,    _asm_if_ne_,
+        _if_equal_, _asm_if_equal_,
+        _if_more_,  _asm_if_more_,
+        _if_more_equal_, _asm_if_more_equal_,
+#endif
         _lit2s_,_asm_lit8s_,     /* '(lit2s)'    becomes '(asm/lit8s)'  in ASM - refined later */
         _lit4s_,_asm_lit8s_,     /* '(lit4s)'    becomes '(asm/lit8s)'  in ASM - refined later */
         _lit8s_,_asm_lit8s_,     /* '(lit8s)'    becomes '(asm/lit8s)'  in ASM */

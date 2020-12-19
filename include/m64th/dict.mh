@@ -345,6 +345,12 @@
     X(10, "(asm/else)", _asm_else_)               /* ASM only: implement '(else)'     */           \
     X(8, "(asm/if)", _asm_if_)                    /* ASM only: implement '(if)'       */           \
     X(9, "(asm/if0)", _asm_if0_)                  /* ASM only: implement '(if0)'      */           \
+    X(9, "(asm/if<)", _asm_if_less_)              /* ASM only: implement '(if<)'      */           \
+    X(10, "(asm/if<=)", _asm_if_less_equal_)      /* ASM only: implement '(if<=)'     */           \
+    X(10, "(asm/if<>)", _asm_if_ne_)              /* ASM only: implement '(if<>)'     */           \
+    X(9, "(asm/if=)", _asm_if_equal_)             /* ASM only: implement '(if=)'      */           \
+    X(9, "(asm/if>)", _asm_if_more_)              /* ASM only: implement '(if>)'      */           \
+    X(10, "(asm/if>=)", _asm_if_more_equal_)      /* ASM only: implement '(if>=)'     */           \
     X(11, "(asm/lit8s)", _asm_lit8s_)             /* compile ASM to push literal on stack */       \
     X(17, "(asm/lit-nt>body)", _asm_lit_nt_body_) /* compile ASM to push nt>body on stack */       \
     X(10, "(asm/loop)", _asm_loop_)               /* ASM only: implement '(loop)'     */           \
@@ -640,6 +646,12 @@
     X(12, "(exec-token)", _exec_token_)                                                            \
     X(13, "(fallthrough)", _fallthrough_) /* jump to next 'of' inside a 'case' */                  \
     X(4, "(if)", _if_)                                                                             \
+    X(5, "(if<)", _if_less_)                                                                       \
+    X(6, "(if<=)", _if_less_equal_)                                                                \
+    X(6, "(if<>)", _if_ne_)                                                                        \
+    X(5, "(if=)", _if_equal_)                                                                      \
+    X(5, "(if>)", _if_more_)                                                                       \
+    X(6, "(if>=)", _if_more_equal_)                                                                \
     X(5, "(if0)", _if0_)                                                                           \
     X(8, "(ignore)", _ignore_) /* followed by IP offset, ignores it.  */                           \
     X(4, "(ip)", _ip_)                                                                             \
