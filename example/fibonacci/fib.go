@@ -12,5 +12,5 @@ func fib(n uintptr) uintptr {
 }
 
 func main() {
-    fmt.Println(fib(40))
+    fmt.Println(fib(45))
 }

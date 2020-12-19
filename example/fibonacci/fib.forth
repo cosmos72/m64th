@@ -9,6 +9,6 @@
    drop 1
 ;
 
-40 fib .
+45 fib .
 
 bye

@@ -20,8 +20,8 @@ create crc-table crc-fill
    bounds ?do i c@ crc+ loop
 ;
 
-: 100M 't' $ffffffff 100000000 0 do over crc+ loop nip ;
+: 1G 't' $ffffffff 1000000000 0 do over crc+ loop nip ;
 
-100M .
+1G .
 
 bye

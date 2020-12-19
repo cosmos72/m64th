@@ -13,7 +13,7 @@ static uint32_t crc_make_table_element(uint32_t n) {
     return n;
 }
 
-static uint32_t crc_table[256];
+uint32_t crc_table[256];
 
 static void crc_make_table(void) {
     uint32_t n;
@@ -22,9 +22,13 @@ static void crc_make_table(void) {
     }
 }
 
+#if 0 /* enable to use an assembly implementation of crc_add_byte() */
+uint32_t crc_add_byte(uint32_t crc, uint8_t byte);
+#else
 uint32_t crc_add_byte(uint32_t crc, uint8_t byte) {
     return (crc >> 8) ^ crc_table[(crc & 0xff) ^ byte];
 }
+#endif /* 0 */
 
 uint32_t crc_n_bytes(uint8_t byte, size_t n) {
     uint32_t crc = 0xffffffff;
@@ -37,6 +41,6 @@ uint32_t crc_n_bytes(uint8_t byte, size_t n) {
 
 int main(void) {
     crc_make_table();
-    printf("%u\n", (unsigned)crc_n_bytes('t', 100 * 1000 * 1000));
+    printf("%u\n", (unsigned)crc_n_bytes('t', 1000 * 1000 * 1000));
     return 0;
 }
