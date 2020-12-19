@@ -1,7 +1,6 @@
 local bit = require("bit")
 
 local xor = bit.bxor
-local lshift = bit.lshift
 local rshift = bit.rshift
 local band = bit.band
 
