@@ -1219,12 +1219,18 @@ WORD_START(_optimize_2token_lowprio_, _optimize_2token_midprio_)
         drop,       drop, /*=>*/ T(1), two_drop,
         over,       over, /*=>*/ T(1), two_dup,
 #if 1
-        less,       _if_, /*=>*/ T(1), _if_less_,
-        less_equal, _if_, /*=>*/ T(1), _if_less_equal_,
-        ne,         _if_, /*=>*/ T(1), _if_ne_,
-        equal,      _if_, /*=>*/ T(1), _if_equal_,
-        more,       _if_, /*=>*/ T(1), _if_more_,
-        more_equal, _if_, /*=>*/ T(1), _if_more_equal_,
+        less,       _if_,  /*=>*/ T(1), _if_less_,
+        less_equal, _if_,  /*=>*/ T(1), _if_less_equal_,
+        ne,         _if_,  /*=>*/ T(1), _if_ne_,
+        equal,      _if_,  /*=>*/ T(1), _if_equal_,
+        more,       _if_,  /*=>*/ T(1), _if_more_,
+        more_equal, _if_,  /*=>*/ T(1), _if_more_equal_,
+        less,       _if0_, /*=>*/ T(1), _if_more_equal_,
+        less_equal, _if0_, /*=>*/ T(1), _if_more_,
+        ne,         _if0_, /*=>*/ T(1), _if_equal_,
+        equal,      _if0_, /*=>*/ T(1), _if_ne_,
+        more,       _if0_, /*=>*/ T(1), _if_less_equal_,
+        more_equal, _if0_, /*=>*/ T(1), _if_less_,
 #endif
         T(0), T(0)
       )
