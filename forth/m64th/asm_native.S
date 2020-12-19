@@ -205,20 +205,20 @@ WORD_START(asm_literal,          _asm_lit8s_)
     )
 WORD_END(asm_literal)
 /* ( tok-addr -- ) compile ASM code for pushing name>data>addr to DSTACK */
-WORD_START(_asm_lit_nt_to_body_,       asm_literal)
+WORD_START(_asm_lit_nt_body_,          asm_literal)
     WORD_DSTACK(1,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
-    WORD_ASM_LEN(_asm_lit_nt_to_body_)
+    WORD_ASM_LEN(_asm_lit_nt_body_)
     WORD_FLAGS(M6FLAG_COMPILE_ONLY | M6FLAG_REEXEC_AFTER_OPTIMIZE)
     WORD_CODE(
         token_plus, fetch,                             /* ( nt                   ) */
         name_to_data_addr,                             /* ( addr                 ) */
         CALL(asm_literal), exit                  /* (                      ) */
     )
-WORD_END(_asm_lit_nt_to_body_)
+WORD_END(_asm_lit_nt_body_)
 /* ( C: -- ) compile ASM code for recursively calling the current ASM function */
-WORD_START(_asm_recurse_,              _asm_lit_nt_to_body_)
+WORD_START(_asm_recurse_,              _asm_lit_nt_body_)
     WORD_DSTACK(1,0)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()

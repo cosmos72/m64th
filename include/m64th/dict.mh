@@ -337,20 +337,20 @@
 /* ------- m64th-asm -----------------------------------------------------------------------------
  */
 #define DICT_TOKENS_M64TH_ASM(X)                                                                   \
-    X(9, "(asm/?do)", _asm_q_do_)                    /* ASM only: implement '(?do)'      */        \
-    X(9, "(asm/?if)", _asm_q_if_)                    /* ASM only: implement '(?if)'      */        \
-    X(10, "(asm/?if0)", _asm_q_if0_)                 /* ASM only: implement '(?if0)'     */        \
-    X(10, "(asm/call)", _asm_call_)                  /* ASM only: call ASM -> ASM        */        \
-    X(8, "(asm/do)", _asm_do_)                       /* ASM only: implement '(do)' 'do'  */        \
-    X(10, "(asm/else)", _asm_else_)                  /* ASM only: implement '(else)'     */        \
-    X(8, "(asm/if)", _asm_if_)                       /* ASM only: implement '(if)'       */        \
-    X(9, "(asm/if0)", _asm_if0_)                     /* ASM only: implement '(if0)'      */        \
-    X(11, "(asm/lit8s)", _asm_lit8s_)                /* compile ASM to push literal on stack */    \
-    X(17, "(asm/lit-nt>body)", _asm_lit_nt_to_body_) /* compile ASM to push nt>body on stack */    \
-    X(10, "(asm/loop)", _asm_loop_)                  /* ASM only: implement '(loop)'     */        \
-    X(13, "(asm/recurse)", _asm_recurse_)            /* ASM only: implement '(recurse)'  */        \
-    X(9, "(asm/ret)", _asm_ret_)                     /* ASM only: return from ASM to ASM */        \
-    X(10, "(asm/then)", _asm_then_)                  /* ASM only: implement 'then'       */        \
+    X(9, "(asm/?do)", _asm_q_do_)                 /* ASM only: implement '(?do)'      */           \
+    X(9, "(asm/?if)", _asm_q_if_)                 /* ASM only: implement '(?if)'      */           \
+    X(10, "(asm/?if0)", _asm_q_if0_)              /* ASM only: implement '(?if0)'     */           \
+    X(10, "(asm/call)", _asm_call_)               /* ASM only: call ASM -> ASM        */           \
+    X(8, "(asm/do)", _asm_do_)                    /* ASM only: implement '(do)' 'do'  */           \
+    X(10, "(asm/else)", _asm_else_)               /* ASM only: implement '(else)'     */           \
+    X(8, "(asm/if)", _asm_if_)                    /* ASM only: implement '(if)'       */           \
+    X(9, "(asm/if0)", _asm_if0_)                  /* ASM only: implement '(if0)'      */           \
+    X(11, "(asm/lit8s)", _asm_lit8s_)             /* compile ASM to push literal on stack */       \
+    X(17, "(asm/lit-nt>body)", _asm_lit_nt_body_) /* compile ASM to push nt>body on stack */       \
+    X(10, "(asm/loop)", _asm_loop_)               /* ASM only: implement '(loop)'     */           \
+    X(13, "(asm/recurse)", _asm_recurse_)         /* ASM only: implement '(recurse)'  */           \
+    X(9, "(asm/ret)", _asm_ret_)                  /* ASM only: return from ASM to ASM */           \
+    X(10, "(asm/then)", _asm_then_)               /* ASM only: implement 'then'       */           \
     /* ASM only: pop XT and use '(vm)' to 'catch' it.  */                                          \
     X(14, "(asm/vm-catch)", _asm_vm_catch_) /* ( ... xt -- err ... ) */                            \
     /* ASM only: pop XT and use '(vm)' to execute it. */                                           \
@@ -651,7 +651,7 @@
     X(7, "(lit4s)", _lit4s_)                                                                       \
     X(7, "(lit8s)", _lit8s_)                                                                       \
     X(8, "(lit-nt)", _lit_nt_)                                                                     \
-    X(13, "(lit-nt>body)", _lit_nt_to_body_)                                                       \
+    X(13, "(lit-nt>body)", _lit_nt_body_)                                                          \
     X(12, "(lit-string)", _lit_string_)                                                            \
     X(9, "(lit-tok)", _lit_tok_)                                                                   \
     X(8, "(lit-xt)", _lit_xt_)                                                                     \

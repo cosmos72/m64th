@@ -190,7 +190,7 @@ FUNC_END(name_to_data)
 
 
 /* followed by NT. return its data>addr */
-FUNC_START(_lit_nt_to_body_)
+FUNC_START(_lit_nt_body_)
         DPUSH__DTOP()
         LOAD(  DTOP,       AT(IP))
         ADD2(IMM(SZ),      IP)
@@ -201,7 +201,7 @@ FUNC_START_NESTED(name_to_data_addr)  /* ( nt -- addr ) */
         ADD4(  REG1,       DTOP, PSZt,    DTOP)        /* dtop = w.code + w.code_n */
         ALIGN( SZ,         DTOP)                       /* dtop = w.data         */
 FUNC_END_NESTED(name_to_data_addr)
-FUNC_END(_lit_nt_to_body_)
+FUNC_END(_lit_nt_body_)
 
 
 /* set m6word.data_n of specified word */

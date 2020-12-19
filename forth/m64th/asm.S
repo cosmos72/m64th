@@ -451,7 +451,7 @@ WORD_START(token_to_asm_replace, token_to_asm_n)
         _lit2s_,_asm_lit8s_,     /* '(lit2s)'    becomes '(asm/lit8s)'  in ASM - refined later */
         _lit4s_,_asm_lit8s_,     /* '(lit4s)'    becomes '(asm/lit8s)'  in ASM - refined later */
         _lit8s_,_asm_lit8s_,     /* '(lit8s)'    becomes '(asm/lit8s)'  in ASM */
-        _lit_nt_to_body_, _asm_lit_nt_to_body_, /* '(lit-nt>body)' becomes '(asm/lit-nt>body)' */
+        _lit_nt_body_, _asm_lit_nt_body_, /* '(lit-nt>body)' becomes '(asm/lit-nt>body)' */
         _loop_, _asm_loop_,      /* '(loop)'     becomes '(asm/loop)    in ASM */
         _recurse_, _asm_recurse_,/* '(recurse)'  becomes '(asm/recurse) in ASM */
         do,   _asm_do_,          /* 'do'         becomes '(asm/do)      in ASM */

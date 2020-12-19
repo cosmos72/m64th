@@ -64,12 +64,12 @@ ASMFUNC_END(_asm_drop_lit4s_)
 
 
 ASMFUNC_START(_asm_lit8s_)
-ASMFUNC_START_NESTED(_asm_lit_nt_to_body_)
+ASMFUNC_START_NESTED(_asm_lit_nt_body_)
         DPUSH__DTOP()
 ASMFUNC_START_NESTED(_asm_drop_lit8s_)
         movabs IMM(0xffffffffffffffff), DTOP;
 ASMFUNC_END(_asm_lit8s_)
-ASMFUNC_END_NESTED(_asm_lit_nt_to_body_)
+ASMFUNC_END_NESTED(_asm_lit_nt_body_)
 ASMFUNC_END_NESTED(_asm_drop_lit8s_)
 
 

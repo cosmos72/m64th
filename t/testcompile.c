@@ -195,7 +195,7 @@ static const m6testcompile testcompile_b[] = {
     {"[ variable x", {}, {}, {2, {m6_ip_to_data_addr_, m6exit}}},
     {"[ 3 value y ] ;", {}, {}, {3, {m6_ip_to_data_addr_, m6fetch, m6exit}}},
     {"[ 2 value z 1 to z z", {}, {1, {1}}, {3, {m6_ip_to_data_addr_, m6fetch, m6exit}}},
-    {"to test_value", {}, {}, {2 + nCALLt, {m6_lit_nt_to_body_, CELL(&test_value.word), m6store}}},
+    {"to test_value", {}, {}, {2 + nCALLt, {m6_lit_nt_body_, CELL(&test_value.word), m6store}}},
 };
 
 static const m6testcompile testcompile_c[] = {
