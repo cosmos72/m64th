@@ -999,7 +999,7 @@ static m6testexecute testexecute_e[] = {
      {{}, {}},
      {}},
     {"{(?if) T(_) dup then} (optimize-4token)",
-     {CALL(_optimize_4token_),           /* ( counted-tokens ) */
+     {CALL(_optimize_4jump_),            /* ( counted-tokens ) */
       CALL(countedtokens_comma), m6bye}, /* (                ) */
      {{1, {(m6cell)test_tokens_qif_t_dup_then}}, {}},
      {{}, {}},

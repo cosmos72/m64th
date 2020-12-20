@@ -1333,17 +1333,18 @@ WORD_START(_optimize_3local_, _optimize_3jump_)
     )
 WORD_END(_optimize_3local_)
 /**
- * find an optimized sequence to replace four tokens being compiled.
+ * find an optimized sequence to replace four tokens being compiled,
+ * which may be part of control flow i.e. 'if' 'else' 'case' etc.
  * if no optimized sequence was found, return 0
  * ( tok-addr -- counted-tokens|0 )
  */
-WORD_START(_optimize_4token_, _optimize_3local_)
+WORD_START(_optimize_4jump_, _optimize_3local_)
     WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()
     WORD_ASM_NONE()
     WORD_FLAGS(M6FLAG_DATA_TOKENS)
-    WORD_CODE_AND_DATA(_optimize_4token_,
+    WORD_CODE_AND_DATA(_optimize_4jump_,
       WORD_CODE_TOKENS(
         _ip_to_data_, bounds,                          /* ( addr end beg        )                */
         do,                                            /* ( addr                ) ( R: end pos ) */
@@ -1365,6 +1366,40 @@ WORD_START(_optimize_4token_, _optimize_3local_)
       ),
       WORD_DATA_TOKENS(
         _q_if_, T(0), dup, then, /*=>*/ T(1), question_dup
+      )
+    )
+WORD_END(_optimize_4jump_)
+/**
+ * find an optimized sequence to replace four tokens being compiled.
+ * if no optimized sequence was found, return 0
+ * ( tok-addr -- counted-tokens|0 )
+ */
+WORD_START(_optimize_4token_, _optimize_4jump_)
+    WORD_DSTACK(1,1)
+    WORD_RSTACK(0,0)
+    WORD_STACK_NONE()
+    WORD_ASM_NONE()
+    WORD_FLAGS(M6FLAG_DATA_TOKENS)
+    WORD_CODE_AND_DATA(_optimize_4token_,
+      WORD_CODE_TOKENS(
+#if SZt * 4 == SZ
+        _ip_to_data_, bounds,                          /* ( addr end beg        )                */
+        do,                                            /* ( addr                ) ( R: end pos ) */
+            dup, fetch, i_fetch, ne,                   /* ( addr t|f            ) ( R: end pos ) */
+        _continue_if_, T(7),                           /* ( addr                ) ( R: end pos ) */
+            drop, i, four, tokens, plus,               /* ( counted-tokens      ) ( R: end pos ) */
+            unloop, exit,                              /* ( counted-tokens      )                */
+
+            six, tokens,                               /* ( addr +loop-offset   ) ( R: end pos ) */
+        _plus_loop_, T(-17),                           /* ( addr                )                */
+#endif
+        drop, zero, exit                               /* ( 0                   )                */
+      ),
+      WORD_DATA_TOKENS(
+        over, over, less,       choose, /*=>*/ T(1), min,
+        over, over, less_equal, choose, /*=>*/ T(1), min,
+        over, over, more,       choose, /*=>*/ T(1), max,
+        over, over, more_equal, choose, /*=>*/ T(1), max
       )
     )
 WORD_END(_optimize_4token_)
@@ -1504,6 +1539,7 @@ WORD_START(_optimize_tokens_, _optimize_7token_)
         T(3|M6OPTS_PRIO_HIGH), XT(_optimize_3token_),
         T(3|M6OPTS_PRIO_HIGH), XT(_optimize_3jump_),
         T(3|M6OPTS_PRIO_HIGH), XT(_optimize_3local_),
+        T(4|M6OPTS_PRIO_HIGH), XT(_optimize_4jump_),
         T(4|M6OPTS_PRIO_HIGH), XT(_optimize_4token_),
         T(5|M6OPTS_PRIO_HIGH), XT(_optimize_5token_),
         T(7|M6OPTS_PRIO_HIGH), XT(_optimize_7token_),

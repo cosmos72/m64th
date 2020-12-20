@@ -38,8 +38,10 @@
     X(2, "8*", eight_times)                                                                        \
     X(2, "8+", eight_plus)                                                                         \
     X(2, "8-", eight_minus)                                                                        \
-    X(2, "8/", eight_div)             /* floored divide by 4 */                                    \
-    X(4, "8sm/", eight_sm_div)        /* symmetric divide by 8 */                                  \
+    X(2, "8/", eight_div)             /* floored divide by 4       */                              \
+    X(4, "8sm/", eight_sm_div)        /* symmetric divide by 8     */                              \
+    X(7, "8lshift", eight_lshift)     /* left shift by 8           */                              \
+    X(7, "8rshift", eight_rshift)     /* unsigned right shift by 8 */                              \
     /*                             */ /*                                                */         \
     /* attempt to narrow two double-width unsigned numbers         */                              \
     X(7, "2du>2u?", two_du_to_2u_q) /* ( du1 du2 -- u1 u2 t | du1 du2 f ) */                       \
@@ -106,7 +108,11 @@
     /*                             */      /*                                               */     \
     X(3, "u<=", u_less_equal)                                                                      \
     X(3, "u>=", u_more_equal)                                                                      \
+    X(2, "u/", u_div)                    /* ( u1 u2 -- u1/u2 )                            */       \
     X(5, "u/mod", u_div_mod)             /* ( u1 u2 -- u1%u2 u1/u2 )                      */       \
+    X(3, "u2/", u_two_div)               /* ( u -- u/2 ) unsigned divide by two           */       \
+    X(3, "u4/", u_four_div)              /* ( u -- u/4 ) unsigned divide by four          */       \
+    X(3, "u8/", u_eight_div)             /* ( u -- u/8 ) unsigned divide by eight         */       \
     /*                              */   /*                                               */       \
     X(11, "xt>validate", xt_to_validate) /* ( xt -- xt ) throw if XT is invalid           */       \
     /*                              */   /*                                               */       \
@@ -791,15 +797,18 @@
     /* find an optimized sequence to replace three tokens being compiled, */                       \
     /* related to local variables.  */                                                             \
     X(17, "(optimize-3local)", _optimize_3local_) /* ( tok-addr -- counted-tokens|0 ) */           \
-    /*  find an optimized sequence to replace 3 tokens being compiled. */                          \
+    /* find an optimized sequence to replace 3 tokens being compiled. */                           \
     X(17, "(optimize-3token)", _optimize_3token_) /* ( tok-addr -- counted-tokens|0 ) */           \
-    /*  find an optimized sequence to replace 4 tokens being compiled. */                          \
+    /* find an optimized sequence to replace 4 tokens being compiled, */                           \
+    /* which may be part of control flow i.e. 'if' 'else' 'case' etc.  */                          \
+    X(16, "(optimize-4jump)", _optimize_4jump_) /* ( tok-addr -- counted-tokens|0 ) */             \
+    /* find an optimized sequence to replace 4 tokens being compiled, */                           \
     X(17, "(optimize-4token)", _optimize_4token_) /* ( tok-addr -- counted-tokens|0 ) */           \
-    /*  find an optimized sequence to replace 5 tokens being compiled. */                          \
+    /* find an optimized sequence to replace 5 tokens being compiled. */                           \
     X(17, "(optimize-5token)", _optimize_5token_) /* ( tok-addr -- counted-tokens|0 ) */           \
-    /*  find an optimized sequence to replace 7 tokens being compiled. */                          \
+    /* find an optimized sequence to replace 7 tokens being compiled. */                           \
     X(17, "(optimize-7token)", _optimize_7token_) /* ( tok-addr -- counted-tokens|0 ) */           \
-    /*  find an optimized sequence to replace N tokens being compiled. */                          \
+    /* find an optimized sequence to replace N tokens being compiled. */                           \
     X(17, "(optimize-tokens)", _optimize_tokens_) /* ( tok-addr u -- counted-tokens u' | 0 0 ) */  \
     /* copy and optimize at least one token from src to HERE. updates HERE src and u */            \
     X(18, "(optimize-tokens,)", _optimize_tokens_comma_) /* ( src u -- src' u' ) */                \

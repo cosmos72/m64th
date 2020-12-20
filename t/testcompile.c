@@ -334,6 +334,9 @@ static const m6testcompile testcompile_d[] = {
     {"1+ 1+ ;", {2, {COLON_SYS}}, {}, {2, {m6two_plus, m6exit}}},
     {"1+ noop 1+ ;", {2, {COLON_SYS}}, {}, {2, {m6two_plus, m6exit}}},
     {"swap drop ;", {2, {COLON_SYS}}, {}, {2, {m6nip, m6exit}}},
+    {"1 rshift ;", {2, {COLON_SYS}}, {}, {2, {m6u_two_div, m6exit}}},
+    {"2 / ;", {2, {COLON_SYS}}, {}, {2, {m6two_sm_div, m6exit}}},
+    {"2 u/ ;", {2, {COLON_SYS}}, {}, {2, {m6u_two_div, m6exit}}},
     /* ------------------------------- (optimize-2token-lowprio) ------------ */
     {"drop drop ;", {2, {COLON_SYS}}, {}, {2, {m6two_drop, m6exit}}},
     /* ------------------------------- [recompile] -------------------------- */
@@ -363,6 +366,12 @@ static const m6testcompile testcompile_d[] = {
      {2, {COLON_SYS}},
      {},
      {5, {m6_q_if_, T(2), m6three, m6then, m6exit}}},
+    /* ------------------------------- [optimize-3token] --------------------- */
+    {"256 * ;", {2, {COLON_SYS}}, {}, {2, {m6eight_lshift, m6exit}}},
+    {"$ff and ;", {2, {COLON_SYS}}, {}, {2, {m6to_char, m6exit}}},
+    {"3 + c@ ;", {2, {COLON_SYS}}, {}, {2, {m6char_fetch_3, m6exit}}},
+    /* ------------------------------- (optimize-4token) -------------------- */
+    {"over over < choose ;", {2, {COLON_SYS}}, {}, {2, {m6min, m6exit}}},
     /* ------------------------------- [optimize] case ---------------------- */
     {"case endcase ;", {2, {COLON_SYS}}, {}, {2, {m6drop, m6exit}}},
     /* ------------------------------- [optimize] begin --------------------- */
@@ -399,6 +408,10 @@ static const m6testcompile testcompile_d[] = {
     /* ------------------------------- [optimize] --------------------------- */
     {"dup dup dup dup drop drop drop drop ;", {2, {COLON_SYS}}, {}, {1, {m6exit}}},
     {"drop dup dup dup drop drop drop drop ;", {2, {COLON_SYS}}, {}, {2, {m6two_drop, m6exit}}},
+    {"if drop else nip then ;", {2, {COLON_SYS}}, {}, {2, {m6choose, m6exit}}},
+    {"if nip else drop then ;", {2, {COLON_SYS}}, {}, {3, {m6zero_equal, m6choose, m6exit}}},
+    {"2dup < if drop else nip then ;", {2, {COLON_SYS}}, {}, {2, {m6min, m6exit}}},
+    {"2dup <= if nip else drop then ;", {2, {COLON_SYS}}, {}, {2, {m6max, m6exit}}},
 };
 
 static const m6testcompile testcompile_e[] = {

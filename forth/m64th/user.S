@@ -88,7 +88,11 @@ WORD(eight_plus,       eight_times,    DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(eight_minus,      eight_plus,     DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(eight_div,        eight_minus,    DSTACK(1,1), RSTACK(0,0), WORD_PURE)
 WORD(eight_sm_div,     eight_div,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
-WORD(atomic_plus_store,eight_sm_div,   DSTACK(2,1), RSTACK(0,0), WORD_IMPURE|M6FLAG_MEM_FETCH|M6FLAG_MEM_STORE)
+/* 8lshift ( u -- u<<8 ) left shift by 8 */
+WORD(eight_lshift,     eight_sm_div,   DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+/* 8rshift ( u -- u>>8 ) unsigned right shift by 8 */
+WORD(eight_rshift,     eight_lshift,   DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD(atomic_plus_store,eight_rshift,   DSTACK(2,1), RSTACK(0,0), WORD_IMPURE|M6FLAG_MEM_FETCH|M6FLAG_MEM_STORE)
 WORD(atomic_one_plus_store,     atomic_plus_store,
                                        DSTACK(1,1), RSTACK(0,0), WORD_IMPURE|M6FLAG_MEM_FETCH|M6FLAG_MEM_STORE)
 WORD(bounds,    atomic_one_plus_store, DSTACK(2,2), RSTACK(0,0), WORD_PURE)
@@ -738,9 +742,17 @@ WORD(u_less_equal,     trail,          DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 WORD(u_more_equal,     u_less_equal,   DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 /* u>d ( u -- du ) extend unsigned number to double width */
 WORD(u_to_d,           u_more_equal,   DSTACK(1,2), RSTACK(0,0), WORD_PURE)
+/* u/ ( u1 u2 -- u1/u2 ) unsigned divide */
+WORD(u_div,            u_to_d,         DSTACK(2,1), RSTACK(0,0), WORD_PURE)
 /* u/mod ( u1 u2 -- u1%u2 u1/u2 ) unsigned remainder & divide */
-WORD(u_div_mod,        u_to_d,         DSTACK(2,2), RSTACK(0,0), WORD_PURE)
-WORD_START(valid_base_q, u_div_mod)
+WORD(u_div_mod,        u_div,          DSTACK(2,2), RSTACK(0,0), WORD_PURE)
+/* u2/ ( u -- u/2 ) unsigned divide by two */
+WORD(u_two_div,        u_div_mod,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+/* u4/ ( u -- u/4 ) unsigned divide by four */
+WORD(u_four_div,       u_two_div,      DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+/* u8/ ( u -- u/8 ) unsigned divide by eight */
+WORD(u_eight_div,      u_four_div,     DSTACK(1,1), RSTACK(0,0), WORD_PURE)
+WORD_START(valid_base_q, u_eight_div)
     WORD_DSTACK(1,1)
     WORD_RSTACK(0,0)
     WORD_STACK_NONE()

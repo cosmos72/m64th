@@ -242,6 +242,16 @@ FUNC_START(eight_div)      /* 8/   m64th-user floored divide by 8 */
 FUNC_END(eight_div)
 
 
+FUNC_START(eight_lshift)   /* 8lshift   left shift by 8 */
+        SHR2(  IMM(8), DTOP)
+FUNC_END(eight_lshift)
+
+
+FUNC_START(eight_rshift)   /* 8rshift   unsigned right shift by 8 */
+        SHR2(  IMM(8), DTOP)
+FUNC_END(eight_rshift)
+
+
 FUNC_START(sixteen)        /* 16   m64th-impl */
         DPUSH__DTOP()
         MOVI(  16,     DTOP)
@@ -457,9 +467,24 @@ FUNC_END(trail)
 
 
 #ifndef M6FTUCK
-FUNC_START(tuck)          /* tuck      core ( a b -- b a b ) */
+FUNC_START(tuck)           /* tuck      core ( a b -- b a b ) */
         LOAD(  REG1,   AT(DSTK))
         STOR(  DTOP,   AT(DSTK))
         DPUSH( REG1)
 FUNC_END(tuck)
 #endif
+
+
+FUNC_START(u_two_div)      /* u2/   unsigned divide by 2 */
+        SHR2(  IMM(1), DTOP)
+FUNC_END(u_two_div)
+
+
+FUNC_START(u_four_div)     /* u4/   unsigned divide by 4 */
+        SHR2(  IMM(2), DTOP)
+FUNC_END(u_four_div)
+
+
+FUNC_START(u_eight_div)    /* u8/   unsigned divide by 8 */
+        SHR2(  IMM(3), DTOP)
+FUNC_END(u_eight_div)

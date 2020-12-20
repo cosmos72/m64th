@@ -60,7 +60,7 @@ FUNC_START(_missing_)      /* (missing) called instead of invalid/unimplemented 
 FUNC_END(_missing_)
 
 
-/* signed divide */
+/* ( a b -- a/b ) signed divide */
 FUNC_START(div)      /* / */
         DPOP(  REG1)
         DIV3(  REG1,   DTOP,   DTOP)
@@ -77,7 +77,14 @@ FUNC_START(div_mod)          /*  */
 FUNC_END(div_mod)
 
 
-/* u/mod ( u1 u2 -- u1%u2 u1/u2 ) unsigned remainder & divide */
+/* u/ ( u1 u2 -- u1/u2 ) unsigned divide */
+FUNC_START(u_div)
+        DPOP(  REG1)
+        UDIV3( REG1,   DTOP,   DTOP)
+FUNC_END(u_div)
+
+
+/* u/mod ( u1 u2 -- u1%u2 u1/u2 ) unsigned remainder & quotient */
 FUNC_START(u_div_mod)
         LOAD(  REG1,   AT(DSTK))
         UDIV3( REG1,   DTOP,   REG2)

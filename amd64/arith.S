@@ -79,6 +79,16 @@ FUNC_START(div_mod)
 FUNC_END(div_mod)
 
 
+/* u/ ( u1 u2 -- u1/u2 ) unsigned divide */
+FUNC_START(u_div)
+        MOVE(  DTOP,   %rcx)       /* DTOP is %rax, we will clobber it */
+        DPOP___DTOP()              /* %rax = u1                        */
+        xor    %edx,   %edx;       /* zero-extend %rax into %rdx       */
+        div    %rcx;               /* quotient is in %rax, remainder in %rdx */
+        /*MOVE(%rax, DTOP)*/       /* result is already in DTOP = %rax */
+FUNC_END(u_div)
+
+
 /* u/mod ( u1 u2 -- u1%u2 u1/u2 ) unsigned remainder & divide */
 FUNC_START(u_div_mod)
         MOVE(  DTOP,   %rcx)       /* DTOP is %rax, we will clobber it */
