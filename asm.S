@@ -66,11 +66,15 @@ MARKER(asm_func_start)
 #include "generic_asm/test.S" /* only used for test & benchmark */
 
 MARKER(asm_func_end)
-SECTION_DATA() /* SECTION_RODATA() causes linker warning: relocation in read-only section `.rodata' */
-MARKER(asm_data_start)
+SECTION_RODATA_REL()
+MARKER(asm_rodata_start)
 
 #include "forth/std.S"
 #include "forth/m64th.S"
+
+MARKER(asm_rodata_end)
+SECTION_DATA()
+MARKER(asm_rwdata_start)
 
 WORDLIST(forth)
 WORDLIST(forth_root)
@@ -80,7 +84,7 @@ WORDLIST(m64th_core)
 WORDLIST(m64th_impl)
 WORDLIST(m64th_user)
 
-MARKER(asm_data_end)
+MARKER(asm_rwdata_end)
 
         .ident "m64th 0.0.0"
         .section .note.GNU-stack,"",@progbits

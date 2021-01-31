@@ -20,20 +20,15 @@
 #ifndef M64TH_INCLUDE_SECTION_MH
 #define M64TH_INCLUDE_SECTION_MH
 
+#define SECTION_FUNC() .text
 #define SECTION_DATA() .data
 
-#define SECTION_FUNC() .text
-
-/*
- * work around Android linker message
- * "warning: creating a DT_TEXTREL in a shared object"
- * because it produces non-working executable that fail with
- * CANNOT LINK EXECUTABLE: "/cmd/full/path" has text relocations
- */
-#if defined(__ELF__) && !defined(__ANDROID__)
-#define SECTION_RODATA() .section /**/.rodata
+#if defined(__GNUC__) // defined(__ELF__) && !defined(__ANDROID__)
+#define SECTION_RODATA()     .section /**/.rodata
+#define SECTION_RODATA_REL() .section /**/.data.rel.ro
 #else
-#define SECTION_RODATA() .data
+#define SECTION_RODATA()     .data
+#define SECTION_RODATA_REL() .data
 #endif
 
 #endif /* M64TH_INCLUDE_SECTION_MH */

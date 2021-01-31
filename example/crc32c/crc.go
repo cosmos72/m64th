@@ -35,5 +35,5 @@ func crc_n_bytes(b uint8, n uintptr) uint32 {
 }
 
 func main() {
-    fmt.Println(crc_n_bytes('t', 100 * 1000 * 1000))
+    fmt.Println(crc_n_bytes('t', 1000 * 1000 * 1000))
 }

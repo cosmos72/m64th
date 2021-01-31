@@ -17,8 +17,8 @@
  * along with m64th.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M64TH_INCLUDE_OPT_MH
-#define M64TH_INCLUDE_OPT_MH
+#ifndef M64TH_INCLUDE_OPT_RULES_MH
+#define M64TH_INCLUDE_OPT_RULES_MH
 
 #include "macro.mh"
 
@@ -719,4 +719,7 @@
         x(over, over, more, /*=>*/ two_dup_more)             /*                                */  \
         x(over, over, more_equal, /*=>*/ two_dup_more_equal) /*                                */
 
-#endif /* M64TH_INCLUDE_OPT_MH */
+/* not defined here. see (optimize-4token) in forth/m64th/impl.S  */
+#undef OPT4_RULES
+
+#endif /* M64TH_INCLUDE_OPT_RULES_MH */
