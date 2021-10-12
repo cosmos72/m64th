@@ -41,7 +41,7 @@ FUNC_RAWEND(_call_)
  * (catch-beg) is the first part of 'catch'. it must be followed by '(catch-end)'
  * it pushes the following cells to rstk:
  *
- * ...  old-RTOP  DSTK-depth locals old-LOCL old-m64th.handler  RTOP=IP
+ * ...  old-RTOP  DSTK-depth [locals] old-LOCL old-m64th.handler RTOP=IP
  */
 FUNC_START(_catch_beg_)
         TOKEN_CALL_NOTHROW(FUNC(_validate_xt_to_reg0_), _catch_beg_.0)
@@ -99,8 +99,8 @@ FUNC_START(_catch_end_)
         LOAD(  REG2,   AT(M64TH, M64TH_OFF_EX))        /* a = exception | 0        */
         JNZ(   REG2,   TO(_catch_end_.thrown))
 
-        /* no exception was thrown. just restore m64th.handler and rstk,         */
-        /* without restoring dstk                                                */
+        /* no exception was thrown. just restore m64th.handler, LOCL and RSTK,     */
+        /* without restoring RSTK                                                  */
         STOR(  RTOP,   AT(M64TH, M64TH_OFF_HANDLER))   /* m64th.handler = rtop = previous m64th.handler */
         LOAD(  RTOP,   AT(RSTK, SZ2))                /* reload rtop              */
         ADD2(  IMM(SZ3), RSTK)                       /* adjust rstk              */
