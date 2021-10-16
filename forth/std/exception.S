@@ -54,7 +54,7 @@ WORD_START(throw,      catch)
     WORD_RSTACK(0,0)
     WORD_DSTACK(1,-1) /* stack effect when throwing */
     WORD_RSTACK(0,-1)
-    WORD_ASM_NONE() /* uses IP-relative jump to 'bye', cannot inline in native code */
+    WORD_ASM_NONE() /* uses IP-relative jumps, cannot inline in native code */
     WORD_FLAGS(M6FLAG_INLINE | M6FLAG_MAY_JUMP)
     WORD_CODE(throw, exit)
 WORD_END(throw)

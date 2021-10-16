@@ -41,44 +41,42 @@ FUNC_RAWEND(_call_)
  * (catch-beg) is the first part of 'catch'. it must be followed by '(catch-end)'
  * it pushes the following cells to rstk:
  *
- * ...  old-RTOP  DSTK-depth [locals] old-LOCL old-m64th.handler RTOP=IP
+ * ...  old-RTOP [locals] old-LOCL DSTK-depth old-m64th.handler RTOP=IP
  */
 FUNC_START(_catch_beg_)
-        TOKEN_CALL_NOTHROW(FUNC(_validate_xt_to_reg0_), _catch_beg_.0)
-        JNZ(   REG0,   FUNC(_throw_reg0_))
+        /* save locals to rstk */
+        JNZ(   LOCL,   TO(_catch_beg_.save_locals))
+        RPUSH( RTOP)                               /* save current RTOP    */
+        RPUSH( LOCL)                               /* save LOCL            */
+        JUMP(  TO(_catch_beg_.done_locals))
 
-        RPUSH( RTOP)                               /* save current RTOP */
+LABEL(_catch_beg_.save_locals)
+        /* _lenter_g_ below saves LOCL to return stack */
+        TOKEN_CALL_NOTHROW(FUNC(_lenter_g_), _catch_beg_.0)
+        RPUSH( RTOP)                               /* save current RTOP = old-LOCL */
+LABEL(_catch_beg_.done_locals)
+
+        /* set REG0 to exception, set REG1 to stack depth */
+        TOKEN_CALL_NOTHROW(FUNC(_validate_xt_to_reg0_), _catch_beg_.1)
 
         /* pop XT */
-        SUB2(IMM(SZ),  REG1)                       /* update stack depth */
-        MOVE(  DTOP,   REG2)                       /* b = XT to execute  */
+        SUB2(IMM(SZ),  REG1)                       /* update stack depth   */
+        MOVE(  DTOP,   REG2)                       /* b = XT to execute    */
         DPOP___DTOP()
 
         /* save dstk depth to rstk */
-        RPUSH( REG1)                               /* save dend - dstk   */
-
-        /* save locals to rstk */
-        RPUSH( LOCL)                               /* save LOCL          */
-        JZ(    LOCL,   TO(_catch_beg_.done_locals))
-
-        /* _lenter_g_ below saves LOCL to return stack, undo our RPUSH( LOCL) above */
-        ADD2(  IMM(SZ),RSTK)
-        /* and reload top of return stack in RTOP */
-        RPOP(  RTOP)
-
-        TOKEN_CALL_NOTHROW(FUNC(_lenter_g_), _catch_beg_.1)
-LABEL(_catch_beg_.done_locals)
+        RPUSH( REG1)                               /* save dend - dstk     */
 
         /* save m64th.handler to rstk */
         LOAD(  REG1,   AT(M64TH, M64TH_OFF_HANDLER))
-        RPUSH( REG1)                               /* save m64th.handler  */
+        RPUSH( REG1)                               /* save m64th.handler   */
 
-        /* save IP to RTOP, as 'execute' does */
+        /* save current IP to RTOP, as 'execute' does */
         MOVE(  IP,     RTOP)
 
         /* save rstk depth to m64th.handler */
         LOAD(  REG1,   AT(M64TH, M64TH_OFF_REND))
-        SUB2(  RSTK,   REG1)                       /* a  = rend - rstk   */
+        SUB2(  RSTK,   REG1)                         /* a  = rend - rstk   */
         STOR(  REG1,   AT(M64TH, M64TH_OFF_HANDLER)) /* save rend - rstk   */
 
         /* clear m64th.ex and m64th.ex_message */
@@ -86,7 +84,10 @@ LABEL(_catch_beg_.done_locals)
         STOR(  R000_REG1,  AT(M64TH, M64TH_OFF_EX))
         STOR(  R000_REG1,  AT(M64TH, M64TH_OFF_EX_STRING_N))
 
-        /* execute IP */
+        /* throw if XT is invvalid */
+        JNZ(   REG0,   FUNC(_throw_reg0_))
+
+        /* execute XT */
         MOVE(  REG2,   IP)
         NEXT0()
 FUNC_RAWEND(_catch_beg_)
@@ -99,11 +100,18 @@ FUNC_START(_catch_end_)
         LOAD(  REG2,   AT(M64TH, M64TH_OFF_EX))        /* a = exception | 0        */
         JNZ(   REG2,   TO(_catch_end_.thrown))
 
-        /* no exception was thrown. just restore m64th.handler, LOCL and RSTK,     */
-        /* without restoring RSTK                                                  */
-        STOR(  RTOP,   AT(M64TH, M64TH_OFF_HANDLER))   /* m64th.handler = rtop = previous m64th.handler */
-        LOAD(  RTOP,   AT(RSTK, SZ2))                /* reload rtop              */
-        ADD2(  IMM(SZ3), RSTK)                       /* adjust rstk              */
+        /* no exception was thrown => return stack contains                        */
+        /* old-RTOP [locals] old-LOCL DSTK-depth RTOP=old-m64th.handler            */
+        /* just restore m64th.handler, LOCL, RSTK without restoring local vars     */
+
+        STOR(  RTOP,   AT(M64TH, M64TH_OFF_HANDLER))   /* m64th.handler = RTOP = previous m64th.handler */
+        ADD2(  IMM(SZ),   RSTK)                        /* skip DSTK-depth          */
+        RPOP(  LOCL)                                   /* reload LOCL              */
+        JZ(    LOCL,   TO(_catch_end_.done_locals))
+        ADD2(  IMM(SZ16), RSTK)                        /* skip local vars          */
+
+LABEL(_catch_end_.done_locals)
+        RPOP(  RTOP)                                   /* reload RTOP              */
         JUMP(  TO(_catch_end_.push))
 
 LABEL(_catch_end_.thrown)
@@ -113,7 +121,7 @@ LABEL(_catch_end_.thrown)
          */
         init_R000_REG1()
         STOR(  R000_REG1,  AT(M64TH, M64TH_OFF_EX))    /* clear m64th.ex              */
-        /* do NOT clear m64th.ex_message, caller may need it                        */
+        /* do NOT clear m64th.ex_message, caller may need it                          */
 
 LABEL(_catch_end_.push)
         /* final touch: push exception to dstk */
@@ -133,6 +141,7 @@ FUNC_RAWEND(_check_lit_tok_)
 
 /* _validate_xt_to_reg0_ is invoked with TOKEN_CALL_NOTHROW => cannot throw   */
 /* thus set REG0 to validation error instead, and let caller throw it */
+/* also set REG1 to stack depth in bytes */
 FUNC_START(_validate_xt_to_reg0_)
         /* check for stack underflow */
         LOAD(  REG1,   AT(M64TH, M64TH_OFF_DEND))
@@ -236,50 +245,52 @@ FUNC_START_NESTED(_throw_reg0_)
         MOVE(  REG1,   RSTK)
 
 LABEL(throw.rstk_ok)
-        /* load previous m64th.handler from rstk */
+        /* return stack now contains:                                                */
+        /* old-RTOP [locals] old-LOCL DSTK-depth old-m64th.handler                   */
+        /* load previous m64th.handler from return stack                             */
         RPOP(  REG1)                                   /* a = previous m64th.handler */
         STOR(  REG1,   AT(M64TH, M64TH_OFF_HANDLER))   /* m64th.handler = a          */
 
-        /* load previous LOCL and local registers from rstk */
-        RPOP(  LOCL)
-        JZ(    LOCL,   TO(throw.done_locals))
-
-        MOVE(  LOCL,   RTOP)      /* _lexit_g_ expects saved LOCL to be in RTOP */
-        TOKEN_CALL_NOTHROW(FUNC(_lexit_g_), throw.0)
-LABEL(throw.done_locals)
-
-
         /* load previous stack depth */
-        RPOP(  REG1)                                 /* a = dend - dstk = saved depth      */
+        RPOP(  REG1)                                   /* a = dend - dstk = saved depth in bytes */
 
         /*
          * recompute dstk from m64th.dend and depth saved to rstk.
          * this is tricky because we must also preserve/restore DTOP
          */
         LOAD(  REG3,   AT(M64TH, M64TH_OFF_DEND))      /* c = dend'                          */
-        MOVE(  REG3,   REG2)                         /* b = dend'                          */
-        SUB2(  DSTK,   REG3)                         /* c = dend' - dstk' = current depth' */
-        JEQ(   REG1,   REG3,   TO(throw.dstk_ok))    /* jump if depth = depth'             */
-        JL(    REG1,   REG3,   TO(throw.dstk))       /* jump if depth < depth'             */
+        MOVE(  REG3,   REG2)                           /* b = dend'                          */
+        SUB2(  DSTK,   REG3)                           /* c = dend' - dstk' = current depth' */
+        JEQ(   REG1,   REG3,   TO(throw.dstk_ok))      /* jump if depth = depth'             */
+        JL(    REG1,   REG3,   TO(throw.dstk))         /* jump if depth < depth'             */
 
         /* depth > depth' i.e. we must invent some values and push them to dstk            */
-        STOR(  DTOP,   AT(DSTK, -SZ))                /* save current DTOP                  */
-        MOVE(  IMM_1,  DTOP)                         /* invent a new value for DTOP        */
+        STOR(  DTOP,   AT(DSTK, -SZ))                  /* save current DTOP                */
+        MOVE(  IMM_1,  DTOP)                           /* invent a new value for DTOP      */
 
 LABEL(throw.dstk)
         /* recompute dstk, because depth <> depth' */
 #ifdef SUB3
-        SUB3(  REG2,   REG1,   DSTK)                 /* dstk' = dend' - (dend - dstk)      */
+        SUB3(  REG2,   REG1,   DSTK)                   /* dstk' = dend' - (dend - dstk)    */
 #else
-        SUB2(  REG1,   REG2)                         /* a     = dend' - (dend - dstk)      */
-        MOVE(  REG2,   DSTK)                         /* dstk' = a                          */
+        SUB2(  REG1,   REG2)                           /* a     = dend' - (dend - dstk)    */
+        MOVE(  REG2,   DSTK)                           /* dstk' = a                        */
 #endif
         /* we carefully preserved REG1 and REG3. if depth < depth' we must reload DTOP     */
-        JGE(   REG1,   REG3,   TO(throw.dstk_ok))    /* jump if depth >= depth'            */
+        JGE(   REG1,   REG3,   TO(throw.dstk_ok))      /* jump if depth >= depth'          */
         LOAD(  DTOP,   AT(DSTK, -SZ))
 
 LABEL(throw.dstk_ok)
-        RPOP(  RTOP)                                 /* restore RTOP pushed by (catch-beg) */
+        /* return stack now contains: old-RTOP [locals] old-LOCL                       */
+        RPOP(  LOCL)                                   /* load previous LOCL           */
+        JZ(    LOCL,   TO(throw.no_locals))
+
+        MOVE(  LOCL,   RTOP)       /* _lexit_g_ expects saved LOCL to be in RTOP       */
+        JUMP(  FUNC(_lexit_g_))
+
+LABEL(throw.no_locals)
+        RPOP(  RTOP)                                   /* load previous RTOP           */
+
 FUNC_END_NESTED(_throw_reg0_)
 FUNC_END(throw)
 
