@@ -12,5 +12,5 @@ func fib(n uintptr) uintptr {
 }
 
 func main() {
-    fmt.Println(fib(45))
+    fmt.Println("fibonacci(45) = ", fib(45))
 }

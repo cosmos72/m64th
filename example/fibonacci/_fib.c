@@ -11,5 +11,5 @@ size_t fib(size_t n) {
 }
 
 int main(void) {
-    printf("%lu\n", (unsigned long)fib(45));
+    printf("fibonacci(45) = %lu\n", (unsigned long)fib(45));
 }

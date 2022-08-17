@@ -56,7 +56,7 @@ static m6cell eval_stdin(m64th *m) {
 
 int main(int argc, char *argv[]) {
     m64th *m = m64th_new(m6opt_return_stack_is_c_stack);
-    m6cell ret;
+    m6cell ret = 0;
     int i;
 
     m->out->func = WORD_SYM(c_fwrite_fflush).code;
