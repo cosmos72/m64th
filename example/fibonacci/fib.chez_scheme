@@ -4,12 +4,12 @@
 ; (#%$assembly-output #t)
 
 (define (fib n)
-  (if (fx> n 2)
-    (fx+ (fib (fx- n 1))
-         (fib (fx- n 2)))
-    1))
+  (letrec ((xfib (lambda (n)
+    (if (fx>? n 2)
+      (fx+ (xfib (fx- n 1))
+           (xfib (fx- n 2)))
+      1))))
+    (xfib n)))
 
-(display (fib 45))
+(display (time (fib 45)))
 (newline)
-
-

@@ -598,7 +598,6 @@ void refreshShowHints(abuf *ab, linenoiseString input, linenoiseState *l) {
 static void refreshSingleLine(linenoiseState *l) {
     char seq[64];
     abuf *ab = &l->abuf;
-    char *buf = l->buf;
     size_t len = l->len;
     size_t pos = l->pos;
     size_t cursor;
@@ -607,7 +606,6 @@ static void refreshSingleLine(linenoiseState *l) {
     int abstart;
 
     while ((plen + pos) >= l->cols) {
-        buf++;
         len--;
         pos--;
     }
